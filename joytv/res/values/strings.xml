@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">tv</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_section1">Section 1</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section3">Section 3</string>
+
+      <string name="init_decoders">正在进行第一次解压解码包...</string>
+     <string name="VideoView_error_title">Cannot play video</string>
+      <string name=" addressnotwork">播放的地址失效！</string>
+    <string name="VideoView_error_text_invalid_progressive_playback">播放的地址失效！</string>
+    <string name="VideoView_error_text_unknown">Sorry, this video cannot be played.</string>
+    <string name="VideoView_error_button">OK</string>
+    <string name="mediacontroller_play_pause">Play/Pause</string>
+</resources>
