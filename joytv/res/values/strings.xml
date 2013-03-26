@@ -7,6 +7,11 @@
     <string name="title_section2">Section 2</string>
     <string name="title_section3">Section 3</string>
 
+    <string name="netstate">网络状态</string>
+      <string name=" networknotwork">哎呀，你的网络好像有问题，请重试！</string>
+       <string name=" ok">退出</string>
+    <string name="  cancel">取消</string>
+      
       <string name="init_decoders">正在进行第一次解压解码包...</string>
      <string name="VideoView_error_title">Cannot play video</string>
       <string name=" addressnotwork">播放的地址失效！</string>

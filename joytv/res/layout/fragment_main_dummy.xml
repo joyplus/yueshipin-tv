@@ -13,4 +13,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/section_label"
+        android:layout_marginLeft="39dp"
+        android:layout_toRightOf="@+id/section_label"
+        android:text="Button" 
+       android:onClick="OnClickPlay" />
+
 </RelativeLayout>
