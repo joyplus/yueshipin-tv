@@ -3,5 +3,28 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
-
+    <!--Yangzhg  -->
+    <dimen name="menu_vertical_margin">2dp</dimen>
+    <dimen name="text_horizontal_margin">5dp</dimen>
+    <dimen name="layout_zero">0dp</dimen>
+    <dimen name="user_name_text_size">12sp</dimen>
+    <dimen name="time_text_size">24sp</dimen>
+    <dimen name="empty_margin_right">10dp</dimen>
+    <dimen name="theme_name_margin">20dp</dimen>
+    <dimen name="theme_name_text_size">23sp</dimen>
+    <dimen name="jishu_text_size">15sp</dimen>
+    <dimen name="edit_vertical_margin">5dp</dimen>
+    <dimen name="menu_horizontal_padding">5dp</dimen>
+    <dimen name="menu_up_text_size">17dp</dimen>
+    
+    <!--Yangzhg  -->
+    
+    
+    <!--ZhangQibo  -->
+    
+    <!--ZhangQibo  -->
+    
+    
+    <!--Yu  -->
+    <!--Yu  -->
 </resources>

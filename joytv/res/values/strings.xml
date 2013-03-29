@@ -19,4 +19,48 @@
     <string name="VideoView_error_text_unknown">Sorry, this video cannot be played.</string>
     <string name="VideoView_error_button">OK</string>
     <string name="mediacontroller_play_pause">Play/Pause</string>
+    
+    <!--Yangzhg  -->
+    <string name="hello_world">Hello world!</string>
+    <string name="tv_play_name">电视剧</string>
+    <string name="shoucang_update_name">收藏更新</string>
+    <string name="oumei_play_name">欧美剧</string>
+    <string name="dalu_play_name">大陆剧</string>
+    <string name="gangju_play_name">港剧</string>
+    <string name="taiju_play_name">台剧</string>
+    <string name="hanju_play_name">韩剧</string>
+    <string name="riju_play_name">日剧</string>
+    <string name="dongman_play_name">动漫</string>
+    <string name="qinzidongman_play_name">亲子动漫</string>
+    <string name="rexuedongman_play_name">热血动漫</string>
+    <string name="hougongdoangman_play_name">后宫动漫</string>
+    <string name="tuilidongman_play_name">推理动漫</string>
+    <string name="jizhandongman_play_name">机战动漫</string>
+    <string name="gaoxiaodongman_play_name">搞笑动漫</string>
+    <string name="search_name">搜索</string>
+    <string name="yuedan_name">悦单</string>
+    <string name="dianyingyuedan_name">电影悦单</string>
+    <string name="dianshijuyuedan_name">电视剧悦单</string>
+    <string name="qitadianshiju_play_name">其他电视剧</string>
+    <string name="dianying_name">电影</string>
+    <string name="quanbufenlei_name">全部分类</string>
+    <string name="dongzuopian_name">动作片</string>
+    <string name="lunlipian_pian">伦理片</string>
+    <string name="xijupian_name">喜剧片</string>
+    <string name="aiqingpian_name">爱情片</string>
+    <string name="xuanyipian_name">悬疑片</string>
+    <string name="kongbupian_name">恐怖片</string>
+    <string name="qitadongman_play_name">其他动漫</string>
+    <string name="zuijinguankan_name">最近观看</string>
+    
+    <!--Yangzhg  -->
+    
+    
+    <!--ZhangQibo  -->
+    
+    <!--ZhangQibo  -->
+    
+    
+    <!--Yu  -->
+    <!--Yu  -->
 </resources>
