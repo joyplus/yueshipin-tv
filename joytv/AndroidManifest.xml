@@ -77,7 +77,7 @@
         </service>
 		<meta-data
             android:name="UMENG_APPKEY"
-            android:value="50937e6c5270151fc8000003" >
+            android:value="50937e6c5270151fc8000003">
         </meta-data>
         <meta-data
             android:name="UMENG_CHANNEL"
