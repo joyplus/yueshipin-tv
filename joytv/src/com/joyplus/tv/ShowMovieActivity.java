@@ -22,7 +22,7 @@ import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 
-public class MovieActivity extends Activity implements OnKeyListener ,OnTouchListener{
+public class ShowMovieActivity extends Activity implements OnKeyListener ,OnTouchListener{
 	private Button mFenLeiBtn;
 	private EditText searchEt;
 	private GridView movieGv;
