@@ -125,7 +125,7 @@
                 android:layout_marginLeft="@dimen/theme_name_margin"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
-                android:text="@string/yuedan_name"
+                android:text="@string/zongyi_name"
                 android:textColor="@color/text_orange"
                 android:textSize="@dimen/theme_name_text_size" />
 
