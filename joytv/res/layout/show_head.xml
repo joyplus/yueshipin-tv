@@ -52,13 +52,12 @@
         android:layout_weight="1"
         android:orientation="vertical" >
 
-        <TextView
+        <com.joyplus.tv.ui.ClockTextView
             android:id="@+id/textView9"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:gravity="center"
-            android:text="12:34"
             android:textColor="@color/time_color"
             android:textSize="@dimen/time_text_size" />
     </LinearLayout>
