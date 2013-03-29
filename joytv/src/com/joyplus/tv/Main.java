@@ -4,8 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Display;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -27,6 +30,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.joyplus.tv.Video.VideoPlayerActivity;
 import com.joyplus.tv.ui.ClockTextView;
 import com.joyplus.tv.ui.MyGallery;
 import com.joyplus.tv.ui.MyScrollLayout;
@@ -312,7 +316,7 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 	private int displayWith;
 	private MyScrollLayout titleGroup;
 	private FrameLayout itemFram;
-	private ClockTextView clock;
+//	private ClockTextView clock;
 	private ImageView highlightImageView;
 	private ImageView playIcon;
 //	private int mSelectedIndex;
@@ -428,7 +432,7 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 			}
 		});
         itemFram = (FrameLayout) findViewById(R.id.itemFram);
-        clock = (ClockTextView) findViewById(R.id.clock);
+//        clock = (ClockTextView) findViewById(R.id.clock);
         highlightImageView = (ImageView) findViewById(R.id.highlight_img);
         playIcon = (ImageView) findViewById(R.id.play_icon);
         MarginLayoutParams mlp = (MarginLayoutParams) gallery1.getLayoutParams();
@@ -863,9 +867,66 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 
 
 	@Override
-	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+	public void onItemClick(AdapterView<?> arg0, View arg1, int index, long arg3) {
 		// TODO Auto-generated method stub
-		Toast.makeText(this, "item click index = " + titleGroup.getSelectedTitleIndex()+"[" + arg2 + "]", 100).show();
+		Toast.makeText(this, "item click index = " + titleGroup.getSelectedTitleIndex()+"[" + index + "]", 100).show();
+		switch (titleGroup.getSelectedTitleIndex()) {
+		case 1:
+			String str0 = "1004602";
+			String str1 = "贤妻";
+			String str2 = "http://115.238.173.139:80/play/7B5E398971A46DD67535DBC0A7CD770D27036204.mp4";
+
+			Intent intent = new Intent(this, VideoPlayerActivity.class);
+			intent.putExtra("prod_url", str2);
+			intent.putExtra("title", str1);
+
+			startActivity(intent);
+
+//			startActivity(new Intent(this,VideoPlayerActivity.class));
+			break;
+		case 2:
+			switch (index) {
+			case 0:
+				startActivity(new Intent(this,ShowMovieActivity.class));
+				break;
+			case 1:
+				startActivity(new Intent(this,ShowTVActivity.class));
+				break;
+			case 2:
+				startActivity(new Intent(this,ShowDongManActivity.class));
+				break;
+			case 3:
+				startActivity(new Intent(this,ShowZongYiActivity.class));
+				break;
+			case 4:
+				startActivity(new Intent(this,ShowSearchActivity.class));
+				break;
+			}
+			break;
+		case 3:
+			switch (index) {
+			case 0:
+				startActivity(new Intent(this,ShowMovieActivity.class));
+				break;
+			case 1:
+				startActivity(new Intent(this,ShowTVActivity.class));
+				break;
+			case 2:
+				startActivity(new Intent(this,ShowDongManActivity.class));
+				break;
+			case 3:
+				startActivity(new Intent(this,ShowZongYiActivity.class));
+				break;
+			case 4:
+				startActivity(new Intent(this,ShowSearchActivity.class));
+				break;
+			}
+			break;
+		case 4:
+	
+		default:
+			break;
+		}
 	}
 	
 
