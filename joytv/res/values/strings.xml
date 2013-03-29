@@ -63,5 +63,16 @@
     
     
     <!--Yu  -->
+       <!-- Movie View Resume Playing dialog title -->
+    <string name="resume_playing_title">播放选项</string>
+
+    <!-- Movie View Start Playing dialog title -->
+    <string name="resume_playing_message">你想继续播放吗？ </string>
+
+    <!-- Movie View Start Playing button "Resume from bookmark" -->
+    <string name="resume_playing_resume">继续</string>
+
+    <!-- Movie View Start Playing button "Beginning" -->
+    <string name="resume_playing_restart">重新开始</string>
     <!--Yu  -->
 </resources>
