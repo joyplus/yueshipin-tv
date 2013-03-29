@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.Scroller;
 import android.widget.TextView;
 
+import com.joyplus.tv.R;
+
 public class MyScrollLayout extends ViewGroup {
 
 //	private static final String TAG = "ScrollLayout";
@@ -246,7 +248,7 @@ public class MyScrollLayout extends ViewGroup {
 //		snapToTitle(getChildCount() - index -1);
 //	}
 	
-	interface OnViewChangeListener {
+	public interface OnViewChangeListener {
 		public void OnViewChange(int index);
 	}
 }

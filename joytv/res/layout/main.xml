@@ -1,23 +1,188 @@
-<android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/pager"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".Main" >
-
-    <!--
-    This title strip will display the currently visible page title, as well as the page
-    titles for adjacent pages.
-    -->
-
-    <android.support.v4.view.PagerTitleStrip
-        android:id="@+id/pager_title_strip"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top"
-        android:background="#33b5e5"
-        android:paddingBottom="4dp"
-        android:paddingTop="4dp"
-        android:textColor="#fff" />
-
-</android.support.v4.view.ViewPager>
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+    <LinearLayout android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="20dp"
+        android:gravity="center_vertical"
+        android:layout_height="50dp">
+        <ImageView android:layout_width="50dp"
+            android:layout_height="50dp"
+           	android:scaleType="fitXY"
+           	android:src="@drawable/avatar_defult"/>
+        <TextView android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:gravity="center_vertical"
+            android:singleLine="true"
+            android:text="用户昵称"
+            android:textColor="@color/hot_content_notice"
+            android:layout_marginLeft="10dp"
+            android:textSize="18sp"/>
+         <LinearLayout 
+            android:layout_width="fill_parent"
+            android:layout_weight="1"
+	        android:layout_height="wrap_content">
+         </LinearLayout>
+         <ImageView android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:src="@drawable/logo"
+	        android:layout_marginBottom="5dp"
+	        android:layout_marginRight="22dp"/>
+    </LinearLayout>
+    <com.joyplus.tv.ui.ClockTextView
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:id="@+id/clock"
+	        android:gravity="center_horizontal"
+	        android:textSize="28sp"
+	        android:layout_marginTop="15dp"
+	        android:textColor="@color/clock_green"/>
+	<TextView android:layout_width="fill_parent"
+	    android:layout_height="45dp"
+	    android:layout_marginTop="105dp"
+	    android:layout_marginLeft="212dp"
+	    android:paddingRight="5dp"
+	    android:gravity="center_vertical|right"
+	    android:id="@+id/notice_text"
+	    android:textSize="18sp"
+	    android:textColor="@color/common_title_selected"
+	    android:background="@drawable/menubg"/>
+    <com.joyplus.tv.ui.MyScrollLayout
+			android:layout_width="fill_parent"
+			android:layout_marginLeft="166dp"
+			android:id="@+id/group"
+			android:layout_marginTop="15dp"
+			android:layout_height="135dp">
+        <TextView android:layout_width="fill_parent"
+			android:layout_height="45dp"
+			android:textColor="@color/common_title_unselected"
+			android:text="我的悦视频"
+			android:focusable="false"
+			android:gravity="center_vertical"
+			android:paddingLeft="14dp"
+			android:textSize="30sp"/>
+        <TextView android:layout_width="fill_parent"
+			android:layout_height="45dp"
+			android:textColor="@color/common_title_unselected"
+			android:paddingLeft="14dp"
+			android:text="悦片库"
+			android:focusable="false"
+			android:gravity="center_vertical"
+			android:textSize="30sp"
+			/>
+        <TextView android:layout_width="fill_parent"
+			android:layout_height="45dp"
+			android:textColor="@color/common_title_unselected"
+			android:paddingLeft="14dp"
+			android:focusable="false"
+			android:text="悦单"
+			android:gravity="center_vertical"
+			android:textSize="30sp"/>
+        <TextView android:layout_width="fill_parent"
+			android:layout_height="45dp"
+			android:paddingLeft="14dp"
+			android:textColor="@color/common_title_unselected"
+			android:focusable="false"
+			android:text="热播"
+			android:gravity="center_vertical"
+			android:textSize="30sp"/>
+    </com.joyplus.tv.ui.MyScrollLayout>
+    <ImageView android:layout_width="fill_parent"
+			    android:layout_height="5dp"
+			    android:layout_marginTop="10dp"
+			    android:layout_below="@id/group"
+			    android:src="@drawable/line"/>
+    <LinearLayout android:layout_width="fill_parent"
+			    android:layout_height="wrap_content"
+			    android:orientation="horizontal"
+			    android:layout_below="@id/group"
+			    android:layout_marginTop="5dp"
+			    android:id="@+id/gallery_layout"
+			    android:paddingLeft="2dp"
+			    android:paddingRight="2dp">
+			    <ImageView android:layout_width="18dp"
+			        android:layout_height="fill_parent"
+			        android:src="@drawable/arrow_left"/>
+			    <com.joyplus.tv.ui.MyGallery android:layout_width="fill_parent"
+			        android:layout_weight="1"
+			        android:layout_height="wrap_content"
+			        android:spacing="1dp"
+			        android:fadingEdge="@null"
+			        android:id="@+id/gallery"/>
+			    <ImageView android:layout_width="18dp"
+			        android:layout_height="fill_parent"
+			        android:src="@drawable/arrow_right"/>
+	</LinearLayout>
+    
+    <FrameLayout android:layout_width="fill_parent"
+        android:layout_below="@id/group"
+        android:id="@+id/galleryFram"
+        android:layout_height="wrap_content">
+        <LinearLayout android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:orientation="vertical">
+            <ImageView android:layout_width="fill_parent"
+			    android:layout_height="5dp"
+			    android:layout_marginTop="5dp"
+			    android:src="@drawable/line"/>
+			<LinearLayout android:layout_width="fill_parent"
+			    android:layout_height="wrap_content"
+			    android:orientation="horizontal"
+			    android:paddingLeft="2dp"
+			    android:layout_marginTop="5dp"
+			    android:paddingRight="2dp">
+			    <ImageView android:layout_width="18dp"
+			        android:layout_height="fill_parent"
+			        android:src="@drawable/arrow_left"/>
+			    <com.joyplus.tv.ui.MyGallery android:layout_width="fill_parent"
+			        android:layout_weight="1"
+			        android:layout_height="wrap_content"
+			        android:spacing="1dp"
+			        android:focusable="false"
+			        android:focusableInTouchMode="false"
+			        android:fadingEdge="@null"
+			        android:id="@+id/gallery"/>
+			    <ImageView android:layout_width="18dp"
+			        android:layout_height="fill_parent"
+			        android:src="@drawable/arrow_right"/>
+			</LinearLayout>
+        </LinearLayout>
+    </FrameLayout>
+	<FrameLayout android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:padding="5dp"
+	    android:id="@+id/itemFram"
+	    android:layout_below="@id/group"
+	    android:layout_marginTop="5dp"
+	    android:layout_alignLeft="@id/group"
+	    android:layout_alignTop="@id/galleryFram"
+	    android:background="@drawable/bg_gallery_highlight">
+	    <ImageView android:layout_width="fill_parent"
+	        android:layout_height="fill_parent"
+	        android:scaleType="fitXY"
+	        android:id="@+id/highlight_img"
+	        android:src="@drawable/test"/>
+	    <ImageView android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_gravity="center"
+	        android:id="@+id/play_icon"
+	        android:src="@drawable/play"/>
+	</FrameLayout>
+	<LinearLayout android:layout_width="match_parent"
+	    android:layout_below="@id/gallery_layout"
+	    android:layout_marginTop="5dp"
+	    android:paddingLeft="226dp"
+	    android:paddingTop="15dp"
+	    android:layout_height="fill_parent"
+	    android:background="@drawable/bg_teat_repeat">
+	    <LinearLayout android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	       	android:id="@+id/contentlayout"
+	        >
+			<include layout="@layout/layout_hot"/>
+	    </LinearLayout>
+	</LinearLayout>
+</RelativeLayout>

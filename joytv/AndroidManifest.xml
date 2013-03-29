@@ -83,7 +83,7 @@
             android:name="UMENG_CHANNEL"
             android:value="a002001" />
         <activity
-            android:name="ShowMovieActivity"
+            android:name="Main"
             android:label="@string/app_name"
             android:theme="@android:style/Theme.Black.NoTitleBar"
             android:windowSoftInputMode="adjustPan" >
