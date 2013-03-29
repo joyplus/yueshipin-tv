@@ -9,7 +9,7 @@
     android:paddingTop="15dp"
     tools:context=".MainActivity" >
 
-    <LinearLayout
+    <!-- <LinearLayout
         android:id="@+id/username_layout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_zero"
@@ -88,7 +88,13 @@
                 android:layout_gravity="right|center_vertical"
                 android:background="@drawable/logo" />
         </LinearLayout>
-    </LinearLayout>
+    </LinearLayout> -->
+    
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_zero"
+        android:layout_weight="0.8"
+        layout="@layout/show_head" />
 
     <LinearLayout
         android:id="@+id/theme_name_layout"

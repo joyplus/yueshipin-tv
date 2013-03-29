@@ -1,15 +1,11 @@
 package com.joyplus.tv;
 
 import android.app.Activity;
-import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
-import android.util.MonthDisplayHelper;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
@@ -18,7 +14,6 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 
@@ -41,13 +36,13 @@ public class ShowMovieActivity extends Activity implements OnKeyListener ,OnTouc
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.show_movie);
 		
-		init();
+		initView();
+		initState();
 		
 	}
 	
-	private void init() {
+	private void initView() {
 		
-		beforeRecordID = R.id.bt_quanbufenlei;
 		searchEt = (EditText) findViewById(R.id.et_search);
 		mFenLeiBtn = (Button) findViewById(R.id.bt_quanbufenlei);	
 		movieGv = (GridView) findViewById(R.id.gv_movie_show);
@@ -73,14 +68,6 @@ public class ShowMovieActivity extends Activity implements OnKeyListener ,OnTouc
 		zuijinguankanLL = (LinearLayout) findViewById(R.id.ll_zuijinguankan);
 		zhuijushoucangLL = (LinearLayout) findViewById(R.id.ll_zhuijushoucang);
 		lixianshipinLL = (LinearLayout) findViewById(R.id.ll_lixianshipin);
-		
-		
-		movieGv.setNextFocusLeftId(R.id.bt_quanbufenlei);//������� ȫ�������ý���
-		movieGv.setAdapter(new MovieAdpter());
-		searchEt.setFocusable(false);
-		movieGv.setSelected(true);//������ȡ����
-		mFenLeiBtn.setTextColor(getResources().getColor(R.color.text_orange));//����������ɫ����Ϊorange
-		mFenLeiBtn.setBackgroundResource(R.drawable.menubg);//���� ��Ĭ�ϼ���
 		
 		mFenLeiBtn.setOnKeyListener(this);
 		searchEt.setOnKeyListener(this);
@@ -163,6 +150,19 @@ public class ShowMovieActivity extends Activity implements OnKeyListener ,OnTouc
 			}
 		});
 		
+	}
+	
+	private void initState() {
+		beforeRecordID = R.id.bt_quanbufenlei;//全部分类为激活状态
+		
+		searchEt.setFocusable(false);//搜索焦点消失
+		movieGv.setNextFocusLeftId(R.id.bt_quanbufenlei);//网格向左 全部分类获得焦点
+		
+		movieGv.setSelected(true);//网格获取焦点
+		mFenLeiBtn.setTextColor(getResources().getColor(R.color.text_orange));//����������ɫ����Ϊorange
+		mFenLeiBtn.setBackgroundResource(R.drawable.menubg);//���� ��Ĭ�ϼ���
+		
+		movieGv.setAdapter(new MovieAdpter());
 	}
 	
 	
@@ -518,11 +518,11 @@ public class ShowMovieActivity extends Activity implements OnKeyListener ,OnTouc
 			int width = parentLayout.getWidth();
 			int height = parent.getHeight();
 			
-//			 v = getLayoutInflater().inflate(R.layout.item_show, null);
-//			 AbsListView.LayoutParams lp = new AbsListView.LayoutParams(width/5, (height - height/10)/2);
-//			 v.setPadding(20, 20, 20, 20);
-//			 v.setLayoutParams(lp);
-//			 convertView = v;
+			 v = getLayoutInflater().inflate(R.layout.show_item_show, null);
+			 AbsListView.LayoutParams lp = new AbsListView.LayoutParams(width/5, (height - height/10)/2);
+			 v.setPadding(20, 20, 20, 20);
+			 v.setLayoutParams(lp);
+			 convertView = v;
 		
 		return convertView;
 		}

@@ -9,6 +9,7 @@
     android:paddingTop="15dp"
     tools:context=".MainActivity" >
 
+    <!--
     <LinearLayout
         android:id="@+id/username_layout"
         android:layout_width="match_parent"
@@ -89,6 +90,13 @@
                 android:background="@drawable/logo" />
         </LinearLayout>
     </LinearLayout>
+    -->
+
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_zero"
+        android:layout_weight="0.8"
+        layout="@layout/show_head" />
 
     <LinearLayout
         android:id="@+id/theme_name_layout"
@@ -130,8 +138,8 @@
                 android:layout_weight="1"
                 android:gravity="right|center_vertical"
                 android:text="2/123"
-                android:textSize="@dimen/jishu_text_size"
-                android:textColor="@color/time_color" />
+                android:textColor="@color/time_color"
+                android:textSize="@dimen/jishu_text_size" />
         </LinearLayout>
     </LinearLayout>
 
@@ -173,7 +181,6 @@
                 android:layout_height="@dimen/layout_zero"
                 android:layout_weight="15"
                 android:orientation="vertical" >
-
             </LinearLayout>
         </LinearLayout>
 
@@ -192,8 +199,8 @@
                 android:layout_weight="0.8"
                 android:background="@drawable/menubg"
                 android:orientation="horizontal"
-                android:paddingRight="20dp" 
-                android:visibility="gone">
+                android:paddingRight="20dp"
+                android:visibility="gone" >
 
                 <TextView
                     android:id="@+id/textView11"
@@ -247,8 +254,8 @@
                     android:layout_weight="1.6"
                     android:background="@color/menu_bg"
                     android:orientation="horizontal"
-                    android:paddingRight="20dp" 
-                    android:visibility="gone">
+                    android:paddingRight="20dp"
+                    android:visibility="gone" >
 
                     <TextView
                         android:id="@+id/textView11"
