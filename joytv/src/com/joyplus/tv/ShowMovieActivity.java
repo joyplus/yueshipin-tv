@@ -39,7 +39,7 @@ public class ShowMovieActivity extends Activity implements OnKeyListener ,OnTouc
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.movie_main);
+		setContentView(R.layout.show_movie);
 		
 		init();
 		
@@ -164,6 +164,8 @@ public class ShowMovieActivity extends Activity implements OnKeyListener ,OnTouc
 		});
 		
 	}
+	
+	
 
 	@Override
 	public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -345,11 +347,6 @@ public class ShowMovieActivity extends Activity implements OnKeyListener ,OnTouc
 		}
 
 		return false;
-	}
-	
-	private void keyChangeToFoucs(int keycode,int id) {
-		
-		
 	}
 	
 	private void rebackState(LinearLayout ll , Button btn) {
