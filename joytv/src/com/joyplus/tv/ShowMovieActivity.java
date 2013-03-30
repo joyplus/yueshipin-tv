@@ -96,6 +96,7 @@ public class ShowMovieActivity extends Activity implements OnKeyListener ,OnTouc
 		lixianshipinLL.setOnTouchListener(this);
 		mFenLeiBtn.setOnTouchListener(this);
 		
+		
 		movieGv.setOnItemSelectedListener(new AbsListView.OnItemSelectedListener() {
 
 			@Override
