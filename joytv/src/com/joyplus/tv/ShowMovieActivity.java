@@ -303,7 +303,7 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener {
 			// TODO Auto-generated method stub
 			View v;
 			
-			LinearLayout parentLayout = (LinearLayout) findViewById(R.id.movie_show_10);
+			LinearLayout parentLayout = (LinearLayout) findViewById(R.id.ll_movie_show);
 			int width = parentLayout.getWidth();
 			int height = parent.getHeight();
 

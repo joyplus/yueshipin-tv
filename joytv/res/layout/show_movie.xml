@@ -1,13 +1,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/movie_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/movie_bg"
     android:orientation="vertical"
     android:paddingLeft="50dp"
-    android:paddingTop="15dp"
-    tools:context=".MainActivity" >
+    android:paddingTop="15dp">
 
     <include
         android:layout_width="match_parent"
@@ -16,7 +14,6 @@
         layout="@layout/show_head" />
 
     <LinearLayout
-        android:id="@+id/theme_name_layout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_zero"
         android:layout_weight="0.4"
@@ -38,7 +35,6 @@
             android:paddingRight="50dp" >
 
             <TextView
-                android:id="@+id/textView11"
                 android:layout_width="@dimen/layout_zero"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="@dimen/theme_name_margin"
@@ -49,7 +45,6 @@
                 android:textSize="@dimen/theme_name_text_size" />
 
             <TextView
-                android:id="@+id/textView18"
                 android:layout_width="@dimen/layout_zero"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -249,7 +244,6 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/movie_show_10"
             android:layout_width="@dimen/layout_zero"
             android:layout_height="match_parent"
             android:layout_weight="6"
@@ -267,7 +261,6 @@
                 android:visibility="gone" >
 
                 <TextView
-                    android:id="@+id/textView11"
                     android:layout_width="@dimen/layout_zero"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="@dimen/theme_name_margin"
@@ -278,7 +271,6 @@
                     android:textSize="@dimen/menu_up_text_size" />
 
                 <TextView
-                    android:id="@+id/textView18"
                     android:layout_width="@dimen/layout_zero"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -323,7 +315,6 @@
                     android:visibility="gone" >
 
                     <TextView
-                        android:id="@+id/textView11"
                         android:layout_width="@dimen/layout_zero"
                         android:layout_height="match_parent"
                         android:layout_marginLeft="@dimen/theme_name_margin"
@@ -334,7 +325,6 @@
                         android:textSize="@dimen/menu_up_text_size" />
 
                     <TextView
-                        android:id="@+id/textView18"
                         android:layout_width="@dimen/layout_zero"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
@@ -353,7 +343,6 @@
                     android:visibility="gone" >
 
                     <com.joyplus.tv.ui.MyGridView
-                        android:id="@+id/gridView1"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:listSelector="@android:color/transparent"
