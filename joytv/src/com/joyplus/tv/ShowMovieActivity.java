@@ -1,21 +1,25 @@
 package com.joyplus.tv;
 
+import com.joyplus.tv.ui.MyGridView;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 
 public class ShowMovieActivity extends Activity implements View.OnKeyListener {
 
 	private EditText searchEt;
-	private GridView movieGv;
+	private MyGridView movieGv;
 	private LinearLayout dongzuoLL, lunliLL, xijuLL, aiqingLL, xuanyiLL,
 			kongbuLL;
 
@@ -23,6 +27,8 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener {
 			mFenLeiBtn;
 
 	private View beforeView, activeView;
+	
+	private boolean isGridViewInit = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +45,7 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener {
 
 		searchEt = (EditText) findViewById(R.id.et_search);
 		mFenLeiBtn = (Button) findViewById(R.id.bt_quanbufenlei);
-		movieGv = (GridView) findViewById(R.id.gv_movie_show);
+		movieGv = (MyGridView) findViewById(R.id.gv_movie_show);
 
 		dongzuoLL = (LinearLayout) findViewById(R.id.ll_dongzuopian);
 		lunliLL = (LinearLayout) findViewById(R.id.ll_lunlipian);
@@ -52,7 +58,21 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener {
 		zhuijushoucangBtn = (Button) findViewById(R.id.bt_zhuijushoucang);
 		lixianshipinBtn = (Button) findViewById(R.id.bt_lixianshipin);
 
-//		 searchEt.setOnKeyListener(this);
+		 searchEt.setOnKeyListener(new View.OnKeyListener() {
+			
+			@Override
+			public boolean onKey(View v, int keyCode, KeyEvent event) {
+				// TODO Auto-generated method stub
+				int action = event.getAction();
+				if (action == KeyEvent.ACTION_UP) {
+					if (keyCode == KeyEvent.KEYCODE_NUMPAD_8) {
+						
+						turnToGridViewState();
+					}
+				}
+				return false;
+			}
+		});
 		 movieGv.setOnKeyListener(new View.OnKeyListener() {
 			
 			@Override
@@ -88,6 +108,7 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener {
 
 		beforeView = mFenLeiBtn;
 		activeView = mFenLeiBtn;
+		isGridViewInit = false;
 
 		searchEt.setFocusable(false);// 搜索焦点消失
 		movieGv.setNextFocusLeftId(R.id.bt_quanbufenlei);// 网格向左 全部分类获得焦点
@@ -95,7 +116,7 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener {
 		movieGv.setNextFocusUpId(R.id.bt_quanbufenlei);// 网格向左 全部分类获得焦点
 		movieGv.setNextFocusRightId(R.id.bt_quanbufenlei);// 网格向左 全部分类获得焦点
 
-		movieGv.setSelected(true);// 网格获取焦点
+//		movieGv.setSelected(true);// 网格获取焦点
 		mFenLeiBtn.setTextColor(getResources().getColor(R.color.text_orange));// 全部分类首先设为激活状态
 		mFenLeiBtn.setBackgroundResource(R.drawable.menubg);//在换成这张图片时，会刷新组件的padding
 		dongzuoLL.setPadding(0, 0, 5, 0);
@@ -110,6 +131,13 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener {
 		mFenLeiBtn.setPadding(0, 0, 5, 0);
 
 		movieGv.setAdapter(new MovieAdpter());// 网格布局添加适配器
+//		movieGv.setSelection(0);
+		movieGv.setFocusable(true);
+		movieGv.setFocusableInTouchMode(true);
+		movieGv.requestFocus();
+//		movieGv.requ
+//		movieGv.getChildAt(0).f
+		
 	}
 
 	private void beforeViewFoucsStateBack() {
@@ -224,7 +252,7 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener {
 					beforeViewActiveStateBack();
 					linearLayoutToActiveState(linearLayout);
 					activeView = v;
-				}
+				} 
 			}
 		} else if (v instanceof Button) {
 			if (action == KeyEvent.ACTION_UP) {
@@ -274,6 +302,7 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener {
 		public View getView(int position, View convertView, ViewGroup parent) {
 			// TODO Auto-generated method stub
 			View v;
+			
 			LinearLayout parentLayout = (LinearLayout) findViewById(R.id.movie_show_10);
 			int width = parentLayout.getWidth();
 			int height = parent.getHeight();
@@ -284,6 +313,11 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener {
 			v.setPadding(20, 20, 20, 20);
 			v.setLayoutParams(lp);
 			convertView = v;
+//			if(position == 0 ) {
+//				v.setFocusable(true);
+//				v.requestFocus();
+//				isGridViewInit = true;
+//			}
 
 			return convertView;
 		}

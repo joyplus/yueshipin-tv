@@ -238,52 +238,6 @@
                     android:gravity="right|center_vertical"
                     android:text="@string/lixianshipin_name"
                     android:textColor="@color/text_color_selector" />
-                <!--
-                     <LinearLayout
-                    style="@style/style_6"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/layout_zero"
-                    android:layout_weight="1"
-                    android:id="@+id/ll_zuijinguankan" >
-
-                    <Button
-                        android:id="@+id/bt_zuijinguankan"
-                        style="@style/style_7"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:text="最近观看" />
-                </LinearLayout>
-
-                <LinearLayout
-                    style="@style/style_6"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/layout_zero"
-                    android:layout_weight="1"
-                    android:id="@+id/ll_zhuijushoucang" >
-
-                    <Button
-                        android:id="@+id/bt_zhuijushoucang"
-                        style="@style/style_7"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:text="追剧收藏" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/ll_lixianshipin"
-                    style="@style/style_6"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/layout_zero"
-                    android:layout_weight="1" >
-
-                    <Button
-                        android:id="@+id/bt_lixianshipin"
-                        style="@style/style_7"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:text="离线视频" />
-                </LinearLayout>
-                -->
 
                 <TextView
                     style="@style/style_4"
@@ -348,12 +302,13 @@
                     android:orientation="horizontal"
                     android:paddingRight="50dp" >
 
-                    <GridView
+                    <com.joyplus.tv.ui.MyGridView
                         android:id="@+id/gv_movie_show"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:numColumns="5" >
-                    </GridView>
+                        android:numColumns="5"
+                        android:descendantFocusability="beforeDescendants">
+                    </com.joyplus.tv.ui.MyGridView>
                 </LinearLayout>
 
                 <LinearLayout
