@@ -9,91 +9,11 @@
     android:paddingTop="15dp"
     tools:context=".MainActivity" >
 
-    <!-- <LinearLayout
-        android:id="@+id/username_layout"
+    <include
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_zero"
         android:layout_weight="0.8"
-        android:orientation="horizontal"
-        android:paddingRight="20dp" >
-
-        <LinearLayout
-            android:layout_width="@dimen/layout_zero"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="horizontal" >
-
-            <LinearLayout
-                android:layout_width="@dimen/layout_zero"
-                android:layout_height="match_parent"
-                android:layout_weight="0.8"
-                android:orientation="horizontal" >
-
-                <ImageView
-                    android:id="@+id/imageView1"
-                    style="@style/style_1"
-                    android:layout_width="@dimen/layout_zero"
-                    android:layout_height="match_parent"
-                    android:layout_weight="3"
-                    android:background="@drawable/avatar" />
-
-                <TextView
-                    android:id="@+id/textView8"
-                    style="@style/style_2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="3dp"
-                    android:layout_weight="5"
-                    android:text="用户名称"
-                    android:textColor="@color/user_name"
-                    android:textSize="@dimen/user_name_text_size" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="@dimen/layout_zero"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="horizontal" >
-            </LinearLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="@dimen/layout_zero"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical" >
-
-            <TextView
-                android:id="@+id/textView9"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:text="12:34"
-                android:textColor="@color/time_color"
-                android:textSize="@dimen/time_text_size" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="@dimen/layout_zero"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical" >
-
-            <ImageView
-                android:id="@+id/imageView2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right|center_vertical"
-                android:background="@drawable/logo" />
-        </LinearLayout>
-    </LinearLayout> -->
-    <include 
-        layout="@layout/show_head"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/layout_zero"
-        android:layout_weight="0.8"/>
+        layout="@layout/show_head" />
 
     <LinearLayout
         android:id="@+id/theme_name_layout"
@@ -115,7 +35,7 @@
             android:layout_weight="6"
             android:background="@drawable/menubg"
             android:orientation="horizontal"
-            android:paddingRight="20dp" >
+            android:paddingRight="50dp" >
 
             <TextView
                 android:id="@+id/textView11"
@@ -135,8 +55,8 @@
                 android:layout_weight="1"
                 android:gravity="right|center_vertical"
                 android:text="2/123"
-                android:textSize="@dimen/jishu_text_size"
-                android:textColor="@color/time_color" />
+                android:textColor="@color/time_color"
+                android:textSize="@dimen/jishu_text_size" />
         </LinearLayout>
     </LinearLayout>
 
@@ -191,11 +111,11 @@
                     android:textColor="@color/text_color_selector" />
 
                 <LinearLayout
+                    android:id="@+id/ll_dongzuopian"
                     style="@style/style_6"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/layout_zero"
-                    android:layout_weight="1" 
-                    android:id="@+id/ll_dongzuopian">
+                    android:layout_weight="1" >
 
                     <Button
                         android:id="@+id/bt_dongzuopian"
@@ -206,11 +126,11 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/ll_lunlipian"
                     style="@style/style_6"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/layout_zero"
-                    android:layout_weight="1"
-                    android:id="@+id/ll_lunlipian" >
+                    android:layout_weight="1" >
 
                     <Button
                         android:id="@+id/bt_lunlipian"
@@ -221,11 +141,11 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/ll_xijupian"
                     style="@style/style_6"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/layout_zero"
-                    android:layout_weight="1"
-                    android:id="@+id/ll_xijupian" >
+                    android:layout_weight="1" >
 
                     <Button
                         android:id="@+id/bt_xijupian"
@@ -236,11 +156,11 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/ll_aiqingpian"
                     style="@style/style_6"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/layout_zero"
-                    android:layout_weight="1"
-                    android:id="@+id/ll_aiqingpian" >
+                    android:layout_weight="1" >
 
                     <Button
                         android:id="@+id/bt_aiqingpian"
@@ -286,7 +206,40 @@
                     android:layout_height="@dimen/layout_zero"
                     android:layout_weight="3" />
 
-                <LinearLayout
+                <Button
+                    android:id="@+id/bt_zuijinguankan"
+                    style="@style/style_4"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/layout_zero"
+                    android:layout_weight="1"
+                    android:background="@drawable/text_drawable_selector"
+                    android:gravity="right|center_vertical"
+                    android:text="@string/zuijinguankan_name"
+                    android:textColor="@color/text_color_selector" />
+
+                <Button
+                    android:id="@+id/bt_zhuijushoucang"
+                    style="@style/style_4"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/layout_zero"
+                    android:layout_weight="1"
+                    android:background="@drawable/text_drawable_selector"
+                    android:gravity="right|center_vertical"
+                    android:text="@string/zhuijushoucang_name"
+                    android:textColor="@color/text_color_selector" />
+
+                <Button
+                    android:id="@+id/bt_lixianshipin"
+                    style="@style/style_4"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/layout_zero"
+                    android:layout_weight="1"
+                    android:background="@drawable/text_drawable_selector"
+                    android:gravity="right|center_vertical"
+                    android:text="@string/lixianshipin_name"
+                    android:textColor="@color/text_color_selector" />
+                <!--
+                     <LinearLayout
                     style="@style/style_6"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/layout_zero"
@@ -330,6 +283,7 @@
                         android:layout_height="match_parent"
                         android:text="离线视频" />
                 </LinearLayout>
+                -->
 
                 <TextView
                     style="@style/style_4"
@@ -355,8 +309,8 @@
                 android:layout_weight="0.8"
                 android:background="@drawable/menubg"
                 android:orientation="horizontal"
-                android:paddingRight="20dp" 
-                android:visibility="gone">
+                android:paddingRight="50dp"
+                android:visibility="gone" >
 
                 <TextView
                     android:id="@+id/textView11"
@@ -387,12 +341,12 @@
                 android:orientation="vertical" >
 
                 <LinearLayout
+                    android:id="@+id/ll_movie_show"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/layout_zero"
                     android:layout_weight="17"
                     android:orientation="horizontal"
-                    android:paddingRight="20dp" 
-                    android:id="@+id/ll_movie_show">
+                    android:paddingRight="50dp" >
 
                     <GridView
                         android:id="@+id/gv_movie_show"
@@ -410,8 +364,8 @@
                     android:layout_weight="1.6"
                     android:background="@color/menu_bg"
                     android:orientation="horizontal"
-                    android:paddingRight="20dp" 
-                    android:visibility="gone">
+                    android:paddingRight="50dp"
+                    android:visibility="gone" >
 
                     <TextView
                         android:id="@+id/textView11"
@@ -440,16 +394,16 @@
                     android:layout_height="@dimen/layout_zero"
                     android:layout_weight="13"
                     android:orientation="horizontal"
-                    android:paddingRight="20dp"
+                    android:paddingRight="50dp"
                     android:visibility="gone" >
 
-                    <GridView
+                    <com.joyplus.tv.ui.MyGridView
                         android:id="@+id/gridView1"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:listSelector="@android:color/transparent"
                         android:numColumns="5" >
-                    </GridView>
+                    </com.joyplus.tv.ui.MyGridView>
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>

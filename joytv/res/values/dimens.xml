@@ -14,7 +14,7 @@
     <dimen name="theme_name_text_size">23sp</dimen>
     <dimen name="jishu_text_size">15sp</dimen>
     <dimen name="edit_vertical_margin">5dp</dimen>
-    <dimen name="menu_horizontal_padding">5dp</dimen>
+    <dimen name="menu_horizontal_padding">0dp</dimen><!--因为使用9patch作为背景，因此padding设为0，在代码中设置  -->
     <dimen name="menu_up_text_size">17dp</dimen>
     
     <!--Yangzhg  -->

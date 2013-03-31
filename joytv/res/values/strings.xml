@@ -52,6 +52,8 @@
     <string name="kongbupian_name">恐怖片</string>
     <string name="qitadongman_play_name">其他动漫</string>
     <string name="zuijinguankan_name">最近观看</string>
+     <string name="zhuijushoucang_name">追剧收藏</string>
+      <string name="lixianshipin_name">离线视频</string>
     <string name="zongyi_name">综艺</string>
     
     <!--Yangzhg  -->
