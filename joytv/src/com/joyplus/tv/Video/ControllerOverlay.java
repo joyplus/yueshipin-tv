@@ -34,6 +34,8 @@ public interface ControllerOverlay {
 		void onHidden();
 
 		void onReplay();
+		
+		void showVolume();
 	}
 
 	void setListener(Listener listener);
@@ -64,5 +66,7 @@ public interface ControllerOverlay {
 	void setTimes(int currentTime, int totalTime);
 
 	void resetTime();
+	
+	void showVolume();
 
 }

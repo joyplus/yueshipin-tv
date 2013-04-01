@@ -257,8 +257,8 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		RelativeLayout.LayoutParams parms=new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
 		parms.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM,
 				RelativeLayout.TRUE);
-		parms.leftMargin=position*sb.getWidth()/duration + 20;
-		parms.bottomMargin =  20+6;
+		parms.leftMargin=position*(sb.getWidth()-4)/duration + 20;
+		parms.bottomMargin =  20+8;
 		mLayoutBottomTime.setLayoutParams(parms);
 
 		textView1.setText(formatDuration(position));
@@ -417,6 +417,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 //			mVideoView.set
 			return true;
 		case KeyEvent.KEYCODE_DPAD_DOWN:
+			mController.showVolume();
 			return true;
 		case KeyEvent.KEYCODE_HEADSETHOOK:
 		case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
@@ -514,6 +515,12 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		}
 
 	};
+
+	@Override
+	public void showVolume() {
+		// TODO Auto-generated method stub
+		
+	}
 }
 
 class Bookmarker {

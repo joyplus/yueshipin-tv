@@ -205,31 +205,6 @@ public class VideoPlayerActivity extends Activity {
 		return mPlayer.onKeyUp(keyCode, event) || super.onKeyUp(keyCode, event);
 	}
 
-	public void OnClickTopLeft(View v) {
-		Intent intent = new Intent(this, Main.class);
-		try {
-			startActivity(intent);
-			finish();
-		} catch (ActivityNotFoundException ex) {
-			Log.e(TAG, "Call Main failed", ex);
-		}
-	}
-
-	public void OnClickTopRight(View v) {
-
-	}
-
-	private void gotoDlnaVideoPlay() {
-
-	}
-
-	public void OnClickMakeLeft(View v) {
-
-	}
-
-	public void OnClickMakeRight(View v) {
-
-	}
 
 	//
 	// public void CallVideoPlay(String m_uri) {
@@ -249,9 +224,6 @@ public class VideoPlayerActivity extends Activity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// add here.
-		if (resultCode == 102) {
-			gotoDlnaVideoPlay();
-		}
 		super.onActivityResult(requestCode, resultCode, data);
 	}
 

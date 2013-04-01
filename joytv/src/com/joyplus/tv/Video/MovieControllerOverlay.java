@@ -16,7 +16,11 @@
 
 package com.joyplus.tv.Video;
 
+import android.R.integer;
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.net.TrafficStats;
 import android.os.Handler;
 import android.view.Gravity;
@@ -29,6 +33,7 @@ import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
@@ -44,7 +49,7 @@ import com.joyplus.tv.R;
  * The playback controller for the Movie Player.
  */
 public class MovieControllerOverlay extends FrameLayout implements
-		ControllerOverlay, OnClickListener, AnimationListener {
+		ControllerOverlay, View.OnTouchListener, AnimationListener {
 
 	private enum State {
 		PLAYING, PAUSED, ENDED, ERROR, LOADING
@@ -56,7 +61,7 @@ public class MovieControllerOverlay extends FrameLayout implements
 
 	private final View background;
 	private View rootView;
-//	private final TimeBar timeBar;
+	// private final TimeBar timeBar;
 
 	private View mainView;
 	private View mLayoutTop;
@@ -65,7 +70,11 @@ public class MovieControllerOverlay extends FrameLayout implements
 	private final View loadingView;
 	private final TextView errorView;
 	private View mLayoutControl;
-	private final ImageView playPauseReplayView;
+	private ImageView playPauseReplayView;
+	private ImageView playContinueView;
+	private ImageView playFavView;
+	private ImageView playPreView;
+	private ImageView playNextView;
 
 	private final Handler handler;
 	private final Runnable startHidingRunnable;
@@ -76,20 +85,21 @@ public class MovieControllerOverlay extends FrameLayout implements
 	private boolean hidden;
 
 	private boolean canReplay = true;
-	
+
 	private Handler mHandler = new Handler();
 	private long mStartRX = 0;
-	
-	private TextView mTextViewRate;
 
-	public MovieControllerOverlay(Context context,View rootView) {
+	private TextView mTextViewRate;
+	boolean mShowVolume = false;
+
+	public MovieControllerOverlay(Context context, View rootView) {
 		super(context);
 
 		this.rootView = rootView;
-		
-		mLayoutTop=rootView.findViewById(R.id.LayoutName);
-		mLayoutBottom=rootView.findViewById(R.id.relativeLayoutControl);
-		mLayoutTime=rootView.findViewById(R.id.LayoutBottomTime);
+
+		mLayoutTop = rootView.findViewById(R.id.LayoutName);
+		mLayoutBottom = rootView.findViewById(R.id.relativeLayoutControl);
+		mLayoutTime = rootView.findViewById(R.id.LayoutBottomTime);
 
 		state = State.LOADING;
 
@@ -105,33 +115,55 @@ public class MovieControllerOverlay extends FrameLayout implements
 				R.color.darker_transparent));
 		addView(background, matchParent);
 
-//		timeBar = new TimeBar(context, this);
-//		addView(timeBar, wrapContent);
-
+		// timeBar = new TimeBar(context, this);
+		// addView(timeBar, wrapContent);
 
 		loadingView = rootView.findViewById(R.id.LayoutPreload);
-		mTextViewRate = (TextView)rootView.findViewById(R.id.textView4);
-		
+		mTextViewRate = (TextView) rootView.findViewById(R.id.textView4);
+
 		mStartRX = TrafficStats.getTotalRxBytes();
 		if (mStartRX == TrafficStats.UNSUPPORTED) {
-			mTextViewRate.setText("Your device does not support traffic stat monitoring.");
+			mTextViewRate
+					.setText("Your device does not support traffic stat monitoring.");
 		} else {
 			mHandler.postDelayed(mRunnable, 500);
 		}
 
 		mLayoutControl = rootView.findViewById(R.id.LayoutControl);
-		playPauseReplayView= (ImageView)rootView.findViewById(R.id.imageControl1);
+		mLayoutControl.setFocusable(true);
+		mLayoutControl.setOnTouchListener(this);
+
+		playPauseReplayView = (ImageView) rootView
+				.findViewById(R.id.imageControl_c);
 		playPauseReplayView.setFocusable(true);
-		playPauseReplayView.setClickable(true);
-		playPauseReplayView.setOnClickListener(this);
-//		mLayoutControl = new ImageView(context);
-//		mLayoutControl.setImageResource(R.drawable.player_s_ic_vidcontrol_play);
-//		mLayoutControl.setBackgroundResource(R.drawable.player_c_normal);
-//		mLayoutControl.setScaleType(ScaleType.CENTER);
-//		mLayoutControl.setFocusable(true);
-//		mLayoutControl.setClickable(true);
-//		mLayoutControl.setOnClickListener(this);
-//		addView(mLayoutControl, wrapContent);
+		playPauseReplayView.setOnTouchListener(this);
+
+		playContinueView = (ImageView) rootView
+				.findViewById(R.id.imageControl_t);
+		playContinueView.setFocusable(true);
+		playContinueView.setOnTouchListener(this);
+
+		playFavView = (ImageView) rootView.findViewById(R.id.imageControl_b);
+		playFavView.setFocusable(true);
+		playFavView.setOnTouchListener(this);
+
+		playPreView = (ImageView) rootView.findViewById(R.id.imageControl_r);
+		playPreView.setFocusable(true);
+		playPreView.setOnTouchListener(this);
+
+		playNextView = (ImageView) rootView.findViewById(R.id.imageControl_l);
+		playNextView.setFocusable(true);
+		playNextView.setOnTouchListener(this);
+
+		// playPauseReplayView.setOnClickListener(this);
+		// mLayoutControl = new ImageView(context);
+		// mLayoutControl.setImageResource(R.drawable.player_s_ic_vidcontrol_play);
+		// mLayoutControl.setBackgroundResource(R.drawable.player_c_normal);
+		// mLayoutControl.setScaleType(ScaleType.CENTER);
+		// mLayoutControl.setFocusable(true);
+		// mLayoutControl.setClickable(true);
+		// mLayoutControl.setOnClickListener(this);
+		// addView(mLayoutControl, wrapContent);
 
 		errorView = new TextView(context);
 		errorView.setGravity(Gravity.CENTER);
@@ -197,26 +229,26 @@ public class MovieControllerOverlay extends FrameLayout implements
 	}
 
 	public void resetTime() {
-//		timeBar.resetTime();
+		// timeBar.resetTime();
 	}
 
 	public void setTimes(int currentTime, int totalTime) {
-		
-//		timeBar.setTime(currentTime, totalTime);
+
+		// timeBar.setTime(currentTime, totalTime);
 	}
 
 	public void hide() {
 		boolean wasHidden = hidden;
 		hidden = true;
-		
+
 		mLayoutTop.setVisibility(View.INVISIBLE);
 		mLayoutBottom.setVisibility(View.INVISIBLE);
 		mLayoutTime.setVisibility(View.INVISIBLE);
-		
+
 		mLayoutControl.setVisibility(View.INVISIBLE);
 		loadingView.setVisibility(View.INVISIBLE);
 		background.setVisibility(View.INVISIBLE);
-//		timeBar.setVisibility(View.INVISIBLE);
+		// timeBar.setVisibility(View.INVISIBLE);
 		setVisibility(View.INVISIBLE);
 		setFocusable(true);
 		requestFocus();
@@ -231,20 +263,19 @@ public class MovieControllerOverlay extends FrameLayout implements
 				: View.INVISIBLE);
 		loadingView.setVisibility(mainView == loadingView ? View.VISIBLE
 				: View.INVISIBLE);
-		mLayoutControl
-				.setVisibility(mainView == mLayoutControl ? View.VISIBLE
-						: View.INVISIBLE);
+		mLayoutControl.setVisibility(mainView == mLayoutControl ? View.VISIBLE
+				: View.INVISIBLE);
 		show();
 	}
 
 	public void show() {
 		boolean wasHidden = hidden;
 		hidden = false;
-		
+
 		mLayoutTop.setVisibility(View.VISIBLE);
 		mLayoutBottom.setVisibility(View.VISIBLE);
 		mLayoutTime.setVisibility(View.VISIBLE);
-		
+
 		updateViews();
 		setVisibility(View.VISIBLE);
 		setFocusable(false);
@@ -262,7 +293,7 @@ public class MovieControllerOverlay extends FrameLayout implements
 	}
 
 	private void startHiding() {
-//		startHideAnimation(timeBar);
+		// startHideAnimation(timeBar);
 		startHideAnimation(mLayoutControl);
 	}
 
@@ -275,7 +306,7 @@ public class MovieControllerOverlay extends FrameLayout implements
 	private void cancelHiding() {
 		handler.removeCallbacks(startHidingRunnable);
 		background.setAnimation(null);
-//		timeBar.setAnimation(null);
+		// timeBar.setAnimation(null);
 		mLayoutControl.setAnimation(null);
 	}
 
@@ -296,10 +327,19 @@ public class MovieControllerOverlay extends FrameLayout implements
 			if (view == mLayoutControl) {
 				if (state == State.ENDED) {
 					if (canReplay) {
+						// playPauseReplayView.setBackgroundResource(R.drawable.player_s_ic_vidcontrol_reload);
 						listener.onReplay();
 					}
 				} else if (state == State.PAUSED || state == State.PLAYING) {
+					// if(state == State.PAUSED){
+					// playPauseReplayView.setBackgroundResource(R.drawable.player_s_ic_vidcontrol_play);
+					// }else if(state == State.PLAYING){
+					// playPauseReplayView.setBackgroundResource(R.drawable.player_s_ic_vidcontrol_pause);
+					// }
+					// else
+					// playPauseReplayView.setBackgroundResource(R.drawable.player_s_ic_vidcontrol_reload);
 					listener.onPlayPause();
+
 				}
 			}
 		}
@@ -307,14 +347,14 @@ public class MovieControllerOverlay extends FrameLayout implements
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-//		if (hidden) {
-//			show();
-//		}
+		// if (hidden) {
+		// show();
+		// }
 		return super.onKeyDown(keyCode, event);
 	}
 
 	@Override
-	public boolean onTouchEvent(MotionEvent event) {
+	public boolean onTouch(View view, MotionEvent event) {
 		if (super.onTouchEvent(event)) {
 			return true;
 		}
@@ -323,17 +363,28 @@ public class MovieControllerOverlay extends FrameLayout implements
 			show();
 			return true;
 		}
-		switch (event.getAction()) {
-		case MotionEvent.ACTION_DOWN:
-			cancelHiding();
-			if (state == State.PLAYING || state == State.PAUSED) {
-				listener.onPlayPause();
+		if (view == playPauseReplayView) {
+			switch (event.getAction()) {
+			case MotionEvent.ACTION_DOWN:
+				cancelHiding();
+				if (state == State.PLAYING || state == State.PAUSED) {
+					listener.onPlayPause();
+				}
+				break;
+			case MotionEvent.ACTION_UP:
+				maybeStartHiding();
+				break;
 			}
-			break;
-		case MotionEvent.ACTION_UP:
-			maybeStartHiding();
-			break;
+		} else if (view == playContinueView) {
+
+		} else if (view == playFavView) {
+
+		} else if (view == playPreView) {
+
+		} else if (view == playNextView) {
+
 		}
+
 		return true;
 	}
 
@@ -346,28 +397,28 @@ public class MovieControllerOverlay extends FrameLayout implements
 		int w = r - l;
 		boolean error = errorView.getVisibility() == View.VISIBLE;
 
-//		bw = timeBar.getBarHeight();
-//		bh = bw;
+		// bw = timeBar.getBarHeight();
+		// bh = bw;
 		y = b;// - bh;
-		
+
 		background.layout(l, y, r, b);
 
-//		if((b - 60- timeBar.getPreferredHeight()) >0 )
-//			timeBar.layout(l, b - 60- timeBar.getPreferredHeight(), r, b-60);
-//		else
-//			timeBar.layout(l, b- timeBar.getPreferredHeight(), r, b);
+		// if((b - 60- timeBar.getPreferredHeight()) >0 )
+		// timeBar.layout(l, b - 60- timeBar.getPreferredHeight(), r, b-60);
+		// else
+		// timeBar.layout(l, b- timeBar.getPreferredHeight(), r, b);
 		// Needed, otherwise the framework will not re-layout in case only the
 		// padding is changed
-//		timeBar.requestLayout();
+		// timeBar.requestLayout();
 
 		// play pause / next / previous buttons
-//		int cx = l + w / 2; // center x
-//		int playbackButtonsCenterline = t + h / 2;
-		
-//		bw = mLayoutControl.getMeasuredWidth();
-//		bh = mLayoutControl.getMeasuredHeight();
-//		mLayoutControl.layout(cx - bw / 2, playbackButtonsCenterline - bh
-//				/ 2, cx + bw / 2, playbackButtonsCenterline + bh / 2);
+		// int cx = l + w / 2; // center x
+		// int playbackButtonsCenterline = t + h / 2;
+
+		// bw = mLayoutControl.getMeasuredWidth();
+		// bh = mLayoutControl.getMeasuredHeight();
+		// mLayoutControl.layout(cx - bw / 2, playbackButtonsCenterline - bh
+		// / 2, cx + bw / 2, playbackButtonsCenterline + bh / 2);
 
 		// Space available on each side of the error message for the next and
 		// previous buttons
@@ -398,30 +449,33 @@ public class MovieControllerOverlay extends FrameLayout implements
 			return;
 		}
 		background.setVisibility(View.VISIBLE);
-//		timeBar.setVisibility(View.VISIBLE);
-		if(state == State.PAUSED){
-			playPauseReplayView.setImageResource(R.drawable.player_s_ic_vidcontrol_play);
-		}else if(state == State.PLAYING){
-			playPauseReplayView.setImageResource(R.drawable.player_s_ic_vidcontrol_pause);
-		}
-		else 
-			playPauseReplayView.setImageResource(R.drawable.player_s_ic_vidcontrol_reload);
-		
-		if(state != State.LOADING && state != State.ERROR && 
-				!(state == State.ENDED && !canReplay)){
+		// timeBar.setVisibility(View.VISIBLE);
+		if (state == State.PAUSED) {
+			playPauseReplayView
+					.setBackgroundResource(R.drawable.player_s_ic_vidcontrol_play);
+		} else if (state == State.PLAYING) {
+			playPauseReplayView
+					.setBackgroundResource(R.drawable.player_s_ic_vidcontrol_pause);
+		} else
+			playPauseReplayView
+					.setBackgroundResource(R.drawable.player_s_ic_vidcontrol_reload);
+
+		if (state != State.LOADING && state != State.ERROR
+				&& !(state == State.ENDED && !canReplay)) {
 			mLayoutControl.setVisibility(View.VISIBLE);
-		}
-		else {
+		} else {
 			mLayoutControl.setVisibility(View.GONE);
 		}
-	
-//		mLayoutControl
-//				.setImageResource(state == State.PAUSED ? R.drawable.player_s_ic_vidcontrol_play
-//						: state == State.PLAYING ? R.drawable.player_s_ic_vidcontrol_pause
-//								: R.drawable.player_s_ic_vidcontrol_reload);
-//		mLayoutControl
-//				.setVisibility((state != State.LOADING && state != State.ERROR && !(state == State.ENDED && !canReplay)) ? View.VISIBLE
-//						: View.GONE);
+
+		// mLayoutControl
+		// .setImageResource(state == State.PAUSED ?
+		// R.drawable.player_s_ic_vidcontrol_play
+		// : state == State.PLAYING ? R.drawable.player_s_ic_vidcontrol_pause
+		// : R.drawable.player_s_ic_vidcontrol_reload);
+		// mLayoutControl
+		// .setVisibility((state != State.LOADING && state != State.ERROR &&
+		// !(state == State.ENDED && !canReplay)) ? View.VISIBLE
+		// : View.GONE);
 		requestLayout();
 	}
 
@@ -441,6 +495,7 @@ public class MovieControllerOverlay extends FrameLayout implements
 		maybeStartHiding();
 		listener.onSeekEnd(time);
 	}
+
 	private final Runnable mRunnable = new Runnable() {
 		long beginTimeMillis, timeTakenMillis, timeLeftMillis, rxByteslast,
 				m_bitrate;
@@ -457,7 +512,7 @@ public class MovieControllerOverlay extends FrameLayout implements
 			m_bitrate = (rxBytes - rxByteslast) * 8 * 1000 / timeTakenMillis;
 			rxByteslast = rxBytes;
 
-			mTextViewRate.setText(Long.toString(m_bitrate/8000)+"kb/s");
+			mTextViewRate.setText(Long.toString(m_bitrate / 8000) + "kb/s");
 
 			// Fun_downloadrate();
 			mHandler.postDelayed(mRunnable, 1000);
@@ -467,7 +522,52 @@ public class MovieControllerOverlay extends FrameLayout implements
 	@Override
 	public void showTimerBar() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
+	public void showVolume() {
+		// TODO Auto-generated method stub
+		mShowVolume = true;
+	}
+
+	@Override
+	public void onDraw(Canvas canvas) {
+		if (mShowVolume) {
+			int mRadius = 202;
+			int bw = mLayoutControl.getMeasuredWidth()/2;
+			int bh = mLayoutControl.getMeasuredHeight()/2;
+			Paint paint = new Paint();
+
+			paint.setAntiAlias(true);
+
+			paint.setColor(Color.WHITE);
+
+			paint.setStyle(Paint.Style.FILL);
+
+			paint.setAlpha(0x30);
+			canvas.drawCircle(bw, bh, mRadius - 80, paint);
+			// xiaoyuan
+
+			paint.setStyle(Paint.Style.FILL);
+			paint.setAntiAlias(true);
+			paint.setColor(Color.BLUE);
+			paint.setAlpha(0x30);
+			canvas.drawCircle(bw, bh, mRadius + 41, paint); 
+
+//		
+//			for (int i = 0; i < MENUS; i++) {
+//				if (!mMenus[i].isVisible)
+//					continue;
+//				drawMenus(canvas, mMenus[i].bitmap, mMenus[i].x, mMenus[i].y);
+//			}
+//
+//			for (int index = 0; index < STONE_COUNT; index++) {
+//				if (!mStones[index].isVisible)
+//					continue;
+//				drawInCenter(canvas, mStones[index].bitmap, mStones[index].x,
+//						mStones[index].y, mStones[index].text);
+//
+//			}
+		}
+	}
 }
