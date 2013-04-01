@@ -8,13 +8,10 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.GridView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 
 public class ShowMovieActivity extends Activity implements View.OnKeyListener {
 
@@ -27,8 +24,6 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener {
 			mFenLeiBtn;
 
 	private View beforeView, activeView;
-	
-	private boolean isGridViewInit = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -108,7 +103,6 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener {
 
 		beforeView = mFenLeiBtn;
 		activeView = mFenLeiBtn;
-		isGridViewInit = false;
 
 		searchEt.setFocusable(false);// 搜索焦点消失
 		movieGv.setNextFocusLeftId(R.id.bt_quanbufenlei);// 网格向左 全部分类获得焦点
@@ -116,7 +110,6 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener {
 		movieGv.setNextFocusUpId(R.id.bt_quanbufenlei);// 网格向左 全部分类获得焦点
 		movieGv.setNextFocusRightId(R.id.bt_quanbufenlei);// 网格向左 全部分类获得焦点
 
-//		movieGv.setSelected(true);// 网格获取焦点
 		mFenLeiBtn.setTextColor(getResources().getColor(R.color.text_orange));// 全部分类首先设为激活状态
 		mFenLeiBtn.setBackgroundResource(R.drawable.menubg);//在换成这张图片时，会刷新组件的padding
 		dongzuoLL.setPadding(0, 0, 5, 0);
@@ -131,12 +124,10 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener {
 		mFenLeiBtn.setPadding(0, 0, 5, 0);
 
 		movieGv.setAdapter(new MovieAdpter());// 网格布局添加适配器
-//		movieGv.setSelection(0);
+		movieGv.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
 		movieGv.setFocusable(true);
 		movieGv.setFocusableInTouchMode(true);
 		movieGv.requestFocus();
-//		movieGv.requ
-//		movieGv.getChildAt(0).f
 		
 	}
 
@@ -173,6 +164,7 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener {
 		}
 	}
 	
+	//转到类似Gridview组件上
 	private void turnToGridViewState(){
 		
 		if(beforeView.getId() == activeView.getId()) {
@@ -313,11 +305,6 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener {
 			v.setPadding(20, 20, 20, 20);
 			v.setLayoutParams(lp);
 			convertView = v;
-//			if(position == 0 ) {
-//				v.setFocusable(true);
-//				v.requestFocus();
-//				isGridViewInit = true;
-//			}
 
 			return convertView;
 		}

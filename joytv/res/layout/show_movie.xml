@@ -5,7 +5,7 @@
     android:background="@color/movie_bg"
     android:orientation="vertical"
     android:paddingLeft="50dp"
-    android:paddingTop="15dp">
+    android:paddingTop="15dp" >
 
     <include
         android:layout_width="match_parent"
@@ -250,105 +250,19 @@
             android:orientation="vertical" >
 
             <LinearLayout
+                android:id="@+id/ll_movie_show"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/layout_zero"
-                android:layout_marginBottom="@dimen/edit_vertical_margin"
-                android:layout_marginTop="@dimen/edit_vertical_margin"
-                android:layout_weight="0.8"
-                android:background="@drawable/menubg"
+                android:layout_height="match_parent"
                 android:orientation="horizontal"
-                android:paddingRight="50dp"
-                android:visibility="gone" >
+                android:paddingRight="50dp" >
 
-                <TextView
-                    android:layout_width="@dimen/layout_zero"
+                <com.joyplus.tv.ui.MyGridView
+                    android:id="@+id/gv_movie_show"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="@dimen/theme_name_margin"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:text="@string/shoucang_update_name"
-                    android:textColor="@color/text_pt"
-                    android:textSize="@dimen/menu_up_text_size" />
-
-                <TextView
-                    android:layout_width="@dimen/layout_zero"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="right|center_vertical"
-                    android:text="1/1"
-                    android:textColor="@color/time_color"
-                    android:textSize="@dimen/jishu_text_size" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/layout_zero"
-                android:layout_weight="15"
-                android:orientation="vertical" >
-
-                <LinearLayout
-                    android:id="@+id/ll_movie_show"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/layout_zero"
-                    android:layout_weight="17"
-                    android:orientation="horizontal"
-                    android:paddingRight="50dp" >
-
-                    <com.joyplus.tv.ui.MyGridView
-                        android:id="@+id/gv_movie_show"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:numColumns="5"
-                        android:descendantFocusability="beforeDescendants">
-                    </com.joyplus.tv.ui.MyGridView>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/layout_zero"
-                    android:layout_marginBottom="@dimen/edit_vertical_margin"
-                    android:layout_marginTop="@dimen/edit_vertical_margin"
-                    android:layout_weight="1.6"
-                    android:background="@color/menu_bg"
-                    android:orientation="horizontal"
-                    android:paddingRight="50dp"
-                    android:visibility="gone" >
-
-                    <TextView
-                        android:layout_width="@dimen/layout_zero"
-                        android:layout_height="match_parent"
-                        android:layout_marginLeft="@dimen/theme_name_margin"
-                        android:layout_weight="1"
-                        android:gravity="center_vertical"
-                        android:text="@string/qitadianshiju_play_name"
-                        android:textColor="@color/text_pt"
-                        android:textSize="@dimen/menu_up_text_size" />
-
-                    <TextView
-                        android:layout_width="@dimen/layout_zero"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="right|center_vertical"
-                        android:text="1/1"
-                        android:textColor="@color/time_color"
-                        android:textSize="@dimen/jishu_text_size" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/layout_zero"
-                    android:layout_weight="13"
-                    android:orientation="horizontal"
-                    android:paddingRight="50dp"
-                    android:visibility="gone" >
-
-                    <com.joyplus.tv.ui.MyGridView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:listSelector="@android:color/transparent"
-                        android:numColumns="5" >
-                    </com.joyplus.tv.ui.MyGridView>
-                </LinearLayout>
+                    android:descendantFocusability="beforeDescendants"
+                    android:numColumns="5" >
+                </com.joyplus.tv.ui.MyGridView>
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
