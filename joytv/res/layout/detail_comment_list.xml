@@ -1,13 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content" 
-    android:background="@drawable/bg_teat_repeat">
+    android:layout_height="wrap_content"
+ >
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_alignParentLeft="true"
+      	android:layout_alignParentTop="true"
+        android:background="@drawable/comment_bg" />
 
     <TextView
         android:id="@+id/TextView01"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="22dp"
+        android:layout_marginTop="10dp"
         android:ellipsize="end"
         android:singleLine="true"
         android:text="9f9f9f"
@@ -19,6 +31,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/TextView01"
+        android:layout_alignLeft="@+id/TextView01"
         android:ellipsize="end"
         android:maxLines="4"
         android:text="9f9f9f"
