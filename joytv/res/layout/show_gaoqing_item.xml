@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/ll_gaoqing_chaogaoqing"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/btn_dark"
+        android:gravity="center" >
+
+        <TextView
+            android:id="@+id/tv_gaoqing_chaobofang"
+            android:layout_width="@dimen/layout_zero"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="left|center_vertical"
+            android:text="@string/xiangqing_bofang" />
+
+        <TextView
+            android:id="@+id/tv_gaoqing_chaogaoqing"
+            android:layout_width="@dimen/layout_zero"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="left|center_vertical"
+            android:text="@string/gaoqing_chaogaoqing" />
+
+        <ImageView
+            android:id="@+id/iv_xiangqing_chaobofang"
+            android:layout_width="@dimen/layout_zero"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center_vertical"
+            android:layout_weight="1"
+            android:src="@drawable/icon_play" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_gaoqing_gaoqing"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/btn_dark"
+        android:gravity="center" >
+
+        <TextView
+            android:id="@+id/tv_gaoqing_bofang"
+            android:layout_width="@dimen/layout_zero"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="left|center_vertical"
+            android:text="@string/xiangqing_bofang" />
+
+        <TextView
+            android:id="@+id/tv_xiangqing_gaoqing"
+            android:layout_width="@dimen/layout_zero"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="left|center_vertical"
+            android:text="@string/xiangqing_gaoqing" />
+
+        <ImageView
+            android:id="@+id/iv_gaoqing_bofang"
+            android:layout_width="@dimen/layout_zero"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center_vertical"
+            android:layout_weight="1"
+            android:src="@drawable/icon_play" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_gaoqing_biaoqing"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/btn_dark"
+        android:gravity="center" >
+
+        <TextView
+            android:id="@+id/tv_gaoqing_biaoqingbofang"
+            android:layout_width="@dimen/layout_zero"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="left|center_vertical"
+            android:text="@string/xiangqing_bofang" />
+
+        <TextView
+            android:id="@+id/tv_gaoqing_biaoqing"
+            android:layout_width="@dimen/layout_zero"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="left|center_vertical"
+            android:text="@string/xiangqing_gaoqing" />
+
+        <ImageView
+            android:id="@+id/iv_gaoqing_biaobofang"
+            android:layout_width="@dimen/layout_zero"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center_vertical"
+            android:layout_weight="1"
+            android:src="@drawable/icon_play" />
+    </LinearLayout>
+
+</LinearLayout>

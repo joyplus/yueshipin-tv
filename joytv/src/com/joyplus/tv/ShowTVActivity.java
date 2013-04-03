@@ -4,6 +4,7 @@ import com.joyplus.tv.ui.MyGridView;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,11 +14,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
+import android.widget.Scroller;
 
-public class ShowTVActivity extends Activity implements View.OnKeyListener{
-	
+public class ShowTVActivity extends Activity implements View.OnKeyListener {
+
 	private EditText searchEt;
-	private MyGridView shoucanggengxinGv,qitadianshijuGv;
+	private MyGridView shoucanggengxinGv, qitadianshijuGv;
 	private LinearLayout oumeijuLL, dalujuLL, gangjuLL, taijuLL, hanjuLL,
 			rijuLL;
 
@@ -26,16 +29,17 @@ public class ShowTVActivity extends Activity implements View.OnKeyListener{
 
 	private View beforeView, activeView;
 	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.show_tv);
-		
+
 		initView();
 		initState();
 	}
-	
+
 	private void initView() {
 
 		searchEt = (EditText) findViewById(R.id.et_search);
@@ -54,44 +58,45 @@ public class ShowTVActivity extends Activity implements View.OnKeyListener{
 		zhuijushoucangBtn = (Button) findViewById(R.id.bt_zhuijushoucang);
 		lixianshipinBtn = (Button) findViewById(R.id.bt_lixianshipin);
 
-		 searchEt.setOnKeyListener(new View.OnKeyListener() {
-			
+		searchEt.setOnKeyListener(new View.OnKeyListener() {
+
 			@Override
 			public boolean onKey(View v, int keyCode, KeyEvent event) {
 				// TODO Auto-generated method stub
 				int action = event.getAction();
 				if (action == KeyEvent.ACTION_UP) {
 					if (keyCode == KeyEvent.KEYCODE_NUMPAD_8) {
-						
+
 						turnToNonButtonState();
 					}
 				}
 				return false;
 			}
 		});
-//		 movieGv.setOnKeyListener(new View.OnKeyListener() {
-//			
-//			@Override
-//			public boolean onKey(View v, int keyCode, KeyEvent event) {
-//				// TODO Auto-generated method stub
-//				int action = event.getAction();
-//				
-//				if (action == KeyEvent.ACTION_UP) {
-//					if (keyCode == KeyEvent.KEYCODE_NUMPAD_6) {
-//						
-//						turnToGridViewState();
-//					}
-//				}
-//				return false;
-//			}
-//		});
 
-		 oumeijuLL.setOnKeyListener(this);
-		 dalujuLL.setOnKeyListener(this);
-		 gangjuLL.setOnKeyListener(this);
-		 taijuLL.setOnKeyListener(this);
-		 hanjuLL.setOnKeyListener(this);
-		 rijuLL.setOnKeyListener(this);
+		shoucanggengxinGv.setOnKeyListener(new View.OnKeyListener() {
+
+			@Override
+			public boolean onKey(View v, int keyCode, KeyEvent event) {
+				// TODO Auto-generated method stub
+				int action = event.getAction();
+
+				if (action == KeyEvent.ACTION_UP) {
+					if (keyCode == KeyEvent.KEYCODE_NUMPAD_6) {
+
+						turnToNonButtonState();
+					}
+				}
+				return false;
+			}
+		});
+
+		oumeijuLL.setOnKeyListener(this);
+		dalujuLL.setOnKeyListener(this);
+		gangjuLL.setOnKeyListener(this);
+		taijuLL.setOnKeyListener(this);
+		hanjuLL.setOnKeyListener(this);
+		rijuLL.setOnKeyListener(this);
 
 		zuijinguankanBtn.setOnKeyListener(this);
 		zhuijushoucangBtn.setOnKeyListener(this);
@@ -106,14 +111,14 @@ public class ShowTVActivity extends Activity implements View.OnKeyListener{
 		activeView = mFenLeiBtn;
 
 		searchEt.setFocusable(false);// 搜索焦点消失
-//		movieGv.setNextFocusLeftId(R.id.bt_quanbufenlei);// 网格向左 全部分类获得焦点
-//		movieGv.setNextFocusDownId(R.id.bt_quanbufenlei);// 网格向左 全部分类获得焦点
-//		movieGv.setNextFocusUpId(R.id.bt_quanbufenlei);// 网格向左 全部分类获得焦点
-//		movieGv.setNextFocusRightId(R.id.bt_quanbufenlei);// 网格向左 全部分类获得焦点
+		// movieGv.setNextFocusLeftId(R.id.bt_quanbufenlei);// 网格向左 全部分类获得焦点
+		// movieGv.setNextFocusDownId(R.id.bt_quanbufenlei);// 网格向左 全部分类获得焦点
+		// movieGv.setNextFocusUpId(R.id.bt_quanbufenlei);// 网格向左 全部分类获得焦点
+		// movieGv.setNextFocusRightId(R.id.bt_quanbufenlei);// 网格向左 全部分类获得焦点
 
-//		movieGv.setSelected(true);// 网格获取焦点
+		// movieGv.setSelected(true);// 网格获取焦点
 		mFenLeiBtn.setTextColor(getResources().getColor(R.color.text_orange));// 全部分类首先设为激活状态
-		mFenLeiBtn.setBackgroundResource(R.drawable.menubg);//在换成这张图片时，会刷新组件的padding
+		mFenLeiBtn.setBackgroundResource(R.drawable.menubg);// 在换成这张图片时，会刷新组件的padding
 		oumeijuLL.setPadding(0, 0, 5, 0);
 		dalujuLL.setPadding(0, 0, 5, 0);
 		gangjuLL.setPadding(0, 0, 5, 0);
@@ -127,15 +132,27 @@ public class ShowTVActivity extends Activity implements View.OnKeyListener{
 
 		shoucanggengxinGv.setAdapter(new MovieAdpter());// 网格布局添加适配器
 		qitadianshijuGv.setAdapter(new MovieAdpter());// 网格布局添加适配器
-////		movieGv.setSelection(0);
-//		movieGv.setFocusable(true);
-//		movieGv.setFocusableInTouchMode(true);
-//		movieGv.requestFocus();
-//		movieGv.requ
-//		movieGv.getChildAt(0).f
 		
+		shoucanggengxinGv.setSelection(3);
+
+//		shoucanggengxinGv.setFocusable(true);
+//		shoucanggengxinGv.setFocusableInTouchMode(true);
+//		shoucanggengxinGv
+//		.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
+//		shoucanggengxinGv.requestFocus();
+
 	}
 	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		StatisticsUtils.simulateKey(KeyEvent.KEYCODE_DPAD_LEFT);
+		StatisticsUtils.simulateKey(KeyEvent.KEYCODE_DPAD_RIGHT);
+		shoucanggengxinGv.setSelection(0);
+		
+	}
+
 	private void beforeViewFoucsStateBack() {
 
 		if (beforeView instanceof LinearLayout) {
@@ -168,11 +185,11 @@ public class ShowTVActivity extends Activity implements View.OnKeyListener{
 			buttonToPTState(tempButton);
 		}
 	}
-	
-	private void turnToNonButtonState(){
-		
-		if(beforeView.getId() == activeView.getId()) {
-			
+
+	private void turnToNonButtonState() {
+
+		if (beforeView.getId() == activeView.getId()) {
+
 			if (activeView instanceof LinearLayout) {
 
 				LinearLayout tempLinearLayout = (LinearLayout) activeView;
@@ -185,38 +202,36 @@ public class ShowTVActivity extends Activity implements View.OnKeyListener{
 		} else {
 			beforeViewFoucsStateBack();
 		}
-		
+
 	}
-	
+
 	private void linearLayoutToPTState(LinearLayout linearLayout) {
-		
+
 		Button tempButton = (Button) linearLayout.getChildAt(0);
-		linearLayout
-				.setBackgroundResource(R.drawable.text_drawable_selector);
+		linearLayout.setBackgroundResource(R.drawable.text_drawable_selector);
 		tempButton.setTextColor(getResources().getColor(R.color.text_pt));
 		tempButton.setCompoundDrawablesWithIntrinsicBounds(getResources()
 				.getDrawable(R.drawable.side_hot_normal), null, null, null);
 	}
-	
+
 	private void buttonToPTState(Button button) {
-		
+
 		button.setBackgroundResource(R.drawable.text_drawable_selector);
 		button.setTextColor(getResources().getColor(R.color.text_pt));
 	}
-	
+
 	private void linearLayoutToActiveState(LinearLayout linearLayout) {
-		
+
 		Button tempButton = (Button) linearLayout.getChildAt(0);
-		linearLayout
-				.setBackgroundResource(R.drawable.menubg);
+		linearLayout.setBackgroundResource(R.drawable.menubg);
 		linearLayout.setPadding(0, 0, 5, 0);
 		tempButton.setTextColor(getResources().getColor(R.color.text_orange));
 		tempButton.setCompoundDrawablesWithIntrinsicBounds(getResources()
 				.getDrawable(R.drawable.side_hot_active), null, null, null);
 	}
-	
+
 	private void buttonToActiveState(Button button) {
-		
+
 		button.setBackgroundResource(R.drawable.menubg);
 		button.setPadding(0, 0, 5, 0);
 		button.setTextColor(getResources().getColor(R.color.text_orange));
@@ -229,7 +244,6 @@ public class ShowTVActivity extends Activity implements View.OnKeyListener{
 		if (v instanceof LinearLayout) {
 			LinearLayout linearLayout = (LinearLayout) v;
 			Button button = (Button) linearLayout.getChildAt(0);
-			
 
 			if (action == KeyEvent.ACTION_UP) {
 
@@ -248,7 +262,7 @@ public class ShowTVActivity extends Activity implements View.OnKeyListener{
 					beforeViewActiveStateBack();
 					linearLayoutToActiveState(linearLayout);
 					activeView = v;
-				} 
+				}
 			}
 		} else if (v instanceof Button) {
 			if (action == KeyEvent.ACTION_UP) {
@@ -256,7 +270,7 @@ public class ShowTVActivity extends Activity implements View.OnKeyListener{
 				if (keyCode == KeyEvent.KEYCODE_NUMPAD_8
 						|| keyCode == KeyEvent.KEYCODE_NUMPAD_4
 						|| keyCode == KeyEvent.KEYCODE_NUMPAD_2) {
-					searchEt.setFocusable(true);//能够获取焦点
+					searchEt.setFocusable(true);// 能够获取焦点
 					beforeViewFoucsStateBack();
 					button.setTextColor(getResources().getColor(
 							R.color.text_foucs));
@@ -266,7 +280,7 @@ public class ShowTVActivity extends Activity implements View.OnKeyListener{
 					beforeViewActiveStateBack();
 					buttonToActiveState(button);
 					activeView = v;
-					
+
 				}
 			}
 		}
@@ -299,7 +313,6 @@ public class ShowTVActivity extends Activity implements View.OnKeyListener{
 			// TODO Auto-generated method stub
 			ImageView iv = new ImageView(getApplicationContext());
 			iv.setBackgroundResource(R.drawable.movie_pic);
-			
 
 			return iv;
 		}

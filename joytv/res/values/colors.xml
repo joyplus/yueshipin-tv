@@ -20,7 +20,7 @@
     
     <!--Yangzhg  -->
     <color name="movie_bg">#08111A</color>
-    <color name="time_color">#606D12</color>
+    <color name="time_color">#ACBF0A</color>
     <color name="text_pt">#999999</color>
     <color name="text_foucs">#F0F0F0</color>
     <color name="text_press">#F0F0F0</color>
@@ -33,6 +33,10 @@
     <color name="text_active">#7D4F1E</color>
     <color name="text_select_ok">#F0E8E2</color>
     <color name="menu_bg_select_ok">#F18C21</color>
+    <color name="daoyan_name_color">#C8C9C9</color>
+    <color name="daoyan_names_name_color">#A3A5A6</color>
+    <color name="time_over_time_color">#D07E2F</color>
+    <color name="xiangqing_active_text_color">#EAE8E7</color>
     <!--Yangzhg  -->
     
     

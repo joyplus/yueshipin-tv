@@ -1,6 +1,6 @@
 package com.joyplus.tv;
 
-import com.joyplus.tv.ui.MyGridView;
+import com.joyplus.tv.ui.MyMovieGridView;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -8,6 +8,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,7 +17,7 @@ import android.widget.LinearLayout;
 public class ShowMovieActivity extends Activity implements View.OnKeyListener {
 
 	private EditText searchEt;
-	private MyGridView movieGv;
+	private MyMovieGridView movieGv;
 	private LinearLayout dongzuoLL, lunliLL, xijuLL, aiqingLL, xuanyiLL,
 			kongbuLL;
 
@@ -40,7 +41,7 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener {
 
 		searchEt = (EditText) findViewById(R.id.et_search);
 		mFenLeiBtn = (Button) findViewById(R.id.bt_quanbufenlei);
-		movieGv = (MyGridView) findViewById(R.id.gv_movie_show);
+		movieGv = (MyMovieGridView) findViewById(R.id.gv_movie_show);
 
 		dongzuoLL = (LinearLayout) findViewById(R.id.ll_dongzuopian);
 		lunliLL = (LinearLayout) findViewById(R.id.ll_lunlipian);
@@ -84,6 +85,22 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener {
 				return false;
 			}
 		});
+		 
+		 movieGv.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view,
+					int position, long id) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parent) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 
 		dongzuoLL.setOnKeyListener(this);
 		lunliLL.setOnKeyListener(this);
@@ -124,10 +141,25 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener {
 		mFenLeiBtn.setPadding(0, 0, 5, 0);
 
 		movieGv.setAdapter(new MovieAdpter());// 网格布局添加适配器
-		movieGv.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
-		movieGv.setFocusable(true);
-		movieGv.setFocusableInTouchMode(true);
-		movieGv.requestFocus();
+//		movieGv.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
+//		movieGv.setFocusable(true);
+//		movieGv.setFocusableInTouchMode(true);
+//		movieGv.requestFocus();
+		movieGv.setSelection(3);
+		
+		
+//		Log.i("Yangzhg", "Count:" + movieGv.getCount());
+		
+	}
+	
+
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		StatisticsUtils.simulateKey(KeyEvent.KEYCODE_DPAD_LEFT);
+		StatisticsUtils.simulateKey(KeyEvent.KEYCODE_DPAD_RIGHT);
+		movieGv.setSelection(0);
 		
 	}
 

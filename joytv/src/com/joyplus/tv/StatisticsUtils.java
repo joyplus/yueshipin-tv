@@ -5,15 +5,16 @@ import java.util.Map;
 
 import org.json.JSONObject;
 
+import android.app.Instrumentation;
 import android.util.Log;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
 
 public class StatisticsUtils {
-	
+
 	private static final String TAG = "StatisticsUtils";
-	
+
 	/**
 	 * 用来统计用户点击播放视屏后正常跳转的次数 有可能跳转到播放器，也有可能跳转到浏览器
 	 * 
@@ -25,16 +26,16 @@ public class StatisticsUtils {
 	 * @param prod_subname
 	 * @param pro_type
 	 */
-	public static void StatisticsClicksShow(AQuery aq, App app ,String prod_id,
-			String prod_name, String prod_subname, int pro_type){
-		
+	public static void StatisticsClicksShow(AQuery aq, App app, String prod_id,
+			String prod_name, String prod_subname, int pro_type) {
+
 		String url = Constant.BASE_URL + "program/recordPlay";
 
 		Map<String, Object> params = new HashMap<String, Object>();
-//		params.put("client","android");
-//		params.put("version", "0.9.9");
-//		params.put("app_key", Constant.APPKEY);// required string //
-												// 申请应用时分配的AppKey。
+		// params.put("client","android");
+		// params.put("version", "0.9.9");
+		// params.put("app_key", Constant.APPKEY);// required string //
+		// 申请应用时分配的AppKey。
 
 		params.put("prod_id", prod_id);// required string // 视频id
 
@@ -51,6 +52,40 @@ public class StatisticsUtils {
 		cb.params(params).url(url).type(JSONObject.class);
 
 		aq.ajax(cb);
+	}
+	
+	public static int count = 0;
+
+	public static void simulateKey(final int KeyCode) {
+		
+		count ++;
+		if(count > 2) {
+			return;
+		}
+
+		new Thread() {
+
+			public void run() {
+
+				try {
+
+					Instrumentation inst = new Instrumentation();
+					// inst.sendKeySync(new KeyEvent(KeyEvent.ACTION_UP,
+					// KeyCode));
+
+					inst.sendKeyDownUpSync(KeyCode);
+					// handler.sendEmptyMessage(0X111);
+
+				} catch (Exception e) {
+
+					Log.e("Exception when sendKeyDownUpSync", e.toString());
+
+				}
+
+			}
+
+		}.start();
+
 	}
 
 }

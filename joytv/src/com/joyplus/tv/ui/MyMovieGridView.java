@@ -5,14 +5,14 @@ import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.widget.GridView;
 
-public class MyGridView extends GridView {
+public class MyMovieGridView extends GridView {
 	
-	public MyGridView(Context context) {
+	public MyMovieGridView(Context context) {
 		super(context);
 		// TODO Auto-generated constructor stub
 	}
 
-	public MyGridView(Context context, AttributeSet attrs) {
+	public MyMovieGridView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		// TODO Auto-generated constructor stub
 	}
@@ -24,18 +24,5 @@ public class MyGridView extends GridView {
 //		super.onKeyUp(keyCode, event);
 //		return true;
 	}
-
-	@Override
-	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-		// TODO Auto-generated method stub
-		
-		int expandSpec = MeasureSpec.makeMeasureSpec(Integer.MAX_VALUE >> 2,  
-                MeasureSpec.AT_MOST); 
-		super.onMeasure(widthMeasureSpec, expandSpec);
-	}
 	
-	
-	
-	
-
 }

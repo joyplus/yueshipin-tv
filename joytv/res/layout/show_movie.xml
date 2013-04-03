@@ -256,13 +256,13 @@
                 android:orientation="horizontal"
                 android:paddingRight="50dp" >
 
-                <com.joyplus.tv.ui.MyGridView
+                <com.joyplus.tv.ui.MyMovieGridView
                     android:id="@+id/gv_movie_show"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:descendantFocusability="beforeDescendants"
+                    android:listSelector="@android:color/black"
                     android:numColumns="5" >
-                </com.joyplus.tv.ui.MyGridView>
+                </com.joyplus.tv.ui.MyMovieGridView>
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
