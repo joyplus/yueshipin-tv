@@ -7,10 +7,11 @@
     <ImageView
         android:id="@+id/imageView1"
         android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
+        android:layout_height="140dp"
         android:layout_alignParentLeft="true"
       	android:layout_alignParentTop="true"
-        android:background="@drawable/comment_bg" />
+      	 android:background="@drawable/list_line" 
+      	android:scaleType="fitXY" />
 
     <TextView
         android:id="@+id/TextView01"
@@ -35,7 +36,7 @@
         android:ellipsize="end"
         android:maxLines="4"
         android:text="9f9f9f"
-        android:textColor="@color/text_normal"
+        android:textColor="@color/text_pt"
         android:textSize="16sp" />
 
 </RelativeLayout>

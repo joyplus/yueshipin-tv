@@ -117,6 +117,8 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 			Uri videoUri, Bundle savedInstance, boolean canReplay) {
 		mContext = movieActivity.getApplicationContext();
 		mVideoView = (VideoView) rootView.findViewById(R.id.surface_view);
+		
+		
 		mBookmarker = new Bookmarker(movieActivity);
 //		mActionBar = movieActivity.getActionBar();
 		mUri = videoUri;
@@ -380,7 +382,9 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 
 	// Below are key events passed from MovieActivity.
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-
+		if (mController.isHidden() && !isVolumeKey(keyCode)) {
+			mController.show();
+		}
 		// Some headsets will fire off 7-10 events on a single click
 		if (event.getRepeatCount() > 0) {
 			return isMediaKey(keyCode);
@@ -414,9 +418,14 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 	            System.out.println("Play back");  
 				return true;
 		case KeyEvent.KEYCODE_DPAD_UP:
-//			mVideoView.set
+		case KeyEvent.KEYCODE_VOLUME_UP:
+			mController.showVolume();
 			return true;
 		case KeyEvent.KEYCODE_DPAD_DOWN:
+		case KeyEvent.KEYCODE_VOLUME_DOWN:
+			mController.showVolume();
+			return true;
+		case KeyEvent.KEYCODE_VOLUME_MUTE:
 			mController.showVolume();
 			return true;
 		case KeyEvent.KEYCODE_HEADSETHOOK:
@@ -424,6 +433,13 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 			if (mVideoView.isPlaying()) {
 				pauseVideo();
 			} else {
+				playVideo();
+			}
+			return true;
+		case KeyEvent.KEYCODE_ENTER:
+			if (mVideoView.isPlaying()) {
+				pauseVideo();
+			}else {
 				playVideo();
 			}
 			return true;
@@ -442,6 +458,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 			// TODO: Handle next / previous accordingly, for now we're
 			// just consuming the events.
 			return true;
+		
 		}
 		return false;
 	}
@@ -469,9 +486,14 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 				|| keyCode == KeyEvent.KEYCODE_DPAD_RIGHT
 				|| keyCode == KeyEvent.KEYCODE_MEDIA_REWIND
 				|| keyCode == KeyEvent.KEYCODE_DPAD_LEFT
-				|| keyCode == KeyEvent.KEYCODE_DPAD_UP
-				|| keyCode == KeyEvent.KEYCODE_DPAD_DOWN
 				|| keyCode == KeyEvent.KEYCODE_MEDIA_PAUSE;
+	}
+	//VOLUME
+	private static boolean isVolumeKey(int keyCode) {
+		return keyCode == KeyEvent.KEYCODE_VOLUME_DOWN
+				|| keyCode == KeyEvent.KEYCODE_VOLUME_UP
+				|| keyCode == KeyEvent.KEYCODE_DPAD_UP
+				|| keyCode == KeyEvent.KEYCODE_DPAD_DOWN;
 	}
 
 	// We want to pause when the headset is unplugged.

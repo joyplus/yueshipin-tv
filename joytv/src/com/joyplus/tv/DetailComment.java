@@ -7,8 +7,10 @@ import java.util.List;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -27,6 +29,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.androidquery.AQuery;
@@ -60,6 +63,9 @@ public class DetailComment extends Activity implements
 	private int isLastisNext = 1;
 	private boolean isDetailComment = false;
 	private int CurrentIndex = 0;
+	private ScrollView scrollViewItemDetail;
+	private int CurrentDetailComment = 0;
+	private int totalDetailCommentHeight = 0;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -81,8 +87,9 @@ public class DetailComment extends Activity implements
 					// TODO Auto-generated method stub
 					int action = event.getAction();
 					if (action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_NUMPAD_5) {
-						aq.id(R.id.scrollViewItemDetail).gone();
+						aq.id(R.id.scrollViewItemDetail).invisible();
 						aq.id(R.id.listView1).visible ();
+						aq.id(R.id.listView1).getView().requestFocus();
 					}
 					return false;
 				}
@@ -122,6 +129,7 @@ public class DetailComment extends Activity implements
 		aq.id(R.id.imageViewBarCode).image(prod_url, true,
 				true, 0, R.drawable.movie_pic);
 
+		scrollViewItemDetail =  (ScrollView) findViewById(R.id.scrollViewItemDetail);
 		if (prod_id != null)
 			CheckSaveData();
 		if(Float.parseFloat(prod_dou) >0)
@@ -187,8 +195,9 @@ public class DetailComment extends Activity implements
 		if (m_ReturnProgramReviews.reviews == null)
 			return;
 		
-		aq.id(R.id.scrollViewItemDetail).gone();
+		aq.id(R.id.scrollViewItemDetail).invisible();
 		aq.id(R.id.listView1).visible();
+		aq.id(R.id.listView1).getView().requestFocus();
 		
 		
 		if (isLastisNext > 1) {
@@ -231,7 +240,7 @@ public class DetailComment extends Activity implements
 	public void InitListData(String url, JSONObject json, AjaxStatus status) {
 		
 		if (status.getCode() == AjaxStatus.NETWORK_ERROR)  {
-//			aq.id(R.id.ProgressText).gone();
+//			aq.id(R.id.ProgressText).invisible();
 			app.MyToast(aq.getContext(),
 					getResources().getString(R.string.networknotwork));
 			return;
@@ -251,7 +260,7 @@ public class DetailComment extends Activity implements
 						"1/" + Integer.toString(dataStruct.size()));
 				aq.id(R.id.textView3).visible();
 			}
-//			aq.id(R.id.ProgressText).gone();
+//			aq.id(R.id.ProgressText).invisible();
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -275,13 +284,54 @@ public class DetailComment extends Activity implements
 			isDetailComment = true;
 			aq.id(R.id.listViewItemTitle).text(m_DetailCommentListData.Prod_title);
 			aq.id(R.id.listViewItemDetail).text(m_DetailCommentListData.Prod_comments);
-			aq.id(R.id.listView1).gone();
+			aq.id(R.id.listView1).invisible();
 			aq.id(R.id.scrollViewItemDetail).visible();
+			aq.id(R.id.scrollViewItemDetail).getView().requestFocus();
+			
+			scrollViewItemDetail.fullScroll(ScrollView.FOCUS_UP);
+			
+			CurrentDetailComment = 1;
+			
+			totalDetailCommentHeight = aq.id(R.id.listViewItemDetail).getTextView().getHeight()/scrollViewItemDetail.getMeasuredHeight();
+//			aq.id(R.id.listViewItemDetail).getTextView().get
+			aq.id(R.id.textView3).text(
+					 "1/" + Integer.toString(totalDetailCommentHeight));
 
 		} else {
 			app.MyToast(this, "ReturnProgramReviews is empty.");
 		}
 
+	}
+
+	@Override
+	public boolean dispatchKeyEvent(KeyEvent event) {
+		if (isDetailComment) {
+			if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN) {
+				if (event.getAction() == KeyEvent.ACTION_DOWN
+						&& event.getRepeatCount() == 0
+						&& scrollViewItemDetail.arrowScroll(View.FOCUS_DOWN)) {
+					scrollViewItemDetail.pageScroll(View.FOCUS_DOWN);
+					CurrentDetailComment++;
+					aq.id(R.id.textView3).text(
+							Integer.toString(CurrentDetailComment) + "/" + Integer.toString(totalDetailCommentHeight));
+					return true;
+				}
+			}else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP) {
+				if (event.getAction() == KeyEvent.ACTION_DOWN
+						&& event.getRepeatCount() == 0
+						&& scrollViewItemDetail.arrowScroll(View.FOCUS_UP)){
+					
+					scrollViewItemDetail.pageScroll(View.FOCUS_UP);
+					CurrentDetailComment--;
+					aq.id(R.id.textView3).text(
+							Integer.toString(CurrentDetailComment) + "/" + Integer.toString(totalDetailCommentHeight));
+					
+					return true;
+				}
+			}
+		}
+
+		return super.dispatchKeyEvent(event);
 	}
 
 	private void CheckSaveData() {
@@ -338,9 +388,12 @@ public class DetailComment extends Activity implements
 	@Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
            if (keyCode == KeyEvent.KEYCODE_BACK && isDetailComment){                    
-        	   	aq.id(R.id.scrollViewItemDetail).gone();
+        	   	aq.id(R.id.scrollViewItemDetail).invisible();
    				aq.id(R.id.listView1).visible ();
+   				aq.id(R.id.listView1).getView().requestFocus();
    				DetailCommentAdapter.notifyDataSetChanged();
+   				aq.id(R.id.textView3).text(
+   						Integer.toString(CurrentIndex) + "/" + Integer.toString(dataStruct.size()));
    				isDetailComment = false;
                  return true;
            }

@@ -68,5 +68,6 @@ public interface ControllerOverlay {
 	void resetTime();
 	
 	void showVolume();
+	boolean isHidden();
 
 }

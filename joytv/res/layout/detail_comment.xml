@@ -34,8 +34,6 @@
                 android:layout_alignParentTop="true"
                 android:scaleType="fitXY" />
 
-         
-
             <RelativeLayout
                 android:id="@+id/relativeLayout_Dou"
                 android:layout_width="wrap_content"
@@ -78,10 +76,12 @@
                     android:layout_toRightOf="@+id/imageView5"
                     android:src="@drawable/star_off" />
             </RelativeLayout>
-             <TextView
+
+            <TextView
                 android:id="@+id/textView_dou"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fadeScrollbars="false"
                 android:layout_alignBaseline="@+id/imageView7"
                 android:layout_below="@+id/imageViewBarCode"
                 android:layout_marginRight="2dp"
@@ -90,8 +90,8 @@
                 android:text="7.3"
                 android:textColor="@color/menu_bg_select_ok"
                 android:textSize="16sp" />
-             
-               <ImageView
+
+            <ImageView
                 android:id="@+id/imageView7"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -99,8 +99,6 @@
                 android:layout_below="@+id/imageViewBarCode"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/douban" />
-
-           
         </RelativeLayout>
 
         <RelativeLayout
@@ -137,9 +135,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                android:layout_below="@+id/textView1">
+                android:layout_below="@+id/textView1"
+                android:divider="@color/listbg" >
+
             </ListView>
-           
 
             <TextView
                 android:id="@+id/textView3"
@@ -148,36 +147,38 @@
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
                 android:text="1/8"
-                android:textColor="@color/text_normal"
-                android:textSize="16sp" 
-                android:visibility="gone"/>
+                android:textColor="@color/text_pt"
+                android:textSize="16sp"
+                android:visibility="gone" />
 
             <ScrollView
                 android:id="@+id/scrollViewItemDetail"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" 
-                 android:layout_alignParentLeft="true"
-                android:layout_below="@+id/textView1" 
-                android:visibility="gone">
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/textView1"
+                android:visibility="invisible" >
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginTop="4dp"
                     android:orientation="vertical" >
-                     <TextView
-                android:id="@+id/listViewItemTitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                 android:textColor="@color/white"
-                 android:textSize="16sp" />
-                        <TextView
-                android:id="@+id/listViewItemDetail"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                 android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/listViewItemTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/white"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/listViewItemDetail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="16sp" />
                 </LinearLayout>
             </ScrollView>
-
         </RelativeLayout>
     </LinearLayout>
 

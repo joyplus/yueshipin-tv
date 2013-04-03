@@ -68,6 +68,8 @@ public class MovieControllerOverlay extends FrameLayout implements
 	private View mLayoutBottom;
 	private View mLayoutTime;
 	private final View loadingView;
+	
+	private View mLayoutVolume;
 	private final TextView errorView;
 	private View mLayoutControl;
 	private ImageView playPauseReplayView;
@@ -78,6 +80,7 @@ public class MovieControllerOverlay extends FrameLayout implements
 
 	private final Handler handler;
 	private final Runnable startHidingRunnable;
+	private final Runnable startHidingVolumeRunnable;
 	private final Animation hideAnimation;
 
 	private State state;
@@ -142,6 +145,9 @@ public class MovieControllerOverlay extends FrameLayout implements
 				.findViewById(R.id.imageControl_t);
 		playContinueView.setFocusable(true);
 		playContinueView.setOnTouchListener(this);
+		
+		
+		mLayoutVolume = rootView.findViewById(R.id.Layout_Volume);
 
 		playFavView = (ImageView) rootView.findViewById(R.id.imageControl_b);
 		playFavView.setFocusable(true);
@@ -177,6 +183,12 @@ public class MovieControllerOverlay extends FrameLayout implements
 				startHiding();
 			}
 		};
+		startHidingVolumeRunnable = new Runnable() {
+			public void run() {
+				startVolumeHiding();
+			}
+		};
+		
 
 		hideAnimation = AnimationUtils
 				.loadAnimation(context, R.anim.player_out);
@@ -246,6 +258,7 @@ public class MovieControllerOverlay extends FrameLayout implements
 		mLayoutTime.setVisibility(View.INVISIBLE);
 
 		mLayoutControl.setVisibility(View.INVISIBLE);
+		mLayoutVolume.setVisibility(View.INVISIBLE);
 		loadingView.setVisibility(View.INVISIBLE);
 		background.setVisibility(View.INVISIBLE);
 		// timeBar.setVisibility(View.INVISIBLE);
@@ -296,13 +309,21 @@ public class MovieControllerOverlay extends FrameLayout implements
 		// startHideAnimation(timeBar);
 		startHideAnimation(mLayoutControl);
 	}
-
+	private void startVolumeHiding() {
+		// startHideAnimation(timeBar);
+		startHideVolumeAnimation(mLayoutVolume);
+	}
+	
 	private void startHideAnimation(View view) {
 		if (view.getVisibility() == View.VISIBLE) {
 			view.startAnimation(hideAnimation);
 		}
 	}
-
+	private void startHideVolumeAnimation(View view) {
+		if (view.getVisibility() == View.VISIBLE) {
+			view.startAnimation(hideAnimation);
+		}
+	}
 	private void cancelHiding() {
 		handler.removeCallbacks(startHidingRunnable);
 		background.setAnimation(null);
@@ -347,12 +368,14 @@ public class MovieControllerOverlay extends FrameLayout implements
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		// if (hidden) {
-		// show();
-		// }
+		 if (hidden) {
+		 show();
+		 }
 		return super.onKeyDown(keyCode, event);
 	}
-
+	public boolean isHidden(){
+		return hidden;
+	}
 	@Override
 	public boolean onTouch(View view, MotionEvent event) {
 		if (super.onTouchEvent(event)) {
@@ -452,13 +475,13 @@ public class MovieControllerOverlay extends FrameLayout implements
 		// timeBar.setVisibility(View.VISIBLE);
 		if (state == State.PAUSED) {
 			playPauseReplayView
-					.setBackgroundResource(R.drawable.player_s_ic_vidcontrol_play);
+					.setBackgroundResource(R.drawable.player_btn_play_play_normal);
 		} else if (state == State.PLAYING) {
 			playPauseReplayView
 					.setBackgroundResource(R.drawable.player_s_ic_vidcontrol_pause);
 		} else
 			playPauseReplayView
-					.setBackgroundResource(R.drawable.player_s_ic_vidcontrol_reload);
+					.setBackgroundResource(R.drawable.player_btn_finish_normal);
 
 		if (state != State.LOADING && state != State.ERROR
 				&& !(state == State.ENDED && !canReplay)) {
@@ -528,6 +551,13 @@ public class MovieControllerOverlay extends FrameLayout implements
 	public void showVolume() {
 		// TODO Auto-generated method stub
 		mShowVolume = true;
+		mLayoutVolume.setVisibility(View.VISIBLE);
+		handler.postDelayed(startHidingVolumeRunnable, 2500);
+	}
+	public void hideVolume() {
+		// TODO Auto-generated method stub
+		mShowVolume = false;
+		mLayoutVolume.setVisibility(View.INVISIBLE);
 	}
 
 	@Override
