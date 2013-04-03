@@ -1,11 +1,13 @@
 package com.joyplus.tv;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.AbsListView;
@@ -66,7 +68,14 @@ public class ShowXiangqingTV extends Activity{
 
 		xiazaiBt = (Button) findViewById(R.id.bt_xiangqing_xiazai);
 		yingpingBt = (Button) findViewById(R.id.bt_xiangqing_yingping);
-
+		yingpingBt.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				startActivity(new Intent(ShowXiangqingTV.this,DetailComment.class));
+			}
+		});
 		gv = (GridView) findViewById(R.id.gv_xiangqing_tuijiandianying);
 		
 		initPopWindow();

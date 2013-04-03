@@ -3,6 +3,7 @@ package com.joyplus.tv;
 import com.joyplus.tv.ui.MyMovieGridView;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -94,7 +95,7 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 			public void onItemSelected(AdapterView<?> parent, View view,
 					int position, long id) {
 				// TODO Auto-generated method stub
-
+				startActivity(new Intent(ShowMovieActivity.this, ShowXiangqingTV.class));
 			}
 
 			@Override

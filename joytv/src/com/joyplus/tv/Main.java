@@ -3,9 +3,17 @@ package com.joyplus.tv;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -30,17 +38,20 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.androidquery.AQuery;
+import com.androidquery.callback.AjaxCallback;
 import com.joyplus.tv.Video.VideoPlayerActivity;
 import com.joyplus.tv.ui.ClockTextView;
 import com.joyplus.tv.ui.MyGallery;
 import com.joyplus.tv.ui.MyScrollLayout;
 import com.joyplus.tv.ui.MyScrollLayout.OnViewChangeListener;
+import com.umeng.analytics.MobclickAgent;
 
 public class Main extends Activity implements OnItemSelectedListener, OnItemClickListener{
 //	private String TAG = "Main";
-//	private App app;
-//	private AQuery aq;
-//	private Map<String, String> headers;
+	private App app;
+	private AQuery aq;
+	private Map<String, String> headers;
 //	/**
 //	 * The {@link android.support.v4.view.PagerAdapter} that will provide
 //	 * fragments for each of the sections. We use a
@@ -80,14 +91,7 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 //		headers.put("client","android");
 //		app.setHeaders(headers);
 //		
-//		// Create the adapter that will return a fragment for each of the three
-//		// primary sections of the app.
-//		mSectionsPagerAdapter = new SectionsPagerAdapter(
-//				getSupportFragmentManager());
-//
-//		// Set up the ViewPager with the sections adapter.
-//		mViewPager = (ViewPager) findViewById(R.id.pager);
-//		mViewPager.setAdapter(mSectionsPagerAdapter);
+
 //		
 //		if(!Constant.TestEnv)
 //			ReadLocalAppKey();
@@ -465,9 +469,83 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
         param.width = displayWith/6+3;
         alpha_appear = AnimationUtils.loadAnimation(this, R.anim.alpha_appear);
         alpha_disappear = AnimationUtils.loadAnimation(this, R.anim.alpha_disappear);
+		app = (App) getApplicationContext();
+		aq = new AQuery(this);
+		
+		headers = new HashMap<String, String>();
+		headers.put("User-Agent",
+				"Mozilla/5.0 (Windows NT 6.1; WOW64; rv:6.0.2) Gecko/20100101 Firefox/6.0.2");
+		PackageInfo pInfo;
+		try {
+			pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+			headers.put("version", pInfo.versionName);
+		} catch (NameNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	
+		headers.put("app_key", Constant.APPKEY);
+		headers.put("client","android");
+		app.setHeaders(headers);
+
+		if(!Constant.TestEnv)
+			ReadLocalAppKey();
+
+		CheckLogin();
     }
     
-    
+	public void ReadLocalAppKey() {
+	// online 获取APPKEY
+	MobclickAgent.updateOnlineConfig(this);
+	String OnLine_Appkey = MobclickAgent.getConfigParams(this, "APPKEY");
+	if (OnLine_Appkey != null && OnLine_Appkey.length() >0) {
+		Constant.APPKEY = OnLine_Appkey;
+		headers.remove("app_key");
+		headers.put("app_key", OnLine_Appkey);
+		app.setHeaders(headers);
+	}
+}
+public boolean CheckLogin() {
+	String UserInfo = null;
+	UserInfo = app.GetServiceData("UserInfo");
+	if (UserInfo == null) {
+		// 1. 在客户端生成一个唯一的UUID
+		String macAddress = null;
+		WifiManager wifiMgr = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+		WifiInfo info = (null == wifiMgr ? null : wifiMgr
+				.getConnectionInfo());
+		if (info != null) {
+			macAddress = info.getMacAddress();
+			// 2. 通过调用 service account/generateUIID把UUID传递到服务器
+			String url = Constant.BASE_URL + "account/generateUIID";
+
+			Map<String, Object> params = new HashMap<String, Object>();
+			params.put("uiid", macAddress);
+			params.put("device_type", "Android");
+
+			AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
+			cb.header("User-Agent",
+					"Mozilla/5.0 (Windows NT 6.1; WOW64; rv:6.0.2) Gecko/20100101 Firefox/6.0.2");
+			cb.header("app_key", Constant.APPKEY);
+
+			cb.params(params).url(url).type(JSONObject.class)
+					.weakHandler(this, "CallServiceResult");
+			aq.ajax(cb);
+		}
+	} else {
+		JSONObject json;
+		try {
+			json = new JSONObject(UserInfo);
+			app.UserID = json.getString("user_id").trim();
+			headers.put("user_id", app.UserID);
+		} catch (JSONException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
+	}
+	return false;
+}
     
     class HotAdapter extends BaseAdapter{
 
@@ -923,7 +1001,24 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 			}
 			break;
 		case 4:
-	
+			switch (index) {
+			case 0:
+//				startActivity(new Intent(this,ShowMovieActivity.class));
+				break;
+			case 1:
+				startActivity(new Intent(this,HistoryActivity.class));
+				break;
+			case 2:
+//				startActivity(new Intent(this,ShowDongManActivity.class));
+				break;
+			case 3:
+//				startActivity(new Intent(this,ShowZongYiActivity.class));
+				break;
+			case 4:
+//				startActivity(new Intent(this,ShowSearchActivity.class));
+				break;
+			}
+			break;
 		default:
 			break;
 		}
