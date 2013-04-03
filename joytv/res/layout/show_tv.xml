@@ -41,7 +41,7 @@
                 android:layout_weight="1"
                 android:gravity="center_vertical"
                 android:text="@string/tv_play_name"
-                android:textColor="@color/text_orange"
+                android:textColor="@color/text_active"
                 android:textSize="@dimen/theme_name_text_size" />
 
             <TextView
@@ -267,7 +267,7 @@
                     android:layout_weight="1"
                     android:gravity="center_vertical"
                     android:text="@string/shoucang_update_name"
-                    android:textColor="@color/text_pt"
+                    android:textColor="@color/text_normal"
                     android:textSize="@dimen/menu_up_text_size" />
 
                 <TextView
@@ -323,7 +323,7 @@
                             android:layout_weight="1"
                             android:gravity="center_vertical"
                             android:text="@string/qitadianshiju_play_name"
-                            android:textColor="@color/text_pt"
+                            android:textColor="@color/text_normal"
                             android:textSize="@dimen/menu_up_text_size" />
 
                         <TextView

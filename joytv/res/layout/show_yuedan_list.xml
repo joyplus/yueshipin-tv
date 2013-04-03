@@ -41,7 +41,7 @@
                 android:layout_weight="1"
                 android:gravity="center_vertical"
                 android:text="周星驰"
-                android:textColor="@color/text_orange"
+                android:textColor="@color/text_active"
                 android:textSize="@dimen/theme_name_text_size" />
 
             <TextView

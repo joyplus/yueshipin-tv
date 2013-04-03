@@ -13,8 +13,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-public class ShowZongYiActivity extends Activity implements View.OnKeyListener {
-	
+public class ShowZongYiActivity extends Activity implements View.OnKeyListener,
+		MyKeyEventKey, View.OnClickListener {
+
 	private EditText searchEt;
 	private MyGridView shoucanggengxinGv, qitadianshijuGv;
 
@@ -22,7 +23,7 @@ public class ShowZongYiActivity extends Activity implements View.OnKeyListener {
 			mFenLeiBtn;
 
 	private View beforeView, activeView;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -50,7 +51,7 @@ public class ShowZongYiActivity extends Activity implements View.OnKeyListener {
 				// TODO Auto-generated method stub
 				int action = event.getAction();
 				if (action == KeyEvent.ACTION_UP) {
-					if (keyCode == KeyEvent.KEYCODE_NUMPAD_8) {
+					if (keyCode == MY_UP) {
 
 						turnToNonButtonState();
 					}
@@ -67,7 +68,7 @@ public class ShowZongYiActivity extends Activity implements View.OnKeyListener {
 				int action = event.getAction();
 
 				if (action == KeyEvent.ACTION_UP) {
-					if (keyCode == KeyEvent.KEYCODE_NUMPAD_6) {
+					if (keyCode == MY_RIGHT) {
 
 						turnToNonButtonState();
 					}
@@ -95,7 +96,7 @@ public class ShowZongYiActivity extends Activity implements View.OnKeyListener {
 		// movieGv.setNextFocusRightId(R.id.bt_quanbufenlei);// 网格向左 全部分类获得焦点
 
 		// movieGv.setSelected(true);// 网格获取焦点
-		mFenLeiBtn.setTextColor(getResources().getColor(R.color.text_orange));// 全部分类首先设为激活状态
+		mFenLeiBtn.setTextColor(getResources().getColor(R.color.text_active));// 全部分类首先设为激活状态
 		mFenLeiBtn.setBackgroundResource(R.drawable.menubg);// 在换成这张图片时，会刷新组件的padding
 		zuijinguankanBtn.setPadding(0, 0, 5, 0);
 		zhuijushoucangBtn.setPadding(0, 0, 5, 0);
@@ -104,17 +105,17 @@ public class ShowZongYiActivity extends Activity implements View.OnKeyListener {
 
 		shoucanggengxinGv.setAdapter(new MovieAdpter());// 网格布局添加适配器
 		qitadianshijuGv.setAdapter(new MovieAdpter());// 网格布局添加适配器
-		
+
 		shoucanggengxinGv.setSelection(3);
 
-//		shoucanggengxinGv.setFocusable(true);
-//		shoucanggengxinGv.setFocusableInTouchMode(true);
-//		shoucanggengxinGv
-//		.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
-//		shoucanggengxinGv.requestFocus();
+		// shoucanggengxinGv.setFocusable(true);
+		// shoucanggengxinGv.setFocusableInTouchMode(true);
+		// shoucanggengxinGv
+		// .setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
+		// shoucanggengxinGv.requestFocus();
 
 	}
-	
+
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
@@ -122,7 +123,7 @@ public class ShowZongYiActivity extends Activity implements View.OnKeyListener {
 		StatisticsUtils.simulateKey(KeyEvent.KEYCODE_DPAD_LEFT);
 		StatisticsUtils.simulateKey(KeyEvent.KEYCODE_DPAD_RIGHT);
 		shoucanggengxinGv.setSelection(0);
-		
+
 	}
 
 	private void beforeViewFoucsStateBack() {
@@ -181,7 +182,8 @@ public class ShowZongYiActivity extends Activity implements View.OnKeyListener {
 
 		Button tempButton = (Button) linearLayout.getChildAt(0);
 		linearLayout.setBackgroundResource(R.drawable.text_drawable_selector);
-		tempButton.setTextColor(getResources().getColor(R.color.text_pt));
+		tempButton.setTextColor(getResources().getColorStateList(
+				R.color.text_color_selector));
 		tempButton.setCompoundDrawablesWithIntrinsicBounds(getResources()
 				.getDrawable(R.drawable.side_hot_normal), null, null, null);
 	}
@@ -189,7 +191,8 @@ public class ShowZongYiActivity extends Activity implements View.OnKeyListener {
 	private void buttonToPTState(Button button) {
 
 		button.setBackgroundResource(R.drawable.text_drawable_selector);
-		button.setTextColor(getResources().getColor(R.color.text_pt));
+		button.setTextColor(getResources().getColorStateList(
+				R.color.text_color_selector));
 	}
 
 	private void linearLayoutToActiveState(LinearLayout linearLayout) {
@@ -197,7 +200,7 @@ public class ShowZongYiActivity extends Activity implements View.OnKeyListener {
 		Button tempButton = (Button) linearLayout.getChildAt(0);
 		linearLayout.setBackgroundResource(R.drawable.menubg);
 		linearLayout.setPadding(0, 0, 5, 0);
-		tempButton.setTextColor(getResources().getColor(R.color.text_orange));
+		tempButton.setTextColor(getResources().getColor(R.color.text_active));
 		tempButton.setCompoundDrawablesWithIntrinsicBounds(getResources()
 				.getDrawable(R.drawable.side_hot_active), null, null, null);
 	}
@@ -206,7 +209,7 @@ public class ShowZongYiActivity extends Activity implements View.OnKeyListener {
 
 		button.setBackgroundResource(R.drawable.menubg);
 		button.setPadding(0, 0, 5, 0);
-		button.setTextColor(getResources().getColor(R.color.text_orange));
+		button.setTextColor(getResources().getColor(R.color.text_active));
 	}
 
 	@Override
@@ -219,9 +222,8 @@ public class ShowZongYiActivity extends Activity implements View.OnKeyListener {
 
 			if (action == KeyEvent.ACTION_UP) {
 
-				if (keyCode == KeyEvent.KEYCODE_NUMPAD_8
-						|| keyCode == KeyEvent.KEYCODE_NUMPAD_4
-						|| keyCode == KeyEvent.KEYCODE_NUMPAD_2) {
+				if (keyCode == MY_UP || keyCode == MY_LEFT
+						|| keyCode == MY_DOWN) {
 					beforeViewFoucsStateBack();
 					button.setTextColor(getResources().getColor(
 							R.color.text_foucs));
@@ -239,9 +241,8 @@ public class ShowZongYiActivity extends Activity implements View.OnKeyListener {
 		} else if (v instanceof Button) {
 			if (action == KeyEvent.ACTION_UP) {
 				Button button = (Button) v;
-				if (keyCode == KeyEvent.KEYCODE_NUMPAD_8
-						|| keyCode == KeyEvent.KEYCODE_NUMPAD_4
-						|| keyCode == KeyEvent.KEYCODE_NUMPAD_2) {
+				if (keyCode == MY_UP || keyCode == MY_LEFT
+						|| keyCode == MY_DOWN) {
 					searchEt.setFocusable(true);// 能够获取焦点
 					beforeViewFoucsStateBack();
 					button.setTextColor(getResources().getColor(
@@ -258,6 +259,32 @@ public class ShowZongYiActivity extends Activity implements View.OnKeyListener {
 		}
 		beforeView = v;
 		return false;
+	}
+
+	/**
+	 * 能够接受 23 和66 但在66值下，没有press效果
+	 */
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+		if (v instanceof LinearLayout) {
+
+			LinearLayout linearLayout = (LinearLayout) v;
+			if (v.getId() != activeView.getId()) {
+				beforeViewActiveStateBack();
+				linearLayoutToActiveState(linearLayout);
+				activeView = v;
+			}
+		} else if (v instanceof Button) {
+
+			if (v.getId() != activeView.getId()) {
+				Button button = (Button) v;
+				beforeViewActiveStateBack();
+				buttonToActiveState(button);
+				activeView = v;
+			}
+
+		}
 	}
 
 	private class MovieAdpter extends BaseAdapter {
