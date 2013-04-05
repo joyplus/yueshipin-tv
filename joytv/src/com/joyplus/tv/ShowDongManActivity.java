@@ -64,7 +64,7 @@ public class ShowDongManActivity extends Activity implements
 				// TODO Auto-generated method stub
 				int action = event.getAction();
 				if (action == KeyEvent.ACTION_UP) {
-					if (keyCode == MY_UP) {
+					if (keyCode == KEY_UP) {
 
 						turnToNonButtonState();
 					}
@@ -81,7 +81,7 @@ public class ShowDongManActivity extends Activity implements
 				int action = event.getAction();
 
 				if (action == KeyEvent.ACTION_UP) {
-					if (keyCode == MY_RIGHT) {
+					if (keyCode == KEY_RIGHT) {
 
 						turnToNonButtonState();
 					}
@@ -89,6 +89,13 @@ public class ShowDongManActivity extends Activity implements
 				return false;
 			}
 		});
+
+		addKeyListener();
+		addClickListener();
+
+	}
+
+	private void addKeyListener() {
 
 		qinziLL.setOnKeyListener(this);
 		rexueLL.setOnKeyListener(this);
@@ -101,7 +108,21 @@ public class ShowDongManActivity extends Activity implements
 		zhuijushoucangBtn.setOnKeyListener(this);
 		lixianshipinBtn.setOnKeyListener(this);
 		mFenLeiBtn.setOnKeyListener(this);
+	}
 
+	private void addClickListener() {
+
+		qinziLL.setOnClickListener(this);
+		rexueLL.setOnClickListener(this);
+		hougongLL.setOnClickListener(this);
+		tuiliLL.setOnClickListener(this);
+		jizhanLL.setOnClickListener(this);
+		gaoxiaoLL.setOnClickListener(this);
+
+		zuijinguankanBtn.setOnClickListener(this);
+		zhuijushoucangBtn.setOnClickListener(this);
+		lixianshipinBtn.setOnClickListener(this);
+		mFenLeiBtn.setOnClickListener(this);
 	}
 
 	private void initState() {
@@ -115,7 +136,6 @@ public class ShowDongManActivity extends Activity implements
 		// movieGv.setNextFocusUpId(R.id.bt_quanbufenlei);// 网格向左 全部分类获得焦点
 		// movieGv.setNextFocusRightId(R.id.bt_quanbufenlei);// 网格向左 全部分类获得焦点
 
-		// movieGv.setSelected(true);// 网格获取焦点
 		mFenLeiBtn.setTextColor(getResources().getColor(R.color.text_active));// 全部分类首先设为激活状态
 		mFenLeiBtn.setBackgroundResource(R.drawable.menubg);// 在换成这张图片时，会刷新组件的padding
 		qinziLL.setPadding(0, 0, 5, 0);
@@ -134,21 +154,15 @@ public class ShowDongManActivity extends Activity implements
 
 		shoucanggengxinGv.setSelection(3);
 
-		// shoucanggengxinGv.setFocusable(true);
-		// shoucanggengxinGv.setFocusableInTouchMode(true);
-		// shoucanggengxinGv
-		// .setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
-		// shoucanggengxinGv.requestFocus();
-
 	}
 
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		StatisticsUtils.simulateKey(KeyEvent.KEYCODE_DPAD_LEFT);
-		StatisticsUtils.simulateKey(KeyEvent.KEYCODE_DPAD_RIGHT);
-		shoucanggengxinGv.setSelection(0);
+//		StatisticsUtils.simulateKey(KeyEvent.KEYCODE_DPAD_LEFT);
+//		StatisticsUtils.simulateKey(KeyEvent.KEYCODE_DPAD_RIGHT);
+//		shoucanggengxinGv.setSelection(0);
 
 	}
 
@@ -242,14 +256,15 @@ public class ShowDongManActivity extends Activity implements
 	public boolean onKey(View v, int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
 		int action = event.getAction();
-		if (v instanceof LinearLayout) {
-			LinearLayout linearLayout = (LinearLayout) v;
-			Button button = (Button) linearLayout.getChildAt(0);
+		if (action == KeyEvent.ACTION_UP) {
+			v.setOnClickListener(null);
 
-			if (action == KeyEvent.ACTION_UP) {
+			if (v instanceof LinearLayout) {
+				LinearLayout linearLayout = (LinearLayout) v;
+				Button button = (Button) linearLayout.getChildAt(0);
 
-				if (keyCode == MY_UP || keyCode == MY_LEFT
-						|| keyCode == MY_DOWN) {
+				if (keyCode == KEY_UP || keyCode == KEY_LEFT
+						|| keyCode == KEY_DOWN) {
 					beforeViewFoucsStateBack();
 					button.setTextColor(getResources().getColor(
 							R.color.text_foucs));
@@ -258,32 +273,19 @@ public class ShowDongManActivity extends Activity implements
 									R.drawable.side_hot_active), null, null,
 							null);
 				}
-				// else if (keyCode == KeyEvent.KEYCODE_NUMPAD_5
-				// && v.getId() != activeView.getId()) {
-				// beforeViewActiveStateBack();
-				// linearLayoutToActiveState(linearLayout);
-				// activeView = v;
-				// }
-			}
-		} else if (v instanceof Button) {
-			if (action == KeyEvent.ACTION_UP) {
+			} else if (v instanceof Button) {
 				Button button = (Button) v;
-				if (keyCode == MY_UP || keyCode == MY_LEFT
-						|| keyCode == MY_DOWN) {
+				if (keyCode == KEY_UP || keyCode == KEY_LEFT
+						|| keyCode == KEY_DOWN) {
 					searchEt.setFocusable(true);// 能够获取焦点
 					beforeViewFoucsStateBack();
 					button.setTextColor(getResources().getColor(
 							R.color.text_foucs));
 					button.setBackgroundResource(R.drawable.text_drawable_selector);
 				}
-				// else if (keyCode == KeyEvent.KEYCODE_NUMPAD_5
-				// && v.getId() != activeView.getId()) {
-				// beforeViewActiveStateBack();
-				// buttonToActiveState(button);
-				// activeView = v;
-				//
-				// }
 			}
+			
+			v.setOnClickListener(this);
 		}
 		beforeView = v;
 		return false;
@@ -295,6 +297,7 @@ public class ShowDongManActivity extends Activity implements
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
+		v.setOnKeyListener(null);
 		if (v instanceof LinearLayout) {
 
 			LinearLayout linearLayout = (LinearLayout) v;
@@ -313,6 +316,7 @@ public class ShowDongManActivity extends Activity implements
 			}
 
 		}
+		v.setOnKeyListener(this);
 	}
 
 	private class MovieAdpter extends BaseAdapter {

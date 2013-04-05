@@ -64,7 +64,7 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 				// TODO Auto-generated method stub
 				int action = event.getAction();
 				if (action == KeyEvent.ACTION_UP) {
-					if (keyCode == MY_UP) {
+					if (keyCode == KEY_UP) {
 
 						turnToGridViewState();
 					}
@@ -80,7 +80,7 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 				int action = event.getAction();
 
 				if (action == KeyEvent.ACTION_UP) {
-					if (keyCode == MY_RIGHT) {
+					if (keyCode == KEY_RIGHT) {
 
 						turnToGridViewState();
 					}
@@ -89,21 +89,28 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 			}
 		});
 
-		movieGv.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//		movieGv.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//
+//			@Override
+//			public void onItemSelected(AdapterView<?> parent, View view,
+//					int position, long id) {
+//				// TODO Auto-generated method stub
+//				startActivity(new Intent(ShowMovieActivity.this,
+//						ShowXiangqingTV.class));
+//			}
+//
+//			@Override
+//			public void onNothingSelected(AdapterView<?> parent) {
+//				// TODO Auto-generated method stub
+//
+//			}
+//		});
 
-			@Override
-			public void onItemSelected(AdapterView<?> parent, View view,
-					int position, long id) {
-				// TODO Auto-generated method stub
-				startActivity(new Intent(ShowMovieActivity.this, ShowXiangqingTV.class));
-			}
+		addListener();
 
-			@Override
-			public void onNothingSelected(AdapterView<?> parent) {
-				// TODO Auto-generated method stub
+	}
 
-			}
-		});
+	private void addListener() {
 
 		dongzuoLL.setOnKeyListener(this);
 		lunliLL.setOnKeyListener(this);
@@ -128,7 +135,6 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 		zhuijushoucangBtn.setOnClickListener(this);
 		lixianshipinBtn.setOnClickListener(this);
 		mFenLeiBtn.setOnClickListener(this);
-
 	}
 
 	private void initState() {
@@ -170,9 +176,9 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		StatisticsUtils.simulateKey(KeyEvent.KEYCODE_DPAD_LEFT);
-		StatisticsUtils.simulateKey(KeyEvent.KEYCODE_DPAD_RIGHT);
-		movieGv.setSelection(0);
+		// StatisticsUtils.simulateKey(KeyEvent.KEYCODE_DPAD_LEFT);
+		// StatisticsUtils.simulateKey(KeyEvent.KEYCODE_DPAD_RIGHT);
+		// movieGv.setSelection(0);
 
 	}
 
@@ -269,14 +275,16 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 	public boolean onKey(View v, int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
 		int action = event.getAction();
-		if (v instanceof LinearLayout) {
-			LinearLayout linearLayout = (LinearLayout) v;
-			Button button = (Button) linearLayout.getChildAt(0);
+		if (action == KeyEvent.ACTION_UP) {
+			
+			v.setOnClickListener(null);
 
-			if (action == KeyEvent.ACTION_UP) {
+			if (v instanceof LinearLayout) {
+				LinearLayout linearLayout = (LinearLayout) v;
+				Button button = (Button) linearLayout.getChildAt(0);
 
-				if (keyCode == MY_UP || keyCode == MY_LEFT
-						|| keyCode == MY_DOWN) {
+				if (keyCode == KEY_UP || keyCode == KEY_LEFT
+						|| keyCode == KEY_DOWN) {
 					beforeViewFoucsStateBack();
 					button.setTextColor(getResources().getColor(
 							R.color.text_foucs));
@@ -285,30 +293,18 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 									R.drawable.side_hot_active), null, null,
 							null);
 				}
-				/*
-				 * else if (keyCode == KeyEvent.KEYCODE_NUMPAD_5 && v.getId() !=
-				 * activeView.getId()) { beforeViewActiveStateBack();
-				 * linearLayoutToActiveState(linearLayout); activeView = v; }
-				 */
-			}
-		} else if (v instanceof Button) {
-			if (action == KeyEvent.ACTION_UP) {
+			} else if (v instanceof Button) {
 				Button button = (Button) v;
-				if ((keyCode == MY_UP || keyCode == MY_LEFT || keyCode == MY_DOWN)) {
+				if ((keyCode == KEY_UP || keyCode == KEY_LEFT || keyCode == KEY_DOWN)) {
 					searchEt.setFocusable(true);// 能够获取焦点
 					beforeViewFoucsStateBack();
 					button.setTextColor(getResources().getColor(
 							R.color.text_foucs));
 					button.setBackgroundResource(R.drawable.text_drawable_selector);
 				}
-				/*
-				 * else if (keyCode == KeyEvent.KEYCODE_NUMPAD_5 && v.getId() !=
-				 * activeView.getId()) { beforeViewActiveStateBack();
-				 * buttonToActiveState(button); activeView = v;
-				 * 
-				 * }
-				 */
 			}
+			
+			v.setOnClickListener(this);
 		}
 		beforeView = v;
 		return false;
@@ -317,7 +313,9 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
-		Log.i("Yangzhg", "onClick");
+//		Log.i("Yangzhg", "onClick");
+		
+		v.setOnKeyListener(null);
 		if (v instanceof LinearLayout) {
 			LinearLayout linearLayout = (LinearLayout) v;
 			if (v.getId() != activeView.getId()) {
@@ -333,6 +331,7 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 				activeView = v;
 			}
 		}
+		v.setOnKeyListener(this);
 	}
 
 	private class MovieAdpter extends BaseAdapter {
