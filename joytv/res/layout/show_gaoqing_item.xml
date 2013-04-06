@@ -7,97 +7,157 @@
     <LinearLayout
         android:id="@+id/ll_gaoqing_chaogaoqing"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/btn_dark"
-        android:gravity="center" >
+        android:layout_height="@dimen/layout_zero"
+        android:background="@drawable/yingping_button_selector"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center" 
+        android:layout_weight="1">
 
-        <TextView
-            android:id="@+id/tv_gaoqing_chaobofang"
+        <LinearLayout
             android:layout_width="@dimen/layout_zero"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="left|center_vertical"
-            android:text="@string/xiangqing_bofang" />
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="2" >
 
-        <TextView
-            android:id="@+id/tv_gaoqing_chaogaoqing"
-            android:layout_width="@dimen/layout_zero"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="left|center_vertical"
-            android:text="@string/gaoqing_chaogaoqing" />
+            <TextView
+                android:id="@+id/tv_gaoing_chaogaoqing_bofang"
+                android:layout_width="@dimen/layout_zero"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="left|center_vertical"
+                android:text="@string/xiangqing_bofang"
+                android:textColor="@color/text_foucs" 
+                android:visibility="invisible"/>
 
-        <ImageView
-            android:id="@+id/iv_xiangqing_chaobofang"
+            <TextView
+                android:id="@+id/tv_gaoqing_chaogaoqing"
+                android:layout_width="@dimen/layout_zero"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="left|center_vertical"
+                android:text="@string/gaoqing_chaogaoqing"
+                android:textColor="@color/text_foucs" />
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="@dimen/layout_zero"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right|center_vertical"
+            android:layout_height="match_parent"
+            android:layout_marginRight="10dp"
             android:layout_weight="1"
-            android:src="@drawable/icon_play" />
+            android:gravity="right|center_vertical" >
+
+            <ImageView
+                android:id="@+id/iv_gaoqing_chaogaoqing"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/icon_play" 
+                android:visibility="invisible"/>
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/ll_gaoqing_gaoqing"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/btn_dark"
-        android:gravity="center" >
+        android:layout_height="@dimen/layout_zero"
+        android:background="@drawable/yingping_button_selector"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center" 
+        android:layout_weight="1">
 
-        <TextView
-            android:id="@+id/tv_gaoqing_bofang"
+        <LinearLayout
             android:layout_width="@dimen/layout_zero"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="left|center_vertical"
-            android:text="@string/xiangqing_bofang" />
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="2" >
 
-        <TextView
-            android:id="@+id/tv_xiangqing_gaoqing"
-            android:layout_width="@dimen/layout_zero"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="left|center_vertical"
-            android:text="@string/xiangqing_gaoqing" />
+            <TextView
+                android:id="@+id/tv_gaoing_gaoqing_bofang"
+                android:layout_width="@dimen/layout_zero"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="left|center_vertical"
+                android:text="@string/xiangqing_bofang"
+                android:textColor="@color/text_foucs" 
+                android:visibility="invisible"/>
 
-        <ImageView
-            android:id="@+id/iv_gaoqing_bofang"
+            <TextView
+                android:id="@+id/tv_gaoqing_gaoqing"
+                android:layout_width="@dimen/layout_zero"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="left|center_vertical"
+                android:text="@string/gaoqing_gaoqing"
+                android:textColor="@color/text_foucs" />
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="@dimen/layout_zero"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right|center_vertical"
+            android:layout_height="match_parent"
+            android:layout_marginRight="10dp"
             android:layout_weight="1"
-            android:src="@drawable/icon_play" />
+            android:gravity="right|center_vertical" >
+
+            <ImageView
+                android:id="@+id/iv_gaoqing_gaoqing"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/icon_play" 
+                android:visibility="invisible"/>
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/ll_gaoqing_biaoqing"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/btn_dark"
-        android:gravity="center" >
+        android:layout_height="@dimen/layout_zero"
+        android:background="@drawable/yingping_button_selector"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:layout_weight="1" >
 
-        <TextView
-            android:id="@+id/tv_gaoqing_biaoqingbofang"
+        <LinearLayout
             android:layout_width="@dimen/layout_zero"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="left|center_vertical"
-            android:text="@string/xiangqing_bofang" />
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="2" >
 
-        <TextView
-            android:id="@+id/tv_gaoqing_biaoqing"
-            android:layout_width="@dimen/layout_zero"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="left|center_vertical"
-            android:text="@string/xiangqing_gaoqing" />
+            <TextView
+                android:id="@+id/tv_gaoing_biaoqing_bofang"
+                android:layout_width="@dimen/layout_zero"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="left|center_vertical"
+                android:text="@string/xiangqing_bofang"
+                android:textColor="@color/text_foucs" 
+                android:visibility="invisible"/>
 
-        <ImageView
-            android:id="@+id/iv_gaoqing_biaobofang"
+            <TextView
+                android:id="@+id/tv_gaoqing_biaoqing"
+                android:layout_width="@dimen/layout_zero"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="left|center_vertical"
+                android:text="@string/gaoqing_biaoqing"
+                android:textColor="@color/text_foucs" />
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="@dimen/layout_zero"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right|center_vertical"
+            android:layout_height="match_parent"
+            android:layout_marginRight="10dp"
             android:layout_weight="1"
-            android:src="@drawable/icon_play" />
+            android:gravity="right|center_vertical" >
+
+            <ImageView
+                android:id="@+id/iv_gaoqing_biaoqing"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/icon_play" 
+                android:visibility="invisible"/>
+        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>

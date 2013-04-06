@@ -75,9 +75,9 @@
     <string name="xiangqing_xiazai">下载</string>
     <string name="xiangqing_yingping">影评</string>
     <string name="xiangqing_tujiandianying">推 荐 电 影</string>
-    <string name="gaoqing_gaoqing">高清</string>
-    <string name="gaoqing_chaogaoqing">超高清</string>
-    <string name="gaoqing_biaoqing">标清</string>
+    <string name="gaoqing_gaoqing">高清版</string>
+    <string name="gaoqing_chaogaoqing">超清版</string>
+    <string name="gaoqing_biaoqing">标清版</string>
     
     <!--Yangzhg  -->
     
