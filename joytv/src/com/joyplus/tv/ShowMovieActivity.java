@@ -28,6 +28,8 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 			mFenLeiBtn;
 
 	private View beforeView, activeView;
+	
+	private boolean isSelectedItem = true; 
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -83,28 +85,37 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 					if (keyCode == KEY_RIGHT) {
 
 						turnToGridViewState();
+					} 
+					if(keyCode == KEY_RIGHT && !isSelectedItem) {
+						isSelectedItem = true;
+						movieGv.setSelection(1);
+					} else if(keyCode == KEY_DOWN && !isSelectedItem) {
+						isSelectedItem = true;
+						movieGv.setSelection(5);
+						
 					}
-				}
+				} 
 				return false;
 			}
 		});
 
-//		movieGv.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//
-//			@Override
-//			public void onItemSelected(AdapterView<?> parent, View view,
-//					int position, long id) {
-//				// TODO Auto-generated method stub
+		movieGv.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view,
+					int position, long id) {
+				// TODO Auto-generated method stub
 //				startActivity(new Intent(ShowMovieActivity.this,
 //						ShowXiangqingTV.class));
-//			}
-//
-//			@Override
-//			public void onNothingSelected(AdapterView<?> parent) {
-//				// TODO Auto-generated method stub
-//
-//			}
-//		});
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parent) {
+				// TODO Auto-generated method stub
+
+				isSelectedItem = false;
+			}
+		});
 
 		addListener();
 
@@ -165,8 +176,9 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 		// movieGv.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
 		// movieGv.setFocusable(true);
 		// movieGv.setFocusableInTouchMode(true);
-		// movieGv.requestFocus();
-		movieGv.setSelection(3);
+		 
+		
+//		movieGv.setSelection(3);
 
 		// Log.i("Yangzhg", "Count:" + movieGv.getCount());
 
@@ -179,6 +191,8 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 		// StatisticsUtils.simulateKey(KeyEvent.KEYCODE_DPAD_LEFT);
 		// StatisticsUtils.simulateKey(KeyEvent.KEYCODE_DPAD_RIGHT);
 		// movieGv.setSelection(0);
+		movieGv.setSelected(true);
+		movieGv.requestFocus();
 
 	}
 
