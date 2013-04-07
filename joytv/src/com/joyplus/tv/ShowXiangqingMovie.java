@@ -26,11 +26,10 @@ import android.widget.TextView;
 public class ShowXiangqingMovie extends Activity implements View.OnClickListener,
 		View.OnKeyListener, MyKeyEventKey {
 
-	private LinearLayout dingLL, xiaiLL, bofangLL;
+	private LinearLayout bofangLL;
 
-	private ImageView dingIv, xiaiIv, bofangIv;
-	private TextView dingTv, xiaiTv, bofangTv, gaoqingTv;
-	private Button xiazaiBt, yingpingBt;
+	private Button dingBt,xiaiBt,xiazaiBt, yingpingBt;
+	private Button bofangBt,gaoqingBt;
 
 	private View beforeView;
 
@@ -58,7 +57,7 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 		popupView = inflater.inflate(R.layout.show_gaoqing_item, null);
 
 		chaoqingLL = (LinearLayout) popupView
-				.findViewById(R.id.ll_gaoqing_chaogaoqing);
+				.findViewById(R.id.ll_gaoqing_chaoqing);
 		gaoqingLL = (LinearLayout) popupView
 				.findViewById(R.id.ll_gaoqing_gaoqing);
 		biaoqingLL = (LinearLayout) popupView
@@ -72,18 +71,13 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 
 	private void initView() {
 
-		dingLL = (LinearLayout) findViewById(R.id.ll_xiangqingding);
-		xiaiLL = (LinearLayout) findViewById(R.id.ll_xiangqing_xiai);
+		dingBt = (Button) findViewById(R.id.bt_xiangqingding);
+		xiaiBt = (Button) findViewById(R.id.bt_xiangqing_xiai);
 		bofangLL = (LinearLayout) findViewById(R.id.ll_xiangqing_bofang_gaoqing);
+		
+		bofangBt = (Button) findViewById(R.id.bt_xiangqing_bofang);
+		gaoqingBt = (Button) findViewById(R.id.bt_xiangqing_gaoqing);
 
-		dingIv = (ImageView) findViewById(R.id.iv_xiangqingding);
-		xiaiIv = (ImageView) findViewById(R.id.iv_xiangqing_xiai);
-		bofangIv = (ImageView) findViewById(R.id.iv_xiangqing_bofang);
-
-		dingTv = (TextView) findViewById(R.id.tv_xiangqingding);
-		xiaiTv = (TextView) findViewById(R.id.tv_xiangqing_xiai);
-		bofangTv = (TextView) findViewById(R.id.tv_xiangqing_bofang);
-		gaoqingTv = (TextView) findViewById(R.id.tv_xiangqing_gaoqing);
 
 		xiazaiBt = (Button) findViewById(R.id.bt_xiangqing_xiazai);
 		yingpingBt = (Button) findViewById(R.id.bt_xiangqing_yingping);
@@ -95,19 +89,19 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 		xiazaiBt.setFocusable(false);
 		// bofangLL.setFocusable(true);
 
-		beforeView = dingLL;
-		dingLL.setSelected(true);
+		beforeView = dingBt;
+//		dingBt.setSelected(true);
 
 	}
 
 	private void addListener() {
 
-		dingLL.setOnKeyListener(this);
-		xiaiLL.setOnKeyListener(this);
+		dingBt.setOnKeyListener(this);
+		xiaiBt.setOnKeyListener(this);
 		bofangLL.setOnKeyListener(this);
 
-		dingLL.setOnClickListener(this);
-		xiaiLL.setOnClickListener(this);
+		dingBt.setOnClickListener(this);
+		xiaiBt.setOnClickListener(this);
 		bofangLL.setOnClickListener(this);
 	}
 
@@ -115,23 +109,23 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
-		case R.id.ll_xiangqingding:
+		case R.id.bt_xiangqingding:
 			if (isDing) {
 				isDing = false;
 			} else {
 				isDing = true;
 			}
-			dingIv.setImageResource(R.drawable.icon_dig_active);
-			dingTv.setTextColor(getResources().getColor(R.color.text_foucs));
+			dingBt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_dig_active, 0, 0,0);
+			dingBt.setTextColor(getResources().getColor(R.color.text_foucs));
 			break;
-		case R.id.ll_xiangqing_xiai:
+		case R.id.bt_xiangqing_xiai:
 			if (isXiai) {
 				isXiai = false;
 			} else {
 				isXiai = true;
 			}
-			xiaiIv.setImageResource(R.drawable.icon_fav_active);
-			xiaiTv.setTextColor(getResources().getColor(R.color.text_foucs));
+			xiaiBt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_dig_active, 0, 0,0);
+			xiaiBt.setTextColor(getResources().getColor(R.color.text_foucs));
 			break;
 		case R.id.ll_xiangqing_bofang_gaoqing:
 			// bofangLL.setN
@@ -147,17 +141,17 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 	private void backToNormalState() {
 		int id = beforeView.getId();
 		switch (id) {
-		case R.id.ll_xiangqingding:
+		case R.id.bt_xiangqingding:
 			if (!isDing) {
-				dingIv.setImageResource(R.drawable.ding_selector);
+				dingBt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ding_selector, 0, 0,0);
 			}
-			dingTv.setTextColor(getResources().getColor(R.color.time_color));
+			dingBt.setTextColor(getResources().getColor(R.color.time_color));
 			break;
-		case R.id.ll_xiangqing_xiai:
+		case R.id.bt_xiangqing_xiai:
 			if (!isXiai) {
-				xiaiIv.setImageResource(R.drawable.xiai_selector);
+				xiaiBt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ding_selector, 0, 0,0);
 			}
-			xiaiTv.setTextColor(getResources().getColor(R.color.time_color));
+			xiaiBt.setTextColor(getResources().getColor(R.color.time_color));
 			break;
 		case R.id.ll_xiangqing_bofang_gaoqing:
 			// bofangLL.setN
@@ -177,21 +171,21 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 		if (action == KeyEvent.ACTION_UP) {
 
 			switch (v.getId()) {
-			case R.id.ll_xiangqingding:
+			case R.id.bt_xiangqingding:
 				if (keyCode == KEY_UP || keyCode == KEY_LEFT) {
 					backToNormalState();
-					dingIv.setImageResource(R.drawable.icon_dig_active);
-					dingTv.setTextColor(getResources().getColor(
+					dingBt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_dig_active, 0, 0,0);
+					dingBt.setTextColor(getResources().getColor(
 							R.color.text_foucs));
 				}
 				break;
-			case R.id.ll_xiangqing_xiai:
+			case R.id.bt_xiangqing_xiai:
 				if (keyCode == KEY_UP || keyCode == KEY_LEFT
 						|| keyCode == KEY_RIGHT) {
 					backToNormalState();
-					dingLL.setSelected(false);
-					xiaiIv.setImageResource(R.drawable.icon_fav_active);
-					xiaiTv.setTextColor(getResources().getColor(
+					dingBt.setSelected(false);
+					xiaiBt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_dig_active, 0, 0,0);
+					xiaiBt.setTextColor(getResources().getColor(
 							R.color.text_foucs));
 				}
 				break;
@@ -208,10 +202,10 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 						int[] location = new int[2];
 						v.getLocationOnScreen(location);
 						popupWindow.setFocusable(true);
-						popupWindow.setWidth(width);
-						popupWindow.setHeight(height);
+						popupWindow.setWidth(width + 10);
+						popupWindow.setHeight(height + 40);
 						popupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
-								location[0], location[1] - locationY);
+								location[0] - 6, location[1] - locationY -40);
 
 					} else {
 
@@ -234,18 +228,20 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 	
 	private void backToNormalPopView() {
 		
-		setLinearLayoutVisible(beforeTempPop);
+		LinearLayout ll = (LinearLayout) beforeTempPop;
+		Button button1= (Button) ll.getChildAt(0);
+		Button button2= (Button) ll.getChildAt(1);
+		button1.setVisibility(View.INVISIBLE);
+		button2.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
 	}
 	
 	private void setLinearLayoutVisible(View v) {
 		
 		LinearLayout ll = (LinearLayout) v;
-		LinearLayout ll1 = (LinearLayout) ll.getChildAt(0);
-		View view1= ll1.getChildAt(0);
-		LinearLayout ll2 = (LinearLayout) ll.getChildAt(1);
-		View view2 = ll2.getChildAt(0);
-		view1.setVisibility(View.VISIBLE);
-		view2.setVisibility(View.VISIBLE);
+		Button button1= (Button) ll.getChildAt(0);
+		Button button2= (Button) ll.getChildAt(1);
+		button1.setVisibility(View.VISIBLE);
+		button2.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_play, 0);
 	}
 
 	private void initPopWindowData() {
@@ -258,16 +254,16 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 				// TODO Auto-generated method stub
 				int id = v.getId();
 				switch (id) {
-				case R.id.ll_gaoqing_chaogaoqing:
-					gaoqingTv.setText(R.string.gaoqing_chaogaoqing);
+				case R.id.ll_gaoqing_chaoqing:
+					gaoqingBt.setText(R.string.gaoqing_chaogaoqing);
 					currentBofangViewPop = v;
 					break;
 				case R.id.ll_gaoqing_gaoqing:
-					gaoqingTv.setText(R.string.gaoqing_gaoqing);
+					gaoqingBt.setText(R.string.gaoqing_gaoqing);
 					currentBofangViewPop = v;
 					break;
 				case R.id.ll_gaoqing_biaoqing:
-					gaoqingTv.setText(R.string.gaoqing_biaoqing);
+					gaoqingBt.setText(R.string.gaoqing_biaoqing);
 					currentBofangViewPop = v;
 					break;
 				default:
@@ -293,17 +289,23 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 				if (action == KeyEvent.ACTION_UP) {
 
 					switch (v.getId()) {
-					case R.id.ll_gaoqing_chaogaoqing:
-						backToNormalPopView();
-						setLinearLayoutVisible(v);
+					case R.id.ll_gaoqing_chaoqing:
+						if(keyCode == KEY_UP) {
+							backToNormalPopView();
+							setLinearLayoutVisible(v);
+						}
 						break;
 					case R.id.ll_gaoqing_gaoqing:
-						backToNormalPopView();
-						setLinearLayoutVisible(v);
+						if(keyCode == KEY_UP || keyCode == KEY_DOWN) {
+							backToNormalPopView();
+							setLinearLayoutVisible(v);
+						}
 						break;
 					case R.id.ll_gaoqing_biaoqing:
-						backToNormalPopView();
-						setLinearLayoutVisible(v);
+						if(keyCode == KEY_DOWN) {
+							backToNormalPopView();
+							setLinearLayoutVisible(v);
+						}
 						break;
 					default:
 						break;
