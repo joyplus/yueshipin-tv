@@ -74,6 +74,7 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 		dingBt = (Button) findViewById(R.id.bt_xiangqingding);
 		xiaiBt = (Button) findViewById(R.id.bt_xiangqing_xiai);
 		bofangLL = (LinearLayout) findViewById(R.id.ll_xiangqing_bofang_gaoqing);
+		bofangLL.setNextFocusUpId(R.id.ll_xiangqing_bofang_gaoqing);
 		
 		bofangBt = (Button) findViewById(R.id.bt_xiangqing_bofang);
 		gaoqingBt = (Button) findViewById(R.id.bt_xiangqing_gaoqing);

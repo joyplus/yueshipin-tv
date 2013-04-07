@@ -74,6 +74,7 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 		dingBt = (Button) findViewById(R.id.bt_xiangqingding);
 		xiaiBt = (Button) findViewById(R.id.bt_xiangqing_xiai);
 		bofangLL = (LinearLayout) findViewById(R.id.ll_xiangqing_bofang_gaoqing);
+		bofangLL.setNextFocusUpId(R.id.ll_xiangqing_bofang_gaoqing);
 		
 		bofangBt = (Button) findViewById(R.id.bt_xiangqing_bofang);
 		gaoqingBt = (Button) findViewById(R.id.bt_xiangqing_gaoqing);
@@ -193,6 +194,7 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 				if (keyCode == KEY_UP || keyCode == KEY_LEFT
 						|| keyCode == KEY_RIGHT) {
 
+					Log.i("Yangzhg", "UPPPPPPPP!");
 					if (keyCode == KEY_UP && beforeView.getId() == v.getId()
 							&& !isPopupWindowShow) {
 						initPopWindowData();

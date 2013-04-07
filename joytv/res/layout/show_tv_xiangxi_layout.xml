@@ -15,7 +15,8 @@
         <include
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            layout="@layout/show_head" />
+            layout="@layout/show_head" 
+            android:focusable="false"/>
     </LinearLayout>
 
     <LinearLayout
