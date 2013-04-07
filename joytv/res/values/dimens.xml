@@ -9,11 +9,11 @@
     <dimen name="layout_zero">0dp</dimen>
     <dimen name="user_name_text_size">12sp</dimen>
     <dimen name="time_text_size">24sp</dimen>
-    <dimen name="empty_margin_right">10dp</dimen>
+    <dimen name="empty_margin_right">15dp</dimen>
     <dimen name="theme_name_margin">20dp</dimen>
     <dimen name="theme_name_text_size">23sp</dimen>
     <dimen name="jishu_text_size">15sp</dimen>
-    <dimen name="edit_vertical_margin">5dp</dimen>
+    <dimen name="edit_vertical_margin">3dp</dimen>
     <dimen name="menu_horizontal_padding">0dp</dimen><!--因为使用9patch作为背景，因此padding设为0，在代码中设置  -->
     <dimen name="menu_up_text_size">17dp</dimen>
     <dimen name="xiangqing_ding_padding_right">0dp</dimen>

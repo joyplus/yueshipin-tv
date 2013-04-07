@@ -38,9 +38,9 @@ public class ShowSearchActivity extends Activity {
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		StatisticsUtils.simulateKey(KeyEvent.KEYCODE_DPAD_LEFT);
-		StatisticsUtils.simulateKey(KeyEvent.KEYCODE_DPAD_RIGHT);
-		showGv.setSelection(0);
+//		StatisticsUtils.simulateKey(KeyEvent.KEYCODE_DPAD_LEFT);
+//		StatisticsUtils.simulateKey(KeyEvent.KEYCODE_DPAD_RIGHT);
+//		showGv.setSelection(0);
 		
 	}
 	

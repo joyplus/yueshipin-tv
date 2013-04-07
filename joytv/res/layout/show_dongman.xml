@@ -10,13 +10,13 @@
     <include
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_zero"
-        android:layout_weight="0.8"
+        android:layout_weight="1"
         layout="@layout/show_head" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_zero"
-        android:layout_weight="0.4"
+        android:layout_weight="1.33"
         android:orientation="horizontal" >
 
         <LinearLayout
@@ -29,7 +29,9 @@
         <LinearLayout
             android:layout_width="@dimen/layout_zero"
             android:layout_height="match_parent"
-            android:layout_weight="6"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_weight="5.61"
             android:background="@drawable/menubg"
             android:orientation="horizontal"
             android:paddingRight="50dp" >
@@ -57,7 +59,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_zero"
-        android:layout_weight="6"
+        android:layout_weight="15.17"
         android:orientation="horizontal" >
 
         <LinearLayout
@@ -70,20 +72,21 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/layout_zero"
-                android:layout_weight="1.2" >
+                android:paddingTop="@dimen/edit_vertical_margin"
+                android:paddingBottom="@dimen/edit_vertical_margin"
+                android:layout_weight="1" >
 
                 <EditText
                     android:id="@+id/et_search"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginBottom="@dimen/edit_vertical_margin"
-                    android:layout_marginTop="@dimen/edit_vertical_margin"
                     android:background="@drawable/search_selector"
                     android:focusableInTouchMode="false"
                     android:hint="搜索"
                     android:paddingRight="@dimen/menu_horizontal_padding"
-                    android:textSize="15sp" >
+                    android:textSize="15sp" 
+                    android:singleLine="true">
                 </EditText>
             </LinearLayout>
 
@@ -198,7 +201,7 @@
                     style="@style/style_4"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/layout_zero"
-                    android:layout_weight="3" />
+                    android:layout_weight="3.73" />
 
                 <Button
                     android:id="@+id/bt_zuijinguankan"
@@ -237,7 +240,7 @@
                     style="@style/style_4"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/layout_zero"
-                    android:layout_weight="2"
+                    android:layout_weight="1.77"
                     android:gravity="right|center_vertical" />
             </LinearLayout>
         </LinearLayout>
@@ -245,39 +248,44 @@
         <LinearLayout
             android:layout_width="@dimen/layout_zero"
             android:layout_height="match_parent"
-            android:layout_weight="6"
+            android:layout_weight="5.61"
             android:orientation="vertical" >
 
             <LinearLayout
                 android:id="@+id/ll_shoucanggengxin"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/layout_zero"
-                android:layout_marginBottom="@dimen/edit_vertical_margin"
-                android:layout_marginTop="@dimen/edit_vertical_margin"
-                android:layout_weight="0.8"
-                android:background="@drawable/menubg"
+                android:layout_weight="1"
                 android:orientation="horizontal"
-                android:paddingRight="50dp"
+                android:paddingBottom="@dimen/edit_vertical_margin"
+                android:paddingTop="@dimen/edit_vertical_margin"
                 android:visibility="visible" >
 
-                <TextView
-                    android:layout_width="@dimen/layout_zero"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="@dimen/theme_name_margin"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:text="@string/shoucang_update_name"
-                    android:textColor="@color/text_normal"
-                    android:textSize="@dimen/menu_up_text_size" />
+                    android:background="@drawable/menubg"
+                    android:paddingRight="50dp" >
 
-                <TextView
-                    android:layout_width="@dimen/layout_zero"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="right|center_vertical"
-                    android:text="1/1"
-                    android:textColor="@color/time_color"
-                    android:textSize="@dimen/jishu_text_size" />
+                    <TextView
+                        android:layout_width="@dimen/layout_zero"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="@dimen/theme_name_margin"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:text="@string/shoucang_update_name"
+                        android:textColor="@color/text_normal"
+                        android:textSize="@dimen/menu_up_text_size" />
+
+                    <TextView
+                        android:layout_width="@dimen/layout_zero"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="right|center_vertical"
+                        android:text="1/1"
+                        android:textColor="@color/time_color"
+                        android:textSize="@dimen/jishu_text_size" />
+                </LinearLayout>
             </LinearLayout>
 
             <ScrollView
