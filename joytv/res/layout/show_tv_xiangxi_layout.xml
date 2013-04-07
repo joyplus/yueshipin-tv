@@ -9,7 +9,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_zero"
-        android:layout_weight="0.8"
+        android:layout_weight="1"
         android:paddingLeft="50dp" >
 
         <include
@@ -21,13 +21,20 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_zero"
-        android:layout_weight="6.4"
+        android:layout_weight="0.5"
+        android:paddingLeft="50dp" >
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_zero"
+        android:layout_weight="15.34"
         android:orientation="vertical" >
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_zero"
-            android:layout_weight="9"
+            android:layout_weight="5.34"
             android:orientation="horizontal"
             android:paddingLeft="50dp"
             android:paddingRight="50dp" >
@@ -173,32 +180,25 @@
                 android:layout_width="@dimen/layout_zero"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:paddingRight="@dimen/xiangqing_ding_padding_right" >
 
                 <LinearLayout
-                    android:id="@+id/ll_xiangqingding"
                     android:layout_width="@dimen/layout_zero"
-                    android:layout_height="match_parent"
-                    android:layout_weight="4.8"
-                    android:background="@drawable/xiangqing_button_selector"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:gravity="center" >
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4.8" >
 
-                    <ImageView
-                        android:id="@+id/iv_xiangqingding"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ding_selector" />
-
-                    <TextView
-                        android:id="@+id/tv_xiangqingding"
+                    <Button
+                        android:id="@+id/bt_xiangqingding"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical|right"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/xiangqing_button_selector"
+                        android:drawableLeft="@drawable/ding_selector"
+                        android:gravity="right|center_vertical"
                         android:text="8888"
-                        android:textColor="@color/ding_selector" />
+                        android:textColor="@color/ding_selector"
+                        android:textSize="17sp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -208,28 +208,20 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/ll_xiangqing_xiai"
                     android:layout_width="@dimen/layout_zero"
-                    android:layout_height="match_parent"
-                    android:layout_weight="4.8"
-                    android:background="@drawable/xiangqing_button_selector"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:gravity="center" >
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4.8" >
 
-                    <ImageView
-                        android:id="@+id/iv_xiangqing_xiai"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/xiai_selector" />
-
-                    <TextView
-                        android:id="@+id/tv_xiangqing_xiai"
+                    <Button
+                        android:id="@+id/bt_xiangqing_xiai"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical|right"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/xiangqing_button_selector"
+                        android:drawableLeft="@drawable/xiai_selector"
+                        android:gravity="right|center_vertical"
                         android:text="8888"
-                        android:textColor="@color/ding_selector" />
+                        android:textColor="@color/ding_selector"
+                        android:textSize="17sp" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -242,63 +234,65 @@
             <LinearLayout
                 android:layout_width="@dimen/layout_zero"
                 android:layout_height="match_parent"
-                android:layout_weight="5" >
+                android:layout_weight="5"
+                android:gravity="center_vertical" >
 
                 <LinearLayout
-                    android:id="@+id/ll_xiangqing_bofang_gaoqing"
                     android:layout_width="@dimen/layout_zero"
-                    android:layout_height="match_parent"
-                    android:layout_marginRight="30dp"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="@drawable/xiangqing_button_selector"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:gravity="center" >
+                    android:gravity="center"
+                    android:paddingRight="10dp" >
 
                     <LinearLayout
+                        android:id="@+id/ll_xiangqing_bofang_gaoqing"
                         android:layout_width="@dimen/layout_zero"
                         android:layout_height="match_parent"
-                        android:layout_marginLeft="10dp"
-                        android:layout_weight="2" >
+                        android:layout_weight="6.8"
+                        android:background="@drawable/xiangqing_button_selector"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:paddingLeft="4dp" >
 
-                        <TextView
-                            android:id="@+id/tv_xiangqing_bofang"
+                        <Button
+                            android:id="@+id/bt_xiangqing_bofang"
                             android:layout_width="@dimen/layout_zero"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:background="@android:color/transparent"
                             android:gravity="left|center_vertical"
                             android:text="@string/xiangqing_bofang"
-                            android:textColor="@color/text_foucs" />
+                            android:textColor="@color/text_foucs"
+                            android:textSize="17sp" />
 
-                        <TextView
-                            android:id="@+id/tv_xiangqing_gaoqing"
+                        <Button
+                            android:id="@+id/bt_xiangqing_gaoqing"
                             android:layout_width="@dimen/layout_zero"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
+                            android:layout_gravity="right"
+                            android:layout_weight="2"
+                            android:background="@android:color/transparent"
+                            android:drawableRight="@drawable/icon_play"
                             android:gravity="left|center_vertical"
-                            android:text="@string/gaoqing_biaoqing"
-                            android:textColor="@color/text_foucs" />
+                            android:paddingRight="4dp"
+                            android:text="@string/gaoqing_chaogaoqing"
+                            android:textColor="@color/text_foucs"
+                            android:textSize="17sp" />
                     </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="@dimen/layout_zero"
                         android:layout_height="match_parent"
-                        android:layout_marginRight="10dp"
-                        android:layout_weight="1"
-                        android:gravity="right|center_vertical" >
-
-                        <ImageView
-                            android:id="@+id/iv_xiangqing_bofang"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/icon_play" />
+                        android:layout_weight="1" >
                     </LinearLayout>
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="@dimen/layout_zero"
                     android:layout_height="match_parent"
-                    android:layout_weight="1" >
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="10dp" >
 
                     <Button
                         android:id="@+id/bt_xiangqing_xiazai"
@@ -306,12 +300,14 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:background="@drawable/btn_unuse"
-                        android:text="@string/xiangqing_xiazai" />
+                        android:gravity="center"
+                        android:text="@string/xiangqing_xiazai"
+                        android:textSize="17sp" />
 
                     <Button
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1.2"
+                        android:layout_weight="1.5"
                         android:visibility="invisible" />
                 </LinearLayout>
 
@@ -324,12 +320,13 @@
                 <LinearLayout
                     android:layout_width="@dimen/layout_zero"
                     android:layout_height="match_parent"
-                    android:layout_weight="1" >
+                    android:layout_weight="1"
+                    android:gravity="center_vertical" >
 
                     <Button
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1.2"
+                        android:layout_weight="1.5"
                         android:visibility="invisible" />
 
                     <Button
@@ -338,8 +335,10 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:background="@drawable/yingping_button_selector"
+                        android:gravity="center"
                         android:text="@string/xiangqing_yingping"
-                        android:textColor="@color/text_foucs" />
+                        android:textColor="@color/text_foucs"
+                        android:textSize="17sp" />
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
@@ -348,8 +347,7 @@
             android:id="@+id/rl_xiangqing_tuijiandianying"
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_zero"
-            android:layout_marginTop="10dp"
-            android:layout_weight="8.8"
+            android:layout_weight="5.34"
             android:background="@drawable/bg_teat_repeat"
             android:orientation="horizontal" >
 
@@ -422,12 +420,13 @@
 
                             <TableRow
                                 android:layout_width="match_parent"
-                                android:layout_height="match_parent" >
+                                android:layout_height="match_parent"
+                                android:gravity="center_vertical" >
 
                                 <Button
                                     android:layout_width="@dimen/layout_zero"
-                                    android:layout_height="match_parent"
-                                    android:layout_weight="1"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="4.0"
                                     android:background="@drawable/xiangqing_button_selector"
                                     android:gravity="center"
                                     android:text="1-20" />
@@ -436,6 +435,13 @@
                                     android:layout_width="@dimen/layout_zero"
                                     android:layout_height="match_parent"
                                     android:layout_weight="1"
+                                    android:background="@android:color/transparent"
+                                    android:visibility="invisible" />
+
+                                <Button
+                                    android:layout_width="@dimen/layout_zero"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="4.0"
                                     android:background="@drawable/xiangqing_button_selector"
                                     android:gravity="center"
                                     android:text="21-40" />
@@ -444,6 +450,13 @@
                                     android:layout_width="@dimen/layout_zero"
                                     android:layout_height="match_parent"
                                     android:layout_weight="1"
+                                    android:background="@android:color/transparent"
+                                    android:visibility="invisible" />
+
+                                <Button
+                                    android:layout_width="@dimen/layout_zero"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="4.0"
                                     android:background="@drawable/xiangqing_button_selector"
                                     android:gravity="center"
                                     android:text="41-60" />
@@ -452,6 +465,13 @@
                                     android:layout_width="@dimen/layout_zero"
                                     android:layout_height="match_parent"
                                     android:layout_weight="1"
+                                    android:background="@android:color/transparent"
+                                    android:visibility="invisible" />
+
+                                <Button
+                                    android:layout_width="@dimen/layout_zero"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="4.0"
                                     android:background="@drawable/xiangqing_button_selector"
                                     android:gravity="center"
                                     android:text="61-80" />
@@ -460,6 +480,13 @@
                                     android:layout_width="@dimen/layout_zero"
                                     android:layout_height="match_parent"
                                     android:layout_weight="1"
+                                    android:background="@android:color/transparent"
+                                    android:visibility="invisible" />
+
+                                <Button
+                                    android:layout_width="@dimen/layout_zero"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="4.0"
                                     android:background="@drawable/xiangqing_button_selector"
                                     android:gravity="center"
                                     android:text="81-100" />
@@ -505,14 +532,14 @@
 
                             <TableRow
                                 android:id="@+id/tableRow1"
-                                android:layout_width="wrap_content"
+                                android:layout_width="match_parent"
                                 android:layout_height="@dimen/layout_zero"
                                 android:layout_weight="1" >
 
                                 <Button
                                     android:layout_width="@dimen/layout_zero"
-                                    android:layout_height="match_parent"
-                                    android:layout_weight="1"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="4.0"
                                     android:background="@drawable/xiangqing_button_selector"
                                     android:gravity="center"
                                     android:text="1-20" />
@@ -521,6 +548,13 @@
                                     android:layout_width="@dimen/layout_zero"
                                     android:layout_height="match_parent"
                                     android:layout_weight="1"
+                                    android:background="@android:color/transparent"
+                                    android:visibility="invisible" />
+
+                                <Button
+                                    android:layout_width="@dimen/layout_zero"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="4.0"
                                     android:background="@drawable/xiangqing_button_selector"
                                     android:gravity="center"
                                     android:text="21-40" />
@@ -529,6 +563,13 @@
                                     android:layout_width="@dimen/layout_zero"
                                     android:layout_height="match_parent"
                                     android:layout_weight="1"
+                                    android:background="@android:color/transparent"
+                                    android:visibility="invisible" />
+
+                                <Button
+                                    android:layout_width="@dimen/layout_zero"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="4.0"
                                     android:background="@drawable/xiangqing_button_selector"
                                     android:gravity="center"
                                     android:text="41-60" />
@@ -537,6 +578,13 @@
                                     android:layout_width="@dimen/layout_zero"
                                     android:layout_height="match_parent"
                                     android:layout_weight="1"
+                                    android:background="@android:color/transparent"
+                                    android:visibility="invisible" />
+
+                                <Button
+                                    android:layout_width="@dimen/layout_zero"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="4.0"
                                     android:background="@drawable/xiangqing_button_selector"
                                     android:gravity="center"
                                     android:text="61-80" />
@@ -545,6 +593,13 @@
                                     android:layout_width="@dimen/layout_zero"
                                     android:layout_height="match_parent"
                                     android:layout_weight="1"
+                                    android:background="@android:color/transparent"
+                                    android:visibility="invisible" />
+
+                                <Button
+                                    android:layout_width="@dimen/layout_zero"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="4.0"
                                     android:background="@drawable/xiangqing_button_selector"
                                     android:gravity="center"
                                     android:text="81-100" />
@@ -558,8 +613,8 @@
 
                                 <Button
                                     android:layout_width="@dimen/layout_zero"
-                                    android:layout_height="match_parent"
-                                    android:layout_weight="1"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="4.0"
                                     android:background="@drawable/xiangqing_button_selector"
                                     android:gravity="center"
                                     android:text="1-20" />
@@ -568,6 +623,13 @@
                                     android:layout_width="@dimen/layout_zero"
                                     android:layout_height="match_parent"
                                     android:layout_weight="1"
+                                    android:background="@android:color/transparent"
+                                    android:visibility="invisible" />
+
+                                <Button
+                                    android:layout_width="@dimen/layout_zero"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="4.0"
                                     android:background="@drawable/xiangqing_button_selector"
                                     android:gravity="center"
                                     android:text="21-40" />
@@ -576,6 +638,13 @@
                                     android:layout_width="@dimen/layout_zero"
                                     android:layout_height="match_parent"
                                     android:layout_weight="1"
+                                    android:background="@android:color/transparent"
+                                    android:visibility="invisible" />
+
+                                <Button
+                                    android:layout_width="@dimen/layout_zero"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="4.0"
                                     android:background="@drawable/xiangqing_button_selector"
                                     android:gravity="center"
                                     android:text="41-60" />
@@ -584,6 +653,13 @@
                                     android:layout_width="@dimen/layout_zero"
                                     android:layout_height="match_parent"
                                     android:layout_weight="1"
+                                    android:background="@android:color/transparent"
+                                    android:visibility="invisible" />
+
+                                <Button
+                                    android:layout_width="@dimen/layout_zero"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="4.0"
                                     android:background="@drawable/xiangqing_button_selector"
                                     android:gravity="center"
                                     android:text="61-80" />
@@ -592,6 +668,13 @@
                                     android:layout_width="@dimen/layout_zero"
                                     android:layout_height="match_parent"
                                     android:layout_weight="1"
+                                    android:background="@android:color/transparent"
+                                    android:visibility="invisible" />
+
+                                <Button
+                                    android:layout_width="@dimen/layout_zero"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="4.0"
                                     android:background="@drawable/xiangqing_button_selector"
                                     android:gravity="center"
                                     android:text="81-100" />
@@ -605,8 +688,8 @@
 
                                 <Button
                                     android:layout_width="@dimen/layout_zero"
-                                    android:layout_height="match_parent"
-                                    android:layout_weight="1"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="4.0"
                                     android:background="@drawable/xiangqing_button_selector"
                                     android:gravity="center"
                                     android:text="1-20" />
@@ -615,6 +698,13 @@
                                     android:layout_width="@dimen/layout_zero"
                                     android:layout_height="match_parent"
                                     android:layout_weight="1"
+                                    android:background="@android:color/transparent"
+                                    android:visibility="invisible" />
+
+                                <Button
+                                    android:layout_width="@dimen/layout_zero"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="4.0"
                                     android:background="@drawable/xiangqing_button_selector"
                                     android:gravity="center"
                                     android:text="21-40" />
@@ -623,6 +713,13 @@
                                     android:layout_width="@dimen/layout_zero"
                                     android:layout_height="match_parent"
                                     android:layout_weight="1"
+                                    android:background="@android:color/transparent"
+                                    android:visibility="invisible" />
+
+                                <Button
+                                    android:layout_width="@dimen/layout_zero"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="4.0"
                                     android:background="@drawable/xiangqing_button_selector"
                                     android:gravity="center"
                                     android:text="41-60" />
@@ -631,6 +728,13 @@
                                     android:layout_width="@dimen/layout_zero"
                                     android:layout_height="match_parent"
                                     android:layout_weight="1"
+                                    android:background="@android:color/transparent"
+                                    android:visibility="invisible" />
+
+                                <Button
+                                    android:layout_width="@dimen/layout_zero"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="4.0"
                                     android:background="@drawable/xiangqing_button_selector"
                                     android:gravity="center"
                                     android:text="61-80" />
@@ -639,6 +743,13 @@
                                     android:layout_width="@dimen/layout_zero"
                                     android:layout_height="match_parent"
                                     android:layout_weight="1"
+                                    android:background="@android:color/transparent"
+                                    android:visibility="invisible" />
+
+                                <Button
+                                    android:layout_width="@dimen/layout_zero"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="4.0"
                                     android:background="@drawable/xiangqing_button_selector"
                                     android:gravity="center"
                                     android:text="81-100" />
@@ -652,8 +763,8 @@
 
                                 <Button
                                     android:layout_width="@dimen/layout_zero"
-                                    android:layout_height="match_parent"
-                                    android:layout_weight="1"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="4.0"
                                     android:background="@drawable/xiangqing_button_selector"
                                     android:gravity="center"
                                     android:text="1-20" />
@@ -662,6 +773,13 @@
                                     android:layout_width="@dimen/layout_zero"
                                     android:layout_height="match_parent"
                                     android:layout_weight="1"
+                                    android:background="@android:color/transparent"
+                                    android:visibility="invisible" />
+
+                                <Button
+                                    android:layout_width="@dimen/layout_zero"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="4.0"
                                     android:background="@drawable/xiangqing_button_selector"
                                     android:gravity="center"
                                     android:text="21-40" />
@@ -670,6 +788,13 @@
                                     android:layout_width="@dimen/layout_zero"
                                     android:layout_height="match_parent"
                                     android:layout_weight="1"
+                                    android:background="@android:color/transparent"
+                                    android:visibility="invisible" />
+
+                                <Button
+                                    android:layout_width="@dimen/layout_zero"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="4.0"
                                     android:background="@drawable/xiangqing_button_selector"
                                     android:gravity="center"
                                     android:text="41-60" />
@@ -678,6 +803,13 @@
                                     android:layout_width="@dimen/layout_zero"
                                     android:layout_height="match_parent"
                                     android:layout_weight="1"
+                                    android:background="@android:color/transparent"
+                                    android:visibility="invisible" />
+
+                                <Button
+                                    android:layout_width="@dimen/layout_zero"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="4.0"
                                     android:background="@drawable/xiangqing_button_selector"
                                     android:gravity="center"
                                     android:text="61-80" />
@@ -686,6 +818,13 @@
                                     android:layout_width="@dimen/layout_zero"
                                     android:layout_height="match_parent"
                                     android:layout_weight="1"
+                                    android:background="@android:color/transparent"
+                                    android:visibility="invisible" />
+
+                                <Button
+                                    android:layout_width="@dimen/layout_zero"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="4.0"
                                     android:background="@drawable/xiangqing_button_selector"
                                     android:gravity="center"
                                     android:text="81-100" />

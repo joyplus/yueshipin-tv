@@ -47,7 +47,7 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 
-		this.setContentView(R.layout.show_dianying_xiangxi_layout);
+		this.setContentView(R.layout.show_tv_xiangxi_layout);
 
 		initView();
 	}
