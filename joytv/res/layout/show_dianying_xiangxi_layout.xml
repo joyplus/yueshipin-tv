@@ -21,20 +21,20 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_zero"
-        android:layout_weight="0.5"
+        android:layout_weight="0.55"
         android:paddingLeft="50dp" >
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_zero"
-        android:layout_weight="15.34"
+        android:layout_weight="15.38"
         android:orientation="vertical" >
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_zero"
-            android:layout_weight="5.34"
+            android:layout_weight="6.623"
             android:orientation="horizontal"
             android:paddingLeft="50dp"
             android:paddingRight="50dp" >
@@ -42,7 +42,7 @@
             <LinearLayout
                 android:layout_width="@dimen/layout_zero"
                 android:layout_height="match_parent"
-                android:layout_weight="1" >
+                android:layout_weight="5.34" >
 
                 <include layout="@layout/show_pic_rating_item" />
             </LinearLayout>
@@ -50,13 +50,13 @@
             <LinearLayout
                 android:layout_width="@dimen/layout_zero"
                 android:layout_height="match_parent"
-                android:layout_weight="0.15" >
+                android:layout_weight="1" >
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="@dimen/layout_zero"
                 android:layout_height="match_parent"
-                android:layout_weight="4.9"
+                android:layout_weight="30.24"
                 android:orientation="vertical" >
 
                 <LinearLayout
@@ -179,7 +179,7 @@
             <LinearLayout
                 android:layout_width="@dimen/layout_zero"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:layout_weight="5.34"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:paddingRight="@dimen/xiangqing_ding_padding_right" >
@@ -228,13 +228,13 @@
             <LinearLayout
                 android:layout_width="@dimen/layout_zero"
                 android:layout_height="match_parent"
-                android:layout_weight="0.15" >
+                android:layout_weight="1" >
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="@dimen/layout_zero"
                 android:layout_height="match_parent"
-                android:layout_weight="5"
+                android:layout_weight="30.24"
                 android:gravity="center_vertical" >
 
                 <LinearLayout
@@ -347,21 +347,21 @@
             android:id="@+id/rl_xiangqing_tuijiandianying"
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_zero"
-            android:layout_weight="5.34"
+            android:layout_weight="6.23"
             android:background="@drawable/bg_teat_repeat"
             android:orientation="horizontal" >
 
             <RelativeLayout
                 android:id="@+id/rl_xiangqing_hotline"
                 android:layout_width="match_parent"
-                android:layout_height="30dp" >
+                android:layout_height="20dp" >
 
                 <TextView
                     android:id="@+id/tv_dianyingtuijian"
                     android:layout_width="wrap_content"
                     android:layout_height="20dp"
                     android:layout_centerInParent="true"
-                    android:layout_gravity="center"
+                    android:gravity="center"
                     android:paddingLeft="8dp"
                     android:paddingRight="8dp"
                     android:text="@string/xiangqing_tujiandianying" />
@@ -370,7 +370,7 @@
                     android:id="@+id/tv_hotline_1"
                     android:layout_width="match_parent"
                     android:layout_height="5dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="7dp"
                     android:layout_toLeftOf="@id/tv_dianyingtuijian"
                     android:background="@color/hot_line" />
 
@@ -378,19 +378,22 @@
                     android:id="@+id/tv_hotline_2"
                     android:layout_width="match_parent"
                     android:layout_height="5dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="7dp"
+                    android:gravity="center"
                     android:layout_toRightOf="@id/tv_dianyingtuijian"
                     android:background="@color/hot_line" />
             </RelativeLayout>
 
             <LinearLayout
+                android:id="@+id/ll_xiangqing_gv_parent"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_below="@id/rl_xiangqing_hotline"
                 android:paddingLeft="50dp"
                 android:paddingRight="50dp" >
 
-                <ImageView
+                <!--
+                     <ImageView
                     android:layout_width="@dimen/layout_zero"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -441,6 +444,16 @@
                     android:clickable="true"
                     android:focusable="true"
                     android:src="@drawable/movie_pic" />
+                -->
+                
+
+                <GridView
+                    android:id="@+id/gv_xiangqing_tuijian"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" 
+                    android:numColumns="6"
+                    android:scrollbars="none">
+                </GridView>
             </LinearLayout>
         </RelativeLayout>
     </LinearLayout>

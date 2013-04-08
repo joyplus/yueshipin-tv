@@ -41,6 +41,8 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 
 	private View beforeTempPop, currentBofangViewPop;
 	private LinearLayout chaoqingLL, gaoqingLL, biaoqingLL;
+	
+	private GridView tuijianGv;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +84,9 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 
 		xiazaiBt = (Button) findViewById(R.id.bt_xiangqing_xiazai);
 		yingpingBt = (Button) findViewById(R.id.bt_xiangqing_yingping);
+		
+		tuijianGv = (GridView) findViewById(R.id.gv_xiangqing_tuijian);
+		tuijianGv.setAdapter(tuiJianAdapter);
 
 		addListener();
 
@@ -100,10 +105,12 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 		dingBt.setOnKeyListener(this);
 		xiaiBt.setOnKeyListener(this);
 		bofangLL.setOnKeyListener(this);
+		tuijianGv.setOnKeyListener(this);
 
 		dingBt.setOnClickListener(this);
 		xiaiBt.setOnClickListener(this);
 		bofangLL.setOnClickListener(this);
+//		tujianGv.setOnClickListener(this);
 	}
 
 	@Override
@@ -132,6 +139,8 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 			// bofangLL.setN
 			// xiaiIv.setImageResource(R.drawable.icon_fav_active);
 			// xiaiTv.setTextColor(getResources().getColor(R.color.text_foucs));
+			break;
+		case R.id.gv_xiangqing_tuijian:
 			break;
 		default:
 			break;
@@ -218,6 +227,9 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 					// xiaiIv.setImageResource(R.drawable.icon_fav_active);
 					// xiaiTv.setTextColor(getResources().getColor(R.color.text_foucs));
 				}
+				break;
+			case R.id.gv_xiangqing_tuijian:
+				backToNormalState();
 				break;
 			default:
 				break;
@@ -323,4 +335,46 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 		biaoqingLL.setOnKeyListener(gaoqingKeyListener);
 
 	}
+	
+	private BaseAdapter tuiJianAdapter = new BaseAdapter() {
+		
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			// TODO Auto-generated method stub
+			View v;
+//			if(convertView == null) {
+				
+				View view =getLayoutInflater().inflate(R.layout.show_item_layout_dianying, null);
+				LinearLayout ll = (LinearLayout) findViewById(R.id.ll_xiangqing_gv_parent);
+				int height = ll.getHeight();
+				int width = ll.getWidth();
+				
+				view.setLayoutParams(new AbsListView.LayoutParams((int)(height * 1.0/372 * 265),
+						height));
+//				view.setPadding(10, 10, 10, 10);
+				v = view;
+//			} else {
+//				v =convertView;
+//			}
+			return v;
+		}
+		
+		@Override
+		public long getItemId(int position) {
+			// TODO Auto-generated method stub
+			return position;
+		}
+		
+		@Override
+		public Object getItem(int position) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+		
+		@Override
+		public int getCount() {
+			// TODO Auto-generated method stub
+			return 6;
+		}
+	}; 
 }
