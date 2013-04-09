@@ -8,6 +8,7 @@ import java.util.List;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
@@ -139,6 +140,16 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 					}
 				}
 				return false;
+			}
+		});
+		
+		movieGv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				// TODO Auto-generated method stub
+				startActivity(new Intent(ShowMovieActivity.this, ShowXiangqingMovie.class));
 			}
 		});
 
