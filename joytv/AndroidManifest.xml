@@ -87,11 +87,14 @@
             android:label="@string/app_name"
             android:theme="@android:style/Theme.Black.NoTitleBar"
             android:windowSoftInputMode="adjustPan" >
-<!--             <intent-filter>
+
+            <!--
+                 <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter> -->
+            </intent-filter>
+            -->
         </activity>
         <activity
             android:name="ShowDongManActivity"
@@ -182,11 +185,14 @@
             android:label="@string/app_name"
             android:theme="@android:style/Theme.Black.NoTitleBar"
             android:windowSoftInputMode="adjustPan" >
-<!--             <intent-filter>
+
+            <!--
+                 <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter> -->
+            </intent-filter>
+            -->
         </activity>
         <activity
             android:name="ShowXiangqingMovie"
@@ -214,12 +220,14 @@
             android:theme="@android:style/Theme.NoTitleBar"
             android:uiOptions="splitActionBarWhenNarrow" >
         </activity>
-         <service
+
+        <service
             android:name="com.umeng.common.net.DownloadingService"
             android:exported="true"
             android:process=":DownloadingService" >
         </service>
-		<meta-data
+
+        <meta-data
             android:name="UMENG_APPKEY"
             android:value="	5160f44856240b223800369a" >
         </meta-data>
