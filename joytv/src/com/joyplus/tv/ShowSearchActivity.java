@@ -3,11 +3,13 @@ package com.joyplus.tv;
 import com.joyplus.tv.ui.MyMovieGridView;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -32,6 +34,15 @@ public class ShowSearchActivity extends Activity {
 //		movieGv.setFocusableInTouchMode(true);
 //		movieGv.requestFocus();
 		showGv.setSelection(3);
+		showGv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				// TODO Auto-generated method stub
+				startActivity(new Intent(getApplicationContext(), ShowXiangqingTv.class));
+			}
+		});
 	}
 	
 	@Override

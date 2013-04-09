@@ -166,6 +166,7 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 					Log.i(TAG, "Positon:" + position + " visiblePosition:" + visiblePosition);
 
 				int firstVisiblePostion = movieGv.getFirstVisiblePosition();
+				int lastVisiblePostion = movieGv.getLastVisiblePosition();
 				// if(position - firstVisiblePostion >= 10 && position -
 				// firstVisiblePostion <= 14) {
 				// // adapter.notifyDataSetChanged();
@@ -213,10 +214,13 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 							int jianyingHeight = height - 2 * popHeight;
 
 
-							if(visiblePosition < position) {
-								
+							if(firstVisiblePostion == position && lastVisiblePostion - 14 == position) {
+								//向上拖动，下渐影 第一行
 //							movieGv.
-							} else {
+							} else if(firstVisiblePostion +  5 == position && lastVisiblePostion - 8 == position){
+								//向上拖动，下渐影 第一行
+								
+							}else if(firstVisiblePostion + 5 == position && lastVisiblePostion - 8 == position){
 								
 								
 							}
