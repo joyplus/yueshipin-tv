@@ -21,6 +21,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.media.AudioManager;
 import android.net.TrafficStats;
 import android.os.Handler;
 import android.view.Gravity;
@@ -28,6 +29,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
@@ -44,6 +46,7 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
 import com.joyplus.tv.R;
+import com.joyplus.tv.ui.ArcView;
 
 /**
  * The playback controller for the Movie Player.
@@ -81,6 +84,7 @@ public class MovieControllerOverlay extends FrameLayout implements
 	private final Handler handler;
 	private final Runnable startHidingRunnable;
 	private final Runnable startHidingVolumeRunnable;
+	private final Runnable startHidingTimerBarRunnable;
 	private final Animation hideAnimation;
 
 	private State state;
@@ -89,11 +93,19 @@ public class MovieControllerOverlay extends FrameLayout implements
 
 	private boolean canReplay = true;
 
-	private Handler mHandler = new Handler();
 	private long mStartRX = 0;
 
 	private TextView mTextViewRate;
 	boolean mShowVolume = false;
+	boolean mShowTimerBar = false;
+	
+	/** 最大声音 */
+	private int mMaxVolume;
+	/** 当前声音 */
+	private int mVolume = -1;
+	private AudioManager mAudioManager;
+	private View mVolumeLayout;
+	private ArcView mArcView;
 
 	public MovieControllerOverlay(Context context, View rootView) {
 		super(context);
@@ -124,14 +136,6 @@ public class MovieControllerOverlay extends FrameLayout implements
 		loadingView = rootView.findViewById(R.id.LayoutPreload);
 		mTextViewRate = (TextView) rootView.findViewById(R.id.textView4);
 
-		mStartRX = TrafficStats.getTotalRxBytes();
-		if (mStartRX == TrafficStats.UNSUPPORTED) {
-			mTextViewRate
-					.setText("Your device does not support traffic stat monitoring.");
-		} else {
-			mHandler.postDelayed(mRunnable, 500);
-		}
-
 		mLayoutControl = rootView.findViewById(R.id.LayoutControl);
 		mLayoutControl.setFocusable(true);
 		mLayoutControl.setOnTouchListener(this);
@@ -161,15 +165,9 @@ public class MovieControllerOverlay extends FrameLayout implements
 		playNextView.setFocusable(true);
 		playNextView.setOnTouchListener(this);
 
-		// playPauseReplayView.setOnClickListener(this);
-		// mLayoutControl = new ImageView(context);
-		// mLayoutControl.setImageResource(R.drawable.player_s_ic_vidcontrol_play);
-		// mLayoutControl.setBackgroundResource(R.drawable.player_c_normal);
-		// mLayoutControl.setScaleType(ScaleType.CENTER);
-		// mLayoutControl.setFocusable(true);
-		// mLayoutControl.setClickable(true);
-		// mLayoutControl.setOnClickListener(this);
-		// addView(mLayoutControl, wrapContent);
+		mVolumeLayout = rootView.findViewById(R.id.Layout_Volume);
+		mArcView = (ArcView)  rootView.findViewById(R.id.arcView1);
+		
 
 		errorView = new TextView(context);
 		errorView.setGravity(Gravity.CENTER);
@@ -178,6 +176,15 @@ public class MovieControllerOverlay extends FrameLayout implements
 		addView(errorView, matchParent);
 
 		handler = new Handler();
+
+		mStartRX = TrafficStats.getTotalRxBytes();
+		if (mStartRX == TrafficStats.UNSUPPORTED) {
+			mTextViewRate
+					.setText("Your device does not support traffic stat monitoring.");
+		} else {
+			handler.postDelayed(mRunnable, 500);
+		}
+		
 		startHidingRunnable = new Runnable() {
 			public void run() {
 				startHiding();
@@ -188,7 +195,11 @@ public class MovieControllerOverlay extends FrameLayout implements
 				startVolumeHiding();
 			}
 		};
-		
+		startHidingTimerBarRunnable = new Runnable() {
+			public void run() {
+				startTimerBarHiding();
+			}
+		};
 
 		hideAnimation = AnimationUtils
 				.loadAnimation(context, R.anim.player_out);
@@ -199,7 +210,12 @@ public class MovieControllerOverlay extends FrameLayout implements
 		setLayoutParams(params);
 		hide();
 	}
+	public void setAudioManager(AudioManager mAudioManager){
+		this.mAudioManager = mAudioManager;
+		mMaxVolume = mAudioManager
+				.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
 
+	}
 	public void setListener(Listener listener) {
 		this.listener = listener;
 	}
@@ -211,7 +227,16 @@ public class MovieControllerOverlay extends FrameLayout implements
 	public View getView() {
 		return this;
 	}
-
+	public void showPlayingAtFirstTime() {
+		state = State.PLAYING;
+		errorView.setVisibility(View.INVISIBLE);
+		loadingView.setVisibility(View.INVISIBLE);
+		
+		mLayoutTop.setVisibility(View.VISIBLE);
+		mLayoutBottom.setVisibility(View.VISIBLE);
+		mLayoutTime.setVisibility(View.VISIBLE);
+		handler.postDelayed(startHidingTimerBarRunnable, 2500);
+	}
 	public void showPlaying() {
 		state = State.PLAYING;
 		showMainView(mLayoutControl);
@@ -243,16 +268,21 @@ public class MovieControllerOverlay extends FrameLayout implements
 	public void resetTime() {
 		// timeBar.resetTime();
 	}
-
+	public void removeTimeTakenMillis(){
+		handler.removeCallbacks(mRunnable);
+	}
+	
 	public void setTimes(int currentTime, int totalTime) {
-
+//		if(currentTime >0 && )
+//			handler.removeCallbacks(mRunnable);
 		// timeBar.setTime(currentTime, totalTime);
 	}
 
 	public void hide() {
 		boolean wasHidden = hidden;
 		hidden = true;
-
+		
+		hideVolume();
 		mLayoutTop.setVisibility(View.INVISIBLE);
 		mLayoutBottom.setVisibility(View.INVISIBLE);
 		mLayoutTime.setVisibility(View.INVISIBLE);
@@ -260,6 +290,7 @@ public class MovieControllerOverlay extends FrameLayout implements
 		mLayoutControl.setVisibility(View.INVISIBLE);
 		mLayoutVolume.setVisibility(View.INVISIBLE);
 		loadingView.setVisibility(View.INVISIBLE);
+		
 		background.setVisibility(View.INVISIBLE);
 		// timeBar.setVisibility(View.INVISIBLE);
 		setVisibility(View.INVISIBLE);
@@ -268,10 +299,13 @@ public class MovieControllerOverlay extends FrameLayout implements
 		if (listener != null && wasHidden != hidden) {
 			listener.onHidden();
 		}
+
+		
 	}
 
 	private void showMainView(View view) {
 		mainView = view;
+
 		errorView.setVisibility(mainView == errorView ? View.VISIBLE
 				: View.INVISIBLE);
 		loadingView.setVisibility(mainView == loadingView ? View.VISIBLE
@@ -296,6 +330,7 @@ public class MovieControllerOverlay extends FrameLayout implements
 			listener.onShown();
 		}
 		maybeStartHiding();
+
 	}
 
 	private void maybeStartHiding() {
@@ -310,26 +345,36 @@ public class MovieControllerOverlay extends FrameLayout implements
 		startHideAnimation(mLayoutControl);
 	}
 	private void startVolumeHiding() {
-		// startHideAnimation(timeBar);
-		startHideVolumeAnimation(mLayoutVolume);
+		startHideAnimation(mLayoutVolume);
 	}
-	
+	private void startTimerBarHiding() {
+		startHideAnimation(mLayoutTop);
+		startHideAnimation(mLayoutBottom);
+		startHideAnimation(mLayoutTime);
+	}
 	private void startHideAnimation(View view) {
 		if (view.getVisibility() == View.VISIBLE) {
 			view.startAnimation(hideAnimation);
 		}
 	}
-	private void startHideVolumeAnimation(View view) {
-		if (view.getVisibility() == View.VISIBLE) {
-			view.startAnimation(hideAnimation);
-		}
-	}
+	
 	private void cancelHiding() {
 		handler.removeCallbacks(startHidingRunnable);
 		background.setAnimation(null);
 		// timeBar.setAnimation(null);
 		mLayoutControl.setAnimation(null);
 	}
+	private void cancelHidingVolume() {
+		handler.removeCallbacks(startHidingVolumeRunnable);
+		mLayoutVolume.setAnimation(null);
+	}
+	private void cancelHidingTimerBar() {
+		handler.removeCallbacks(startHidingTimerBarRunnable);
+		mLayoutTop.setAnimation(null);
+		mLayoutBottom.setAnimation(null);
+		mLayoutTime.setAnimation(null);
+	}
+
 
 	public void onAnimationStart(Animation animation) {
 		// Do nothing.
@@ -520,7 +565,7 @@ public class MovieControllerOverlay extends FrameLayout implements
 	}
 
 	private final Runnable mRunnable = new Runnable() {
-		long beginTimeMillis, timeTakenMillis, timeLeftMillis, rxByteslast,
+		long beginTimeMillis, timeTakenMillis, rxByteslast,
 				m_bitrate;
 
 		public void run() {
@@ -538,20 +583,41 @@ public class MovieControllerOverlay extends FrameLayout implements
 			mTextViewRate.setText(Long.toString(m_bitrate / 8000) + "kb/s");
 
 			// Fun_downloadrate();
-			mHandler.postDelayed(mRunnable, 1000);
+			handler.postDelayed(mRunnable, 500);
 		}
 	};
 
 	@Override
 	public void showTimerBar() {
 		// TODO Auto-generated method stub
-
+		if (!mShowTimerBar) {
+			mShowTimerBar = true;
+			mLayoutTop.setVisibility(View.VISIBLE);
+			mLayoutBottom.setVisibility(View.VISIBLE);
+			mLayoutTime.setVisibility(View.VISIBLE);
+		}
+		else 
+			cancelHidingTimerBar();
+		handler.postDelayed(startHidingTimerBarRunnable, 2500);
+	}
+	public void hideTimerBar() {
+		// TODO Auto-generated method stub
+		mShowTimerBar = false;
+		mLayoutTop.setVisibility(View.INVISIBLE);
+		mLayoutBottom.setVisibility(View.INVISIBLE);
+		mLayoutTime.setVisibility(View.INVISIBLE);
 	}
 
-	public void showVolume() {
+	public void showVolume(int index) {
 		// TODO Auto-generated method stub
-		mShowVolume = true;
-		mLayoutVolume.setVisibility(View.VISIBLE);
+		
+		if (!mShowVolume) {
+			mShowVolume = true;
+			mLayoutVolume.setVisibility(View.VISIBLE);
+		}
+		else 
+			cancelHidingVolume();
+		onVolumeSlide(index);
 		handler.postDelayed(startHidingVolumeRunnable, 2500);
 	}
 	public void hideVolume() {
@@ -559,45 +625,23 @@ public class MovieControllerOverlay extends FrameLayout implements
 		mShowVolume = false;
 		mLayoutVolume.setVisibility(View.INVISIBLE);
 	}
+	/**
+	 * 滑动改变声音大小
+	 * 
+	 * @param percent
+	 */
+	private void onVolumeSlide(int index) {
+	if (index > mMaxVolume)
+		index = mMaxVolume;
+	else if (index < 0)
+		index = 0;
 
-	@Override
-	public void onDraw(Canvas canvas) {
-		if (mShowVolume) {
-			int mRadius = 202;
-			int bw = mLayoutControl.getMeasuredWidth()/2;
-			int bh = mLayoutControl.getMeasuredHeight()/2;
-			Paint paint = new Paint();
+	// 变更声音
+	mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, index, 0);
+	int mAngle = index*360 /mMaxVolume ;
+	// 变更进度条
+	mArcView.SetAngle(mAngle);
 
-			paint.setAntiAlias(true);
-
-			paint.setColor(Color.WHITE);
-
-			paint.setStyle(Paint.Style.FILL);
-
-			paint.setAlpha(0x30);
-			canvas.drawCircle(bw, bh, mRadius - 80, paint);
-			// xiaoyuan
-
-			paint.setStyle(Paint.Style.FILL);
-			paint.setAntiAlias(true);
-			paint.setColor(Color.BLUE);
-			paint.setAlpha(0x30);
-			canvas.drawCircle(bw, bh, mRadius + 41, paint); 
-
-//		
-//			for (int i = 0; i < MENUS; i++) {
-//				if (!mMenus[i].isVisible)
-//					continue;
-//				drawMenus(canvas, mMenus[i].bitmap, mMenus[i].x, mMenus[i].y);
-//			}
-//
-//			for (int index = 0; index < STONE_COUNT; index++) {
-//				if (!mStones[index].isVisible)
-//					continue;
-//				drawInCenter(canvas, mStones[index].bitmap, mStones[index].x,
-//						mStones[index].y, mStones[index].text);
-//
-//			}
-		}
 	}
+
 }

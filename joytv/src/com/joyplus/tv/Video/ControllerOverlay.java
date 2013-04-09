@@ -16,6 +16,7 @@
 
 package com.joyplus.tv.Video;
 
+import android.media.AudioManager;
 import android.view.View;
 
 public interface ControllerOverlay {
@@ -35,7 +36,6 @@ public interface ControllerOverlay {
 
 		void onReplay();
 		
-		void showVolume();
 	}
 
 	void setListener(Listener listener);
@@ -51,6 +51,8 @@ public interface ControllerOverlay {
 	
 	void showTimerBar();
 	
+	void showPlayingAtFirstTime();
+	
 	void showPlaying();
 
 	void showPaused();
@@ -64,10 +66,12 @@ public interface ControllerOverlay {
 	void hide();
 
 	void setTimes(int currentTime, int totalTime);
-
+	
 	void resetTime();
 	
-	void showVolume();
+	void showVolume(int index);
 	boolean isHidden();
+	
+	void setAudioManager(AudioManager mAudioManager);
 
 }

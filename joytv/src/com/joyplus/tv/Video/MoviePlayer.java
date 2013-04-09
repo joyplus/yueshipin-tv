@@ -21,15 +21,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 
-import android.app.ActionBar;
 import android.app.AlertDialog;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -44,14 +41,19 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.VideoView;
+import android.widget.MediaController.MediaPlayerControl;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 
-import com.joyplus.tv.App;
 import com.joyplus.tv.R;
-import com.joyplus.tv.Service.Return.ReturnProgramView;
 
 public class MoviePlayer implements MediaPlayer.OnErrorListener,
-		MediaPlayer.OnCompletionListener, ControllerOverlay.Listener {
+		MediaPlayer.OnCompletionListener, 
+		MediaPlayer.OnPreparedListener ,
+		MediaPlayer.OnBufferingUpdateListener,
+		MediaPlayer.OnInfoListener,
+		MediaPlayer.OnSeekCompleteListener,
+		MediaPlayer.OnVideoSizeChangedListener,
+		ControllerOverlay.Listener {
 	@SuppressWarnings("unused")
 	private static final String TAG = "MoviePlayer";
 
@@ -74,10 +76,9 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 	private final VideoView mVideoView;
 	private final Bookmarker mBookmarker;
 	private final Uri mUri;
-	private final Handler mHandler = new Handler();
-	private final AudioBecomingNoisyReceiver mAudioBecomingNoisyReceiver;
+	private Handler mHandler = new Handler();
 //	private final ActionBar mActionBar;
-	private final ControllerOverlay mController;
+	private ControllerOverlay mController;
 
 	private long mResumeableTime = Long.MAX_VALUE;
 	private int mVideoPosition = 0;
@@ -95,11 +96,17 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 	private View mLayoutBottomTime;
 	private int totalTime;
 	private int currentTime;
-
+	
+	private AudioManager mAudioManager;
+	/** 最大声音 */
+	private int mMaxVolume;
+	/** 当前声音 */
+	private int mVolume = -1;
+	
 	private final Runnable mPlayingChecker = new Runnable() {
 		public void run() {
 			if (mVideoView.isPlaying()) {
-				mController.showPlaying();
+				mController.showPlayingAtFirstTime();
 			} else {
 				mHandler.postDelayed(mPlayingChecker, 250);
 			}
@@ -113,13 +120,12 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		}
 	};
 
-	public MoviePlayer(View rootView,final VideoPlayerActivity movieActivity,
+	public MoviePlayer(View rootView,Context movieActivity,
 			Uri videoUri, Bundle savedInstance, boolean canReplay) {
-		mContext = movieActivity.getApplicationContext();
+		this.mContext = movieActivity;
 		mVideoView = (VideoView) rootView.findViewById(R.id.surface_view);
-		
-		
-		mBookmarker = new Bookmarker(movieActivity);
+
+		mBookmarker = new Bookmarker(mContext);
 //		mActionBar = movieActivity.getActionBar();
 		mUri = videoUri;
 		
@@ -130,6 +136,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		textView2 = (TextView) rootView.findViewById(R.id.textViewTime2);
 		
 		mLayoutBottomTime = (View) rootView.findViewById(R.id.LayoutBottomTime);
+		
 
 		mController = new MovieControllerOverlay(mContext,rootView);
 		((ViewGroup) rootView).addView(mController.getView());
@@ -138,6 +145,9 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 
 		mVideoView.setOnErrorListener(this);
 		mVideoView.setOnCompletionListener(this);
+		mVideoView.setOnPreparedListener(this);
+		
+		
 		mVideoView.setVideoURI(mUri);
 		mVideoView.setOnTouchListener(new View.OnTouchListener() {
 			public boolean onTouch(View v, MotionEvent event) {
@@ -149,17 +159,14 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		// When the user touches the screen or uses some hard key, the framework
 		// will change system ui visibility from invisible to visible. We show
 		// the media control at this point.
-//		mVideoView
-//				.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
-//					public void onSystemUiVisibilityChange(int visibility) {
-//						if ((visibility & View.SYSTEM_UI_FLAG_HIDE_NAVIGATION) == 0) {
-//							mController.show();
-//						}
-//					}
-//				});
-
-		mAudioBecomingNoisyReceiver = new AudioBecomingNoisyReceiver();
-		mAudioBecomingNoisyReceiver.register();
+		mVideoView
+				.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
+					public void onSystemUiVisibilityChange(int visibility) {
+						if ((visibility & View.SYSTEM_UI_FLAG_HIDE_NAVIGATION) == 0) {
+							mController.show();
+						}
+					}
+				});
 
 		Intent i = new Intent(SERVICECMD);
 		i.putExtra(CMDNAME, CMDPAUSE);
@@ -175,13 +182,22 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		} else {
 			final Integer bookmark = mBookmarker.getBookmark(mUri);
 			if (bookmark != null) {
-				showResumeDialog(movieActivity, bookmark);
+				showResumeDialog(mContext, bookmark);
 			} else {
 				startVideo();
 			}
 		}
 	}
-
+	public void setAudioManager(AudioManager mAudioManager){
+		this.mAudioManager = mAudioManager;
+		mVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+		
+		if (mVolume < 0)
+			mVolume = 0;
+		mMaxVolume = mAudioManager
+				.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+		mController.setAudioManager(mAudioManager);
+	}
 	private void showSystemUi(boolean visible) {
 		int flag = visible ? 0 : View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
 				| View.SYSTEM_UI_FLAG_LOW_PROFILE;
@@ -196,8 +212,9 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 	private void showResumeDialog(Context context, final int bookmark) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(context);
 		builder.setTitle(R.string.resume_playing_title);
-		builder.setMessage(String.format(
-				context.getString(R.string.resume_playing_message), 30));
+        builder.setMessage(String.format(
+                context.getString(R.string.resume_playing_message),
+               formatDuration(bookmark / 1000)));
 		builder.setOnCancelListener(new OnCancelListener() {
 			public void onCancel(DialogInterface dialog) {
 				onCompletion();
@@ -243,7 +260,9 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 
 	public void onDestroy() {
 		mVideoView.stopPlayback();
-		mAudioBecomingNoisyReceiver.unregister();
+		if(sb != null)
+			sb.removeCallbacks(mProgressChecker);
+		mController.hide();
 	}
 
 	// This updates the time bar display (if necessary). It is called every
@@ -255,20 +274,24 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		}
 		int position = mVideoView.getCurrentPosition();
 		int duration = mVideoView.getDuration();
+		if (duration > 0) {
+			RelativeLayout.LayoutParams parms = new RelativeLayout.LayoutParams(
+					RelativeLayout.LayoutParams.WRAP_CONTENT,
+					RelativeLayout.LayoutParams.WRAP_CONTENT);
+			parms.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM,
+					RelativeLayout.TRUE);
+			parms.leftMargin = position * (sb.getWidth() - 4) / duration + 20;
+			parms.bottomMargin = 20 + 8;
+			mLayoutBottomTime.setLayoutParams(parms);
 
-		RelativeLayout.LayoutParams parms=new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
-		parms.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM,
-				RelativeLayout.TRUE);
-		parms.leftMargin=position*(sb.getWidth()-4)/duration + 20;
-		parms.bottomMargin =  20+8;
-		mLayoutBottomTime.setLayoutParams(parms);
+			textView1.setText(formatDuration(position));
+			textView1.setVisibility(View.VISIBLE);
+			sb.setProgress(position);
+			this.currentTime = position;
+			setTime(duration);
 
-		textView1.setText(formatDuration(position));
-		sb.setProgress(position);
-		this.currentTime = position;
-		setTime(duration);
-
-		mController.setTimes(position, duration);
+			mController.setTimes(position, duration);
+		}
 		return position;
 	}
 	public void setTime(int totalTime) {
@@ -382,9 +405,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 
 	// Below are key events passed from MovieActivity.
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if (mController.isHidden() && !isVolumeKey(keyCode)) {
-			mController.show();
-		}
+
 		// Some headsets will fire off 7-10 events on a single click
 		if (event.getRepeatCount() > 0) {
 			return isMediaKey(keyCode);
@@ -419,17 +440,26 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 				return true;
 		case KeyEvent.KEYCODE_DPAD_UP:
 		case KeyEvent.KEYCODE_VOLUME_UP:
-			mController.showVolume();
+			mVolume++;
+			if (mVolume > mMaxVolume)
+				mVolume = mMaxVolume;
+			mController.showVolume(mVolume);
 			return true;
 		case KeyEvent.KEYCODE_DPAD_DOWN:
 		case KeyEvent.KEYCODE_VOLUME_DOWN:
-			mController.showVolume();
+			mVolume--;
+			 if (mVolume < 0)
+				 mVolume = 0;
+			mController.showVolume(mVolume);
 			return true;
 		case KeyEvent.KEYCODE_VOLUME_MUTE:
-			mController.showVolume();
+			mController.showVolume(0);
 			return true;
 		case KeyEvent.KEYCODE_HEADSETHOOK:
 		case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
+			if (mController.isHidden()) {
+				mController.show();
+			}
 			if (mVideoView.isPlaying()) {
 				pauseVideo();
 			} else {
@@ -437,6 +467,9 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 			}
 			return true;
 		case KeyEvent.KEYCODE_ENTER:
+			if (mController.isHidden()) {
+				mController.show();
+			}
 			if (mVideoView.isPlaying()) {
 				pauseVideo();
 			}else {
@@ -444,17 +477,26 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 			}
 			return true;
 		case KeyEvent.KEYCODE_MEDIA_PAUSE:
+			if (mController.isHidden()) {
+				mController.show();
+			}
 			if (mVideoView.isPlaying()) {
 				pauseVideo();
 			}
 			return true;
 		case KeyEvent.KEYCODE_MEDIA_PLAY:
+			if (mController.isHidden()) {
+				mController.show();
+			}
 			if (!mVideoView.isPlaying()) {
 				playVideo();
 			}
 			return true;
 		case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
 		case KeyEvent.KEYCODE_MEDIA_NEXT:
+			if (mController.isHidden()) {
+				mController.show();
+			}
 			// TODO: Handle next / previous accordingly, for now we're
 			// just consuming the events.
 			return true;
@@ -496,24 +538,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 				|| keyCode == KeyEvent.KEYCODE_DPAD_DOWN;
 	}
 
-	// We want to pause when the headset is unplugged.
-	private class AudioBecomingNoisyReceiver extends BroadcastReceiver {
 
-		public void register() {
-			mContext.registerReceiver(this, new IntentFilter(
-					AudioManager.ACTION_AUDIO_BECOMING_NOISY));
-		}
-
-		public void unregister() {
-			mContext.unregisterReceiver(this);
-		}
-
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			if (mVideoView.isPlaying())
-				pauseVideo();
-		}
-	}
 	private OnSeekBarChangeListener sbLis = new OnSeekBarChangeListener() {
 
 		@Override
@@ -539,10 +564,32 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 	};
 
 	@Override
-	public void showVolume() {
+	public void onPrepared(MediaPlayer mp) {
 		// TODO Auto-generated method stub
 		
 	}
+	@Override
+	public void onBufferingUpdate(MediaPlayer mp, int percent) {
+		// TODO Auto-generated method stub
+		sb.setMax(100);
+		sb.setProgress(percent);
+	}
+	@Override
+	public void onVideoSizeChanged(MediaPlayer mp, int width, int height) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onSeekComplete(MediaPlayer mp) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public boolean onInfo(MediaPlayer mp, int what, int extra) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }
 
 class Bookmarker {

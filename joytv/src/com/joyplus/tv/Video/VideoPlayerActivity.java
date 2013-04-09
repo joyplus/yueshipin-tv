@@ -22,6 +22,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -40,6 +41,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
@@ -61,6 +63,7 @@ public class VideoPlayerActivity extends Activity {
 	private App app;
 	private String prod_url = null;
 	private String prod_name = null;
+	private AudioManager mAudioManager;
 
 
 	@Override
@@ -157,16 +160,21 @@ public class VideoPlayerActivity extends Activity {
 
 	@Override
 	public void onStart() {
-		((AudioManager) getSystemService(AUDIO_SERVICE)).requestAudioFocus(
+//		((AudioManager) getSystemService(AUDIO_SERVICE)).requestAudioFocus(
+//				null, AudioManager.STREAM_MUSIC,
+//				AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
+		mAudioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
+		mAudioManager.requestAudioFocus(
 				null, AudioManager.STREAM_MUSIC,
 				AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
+		mPlayer.setAudioManager(mAudioManager);
+		
 		super.onStart();
 	}
 
 	@Override
 	protected void onStop() {
-		((AudioManager) getSystemService(AUDIO_SERVICE))
-				.abandonAudioFocus(null);
+		mAudioManager.abandonAudioFocus(null);
 		super.onStop();
 	}
 

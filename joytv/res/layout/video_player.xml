@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/root"
     android:layout_width="match_parent"
@@ -138,8 +137,7 @@
             android:minHeight="10dp"
             android:progressDrawable="@drawable/player_seekbar_img"
             android:secondaryProgress="0"
-            android:thumb="@drawable/player_seekbar_thumb"
-            android:thumbOffset="2dp" />
+            android:thumb="@drawable/player_seekbar_thumb" />
 
         <TextView
             android:id="@+id/textViewTime2"
@@ -169,14 +167,13 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@color/white" />
 
-        <TextView
-            android:id="@+id/textView2"
+        <com.joyplus.tv.ui.ClockTextView
+            android:id="@+id/digitalClock1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="10dp"
-            android:text="12:00"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@color/white" />
 
@@ -196,8 +193,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:visibility="gone"
-        >
+        android:visibility="gone" >
 
         <ImageView
             android:id="@+id/imageControl_c"
@@ -238,28 +234,26 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="86dp"
             android:background="@drawable/player_btn_fav_normal" />
-
     </RelativeLayout>
 
-     <RelativeLayout
+    <FrameLayout
         android:id="@+id/Layout_Volume"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-		android:background="@drawable/player_volume"
-		android:visibility="invisible"
-        >
+        android:layout_centerInParent="true"
+        android:background="#00000000"
+        android:orientation="horizontal"
+        android:padding="0dip" 
+        android:visibility="gone" >
 
-        <ImageView
-            android:id="@+id/imageControl_Volume"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-             />
-        
-           </RelativeLayout>
+        <com.joyplus.tv.ui.ArcView
+            android:id="@+id/arcView1"
+            android:layout_width="218dp"
+            android:layout_height="218dp"
+            android:layout_gravity="center"
+            android:background="@drawable/player_volume" />
+    </FrameLayout>
+
     <RelativeLayout
         android:id="@+id/LayoutBottomTime"
         android:layout_width="wrap_content"
@@ -268,7 +262,8 @@
         android:layout_alignParentLeft="true"
         android:layout_marginBottom="30dp"
         android:layout_marginLeft="66dp"
-        android:background="@drawable/player_time" >
+        android:background="@drawable/player_time"
+        android:visibility="gone" >
 
         <TextView
             android:id="@+id/textViewTime1"
