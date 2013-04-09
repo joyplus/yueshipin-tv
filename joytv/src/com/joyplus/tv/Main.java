@@ -1,13 +1,15 @@
 package com.joyplus.tv;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
-import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -15,6 +17,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
@@ -40,27 +43,38 @@ import android.widget.Toast;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
+import com.androidquery.callback.AjaxStatus;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.joyplus.tv.Adapters.MainHotItemAdapter;
+import com.joyplus.tv.Service.Return.ReturnMainHot;
 import com.joyplus.tv.Video.VideoPlayerActivity;
-import com.joyplus.tv.ui.ClockTextView;
-import com.joyplus.tv.ui.MyGallery;
+import com.joyplus.tv.entity.HotItemInfo;
+import com.joyplus.tv.ui.CustomGallery;
 import com.joyplus.tv.ui.MyScrollLayout;
 import com.joyplus.tv.ui.MyScrollLayout.OnViewChangeListener;
 import com.umeng.analytics.MobclickAgent;
 
+
 public class Main extends Activity implements OnItemSelectedListener, OnItemClickListener{
-//	private String TAG = "Main";
+	private String TAG = "Main";
 	private App app;
 	private AQuery aq;
 	private Map<String, String> headers;
+	private Handler handler = new Handler();
+	ObjectMapper mapper = new ObjectMapper();
+	private List<View> hot_contentViews = new ArrayList<View>();
+	private List<HotItemInfo> hot_list = new ArrayList<HotItemInfo>();
 
-	private int[] resouces = {
-			R.drawable.test1,
-			R.drawable.test2,
-			R.drawable.test3,
-			R.drawable.test4,
-			R.drawable.test5,
-			R.drawable.test6
-		};
+//	private int[] resouces = {
+//			R.drawable.test1,
+//			R.drawable.test2,
+//			R.drawable.test3,
+//			R.drawable.test4,
+//			R.drawable.test5,
+//			R.drawable.test6
+//		};
 	
 	private int [] resouces_lib_nomal = {
 			R.drawable.movie_normal,
@@ -90,33 +104,32 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 			R.drawable.system_active,
 		};
 	
-	private MyGallery gallery1;
+	private CustomGallery gallery1;
 	private float density;
 	private int displayWith;
 	private MyScrollLayout titleGroup;
 	private FrameLayout itemFram;
-//	private ClockTextView clock;
 	private ImageView highlightImageView;
 	private ImageView playIcon;
-//	private int mSelectedIndex;
 	private LinearLayout contentLayout;
 	private TextView noticeView;
 	
-	private static final String TAG = "TvDemoActivity";
-	private View hotView;
+//	private View hotView;
 	private View yeuDanView;
 	private View kuView;
 	private View myView;
+	
+//	private TextView hot_name_tv;
+//	private TextView hot_score_tv;
+//	private TextView hot_directors_tv;
+//	private TextView hot_starts_tv;
+//	private TextView hot_introduce_tv;
 	
 	private Map<Integer, Integer> indexCaces = new HashMap<Integer, Integer>();
 	
 	private Animation alpha_appear;
 	private Animation alpha_disappear;
 	
-//	private AnimationSet leftSetAnimationSetStep1;
-//	private AnimationSet leftSetAnimationSetStep2;
-//	private AnimationSet rightSetAnimationSetStep1;
-//	private AnimationSet rightSetAnimationSetStep2;
 	private TranslateAnimation leftTranslateAnimationStep1;
 	private TranslateAnimation leftTranslateAnimationStep2;
 	private TranslateAnimation rightTranslateAnimationStep1;
@@ -125,18 +138,18 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 //	private Handler mHandler = new Handler();
 	
     /** Called when the activity is first created. */
-    @SuppressWarnings("deprecation")
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        gallery1 = (MyGallery) findViewById(R.id.gallery);
+        gallery1 = (CustomGallery) findViewById(R.id.gallery);
         contentLayout = (LinearLayout) findViewById(R.id.contentlayout);
         noticeView = (TextView) findViewById(R.id.notice_text);
         titleGroup = (MyScrollLayout) findViewById(R.id.group);
         titleGroup.setFocusable(false);
         titleGroup.setFocusableInTouchMode(false);
-        hotView = LayoutInflater.from(Main.this).inflate(R.layout.layout_hot, null);
+        
+        
         yeuDanView = LayoutInflater.from(Main.this).inflate(R.layout.layout_list, null);
         kuView = LayoutInflater.from(Main.this).inflate(R.layout.layout_lib, null);
         myView = LayoutInflater.from(Main.this).inflate(R.layout.layout_my, null);
@@ -149,18 +162,29 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 				switch (index) {
 				case 1:
 					contentLayout.removeAllViews();
+					View hotView = hot_contentViews.get(indexCaces.get(index));
 					hotView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
 					contentLayout.startAnimation(alpha_appear);
 					contentLayout.addView(hotView);
-					gallery1.setAdapter(new HotAdapter());
+					gallery1.setAdapter(new MainHotItemAdapter(Main.this, hot_list));
 					if(indexCaces.get(index) == null){
 						gallery1.setSelection(0);
 					}else{
 						gallery1.setSelection(indexCaces.get(index));
 					}
-					highlightImageView.setImageResource(resouces[gallery1.getSelectedItemPosition()]);
+//					changeContent(0);
+					ImageView img = (ImageView) gallery1.findViewWithTag(hot_list.get(gallery1.getSelectedItemPosition()).prod_pic_url);
+					if(img != null){
+						if(img.getDrawable()!=null){
+							highlightImageView.setImageDrawable(img.getDrawable());
+						}else{
+							aq.id(highlightImageView).image(hot_list.get(gallery1.getSelectedItemPosition()).prod_pic_url,true,true);
+						}
+					}else{
+					}
+//					aq.id(highlightImageView).image(hot_list.get(gallery1.getSelectedItemPosition()).prod_pic_url);
+//					noticeView.setText(gallery1.getSelectedItemPosition()+1 + "/" + hot_list.size());
 					playIcon.setVisibility(View.VISIBLE);
-					noticeView.setText(gallery1.getSelectedItemPosition()+1 + "/" + resouces.length);
 					break;
 				case 2:
 					contentLayout.removeAllViews();
@@ -173,8 +197,10 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 					}else{
 						gallery1.setSelection(indexCaces.get(index));
 					}
-					highlightImageView.setImageResource(resouces_lib_active[gallery1.getSelectedItemPosition()]);
 					playIcon.setVisibility(View.INVISIBLE);
+					
+					
+					highlightImageView.setImageResource(resouces_lib_active[gallery1.getSelectedItemPosition()]);
 					noticeView.setText(gallery1.getSelectedItemPosition()+1 + "/" + resouces_lib_active.length);
 					break;
 				case 3:
@@ -188,8 +214,8 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 					}else{
 						gallery1.setSelection(indexCaces.get(index));
 					}
-					highlightImageView.setImageResource(resouces_lib_active[gallery1.getSelectedItemPosition()]);
 					playIcon.setVisibility(View.INVISIBLE);
+					highlightImageView.setImageResource(resouces_lib_active[gallery1.getSelectedItemPosition()]);
 					noticeView.setText(gallery1.getSelectedItemPosition()+1 + "/" + resouces_lib_active.length);
 					break;
 				case 4:
@@ -203,8 +229,8 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 					}else{
 						gallery1.setSelection(indexCaces.get(index));
 					}
-					highlightImageView.setImageResource(resouces_my_active[gallery1.getSelectedItemPosition()]);
 					playIcon.setVisibility(View.INVISIBLE);
+					highlightImageView.setImageResource(resouces_my_active[gallery1.getSelectedItemPosition()]);
 					noticeView.setText(gallery1.getSelectedItemPosition() +1+ "/" + resouces_my_active.length);
 					break;
 				}
@@ -222,31 +248,39 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 //        Toast.makeText(this, "widthPixels = " + display.get, 100).show();
 //        Toast.makeText(this, "topMargin = " + mlp.topMargin, 100).show();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        mlp.setMargins(-displayWith+displayWith/2, 
-                       mlp.topMargin, 
-                       mlp.rightMargin, 
-                       mlp.bottomMargin
-        );
-        gallery1.setAdapter(new HotAdapter());
-        gallery1.setCallbackDuringFling(false);
+//        mlp.setMargins(-displayWith+displayWith/2, 
+//                       mlp.topMargin, 
+//                       mlp.rightMargin, 
+//                       mlp.bottomMargin
+//        );
+        gallery1.setAdapter(new MainHotItemAdapter(Main.this, hot_list));
+//        gallery1.setCallbackDuringFling(false);
         gallery1.setOnItemSelectedListener(this);
         gallery1.setOnItemClickListener(this);
         gallery1.setSelection(1);
-        noticeView.setText(gallery1.getSelectedItemPosition() +1 + "/" + resouces.length);
-        highlightImageView.setImageResource(resouces[gallery1.getSelectedItemPosition()]);
+        aq = new AQuery(this);
         MarginLayoutParams mlp2 = (MarginLayoutParams) titleGroup.getLayoutParams();
-        mlp2.setMargins(displayWith/6, 
+        mlp2.setMargins((displayWith-40)/6+15, 
 		        		mlp2.topMargin, 
 		        		mlp2.rightMargin, 
 		        		mlp2.bottomMargin);
+        MarginLayoutParams mlp3 = (MarginLayoutParams) noticeView.getLayoutParams();
+        mlp3.setMargins((displayWith-40)/6+15, 
+        		mlp3.topMargin, 
+        		mlp3.rightMargin, 
+        		mlp3.bottomMargin);
+//        MarginLayoutParams mlp4 = (MarginLayoutParams) contentLayout.getLayoutParams();
+//        mlp4.setMargins((displayWith-40)/6+15, 
+//        		mlp4.topMargin, 
+//        		mlp4.rightMargin, 
+//        		mlp4.bottomMargin);
         LayoutParams param = itemFram.getLayoutParams();
         param.height = 2*displayWith/9+3;
         param.width = displayWith/6+3;
+        itemFram.setVisibility(View.INVISIBLE);
         alpha_appear = AnimationUtils.loadAnimation(this, R.anim.alpha_appear);
         alpha_disappear = AnimationUtils.loadAnimation(this, R.anim.alpha_disappear);
 		app = (App) getApplicationContext();
-		aq = new AQuery(this);
-		
 		headers = new HashMap<String, String>();
 		headers.put("User-Agent",
 				"Mozilla/5.0 (Windows NT 6.1; WOW64; rv:6.0.2) Gecko/20100101 Firefox/6.0.2");
@@ -266,7 +300,8 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 		if(!Constant.TestEnv)
 			ReadLocalAppKey();
  
-		CheckLogin();
+		checkLogin();
+		getServiceData();
     }
     
 	@Override
@@ -286,7 +321,7 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 		app.setHeaders(headers);
 	}
 }
-public boolean CheckLogin() {
+public boolean checkLogin() {
 	String UserInfo = null;
 	UserInfo = app.GetServiceData("UserInfo");
 	if (UserInfo == null) {
@@ -328,88 +363,95 @@ public boolean CheckLogin() {
 	return false;
 }
     
-    class HotAdapter extends BaseAdapter{
-
-		@Override
-		public int getCount() {
-			// TODO Auto-generated method stub
-			return resouces.length;
-		}
-
-		@Override
-		public Object getItem(int arg0) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public long getItemId(int position) {
-			// TODO Auto-generated method stub
-			return 0;
-		}
-
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-			// TODO Auto-generated method stub
-//			ImageView view = new ImageView(TvDemoActivity.this);
-			View view = LayoutInflater.from(Main.this).inflate(R.layout.item_layout_gallery, null);
-			view.setPadding(20, 30, 20, 10);
-//			view.setScaleType(ScaleType.FIT_XY);
-//			Toast.makeText(TvDemoActivity.this, "parent width" + parent.getWidth(), 100).show();
-			view.setLayoutParams(new android.widget.Gallery.LayoutParams(displayWith/6,2*displayWith/9));
-			
-			ImageView img = (ImageView) view.findViewById(R.id.image);
-			
-			img.setImageResource(resouces[position]);
-			return view;
-		}
-    	
-    }
-
-
-
 	@Override
 	public void onItemSelected(AdapterView<?> arg0, View arg1,final int arg2,
 			long arg3) {
+		final int positon1 = gallery1.getSelectedItemPosition();
+		if(leftTranslateAnimationStep2 == null){
+			leftTranslateAnimationStep2  = new TranslateAnimation(itemFram.getLeft()+itemFram.getWidth()/5-itemFram.getWidth(), 
+					itemFram.getLeft()-itemFram.getWidth(), 
+					0, 
+					0);
+			leftTranslateAnimationStep2.setDuration(250);
+			leftTranslateAnimationStep2.setInterpolator(new AccelerateInterpolator(0.1f));
+		}
+		if(rightTranslateAnimationStep2 == null){
+			rightTranslateAnimationStep2  = new TranslateAnimation(itemFram.getLeft()-itemFram.getWidth()/4-itemFram.getWidth(), 
+					itemFram.getLeft()-itemFram.getWidth(), 
+					0, 
+					0);
+			rightTranslateAnimationStep2.setDuration(250);
+			rightTranslateAnimationStep2.setInterpolator(new AccelerateInterpolator(0.1f));
+		}
+		switch (titleGroup.getSelectedTitleIndex()) {
+		case 1:
+			if(arg2<hot_list.size()&&arg2>=0){
+				ImageView img = (ImageView) gallery1.findViewWithTag(hot_list.get(arg2).prod_pic_url);
+				if(img != null){
+					if(img.getDrawable()!=null){
+						highlightImageView.setImageDrawable(img.getDrawable());
+					}else{
+						aq.id(highlightImageView).image(hot_list.get(arg2).prod_pic_url,true,true);
+					}
+				}else{
+					aq.id(highlightImageView).image(hot_list.get(arg2).prod_pic_url,true,true);
+				}
+				if(indexCaces.get(1)!=null&&indexCaces.get(1)<arg2){
+					itemFram.startAnimation(leftTranslateAnimationStep2);
+				}
+				Log.d(TAG, "positon = " + arg2 + "laset = " + indexCaces.get(1));
+				if(indexCaces.get(1)!=null&&indexCaces.get(1)>arg2){
+					itemFram.startAnimation(rightTranslateAnimationStep2);
+				} 
+				
+				noticeView.setText(arg2+ 1 + "/" + hot_list.size());
+				handler.removeCallbacksAndMessages(null);
+				handler.postDelayed((new Runnable() {
+					
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						contentLayout.removeAllViews();
+						View hotView = hot_contentViews.get(arg2);
+						hotView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
+						contentLayout.startAnimation(alpha_appear);
+						contentLayout.addView(hotView);
+					}
+				}),280);
+			}
+			break;
+		case 2:
+			if(positon1<resouces_lib_active.length-1){
+				highlightImageView.setImageResource(resouces_lib_active[positon1+1]);
+				itemFram.startAnimation(leftTranslateAnimationStep2);
+				noticeView.setText(positon1+2 + "/" + resouces_lib_active.length);
+			}
+			break;
+		case 3:
+			if(positon1<resouces_lib_active.length-1){
+				highlightImageView.setImageResource(resouces_lib_active[positon1+1]);
+				itemFram.startAnimation(leftTranslateAnimationStep2);
+				noticeView.setText(positon1+2 + "/" + resouces_lib_active.length);
+			}
+			break;
+		case 4:
+			if(positon1<resouces_my_active.length-1){
+				highlightImageView.setImageResource(resouces_my_active[positon1+1]);
+				itemFram.startAnimation(leftTranslateAnimationStep2);
+				noticeView.setText(positon1+2 + "/" + resouces_my_active.length);
+			}
+			break;
+		
+		}
 		indexCaces.put(titleGroup.getSelectedTitleIndex(), arg2);
 		// TODO Auto-generated method stub
-//		highlightImageView.setImageResource(resouces[arg2]);
-//		mSelectedIndex = arg2;
-//		mHandler.post(new Runnable() {
-//			
-//			@Override
-//			public void run() {
-				// TODO Auto-generated method stub
-//				View seletedView1 = gallery1.getChildAt(mSelectedIndex);
-//				LinearLayout playLayout1 = (LinearLayout) seletedView1.findViewById(R.id.play_icon_layout);
-//				ImageView reflectView1 = (ImageView) seletedView1.findViewById(R.id.reflact_bottom);
-//				playLayout1.setVisibility(View.INVISIBLE);
-//				reflectView1.setVisibility(View.VISIBLE);
-//				seletedView1.setPadding(20, 30, 20, 20);
-//				seletedView1.setBackgroundDrawable(null);
-//				
-//				mSelectedIndex = arg2;
-//				
-//				View seletedView2 = gallery1.getChildAt(mSelectedIndex);
-//				LinearLayout playLayout2 = (LinearLayout) seletedView2.findViewById(R.id.play_icon_layout);
-//				ImageView reflectView2= (ImageView) seletedView2.findViewById(R.id.reflact_bottom);
-//				playLayout2.setVisibility(View.VISIBLE);
-//				reflectView2.setVisibility(View.GONE);
-//				seletedView2.setPadding(5, 5, 5, 5);
-//				seletedView2.setBackgroundResource(R.drawable.line);
-//			}
-//		});
 	}
-
-
 
 	@Override
 	public void onNothingSelected(AdapterView<?> arg0) {
 		// TODO Auto-generated method stub
 		
 	}
-
-
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -424,230 +466,102 @@ public boolean CheckLogin() {
 			return true;
 		
 		case KeyEvent.KEYCODE_DPAD_RIGHT:
-			final int positon1 = gallery1.getSelectedItemPosition();
-			
-//			if(leftTranslateAnimationStep1 == null){
-//				leftTranslateAnimationStep1  = new TranslateAnimation(itemFram.getLeft()-itemFram.getWidth(), 
-//						itemFram.getLeft()+itemFram.getWidth()/-itemFram.getWidth(), 
+//			final int positon1 = gallery1.getSelectedItemPosition();
+//			if(leftTranslateAnimationStep2 == null){
+//				leftTranslateAnimationStep2  = new TranslateAnimation(itemFram.getLeft()+itemFram.getWidth()/5-itemFram.getWidth(), 
+//						itemFram.getLeft()-itemFram.getWidth(), 
 //						0, 
 //						0);
-//				leftTranslateAnimationStep1.setDuration(10);
+//				leftTranslateAnimationStep2.setDuration(250);
+//				leftTranslateAnimationStep2.setInterpolator(new AccelerateInterpolator(0.1f));
 //			}
-			if(leftTranslateAnimationStep2 == null){
-				leftTranslateAnimationStep2  = new TranslateAnimation(itemFram.getLeft()+itemFram.getWidth()/5-itemFram.getWidth(), 
-						itemFram.getLeft()-itemFram.getWidth(), 
-						0, 
-						0);
-				leftTranslateAnimationStep2.setDuration(250);
-				leftTranslateAnimationStep2.setInterpolator(new AccelerateInterpolator(0.1f));
-			}
-//			leftTranslateAnimationStep1.setAnimationListener(new AnimationListener() {
-//				
-//				@Override
-//				public void onAnimationStart(Animation animation) {
-//					// TODO Auto-generated method stub
-//					
+//			switch (titleGroup.getSelectedTitleIndex()) {
+//			case 1:
+//				if(positon1<hot_list.size()-1){
+////					aq.id(highlightImageView).image(hot_list.get(positon1+1).prod_pic_url,true,true);
+////					itemFram.startAnimation(leftTranslateAnimationStep2);
+////					noticeView.setText(positon1+2 + "/" + hot_list.size());
+//					changeContent(1);
 //				}
-//				
-//				@Override
-//				public void onAnimationRepeat(Animation animation) {
-//					// TODO Auto-generated method stub
-//					
+//				break;
+//			case 2:
+//				if(positon1<resouces_lib_active.length-1){
+////					highlightImageView.setImageResource(resouces_lib_active[positon1+1]);
+////					itemFram.startAnimation(leftTranslateAnimationStep2);
+////					noticeView.setText(positon1+2 + "/" + resouces_lib_active.length);
+//					changeContent(1);
 //				}
-//				
-//				@Override
-//				public void onAnimationEnd(Animation animation) {
-//					// TODO Auto-generated method stub
-//					if(positon1<resouces.length-1){
-//						highlightImageView.setImageResource(resouces[positon1+1]);
-//						itemFram.startAnimation(leftTranslateAnimationStep2);
-//					}
+//				break;
+//			case 3:
+//				if(positon1<resouces_lib_active.length-1){
+//					highlightImageView.setImageResource(resouces_lib_active[positon1+1]);
+//					itemFram.startAnimation(leftTranslateAnimationStep2);
+//					noticeView.setText(positon1+2 + "/" + resouces_lib_active.length);
 //				}
-//			});
-			switch (titleGroup.getSelectedTitleIndex()) {
-			case 1:
-				if(positon1<resouces.length-1){
-					highlightImageView.setImageResource(resouces[positon1+1]);
-					itemFram.startAnimation(leftTranslateAnimationStep2);
-					noticeView.setText(positon1+2 + "/" + resouces.length);
-				}
-				break;
-			case 2:
-				if(positon1<resouces_lib_active.length-1){
-					highlightImageView.setImageResource(resouces_lib_active[positon1+1]);
-					itemFram.startAnimation(leftTranslateAnimationStep2);
-					noticeView.setText(positon1+2 + "/" + resouces_lib_active.length);
-				}
-				break;
-			case 3:
-				if(positon1<resouces_lib_active.length-1){
-					highlightImageView.setImageResource(resouces_lib_active[positon1+1]);
-					itemFram.startAnimation(leftTranslateAnimationStep2);
-					noticeView.setText(positon1+2 + "/" + resouces_lib_active.length);
-				}
-				break;
-			case 4:
-				if(positon1<resouces_my_active.length-1){
-					highlightImageView.setImageResource(resouces_my_active[positon1+1]);
-					itemFram.startAnimation(leftTranslateAnimationStep2);
-					noticeView.setText(positon1+2 + "/" + resouces_my_active.length);
-				}
-				break;
-			
-			}
-			
-			
-//			if(leftSetAnimationSetStep1 == null){
-//				leftSetAnimationSetStep1 = new AnimationSet(true);
-//				ScaleAnimation scaleAnimation = new ScaleAnimation(1.0f, 
-//										(float)(displayWith/6-30)/itemFram.getWidth(), 
-//										1.0f, 
-//										(float)(2*displayWith/9-60)/itemFram.getHeight(),
-//										itemFram.getWidth()/2,
-//										itemFram.getHeight()/2);
-//				TranslateAnimation translateAnimation = new TranslateAnimation(itemFram.getLeft()+displayWith/6+20-itemFram.getWidth(),
-//						itemFram.getLeft()-itemFram.getWidth(), 
-//										0, 
-//										0);
-//				translateAnimation.setAnimationListener(new AnimationListener() {
-//					
-//					@Override
-//					public void onAnimationStart(Animation animation) {
-//						// TODO Auto-generated method stub
-//						
-//					}
-//					
-//					@Override
-//					public void onAnimationRepeat(Animation animation) {
-//						// TODO Auto-generated method stub
-//						
-//					}
-//					
-//					@Override
-//					public void onAnimationEnd(Animation animation) {
-//						// TODO Auto-generated method stub
-//						
-//					}
-//				});
-//				leftSetAnimationSetStep1.addAnimation(scaleAnimation);
-//				leftSetAnimationSetStep1.addAnimation(translateAnimation);
-//				leftSetAnimationSetStep1.setDuration(500);
-//			}
-//			if(leftSetAnimationSetStep2 == null){
-//				leftSetAnimationSetStep2 = new AnimationSet(true);
-//				ScaleAnimation scaleAnimation = new ScaleAnimation((float)(displayWith/6-30)/itemFram.getWidth(), 
-//										1.0f, 
-//										(float)(2*displayWith/9-60)/itemFram.getHeight(), 
-//										1.0f,
-//										itemFram.getWidth()/2,
-//										itemFram.getHeight()/2);
-//				TranslateAnimation translateAnimation = new TranslateAnimation(itemFram.getLeft()-itemFram.getWidth(),
-//										itemFram.getLeft()-displayWith/6+20-itemFram.getWidth(), 
-//										0, 
-//										0);
-//				
-//				leftSetAnimationSetStep2.addAnimation(scaleAnimation);
-//				leftSetAnimationSetStep2.addAnimation(translateAnimation);
-//				leftSetAnimationSetStep2.setDuration(500);
-//			}
+//				break;
+//			case 4:
+//				if(positon1<resouces_my_active.length-1){
+//					highlightImageView.setImageResource(resouces_my_active[positon1+1]);
+//					itemFram.startAnimation(leftTranslateAnimationStep2);
+//					noticeView.setText(positon1+2 + "/" + resouces_my_active.length);
+//				}
+//				break;
 //			
-//			itemFram.startAnimation(leftSetAnimationSetStep1);
-//			itemFram.setVisibility(View.INVISIBLE);
-//			if(positon1>0){
-//				highlightImageView.setImageResource(resouces[positon1-1]);
 //			}
-//			itemFram.startAnimation(leftSetAnimationSetStep2);
-//			itemFram.setVisibility(View.VISIBLE);
-			
 			return true;
 		case KeyEvent.KEYCODE_DPAD_LEFT:
-			
-			
-			final int positon2 = gallery1.getSelectedItemPosition();
 //			
-//			if(rightTranslateAnimationStep1 == null){
-//				rightTranslateAnimationStep1  = new TranslateAnimation(itemFram.getLeft()-itemFram.getWidth(), 
-//						itemFram.getLeft()-itemFram.getWidth()/3-itemFram.getWidth(), 
+//			
+//			final int positon2 = gallery1.getSelectedItemPosition();
+//			if(rightTranslateAnimationStep2 == null){
+//				rightTranslateAnimationStep2  = new TranslateAnimation(itemFram.getLeft()-itemFram.getWidth()/4-itemFram.getWidth(), 
+//						itemFram.getLeft()-itemFram.getWidth(), 
 //						0, 
 //						0);
-//				rightTranslateAnimationStep1.setDuration(250);
+//				rightTranslateAnimationStep2.setDuration(250);
+//				rightTranslateAnimationStep2.setInterpolator(new AccelerateInterpolator(0.1f));
 //			}
-			if(rightTranslateAnimationStep2 == null){
-				rightTranslateAnimationStep2  = new TranslateAnimation(itemFram.getLeft()-itemFram.getWidth()/4-itemFram.getWidth(), 
-						itemFram.getLeft()-itemFram.getWidth(), 
-						0, 
-						0);
-				rightTranslateAnimationStep2.setDuration(250);
-				rightTranslateAnimationStep2.setInterpolator(new AccelerateInterpolator(0.1f));
-			}
-//			rightTranslateAnimationStep1.setAnimationListener(new AnimationListener() {
-//				
-//				@Override
-//				public void onAnimationStart(Animation animation) {
-//					// TODO Auto-generated method stub
-//					
-//				}
-//				
-//				@Override
-//				public void onAnimationRepeat(Animation animation) {
-//					// TODO Auto-generated method stub
-//					
-//				}
-//				
-//				@Override
-//				public void onAnimationEnd(Animation animation) {
-//					// TODO Auto-generated method stub
-//					if(positon2>0){
-//						highlightImageView.setImageResource(resouces[positon2-1]);
-//						itemFram.startAnimation(rightTranslateAnimationStep2);
-//					}
-//				}
-//			});
-			
-			
-		switch (titleGroup.getSelectedTitleIndex()) {
-		case 1:
-			if(positon2>0){
-				highlightImageView.setImageResource(resouces[positon2-1]);
-				itemFram.startAnimation(rightTranslateAnimationStep2);
-				noticeView.setText(positon2 + "/" + resouces.length);
-			}
-			break;
-		case 2:
-			if(positon2>0){
-				highlightImageView.setImageResource(resouces_lib_active[positon2-1]);
-				itemFram.startAnimation(leftTranslateAnimationStep2);
-				noticeView.setText(positon2 + "/" + resouces_lib_active.length);
-			}
-			break;
-		case 3:
-			if(positon2>0){
-				highlightImageView.setImageResource(resouces_lib_active[positon2-1]);
-				itemFram.startAnimation(leftTranslateAnimationStep2);
-				noticeView.setText(positon2 + "/" + resouces_lib_active.length);
-			}
-			break;
-		case 4:
-			if(positon2>0){
-				highlightImageView.setImageResource(resouces_my_active[positon2-1]);
-				itemFram.startAnimation(leftTranslateAnimationStep2);
-				noticeView.setText(positon2 + "/" + resouces_my_active.length);
-			}
-			break;
-		
-		}
-			
-//			if(rightSetAnimationSetStep1 == null){
-//				
+//			
+//			
+//		switch (titleGroup.getSelectedTitleIndex()) {
+//		case 1:
+////			if(positon2>0){
+////				highlightImageView.setImageResource(resouces[positon2]);
+////				itemFram.startAnimation(rightTranslateAnimationStep2);
+////				noticeView.setText(positon2 + "/" + resouces.length);
+////			}
+//			if(positon2>0){
+////				aq.id(highlightImageView).image(hot_list.get(positon2-1).prod_pic_url,true,true);
+////				itemFram.startAnimation(rightTranslateAnimationStep2);
+////				noticeView.setText(positon2 + "/" + hot_list.size());
+//				changeContent(-1);
 //			}
-//			if(rightSetAnimationSetStep2 == null){
-//				
+//			break;
+//		case 2:
+//			if(positon2>0){
+////				highlightImageView.setImageResource(resouces_lib_active[positon2-1]);
+////				itemFram.startAnimation(leftTranslateAnimationStep2);
+////				noticeView.setText(positon2 + "/" + resouces_lib_active.length);
+//				changeContent(-1);
 //			}
-//			int positon2 = gallery1.getSelectedItemPosition();
-//			if(positon2<resouces.length-1){
-//				highlightImageView.setImageResource(resouces[positon2+1]);
+//			break;
+//		case 3:
+//			if(positon2>0){
+//				highlightImageView.setImageResource(resouces_lib_active[positon2-1]);
+//				itemFram.startAnimation(leftTranslateAnimationStep2);
+//				noticeView.setText(positon2 + "/" + resouces_lib_active.length);
 //			}
-//		KeyEvent.KEYCODE_DPAD_CENTER
+//			break;
+//		case 4:
+//			if(positon2>0){
+//				highlightImageView.setImageResource(resouces_my_active[positon2-1]);
+//				itemFram.startAnimation(leftTranslateAnimationStep2);
+//				noticeView.setText(positon2 + "/" + resouces_my_active.length);
+//			}
+//			break;
+//		
+//		}
+//			
 			return true;
 		}
 		return false;
@@ -805,5 +719,166 @@ public boolean CheckLogin() {
 		}
 	}
 	
+	
+	public void getServiceData() {
+		String url = Constant.BASE_URL + "tv_net_top" +"?page_num=1&page_size=10";
+
+//		String url = Constant.BASE_URL;
+		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
+		cb.url(url).type(JSONObject.class).weakHandler(this, "initHotData");
+
+		cb.SetHeader(app.getHeaders());
+		Log.d(TAG, cb.toString());
+		aq.ajax(cb);
+	}
+	
+	public void initHotData(String url, JSONObject json, AjaxStatus status){
+		if (status.getCode() == AjaxStatus.NETWORK_ERROR)  {
+//			aq.id(R.id.ProgressText).invisible();
+			app.MyToast(aq.getContext(),
+					getResources().getString(R.string.networknotwork));
+			return;
+		}
+		try {
+			Log.d(TAG, json.toString());
+			ReturnMainHot result  = mapper.readValue(json.toString(), ReturnMainHot.class);
+			hot_list.clear();
+			for(int i=0; i <result.items.length; i++){
+				HotItemInfo item  =  new HotItemInfo();
+				item.id = result.items[i].id;
+				item.prod_id = result.items[i].prod_id;
+				item.prod_name = result.items[i].prod_name;
+				item.prod_type = result.items[i].prod_type;
+				item.prod_pic_url = result.items[i].prod_pic_url;
+				item.stars = result.items[i].stars;
+				item.directors = result.items[i].directors;
+				item.favority_num = result.items[i].favority_num;
+				item.support_num = result.items[i].support_num;
+				item.publish_date = result.items[i].publish_date;
+				item.score = result.items[i].score;
+				item.area = result.items[i].area;
+				item.cur_episode = result.items[i].cur_episode;
+				item.definition = result.items[i].definition;
+				item.prod_summary = result.items[i].prod_summary;
+				item.duration = result.items[i].duration;
+				item.playback_time = "";
+				hot_list.add(item);
+				View hotView = LayoutInflater.from(Main.this).inflate(R.layout.layout_hot, null);
+				TextView hot_name_tv = (TextView) hotView.findViewById(R.id.hot_content_name);
+				TextView hot_score_tv = (TextView) hotView.findViewById(R.id.hot_content_score);
+				TextView hot_directors_tv = (TextView) hotView.findViewById(R.id.hot_content_directors);
+				TextView hot_starts_tv = (TextView) hotView.findViewById(R.id.hot_content_stars);
+				TextView hot_introduce_tv = (TextView) hotView.findViewById(R.id.hot_content_introduce);
+				
+				hot_name_tv.setText(hot_list.get(i).prod_name);
+				hot_score_tv.setText(hot_list.get(i).score);
+				hot_directors_tv.setText(hot_list.get(i).directors);
+				hot_starts_tv.setText(hot_list.get(i).stars);
+				hot_introduce_tv.setText(hot_list.get(i).prod_summary);
+				hot_contentViews.add(hotView);
+				
+			}
+//			Log.d
+			itemFram.setVisibility(View.VISIBLE);
+			gallery1.setAdapter(new MainHotItemAdapter(Main.this, hot_list));
+			gallery1.setSelection(1);
+//			aq.id(highlightImageView).image(hot_list.get(gallery1.getSelectedItemPosition()).prod_pic_url,true,true);
+//			noticeView.setText(gallery1.getSelectedItemPosition()+1 + "/" + hot_list.size());
+//			changeContent(0);
+//			hot_list.add(arg0);
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	
+	private void changeContent1(int dx){
+		final int positon = gallery1.getSelectedItemPosition();
+		switch (titleGroup.getSelectedTitleIndex()) {
+		case 1:
+			
+//			hot_name_tv = (TextView) hotView.findViewById(R.id.hot_content_name);
+//	        hot_score_tv = (TextView) hotView.findViewById(R.id.hot_content_score);
+//	        hot_directors_tv = (TextView) hotView.findViewById(R.id.hot_content_directors);
+//	        hot_starts_tv = (TextView) hotView.findViewById(R.id.hot_content_stars);
+//	        hot_introduce_tv = (TextView) hotView.findViewById(R.id.hot_content_introduce);
+//			Log.d(TAG, "------------------------");
+			
+//			aq.id(highlightImageView).image(hot_list.get(positon+dx).prod_pic_url,true,true); 
+			
+			ImageView img = (ImageView) gallery1.findViewWithTag(hot_list.get(positon+dx).prod_pic_url);
+			if(img != null){
+				highlightImageView.setImageDrawable(img.getDrawable());
+			}else{
+				aq.id(highlightImageView).image(hot_list.get(positon+dx).prod_pic_url,true,true);
+			}
+//			if(dx==1){
+//				itemFram.startAnimation(leftTranslateAnimationStep2);
+//			}
+//			if(dx==-1){
+//				itemFram.startAnimation(rightTranslateAnimationStep2);
+//			} 
+			
+			if(indexCaces.get(1)!=null&&indexCaces.get(1)<positon){
+				itemFram.startAnimation(leftTranslateAnimationStep2);
+			}
+			Log.d(TAG, "positon = " + positon + "laset = " + indexCaces.get(1));
+			if(indexCaces.get(1)!=null&&indexCaces.get(1)>positon){
+				itemFram.startAnimation(rightTranslateAnimationStep2);
+			} 
+			
+//			itemFram.setVisibility(View.GONE);
+			noticeView.setText(positon+1+dx + "/" + hot_list.size());
+			handler.removeCallbacksAndMessages(null);
+			handler.postDelayed((new Runnable() {
+				
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					contentLayout.removeAllViews();
+					View hotView = hot_contentViews.get(positon);
+					hotView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
+					contentLayout.startAnimation(alpha_appear);
+					contentLayout.addView(hotView);
+				}
+			}),280);
+			
+			
+//			contentLayout.startAnimation(alpha_appear);
+//			hotView.invalidate();
+			
+//			aq.id(R.id.hot_content_name).text(hot_list.get(positon+dx).prod_name);
+//			aq.id(R.id.hot_content_score).text(hot_list.get(positon+dx).score);
+//			aq.id(R.id.hot_content_directors).text(hot_list.get(positon+dx).directors);
+//			aq.id(R.id.hot_content_stars).text(hot_list.get(positon+dx).stars);
+//			aq.id(R.id.hot_content_introduce).text(hot_list.get(positon+dx).prod_summary);
+			break;
+		case 2:
+			highlightImageView.setImageResource(resouces_lib_active[positon]);
+			noticeView.setText(positon+1 + "/" + resouces_lib_active.length);
+			contentLayout.removeAllViews();
+			yeuDanView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
+			contentLayout.startAnimation(alpha_appear);
+			contentLayout.addView(yeuDanView);
+			break;
+		case 3:
+			highlightImageView.setImageResource(resouces_lib_active[positon]);
+			noticeView.setText(positon+1 + "/" + resouces_lib_active.length);
+			break;
+		case 4:
+			highlightImageView.setImageResource(resouces_my_active[positon]);
+			noticeView.setText(positon+1 + "/" + resouces_my_active.length);
+			break;
+		default:
+			break;
+		}
+	}
 
 }

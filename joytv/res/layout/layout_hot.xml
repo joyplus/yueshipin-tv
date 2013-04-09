@@ -5,25 +5,33 @@
     android:orientation="vertical">
 	<LinearLayout android:layout_width="fill_parent"
 	    android:gravity="center_vertical"
-	    android:layout_height="wrap_content">
+	    android:layout_height="35dp">
 	    <TextView android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
+	        android:layout_height="fill_parent"
+	        android:gravity="center_vertical"
 	        android:textColor="@color/blue_content_title"
 	        android:textSize="25sp"
-	        android:text="西游降魔篇"/>
+	        android:id="@+id/hot_content_name"/>
 	    <ImageView android:layout_width="wrap_content"
 	        android:layout_height="fill_parent"
 	        android:layout_marginLeft="14dp"
+	        android:paddingTop="4dp"
 	        android:layout_gravity="center_vertical"
 	        android:src="@drawable/douban"/>
 	    <TextView android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
+	        android:layout_height="fill_parent"
 	        android:layout_marginLeft="5dp"
 	        android:textSize="20sp"
+	        android:gravity="center_vertical"
 	        android:textColor="@color/clock_green"
-	        android:text="7.3分"
+	        android:id="@+id/hot_content_score"
 	        />
-	    <TextView android:layout_width="wrap_content"
+	    <LinearLayout android:orientation="horizontal"
+	        android:layout_width="0dp"
+	        android:visibility="gone"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1">
+	        <TextView android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:layout_marginLeft="48dp"
 	        android:textSize="20sp"
@@ -58,40 +66,42 @@
 	        android:textColor="@color/clock_green"
 	        android:text="看完"
 	        />
+	    </LinearLayout>
 	</LinearLayout>
     <LinearLayout android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="25dp"
         android:layout_marginTop="15dp">
         <TextView android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
+	        android:layout_height="25dp"
 	        android:textSize="20sp"
 	        android:textColor="@color/hot_content_notice"
 	        android:text="导演:"
 	        />
          <TextView android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
+	        android:layout_height="25dp"
 	        android:layout_marginLeft="5dp"
 	        android:textSize="20sp"
 	        android:textColor="@color/hot_content_content"
-	        android:text="周星驰/郭子健"
+	        android:id="@+id/hot_content_directors"
 	        />
           <TextView android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
+	        android:layout_height="25dp"
 	        android:layout_marginLeft="48dp"
 	        android:textSize="20sp"
 	        android:textColor="@color/hot_content_notice"
 	        android:text="主演:"
 	        />
           <TextView android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
+	        android:layout_height="25dp"
 	        android:layout_marginLeft="5dp"
 	        android:textSize="20sp"
+	        android:singleLine="true"
 	        android:textColor="@color/hot_content_content"
-	        android:text="文章/舒淇/黄渤/罗志祥"
+	        android:id="@+id/hot_content_stars"
 	        />
     </LinearLayout>
     <TextView android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
+	        android:layout_height="25dp"
 	        android:layout_marginTop="15dp"
 	        android:textSize="20sp"
 	        android:textColor="@color/hot_content_notice"
@@ -103,6 +113,6 @@
 	        android:textSize="20sp"
 	        android:ellipsize="end"
 	        android:textColor="@color/hot_content_content"
-	        android:text="\t《西游降魔[1]》中讲述的是一个妖魔横行的世界，百姓苦不堪言。年轻的驱魔人陈玄奘以“舍小我，西游·降魔篇成大我”的大无畏精神，历尽艰难险阻，依次收服水妖、猪妖以及妖王之王孙悟空为徒，并用“爱”将他们感化，而玄奘自己也终于领悟到了“大爱”的真意。为救天下苍生于水火，为赎还自己的罪恶，师徒四人义无反顾的踏上了“下地狱”般的西行取经之路......"
+	        android:id="@+id/hot_content_introduce"
 	        />
 </LinearLayout>

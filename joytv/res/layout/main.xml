@@ -95,32 +95,32 @@
 			android:gravity="center_vertical"
 			android:textSize="30sp"/>
     </com.joyplus.tv.ui.MyScrollLayout>
-    <ImageView android:layout_width="fill_parent"
-			    android:layout_height="5dp"
-			    android:layout_marginTop="10dp"
-			    android:layout_below="@id/group"
-			    android:src="@drawable/line"/>
-    <LinearLayout android:layout_width="fill_parent"
-			    android:layout_height="wrap_content"
-			    android:orientation="horizontal"
-			    android:layout_below="@id/group"
-			    android:layout_marginTop="5dp"
-			    android:id="@+id/gallery_layout"
-			    android:paddingLeft="2dp"
-			    android:paddingRight="2dp">
-			    <ImageView android:layout_width="18dp"
-			        android:layout_height="fill_parent"
-			        android:src="@drawable/arrow_left"/>
-			    <com.joyplus.tv.ui.MyGallery android:layout_width="fill_parent"
-			        android:layout_weight="1"
-			        android:layout_height="wrap_content"
-			        android:spacing="1dp"
-			        android:fadingEdge="@null"
-			        android:id="@+id/gallery"/>
-			    <ImageView android:layout_width="18dp"
-			        android:layout_height="fill_parent"
-			        android:src="@drawable/arrow_right"/>
-	</LinearLayout>
+<!--     <ImageView android:layout_width="fill_parent" -->
+<!-- 			    android:layout_height="5dp" -->
+<!-- 			    android:layout_marginTop="10dp" -->
+<!-- 			    android:layout_below="@id/group" -->
+<!-- 			    android:src="@drawable/line"/> -->
+<!--     <LinearLayout android:layout_width="fill_parent" -->
+<!-- 			    android:layout_height="wrap_content" -->
+<!-- 			    android:orientation="horizontal" -->
+<!-- 			    android:layout_below="@id/group" -->
+<!-- 			    android:layout_marginTop="5dp" -->
+<!-- 			    android:id="@+id/gallery_layout" -->
+<!-- 			    android:paddingLeft="2dp" -->
+<!-- 			    android:paddingRight="2dp"> -->
+<!-- 			    <ImageView android:layout_width="18dp" -->
+<!-- 			        android:layout_height="fill_parent" -->
+<!-- 			        android:src="@drawable/arrow_left"/> -->
+<!-- 			    <com.joyplus.tv.ui.CustomGallery android:layout_width="fill_parent" -->
+<!-- 			        android:layout_weight="1" -->
+<!-- 			        android:layout_height="wrap_content" -->
+<!-- 			        android:spacing="1dp" -->
+<!-- 			        android:fadingEdge="@null" -->
+<!-- 			        android:id="@+id/gallery"/> -->
+<!-- 			    <ImageView android:layout_width="18dp" -->
+<!-- 			        android:layout_height="fill_parent" -->
+<!-- 			        android:src="@drawable/arrow_right"/> -->
+<!-- 	</LinearLayout> -->
     
     <FrameLayout android:layout_width="fill_parent"
         android:layout_below="@id/group"
@@ -143,7 +143,7 @@
 			    <ImageView android:layout_width="18dp"
 			        android:layout_height="fill_parent"
 			        android:src="@drawable/arrow_left"/>
-			    <com.joyplus.tv.ui.MyGallery android:layout_width="fill_parent"
+			    <com.joyplus.tv.ui.CustomGallery android:layout_width="fill_parent"
 			        android:layout_weight="1"
 			        android:layout_height="wrap_content"
 			        android:spacing="1dp"
@@ -169,6 +169,7 @@
 	    <ImageView android:layout_width="fill_parent"
 	        android:layout_height="fill_parent"
 	        android:scaleType="fitXY"
+	        android:background="#000000"
 	        android:id="@+id/highlight_img"
 	        android:src="@drawable/test"/>
 	    <ImageView android:layout_width="wrap_content"
@@ -178,7 +179,7 @@
 	        android:src="@drawable/play"/>
 	</FrameLayout>
 	<LinearLayout android:layout_width="match_parent"
-	    android:layout_below="@id/gallery_layout"
+	    android:layout_below="@id/galleryFram"
 	    android:layout_marginTop="5dp"
 	    android:paddingLeft="226dp"
 	    android:paddingTop="15dp"

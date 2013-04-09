@@ -90,16 +90,8 @@ public class App extends Application {
 		super.onCreate();
 
 		File cacheDir = new File(Constant.PATH);
-		if (cacheDir.exists())
-			AQUtility.setCacheDir(cacheDir);
-		// 创建一个目录
-		File destDir = new File(Constant.PATH_VIDEO);
-		if (!destDir.exists()) {
-			destDir.mkdirs();
-		}
-
+		AQUtility.setCacheDir(cacheDir);
 		Parse.initialize(this, Constant.Parse_AppId, Constant.Parse_ClientKey);
-
 		instance = this;
 	}
 

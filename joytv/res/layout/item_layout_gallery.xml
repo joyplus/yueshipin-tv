@@ -15,6 +15,7 @@
 	        android:layout_height="wrap_content"
 	        android:layout_alignParentTop="true"
 	        android:layout_alignParentRight="true"
+	        android:id="@+id/definition"
 	        android:src="@drawable/icon_bd"/>
         <LinearLayout android:layout_width="fill_parent"
 		    android:layout_height="wrap_content"
@@ -25,25 +26,27 @@
 		    android:id="@+id/bottom_frame"
 		    android:background="@drawable/bg_gallery_fram">
 		    <TextView android:layout_width="fill_parent"
-		        android:layout_height="wrap_content"
+		        android:layout_height="25dp"
 		        android:singleLine="true"
-		        android:textColor="#ffffff"
-		        android:textSize="20sp"
-		        android:text="爱情银行"/>
+		        android:textColor="@color/hot_content_notice"
+		        android:id="@+id/second_title"
+		        android:textSize="20sp"/>
 		    <LinearLayout android:layout_width="fill_parent"
 		        android:layout_height="wrap_content"
 		        android:orientation="horizontal">
-		        <TextView android:layout_width="fill_parent"
-		            android:layout_height="wrap_content"
+		        <TextView android:layout_width="0dp"
+		            android:layout_height="20dp"
 		            android:layout_weight="1"
-		            android:textColor="#7a7a7a"
+		            android:textColor="@color/hot_content_content"
+		        	android:id="@+id/content"
 		            android:textSize="15sp"
 		            android:text="第二季  第17集"/>
-		        <TextView android:layout_width="wrap_content"
-		            android:layout_height="wrap_content"
-		            android:textColor="#ffffff"
-		            android:textSize="15sp"
-		            android:text="6.8"/>
+		        <TextView android:layout_width="25dp"
+		            android:layout_height="20dp"
+		            android:textColor="@color/hot_content_notice"
+		        	android:id="@+id/score"
+		        	android:gravity="right"
+		            android:textSize="15sp"/>
 		    </LinearLayout>
 		</LinearLayout>
 <!-- 		<LinearLayout android:layout_width="fill_parent" -->
@@ -59,14 +62,16 @@
 		<TextView
 		    android:layout_width="fill_parent"
 		    android:layout_height="wrap_content"
-		    android:layout_above="@+id/bottom_frame"
+		    android:layout_above="@id/bottom_frame"
 		    android:layout_alignParentLeft="true"
 		    android:background="@drawable/bg_gallery_fram_1"
 		    android:paddingLeft="8dp"
 		    android:paddingRight="8dp"
 		    android:singleLine="true"
 		    android:text="上次观看"
-		    android:textColor="#00ff00"
+		    android:id="@+id/first_title"
+		    android:visibility="gone"
+		    android:textColor="@color/clock_green"
 		    android:textSize="18sp" />
 
     </RelativeLayout>
