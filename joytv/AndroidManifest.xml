@@ -214,6 +214,15 @@
             android:theme="@android:style/Theme.NoTitleBar"
             android:uiOptions="splitActionBarWhenNarrow" >
         </activity>
+         <service
+            android:name="com.umeng.common.net.DownloadingService"
+            android:exported="true"
+            android:process=":DownloadingService" >
+        </service>
+		<meta-data
+            android:name="UMENG_APPKEY"
+            android:value="	5160f44856240b223800369a" >
+        </meta-data>
     </application>
 
 </manifest>

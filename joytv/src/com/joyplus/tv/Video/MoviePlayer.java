@@ -274,24 +274,26 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		}
 		int position = mVideoView.getCurrentPosition();
 		int duration = mVideoView.getDuration();
-		if (duration > 0) {
-			RelativeLayout.LayoutParams parms = new RelativeLayout.LayoutParams(
-					RelativeLayout.LayoutParams.WRAP_CONTENT,
-					RelativeLayout.LayoutParams.WRAP_CONTENT);
-			parms.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM,
-					RelativeLayout.TRUE);
+	
+		RelativeLayout.LayoutParams parms = new RelativeLayout.LayoutParams(
+				RelativeLayout.LayoutParams.WRAP_CONTENT,
+				RelativeLayout.LayoutParams.WRAP_CONTENT);
+		parms.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM,
+				RelativeLayout.TRUE);
+		if (duration > 0) 
 			parms.leftMargin = position * (sb.getWidth() - 4) / duration + 20;
-			parms.bottomMargin = 20 + 8;
-			mLayoutBottomTime.setLayoutParams(parms);
+		else 
+			parms.leftMargin = 20;
+		parms.bottomMargin = 20 + 8;
+		mLayoutBottomTime.setLayoutParams(parms);
 
-			textView1.setText(formatDuration(position));
-			textView1.setVisibility(View.VISIBLE);
-			sb.setProgress(position);
-			this.currentTime = position;
-			setTime(duration);
+		textView1.setText(formatDuration(position));
+		textView1.setVisibility(View.VISIBLE);
+		sb.setProgress(position);
+		this.currentTime = position;
+		setTime(duration);
 
-			mController.setTimes(position, duration);
-		}
+		mController.setTimes(position, duration);
 		return position;
 	}
 	public void setTime(int totalTime) {
