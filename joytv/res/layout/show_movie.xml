@@ -252,22 +252,26 @@
             android:layout_weight="5.61"
             android:orientation="vertical" >
 
-            <LinearLayout
-                android:id="@+id/ll_movie_show"
+            <FrameLayout
+                android:id="@+id/fl_movie_show"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal"
                 android:paddingRight="50dp" >
 
                 <com.joyplus.tv.ui.MyMovieGridView
                     android:id="@+id/gv_movie_show"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:listSelector="@android:color/transparent"
+                    android:listSelector="@android:color/black"
                     android:numColumns="5" 
                     android:gravity="center">
                 </com.joyplus.tv.ui.MyMovieGridView>
-            </LinearLayout>
+                <include 
+                    android:id="@+id/inclue_movie_show_item"
+                    android:layout_width="0dip"
+                    android:layout_height="0dip"
+                    layout="@layout/show_item_layout"/>"
+            </FrameLayout>
         </LinearLayout>
     </LinearLayout>
 

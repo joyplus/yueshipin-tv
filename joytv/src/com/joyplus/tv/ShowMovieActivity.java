@@ -14,13 +14,15 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Config;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.ScaleAnimation;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
@@ -29,6 +31,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.TextView;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
@@ -60,9 +63,7 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 	private boolean isSelectedItem = true;// GridView中参数是否真正初始化
 	private BaseAdapter adapter;
 
-	private PopupWindow popupWindow;
-	private PopupWindow beforePopupWindow;
-	private View popupView;
+	private View floatView;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +77,7 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 		initView();
 		initState();
 
-		getServiceData();
+		// getServiceData();
 		adapter = new MovieAdpter();
 		movieGv.setAdapter(adapter);// 网格布局添加适配器
 		// movieGv.set
@@ -99,6 +100,8 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 		zuijinguankanBtn = (Button) findViewById(R.id.bt_zuijinguankan);
 		zhuijushoucangBtn = (Button) findViewById(R.id.bt_zhuijushoucang);
 		lixianshipinBtn = (Button) findViewById(R.id.bt_lixianshipin);
+
+		floatView = findViewById(R.id.inclue_movie_show_item);
 
 		searchEt.setOnKeyListener(new View.OnKeyListener() {
 
@@ -162,71 +165,151 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 					int position, long id) {
 				// TODO Auto-generated method stub
 				// if (BuildConfig.DEBUG)
-				Log.i(TAG, "Positon:" + position);
+				// Log.i(TAG, "Positon:" + position);
 
-				PopupWindow tempPopupWindow = null;
 				if (view == null) {
 
 					isSelectedItem = false;
 					return;
 				}
 
-				if (popupWindow.isShowing()) {
+				final float x = view.getX();
+				final float y = view.getY();
 
-					popupWindow.dismiss();
-					tempPopupWindow = popupWindow;
-				} else if (beforePopupWindow.isShowing()) {
+				ScaleAnimation outScaleAnimation = new ScaleAnimation(1.0f,
+						0.8f, 1.0f, 0.8f, Animation.RELATIVE_TO_SELF, 0.5f,
+						Animation.RELATIVE_TO_SELF, 0.5f);
 
-					beforePopupWindow.dismiss();
-					tempPopupWindow = beforePopupWindow;
-				}
+				outScaleAnimation.setDuration(80);
+				outScaleAnimation.setFillAfter(false);
 
-				if (position == 0) {
+				outScaleAnimation
+						.setAnimationListener(new Animation.AnimationListener() {
 
-					if (tempPopupWindow != null && !tempPopupWindow.isShowing()) {
+							@Override
+							public void onAnimationStart(Animation animation) {
+								// TODO Auto-generated method stub
+							}
 
-						tempPopupWindow.setWidth(popWidth);
-						tempPopupWindow.setHeight(popHeight);
-						int[] location = new int[2];
-						movieGv.getLocationInWindow(location);
-						tempPopupWindow
-								.setAnimationStyle(R.style.AnimationPreview);
-						tempPopupWindow.showAtLocation(movieGv,
-								Gravity.NO_GRAVITY, location[0], location[1]);
-					}
-				} else {
+							@Override
+							public void onAnimationRepeat(Animation animation) {
+								// TODO Auto-generated method stub
 
-					if (tempPopupWindow != null && !tempPopupWindow.isShowing()) {
+							}
 
-						tempPopupWindow.setWidth(popWidth);
-						tempPopupWindow.setHeight(popHeight);
-						int[] location = new int[2];
+							@Override
+							public void onAnimationEnd(Animation animation) {
+								// TODO Auto-generated method stub
+								ScaleAnimation inScaleAnimation = new ScaleAnimation(
+										0.8f, 1.0f, 0.8f, 1.0f,
+										Animation.RELATIVE_TO_SELF, 0.5f,
+										Animation.RELATIVE_TO_SELF, 0.5f);
+								inScaleAnimation.setDuration(80);
+								inScaleAnimation.setFillAfter(false);
 
-						view.getLocationInWindow(location);
+								floatView.layout((int) x, (int) y,
+										(int) (x + popWidth),
+										(int) (y + popHeight));
 
-						if (location[1] == 0) {
-							int[] location2 = new int[2];
-							movieGv.getLocationInWindow(location2);
-							location[1] = (int) (location2[1] + view.getY());
-							location[0] = location2[0];
+								floatView.setPadding(10, 10, 10, 10);
+								floatView.setBackgroundColor(getResources()
+										.getColor(R.color.text_active));
+								floatView.startAnimation(inScaleAnimation);
+							}
+						});
+				floatView.startAnimation(outScaleAnimation);
+
+				int firstVisiblePostion = movieGv.getFirstVisiblePosition();
+				int lastVisiblePosition = movieGv.getLastVisiblePosition();
+
+				if (position >= 10) {
+
+					if (y == 0 || y - popHeight == 0) {// 顶部没有渐影
+
+						if (position <= firstVisiblePostion + 4
+								&& position >= firstVisiblePostion) {// 屏幕第一行
+
+							boolean isSameContent = position >= startAndEndVisibleAll[0] && position <= startAndEndVisibleAll[1];
+							if (beforepostion - 5 == position && !isSameContent) {// 向上
+
+								movieGv.smoothScrollBy(-popHeight, 1000);
+							}
+						} 
+						
+//						else {// 否则在第二行
+//							if (beforepostion + 5 == position && ) {
+//
+//								movieGv.smoothScrollBy(popHeight, 1000);
+//							}
+//						}
+						startAndEndVisibleAll[0] = firstVisiblePostion;
+						startAndEndVisibleAll[1] = firstVisiblePostion + 9;
+
+					} else {// 顶部有渐影
+
+
+						if (position < firstVisiblePostion + 10
+								&& position >= firstVisiblePostion + 5) {// 屏幕第一行
+
+//							if (beforepostion - 5 == position) {
+//
+//								movieGv.smoothScrollBy(-popHeight, 1000);
+//							}
+						} else {// 否则在第二行
+							boolean isSameContent = position >= startAndEndVisibleAll[0] && position <= startAndEndVisibleAll[1];
+							if (beforepostion + 5 == position && !isSameContent) {
+
+								movieGv.smoothScrollBy(popHeight, 1000);
+							}
 						}
-						if (BuildConfig.DEBUG)
-							Log.i(TAG,
-									"Positon:" + position + " y:" + view.getX()
-											+ " y:" + view.getY() + " h:"
-											+ popHeight);
-						tempPopupWindow
-								.setAnimationStyle(R.style.AnimationPreview);
-						tempPopupWindow.showAtLocation(view,
-								Gravity.NO_GRAVITY, location[0], location[1]);
+						startAndEndVisibleAll[0] = lastVisiblePosition - 9;
+						startAndEndVisibleAll[1] = lastVisiblePosition;
 					}
-
 				}
-				
-//				if(position >= 10) {
-//					
-//					movieGv.smoothScrollToPositionFromTop(position, 5, 800);
-//				}
+
+				// if (position >= 10) {
+				//
+				// if(BuildConfig.DEBUG) Log.i(TAG, "Y:" + y);
+				//
+				// int distance = (int)y - popHeight;
+				//
+				// if( distance < 0) {//肯定在第一行
+				//
+				// if (beforepostion - position == 5) {// 向上滑
+				//
+				// movieGv.smoothScrollBy(-popHeight, 1000);
+				// movieGv.setSelection(position - 5);
+				// }
+				// } else {//肯定在第二行
+				//
+				//
+				// }
+				// if (y - popHeight >= 0) {//肯定在第二行
+				//
+				// if (beforepostion - position == 5) {// 向上滑
+				//
+				// movieGv.smoothScrollBy(-popHeight, 1000);
+				//
+				// }
+				// } else {
+				//
+				// if (beforepostion - position == -5 &&) {
+				//
+				// // movieGv.smoothScrollBy(popHeight, 1000);
+				// movieGv.smoothScrollToPositionFromTop(position, 0, 1000);
+				//
+				// }
+				// }
+				// if(x >= popHeight) {
+				//
+				// movieGv.smoothScrollBy( popHeight - (int)x, 1000);
+				// } else if(x < popHeight) {
+				//
+				// movieGv.smoothScrollBy( -popHeight, 1000);
+				// }
+				// }
+
+				beforepostion = position;
 
 			}
 
@@ -239,9 +322,12 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 		});
 
 		addListener();
-		initPopupWindow();
 
 	}
+
+	private int beforepostion = 0;
+	private int[] startAndEndVisibleAll = {0,9};
+	private int beforeY;
 
 	private void addListener() {
 
@@ -276,10 +362,10 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 		activeView = mFenLeiBtn;
 
 		searchEt.setFocusable(false);// 搜索焦点消失
-//		movieGv.setNextFocusLeftId(R.id.bt_quanbufenlei);// 网格向左 全部分类获得焦点
-//		movieGv.setNextFocusDownId(R.id.bt_quanbufenlei);// 网格向左 全部分类获得焦点
-//		movieGv.setNextFocusUpId(R.id.bt_quanbufenlei);// 网格向左 全部分类获得焦点
-//		movieGv.setNextFocusRightId(R.id.bt_quanbufenlei);// 网格向左 全部分类获得焦点
+		// movieGv.setNextFocusLeftId(R.id.bt_quanbufenlei);// 网格向左 全部分类获得焦点
+		// movieGv.setNextFocusDownId(R.id.bt_quanbufenlei);// 网格向左 全部分类获得焦点
+		// movieGv.setNextFocusUpId(R.id.bt_quanbufenlei);// 网格向左 全部分类获得焦点
+		// movieGv.setNextFocusRightId(R.id.bt_quanbufenlei);// 网格向左 全部分类获得焦点
 
 		mFenLeiBtn.setTextColor(getResources().getColor(R.color.text_active));// 全部分类首先设为激活状态
 		mFenLeiBtn.setBackgroundResource(R.drawable.menubg);// 在换成这张图片时，会刷新组件的padding
@@ -298,18 +384,6 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 		// movieGv.setFocusable(true);
 		// movieGv.setFocusableInTouchMode(true);
 
-	}
-
-	private void initPopupWindow() {
-
-		LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-		popupView = inflater.inflate(R.layout.show_item_layout_active, null);
-		popupView.setPadding(10, 10, 10, 10);
-		popupWindow = new PopupWindow(popupView);
-		beforePopupWindow = new PopupWindow(popupView);
-
-		popupView.setBackgroundColor(getResources().getColor(
-				R.color.text_active));
 	}
 
 	@Override
@@ -568,12 +642,7 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 		if (BuildConfig.DEBUG)
 			Log.i(TAG, dataList.size() + ":size");
 		adapter.notifyDataSetChanged();
-		// Message msg = new Message();
 
-		// msg.arg1 = popWidth;
-		// msg.arg2 = popHeight;
-		// msg.what = 10021;
-		// handler.sendMessage(msg);
 		// movieGv.setSelection(10);
 		// for(int i=0;i<dataList.size();i++) {
 		// if(BuildConfig.DEBUG) Log.i(TAG, dataList.get(i) + "");
@@ -582,29 +651,6 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 	}
 
 	private int popWidth, popHeight;
-
-	private Handler handler = new Handler() {
-
-		@Override
-		public void handleMessage(Message msg) {
-			// TODO Auto-generated method stub
-			if (!popupWindow.isShowing()) {
-
-				// int width = msg.arg1;
-				// int viewH2 = msg.arg2;
-				// popWidth = width / 5;
-				// popHeight = viewH2;
-				popupWindow.setWidth(popWidth);
-				popupWindow.setHeight(popHeight);
-				int[] location = new int[2];
-				movieGv.getLocationOnScreen(location);
-				popupWindow.setAnimationStyle(R.style.AnimationPreview);
-				popupWindow.showAtLocation(movieGv, Gravity.NO_GRAVITY,
-						location[0], location[1]);
-			}
-		}
-
-	};
 
 	private class MovieAdpter extends BaseAdapter {
 
@@ -635,8 +681,6 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 			// TODO Auto-generated method stub
 			View v;
 
-			// LinearLayout parentLayout = (LinearLayout)
-			// findViewById(R.id.ll_movie_show);
 			// int viewH = (int) (height / (1.0f * (2 + 0.10))) + 5;
 			// int viewW = (int) (viewH * 1.0f / 370 * 264) - 24;
 			int width = parent.getWidth() / 5;
@@ -644,7 +688,7 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 
 			if (convertView == null) {
 				View view = getLayoutInflater().inflate(
-						R.layout.show_item_ani_dianying, null);
+						R.layout.show_item_layout_dianying, null);
 				v = view;
 			} else {
 
@@ -654,19 +698,28 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 					width, height);
 			v.setLayoutParams(params);
 
+			TextView tv = (TextView) v.findViewById(R.id.tv_item_layout_name);
+			tv.setText("" + position);
+
 			v.setPadding(10, 10, 10, 10);
 
 			if (width != 0) {
 
 				popWidth = width;
 				popHeight = height;
-				Log.i(TAG, "Width:" + popWidth);
+				// Log.i(TAG, "Width:" + popWidth);
 			}
 
 			if (position == 0 && !isSelectedItem && width != 0) {
-				Message msg = new Message();
-				msg.what = 10021;
-				handler.sendMessage(msg);
+
+				FrameLayout.LayoutParams params2 = new FrameLayout.LayoutParams(
+						popWidth, popHeight);
+				floatView.setLayoutParams(params2);
+				floatView.setX(movieGv.getX());
+				floatView.setY(movieGv.getY());
+				floatView.setPadding(10, 10, 10, 10);
+				floatView.setBackgroundColor(getResources().getColor(
+						R.color.text_active));
 				isSelectedItem = true;
 			}
 
