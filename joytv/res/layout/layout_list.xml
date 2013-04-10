@@ -74,5 +74,5 @@
 	        android:textSize="20sp"
 	        android:layout_marginLeft="20dp"
 	        android:textColor="@color/hot_content_content"
-	        android:text="等8部"/>
+	        android:id="@+id/notice_num"/>
 </LinearLayout>

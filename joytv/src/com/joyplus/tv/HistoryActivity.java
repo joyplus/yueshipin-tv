@@ -1,5 +1,9 @@
 package com.joyplus.tv;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.joyplus.tv.entity.ShiPinInfo;
 import com.joyplus.tv.ui.NavigateView;
 import com.joyplus.tv.ui.NavigateView.OnResultListener;
 
@@ -24,6 +28,13 @@ public class HistoryActivity extends Activity implements OnClickListener {
 	private Button btn_fenlei_dongman;
 	private Button btn_fenlei_zongyi;
 	private Button selectedButton;
+	private List<ShiPinInfo> allHistoryList = new ArrayList<ShiPinInfo>();
+	private List<ShiPinInfo> movieHistoryList = new ArrayList<ShiPinInfo>();
+	private List<ShiPinInfo> tvHistoryList = new ArrayList<ShiPinInfo>();
+	private List<ShiPinInfo> dongmanHistoryList = new ArrayList<ShiPinInfo>();
+	private List<ShiPinInfo> zongyiHistoryList = new ArrayList<ShiPinInfo>();
+	
+	
 	private ListView listView;
 	
 	private PopupWindow popupWindow;
@@ -90,16 +101,8 @@ public class HistoryActivity extends Activity implements OnClickListener {
 		if(selectedButton.equals(v)){
 			return ;
 		}
-//		
-//		selectedButton.setTextColor(getResources().getColor(R.color.text_color_selector));
-//		selectedButton.setBackgroundResource(R.drawable.text_drawable_selector);
-//		v.setTextColor(getResources().getColor(R.color.common_title_selected));
-//		v.setBackgroundResource(R.drawable.menubg);
-//		selectedButton = v;
-//		selectedButton.setPadding(0, 0, 5, 0);
-//		
 		
-		switch (v.getId()) {
+		switch (v.getId()) { 
 		case R.id.fenlei_all:
 			selectedButton.setTextColor(getResources().getColorStateList(R.color.text_color_selector));
 			selectedButton.setBackgroundResource(R.drawable.text_drawable_selector);

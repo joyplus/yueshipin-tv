@@ -1,7 +1,5 @@
 package com.joyplus.tv.Adapters;
 
-import java.util.List;
-
 import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,37 +7,30 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.androidquery.AQuery;
 import com.joyplus.tv.R;
-import com.joyplus.tv.entity.HotItemInfo;
 
-public class MainHotItemAdapter extends BaseAdapter {
+public class MainLibAdapter extends BaseAdapter {
 
-	private List<HotItemInfo> hot_list;
-	private AQuery aq;
+	private int[] data;
 	private Context c;
-	private int displayWith;
 	private android.widget.Gallery.LayoutParams layoutParam;
+	private int displayWith;
 	
-	public MainHotItemAdapter(Context c,List<HotItemInfo> list){
-		super();
-		this.hot_list = list;
+	public MainLibAdapter(Context c, int[] data) {
+		// TODO Auto-generated constructor stub
 		this.c = c;
+		this.data = data;
 		displayWith = ((Activity)c).getWindowManager().getDefaultDisplay().getWidth();
 		layoutParam = new android.widget.Gallery.LayoutParams((displayWith-40)/6,2*displayWith/9);
-		aq = new AQuery(c);
 	}
+	
 	@Override
 	public int getCount() {
 		// TODO Auto-generated method stub
-		return hot_list.size();
-//		if(hot_list.size()!=0){
-//			return 2;
-//		}else{
-//			return hot_list.size();
-//		}
+		return data.length;
 	}
 
 	@Override
@@ -67,44 +58,17 @@ public class MainHotItemAdapter extends BaseAdapter {
 			holder.score = (TextView) convertView.findViewById(R.id.score);
 			holder.image = (ImageView) convertView.findViewById(R.id.image);
 			holder.definition = (ImageView) convertView.findViewById(R.id.definition);
+			holder.layout = (LinearLayout) convertView.findViewById(R.id.bottom_frame);
 			convertView.setTag(holder);
 		}else{
 			holder = (ViewHolder) convertView.getTag();
 		}
-//		aq = new AQuery(convertView);
-		holder.image.setTag(hot_list.get(position).prod_pic_url);
-//		holder.image.setImageResource(R.drawable.test1);
-		aq.id(holder.image).image(hot_list.get(position).prod_pic_url,true,true);
-		if(hot_list.get(position).type == 0){
-			holder.firstTitle.setVisibility(View.VISIBLE);
-		}else{
-			holder.firstTitle.setVisibility(View.GONE);
-		}
-		holder.secondTitle.setText(hot_list.get(position).prod_name);
-		holder.score.setText(hot_list.get(position).score);
-		switch (Integer.valueOf(hot_list.get(position).definition)) {
-		case 5:
-			holder.definition.setImageResource(R.drawable.icon_bd);
-			break;
-		case 4:
-			holder.definition.setImageResource(R.drawable.icon_hd);
-			break;
-		case 3:
-			holder.definition.setImageResource(R.drawable.icon_ts);
-			break;
-		default:
-			holder.definition.setVisibility(View.GONE);
-			break;
-		}
+		holder.firstTitle.setVisibility(View.GONE);
+		holder.layout.setVisibility(View.GONE);
+		holder.definition.setVisibility(View.GONE);
+		holder.image.setImageResource(data[position]);
 		convertView.setPadding(15, 10, 15, 10);
 		convertView.setLayoutParams(layoutParam);
-		
-//		ImageView img = (ImageView) view.findViewById(R.id.image);
-//		
-//		img.setImageResource(resouces[position]);
-//		Log.d(TAG, hot_list.get(position).prod_pic_url);
-//		aq = new AQuery(view);
-//		aq.id(R.id.image).image(hot_list.get(position).prod_pic_url);
 		return convertView;
 	}
 	
@@ -115,7 +79,7 @@ public class MainHotItemAdapter extends BaseAdapter {
 		TextView score;
 		ImageView image;
 		ImageView definition;
+		LinearLayout layout;
 	}
+
 }
-
-

@@ -83,7 +83,8 @@
     
     
     <!--ZhangQibo  -->
-    
+    <!-- main -->
+    <string name="yuedan_notice_num">等%1$s部影片</string>
     <!--ZhangQibo  -->
     
     <string name="history_title">最近观看</string>

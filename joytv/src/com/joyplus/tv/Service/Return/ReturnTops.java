@@ -26,6 +26,7 @@ public class ReturnTops implements Serializable {
 		public String prod_type;
 		public String pic_url;
 		public String content;
+		public String big_pic_url;
 		public String num;
 		public Items[] items;
 

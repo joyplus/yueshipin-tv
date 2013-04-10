@@ -48,6 +48,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joyplus.tv.Adapters.MainHotItemAdapter;
+import com.joyplus.tv.Adapters.MainLibAdapter;
 import com.joyplus.tv.Adapters.MainYueDanItemAdapter;
 import com.joyplus.tv.Service.Return.ReturnMainHot;
 import com.joyplus.tv.Service.Return.ReturnTops;
@@ -209,11 +210,13 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 				case 2:
 					playIcon.setVisibility(View.INVISIBLE);
 					if(isYueDanLoadedFlag==2){
-						View yeuDanView = yuedan_contentViews.get(indexCaces.get(index));
 						contentLayout.removeAllViews();
-						yeuDanView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
-						contentLayout.startAnimation(alpha_appear);
-						contentLayout.addView(yeuDanView);
+						if(indexCaces.get(index)<yuedan_contentViews.size()-1){
+							View yeuDanView = yuedan_contentViews.get(indexCaces.get(index));
+							yeuDanView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
+							contentLayout.startAnimation(alpha_appear);
+							contentLayout.addView(yeuDanView);
+						}
 						gallery1.setAdapter(new MainYueDanItemAdapter(Main.this, yuedan_list));
 						if(indexCaces.get(index) == null){
 							gallery1.setSelection(0);
@@ -247,7 +250,7 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 					kuView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
 					contentLayout.startAnimation(alpha_appear);
 					contentLayout.addView(kuView);
-					gallery1.setAdapter(new LibAdapter());
+					gallery1.setAdapter(new MainLibAdapter(Main.this, resouces_lib_nomal));
 					if(indexCaces.get(index) == null){
 						gallery1.setSelection(0);
 					}else{
@@ -262,7 +265,7 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 					myView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
 					contentLayout.startAnimation(alpha_appear);
 					contentLayout.addView(myView);
-					gallery1.setAdapter(new MyAdapter());
+					gallery1.setAdapter(new MainLibAdapter(Main.this, resouces_my_nomal));
 					if(indexCaces.get(index) == null){
 						gallery1.setSelection(0);
 					}else{
@@ -461,6 +464,23 @@ public boolean checkLogin() {
 					}else if("-2".equals(yuedan_list.get(arg2).id)){
 						highlightImageView.setImageResource(R.drawable.more_episode_active);
 					}
+					noticeView.setText(arg2+ 1 + "/" + yuedan_list.size());
+					handler.removeCallbacksAndMessages(null);
+					handler.postDelayed((new Runnable() {
+						
+						@Override
+						public void run() {
+							// TODO Auto-generated method stub
+							
+							contentLayout.removeAllViews();
+							if(arg2<yuedan_contentViews.size()){
+								View yeuDanView = yuedan_contentViews.get(arg2);
+								yeuDanView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
+								contentLayout.startAnimation(alpha_appear);
+								contentLayout.addView(yeuDanView);
+							}
+						}
+					}),280);
 				}else{
 					ImageView img = (ImageView) gallery1.findViewWithTag(yuedan_list.get(arg2).pic_url);
 					if(img != null){
@@ -473,36 +493,36 @@ public boolean checkLogin() {
 						aq.id(highlightImageView).image(yuedan_list.get(arg2).pic_url,true,true);
 					}
 					noticeView.setText(arg2+ 1 + "/" + yuedan_list.size());
-//					handler.removeCallbacksAndMessages(null);
-//					handler.postDelayed((new Runnable() {
-//						
-//						@Override
-//						public void run() {
-//							// TODO Auto-generated method stub
-//							Log.d(TAG, "index = " + arg2 + "lengh = " +  hot_contentViews.size());
-//							contentLayout.removeAllViews();
-//							View hotView = hot_contentViews.get(arg2);
-//							hotView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
-//							contentLayout.startAnimation(alpha_appear);
-//							contentLayout.addView(hotView);
-//						}
-//					}),280);
+					handler.removeCallbacksAndMessages(null);
+					handler.postDelayed((new Runnable() {
+						
+						@Override
+						public void run() {
+							// TODO Auto-generated method stub
+							
+							contentLayout.removeAllViews();
+							if(arg2<yuedan_contentViews.size()){
+								View yeuDanView = yuedan_contentViews.get(arg2);
+								yeuDanView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
+								contentLayout.startAnimation(alpha_appear);
+								contentLayout.addView(yeuDanView);
+							}
+						}
+					}),280);
 				}
 			}
 				
 			break;
 		case 3:
 			if(positon1<resouces_lib_active.length-1){
-				highlightImageView.setImageResource(resouces_lib_active[positon1+1]);
-				itemFram.startAnimation(leftTranslateAnimationStep2);
-				noticeView.setText(positon1+2 + "/" + resouces_lib_active.length);
+				highlightImageView.setImageResource(resouces_lib_active[positon1]);
+				noticeView.setText(positon1+1 + "/" + resouces_lib_active.length);
 			}
 			break;
 		case 4:
 			if(positon1<resouces_my_active.length-1){
-				highlightImageView.setImageResource(resouces_my_active[positon1+1]);
-				itemFram.startAnimation(leftTranslateAnimationStep2);
-				noticeView.setText(positon1+2 + "/" + resouces_my_active.length);
+				highlightImageView.setImageResource(resouces_my_active[positon1]);
+				noticeView.setText(positon1+1 + "/" + resouces_my_active.length);
 			}
 			break;
 		
@@ -637,78 +657,6 @@ public boolean checkLogin() {
 		return false;
 	}
 	
-	class LibAdapter extends BaseAdapter{
-
-		@Override
-		public int getCount() {
-			// TODO Auto-generated method stub
-			return resouces_lib_nomal.length;
-		}
-
-		@Override
-		public Object getItem(int arg0) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public long getItemId(int position) {
-			// TODO Auto-generated method stub
-			return 0;
-		}
-
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-			// TODO Auto-generated method stub
-			if(convertView == null){
-				ImageView view = new ImageView(Main.this);
-				view.setPadding(20, 30, 20, 20);
-				view.setLayoutParams(new android.widget.Gallery.LayoutParams(displayWith/6,2*displayWith/9));
-				convertView = view;
-			}
-			((ImageView)convertView).setImageResource(resouces_lib_nomal[position]);
-			return convertView;
-		}
-    	
-    }
-	
-	class MyAdapter extends BaseAdapter{
-
-		@Override
-		public int getCount() {
-			// TODO Auto-generated method stub
-			return resouces_my_nomal.length;
-		}
-
-		@Override
-		public Object getItem(int arg0) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public long getItemId(int position) {
-			// TODO Auto-generated method stub
-			return 0;
-		}
-
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-			// TODO Auto-generated method stub
-			if(convertView == null){
-				ImageView view = new ImageView(Main.this);
-				view.setPadding(20, 30, 20, 20);
-				view.setLayoutParams(new android.widget.Gallery.LayoutParams(displayWith/6,2*displayWith/9));
-				convertView = view;
-			}
-			((ImageView)convertView).setImageResource(resouces_my_nomal[position]);
-			return convertView;
-		}
-    	
-    }
-
-
-
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int index, long arg3) {
 		// TODO Auto-generated method stub
@@ -850,7 +798,7 @@ public boolean checkLogin() {
 				yuedanInfo.name = result.tops[i].name;
 				yuedanInfo.id = result.tops[i].id;
 				yuedanInfo.prod_type = result.tops[i].prod_type;
-				yuedanInfo.pic_url = result.tops[i].pic_url;
+				yuedanInfo.pic_url = result.tops[i].big_pic_url;
 				yuedanInfo.num = result.tops[i].num;
 				yuedanInfo.content = result.tops[i].content;
 				for (int j = 0; j < result.tops[i].items.length; j++) {
@@ -876,12 +824,73 @@ public boolean checkLogin() {
 					shiPinInfos.add(shipinInfo);
 				}
 				yuedanInfo.shiPinList = shiPinInfos;
+				View yueDanView = LayoutInflater.from(Main.this).inflate(R.layout.layout_list, null);
+				
+				LinearLayout layout1 = (LinearLayout) yueDanView.findViewById(R.id.shipin_layout1);
+				LinearLayout layout2 = (LinearLayout) yueDanView.findViewById(R.id.shipin_layout2);
+				LinearLayout layout3 = (LinearLayout) yueDanView.findViewById(R.id.shipin_layout3);
+				LinearLayout layout4 = (LinearLayout) yueDanView.findViewById(R.id.shipin_layout4);
+				TextView yueDanNameText = (TextView) yueDanView.findViewById(R.id.yuedan_name);
+				TextView shipNameText1 = (TextView) yueDanView.findViewById(R.id.shipin1);
+				TextView shipNameText2 = (TextView) yueDanView.findViewById(R.id.shipin2);
+				TextView shipNameText3 = (TextView) yueDanView.findViewById(R.id.shipin3);
+				TextView shipNameText4 = (TextView) yueDanView.findViewById(R.id.shipin4);
+				TextView shiPinNumNotice = (TextView) yueDanView.findViewById(R.id.notice_num);
+				yueDanNameText.setText(yuedanInfo.name);
+				if(yuedanInfo.shiPinList!=null){
+					switch (yuedanInfo.shiPinList.size()) {
+					case 0:
+						layout1.setVisibility(View.GONE);
+						layout2.setVisibility(View.GONE);
+						layout3.setVisibility(View.GONE);
+						layout4.setVisibility(View.GONE);
+						shiPinNumNotice.setVisibility(View.GONE);
+						break;
+					case 1:
+						shipNameText1.setText(yuedanInfo.shiPinList.get(0).getProd_name());
+						layout2.setVisibility(View.GONE);
+						layout3.setVisibility(View.GONE);
+						layout4.setVisibility(View.GONE);
+						shiPinNumNotice.setVisibility(View.GONE);
+						break;
+					case 2:
+						shipNameText1.setText(yuedanInfo.shiPinList.get(0).getProd_name());
+						shipNameText2.setText(yuedanInfo.shiPinList.get(1).getProd_name());
+						layout3.setVisibility(View.GONE);
+						layout4.setVisibility(View.GONE);
+						shiPinNumNotice.setVisibility(View.GONE);
+						break;
+					case 3:
+						shipNameText1.setText(yuedanInfo.shiPinList.get(0).getProd_name());
+						shipNameText2.setText(yuedanInfo.shiPinList.get(1).getProd_name());
+						shipNameText3.setText(yuedanInfo.shiPinList.get(2).getProd_name());
+						layout4.setVisibility(View.GONE);
+						shiPinNumNotice.setVisibility(View.GONE);
+						break;
+					case 4:
+						shipNameText1.setText(yuedanInfo.shiPinList.get(0).getProd_name());
+						shipNameText2.setText(yuedanInfo.shiPinList.get(1).getProd_name());
+						shipNameText3.setText(yuedanInfo.shiPinList.get(2).getProd_name());
+						shipNameText4.setText(yuedanInfo.shiPinList.get(3).getProd_name());
+						shiPinNumNotice.setVisibility(View.GONE);
+						break;
+
+					default:
+						shipNameText1.setText(yuedanInfo.shiPinList.get(0).getProd_name());
+						shipNameText2.setText(yuedanInfo.shiPinList.get(1).getProd_name());
+						shipNameText3.setText(yuedanInfo.shiPinList.get(2).getProd_name());
+						shipNameText4.setText(yuedanInfo.shiPinList.get(3).getProd_name());
+						shiPinNumNotice.setText(getResources().getString(R.string.yuedan_notice_num, yuedanInfo.num));
+						break;
+					}
+				}
 				if("1".equals(yuedanInfo.prod_type)){
 					yuedan_list.add(i,yuedanInfo);
-					View yueDanView = LayoutInflater.from(Main.this).inflate(R.layout.layout_list, null);
+					yuedan_contentViews.add(i, yueDanView);
 					
 				}else{
 					yuedan_list.add(yuedanInfo);
+					yuedan_contentViews.add(yueDanView);
 				}
 			}
 			if(isYueDanLoadedFlag==1){
@@ -891,7 +900,7 @@ public boolean checkLogin() {
 			}
 			if(isYueDanLoadedFlag ==2){
 				YueDanInfo yuedanInfo1 = new YueDanInfo();
-				yuedanInfo1.prod_type = "0";   
+				yuedanInfo1.prod_type = "0";    
 				yuedanInfo1.id = "-1";
 				yuedan_list.add(yuedanInfo1);
 				YueDanInfo yuedanInfo2 = new YueDanInfo();
@@ -1146,5 +1155,4 @@ public boolean checkLogin() {
 //			break;
 //		}
 //	}
-
 }

@@ -2,11 +2,6 @@ package com.joyplus.tv.Adapters;
 
 import java.util.List;
 
-import com.androidquery.AQuery;
-import com.joyplus.tv.R;
-import com.joyplus.tv.Adapters.MainHotItemAdapter.ViewHolder;
-import com.joyplus.tv.entity.YueDanInfo;
-
 import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -16,6 +11,10 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.androidquery.AQuery;
+import com.joyplus.tv.R;
+import com.joyplus.tv.entity.YueDanInfo;
 
 public class MainYueDanItemAdapter extends BaseAdapter {
 	
