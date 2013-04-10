@@ -58,12 +58,13 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 	private View beforeView, activeView;
 
 	private boolean isSelectedItem = true;// GridView中参数是否真正初始化
-	private boolean isFirstHiddenFirstItem = false;
 	private BaseAdapter adapter;
 
 	private PopupWindow popupWindow;
 	private View popupView;
-	private int beforePostion = 0;
+	
+	private int[] startPopupWindowLocation = new int[2];
+	private int[] endPopWindowLocation = new int[2];
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -77,9 +78,10 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 		initView();
 		initState();
 
-		// getServiceData();
+		 getServiceData();
 		adapter = new MovieAdpter();
 		movieGv.setAdapter(adapter);// 网格布局添加适配器
+		// movieGv.set
 
 	}
 
@@ -134,22 +136,22 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 						isSelectedItem = true;
 						movieGv.setSelection(5);
 
-					}else if(keyCode == KEY_UP) {
-						
-						
+					} else if (keyCode == KEY_UP) {
+
 					}
 				}
 				return false;
 			}
 		});
-		
+
 		movieGv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				// TODO Auto-generated method stub
-				startActivity(new Intent(ShowMovieActivity.this, ShowXiangqingMovie.class));
+				startActivity(new Intent(ShowMovieActivity.this,
+						ShowXiangqingMovie.class));
 			}
 		});
 
@@ -159,42 +161,30 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 			public void onItemSelected(AdapterView<?> parent, View view,
 					int position, long id) {
 				// TODO Auto-generated method stub
-				// startActivity(new Intent(ShowMovieActivity.this,
-				// ShowXiangqingTV.class));
-				int visiblePosition = movieGv.getFirstVisiblePosition();
-				if (BuildConfig.DEBUG)
-					Log.i(TAG, "Positon:" + position + " visiblePosition:" + visiblePosition);
-
-				int firstVisiblePostion = movieGv.getFirstVisiblePosition();
-				int lastVisiblePostion = movieGv.getLastVisiblePosition();
-				// if(position - firstVisiblePostion >= 10 && position -
-				// firstVisiblePostion <= 14) {
-				// // adapter.notifyDataSetChanged();
-				// // movieGv.setSelection(position);
-				// movieGv.smoothScrollToPositionFromTop(position, 10, 1000);
-				// }
+				// if (BuildConfig.DEBUG)
+				Log.i(TAG, "Positon:" + position);
 
 				if (view == null) {
 
 					isSelectedItem = false;
 					return;
 				}
-				
+
 				if (popupWindow.isShowing()) {
 					popupWindow.dismiss();
 				}
 
 				if (position == 0) {
 
-
 					if (!popupWindow.isShowing()) {
 
 						popupWindow.setWidth(popWidth);
 						popupWindow.setHeight(popHeight);
 						int[] location = new int[2];
-						movieGv.getLocationOnScreen(location);
+						movieGv.getLocationInWindow(location);
 						popupWindow.showAtLocation(movieGv, Gravity.NO_GRAVITY,
 								location[0], location[1]);
+						startPopupWindowLocation = location;//记录显示的坐标
 					}
 				} else {
 
@@ -204,55 +194,24 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 						popupWindow.setHeight(popHeight);
 						int[] location = new int[2];
 
-						int quyu = position % 5;
-						view.getLocationOnScreen(location);
-						if (quyu == 0&&position >= 15) {
+						view.getLocationInWindow(location);
 
+						if (location[1] == 0) {
 							int[] location2 = new int[2];
 							movieGv.getLocationInWindow(location2);
-							int height = movieGv.getHeight();
-							int jianyingHeight = height - 2 * popHeight;
-
-
-							if(firstVisiblePostion == position && lastVisiblePostion - 14 == position) {
-								//向上拖动，下渐影 第一行
-//							movieGv.
-							} else if(firstVisiblePostion +  5 == position && lastVisiblePostion - 8 == position){
-								//向上拖动，下渐影 第一行
-								
-							}else if(firstVisiblePostion + 5 == position && lastVisiblePostion - 8 == position){
-								
-								
-							}
-//							if(beforePostion < position) {
-//								if (position != visiblePosition + 5) {
-//
-//									location2[1] = location2[1] + height
-//											- popHeight;
-//								} else{
-//
-//									location2[1] = location2[1]
-//											+ jianyingHeight;
-//								}
-//							} else if(beforePostion > position){
-//								
-//								
-//							}
-
-								location = location2;
-
+							location[1] = (int) (location2[1] + view.getY());
+							location[0] = location2[0];
 						}
+						if (BuildConfig.DEBUG)
+							Log.i(TAG, "Positon:" + position + " y:" + view.getX()
+									+ " y:" + view.getY() + " h:" + popHeight);
 						popupWindow.showAtLocation(view, Gravity.NO_GRAVITY,
 								location[0], location[1]);
-					} else {
-
-						popupWindow.dismiss();
+						startPopupWindowLocation = location;//记录显示的坐标
 					}
 
 				}
 
-				beforeViewGv = view;
-				beforePostion = position;
 			}
 
 			@Override
@@ -267,8 +226,6 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 		initPopupWindow();
 
 	}
-
-	private View beforeViewGv;
 
 	private void addListener() {
 
@@ -594,6 +551,13 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 		if (BuildConfig.DEBUG)
 			Log.i(TAG, dataList.size() + ":size");
 		adapter.notifyDataSetChanged();
+//		Message msg = new Message();
+
+		
+//		msg.arg1 = popWidth;
+//		msg.arg2 = popHeight;
+//		msg.what = 10021;
+//		handler.sendMessage(msg);
 		// movieGv.setSelection(10);
 		// for(int i=0;i<dataList.size();i++) {
 		// if(BuildConfig.DEBUG) Log.i(TAG, dataList.get(i) + "");
@@ -610,10 +574,10 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 			// TODO Auto-generated method stub
 			if (!popupWindow.isShowing()) {
 
-				int width = msg.arg1;
-				int viewH2 = msg.arg2;
-				popWidth = width / 5;
-				popHeight = viewH2;
+//				int width = msg.arg1;
+//				int viewH2 = msg.arg2;
+//				popWidth = width / 5;
+//				popHeight = viewH2;
 				popupWindow.setWidth(popWidth);
 				popupWindow.setHeight(popHeight);
 				int[] location = new int[2];
@@ -631,13 +595,15 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 		public int getCount() {
 			// TODO Auto-generated method stub
 			// return dataList.size();
-			return 30;
+//			return dataList.size();
+			return 50;
 		}
 
 		@Override
 		public Object getItem(int position) {
 			// TODO Auto-generated method stub
 			// return dataList.get(position);
+//			return dataList.get(position);
 			return null;
 		}
 
@@ -652,54 +618,46 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 			// TODO Auto-generated method stub
 			View v;
 
-			LinearLayout parentLayout = (LinearLayout) findViewById(R.id.ll_movie_show);
-			int height = parentLayout.getHeight();
-			int width = parent.getWidth();
+//			LinearLayout parentLayout = (LinearLayout) findViewById(R.id.ll_movie_show);
 			// int viewH = (int) (height / (1.0f * (2 + 0.10))) + 5;
 			// int viewW = (int) (viewH * 1.0f / 370 * 264) - 24;
-			int viewH2 = (int) (width / 5 * 1.0f / 264 * 370);
+			int width = parent.getWidth()/5;
+			int height = (int) (width / 1.0f / 264 * 370);
+			
 
 			if (convertView == null) {
 				View view = getLayoutInflater().inflate(
 						R.layout.show_item_ani_dianying, null);
-				AbsListView.LayoutParams params = new AbsListView.LayoutParams(
-						width / 5, viewH2);
-
-				view.setLayoutParams(params);
-				// view.setPadding(10, 10, 10, 10);
 				v = view;
 			} else {
 
 				v = convertView;
-				AbsListView.LayoutParams params = new AbsListView.LayoutParams(
-						width / 5, viewH2);
-				v.setLayoutParams(params);
 			}
+			AbsListView.LayoutParams params = new AbsListView.LayoutParams(
+					width, height);
+			v.setLayoutParams(params);
 
 			v.setPadding(10, 10, 10, 10);
+			
+			if(width !=0) {
+				
+				popWidth = width;
+				popHeight = height;
+				Log.i(TAG, "Width:" + popWidth);
+			}
+			
 
-			if (position == 0 && !isSelectedItem && !isFirstHiddenFirstItem
+
+			if (position == 0 && !isSelectedItem
 					&& width != 0) {
-
-				// View frameLayout =
-				// v.findViewById(R.id.include_item_ani_active);
-				// View frameLayoutNormal =
-				// v.findViewById(R.id.include_item_ani_normal);
-				// frameLayout.setVisibility(View.VISIBLE);
-				// frameLayoutNormal.setVisibility(View.INVISIBLE);
-				// v.setBackgroundColor(getResources().getColor(R.color.text_active));
 				Message msg = new Message();
-
-				msg.arg1 = width;
-				msg.arg2 = viewH2;
 				msg.what = 10021;
 				handler.sendMessage(msg);
 				isSelectedItem = true;
-				// beforeViewGv = v;
 			}
 
-			// aq = new AQuery(v);
-			// aq.id(R.id.iv_item_layout_haibao).image(dataList.get(position).getPic_url());
+//			 aq = new AQuery(v);
+//			 aq.id(R.id.iv_item_layout_haibao).image(dataList.get(position).getPic_url());
 			return v;
 		}
 
