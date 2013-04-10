@@ -62,6 +62,9 @@ public class CustomGallery extends HorizontalScrollView {
 		removeAllViews();
 		layout.removeAllViews();
 		this.adapter = adapter;
+		if(this.adapter == null){
+			return;
+		}
 		for(int i=0;i<adapter.getCount();i++){  
 //            final Map<String,Object> map=adapter.getItem(i);  
             View view=adapter.getView(i, null, this);  

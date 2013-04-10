@@ -76,7 +76,11 @@ public class MainHotItemAdapter extends BaseAdapter {
 		holder.image.setTag(hot_list.get(position).prod_pic_url);
 //		holder.image.setImageResource(R.drawable.test1);
 		aq.id(holder.image).image(hot_list.get(position).prod_pic_url,true,true);
-		
+		if(hot_list.get(position).type == 0){
+			holder.firstTitle.setVisibility(View.VISIBLE);
+		}else{
+			holder.firstTitle.setVisibility(View.GONE);
+		}
 		holder.secondTitle.setText(hot_list.get(position).prod_name);
 		holder.score.setText(hot_list.get(position).score);
 		switch (Integer.valueOf(hot_list.get(position).definition)) {

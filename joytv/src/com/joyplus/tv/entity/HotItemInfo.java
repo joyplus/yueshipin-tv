@@ -1,10 +1,13 @@
 package com.joyplus.tv.entity;
 
 public class HotItemInfo{
+	
+		public int type; //0 历史 ； 1正常
+	
 		public String id;
 		public String prod_id;
 		public String prod_name;
-		public String prod_type; //1，电影; 2，电视剧; 3，综艺; 4，动漫; 5.历史
+		public String prod_type; //1，电影; 2，电视剧; 3，综艺; 4，动漫;
 		public String prod_pic_url;
 		public String stars;
 		public String directors;

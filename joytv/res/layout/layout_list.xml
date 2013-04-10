@@ -7,11 +7,12 @@
 	        android:layout_height="wrap_content"
 	        android:textColor="@color/blue_content_title"
 	        android:textSize="25sp"
-	        android:text="周末大片抢先看"/>
+	        android:id="@+id/yuedan_name"/>
 	<LinearLayout android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
 	    android:layout_marginTop="15dp"
 	    android:orientation="horizontal"
+	    android:id="@+id/shipin_layout1"
 	    android:gravity="center_vertical">
 	    <ImageView android:layout_width="20dp"
 	        android:layout_height="wrap_content"
@@ -20,12 +21,13 @@
 	        android:layout_height="wrap_content"
 	        android:textColor="@color/hot_content_notice"
 	        android:textSize="20sp"
-	        android:text="霍比特人1：意外之旅"/>
+	        android:id="@+id/shipin1"/>
 	</LinearLayout>
 	<LinearLayout android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
 	    android:layout_marginTop="5dp"
 	    android:orientation="horizontal"
+	    android:id="@+id/shipin_layout2"
 	    android:gravity="center_vertical">
 	    <ImageView android:layout_width="20dp"
 	        android:layout_height="wrap_content"
@@ -34,12 +36,13 @@
 	        android:layout_height="wrap_content"
 	        android:textColor="@color/hot_content_notice"
 	        android:textSize="20sp"
-	        android:text="007：大破天幕杀机"/>
+	        android:id="@+id/shipin2"/>
 	</LinearLayout>
 	<LinearLayout android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
 	    android:layout_marginTop="5dp"
 	    android:orientation="horizontal"
+	    android:id="@+id/shipin_layout3"
 	    android:gravity="center_vertical">
 	    <ImageView android:layout_width="20dp"
 	        android:layout_height="wrap_content"
@@ -48,12 +51,13 @@
 	        android:layout_height="wrap_content"
 	        android:textColor="@color/hot_content_notice"
 	        android:textSize="20sp"
-	        android:text="谍影重重4"/>
+	        android:id="@+id/shipin3"/>
 	</LinearLayout>
 	<LinearLayout android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
 	    android:layout_marginTop="5dp"
 	    android:orientation="horizontal"
+	    android:id="@+id/shipin_layout4"
 	    android:gravity="center_vertical">
 	    <ImageView android:layout_width="20dp"
 	        android:layout_height="wrap_content"
@@ -62,7 +66,7 @@
 	        android:layout_height="wrap_content"
 	        android:textColor="@color/hot_content_notice"
 	        android:textSize="20sp"
-	        android:text="生化危机5：惩罚"/>
+	        android:id="@+id/shipin4"/>
 	</LinearLayout>
 	<TextView android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"

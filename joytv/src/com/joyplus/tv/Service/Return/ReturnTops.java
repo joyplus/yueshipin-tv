@@ -26,16 +26,19 @@ public class ReturnTops implements Serializable {
 		public String prod_type;
 		public String pic_url;
 		public String content;
+		public String num;
 		public Items[] items;
 
 		public static class Items {
 			public String id;
 			public String prod_id;
+			public String definition;
 			public String prod_name;
 			public String prod_type;
 			public String prod_pic_url;
-			// 综艺多了个 : 最新剧集
-			public String cur_item_name;
+			public String big_prod_pic_url;
+//			// 综艺多了个 : 最新剧集
+//			public String cur_item_name;
 			public String stars;
 			public String directors;
 			public String favority_num;
@@ -43,6 +46,9 @@ public class ReturnTops implements Serializable {
 			public String publish_date;
 			public String score;
 			public String area;
+			public String max_episode;
+			public String cur_episode;
+			public String duration;
 		}
 
 	}

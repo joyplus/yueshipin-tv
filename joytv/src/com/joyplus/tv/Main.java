@@ -48,9 +48,14 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joyplus.tv.Adapters.MainHotItemAdapter;
+import com.joyplus.tv.Adapters.MainYueDanItemAdapter;
 import com.joyplus.tv.Service.Return.ReturnMainHot;
+import com.joyplus.tv.Service.Return.ReturnTops;
+import com.joyplus.tv.Service.Return.ReturnUserPlayHistories;
 import com.joyplus.tv.Video.VideoPlayerActivity;
 import com.joyplus.tv.entity.HotItemInfo;
+import com.joyplus.tv.entity.ShiPinInfo;
+import com.joyplus.tv.entity.YueDanInfo;
 import com.joyplus.tv.ui.CustomGallery;
 import com.joyplus.tv.ui.MyScrollLayout;
 import com.joyplus.tv.ui.MyScrollLayout.OnViewChangeListener;
@@ -65,7 +70,11 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 	private Handler handler = new Handler();
 	ObjectMapper mapper = new ObjectMapper();
 	private List<View> hot_contentViews = new ArrayList<View>();
+	private List<View> yuedan_contentViews = new ArrayList<View>();
 	private List<HotItemInfo> hot_list = new ArrayList<HotItemInfo>();
+	private List<YueDanInfo> yuedan_list = new ArrayList<YueDanInfo>();
+	private int isHotLoadedFlag = 0;
+	private int isYueDanLoadedFlag = 0;
 
 //	private int[] resouces = {
 //			R.drawable.test1,
@@ -115,7 +124,7 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 	private TextView noticeView;
 	
 //	private View hotView;
-	private View yeuDanView;
+//	private View yeuDanView;
 	private View kuView;
 	private View myView;
 	
@@ -150,7 +159,7 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
         titleGroup.setFocusableInTouchMode(false);
         
         
-        yeuDanView = LayoutInflater.from(Main.this).inflate(R.layout.layout_list, null);
+        
         kuView = LayoutInflater.from(Main.this).inflate(R.layout.layout_lib, null);
         myView = LayoutInflater.from(Main.this).inflate(R.layout.layout_my, null);
         titleGroup.SetOnViewChangeListener(new OnViewChangeListener() {
@@ -161,47 +170,77 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 				gallery1.startAnimation(alpha_appear);
 				switch (index) {
 				case 1:
-					contentLayout.removeAllViews();
-					View hotView = hot_contentViews.get(indexCaces.get(index));
-					hotView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
-					contentLayout.startAnimation(alpha_appear);
-					contentLayout.addView(hotView);
-					gallery1.setAdapter(new MainHotItemAdapter(Main.this, hot_list));
-					if(indexCaces.get(index) == null){
-						gallery1.setSelection(0);
-					}else{
-						gallery1.setSelection(indexCaces.get(index));
-					}
-//					changeContent(0);
-					ImageView img = (ImageView) gallery1.findViewWithTag(hot_list.get(gallery1.getSelectedItemPosition()).prod_pic_url);
-					if(img != null){
-						if(img.getDrawable()!=null){
-							highlightImageView.setImageDrawable(img.getDrawable());
+					if(isHotLoadedFlag == 2){
+						contentLayout.removeAllViews();
+						View hotView = hot_contentViews.get(indexCaces.get(index));
+						hotView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
+						contentLayout.startAnimation(alpha_appear);
+						contentLayout.addView(hotView);
+						gallery1.setAdapter(new MainHotItemAdapter(Main.this, hot_list));
+						if(indexCaces.get(index) == null){
+							gallery1.setSelection(0);
+						}else{
+							gallery1.setSelection(indexCaces.get(index));
+						}
+//						changeContent(0);
+						ImageView img = (ImageView) gallery1.findViewWithTag(hot_list.get(gallery1.getSelectedItemPosition()).prod_pic_url);
+						if(img != null){
+							if(img.getDrawable()!=null){
+								highlightImageView.setImageDrawable(img.getDrawable());
+							}else{
+								aq.id(highlightImageView).image(hot_list.get(gallery1.getSelectedItemPosition()).prod_pic_url,true,true);
+							}
 						}else{
 							aq.id(highlightImageView).image(hot_list.get(gallery1.getSelectedItemPosition()).prod_pic_url,true,true);
 						}
+//						aq.id(highlightImageView).image(hot_list.get(gallery1.getSelectedItemPosition()).prod_pic_url);
+//						noticeView.setText(gallery1.getSelectedItemPosition()+1 + "/" + hot_list.size());
+						
 					}else{
+						hot_list.clear();
+						hot_contentViews.clear();
+						gallery1.setAdapter(null);
+						contentLayout.removeAllViews();
+						getHistoryServiceData();
+						getHotServiceData();
 					}
-//					aq.id(highlightImageView).image(hot_list.get(gallery1.getSelectedItemPosition()).prod_pic_url);
-//					noticeView.setText(gallery1.getSelectedItemPosition()+1 + "/" + hot_list.size());
 					playIcon.setVisibility(View.VISIBLE);
 					break;
 				case 2:
-					contentLayout.removeAllViews();
-					yeuDanView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
-					contentLayout.startAnimation(alpha_appear);
-					contentLayout.addView(yeuDanView);
-					gallery1.setAdapter(new LibAdapter());
-					if(indexCaces.get(index) == null){
-						gallery1.setSelection(0);
-					}else{
-						gallery1.setSelection(indexCaces.get(index));
-					}
 					playIcon.setVisibility(View.INVISIBLE);
+					if(isYueDanLoadedFlag==2){
+						View yeuDanView = yuedan_contentViews.get(indexCaces.get(index));
+						contentLayout.removeAllViews();
+						yeuDanView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
+						contentLayout.startAnimation(alpha_appear);
+						contentLayout.addView(yeuDanView);
+						gallery1.setAdapter(new MainYueDanItemAdapter(Main.this, yuedan_list));
+						if(indexCaces.get(index) == null){
+							gallery1.setSelection(0);
+						}else{
+							gallery1.setSelection(indexCaces.get(index));
+						}
+						ImageView img2 = (ImageView) gallery1.findViewWithTag(yuedan_list.get(gallery1.getSelectedItemPosition()).pic_url);
+						if(img2 != null){
+							if(img2.getDrawable()!=null){
+								highlightImageView.setImageDrawable(img2.getDrawable());
+							}else{
+								aq.id(highlightImageView).image(yuedan_list.get(gallery1.getSelectedItemPosition()).pic_url,true,true);
+							}
+						}else{
+							aq.id(highlightImageView).image(yuedan_list.get(gallery1.getSelectedItemPosition()).pic_url,true,true);
+						}
+						noticeView.setText(gallery1.getSelectedItemPosition()+1 + "/" + yuedan_list.size());
+					}else{
+						yuedan_list.clear();
+						yuedan_contentViews.clear();
+						gallery1.setAdapter(null);
+						contentLayout.removeAllViews();
+						itemFram.setVisibility(View.INVISIBLE);
+						getMovieYueDanServiceData();
+						getTVYueDanServiceData();
+					}
 					
-					
-					highlightImageView.setImageResource(resouces_lib_active[gallery1.getSelectedItemPosition()]);
-					noticeView.setText(gallery1.getSelectedItemPosition()+1 + "/" + resouces_lib_active.length);
 					break;
 				case 3:
 					contentLayout.removeAllViews();
@@ -240,7 +279,7 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 //        clock = (ClockTextView) findViewById(R.id.clock);
         highlightImageView = (ImageView) findViewById(R.id.highlight_img);
         playIcon = (ImageView) findViewById(R.id.play_icon);
-        MarginLayoutParams mlp = (MarginLayoutParams) gallery1.getLayoutParams();
+//        MarginLayoutParams mlp = (MarginLayoutParams) gallery1.getLayoutParams();
         DisplayMetrics metrics = new DisplayMetrics();
         density = metrics.density;
         Display display = getWindowManager().getDefaultDisplay();
@@ -301,7 +340,8 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 			ReadLocalAppKey();
  
 		checkLogin();
-		getServiceData();
+		getHotServiceData();
+		getHistoryServiceData();
     }
     
 	@Override
@@ -396,14 +436,6 @@ public boolean checkLogin() {
 				}else{
 					aq.id(highlightImageView).image(hot_list.get(arg2).prod_pic_url,true,true);
 				}
-				if(indexCaces.get(1)!=null&&indexCaces.get(1)<arg2){
-					itemFram.startAnimation(leftTranslateAnimationStep2);
-				}
-				Log.d(TAG, "positon = " + arg2 + "laset = " + indexCaces.get(1));
-				if(indexCaces.get(1)!=null&&indexCaces.get(1)>arg2){
-					itemFram.startAnimation(rightTranslateAnimationStep2);
-				} 
-				
 				noticeView.setText(arg2+ 1 + "/" + hot_list.size());
 				handler.removeCallbacksAndMessages(null);
 				handler.postDelayed((new Runnable() {
@@ -411,6 +443,7 @@ public boolean checkLogin() {
 					@Override
 					public void run() {
 						// TODO Auto-generated method stub
+						Log.d(TAG, "index = " + arg2 + "lengh = " +  hot_contentViews.size());
 						contentLayout.removeAllViews();
 						View hotView = hot_contentViews.get(arg2);
 						hotView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
@@ -421,11 +454,42 @@ public boolean checkLogin() {
 			}
 			break;
 		case 2:
-			if(positon1<resouces_lib_active.length-1){
-				highlightImageView.setImageResource(resouces_lib_active[positon1+1]);
-				itemFram.startAnimation(leftTranslateAnimationStep2);
-				noticeView.setText(positon1+2 + "/" + resouces_lib_active.length);
+			if(arg2<yuedan_list.size()&&arg2>=0){
+				if("0".equals(yuedan_list.get(arg2).prod_type)){
+					if("-1".equals(yuedan_list.get(arg2).id)){
+						highlightImageView.setImageResource(R.drawable.more_movie_active);
+					}else if("-2".equals(yuedan_list.get(arg2).id)){
+						highlightImageView.setImageResource(R.drawable.more_episode_active);
+					}
+				}else{
+					ImageView img = (ImageView) gallery1.findViewWithTag(yuedan_list.get(arg2).pic_url);
+					if(img != null){
+						if(img.getDrawable()!=null){
+							highlightImageView.setImageDrawable(img.getDrawable());
+						}else{
+							aq.id(highlightImageView).image(yuedan_list.get(arg2).pic_url,true,true);
+						}
+					}else{
+						aq.id(highlightImageView).image(yuedan_list.get(arg2).pic_url,true,true);
+					}
+					noticeView.setText(arg2+ 1 + "/" + yuedan_list.size());
+//					handler.removeCallbacksAndMessages(null);
+//					handler.postDelayed((new Runnable() {
+//						
+//						@Override
+//						public void run() {
+//							// TODO Auto-generated method stub
+//							Log.d(TAG, "index = " + arg2 + "lengh = " +  hot_contentViews.size());
+//							contentLayout.removeAllViews();
+//							View hotView = hot_contentViews.get(arg2);
+//							hotView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
+//							contentLayout.startAnimation(alpha_appear);
+//							contentLayout.addView(hotView);
+//						}
+//					}),280);
+				}
 			}
+				
 			break;
 		case 3:
 			if(positon1<resouces_lib_active.length-1){
@@ -443,6 +507,12 @@ public boolean checkLogin() {
 			break;
 		
 		}
+		if(indexCaces.get(titleGroup.getSelectedTitleIndex())!=null&&indexCaces.get(titleGroup.getSelectedTitleIndex())<arg2){
+			itemFram.startAnimation(leftTranslateAnimationStep2);
+		}
+		if(indexCaces.get(titleGroup.getSelectedTitleIndex())!=null&&indexCaces.get(titleGroup.getSelectedTitleIndex())>arg2){
+			itemFram.startAnimation(rightTranslateAnimationStep2);
+		} 
 		indexCaces.put(titleGroup.getSelectedTitleIndex(), arg2);
 		// TODO Auto-generated method stub
 	}
@@ -647,7 +717,8 @@ public boolean checkLogin() {
 		case 1:
 			String str0 = "1004602";
 			String str1 = "贤妻";
-			String str2 = "http://115.238.173.139:80/play/7B5E398971A46DD67535DBC0A7CD770D27036204.mp4";
+//			String str2 = "http://115.238.173.139:80/play/7B5E398971A46DD67535DBC0A7CD770D27036204.mp4";
+			String str2 = "http://221.130.179.68/29/51/83/kingsoft/movie/657D7A4D3E64B8532E41CADC9D9CAEE5-huobiteren1.mp4?crypt=74086bf4aa7f2e300&b=800&gn=132&nc=1&bf=30&p2p=1&video_type=mp4&check=0&tm=1364180400&key=9d5cb867ee5942a6739730a0241725fd&opck=1&lgn=letv&proxy=3702889383&cipi=2026698610&tsnp=1&tag=ios&tag=kingsoft&sign=coopdown&realext=.mp4&test=m3u8";
 
 			Intent intent = new Intent(this, VideoPlayerActivity.class);
 			intent.putExtra("prod_url", str2);
@@ -720,7 +791,7 @@ public boolean checkLogin() {
 	}
 	
 	
-	public void getServiceData() {
+	public void getHotServiceData() {
 		String url = Constant.BASE_URL + "tv_net_top" +"?page_num=1&page_size=10";
 
 //		String url = Constant.BASE_URL;
@@ -728,8 +799,198 @@ public boolean checkLogin() {
 		cb.url(url).type(JSONObject.class).weakHandler(this, "initHotData");
 
 		cb.SetHeader(app.getHeaders());
-		Log.d(TAG, cb.toString());
 		aq.ajax(cb);
+	}
+	
+	public void getHistoryServiceData() {
+		String url = Constant.BASE_URL + "user/playHistories" +"?page_num=1&page_size=10&userid=4742";
+
+//		String url = Constant.BASE_URL;
+		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
+		cb.url(url).type(JSONObject.class).weakHandler(this, "initHistoryData");
+
+		cb.SetHeader(app.getHeaders());
+		aq.ajax(cb);
+	}
+	
+	public void getMovieYueDanServiceData() {
+		String url = Constant.BASE_URL + "tops" +"?page_num=1&page_size=3&topic_type=1";
+
+//		String url = Constant.BASE_URL;
+		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
+		cb.url(url).type(JSONObject.class).weakHandler(this, "initYueDanData");
+
+		cb.SetHeader(app.getHeaders());
+		aq.ajax(cb);
+	}
+	public void getTVYueDanServiceData() {
+		String url = Constant.BASE_URL + "tops" +"?page_num=1&page_size=3&topic_type=2";
+		
+//		String url = Constant.BASE_URL;
+		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
+		cb.url(url).type(JSONObject.class).weakHandler(this, "initYueDanData");
+		
+		cb.SetHeader(app.getHeaders());
+		aq.ajax(cb);
+	}
+	
+	public synchronized void initYueDanData(String url, JSONObject json, AjaxStatus status){
+		if (status.getCode() == AjaxStatus.NETWORK_ERROR)  {
+//			aq.id(R.id.ProgressText).invisible();
+			app.MyToast(aq.getContext(),
+					getResources().getString(R.string.networknotwork));
+			return;
+		}
+		Log.d(TAG, "history data = " + json.toString());
+		try {
+			ReturnTops result  = mapper.readValue(json.toString(), ReturnTops.class);
+			for(int i=0; i<result.tops.length; i++){
+				YueDanInfo yuedanInfo = new YueDanInfo();
+				List<ShiPinInfo> shiPinInfos = new ArrayList<ShiPinInfo>();
+				yuedanInfo.name = result.tops[i].name;
+				yuedanInfo.id = result.tops[i].id;
+				yuedanInfo.prod_type = result.tops[i].prod_type;
+				yuedanInfo.pic_url = result.tops[i].pic_url;
+				yuedanInfo.num = result.tops[i].num;
+				yuedanInfo.content = result.tops[i].content;
+				for (int j = 0; j < result.tops[i].items.length; j++) {
+					ShiPinInfo shipinInfo = new ShiPinInfo();
+					shipinInfo.setArea(result.tops[i].items[j].area);
+					shipinInfo.setBig_prod_pic_url(result.tops[i].items[j].big_prod_pic_url);
+					shipinInfo.setCur_episode(result.tops[i].items[j].cur_episode);
+//					shipinInfo.setCur_item_name(result.tops[i].items[j].cur_i);
+					shipinInfo.setDefinition(result.tops[i].items[j].definition);
+					shipinInfo.setDirectors(result.tops[i].items[j].directors);
+					shipinInfo.setDuration(result.tops[i].items[j].duration);
+					shipinInfo.setFavority_num(result.tops[i].items[j].favority_num);
+					shipinInfo.setId(result.tops[i].items[j].id);
+					shipinInfo.setMax_episode(result.tops[i].items[j].max_episode);
+					shipinInfo.setProd_id(result.tops[i].items[j].prod_id);
+					shipinInfo.setProd_name(result.tops[i].items[j].prod_name);
+					shipinInfo.setProd_pic_url(result.tops[i].items[j].prod_pic_url);
+					shipinInfo.setProd_type(result.tops[i].items[j].prod_type);
+					shipinInfo.setPublish_date(result.tops[i].items[j].publish_date);
+					shipinInfo.setScore(result.tops[i].items[j].score);
+					shipinInfo.setStars(result.tops[i].items[j].stars);
+					shipinInfo.setSupport_num(result.tops[i].items[j].support_num);
+					shiPinInfos.add(shipinInfo);
+				}
+				yuedanInfo.shiPinList = shiPinInfos;
+				if("1".equals(yuedanInfo.prod_type)){
+					yuedan_list.add(i,yuedanInfo);
+					View yueDanView = LayoutInflater.from(Main.this).inflate(R.layout.layout_list, null);
+					
+				}else{
+					yuedan_list.add(yuedanInfo);
+				}
+			}
+			if(isYueDanLoadedFlag==1){
+				isYueDanLoadedFlag = 2;
+			}else{
+				isYueDanLoadedFlag = 1;
+			}
+			if(isYueDanLoadedFlag ==2){
+				YueDanInfo yuedanInfo1 = new YueDanInfo();
+				yuedanInfo1.prod_type = "0";   
+				yuedanInfo1.id = "-1";
+				yuedan_list.add(yuedanInfo1);
+				YueDanInfo yuedanInfo2 = new YueDanInfo();
+				yuedanInfo2.prod_type = "0";
+				yuedanInfo2.id = "-2";
+				yuedan_list.add(yuedanInfo2);
+//				itemFram.setVisibility(View.VISIBLE);
+				itemFram.setVisibility(View.VISIBLE);
+				gallery1.setAdapter(new MainYueDanItemAdapter(Main.this, yuedan_list));
+				gallery1.setSelection(0);
+				return ;
+			}
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public void initHistoryData(String url, JSONObject json, AjaxStatus status){
+		if (status.getCode() == AjaxStatus.NETWORK_ERROR)  {
+//			aq.id(R.id.ProgressText).invisible();
+			app.MyToast(aq.getContext(),
+					getResources().getString(R.string.networknotwork));
+			return;
+		}
+		Log.d(TAG, "history data = " + json.toString());
+		try {
+			ReturnUserPlayHistories result  = mapper.readValue(json.toString(), ReturnUserPlayHistories.class);
+			HotItemInfo item  =  new HotItemInfo();
+			if(result.histories.length == 0){
+				if(isHotLoadedFlag == 1){
+					isHotLoadedFlag = 2;	
+					itemFram.setVisibility(View.VISIBLE);
+					gallery1.setAdapter(new MainHotItemAdapter(Main.this, hot_list));
+					gallery1.setSelection(1);
+				}else{
+					isHotLoadedFlag = 1;
+				}
+				return ;
+			}
+			item.type = 0;
+			item.id = result.histories[0].id;
+			item.prod_id = result.histories[0].prod_id;
+			item.prod_name = result.histories[0].prod_name;
+			item.prod_type = result.histories[0].prod_type;
+			item.prod_pic_url = result.histories[0].prod_pic_url;
+			item.stars = result.histories[0].stars;
+			item.directors = result.histories[0].directors;
+			item.favority_num = result.histories[0].favority_num;
+			item.support_num = result.histories[0].support_num;
+			item.publish_date = result.histories[0].publish_date;
+			item.score = result.histories[0].score;
+			item.area = result.histories[0].area;
+			item.cur_episode = result.histories[0].cur_episode;
+			item.definition = result.histories[0].definition;
+			item.prod_summary = result.histories[0].prod_summary;
+			item.duration = result.histories[0].duration;
+			item.playback_time = result.histories[0].playback_time;
+			hot_list.add(0,item);
+			View hotView = LayoutInflater.from(Main.this).inflate(R.layout.layout_hot, null);
+			TextView hot_name_tv = (TextView) hotView.findViewById(R.id.hot_content_name);
+			TextView hot_score_tv = (TextView) hotView.findViewById(R.id.hot_content_score);
+			TextView hot_directors_tv = (TextView) hotView.findViewById(R.id.hot_content_directors);
+			TextView hot_starts_tv = (TextView) hotView.findViewById(R.id.hot_content_stars);
+			TextView hot_introduce_tv = (TextView) hotView.findViewById(R.id.hot_content_introduce);
+			
+			hot_name_tv.setText(item.prod_name);
+			hot_score_tv.setText(item.score);
+			hot_directors_tv.setText(item.directors);
+			hot_starts_tv.setText(item.stars);
+			hot_introduce_tv.setText(item.prod_summary);
+			hot_contentViews.add(0,hotView);
+			Log.d(TAG, "lengh = " + hot_contentViews.size());
+			if(isHotLoadedFlag ==1 ){
+				itemFram.setVisibility(View.VISIBLE);
+				gallery1.setAdapter(new MainHotItemAdapter(Main.this, hot_list));
+				gallery1.setSelection(1);
+				isHotLoadedFlag = 2;
+				return;
+			}
+			isHotLoadedFlag = 1;
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 	
 	public void initHotData(String url, JSONObject json, AjaxStatus status){
@@ -742,9 +1003,10 @@ public boolean checkLogin() {
 		try {
 			Log.d(TAG, json.toString());
 			ReturnMainHot result  = mapper.readValue(json.toString(), ReturnMainHot.class);
-			hot_list.clear();
+//			hot_list.clear();
 			for(int i=0; i <result.items.length; i++){
 				HotItemInfo item  =  new HotItemInfo();
+				item.type = 1;
 				item.id = result.items[i].id;
 				item.prod_id = result.items[i].prod_id;
 				item.prod_name = result.items[i].prod_name;
@@ -770,18 +1032,23 @@ public boolean checkLogin() {
 				TextView hot_starts_tv = (TextView) hotView.findViewById(R.id.hot_content_stars);
 				TextView hot_introduce_tv = (TextView) hotView.findViewById(R.id.hot_content_introduce);
 				
-				hot_name_tv.setText(hot_list.get(i).prod_name);
-				hot_score_tv.setText(hot_list.get(i).score);
-				hot_directors_tv.setText(hot_list.get(i).directors);
-				hot_starts_tv.setText(hot_list.get(i).stars);
-				hot_introduce_tv.setText(hot_list.get(i).prod_summary);
+				hot_name_tv.setText(item.prod_name);
+				hot_score_tv.setText(item.score);
+				hot_directors_tv.setText(item.directors);
+				hot_starts_tv.setText(item.stars);
+				hot_introduce_tv.setText(item.prod_summary);
 				hot_contentViews.add(hotView);
-				
 			}
 //			Log.d
-			itemFram.setVisibility(View.VISIBLE);
-			gallery1.setAdapter(new MainHotItemAdapter(Main.this, hot_list));
-			gallery1.setSelection(1);
+			
+			if(isHotLoadedFlag == 1){
+				itemFram.setVisibility(View.VISIBLE);
+				gallery1.setAdapter(new MainHotItemAdapter(Main.this, hot_list));
+				gallery1.setSelection(1);
+				isHotLoadedFlag = 2;
+				return ;
+			}
+			isHotLoadedFlag = 1;
 //			aq.id(highlightImageView).image(hot_list.get(gallery1.getSelectedItemPosition()).prod_pic_url,true,true);
 //			noticeView.setText(gallery1.getSelectedItemPosition()+1 + "/" + hot_list.size());
 //			changeContent(0);
@@ -799,86 +1066,85 @@ public boolean checkLogin() {
 	}
 	
 	
-	private void changeContent1(int dx){
-		final int positon = gallery1.getSelectedItemPosition();
-		switch (titleGroup.getSelectedTitleIndex()) {
-		case 1:
-			
-//			hot_name_tv = (TextView) hotView.findViewById(R.id.hot_content_name);
-//	        hot_score_tv = (TextView) hotView.findViewById(R.id.hot_content_score);
-//	        hot_directors_tv = (TextView) hotView.findViewById(R.id.hot_content_directors);
-//	        hot_starts_tv = (TextView) hotView.findViewById(R.id.hot_content_stars);
-//	        hot_introduce_tv = (TextView) hotView.findViewById(R.id.hot_content_introduce);
-//			Log.d(TAG, "------------------------");
-			
-//			aq.id(highlightImageView).image(hot_list.get(positon+dx).prod_pic_url,true,true); 
-			
-			ImageView img = (ImageView) gallery1.findViewWithTag(hot_list.get(positon+dx).prod_pic_url);
-			if(img != null){
-				highlightImageView.setImageDrawable(img.getDrawable());
-			}else{
-				aq.id(highlightImageView).image(hot_list.get(positon+dx).prod_pic_url,true,true);
-			}
-//			if(dx==1){
+//	private void changeContent1(int dx){
+//		final int positon = gallery1.getSelectedItemPosition();
+//		switch (titleGroup.getSelectedTitleIndex()) {
+//		case 1:
+//			
+////			hot_name_tv = (TextView) hotView.findViewById(R.id.hot_content_name);
+////	        hot_score_tv = (TextView) hotView.findViewById(R.id.hot_content_score);
+////	        hot_directors_tv = (TextView) hotView.findViewById(R.id.hot_content_directors);
+////	        hot_starts_tv = (TextView) hotView.findViewById(R.id.hot_content_stars);
+////	        hot_introduce_tv = (TextView) hotView.findViewById(R.id.hot_content_introduce);
+////			Log.d(TAG, "------------------------");
+//			
+////			aq.id(highlightImageView).image(hot_list.get(positon+dx).prod_pic_url,true,true); 
+//			
+//			ImageView img = (ImageView) gallery1.findViewWithTag(hot_list.get(positon+dx).prod_pic_url);
+//			if(img != null){
+//				highlightImageView.setImageDrawable(img.getDrawable());
+//			}else{
+//				aq.id(highlightImageView).image(hot_list.get(positon+dx).prod_pic_url,true,true);
+//			}
+////			if(dx==1){
+////				itemFram.startAnimation(leftTranslateAnimationStep2);
+////			}
+////			if(dx==-1){
+////				itemFram.startAnimation(rightTranslateAnimationStep2);
+////			} 
+//			
+//			if(indexCaces.get(1)!=null&&indexCaces.get(1)<positon){
 //				itemFram.startAnimation(leftTranslateAnimationStep2);
 //			}
-//			if(dx==-1){
+//			Log.d(TAG, "positon = " + positon + "laset = " + indexCaces.get(1));
+//			if(indexCaces.get(1)!=null&&indexCaces.get(1)>positon){
 //				itemFram.startAnimation(rightTranslateAnimationStep2);
 //			} 
-			
-			if(indexCaces.get(1)!=null&&indexCaces.get(1)<positon){
-				itemFram.startAnimation(leftTranslateAnimationStep2);
-			}
-			Log.d(TAG, "positon = " + positon + "laset = " + indexCaces.get(1));
-			if(indexCaces.get(1)!=null&&indexCaces.get(1)>positon){
-				itemFram.startAnimation(rightTranslateAnimationStep2);
-			} 
-			
-//			itemFram.setVisibility(View.GONE);
-			noticeView.setText(positon+1+dx + "/" + hot_list.size());
-			handler.removeCallbacksAndMessages(null);
-			handler.postDelayed((new Runnable() {
-				
-				@Override
-				public void run() {
-					// TODO Auto-generated method stub
-					contentLayout.removeAllViews();
-					View hotView = hot_contentViews.get(positon);
-					hotView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
-					contentLayout.startAnimation(alpha_appear);
-					contentLayout.addView(hotView);
-				}
-			}),280);
-			
-			
+//			
+////			itemFram.setVisibility(View.GONE);
+//			handler.removeCallbacksAndMessages(null);
+//			handler.postDelayed((new Runnable() {
+//				
+//				@Override
+//				public void run() {
+//					// TODO Auto-generated method stub
+//					contentLayout.removeAllViews();
+//					View hotView = hot_contentViews.get(positon);
+//					hotView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
+//					contentLayout.startAnimation(alpha_appear);
+//					contentLayout.addView(hotView);
+//				}
+//			}),280);
+//			
+//			
+////			contentLayout.startAnimation(alpha_appear);
+////			hotView.invalidate();
+//			
+////			aq.id(R.id.hot_content_name).text(hot_list.get(positon+dx).prod_name);
+////			aq.id(R.id.hot_content_score).text(hot_list.get(positon+dx).score);
+////			aq.id(R.id.hot_content_directors).text(hot_list.get(positon+dx).directors);
+////			aq.id(R.id.hot_content_stars).text(hot_list.get(positon+dx).stars);
+////			aq.id(R.id.hot_content_introduce).text(hot_list.get(positon+dx).prod_summary);
+//			break;
+//		case 2:
+//			highlightImageView.setImageResource(resouces_lib_active[positon]);
+//			noticeView.setText(positon+1 + "/" + resouces_lib_active.length);
+//			contentLayout.removeAllViews();
+//			yeuDanView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
 //			contentLayout.startAnimation(alpha_appear);
-//			hotView.invalidate();
-			
-//			aq.id(R.id.hot_content_name).text(hot_list.get(positon+dx).prod_name);
-//			aq.id(R.id.hot_content_score).text(hot_list.get(positon+dx).score);
-//			aq.id(R.id.hot_content_directors).text(hot_list.get(positon+dx).directors);
-//			aq.id(R.id.hot_content_stars).text(hot_list.get(positon+dx).stars);
-//			aq.id(R.id.hot_content_introduce).text(hot_list.get(positon+dx).prod_summary);
-			break;
-		case 2:
-			highlightImageView.setImageResource(resouces_lib_active[positon]);
-			noticeView.setText(positon+1 + "/" + resouces_lib_active.length);
-			contentLayout.removeAllViews();
-			yeuDanView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
-			contentLayout.startAnimation(alpha_appear);
-			contentLayout.addView(yeuDanView);
-			break;
-		case 3:
-			highlightImageView.setImageResource(resouces_lib_active[positon]);
-			noticeView.setText(positon+1 + "/" + resouces_lib_active.length);
-			break;
-		case 4:
-			highlightImageView.setImageResource(resouces_my_active[positon]);
-			noticeView.setText(positon+1 + "/" + resouces_my_active.length);
-			break;
-		default:
-			break;
-		}
-	}
+//			contentLayout.addView(yeuDanView);
+//			break;
+//		case 3:
+//			highlightImageView.setImageResource(resouces_lib_active[positon]);
+//			noticeView.setText(positon+1 + "/" + resouces_lib_active.length);
+//			break;
+//		case 4:
+//			highlightImageView.setImageResource(resouces_my_active[positon]);
+//			noticeView.setText(positon+1 + "/" + resouces_my_active.length);
+//			break;
+//		default:
+//			break;
+//		}
+//	}
 
 }

@@ -37,6 +37,7 @@ public class ReturnMainHot {
 		public String prod_name;
 		public String prod_type;
 		public String prod_pic_url;
+		public String big_prod_pic_url;
 		public String stars;
 		public String directors;
 		public String favority_num;
