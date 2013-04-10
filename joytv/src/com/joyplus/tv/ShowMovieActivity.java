@@ -61,10 +61,8 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 	private BaseAdapter adapter;
 
 	private PopupWindow popupWindow;
+	private PopupWindow beforePopupWindow;
 	private View popupView;
-	
-	private int[] startPopupWindowLocation = new int[2];
-	private int[] endPopWindowLocation = new int[2];
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +76,7 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 		initView();
 		initState();
 
-		 getServiceData();
+		getServiceData();
 		adapter = new MovieAdpter();
 		movieGv.setAdapter(adapter);// 网格布局添加适配器
 		// movieGv.set
@@ -129,16 +127,18 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 
 						turnToGridViewState();
 					}
-					if (keyCode == KEY_RIGHT && !isSelectedItem) {
-						isSelectedItem = true;
-						movieGv.setSelection(1);
-					} else if (keyCode == KEY_DOWN && !isSelectedItem) {
-						isSelectedItem = true;
-						movieGv.setSelection(5);
+					if (!isSelectedItem) {
 
-					} else if (keyCode == KEY_UP) {
+						if (keyCode == KEY_RIGHT) {
+							isSelectedItem = true;
+							movieGv.setSelection(1);
+						} else if (keyCode == KEY_DOWN) {
+							isSelectedItem = true;
+							movieGv.setSelection(5);
 
+						}
 					}
+
 				}
 				return false;
 			}
@@ -164,6 +164,7 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 				// if (BuildConfig.DEBUG)
 				Log.i(TAG, "Positon:" + position);
 
+				PopupWindow tempPopupWindow = null;
 				if (view == null) {
 
 					isSelectedItem = false;
@@ -171,27 +172,34 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 				}
 
 				if (popupWindow.isShowing()) {
+
 					popupWindow.dismiss();
+					tempPopupWindow = popupWindow;
+				} else if (beforePopupWindow.isShowing()) {
+
+					beforePopupWindow.dismiss();
+					tempPopupWindow = beforePopupWindow;
 				}
 
 				if (position == 0) {
 
-					if (!popupWindow.isShowing()) {
+					if (tempPopupWindow != null && !tempPopupWindow.isShowing()) {
 
-						popupWindow.setWidth(popWidth);
-						popupWindow.setHeight(popHeight);
+						tempPopupWindow.setWidth(popWidth);
+						tempPopupWindow.setHeight(popHeight);
 						int[] location = new int[2];
 						movieGv.getLocationInWindow(location);
-						popupWindow.showAtLocation(movieGv, Gravity.NO_GRAVITY,
-								location[0], location[1]);
-						startPopupWindowLocation = location;//记录显示的坐标
+						tempPopupWindow
+								.setAnimationStyle(R.style.AnimationPreview);
+						tempPopupWindow.showAtLocation(movieGv,
+								Gravity.NO_GRAVITY, location[0], location[1]);
 					}
 				} else {
 
-					if (!popupWindow.isShowing()) {
+					if (tempPopupWindow != null && !tempPopupWindow.isShowing()) {
 
-						popupWindow.setWidth(popWidth);
-						popupWindow.setHeight(popHeight);
+						tempPopupWindow.setWidth(popWidth);
+						tempPopupWindow.setHeight(popHeight);
 						int[] location = new int[2];
 
 						view.getLocationInWindow(location);
@@ -203,14 +211,22 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 							location[0] = location2[0];
 						}
 						if (BuildConfig.DEBUG)
-							Log.i(TAG, "Positon:" + position + " y:" + view.getX()
-									+ " y:" + view.getY() + " h:" + popHeight);
-						popupWindow.showAtLocation(view, Gravity.NO_GRAVITY,
-								location[0], location[1]);
-						startPopupWindowLocation = location;//记录显示的坐标
+							Log.i(TAG,
+									"Positon:" + position + " y:" + view.getX()
+											+ " y:" + view.getY() + " h:"
+											+ popHeight);
+						tempPopupWindow
+								.setAnimationStyle(R.style.AnimationPreview);
+						tempPopupWindow.showAtLocation(view,
+								Gravity.NO_GRAVITY, location[0], location[1]);
 					}
 
 				}
+				
+//				if(position >= 10) {
+//					
+//					movieGv.smoothScrollToPositionFromTop(position, 5, 800);
+//				}
 
 			}
 
@@ -260,10 +276,10 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 		activeView = mFenLeiBtn;
 
 		searchEt.setFocusable(false);// 搜索焦点消失
-		movieGv.setNextFocusLeftId(R.id.bt_quanbufenlei);// 网格向左 全部分类获得焦点
-		movieGv.setNextFocusDownId(R.id.bt_quanbufenlei);// 网格向左 全部分类获得焦点
-		movieGv.setNextFocusUpId(R.id.bt_quanbufenlei);// 网格向左 全部分类获得焦点
-		movieGv.setNextFocusRightId(R.id.bt_quanbufenlei);// 网格向左 全部分类获得焦点
+//		movieGv.setNextFocusLeftId(R.id.bt_quanbufenlei);// 网格向左 全部分类获得焦点
+//		movieGv.setNextFocusDownId(R.id.bt_quanbufenlei);// 网格向左 全部分类获得焦点
+//		movieGv.setNextFocusUpId(R.id.bt_quanbufenlei);// 网格向左 全部分类获得焦点
+//		movieGv.setNextFocusRightId(R.id.bt_quanbufenlei);// 网格向左 全部分类获得焦点
 
 		mFenLeiBtn.setTextColor(getResources().getColor(R.color.text_active));// 全部分类首先设为激活状态
 		mFenLeiBtn.setBackgroundResource(R.drawable.menubg);// 在换成这张图片时，会刷新组件的padding
@@ -290,6 +306,7 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 		popupView = inflater.inflate(R.layout.show_item_layout_active, null);
 		popupView.setPadding(10, 10, 10, 10);
 		popupWindow = new PopupWindow(popupView);
+		beforePopupWindow = new PopupWindow(popupView);
 
 		popupView.setBackgroundColor(getResources().getColor(
 				R.color.text_active));
@@ -551,13 +568,12 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 		if (BuildConfig.DEBUG)
 			Log.i(TAG, dataList.size() + ":size");
 		adapter.notifyDataSetChanged();
-//		Message msg = new Message();
+		// Message msg = new Message();
 
-		
-//		msg.arg1 = popWidth;
-//		msg.arg2 = popHeight;
-//		msg.what = 10021;
-//		handler.sendMessage(msg);
+		// msg.arg1 = popWidth;
+		// msg.arg2 = popHeight;
+		// msg.what = 10021;
+		// handler.sendMessage(msg);
 		// movieGv.setSelection(10);
 		// for(int i=0;i<dataList.size();i++) {
 		// if(BuildConfig.DEBUG) Log.i(TAG, dataList.get(i) + "");
@@ -574,14 +590,15 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 			// TODO Auto-generated method stub
 			if (!popupWindow.isShowing()) {
 
-//				int width = msg.arg1;
-//				int viewH2 = msg.arg2;
-//				popWidth = width / 5;
-//				popHeight = viewH2;
+				// int width = msg.arg1;
+				// int viewH2 = msg.arg2;
+				// popWidth = width / 5;
+				// popHeight = viewH2;
 				popupWindow.setWidth(popWidth);
 				popupWindow.setHeight(popHeight);
 				int[] location = new int[2];
 				movieGv.getLocationOnScreen(location);
+				popupWindow.setAnimationStyle(R.style.AnimationPreview);
 				popupWindow.showAtLocation(movieGv, Gravity.NO_GRAVITY,
 						location[0], location[1]);
 			}
@@ -595,7 +612,7 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 		public int getCount() {
 			// TODO Auto-generated method stub
 			// return dataList.size();
-//			return dataList.size();
+			// return dataList.size();
 			return 50;
 		}
 
@@ -603,7 +620,7 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 		public Object getItem(int position) {
 			// TODO Auto-generated method stub
 			// return dataList.get(position);
-//			return dataList.get(position);
+			// return dataList.get(position);
 			return null;
 		}
 
@@ -618,12 +635,12 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 			// TODO Auto-generated method stub
 			View v;
 
-//			LinearLayout parentLayout = (LinearLayout) findViewById(R.id.ll_movie_show);
+			// LinearLayout parentLayout = (LinearLayout)
+			// findViewById(R.id.ll_movie_show);
 			// int viewH = (int) (height / (1.0f * (2 + 0.10))) + 5;
 			// int viewW = (int) (viewH * 1.0f / 370 * 264) - 24;
-			int width = parent.getWidth()/5;
+			int width = parent.getWidth() / 5;
 			int height = (int) (width / 1.0f / 264 * 370);
-			
 
 			if (convertView == null) {
 				View view = getLayoutInflater().inflate(
@@ -638,26 +655,23 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 			v.setLayoutParams(params);
 
 			v.setPadding(10, 10, 10, 10);
-			
-			if(width !=0) {
-				
+
+			if (width != 0) {
+
 				popWidth = width;
 				popHeight = height;
 				Log.i(TAG, "Width:" + popWidth);
 			}
-			
 
-
-			if (position == 0 && !isSelectedItem
-					&& width != 0) {
+			if (position == 0 && !isSelectedItem && width != 0) {
 				Message msg = new Message();
 				msg.what = 10021;
 				handler.sendMessage(msg);
 				isSelectedItem = true;
 			}
 
-//			 aq = new AQuery(v);
-//			 aq.id(R.id.iv_item_layout_haibao).image(dataList.get(position).getPic_url());
+			// aq = new AQuery(v);
+			// aq.id(R.id.iv_item_layout_haibao).image(dataList.get(position).getPic_url());
 			return v;
 		}
 
