@@ -6,8 +6,9 @@
     <ImageView android:layout_height="135dp"
         android:layout_width="110dp"
         android:paddingRight="5dp"
-        android:background="#000000"
+        android:background="#08111a"
         android:scaleType="fitXY"
+        android:id="@+id/image"
         android:paddingTop="1dp"
         android:paddingBottom="1dp"
         android:src="@drawable/test1"/>
@@ -20,7 +21,8 @@
             android:layout_height="wrap_content"
             android:textSize="20sp"
             android:textColor="@color/hot_content_notice"
-            android:text="西游降魔篇"/>
+            android:singleLine="true"
+            android:id="@+id/title"/>
         <LinearLayout android:layout_width="fill_parent"
 	        android:layout_height="wrap_content"
 	        android:layout_marginTop="10dp">
@@ -34,8 +36,9 @@
 		        android:layout_height="wrap_content"
 		        android:layout_marginLeft="5dp"
 		        android:textSize="18sp"
+		        android:singleLine="true"
 		        android:textColor="@color/hot_content_content"
-		        android:text="周星驰/郭子健"
+		        android:id="@+id/directors"
 		        />
 	          <TextView android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
@@ -48,8 +51,9 @@
 		        android:layout_height="wrap_content"
 		        android:layout_marginLeft="5dp"
 		        android:textSize="18sp"
+		        android:singleLine="true"
 		        android:textColor="@color/hot_content_content"
-		        android:text="文章/舒淇/黄渤/罗志祥"
+		        android:id="@+id/stars"
 		        />
     	</LinearLayout>
         <TextView android:layout_width="fill_parent"
@@ -57,6 +61,7 @@
             android:textSize="18sp"
             android:textColor="@color/hot_content_notice"
             android:layout_marginTop="10dp"
-            android:text="观看至 第17集"/>
+            android:singleLine="true"
+            android:id="@+id/content"/>
     </LinearLayout>
 </LinearLayout>

@@ -14,6 +14,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.graphics.Bitmap;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -36,6 +37,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -47,6 +49,7 @@ import com.androidquery.callback.AjaxStatus;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.zxing.WriterException;
 import com.joyplus.tv.Adapters.MainHotItemAdapter;
 import com.joyplus.tv.Adapters.MainLibAdapter;
 import com.joyplus.tv.Adapters.MainYueDanItemAdapter;
@@ -163,20 +166,27 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
         
         kuView = LayoutInflater.from(Main.this).inflate(R.layout.layout_lib, null);
         myView = LayoutInflater.from(Main.this).inflate(R.layout.layout_my, null);
+        ImageView erweimaImage = (ImageView) myView.findViewById(R.id.img_erweima);
+        
+        erweimaImage.setImageBitmap(CreateBarCode());
         titleGroup.SetOnViewChangeListener(new OnViewChangeListener() {
 			
 			@Override
 			public void OnViewChange(int index) {
 				// TODO Auto-generated method stub
 				gallery1.startAnimation(alpha_appear);
+				handler.removeCallbacksAndMessages(null);
 				switch (index) {
 				case 1:
 					if(isHotLoadedFlag == 2){
+						itemFram.setVisibility(View.VISIBLE);
 						contentLayout.removeAllViews();
-						View hotView = hot_contentViews.get(indexCaces.get(index));
-						hotView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
-						contentLayout.startAnimation(alpha_appear);
-						contentLayout.addView(hotView);
+						if(indexCaces.get(index) != null&&indexCaces.get(index)<hot_contentViews.size()-1){
+							View hotView = hot_contentViews.get(indexCaces.get(index));
+							hotView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
+							contentLayout.startAnimation(alpha_appear);
+							contentLayout.addView(hotView);
+						}
 						gallery1.setAdapter(new MainHotItemAdapter(Main.this, hot_list));
 						if(indexCaces.get(index) == null){
 							gallery1.setSelection(0);
@@ -184,7 +194,11 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 							gallery1.setSelection(indexCaces.get(index));
 						}
 //						changeContent(0);
-						ImageView img = (ImageView) gallery1.findViewWithTag(hot_list.get(gallery1.getSelectedItemPosition()).prod_pic_url);
+						int seletedindex = gallery1.getSelectedItemPosition();
+						ImageView img = null;
+						if(seletedindex>=0&&seletedindex<hot_list.size()-1){
+							img = (ImageView) gallery1.findViewWithTag(hot_list.get(gallery1.getSelectedItemPosition()).prod_pic_url);
+						}
 						if(img != null){
 							if(img.getDrawable()!=null){
 								highlightImageView.setImageDrawable(img.getDrawable());
@@ -192,12 +206,15 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 								aq.id(highlightImageView).image(hot_list.get(gallery1.getSelectedItemPosition()).prod_pic_url,true,true);
 							}
 						}else{
-							aq.id(highlightImageView).image(hot_list.get(gallery1.getSelectedItemPosition()).prod_pic_url,true,true);
+							if(seletedindex>=0&&seletedindex<hot_list.size()-1){
+								aq.id(highlightImageView).image(hot_list.get(gallery1.getSelectedItemPosition()).prod_pic_url,true,true);
+							}
 						}
 //						aq.id(highlightImageView).image(hot_list.get(gallery1.getSelectedItemPosition()).prod_pic_url);
 //						noticeView.setText(gallery1.getSelectedItemPosition()+1 + "/" + hot_list.size());
 						
 					}else{
+						itemFram.setVisibility(View.INVISIBLE);
 						hot_list.clear();
 						hot_contentViews.clear();
 						gallery1.setAdapter(null);
@@ -210,8 +227,9 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 				case 2:
 					playIcon.setVisibility(View.INVISIBLE);
 					if(isYueDanLoadedFlag==2){
+						itemFram.setVisibility(View.VISIBLE);
 						contentLayout.removeAllViews();
-						if(indexCaces.get(index)<yuedan_contentViews.size()-1){
+						if(indexCaces.get(index)!=null&&indexCaces.get(index)<yuedan_contentViews.size()-1){
 							View yeuDanView = yuedan_contentViews.get(indexCaces.get(index));
 							yeuDanView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
 							contentLayout.startAnimation(alpha_appear);
@@ -246,6 +264,7 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 					
 					break;
 				case 3:
+					itemFram.setVisibility(View.VISIBLE);
 					contentLayout.removeAllViews();
 					kuView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
 					contentLayout.startAnimation(alpha_appear);
@@ -261,6 +280,7 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 					noticeView.setText(gallery1.getSelectedItemPosition()+1 + "/" + resouces_lib_active.length);
 					break;
 				case 4:
+					itemFram.setVisibility(View.VISIBLE);
 					contentLayout.removeAllViews();
 					myView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
 					contentLayout.startAnimation(alpha_appear);
@@ -341,7 +361,6 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 
 		if(!Constant.TestEnv)
 			ReadLocalAppKey();
- 
 		checkLogin();
 		getHotServiceData();
 		getHistoryServiceData();
@@ -751,7 +770,7 @@ public boolean checkLogin() {
 	}
 	
 	public void getHistoryServiceData() {
-		String url = Constant.BASE_URL + "user/playHistories" +"?page_num=1&page_size=10&userid=4742";
+		String url = Constant.BASE_URL + "user/playHistories" +"?page_num=1&page_size=1&userid=4742";
 
 //		String url = Constant.BASE_URL;
 		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
@@ -908,9 +927,11 @@ public boolean checkLogin() {
 				yuedanInfo2.id = "-2";
 				yuedan_list.add(yuedanInfo2);
 //				itemFram.setVisibility(View.VISIBLE);
-				itemFram.setVisibility(View.VISIBLE);
-				gallery1.setAdapter(new MainYueDanItemAdapter(Main.this, yuedan_list));
-				gallery1.setSelection(0);
+				if(titleGroup.getSelectedTitleIndex() == 2){
+					itemFram.setVisibility(View.VISIBLE);
+					gallery1.setAdapter(new MainYueDanItemAdapter(Main.this, yuedan_list));
+					gallery1.setSelection(0);
+				}
 				return ;
 			}
 		} catch (JsonParseException e) {
@@ -939,10 +960,12 @@ public boolean checkLogin() {
 			HotItemInfo item  =  new HotItemInfo();
 			if(result.histories.length == 0){
 				if(isHotLoadedFlag == 1){
+					if(titleGroup.getSelectedTitleIndex()==1){
+						itemFram.setVisibility(View.VISIBLE);
+						gallery1.setAdapter(new MainHotItemAdapter(Main.this, hot_list));
+						gallery1.setSelection(1);
+					}
 					isHotLoadedFlag = 2;	
-					itemFram.setVisibility(View.VISIBLE);
-					gallery1.setAdapter(new MainHotItemAdapter(Main.this, hot_list));
-					gallery1.setSelection(1);
 				}else{
 					isHotLoadedFlag = 1;
 				}
@@ -982,9 +1005,11 @@ public boolean checkLogin() {
 			hot_contentViews.add(0,hotView);
 			Log.d(TAG, "lengh = " + hot_contentViews.size());
 			if(isHotLoadedFlag ==1 ){
-				itemFram.setVisibility(View.VISIBLE);
-				gallery1.setAdapter(new MainHotItemAdapter(Main.this, hot_list));
-				gallery1.setSelection(1);
+				if(titleGroup.getSelectedTitleIndex()==1){
+					itemFram.setVisibility(View.VISIBLE);
+					gallery1.setAdapter(new MainHotItemAdapter(Main.this, hot_list));
+					gallery1.setSelection(1);
+				}
 				isHotLoadedFlag = 2;
 				return;
 			}
@@ -1051,9 +1076,11 @@ public boolean checkLogin() {
 //			Log.d
 			
 			if(isHotLoadedFlag == 1){
-				itemFram.setVisibility(View.VISIBLE);
-				gallery1.setAdapter(new MainHotItemAdapter(Main.this, hot_list));
-				gallery1.setSelection(1);
+				if(titleGroup.getSelectedTitleIndex() == 1){
+					gallery1.setAdapter(new MainHotItemAdapter(Main.this, hot_list));
+					gallery1.setSelection(1);
+					itemFram.setVisibility(View.VISIBLE);
+				}
 				isHotLoadedFlag = 2;
 				return ;
 			}
@@ -1155,4 +1182,25 @@ public boolean checkLogin() {
 //			break;
 //		}
 //	}
+	
+	
+	private Bitmap CreateBarCode(){
+		//根据字符串生成二维码图片并显示在界面上，第二个参数为图片的大小（350*350）
+		Bitmap b = null;
+		String macAddress = null;
+		WifiManager wifiMgr = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+		WifiInfo info = (null == wifiMgr ? null : wifiMgr
+				.getConnectionInfo());
+		if (info != null) {
+			macAddress = info.getMacAddress();
+			try {
+				b =EncodingHandler.createQRCode(macAddress, 500);
+			} catch (WriterException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return b;
+	}
+
 }

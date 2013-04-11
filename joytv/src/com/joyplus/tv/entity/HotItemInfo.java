@@ -22,4 +22,10 @@ public class HotItemInfo{
 		public String duration;
 		
 		public String playback_time;
+		
+		public String max_episode;
+		public String video_url;
+		public String prod_subname;
+		public String play_type;
+		
 	}

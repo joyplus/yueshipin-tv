@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="#08111a"
     android:paddingTop="15dp">
 
     <include
@@ -120,10 +121,17 @@
             <LinearLayout 
                 android:layout_height="fill_parent"
                 android:layout_width="0dp"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:paddingTop="5dp"
                 android:layout_weight="1">
                 <Button android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="清空记录"/>
+                    android:background="@drawable/bg_button_delete_selector"
+                    android:textColor="@color/white"
+                    android:id="@+id/delete_btn"
+                    android:textSize="18sp"
+                    android:text="清 空 记 录"/>
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

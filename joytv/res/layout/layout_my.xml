@@ -3,7 +3,20 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical">
-	<TextView android:layout_width="fill_parent"
-	    android:layout_height="fill_parent"
+	<TextView android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
 	    android:text="我的悦视频"/>
+	<FrameLayout android:layout_width="wrap_content"
+	    android:layout_height="wrap_content">
+	    <ImageView android:layout_width="130dp"
+	        android:layout_height="130dp"
+	        android:background="@color/white"/>
+	    <ImageView android:layout_width="150dp"
+		    android:layout_height="150dp"
+		    android:layout_marginLeft="-10dp"
+		    android:layout_marginTop="-10dp"
+		    android:id="@+id/img_erweima"
+		    android:scaleType="centerCrop"/>
+	</FrameLayout>
+	
 </LinearLayout>
