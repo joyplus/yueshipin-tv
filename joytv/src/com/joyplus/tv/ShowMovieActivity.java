@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.ScaleAnimation;
+import android.view.animation.TranslateAnimation;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
@@ -64,6 +65,13 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 	private BaseAdapter adapter;
 
 	private View floatView;
+
+	private int popWidth, popHeight;
+
+	private boolean isGridViewUp = false;
+//			isGridViewDown = false;
+
+	private int[] beforeFirstAndLastVible = { 0, 9 };
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -125,11 +133,29 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 				// TODO Auto-generated method stub
 				int action = event.getAction();
 
+				if (keyCode == KEY_UP) {
+
+					isGridViewUp = true;
+//					isGridViewDown = false;
+				} else if (keyCode == KEY_DOWN) {
+
+					isGridViewUp = false;
+//					isGridViewDown = true;
+				}
 				if (action == KeyEvent.ACTION_UP) {
 					if (keyCode == KEY_RIGHT) {
 
 						turnToGridViewState();
-					}
+					} 
+//					else if (keyCode == KEY_UP) {
+//
+//						isGridViewUp = true;
+////						isGridViewDown = false;
+//					} else if (keyCode == KEY_DOWN) {
+//
+//						isGridViewUp = false;
+////						isGridViewDown = true;
+//					}
 					if (!isSelectedItem) {
 
 						if (keyCode == KEY_RIGHT) {
@@ -176,138 +202,143 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 				final float x = view.getX();
 				final float y = view.getY();
 
-				ScaleAnimation outScaleAnimation = new ScaleAnimation(1.0f,
-						0.8f, 1.0f, 0.8f, Animation.RELATIVE_TO_SELF, 0.5f,
-						Animation.RELATIVE_TO_SELF, 0.5f);
+				boolean isSmoonthScroll = false;
 
-				outScaleAnimation.setDuration(80);
-				outScaleAnimation.setFillAfter(false);
+				boolean isSameContent = position >= beforeFirstAndLastVible[0]
+						&& position <= beforeFirstAndLastVible[1];
+				if (position >= 5 && !isSameContent) {
 
-				outScaleAnimation
-						.setAnimationListener(new Animation.AnimationListener() {
+					if (beforepostion >= beforeFirstAndLastVible[0]
+							&& beforepostion <= beforeFirstAndLastVible[0] + 4) {
 
-							@Override
-							public void onAnimationStart(Animation animation) {
-								// TODO Auto-generated method stub
-							}
+						if (isGridViewUp) {
 
-							@Override
-							public void onAnimationRepeat(Animation animation) {
-								// TODO Auto-generated method stub
+							movieGv.smoothScrollBy(-popHeight, 1000);
+							isSmoonthScroll = true;
+							// movieGv.requestLayout();
 
-							}
-
-							@Override
-							public void onAnimationEnd(Animation animation) {
-								// TODO Auto-generated method stub
-								ScaleAnimation inScaleAnimation = new ScaleAnimation(
-										0.8f, 1.0f, 0.8f, 1.0f,
-										Animation.RELATIVE_TO_SELF, 0.5f,
-										Animation.RELATIVE_TO_SELF, 0.5f);
-								inScaleAnimation.setDuration(80);
-								inScaleAnimation.setFillAfter(false);
-
-								floatView.layout((int) x, (int) y,
-										(int) (x + popWidth),
-										(int) (y + popHeight));
-
-								floatView.setPadding(10, 10, 10, 10);
-								floatView.setBackgroundColor(getResources()
-										.getColor(R.color.text_active));
-								floatView.startAnimation(inScaleAnimation);
-							}
-						});
-				floatView.startAnimation(outScaleAnimation);
-
-				int firstVisiblePostion = movieGv.getFirstVisiblePosition();
-				int lastVisiblePosition = movieGv.getLastVisiblePosition();
-
-				if (position >= 10) {
-
-					if (y == 0 || y - popHeight == 0) {// 顶部没有渐影
-
-						if (position <= firstVisiblePostion + 4
-								&& position >= firstVisiblePostion) {// 屏幕第一行
-
-							boolean isSameContent = position >= startAndEndVisibleAll[0] && position <= startAndEndVisibleAll[1];
-							if (beforepostion - 5 == position && !isSameContent) {// 向上
-
-								movieGv.smoothScrollBy(-popHeight, 1000);
-							}
-						} 
-						
-//						else {// 否则在第二行
-//							if (beforepostion + 5 == position && ) {
-//
-//								movieGv.smoothScrollBy(popHeight, 1000);
-//							}
-//						}
-						startAndEndVisibleAll[0] = firstVisiblePostion;
-						startAndEndVisibleAll[1] = firstVisiblePostion + 9;
-
-					} else {// 顶部有渐影
-
-
-						if (position < firstVisiblePostion + 10
-								&& position >= firstVisiblePostion + 5) {// 屏幕第一行
-
-//							if (beforepostion - 5 == position) {
-//
-//								movieGv.smoothScrollBy(-popHeight, 1000);
-//							}
-						} else {// 否则在第二行
-							boolean isSameContent = position >= startAndEndVisibleAll[0] && position <= startAndEndVisibleAll[1];
-							if (beforepostion + 5 == position && !isSameContent) {
-
-								movieGv.smoothScrollBy(popHeight, 1000);
-							}
+							TranslateAnimation translateAnimation = new TranslateAnimation(
+									x, x, y, y + popHeight);
+							translateAnimation.setDuration(1000);
+							translateAnimation.setFillAfter(false);
+//							floatView.layout((int) x, (int) y,
+//									(int) (x + popWidth),
+//									(int) (y + + popHeight + popHeight));
+							floatView.startAnimation(translateAnimation);
 						}
-						startAndEndVisibleAll[0] = lastVisiblePosition - 9;
-						startAndEndVisibleAll[1] = lastVisiblePosition;
+					} else {
+
+						if (!isGridViewUp) {
+
+							movieGv.smoothScrollBy(popHeight, 1000*2);
+//							movieGv.scrollBy(x, y)
+							// movieGv.requestLayout();
+							isSmoonthScroll = true;
+							
+							floatView.layout((int) x, (int) y,
+									(int) (x + popWidth),
+									(int) (y + popHeight));
+							TranslateAnimation translateAnimation;
+							
+//							floatView.layout((int) x, (int) y,
+//							(int) (x + popWidth),
+//							(int) (y + + popHeight + popHeight));
+							int jianYingHeight = (int) (y- popHeight);
+							if(jianYingHeight < 0) {
+								
+								jianYingHeight = (int) y;
+							}
+							translateAnimation = new TranslateAnimation(
+									x, x, y, y  - 2 * popHeight - jianYingHeight);
+							translateAnimation.setDuration(1000);
+							translateAnimation.setFillAfter(true);
+							floatView.startAnimation(translateAnimation);
+						}
 					}
+
 				}
 
-				// if (position >= 10) {
-				//
-				// if(BuildConfig.DEBUG) Log.i(TAG, "Y:" + y);
-				//
-				// int distance = (int)y - popHeight;
-				//
-				// if( distance < 0) {//肯定在第一行
-				//
-				// if (beforepostion - position == 5) {// 向上滑
-				//
-				// movieGv.smoothScrollBy(-popHeight, 1000);
-				// movieGv.setSelection(position - 5);
-				// }
-				// } else {//肯定在第二行
-				//
-				//
-				// }
-				// if (y - popHeight >= 0) {//肯定在第二行
-				//
-				// if (beforepostion - position == 5) {// 向上滑
-				//
-				// movieGv.smoothScrollBy(-popHeight, 1000);
-				//
-				// }
-				// } else {
-				//
-				// if (beforepostion - position == -5 &&) {
-				//
-				// // movieGv.smoothScrollBy(popHeight, 1000);
-				// movieGv.smoothScrollToPositionFromTop(position, 0, 1000);
-				//
-				// }
-				// }
-				// if(x >= popHeight) {
-				//
-				// movieGv.smoothScrollBy( popHeight - (int)x, 1000);
-				// } else if(x < popHeight) {
-				//
-				// movieGv.smoothScrollBy( -popHeight, 1000);
-				// }
-				// }
+				if (!isSmoonthScroll) {// 没有强行拖动时候的动画效果
+
+					ScaleAnimation outScaleAnimation = new ScaleAnimation(1.0f,
+							0.8f, 1.0f, 0.8f, Animation.RELATIVE_TO_SELF, 0.5f,
+							Animation.RELATIVE_TO_SELF, 0.5f);
+
+					outScaleAnimation.setDuration(80);
+					outScaleAnimation.setFillAfter(false);
+
+					outScaleAnimation
+							.setAnimationListener(new Animation.AnimationListener() {
+
+								@Override
+								public void onAnimationStart(Animation animation) {
+									// TODO Auto-generated method stub
+								}
+
+								@Override
+								public void onAnimationRepeat(
+										Animation animation) {
+									// TODO Auto-generated method stub
+
+								}
+
+								@Override
+								public void onAnimationEnd(Animation animation) {
+									// TODO Auto-generated method stub
+									ScaleAnimation inScaleAnimation = new ScaleAnimation(
+											0.8f, 1.0f, 0.8f, 1.0f,
+											Animation.RELATIVE_TO_SELF, 0.5f,
+											Animation.RELATIVE_TO_SELF, 0.5f);
+									inScaleAnimation.setDuration(80);
+									inScaleAnimation.setFillAfter(false);
+
+									floatView.layout((int) x, (int) y,
+											(int) (x + popWidth),
+											(int) (y + popHeight));
+
+									floatView.setPadding(10, 10, 10, 10);
+									floatView.setBackgroundColor(getResources()
+											.getColor(R.color.text_active));
+									floatView.startAnimation(inScaleAnimation);
+								}
+							});
+					floatView.startAnimation(outScaleAnimation);
+
+				}
+
+				if (y == 0 || y - popHeight == 0) {// 顶部没有渐影
+
+					if (!isSmoonthScroll) {
+
+						beforeFirstAndLastVible[0] = movieGv
+								.getFirstVisiblePosition();
+						beforeFirstAndLastVible[1] = movieGv
+								.getFirstVisiblePosition() + 9;
+					} else {
+
+						beforeFirstAndLastVible[0] = movieGv
+								.getFirstVisiblePosition() - 5;
+						beforeFirstAndLastVible[1] = movieGv
+								.getFirstVisiblePosition() + 9 - 5;
+					}
+
+				} else {// 顶部有渐影
+
+					if (!isSmoonthScroll) {
+
+						beforeFirstAndLastVible[0] = movieGv
+								.getLastVisiblePosition() - 9;
+						beforeFirstAndLastVible[1] = movieGv
+								.getLastVisiblePosition();
+					} else {
+
+						beforeFirstAndLastVible[0] = movieGv
+								.getLastVisiblePosition() - 9 + 5;
+						beforeFirstAndLastVible[1] = movieGv
+								.getLastVisiblePosition() + 5;
+					}
+
+				}
 
 				beforepostion = position;
 
@@ -326,8 +357,6 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 	}
 
 	private int beforepostion = 0;
-	private int[] startAndEndVisibleAll = {0,9};
-	private int beforeY;
 
 	private void addListener() {
 
@@ -649,8 +678,6 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 		// }
 
 	}
-
-	private int popWidth, popHeight;
 
 	private class MovieAdpter extends BaseAdapter {
 
