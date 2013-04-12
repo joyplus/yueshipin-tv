@@ -421,6 +421,8 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		if (event.getRepeatCount() > 0) {
 			return isMediaKey(keyCode);
 		}
+		if(JUMP_TIME_TIMES != 0 && !isFastForwardKey(keyCode)) // 快进模式才能按的键
+				return true;
 
 		switch (keyCode) {
 		case KeyEvent.KEYCODE_DPAD_RIGHT:
@@ -468,9 +470,6 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 				}
 			}
 			return true;
-		case KeyEvent.KEYCODE_VOLUME_UP:
-			OnVolumeUp();
-			return true;
 		case KeyEvent.KEYCODE_DPAD_DOWN:
 			if (mHasPaused == false)
 				OnVolumeDown();
@@ -486,11 +485,14 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 				
 			}
 			return true;
+		case KeyEvent.KEYCODE_VOLUME_UP:
+			OnVolumeUp();
+			return true;
 		case KeyEvent.KEYCODE_VOLUME_DOWN:
 			OnVolumeDown();
 			return true;
 		case KeyEvent.KEYCODE_VOLUME_MUTE:
-			mController.showVolume(0);
+				mController.showVolume(0);
 			return true;
 		case KeyEvent.KEYCODE_HEADSETHOOK:
 		case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
@@ -709,6 +711,11 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 				|| keyCode == KeyEvent.KEYCODE_DPAD_LEFT
 				|| keyCode == KeyEvent.KEYCODE_MEDIA_PAUSE;
 	}
+	private static boolean isFastForwardKey(int keyCode) {
+		return keyCode == KeyEvent.KEYCODE_ENTER
+				|| keyCode == KeyEvent.KEYCODE_DPAD_LEFT
+				|| keyCode == KeyEvent.KEYCODE_DPAD_RIGHT;
+	}
 
 	// VOLUME
 	private static boolean isVolumeKey(int keyCode) {
@@ -716,6 +723,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 				|| keyCode == KeyEvent.KEYCODE_VOLUME_UP
 				|| keyCode == KeyEvent.KEYCODE_DPAD_UP
 				|| keyCode == KeyEvent.KEYCODE_DPAD_DOWN;
+
 	}
 
 	private OnSeekBarChangeListener sbLis = new OnSeekBarChangeListener() {
@@ -723,7 +731,10 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		@Override
 		public void onProgressChanged(SeekBar seekBar, int progress,
 				boolean fromUser) {
-			mController.showPlayingAtFirstTime();
+			if (mVideoView.isPlaying()
+					&& mVideoView.getCurrentPosition() >1)
+				mController.showPlayingAtFirstTime();
+			
 			if (JUMP_TIME_TIMES == 0) {
 				RelativeLayout.LayoutParams parms = new RelativeLayout.LayoutParams(
 						RelativeLayout.LayoutParams.WRAP_CONTENT,

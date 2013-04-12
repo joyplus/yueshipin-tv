@@ -120,7 +120,7 @@ public class VideoPlayerActivity extends Activity {
 		Window win = getWindow();
 		WindowManager.LayoutParams winParams = win.getAttributes();
 		winParams.buttonBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_OFF;
-		winParams.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
+//		winParams.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
 		win.setAttributes(winParams);
 
 	}
