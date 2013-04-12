@@ -65,7 +65,6 @@ public class VideoPlayerActivity extends Activity {
 	private String prod_name = null;
 	private AudioManager mAudioManager;
 
-
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -75,12 +74,15 @@ public class VideoPlayerActivity extends Activity {
 
 		setContentView(R.layout.video_player);
 		View rootView = findViewById(R.id.root);
-		View contrlView = findViewById(R.id.relativeLayoutControl);
+
 		Intent intent = getIntent();
 		prod_name = intent.getStringExtra("title");
 		prod_url = intent.getStringExtra("prod_url");
+		prod_name = "越来越好之村晚";
+//		prod_url = "http://221.130.179.66/25/36/53/kingsoft/movie/47978987920B0079FF686B6370B4E039-xiyoupian.mp4?crypt=61740d1aa7f2e300&b=800&gn=132&nc=1&bf=30&p2p=1&video_type=mp4&check=0&tm=1364191200&key=af7b9ad0697560c682a0070cf225e65e&opck=1&lgn=letv&proxy=3702889363&cipi=2026698610&tsnp=1&tag=ios&tag=kingsoft&sign=coopdown&realext=.mp4test=m3u8";
+//		
+		prod_url ="http://g3.letv.cn/vod/v2/MjUvNDgvOTEvbGV0di11dHMvMjM0OTQzOC1BVkMtOTU4ODczLUFBQy0xMjc3MjQtNjA4MDk2MC04MjkxMTA0MzYtNjI1NjNmMTQxNDMxNGFkODY3ZGRjMGNhMTFkNjIxNjgtMTM2NDkxMjMxOTkxMC5tcDQ=?b=1090&mmsid=2341519&tm=1365557814&platid=1&splatid=2&key=75e40c4fc8927605afe8456dc0f9b207&m3u8=ios,2341519?_r0.3129199950490147&test=m3u8";
 		((TextView) findViewById(R.id.textView1)).setText(prod_name);
-		// initializeActionBar(intent);
 		mFinishOnCompletion = intent.getBooleanExtra(
 				MediaStore.EXTRA_FINISH_ON_COMPLETION, true);
 		mPlayer = new MoviePlayer(rootView, this, Uri.parse(prod_url),
@@ -108,30 +110,23 @@ public class VideoPlayerActivity extends Activity {
 
 	}
 
-	private void initializeActionBar(Intent intent) {
-		// ActionBar actionBar = getActionBar();
-		// actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP,
-		// ActionBar.DISPLAY_HOME_AS_UP);
-		String title = intent.getStringExtra(Intent.EXTRA_TITLE);
-		mUri = intent.getData();
-		if (title == null) {
-			Cursor cursor = null;
-			try {
-				cursor = getContentResolver().query(mUri,
-						new String[] { VideoColumns.TITLE }, null, null, null);
-				if (cursor != null && cursor.moveToNext()) {
-					title = cursor.getString(0);
-				}
-			} catch (Throwable t) {
-				Log.w(TAG, "cannot get title from: " + intent.getDataString(),
-						t);
-			} finally {
-				if (cursor != null)
-					cursor.close();
-			}
-		}
-		// if (title != null)
-		// actionBar.setTitle(title);
+	public void OnClickPause(View v) {
+		if(mPlayer.isPause())
+			mPlayer.playVideo();
+		else
+			mPlayer.pauseVideo();
+	}
+	public void OnClickPre(View v) {
+
+	}
+	public void OnClickContinue(View v) {
+
+	}
+	public void OnClickNext(View v) {
+
+	}
+	public void OnClickFav(View v) {
+
 	}
 
 	@Override

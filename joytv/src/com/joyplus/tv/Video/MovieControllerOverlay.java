@@ -75,16 +75,18 @@ public class MovieControllerOverlay extends FrameLayout implements
 	private View mLayoutVolume;
 	private final TextView errorView;
 	private View mLayoutControl;
-	private ImageView playPauseReplayView;
-	private ImageView playContinueView;
-	private ImageView playFavView;
-	private ImageView playPreView;
-	private ImageView playNextView;
+	private View mLayoutBottomTime2;
+	private ImageButton playPauseReplayView;
+	private ImageButton playContinueView;
+	private ImageButton playFavView;
+	private ImageButton playPreView;
+	private ImageButton playNextView;
 
 	private final Handler handler;
 	private final Runnable startHidingRunnable;
 	private final Runnable startHidingVolumeRunnable;
 	private final Runnable startHidingTimerBarRunnable;
+	private final Runnable startHidingTimesRunnable;
 	private final Animation hideAnimation;
 
 	private State state;
@@ -104,7 +106,6 @@ public class MovieControllerOverlay extends FrameLayout implements
 	/** 当前声音 */
 	private int mVolume = -1;
 	private AudioManager mAudioManager;
-	private View mVolumeLayout;
 	private ArcView mArcView;
 
 	public MovieControllerOverlay(Context context, View rootView) {
@@ -137,37 +138,31 @@ public class MovieControllerOverlay extends FrameLayout implements
 		mTextViewRate = (TextView) rootView.findViewById(R.id.textView4);
 
 		mLayoutControl = rootView.findViewById(R.id.LayoutControl);
-		mLayoutControl.setFocusable(true);
 		mLayoutControl.setOnTouchListener(this);
 
-		playPauseReplayView = (ImageView) rootView
+		playPauseReplayView = (ImageButton) rootView
 				.findViewById(R.id.imageControl_c);
-		playPauseReplayView.setFocusable(true);
 		playPauseReplayView.setOnTouchListener(this);
 
-		playContinueView = (ImageView) rootView
+		playContinueView = (ImageButton) rootView
 				.findViewById(R.id.imageControl_t);
-		playContinueView.setFocusable(true);
 		playContinueView.setOnTouchListener(this);
 		
 		
 		mLayoutVolume = rootView.findViewById(R.id.Layout_Volume);
 
-		playFavView = (ImageView) rootView.findViewById(R.id.imageControl_b);
-		playFavView.setFocusable(true);
+		playFavView = (ImageButton) rootView.findViewById(R.id.imageControl_b);
 		playFavView.setOnTouchListener(this);
 
-		playPreView = (ImageView) rootView.findViewById(R.id.imageControl_r);
-		playPreView.setFocusable(true);
+		playPreView = (ImageButton) rootView.findViewById(R.id.imageControl_r);
 		playPreView.setOnTouchListener(this);
 
-		playNextView = (ImageView) rootView.findViewById(R.id.imageControl_l);
-		playNextView.setFocusable(true);
+		playNextView = (ImageButton) rootView.findViewById(R.id.imageControl_l);
 		playNextView.setOnTouchListener(this);
 
-		mVolumeLayout = rootView.findViewById(R.id.Layout_Volume);
 		mArcView = (ArcView)  rootView.findViewById(R.id.arcView1);
 		
+		mLayoutBottomTime2 = rootView.findViewById(R.id.LayoutBottomTime2);
 
 		errorView = new TextView(context);
 		errorView.setGravity(Gravity.CENTER);
@@ -200,7 +195,11 @@ public class MovieControllerOverlay extends FrameLayout implements
 				startTimerBarHiding();
 			}
 		};
-
+		startHidingTimesRunnable = new Runnable() {
+			public void run() {
+				startTimesHiding();
+			}
+		};
 		hideAnimation = AnimationUtils
 				.loadAnimation(context, R.anim.player_out);
 		hideAnimation.setAnimationListener(this);
@@ -209,6 +208,37 @@ public class MovieControllerOverlay extends FrameLayout implements
 				LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
 		setLayoutParams(params);
 		hide();
+	}
+
+	public void focusLayoutControl(int index) {
+		switch (index) {
+		case 0:
+			playPauseReplayView.setFocusable(true);
+			playPauseReplayView.requestFocus();
+			break;
+		case 1:
+			playNextView.setFocusable(true);
+			playNextView.requestFocus();
+			
+			break;
+		case 2:
+			playFavView.setFocusable(true);
+			playFavView.requestFocus();
+			break;
+		case 3:
+			playPreView.setFocusable(true);
+			playPreView.requestFocus();
+			
+			break;
+		case 4:
+			playContinueView.setFocusable(true);
+			playContinueView.requestFocus();
+
+			break;
+		default:
+			break;
+		}
+		
 	}
 	public void setAudioManager(AudioManager mAudioManager){
 		this.mAudioManager = mAudioManager;
@@ -227,15 +257,18 @@ public class MovieControllerOverlay extends FrameLayout implements
 	public View getView() {
 		return this;
 	}
+
 	public void showPlayingAtFirstTime() {
-		state = State.PLAYING;
-		errorView.setVisibility(View.INVISIBLE);
-		loadingView.setVisibility(View.INVISIBLE);
-		
-		mLayoutTop.setVisibility(View.VISIBLE);
-		mLayoutBottom.setVisibility(View.VISIBLE);
-		mLayoutTime.setVisibility(View.VISIBLE);
-		handler.postDelayed(startHidingTimerBarRunnable, 2500);
+		if (loadingView.getVisibility() == View.VISIBLE) {
+			state = State.PLAYING;
+			errorView.setVisibility(View.GONE);
+			loadingView.setVisibility(View.GONE);
+
+			mLayoutTop.setVisibility(View.VISIBLE);
+			mLayoutBottom.setVisibility(View.VISIBLE);
+			mLayoutTime.setVisibility(View.VISIBLE);
+			handler.postDelayed(startHidingTimerBarRunnable, 2500);
+		}
 	}
 	public void showPlaying() {
 		state = State.PLAYING;
@@ -273,6 +306,7 @@ public class MovieControllerOverlay extends FrameLayout implements
 	}
 	
 	public void setTimes(int currentTime, int totalTime) {
+		
 //		if(currentTime >0 && )
 //			handler.removeCallbacks(mRunnable);
 		// timeBar.setTime(currentTime, totalTime);
@@ -283,15 +317,16 @@ public class MovieControllerOverlay extends FrameLayout implements
 		hidden = true;
 		
 		hideVolume();
-		mLayoutTop.setVisibility(View.INVISIBLE);
-		mLayoutBottom.setVisibility(View.INVISIBLE);
-		mLayoutTime.setVisibility(View.INVISIBLE);
+		mLayoutBottomTime2.setVisibility(View.GONE);
+		mLayoutTop.setVisibility(View.GONE);
+		mLayoutBottom.setVisibility(View.GONE);
+		mLayoutTime.setVisibility(View.GONE);
 
-		mLayoutControl.setVisibility(View.INVISIBLE);
-		mLayoutVolume.setVisibility(View.INVISIBLE);
-		loadingView.setVisibility(View.INVISIBLE);
+		mLayoutControl.setVisibility(View.GONE);
+		mLayoutVolume.setVisibility(View.GONE);
+		loadingView.setVisibility(View.GONE);
 		
-		background.setVisibility(View.INVISIBLE);
+		background.setVisibility(View.GONE);
 		// timeBar.setVisibility(View.INVISIBLE);
 		setVisibility(View.INVISIBLE);
 		setFocusable(true);
@@ -307,12 +342,13 @@ public class MovieControllerOverlay extends FrameLayout implements
 		mainView = view;
 
 		errorView.setVisibility(mainView == errorView ? View.VISIBLE
-				: View.INVISIBLE);
+				: View.GONE);
 		loadingView.setVisibility(mainView == loadingView ? View.VISIBLE
-				: View.INVISIBLE);
+				: View.GONE);
 		mLayoutControl.setVisibility(mainView == mLayoutControl ? View.VISIBLE
-				: View.INVISIBLE);
+				: View.GONE);
 		show();
+		
 	}
 
 	public void show() {
@@ -332,7 +368,13 @@ public class MovieControllerOverlay extends FrameLayout implements
 		maybeStartHiding();
 
 	}
-
+	public void HidingTimes(){
+		handler.removeCallbacks(startHidingTimesRunnable);
+		handler.postDelayed(startHidingTimesRunnable, 500);
+	}
+	public void ShowTimes(){
+		mLayoutBottomTime2.setVisibility(View.VISIBLE);
+	}
 	private void maybeStartHiding() {
 		cancelHiding();
 		if (state == State.PLAYING) {
@@ -351,6 +393,10 @@ public class MovieControllerOverlay extends FrameLayout implements
 		startHideAnimation(mLayoutTop);
 		startHideAnimation(mLayoutBottom);
 		startHideAnimation(mLayoutTime);
+		mShowTimerBar = false;
+	}
+	private void startTimesHiding(){
+		startHideAnimation(mLayoutBottomTime2);
 	}
 	private void startHideAnimation(View view) {
 		if (view.getVisibility() == View.VISIBLE) {
@@ -510,6 +556,7 @@ public class MovieControllerOverlay extends FrameLayout implements
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 		measureChildren(widthMeasureSpec, heightMeasureSpec);
+
 	}
 
 	private void updateViews() {
@@ -520,13 +567,13 @@ public class MovieControllerOverlay extends FrameLayout implements
 		// timeBar.setVisibility(View.VISIBLE);
 		if (state == State.PAUSED) {
 			playPauseReplayView
-					.setBackgroundResource(R.drawable.player_btn_play_play_normal);
+					.setBackgroundResource(R.drawable.player_btn_play_play);
 		} else if (state == State.PLAYING) {
 			playPauseReplayView
-					.setBackgroundResource(R.drawable.player_s_ic_vidcontrol_pause);
+					.setBackgroundResource(R.drawable.player_btn_pause);
 		} else
 			playPauseReplayView
-					.setBackgroundResource(R.drawable.player_btn_finish_normal);
+					.setBackgroundResource(R.drawable.player_btn_finish);
 
 		if (state != State.LOADING && state != State.ERROR
 				&& !(state == State.ENDED && !canReplay)) {
@@ -590,27 +637,20 @@ public class MovieControllerOverlay extends FrameLayout implements
 	@Override
 	public void showTimerBar() {
 		// TODO Auto-generated method stub
-		if (!mShowTimerBar) {
 			mShowTimerBar = true;
 			mLayoutTop.setVisibility(View.VISIBLE);
 			mLayoutBottom.setVisibility(View.VISIBLE);
 			mLayoutTime.setVisibility(View.VISIBLE);
-		}
-		else 
-			cancelHidingTimerBar();
-		handler.postDelayed(startHidingTimerBarRunnable, 2500);
 	}
 	public void hideTimerBar() {
 		// TODO Auto-generated method stub
 		mShowTimerBar = false;
-		mLayoutTop.setVisibility(View.INVISIBLE);
-		mLayoutBottom.setVisibility(View.INVISIBLE);
-		mLayoutTime.setVisibility(View.INVISIBLE);
+		handler.removeCallbacks(startHidingTimerBarRunnable);
+		handler.postDelayed(startHidingTimerBarRunnable, 2500);
 	}
 
 	public void showVolume(int index) {
 		// TODO Auto-generated method stub
-		
 		if (!mShowVolume) {
 			mShowVolume = true;
 			mLayoutVolume.setVisibility(View.VISIBLE);
@@ -623,7 +663,7 @@ public class MovieControllerOverlay extends FrameLayout implements
 	public void hideVolume() {
 		// TODO Auto-generated method stub
 		mShowVolume = false;
-		mLayoutVolume.setVisibility(View.INVISIBLE);
+		mLayoutVolume.setVisibility(View.GONE);
 	}
 	/**
 	 * 滑动改变声音大小

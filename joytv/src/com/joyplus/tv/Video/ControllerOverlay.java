@@ -51,6 +51,8 @@ public interface ControllerOverlay {
 	
 	void showTimerBar();
 	
+	void hideTimerBar();
+	
 	void showPlayingAtFirstTime();
 	
 	void showPlaying();
@@ -67,11 +69,15 @@ public interface ControllerOverlay {
 
 	void setTimes(int currentTime, int totalTime);
 	
+	void HidingTimes();
+	void ShowTimes();
+	
 	void resetTime();
 	
 	void showVolume(int index);
 	boolean isHidden();
 	
 	void setAudioManager(AudioManager mAudioManager);
-
+	
+	void focusLayoutControl(int index);
 }

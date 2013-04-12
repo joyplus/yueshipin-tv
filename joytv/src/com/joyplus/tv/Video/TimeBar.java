@@ -105,7 +105,7 @@ public class TimeBar extends View {
 		timeTextPaint.getTextBounds("0:00:00", 0, 7, timeBounds);
 
 		scrubber = BitmapFactory.decodeResource(getResources(),
-				R.drawable.player_s_scrubber_knob);
+				R.drawable.player_btn_play_play_normal);
 		scrubberPadding = (int) (metrics.density * SCRUBBER_PADDING_IN_DP);
 
 		vPaddingInPx = (int) (metrics.density * V_PADDING_IN_DP);

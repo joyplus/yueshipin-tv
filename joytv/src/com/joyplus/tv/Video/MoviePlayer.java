@@ -29,6 +29,7 @@ import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.net.TrafficStats;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -47,12 +48,11 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 import com.joyplus.tv.R;
 
 public class MoviePlayer implements MediaPlayer.OnErrorListener,
-		MediaPlayer.OnCompletionListener, 
-		MediaPlayer.OnPreparedListener ,
-		MediaPlayer.OnBufferingUpdateListener,
-		MediaPlayer.OnInfoListener,
+		MediaPlayer.OnCompletionListener,
+		MediaPlayer.OnPreparedListener,
+		MediaPlayer.OnBufferingUpdateListener, MediaPlayer.OnInfoListener,
 		MediaPlayer.OnSeekCompleteListener,
-		MediaPlayer.OnVideoSizeChangedListener,
+		MediaPlayer.OnVideoSizeChangedListener, 
 		ControllerOverlay.Listener {
 	@SuppressWarnings("unused")
 	private static final String TAG = "MoviePlayer";
@@ -71,13 +71,17 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 	private static final long RESUMEABLE_TIMEOUT = 3 * 60 * 1000; // 3 mins
 
 	private int JUMP_TIME = 0;
+	private int JUMP_TIME_TIMES = 0;//检查是否处在快进模式中
+	private int CURRENT_KEY = 0;
+
+	private int seekBarWidthOffset = 24;
 	
 	private Context mContext;
 	private final VideoView mVideoView;
 	private final Bookmarker mBookmarker;
 	private final Uri mUri;
 	private Handler mHandler = new Handler();
-//	private final ActionBar mActionBar;
+	// private final ActionBar mActionBar;
 	private ControllerOverlay mController;
 
 	private long mResumeableTime = Long.MAX_VALUE;
@@ -89,29 +93,37 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 
 	// If the time bar is visible.
 	private boolean mShowing;
+
 	
 	private SeekBar sb;
 	private TextView textView1;
 	private TextView textView2;
+	private TextView mTextViewTime2;
+	private TextView saveTime;
+	
 	private View mLayoutBottomTime;
 	private int totalTime;
 	private int currentTime;
-	
+
 	private AudioManager mAudioManager;
 	/** 最大声音 */
 	private int mMaxVolume;
 	/** 当前声音 */
 	private int mVolume = -1;
 	
-	private final Runnable mPlayingChecker = new Runnable() {
-		public void run() {
-			if (mVideoView.isPlaying()) {
-				mController.showPlayingAtFirstTime();
-			} else {
-				mHandler.postDelayed(mPlayingChecker, 250);
-			}
-		}
-	};
+	private int mVideoWidth = 0;
+	private int mVideoHeight = 0;
+
+//	private final Runnable mPlayingChecker = new Runnable() {
+//		public void run() {
+//			if (mVideoView.isPlaying()
+//					&& mVideoView.getCurrentPosition() >1) {
+//				mController.showPlayingAtFirstTime();
+//			} else {
+//				mHandler.postDelayed(mPlayingChecker, 250);
+//			}
+//		}
+//	};
 
 	private final Runnable mProgressChecker = new Runnable() {
 		public void run() {
@@ -120,25 +132,26 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		}
 	};
 
-	public MoviePlayer(View rootView,Context movieActivity,
-			Uri videoUri, Bundle savedInstance, boolean canReplay) {
+	public MoviePlayer(View rootView, Context movieActivity, Uri videoUri,
+			Bundle savedInstance, boolean canReplay) {
 		this.mContext = movieActivity;
 		mVideoView = (VideoView) rootView.findViewById(R.id.surface_view);
 
 		mBookmarker = new Bookmarker(mContext);
-//		mActionBar = movieActivity.getActionBar();
+		// mActionBar = movieActivity.getActionBar();
 		mUri = videoUri;
-		
+
 		sb = (SeekBar) rootView.findViewById(R.id.seekBar1);
 		sb.setOnSeekBarChangeListener(sbLis);
-		
+
 		textView1 = (TextView) rootView.findViewById(R.id.textViewTime1);
 		textView2 = (TextView) rootView.findViewById(R.id.textViewTime2);
-		
-		mLayoutBottomTime = (View) rootView.findViewById(R.id.LayoutBottomTime);
-		
+		mTextViewTime2 = (TextView) rootView.findViewById(R.id.textViewTimes);
+		saveTime	 = (TextView) rootView.findViewById(R.id.textView7);
 
-		mController = new MovieControllerOverlay(mContext,rootView);
+		mLayoutBottomTime = (View) rootView.findViewById(R.id.LayoutBottomTime);
+
+		mController = new MovieControllerOverlay(mContext, rootView);
 		((ViewGroup) rootView).addView(mController.getView());
 		mController.setListener(this);
 		mController.setCanReplay(canReplay);
@@ -146,8 +159,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		mVideoView.setOnErrorListener(this);
 		mVideoView.setOnCompletionListener(this);
 		mVideoView.setOnPreparedListener(this);
-		
-		
+
 		mVideoView.setVideoURI(mUri);
 		mVideoView.setOnTouchListener(new View.OnTouchListener() {
 			public boolean onTouch(View v, MotionEvent event) {
@@ -182,22 +194,25 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		} else {
 			final Integer bookmark = mBookmarker.getBookmark(mUri);
 			if (bookmark != null) {
+				saveTime.setText(formatDuration(bookmark));
 				showResumeDialog(mContext, bookmark);
 			} else {
 				startVideo();
 			}
 		}
 	}
-	public void setAudioManager(AudioManager mAudioManager){
+
+	public void setAudioManager(AudioManager mAudioManager) {
 		this.mAudioManager = mAudioManager;
 		mVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-		
+
 		if (mVolume < 0)
 			mVolume = 0;
 		mMaxVolume = mAudioManager
 				.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
 		mController.setAudioManager(mAudioManager);
 	}
+
 	private void showSystemUi(boolean visible) {
 		int flag = visible ? 0 : View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
 				| View.SYSTEM_UI_FLAG_LOW_PROFILE;
@@ -205,16 +220,16 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 	}
 
 	public void onSaveInstanceState(Bundle outState) {
-		outState.putInt(KEY_VIDEO_POSITION, mVideoPosition);
+		outState.putLong(KEY_VIDEO_POSITION, mVideoPosition);
 		outState.putLong(KEY_RESUMEABLE_TIME, mResumeableTime);
 	}
 
 	private void showResumeDialog(Context context, final int bookmark) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(context);
 		builder.setTitle(R.string.resume_playing_title);
-        builder.setMessage(String.format(
-                context.getString(R.string.resume_playing_message),
-               formatDuration(bookmark / 1000)));
+		builder.setMessage(String.format(
+				context.getString(R.string.resume_playing_message),
+				formatDuration(bookmark)));
 		builder.setOnCancelListener(new OnCancelListener() {
 			public void onCancel(DialogInterface dialog) {
 				onCompletion();
@@ -260,7 +275,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 
 	public void onDestroy() {
 		mVideoView.stopPlayback();
-		if(sb != null)
+		if (sb != null)
 			sb.removeCallbacks(mProgressChecker);
 		mController.hide();
 	}
@@ -274,21 +289,8 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		}
 		int position = mVideoView.getCurrentPosition();
 		int duration = mVideoView.getDuration();
-	
-		RelativeLayout.LayoutParams parms = new RelativeLayout.LayoutParams(
-				RelativeLayout.LayoutParams.WRAP_CONTENT,
-				RelativeLayout.LayoutParams.WRAP_CONTENT);
-		parms.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM,
-				RelativeLayout.TRUE);
-		if (duration > 0) 
-			parms.leftMargin = position * (sb.getWidth() - 4) / duration + 20;
-		else 
-			parms.leftMargin = 20;
-		parms.bottomMargin = 20 + 8;
-		mLayoutBottomTime.setLayoutParams(parms);
 
-		textView1.setText(formatDuration(position));
-		textView1.setVisibility(View.VISIBLE);
+	
 		sb.setProgress(position);
 		this.currentTime = position;
 		setTime(duration);
@@ -296,21 +298,22 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		mController.setTimes(position, duration);
 		return position;
 	}
+
 	public void setTime(int totalTime) {
-		if ( this.totalTime == totalTime) {
+		if (this.totalTime == totalTime) {
 			return;
 		}
 		this.totalTime = totalTime;
 		sb.setMax(totalTime);
 		textView2.setText(formatDuration(totalTime));
-		
 
 	}
-	private String formatDuration(int duration) {
+
+	private String formatDuration(long duration) {
 		duration = duration / 1000;
-		int h = duration / 3600;
-		int m = (duration - h * 3600) / 60;
-		int s = duration - (h * 3600 + m * 60);
+		int h = (int)duration / 3600;
+		int m = (int)(duration - h * 3600) / 60;
+		int s = (int)duration - (h * 3600 + m * 60);
 		String durationValue;
 		if (h == 0) {
 			durationValue = String.format("%1$02d:%2$02d", m, s);
@@ -319,31 +322,34 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		}
 		return durationValue;
 	}
+
 	private void startVideo() {
 		// For streams that we expect to be slow to start up, show a
 		// progress spinner until playback starts.
 		String scheme = mUri.getScheme();
 		if ("http".equalsIgnoreCase(scheme) || "rtsp".equalsIgnoreCase(scheme)) {
 			mController.showLoading();
-			mHandler.removeCallbacks(mPlayingChecker);
-			mHandler.postDelayed(mPlayingChecker, 250);
+//			mHandler.removeCallbacks(mPlayingChecker);
+//			mHandler.postDelayed(mPlayingChecker, 250);
 		} else {
 			mController.showPlaying();
 		}
 
 		mVideoView.start();
-		
+		mHasPaused = false;
 		setProgress();
 	}
 
-	private void playVideo() {
+	public void playVideo() {
+		mHasPaused = false;
 		mVideoView.start();
 		mController.showPlaying();
-		
+
 		setProgress();
 	}
 
-	private void pauseVideo() {
+	public void pauseVideo() {
+		mHasPaused = true;
 		mVideoView.pause();
 		mController.showPaused();
 	}
@@ -390,19 +396,22 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 
 	public void onShown() {
 		mShowing = true;
-//		mActionBar.show();
+		// mActionBar.show();
 		showSystemUi(true);
 		setProgress();
 	}
 
 	public void onHidden() {
 		mShowing = false;
-//		mActionBar.hide();
+		// mActionBar.hide();
 		showSystemUi(false);
 	}
 
 	public void onReplay() {
 		startVideo();
+	}
+	public boolean isPause() {
+		return mHasPaused;
 	}
 
 	// Below are key events passed from MovieActivity.
@@ -415,44 +424,70 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 
 		switch (keyCode) {
 		case KeyEvent.KEYCODE_DPAD_RIGHT:
+			if (mHasPaused == false)
+				OnMediaFastForward();
+			else{
+				if(CURRENT_KEY == 3){
+					mController.focusLayoutControl(0);
+					CURRENT_KEY = 0;
+				}else{
+					mController.focusLayoutControl(1);
+					CURRENT_KEY = 1;
+				}
+			}
+			return true;
 		case KeyEvent.KEYCODE_MEDIA_FAST_FORWARD:
-				if(!mShowing){
-					mController.showTimerBar(); 
-//					onShown();
-				}
-				if(JUMP_TIME == 0)
-					JUMP_TIME = mVideoView.getCurrentPosition() + 10000;
-				else 
-					JUMP_TIME = JUMP_TIME + 10000;
-				System.out.println("Play forward");  
-				
-				return true;
+			OnMediaFastForward();
+			return true;
 		case KeyEvent.KEYCODE_DPAD_LEFT:
-		case KeyEvent.KEYCODE_MEDIA_REWIND:
-				if(!mShowing){
-					mController.showTimerBar(); 
-//					onShown();
+			if (mHasPaused == false)
+				OnMediaRewind();
+			else{
+				if(CURRENT_KEY == 1){
+					mController.focusLayoutControl(0);
+					CURRENT_KEY = 0;
+				}else{
+				mController.focusLayoutControl(3);
+				CURRENT_KEY = 3;
 				}
-				if(JUMP_TIME == 0)
-					JUMP_TIME = mVideoView.getCurrentPosition() - 10000;
-				else 
-					JUMP_TIME = JUMP_TIME - 10000;
-				
-	            System.out.println("Play back");  
-				return true;
+			}
+			return true;
+		case KeyEvent.KEYCODE_MEDIA_REWIND:
+			OnMediaRewind();
+			return true;
 		case KeyEvent.KEYCODE_DPAD_UP:
+			if (mHasPaused == false)
+				OnVolumeUp();
+			else{
+				if(CURRENT_KEY == 2){
+					mController.focusLayoutControl(0);
+					CURRENT_KEY = 0;
+				}else{
+					mController.focusLayoutControl(4);
+					CURRENT_KEY = 4;
+				}
+			}
+			return true;
 		case KeyEvent.KEYCODE_VOLUME_UP:
-			mVolume++;
-			if (mVolume > mMaxVolume)
-				mVolume = mMaxVolume;
-			mController.showVolume(mVolume);
+			OnVolumeUp();
 			return true;
 		case KeyEvent.KEYCODE_DPAD_DOWN:
+			if (mHasPaused == false)
+				OnVolumeDown();
+			else{
+				if(CURRENT_KEY == 4){
+					mController.focusLayoutControl(0);
+					CURRENT_KEY = 0;
+				}
+				else{
+					mController.focusLayoutControl(2);
+					CURRENT_KEY = 2;
+				}
+				
+			}
+			return true;
 		case KeyEvent.KEYCODE_VOLUME_DOWN:
-			mVolume--;
-			 if (mVolume < 0)
-				 mVolume = 0;
-			mController.showVolume(mVolume);
+			OnVolumeDown();
 			return true;
 		case KeyEvent.KEYCODE_VOLUME_MUTE:
 			mController.showVolume(0);
@@ -469,14 +504,27 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 			}
 			return true;
 		case KeyEvent.KEYCODE_ENTER:
-			if (mController.isHidden()) {
-				mController.show();
+			if (JUMP_TIME_TIMES != 0) {// 快进模式
+				mDragging = false;
+				mVideoView.seekTo(JUMP_TIME);
+				JUMP_TIME = 0;
+				JUMP_TIME_TIMES = 0;
+				mHandler.removeCallbacks(mMediaFastForwardRunnable);
+				mController.hideTimerBar();
+				mController.HidingTimes();
+			} else {
+				if (mController.isHidden()) {
+					mController.show();
+				}
+				if (mVideoView.isPlaying()) {
+					pauseVideo();
+					mController.focusLayoutControl(0);
+					CURRENT_KEY = 0;
+				} else {
+					playVideo();
+				}
 			}
-			if (mVideoView.isPlaying()) {
-				pauseVideo();
-			}else {
-				playVideo();
-			}
+
 			return true;
 		case KeyEvent.KEYCODE_MEDIA_PAUSE:
 			if (mController.isHidden()) {
@@ -502,9 +550,140 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 			// TODO: Handle next / previous accordingly, for now we're
 			// just consuming the events.
 			return true;
-		
+		case KeyEvent.KEYCODE_BACK:
+			if (mHasPaused){
+				playVideo();
+				return true;
+			}else if (JUMP_TIME_TIMES != 0) {// 快进模式
+				mDragging = false;
+				JUMP_TIME = 0;
+				JUMP_TIME_TIMES = 0;
+				mHandler.removeCallbacks(mMediaFastForwardRunnable);
+				mController.hideTimerBar();
+				mController.HidingTimes();
+				return true;
+			} 
+
 		}
 		return false;
+	}
+
+	private void OnMediaRewind() {
+		if(JUMP_TIME_TIMES >1)
+			JUMP_TIME_TIMES = 1;
+		else if(JUMP_TIME_TIMES-1 <-3)
+			return;
+		else if(JUMP_TIME_TIMES == 1)
+			JUMP_TIME_TIMES = -1;
+		else
+			JUMP_TIME_TIMES--;
+
+		mDragging = true;
+		if (!mShowing) {
+			mController.showTimerBar();
+		}
+		if (JUMP_TIME == 0)
+			JUMP_TIME = mVideoView.getCurrentPosition();
+//		else
+//			JUMP_TIME = JUMP_TIME - 10000;
+		if(JUMP_TIME_TIMES != 0){
+			mTextViewTime2.setText("×" + Integer.toString(Math.abs(JUMP_TIME_TIMES)));
+			mController.ShowTimes();
+		}
+		else {
+			mController.HidingTimes();
+		}
+		
+		mHandler.removeCallbacks(mMediaFastForwardRunnable);
+		mHandler.postDelayed(mMediaFastForwardRunnable, 1000);
+		System.out.println("Play back");
+	}
+
+	private void OnMediaFastForward() {
+		if(JUMP_TIME_TIMES < -1)
+			JUMP_TIME_TIMES = -1;
+		else if(JUMP_TIME_TIMES+1 >3)
+			return;
+		else if(JUMP_TIME_TIMES == -1)
+			JUMP_TIME_TIMES = 1;
+		else
+			JUMP_TIME_TIMES++;
+		mDragging = true;
+		if (!mShowing) {
+			mController.showTimerBar();
+		}
+		if (JUMP_TIME == 0)
+			JUMP_TIME = mVideoView.getCurrentPosition();
+//		else
+//			JUMP_TIME = JUMP_TIME + 10000;
+		if(JUMP_TIME_TIMES != 0){
+			mTextViewTime2.setText("×" + Integer.toString(Math.abs(JUMP_TIME_TIMES)));
+			mController.ShowTimes();
+		}
+		else {
+			mController.HidingTimes();
+		}
+		
+		mHandler.removeCallbacks(mMediaFastForwardRunnable);
+		mHandler.postDelayed(mMediaFastForwardRunnable, 1000);
+		System.out.println("Play forward");
+	}
+
+	private final Runnable mMediaFastForwardRunnable = new Runnable() {
+		int[] mTimes = { 10000, 30000, 3 * 60000 };
+
+		public void run() {
+			
+			if (JUMP_TIME_TIMES < 0){ // 快退模式
+				if (JUMP_TIME - mTimes[Math.abs(JUMP_TIME_TIMES) - 1] < 0) 
+					return;
+				else
+					JUMP_TIME = JUMP_TIME - mTimes[Math.abs(JUMP_TIME_TIMES) - 1];
+			}
+			else if (JUMP_TIME_TIMES > 0) {
+				if ((JUMP_TIME + mTimes[JUMP_TIME_TIMES - 1]) >= totalTime) 
+					return;
+				else
+					JUMP_TIME = JUMP_TIME + mTimes[JUMP_TIME_TIMES - 1];
+			}
+			RelativeLayout.LayoutParams parms = new RelativeLayout.LayoutParams(
+					RelativeLayout.LayoutParams.WRAP_CONTENT,
+					RelativeLayout.LayoutParams.WRAP_CONTENT);
+			parms.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM,
+					RelativeLayout.TRUE);
+
+			double mLeft = (double) JUMP_TIME / totalTime
+					* (sb.getMeasuredWidth() - seekBarWidthOffset) + 20;
+			if (totalTime > 0)
+				parms.leftMargin = (int) mLeft;
+			else
+				parms.leftMargin = 20;
+			parms.bottomMargin = 20 + 10;
+
+			mLayoutBottomTime.setLayoutParams(parms);
+
+			textView1.setText(formatDuration(JUMP_TIME));
+			textView1.setVisibility(View.VISIBLE);
+
+			sb.setMax(totalTime);
+			sb.setProgress(JUMP_TIME);
+
+			// Fun_downloadrate();
+			mHandler.postDelayed(mMediaFastForwardRunnable, 1000);
+		}
+	};
+	private void OnVolumeDown() {
+		mVolume--;
+		if (mVolume < 0)
+			mVolume = 0;
+		mController.showVolume(mVolume);
+	}
+
+	private void OnVolumeUp() {
+		mVolume++;
+		if (mVolume > mMaxVolume)
+			mVolume = mMaxVolume;
+		mController.showVolume(mVolume);
 	}
 
 	public boolean onKeyUp(int keyCode, KeyEvent event) {
@@ -513,9 +692,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		case KeyEvent.KEYCODE_MEDIA_FAST_FORWARD:
 		case KeyEvent.KEYCODE_DPAD_LEFT:
 		case KeyEvent.KEYCODE_MEDIA_REWIND:
-				mVideoView.seekTo(JUMP_TIME);
-				JUMP_TIME =0;
-				return true;
+			return true;
 		}
 		return isMediaKey(keyCode);
 	}
@@ -532,7 +709,8 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 				|| keyCode == KeyEvent.KEYCODE_DPAD_LEFT
 				|| keyCode == KeyEvent.KEYCODE_MEDIA_PAUSE;
 	}
-	//VOLUME
+
+	// VOLUME
 	private static boolean isVolumeKey(int keyCode) {
 		return keyCode == KeyEvent.KEYCODE_VOLUME_DOWN
 				|| keyCode == KeyEvent.KEYCODE_VOLUME_UP
@@ -540,25 +718,45 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 				|| keyCode == KeyEvent.KEYCODE_DPAD_DOWN;
 	}
 
-
 	private OnSeekBarChangeListener sbLis = new OnSeekBarChangeListener() {
 
 		@Override
 		public void onProgressChanged(SeekBar seekBar, int progress,
 				boolean fromUser) {
+			mController.showPlayingAtFirstTime();
+			if (JUMP_TIME_TIMES == 0) {
+				RelativeLayout.LayoutParams parms = new RelativeLayout.LayoutParams(
+						RelativeLayout.LayoutParams.WRAP_CONTENT,
+						RelativeLayout.LayoutParams.WRAP_CONTENT);
+				parms.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM,
+						RelativeLayout.TRUE);
+
+				double mLeft = (double) progress / totalTime
+						* (sb.getMeasuredWidth() - seekBarWidthOffset) + 20;
+
+				if (progress > 0)
+					parms.leftMargin = (int) mLeft;
+				else
+					parms.leftMargin = 20;
+				parms.bottomMargin = 20 + 10;
+				mLayoutBottomTime.setLayoutParams(parms);
+
+				textView1.setText(formatDuration(progress));
+				textView1.setVisibility(View.VISIBLE);
+			}
 			// TODO Auto-generated method stub
 		}
 
 		@Override
 		public void onStartTrackingTouch(SeekBar seekBar) {
 			// TODO Auto-generated method stub
-
+			Log.d(TAG,"onStartTrackingTouch");
 		}
 
 		@Override
 		public void onStopTrackingTouch(SeekBar seekBar) {
 			// TODO Auto-generated method stub
-//			mMediaPlayer.seekTo(sb.getProgress());
+			// mMediaPlayer.seekTo(sb.getProgress());
 			mVideoView.seekTo(sb.getProgress());
 			// SeekBar确定位置后，跳到指定位置
 		}
@@ -568,28 +766,61 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 	@Override
 	public void onPrepared(MediaPlayer mp) {
 		// TODO Auto-generated method stub
-		
+		Log.d(TAG,"onPrepared");
+		mVideoWidth = mp.getVideoWidth();
+		mVideoHeight = mp.getVideoHeight();
 	}
+
 	@Override
 	public void onBufferingUpdate(MediaPlayer mp, int percent) {
 		// TODO Auto-generated method stub
+		Log.d(TAG,"onBufferingUpdate:   "+Integer.toString(percent));
 		sb.setMax(100);
 		sb.setProgress(percent);
 	}
+
 	@Override
 	public void onVideoSizeChanged(MediaPlayer mp, int width, int height) {
 		// TODO Auto-generated method stub
-		
+		Log.d(TAG,"onVideoSizeChanged, width:"+Integer.toString(width)+"height: "+Integer.toString(height));
 	}
+
 	@Override
 	public void onSeekComplete(MediaPlayer mp) {
 		// TODO Auto-generated method stub
-		
+		Log.d(TAG,"onSeekComplete");
 	}
+
 	@Override
 	public boolean onInfo(MediaPlayer mp, int what, int extra) {
 		// TODO Auto-generated method stub
-		return false;
+		if (mp != null) {
+			switch (what) {
+			case MediaPlayer.MEDIA_INFO_UNKNOWN:
+				Log.d(TAG,"MEDIA_INFO_UNKNOWN");
+				break;
+			case MediaPlayer.MEDIA_INFO_VIDEO_TRACK_LAGGING:
+				Log.d(TAG,"MEDIA_INFO_VIDEO_TRACK_LAGGING");
+				break;
+			case MediaPlayer.MEDIA_INFO_BUFFERING_START:
+				Log.d(TAG,"MEDIA_INFO_BUFFERING_START");
+				break;
+			case MediaPlayer.MEDIA_INFO_BUFFERING_END:
+				Log.d(TAG,"MEDIA_INFO_BUFFERING_END");
+				break;
+			case MediaPlayer.MEDIA_INFO_BAD_INTERLEAVING:
+				Log.d(TAG,"MEDIA_INFO_BAD_INTERLEAVING");
+				break;
+			case MediaPlayer.MEDIA_INFO_NOT_SEEKABLE:
+				Log.d(TAG,"MEDIA_INFO_NOT_SEEKABLE");
+				break;
+			case MediaPlayer.MEDIA_INFO_METADATA_UPDATE:
+				Log.d(TAG,"MEDIA_INFO_METADATA_UPDATE");
+				break;
+			}
+			
+		}
+		return true;
 	}
 
 }
