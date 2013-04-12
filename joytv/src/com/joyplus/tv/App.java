@@ -44,19 +44,9 @@ import com.parse.Parse;
 @SuppressLint("DefaultLocale")
 public class App extends Application {
 	private final String TAG = "App";
-	private static final String NOT_VALID_LINK = "NULL";
-	private static final String FENGXING = "1";
 
 	private static App instance;
 	public String UserID;
-	private String url = ""; // 用于weibodiallog2中
-	public static int percentDown = 0;
-	public static String urlDown = null;
-	public List prodIdList = new ArrayList();
-	// 固定存放下载的音乐的路径：SD卡目录下
-	public boolean ThreadStartFlag = false;
-	public boolean use2G3G = false;
-	private String mURLPath;
 	private Map<String, String> headers;
 	private CurrentPlayData mCurrentPlayData;
 	private ReturnProgramView m_ReturnProgramView = null;
@@ -117,35 +107,6 @@ public class App extends Application {
 	 */
 	public static Resources getAppResources() {
 		return instance.getResources();
-	}
-
-	public void seturl(String url) {
-		this.url = url;
-	}
-
-	public String geturl() {
-		return url;
-	}
-
-	public void setpercentDown(int percentDown) {
-		App.percentDown = percentDown;
-	}
-
-	public int getpercentDown() {
-		return percentDown;
-	}
-
-	public void seturlDown(String urlDown) {
-		App.urlDown = urlDown;
-	}
-
-	public String geturlDown() {
-		return urlDown;
-	}
-
-
-	public String getURLPath() {
-		return mURLPath;
 	}
 
 	/**
