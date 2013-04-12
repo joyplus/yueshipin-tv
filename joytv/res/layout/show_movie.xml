@@ -292,7 +292,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:listSelector="@android:color/black"
+                    android:listSelector="@android:color/transparent"
                     android:numColumns="5" >
                 </com.joyplus.tv.ui.MyMovieGridView>
 

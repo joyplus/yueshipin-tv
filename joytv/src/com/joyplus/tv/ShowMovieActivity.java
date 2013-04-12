@@ -64,6 +64,8 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 
 	private Button zuijinguankanBtn, zhuijushoucangBtn, lixianshipinBtn,
 			mFenLeiBtn;
+	
+	private View firstFloatView ;
 
 	private View beforeView, activeView;
 
@@ -76,10 +78,8 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 	private int[] beforeFirstAndLastVible = { 0, 9 };
 
 	private View beforeGvView = null;
-	private View firstChildGvView;
 
 	private ObjectMapper mapper = new ObjectMapper();
-	// private List<HotItemInfo> hot_list = new ArrayList<HotItemInfo>();
 
 	private List<MovieItemData> movieList = new ArrayList<MovieItemData>();
 
@@ -100,6 +100,10 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 		TV_DIANYING, 1 + "", 50 + "");
 		getServiceData(url);// 进入电影界面时，全部分类电影显示获取焦点，并且显示数据
 //		movieGv.setAdapter(movieAdapter);// 网格布局添加适配器
+		movieGv.setAdapter(movieAdapter);
+		movieGv.setSelected(true);
+		movieGv.requestFocus();
+		movieGv.setSelection(0);
 
 	}
 
@@ -121,9 +125,73 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 		zuijinguankanBtn = (Button) findViewById(R.id.bt_zuijinguankan);
 		zhuijushoucangBtn = (Button) findViewById(R.id.bt_zhuijushoucang);
 		lixianshipinBtn = (Button) findViewById(R.id.bt_lixianshipin);
+		
+		firstFloatView = findViewById(R.id.inclue_movie_show_item);
 
-		// floatView = findViewById(R.id.inclue_movie_show_item);
+		addListener();
 
+	}
+	
+	private void initState() {
+
+		beforeView = mFenLeiBtn;
+		activeView = mFenLeiBtn;
+
+		searchEt.setFocusable(false);// 搜索焦点消失
+		// movieGv.setNextFocusLeftId(R.id.bt_quanbufenlei);// 网格向左 全部分类获得焦点
+		// movieGv.setNextFocusDownId(R.id.bt_quanbufenlei);// 网格向左 全部分类获得焦点
+		// movieGv.setNextFocusUpId(R.id.bt_quanbufenlei);// 网格向左 全部分类获得焦点
+		// movieGv.setNextFocusRightId(R.id.bt_quanbufenlei);// 网格向左 全部分类获得焦点
+
+		mFenLeiBtn.setTextColor(getResources().getColor(R.color.text_active));// 全部分类首先设为激活状态
+		mFenLeiBtn.setBackgroundResource(R.drawable.menubg);// 在换成这张图片时，会刷新组件的padding
+		dongzuoLL.setPadding(0, 0, 5, 0);
+		kehuanLL.setPadding(0, 0, 5, 0);
+		lunliLL.setPadding(0, 0, 5, 0);
+		xijuLL.setPadding(0, 0, 5, 0);
+		aiqingLL.setPadding(0, 0, 5, 0);
+		xuanyiLL.setPadding(0, 0, 5, 0);
+		kongbuLL.setPadding(0, 0, 5, 0);
+		donghuaLL.setPadding(0, 0, 5, 0);
+		zuijinguankanBtn.setPadding(0, 0, 5, 0);
+		zhuijushoucangBtn.setPadding(0, 0, 5, 0);
+		lixianshipinBtn.setPadding(0, 0, 5, 0);
+		mFenLeiBtn.setPadding(0, 0, 5, 0);
+
+	}
+
+	private int beforepostion = 0;
+
+	private void addListener() {
+
+		dongzuoLL.setOnKeyListener(this);
+		kehuanLL.setOnKeyListener(this);
+		lunliLL.setOnKeyListener(this);
+		xijuLL.setOnKeyListener(this);
+		aiqingLL.setOnKeyListener(this);
+		xuanyiLL.setOnKeyListener(this);
+		kongbuLL.setOnKeyListener(this);
+		donghuaLL.setOnKeyListener(this);
+
+		zuijinguankanBtn.setOnKeyListener(this);
+		zhuijushoucangBtn.setOnKeyListener(this);
+		lixianshipinBtn.setOnKeyListener(this);
+		mFenLeiBtn.setOnKeyListener(this);
+
+		dongzuoLL.setOnClickListener(this);
+		kehuanLL.setOnClickListener(this);
+		lunliLL.setOnClickListener(this);
+		xijuLL.setOnClickListener(this);
+		aiqingLL.setOnClickListener(this);
+		xuanyiLL.setOnClickListener(this);
+		kongbuLL.setOnClickListener(this);
+		donghuaLL.setOnClickListener(this);
+
+		zuijinguankanBtn.setOnClickListener(this);
+		zhuijushoucangBtn.setOnClickListener(this);
+		lixianshipinBtn.setOnClickListener(this);
+		mFenLeiBtn.setOnClickListener(this);
+		
 		searchEt.setOnKeyListener(new View.OnKeyListener() {
 
 			@Override
@@ -139,6 +207,7 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 				return false;
 			}
 		});
+		
 		movieGv.setOnKeyListener(new View.OnKeyListener() {
 
 			@Override
@@ -159,27 +228,17 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 					if (keyCode == KEY_RIGHT) {
 
 						turnToGridViewState();
-						// movieGv.setSelection(0);
 					}
-					// else if (keyCode == KEY_UP) {
-					//
-					// isGridViewUp = true;
-					// // isGridViewDown = false;
-					// } else if (keyCode == KEY_DOWN) {
-					//
-					// isGridViewUp = false;
-					// // isGridViewDown = true;
-					// }
 					if (!isSelectedItem) {
 
-						// if (keyCode == KEY_RIGHT) {
-						// isSelectedItem = true;
-						// movieGv.setSelection(1);
-						// } else if (keyCode == KEY_DOWN) {
-						// isSelectedItem = true;
-						// movieGv.setSelection(5);
-						//
-						// }
+						 if (keyCode == KEY_RIGHT) {
+						 isSelectedItem = true;
+						 movieGv.setSelection(1);
+						 } else if (keyCode == KEY_DOWN) {
+						 isSelectedItem = true;
+						 movieGv.setSelection(5);
+						
+						 }
 					}
 
 				}
@@ -205,7 +264,8 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 					int position, long id) {
 				// TODO Auto-generated method stub
 				// if (BuildConfig.DEBUG)
-				Log.i(TAG, "Positon:" + position + " View:" + beforeGvView);
+				Log.i(TAG, "Positon:" + position + " View:" + view + 
+						" beforGvView:" + beforeGvView );
 
 				if (view == null) {
 
@@ -229,46 +289,14 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 
 							movieGv.smoothScrollBy(-popHeight, 1000);
 							isSmoonthScroll = true;
-							// movieGv.requestLayout();
-
-							// TranslateAnimation translateAnimation = new
-							// TranslateAnimation(
-							// x, x, y, y + popHeight);
-							// translateAnimation.setDuration(1000);
-							// translateAnimation.setFillAfter(false);
-							// // floatView.layout((int) x, (int) y,
-							// // (int) (x + popWidth),
-							// // (int) (y + + popHeight + popHeight));
-							// floatView.startAnimation(translateAnimation);
 						}
 					} else {
 
 						if (!isGridViewUp) {
 
 							movieGv.smoothScrollBy(popHeight, 1000 * 2);
-							// movieGv.scrollBy(x, y)
-							// movieGv.requestLayout();
 							isSmoonthScroll = true;
 
-							// floatView
-							// .layout((int) x, (int) y,
-							// (int) (x + popWidth),
-							// (int) (y + popHeight));
-							// TranslateAnimation translateAnimation;
-							//
-							// // floatView.layout((int) x, (int) y,
-							// // (int) (x + popWidth),
-							// // (int) (y + + popHeight + popHeight));
-							// int jianYingHeight = (int) (y - popHeight);
-							// if (jianYingHeight < 0) {
-							//
-							// jianYingHeight = (int) y;
-							// }
-							// translateAnimation = new TranslateAnimation(x, x,
-							// y, y - 2 * popHeight - jianYingHeight);
-							// translateAnimation.setDuration(1000);
-							// translateAnimation.setFillAfter(true);
-							// floatView.startAnimation(translateAnimation);
 						}
 					}
 
@@ -276,49 +304,6 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 
 				// if (!isSmoonthScroll) {// 没有强行拖动时候的动画效果
 
-				ScaleAnimation outScaleAnimation = new ScaleAnimation(1.0f,
-						0.8f, 1.0f, 0.8f, Animation.RELATIVE_TO_SELF, 0.5f,
-						Animation.RELATIVE_TO_SELF, 0.5f);
-
-				outScaleAnimation.setDuration(80);
-				outScaleAnimation.setFillAfter(false);
-				outScaleAnimation
-						.setAnimationListener(new Animation.AnimationListener() {
-
-							@Override
-							public void onAnimationStart(Animation animation) {
-								// TODO Auto-generated method stub
-							}
-
-							@Override
-							public void onAnimationRepeat(Animation animation) {
-								// TODO Auto-generated method stub
-
-							}
-
-							@Override
-							public void onAnimationEnd(Animation animation) {
-								// TODO Auto-generated method stub
-								ImageView iv = (ImageView) view
-										.findViewById(R.id.item_layout_dianying_reflact);
-								iv.setVisibility(View.GONE);
-								ScaleAnimation inScaleAnimation = new ScaleAnimation(
-										0.8f, 1.0f, 0.8f, 1.0f,
-										Animation.RELATIVE_TO_SELF, 0.5f,
-										Animation.RELATIVE_TO_SELF, 0.5f);
-								inScaleAnimation.setDuration(80);
-								inScaleAnimation.setFillAfter(false);
-
-								// floatView.layout((int) x, (int) y,
-								// (int) (x + popWidth),
-								// (int) (y + popHeight));
-
-								view.setPadding(10, 10, 10, 10);
-								view.setBackgroundColor(getResources()
-										.getColor(R.color.text_active));
-								view.startAnimation(inScaleAnimation);
-							}
-						});
 				if (beforeGvView != null) {
 
 					ImageView iv = (ImageView) beforeGvView
@@ -326,16 +311,55 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 					iv.setVisibility(View.VISIBLE);
 					beforeGvView.setBackgroundColor(getResources().getColor(
 							android.R.color.transparent));
+					ScaleAnimation outScaleAnimation = new ScaleAnimation(1.0f,
+							0.8f, 1.0f, 0.8f, Animation.RELATIVE_TO_SELF, 0.5f,
+							Animation.RELATIVE_TO_SELF, 0.5f);
+
+					outScaleAnimation.setDuration(80);
+					outScaleAnimation.setFillAfter(false);
 					beforeGvView.startAnimation(outScaleAnimation);
+					
+					
+					ImageView iv2 = (ImageView) view
+							.findViewById(R.id.item_layout_dianying_reflact);
+					iv2.setVisibility(View.GONE);
+					ScaleAnimation inScaleAnimation = new ScaleAnimation(
+							0.8f, 1.0f, 0.8f, 1.0f,
+							Animation.RELATIVE_TO_SELF, 0.5f,
+							Animation.RELATIVE_TO_SELF, 0.5f);
+					inScaleAnimation.setDuration(80);
+					inScaleAnimation.setFillAfter(false);
+
+					view.setPadding(10, 10, 10, 10);
+					view.setBackgroundColor(getResources()
+							.getColor(R.color.text_active));
+					view.startAnimation(inScaleAnimation);
 
 				} else {
 					
-					ImageView iv = (ImageView) firstChildGvView
+					ScaleAnimation outScaleAnimation = new ScaleAnimation(0.8f,
+							1.0f, 0.8f, 1.0f, Animation.RELATIVE_TO_SELF, 0.5f,
+							Animation.RELATIVE_TO_SELF, 0.5f);
+
+					outScaleAnimation.setDuration(80);
+					outScaleAnimation.setFillAfter(false);
+					firstFloatView.startAnimation(outScaleAnimation);
+					
+					firstFloatView.setVisibility(View.GONE);
+					ImageView iv = (ImageView) view
 							.findViewById(R.id.item_layout_dianying_reflact);
-					iv.setVisibility(View.VISIBLE);
-					firstChildGvView.setBackgroundColor(getResources().getColor(
-							android.R.color.transparent));
-					firstChildGvView.startAnimation(outScaleAnimation);
+					iv.setVisibility(View.GONE);
+					ScaleAnimation inScaleAnimation = new ScaleAnimation(
+							0.8f, 1.0f, 0.8f, 1.0f,
+							Animation.RELATIVE_TO_SELF, 0.5f,
+							Animation.RELATIVE_TO_SELF, 0.5f);
+					inScaleAnimation.setDuration(80);
+					inScaleAnimation.setFillAfter(false);
+
+					view.setPadding(10, 10, 10, 10);
+					view.setBackgroundColor(getResources()
+							.getColor(R.color.text_active));
+					view.startAnimation(inScaleAnimation);
 				}
 //				 }
 
@@ -408,14 +432,9 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 						beforeGvView.setBackgroundColor(getResources()
 								.getColor(android.R.color.transparent));
 						beforeGvView.startAnimation(outScaleAnimation);
-					}else {
+					} else {
 						
-						ImageView iv = (ImageView) firstChildGvView
-								.findViewById(R.id.item_layout_dianying_reflact);
-						iv.setVisibility(View.VISIBLE);
-						firstChildGvView.setBackgroundColor(getResources()
-								.getColor(android.R.color.transparent));
-						firstChildGvView.startAnimation(outScaleAnimation);
+						firstFloatView.setVisibility(View.GONE);
 					}
 				} else {
 
@@ -437,95 +456,17 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 						beforeGvView.startAnimation(inScaleAnimation);
 
 					} else {
-						
-						ImageView iv = (ImageView) firstChildGvView
-								.findViewById(R.id.item_layout_dianying_reflact);
-						iv.setVisibility(View.GONE);
-						firstChildGvView.setPadding(10, 10, 10, 10);
-						firstChildGvView.setBackgroundColor(getResources()
-								.getColor(R.color.text_active));
-
-						firstChildGvView.startAnimation(inScaleAnimation);
+						initFirstFloatView();
 					}
 				}
 			}
 		});
-
-		addListener();
-
 	}
-
-	private int beforepostion = 0;
-
-	private void addListener() {
-
-		dongzuoLL.setOnKeyListener(this);
-		kehuanLL.setOnKeyListener(this);
-		lunliLL.setOnKeyListener(this);
-		xijuLL.setOnKeyListener(this);
-		aiqingLL.setOnKeyListener(this);
-		xuanyiLL.setOnKeyListener(this);
-		kongbuLL.setOnKeyListener(this);
-		donghuaLL.setOnKeyListener(this);
-
-		zuijinguankanBtn.setOnKeyListener(this);
-		zhuijushoucangBtn.setOnKeyListener(this);
-		lixianshipinBtn.setOnKeyListener(this);
-		mFenLeiBtn.setOnKeyListener(this);
-
-		dongzuoLL.setOnClickListener(this);
-		kehuanLL.setOnKeyListener(this);
-		lunliLL.setOnClickListener(this);
-		xijuLL.setOnClickListener(this);
-		aiqingLL.setOnClickListener(this);
-		xuanyiLL.setOnClickListener(this);
-		kongbuLL.setOnClickListener(this);
-		donghuaLL.setOnKeyListener(this);
-
-		zuijinguankanBtn.setOnClickListener(this);
-		zhuijushoucangBtn.setOnClickListener(this);
-		lixianshipinBtn.setOnClickListener(this);
-		mFenLeiBtn.setOnClickListener(this);
-	}
-
-	private void initState() {
-
-		beforeView = mFenLeiBtn;
-		activeView = mFenLeiBtn;
-
-		searchEt.setFocusable(false);// 搜索焦点消失
-		// movieGv.setNextFocusLeftId(R.id.bt_quanbufenlei);// 网格向左 全部分类获得焦点
-		// movieGv.setNextFocusDownId(R.id.bt_quanbufenlei);// 网格向左 全部分类获得焦点
-		// movieGv.setNextFocusUpId(R.id.bt_quanbufenlei);// 网格向左 全部分类获得焦点
-		// movieGv.setNextFocusRightId(R.id.bt_quanbufenlei);// 网格向左 全部分类获得焦点
-
-		mFenLeiBtn.setTextColor(getResources().getColor(R.color.text_active));// 全部分类首先设为激活状态
-		mFenLeiBtn.setBackgroundResource(R.drawable.menubg);// 在换成这张图片时，会刷新组件的padding
-		dongzuoLL.setPadding(0, 0, 5, 0);
-		kehuanLL.setPadding(0, 0, 5, 0);
-		lunliLL.setPadding(0, 0, 5, 0);
-		xijuLL.setPadding(0, 0, 5, 0);
-		aiqingLL.setPadding(0, 0, 5, 0);
-		xuanyiLL.setPadding(0, 0, 5, 0);
-		kongbuLL.setPadding(0, 0, 5, 0);
-		donghuaLL.setPadding(0, 0, 5, 0);
-		zuijinguankanBtn.setPadding(0, 0, 5, 0);
-		zhuijushoucangBtn.setPadding(0, 0, 5, 0);
-		lixianshipinBtn.setPadding(0, 0, 5, 0);
-		mFenLeiBtn.setPadding(0, 0, 5, 0);
-
-		// movieGv.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
-		// movieGv.setFocusable(true);
-		// movieGv.setFocusableInTouchMode(true);
-
-	}
-
+	
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		movieGv.setSelected(true);
-		movieGv.requestFocus();
 
 	}
 
@@ -586,7 +527,6 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 
 		Button tempButton = (Button) linearLayout.getChildAt(0);
 		linearLayout.setBackgroundResource(R.drawable.text_drawable_selector);
-		// tempButton.setTextColor(getResources().getColor(R.color.text_pt));
 		tempButton.setTextColor(getResources().getColorStateList(
 				R.color.text_color_selector));
 		tempButton.setCompoundDrawablesWithIntrinsicBounds(getResources()
@@ -596,7 +536,6 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 	private void buttonToPTState(Button button) {
 
 		button.setBackgroundResource(R.drawable.text_drawable_selector);
-		// button.setTextColor(getResources().getColor(R.color.text_pt));
 		button.setTextColor(getResources().getColorStateList(
 				R.color.text_color_selector));
 	}
@@ -660,7 +599,7 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
-		// Log.i("Yangzhg", "onClick");
+		 Log.i("Yangzhg", "onClick");
 
 		v.setOnKeyListener(null);
 		if (v instanceof LinearLayout) {
@@ -732,6 +671,7 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 		default:
 			break;
 		}
+		beforeGvView = null;
 		v.setOnKeyListener(this);
 	}
 
@@ -772,8 +712,12 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 			// Log.d
 
 			movieAdapter.notifyDataSetChanged();
-			movieGv.setAdapter(movieAdapter);
+			beforeGvView = null;
+			initFirstFloatView();
+			movieGv.setFocusable(true);
+			movieGv.setSelected(true);
 			isSelectedItem = false;
+			movieGv.requestFocus();
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -785,6 +729,35 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 			e.printStackTrace();
 		}
 	}
+	
+	private void  initFirstFloatView() {
+		
+		firstFloatView.setX(0);
+		firstFloatView.setY(0);
+		firstFloatView.setLayoutParams(new FrameLayout.LayoutParams(popWidth, popHeight));
+		firstFloatView.setVisibility(View.VISIBLE);
+		
+//		ImageView iv = (ImageView) firstFloatView.findViewById(R.id.iv_item_layout_haibao);
+		TextView movieName = (TextView) firstFloatView.findViewById(R.id.tv_item_layout_name);
+		TextView movieScore = (TextView) firstFloatView.findViewById(R.id.tv_item_layout_score);
+		aq = new AQuery(firstFloatView);
+		aq.id(R.id.iv_item_layout_haibao).image(
+				movieList.get(0).getMoviePicUrl());
+		movieName.setText(movieList.get(0).getMovieName());
+		movieScore.setText(movieList.get(0).getMovieScore());
+		firstFloatView.setPadding(10, 10, 10, 10);
+		firstFloatView.setBackgroundColor(getResources()
+				.getColor(R.color.text_active));
+		ScaleAnimation inScaleAnimation = new ScaleAnimation(
+				0.8f, 1.0f, 0.8f, 1.0f,
+				Animation.RELATIVE_TO_SELF, 0.5f,
+				Animation.RELATIVE_TO_SELF, 0.5f);
+		inScaleAnimation.setDuration(80);
+		inScaleAnimation.setFillAfter(false);
+		
+		firstFloatView.startAnimation(inScaleAnimation);
+	}
+
 
 	private BaseAdapter movieAdapter = new BaseAdapter() {
 
@@ -823,12 +796,6 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 				// Log.i(TAG, "Width:" + popWidth);
 			}
 
-			if (position == 0 && width != 0) {
-
-				if (v != null)
-					firstChildGvView = v;
-			}
-
 			aq = new AQuery(v);
 			aq.id(R.id.iv_item_layout_haibao).image(
 					movieList.get(position).getMoviePicUrl());
@@ -853,101 +820,5 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 			return movieList.size();
 		}
 	};
-
-	// private class MovieAdpter extends BaseAdapter {
-	//
-	// @Override
-	// public int getCount() {
-	// // TODO Auto-generated method stub
-	// // return dataList.size();
-	// // return dataList.size();
-	// return 50;
-	// }
-	//
-	// @Override
-	// public Object getItem(int position) {
-	// // TODO Auto-generated method stub
-	// // return dataList.get(position);
-	// // return dataList.get(position);
-	// return null;
-	// }
-	//
-	// @Override
-	// public long getItemId(int position) {
-	// // TODO Auto-generated method stub
-	// return position;
-	// }
-	//
-	// @Override
-	// public View getView(int position, View convertView, ViewGroup parent) {
-	// // TODO Auto-generated method stub
-	// View v;
-	//
-	// // int viewH = (int) (height / (1.0f * (2 + 0.10))) + 5;
-	// // int viewW = (int) (viewH * 1.0f / 370 * 264) - 24;
-	// int width = parent.getWidth() / 5;
-	// int height = (int) (width / 1.0f / 264 * 370);
-	//
-	// if (convertView == null) {
-	// View view = getLayoutInflater().inflate(
-	// R.layout.show_item_layout_dianying, null);
-	// v = view;
-	// } else {
-	//
-	// v = convertView;
-	// }
-	// AbsListView.LayoutParams params = new AbsListView.LayoutParams(
-	// width, height);
-	// v.setLayoutParams(params);
-	//
-	// TextView tv = (TextView) v.findViewById(R.id.tv_item_layout_name);
-	// tv.setText("" + position);
-	//
-	// v.setPadding(10, 10, 10, 10);
-	//
-	// if (width != 0) {
-	//
-	// popWidth = width;
-	// popHeight = height;
-	// // Log.i(TAG, "Width:" + popWidth);
-	// }
-	//
-	// if (position == 0 && !isSelectedItem && width != 0) {
-	//
-	// // FrameLayout.LayoutParams params2 = new
-	// // FrameLayout.LayoutParams(
-	// // popWidth, popHeight);
-	// // floatView.setLayoutParams(params2);
-	// // floatView.setX(movieGv.getX());
-	// // floatView.setY(movieGv.getY());
-	// // floatView.setPadding(10, 10, 10, 10);
-	// // floatView.setBackgroundColor(getResources().getColor(
-	// // R.color.text_active));
-	//
-	// ImageView iv = (ImageView) v
-	// .findViewById(R.id.item_layout_dianying_reflact);
-	// iv.setVisibility(View.GONE);
-	//
-	// ScaleAnimation inScaleAnimation = new ScaleAnimation(0.8f,
-	// 1.0f, 0.8f, 1.0f, Animation.RELATIVE_TO_SELF, 0.5f,
-	// Animation.RELATIVE_TO_SELF, 0.5f);
-	// inScaleAnimation.setDuration(80);
-	// inScaleAnimation.setFillAfter(false);
-	// v.setPadding(10, 10, 10, 10);
-	// v.setBackgroundColor(getResources().getColor(
-	// R.color.text_active));
-	//
-	// v.startAnimation(inScaleAnimation);
-	// beforeGvView = v;
-	// isSelectedItem = true;
-	// }
-	//
-	// // aq = new AQuery(v);
-	// //
-	// aq.id(R.id.iv_item_layout_haibao).image(dataList.get(position).getPic_url());
-	// return v;
-	// }
-	//
-	// }
 
 }
