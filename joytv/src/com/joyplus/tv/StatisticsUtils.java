@@ -87,5 +87,11 @@ public class StatisticsUtils {
 		}.start();
 
 	}
+	
+	
+	public static String getTopItemURL(String url, String top_id ,String page_num , String page_size ) {
+		
+		return url + "?top_id=" +top_id + "&page_num=" + page_num + "&page_size=" + page_size;
+	}
 
 }

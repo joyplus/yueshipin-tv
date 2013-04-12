@@ -301,7 +301,6 @@
                     android:layout_width="0dip"
                     android:layout_height="0dip"
                     layout="@layout/show_item_layout" />
-"
             </FrameLayout>
         </LinearLayout>
     </LinearLayout>

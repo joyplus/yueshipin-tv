@@ -43,11 +43,11 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar"
             android:uiOptions="splitActionBarWhenNarrow" >
-<!--             <intent-filter>
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter> -->
+            </intent-filter>
         </activity>
         <activity
             android:name=".Video.VideoPlayerActivity"
@@ -87,14 +87,11 @@
             android:label="@string/app_name"
             android:theme="@android:style/Theme.Black.NoTitleBar"
             android:windowSoftInputMode="adjustPan" >
-
-            
-                 <intent-filter>
+<!--             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-           
+            </intent-filter> -->
         </activity>
         <activity
             android:name="ShowDongManActivity"
