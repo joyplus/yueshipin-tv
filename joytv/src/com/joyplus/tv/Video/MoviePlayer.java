@@ -195,10 +195,10 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 			final Integer bookmark = mBookmarker.getBookmark(mUri);
 			if (bookmark != null) {
 				saveTime.setText(formatDuration(bookmark));
-				showResumeDialog(mContext, bookmark);
-			} else {
-				startVideo();
-			}
+				mVideoView.seekTo(bookmark);
+//				showResumeDialog(mContext, bookmark);
+			} 
+			startVideo();
 		}
 	}
 

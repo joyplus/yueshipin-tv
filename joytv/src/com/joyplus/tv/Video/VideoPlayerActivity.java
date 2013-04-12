@@ -76,8 +76,6 @@ public class VideoPlayerActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		app = (App) getApplication();
-		// requestWindowFeature(Window.FEATURE_ACTION_BAR);
-		// requestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
 
 		setContentView(R.layout.video_player);
 		View rootView = findViewById(R.id.root);
@@ -122,7 +120,7 @@ public class VideoPlayerActivity extends Activity {
 		Window win = getWindow();
 		WindowManager.LayoutParams winParams = win.getAttributes();
 		winParams.buttonBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_OFF;
-		// winParams.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
+		winParams.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
 		win.setAttributes(winParams);
 
 	}

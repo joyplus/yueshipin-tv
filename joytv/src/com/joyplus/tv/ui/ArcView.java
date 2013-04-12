@@ -10,8 +10,9 @@ import android.view.View;
 
 public class ArcView extends View {
 
-	 int r1 = 20;
-	private int mAngle = 360;
+//	 int r1 = 20;
+	int r1 = 12;
+	private int mAngle = 180;
 	private Paint mPaints;
     private boolean mUseCenters;
     private RectF mBigOval;
@@ -64,10 +65,14 @@ public class ArcView extends View {
     @Override protected void onDraw(Canvas canvas) {
         canvas.drawColor(Color.TRANSPARENT);
 
-        float left = 0+r1-1;
-        float top = 0+r1-2;
-        float right =this.getWidth()-r1+1;
-        float bottom = this.getHeight()-r1;
+//        float left = 0+r1-1;
+//        float top = 0+r1-2;
+//        float right =this.getWidth()-r1+1;
+//        float bottom = this.getHeight()-r1;
+        float left = 0+r1-6;
+        float top = 0+r1-6;
+        float right =this.getWidth()-r1+6;
+        float bottom = this.getHeight()-r1+6;
            
         mBigOval = new RectF(left, top, right, bottom);
              

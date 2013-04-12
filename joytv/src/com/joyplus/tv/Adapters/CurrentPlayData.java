@@ -2,6 +2,7 @@ package com.joyplus.tv.Adapters;
 
 public class CurrentPlayData {
 	public String prod_id;
+	public int prod_type;//视频类型
 	public String prod_name;
 	public String prod_url;//播放地址
 	public String prod_src;//来源
