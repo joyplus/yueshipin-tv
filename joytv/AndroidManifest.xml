@@ -228,6 +228,20 @@
             android:name="UMENG_APPKEY"
             android:value="	5160f44856240b223800369a" >
         </meta-data>
+
+        <service android:name="com.parse.PushService" />
+
+        <receiver android:name="com.parse.ParseBroadcastReceiver" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.USER_PRESENT" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".ParseReceiver" >
+            <intent-filter>
+                <action android:name="com.example.UPDATE_STATUS" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
