@@ -1,10 +1,12 @@
 package com.joyplus.tv;
 
 import com.joyplus.tv.Video.VideoPlayerActivity;
+import com.joyplus.tv.ui.CustomGallery;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -23,7 +25,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 		View.OnKeyListener, MyKeyEventKey {
@@ -43,7 +48,16 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 
 	private View beforeTempPop, currentBofangViewPop;
 	private LinearLayout chaoqingLL, gaoqingLL, biaoqingLL;
-
+	
+	private LinearLayout layout;
+	private TableLayout table;
+	private boolean isOver = false;
+	private int num = 45;
+	private int totle_pagecount;
+	private int selectedIndex;
+	private static final int COUNT = 20;
+	private Handler handler =  new Handler();
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -52,6 +66,60 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 		this.setContentView(R.layout.show_tv_xiangxi_layout);
 
 		initView();
+		
+		handler.postDelayed(new Runnable() {
+			
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				initButton();
+			}
+		},500);
+		
+	}
+
+	private void initButton() {
+		// TODO Auto-generated method stub
+		
+		totle_pagecount = (num%COUNT ==0)? num/COUNT:num/COUNT+1;
+		
+		for(int i=0; i<totle_pagecount; i++){
+			Button b = new Button(this);
+//			b.setWidth(table.getWidth()/5);
+//			b.setHeight(layout.getHeight());
+			b.setLayoutParams(new LayoutParams((table.getWidth()-80)/5,35));
+			if(isOver){
+				if((i+1)*COUNT>num){
+					b.setText((i*COUNT+1) +"-"+num);
+				}else{
+					b.setText((i*COUNT+1) +"-"+(i+1)*COUNT);
+				}
+			}else{
+				if(num-(i+1)*COUNT+1<0){
+					b.setText((num-i*COUNT) + "-1");
+				}else{
+					b.setText((num-i*COUNT) + "-" + (num-(i+1)*COUNT+1));
+				}
+				
+			}
+			b.setBackgroundResource(R.drawable.xiangqing_button_selector);
+			b.setId((i+1)*10000);
+			b.setOnClickListener(this);
+			layout.addView(b);
+			if(i!=totle_pagecount-1){
+				TextView t = new TextView(this);
+				t.setLayoutParams(new LayoutParams(20,35));
+				layout.addView(t);
+			}
+			
+		}
+		
+		selectedIndex = 1;
+		if(num>COUNT){
+			initTableView(COUNT);
+		}else{
+			initTableView(num);
+		}
 	}
 
 	private void initPopWindow() {
@@ -69,6 +137,9 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 		
 		currentBofangViewPop = biaoqingLL;
 		beforeTempPop = biaoqingLL;
+		
+		layout = (LinearLayout) findViewById(R.id.layout);
+		table  = (TableLayout) findViewById(R.id.table);
 	}
 
 	private void initView() {
@@ -147,6 +218,17 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 		case R.id.bt_xiangqing_yingping:
 			startActivity(new Intent(this, DetailComment.class));
 		default:
+			
+			if(v.getId()>=10000){
+				selectedIndex = v.getId()/10000;
+				if(num>COUNT*selectedIndex){
+					initTableView(COUNT);
+				}else{
+					initTableView(num-COUNT*(selectedIndex-1));
+				}
+			}else{
+				Toast.makeText(this, "click btn = " + v.getId(), 100).show();
+			}
 			break;
 		}
 
@@ -333,6 +415,42 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 		chaoqingLL.setOnKeyListener(gaoqingKeyListener);
 		gaoqingLL.setOnKeyListener(gaoqingKeyListener);
 		biaoqingLL.setOnKeyListener(gaoqingKeyListener);
-
+	}
+	
+	
+	private void initTableView(int count){
+		table.removeAllViews();
+		int col = (count%5 ==0)? count/5:count/5+1;
+		for(int j=0; j<col; j++){
+			TableRow row = new TableRow(this);
+//			row.setId(6-flag);
+			for(int i =0; i<5 ; i++){
+				Button btn = new Button(this);
+				btn.setWidth((table.getWidth()-80)/5);
+				btn.setTextSize(18);
+				btn.setHeight(25);
+				if(isOver){
+					btn.setText("" + (j*5+i+1 + (selectedIndex-1)*COUNT));
+					btn.setId(j*5+i+1 + (selectedIndex-1)*COUNT);
+				}else{
+					btn.setText("" + (num-((j*5+i)+ (selectedIndex-1)*COUNT)));
+					btn.setId(num-((j*5+i)+ (selectedIndex-1)*COUNT));
+				}
+				btn.setOnClickListener(this);
+				btn.setBackgroundResource(R.drawable.xiangqing_button_selector);
+				if(j*5+i+1>count){
+					btn.setVisibility(View.INVISIBLE);
+				}
+				TextView t = new TextView(this);
+				t.setWidth(20);
+				row.addView(btn);
+				if(i!=4){
+					row.addView(t);
+				}
+			}
+			row.setLayoutParams(new LayoutParams(table.getWidth(),35));
+			row.setPadding(0, 5, 0, 5);
+			table.addView(row);
+		}
 	}
 }

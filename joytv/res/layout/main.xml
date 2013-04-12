@@ -169,7 +169,7 @@
 	    <ImageView android:layout_width="fill_parent"
 	        android:layout_height="fill_parent"
 	        android:scaleType="fitXY"
-	        android:background="#000000"
+	        android:background="@drawable/post_active"
 	        android:id="@+id/highlight_img"
 	        android:src="@drawable/test"/>
 	    <ImageView android:layout_width="wrap_content"
@@ -187,9 +187,10 @@
 	    android:background="@drawable/bg_teat_repeat">
 	    <LinearLayout android:layout_width="match_parent"
 	        android:layout_height="match_parent"
+	        android:paddingLeft="10dp"
 	       	android:id="@+id/contentlayout"
 	        >
-			<include layout="@layout/layout_hot"/>
+<!-- 			<include layout="@layout/layout_hot"/> -->
 	    </LinearLayout>
 	</LinearLayout>
 </RelativeLayout>

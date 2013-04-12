@@ -241,15 +241,21 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 						}else{
 							gallery1.setSelection(indexCaces.get(index));
 						}
-						ImageView img2 = (ImageView) gallery1.findViewWithTag(yuedan_list.get(gallery1.getSelectedItemPosition()).pic_url);
-						if(img2 != null){
-							if(img2.getDrawable()!=null){
-								highlightImageView.setImageDrawable(img2.getDrawable());
+						if(gallery1.getSelectedItemPosition()==6){
+							highlightImageView.setImageResource(R.drawable.more_movie_active);
+						}else if(gallery1.getSelectedItemPosition()==7){
+							highlightImageView.setImageResource(R.drawable.more_episode_active);
+						}else {
+							ImageView img2 = (ImageView) gallery1.findViewWithTag(yuedan_list.get(gallery1.getSelectedItemPosition()).pic_url);
+							if(img2 != null){
+								if(img2.getDrawable()!=null){
+									highlightImageView.setImageDrawable(img2.getDrawable());
+								}else{
+									aq.id(highlightImageView).image(yuedan_list.get(gallery1.getSelectedItemPosition()).pic_url,true,true);
+								}
 							}else{
 								aq.id(highlightImageView).image(yuedan_list.get(gallery1.getSelectedItemPosition()).pic_url,true,true);
 							}
-						}else{
-							aq.id(highlightImageView).image(yuedan_list.get(gallery1.getSelectedItemPosition()).pic_url,true,true);
 						}
 						noticeView.setText(gallery1.getSelectedItemPosition()+1 + "/" + yuedan_list.size());
 					}else{
@@ -501,15 +507,21 @@ public boolean checkLogin() {
 						}
 					}),280);
 				}else{
-					ImageView img = (ImageView) gallery1.findViewWithTag(yuedan_list.get(arg2).pic_url);
-					if(img != null){
-						if(img.getDrawable()!=null){
-							highlightImageView.setImageDrawable(img.getDrawable());
+					if(gallery1.getSelectedItemPosition()==6){
+						highlightImageView.setImageResource(R.drawable.more_movie_active);
+					}else if(gallery1.getSelectedItemPosition()==7){
+						highlightImageView.setImageResource(R.drawable.more_episode_active);
+					}else {
+						ImageView img2 = (ImageView) gallery1.findViewWithTag(yuedan_list.get(gallery1.getSelectedItemPosition()).pic_url);
+						if(img2 != null){
+							if(img2.getDrawable()!=null){
+								highlightImageView.setImageDrawable(img2.getDrawable());
+							}else{
+								aq.id(highlightImageView).image(yuedan_list.get(gallery1.getSelectedItemPosition()).pic_url,true,true);
+							}
 						}else{
-							aq.id(highlightImageView).image(yuedan_list.get(arg2).pic_url,true,true);
+							aq.id(highlightImageView).image(yuedan_list.get(gallery1.getSelectedItemPosition()).pic_url,true,true);
 						}
-					}else{
-						aq.id(highlightImageView).image(yuedan_list.get(arg2).pic_url,true,true);
 					}
 					noticeView.setText(arg2+ 1 + "/" + yuedan_list.size());
 					handler.removeCallbacksAndMessages(null);
@@ -533,13 +545,13 @@ public boolean checkLogin() {
 				
 			break;
 		case 3:
-			if(positon1<resouces_lib_active.length-1){
+			if(positon1<resouces_lib_active.length){
 				highlightImageView.setImageResource(resouces_lib_active[positon1]);
 				noticeView.setText(positon1+1 + "/" + resouces_lib_active.length);
 			}
 			break;
 		case 4:
-			if(positon1<resouces_my_active.length-1){
+			if(positon1<resouces_my_active.length){
 				highlightImageView.setImageResource(resouces_my_active[positon1]);
 				noticeView.setText(positon1+1 + "/" + resouces_my_active.length);
 			}
