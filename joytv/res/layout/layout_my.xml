@@ -5,8 +5,11 @@
     android:orientation="vertical">
 	<TextView android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
-	    android:text="我的悦视频"/>
+	    android:textColor="@color/hot_content_notice"
+	    android:textSize="20sp"
+	    android:text="上次同步于："/>
 	<FrameLayout android:layout_width="wrap_content"
+	    android:layout_marginTop="7dp"
 	    android:layout_height="wrap_content">
 	    <ImageView android:layout_width="130dp"
 	        android:layout_height="130dp"
@@ -18,5 +21,9 @@
 		    android:id="@+id/img_erweima"
 		    android:scaleType="centerCrop"/>
 	</FrameLayout>
-	
+	<TextView android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:textColor="@color/hot_content_content"
+	    android:textSize="20sp"
+	    android:text="如需更换用户，请启动手机上的&quot;悦视频&quot;，然后扫描上面的二维码。"/>
 </LinearLayout>

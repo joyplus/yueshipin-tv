@@ -478,7 +478,7 @@ public boolean checkLogin() {
 						contentLayout.startAnimation(alpha_appear);
 						contentLayout.addView(hotView);
 					}
-				}),280);
+				}),300);
 			}
 			break;
 		case 2:
@@ -505,7 +505,7 @@ public boolean checkLogin() {
 								contentLayout.addView(yeuDanView);
 							}
 						}
-					}),280);
+					}),300);
 				}else{
 					if(gallery1.getSelectedItemPosition()==6){
 						highlightImageView.setImageResource(R.drawable.more_movie_active);
@@ -539,7 +539,7 @@ public boolean checkLogin() {
 								contentLayout.addView(yeuDanView);
 							}
 						}
-					}),280);
+					}),300);
 				}
 			}
 				
