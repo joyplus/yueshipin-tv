@@ -54,8 +54,8 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 
 	private EditText searchEt;
 	private MyMovieGridView movieGv;
-	private LinearLayout dongzuoLL, lunliLL, xijuLL, aiqingLL, xuanyiLL,
-			kongbuLL;
+	private LinearLayout dongzuoLL, kehuanLL,lunliLL, xijuLL, aiqingLL, xuanyiLL,
+			kongbuLL,donghuaLL;
 
 	private Button zuijinguankanBtn, zhuijushoucangBtn, lixianshipinBtn,
 			mFenLeiBtn;
@@ -103,11 +103,13 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 		movieGv = (MyMovieGridView) findViewById(R.id.gv_movie_show);
 
 		dongzuoLL = (LinearLayout) findViewById(R.id.ll_dongzuopian);
+		kehuanLL = (LinearLayout) findViewById(R.id.ll_kehuanpian);
 		lunliLL = (LinearLayout) findViewById(R.id.ll_lunlipian);
 		xijuLL = (LinearLayout) findViewById(R.id.ll_xijupian);
 		aiqingLL = (LinearLayout) findViewById(R.id.ll_aiqingpian);
 		xuanyiLL = (LinearLayout) findViewById(R.id.ll_xuanyipian);
 		kongbuLL = (LinearLayout) findViewById(R.id.ll_kongbupian);
+		donghuaLL = (LinearLayout) findViewById(R.id.ll_donghuapian);
 
 		zuijinguankanBtn = (Button) findViewById(R.id.bt_zuijinguankan);
 		zhuijushoucangBtn = (Button) findViewById(R.id.bt_zhuijushoucang);
@@ -375,11 +377,13 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 	private void addListener() {
 
 		dongzuoLL.setOnKeyListener(this);
+		kehuanLL.setOnKeyListener(this);
 		lunliLL.setOnKeyListener(this);
 		xijuLL.setOnKeyListener(this);
 		aiqingLL.setOnKeyListener(this);
 		xuanyiLL.setOnKeyListener(this);
 		kongbuLL.setOnKeyListener(this);
+		donghuaLL.setOnKeyListener(this);
 
 		zuijinguankanBtn.setOnKeyListener(this);
 		zhuijushoucangBtn.setOnKeyListener(this);
@@ -387,11 +391,13 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 		mFenLeiBtn.setOnKeyListener(this);
 
 		dongzuoLL.setOnClickListener(this);
+		kehuanLL.setOnKeyListener(this);
 		lunliLL.setOnClickListener(this);
 		xijuLL.setOnClickListener(this);
 		aiqingLL.setOnClickListener(this);
 		xuanyiLL.setOnClickListener(this);
 		kongbuLL.setOnClickListener(this);
+		donghuaLL.setOnKeyListener(this);
 
 		zuijinguankanBtn.setOnClickListener(this);
 		zhuijushoucangBtn.setOnClickListener(this);
@@ -413,11 +419,13 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 		mFenLeiBtn.setTextColor(getResources().getColor(R.color.text_active));// 全部分类首先设为激活状态
 		mFenLeiBtn.setBackgroundResource(R.drawable.menubg);// 在换成这张图片时，会刷新组件的padding
 		dongzuoLL.setPadding(0, 0, 5, 0);
+		kehuanLL.setPadding(0, 0, 5, 0);
 		lunliLL.setPadding(0, 0, 5, 0);
 		xijuLL.setPadding(0, 0, 5, 0);
 		aiqingLL.setPadding(0, 0, 5, 0);
 		xuanyiLL.setPadding(0, 0, 5, 0);
 		kongbuLL.setPadding(0, 0, 5, 0);
+		donghuaLL.setPadding(0, 0, 5, 0);
 		zuijinguankanBtn.setPadding(0, 0, 5, 0);
 		zhuijushoucangBtn.setPadding(0, 0, 5, 0);
 		lixianshipinBtn.setPadding(0, 0, 5, 0);
