@@ -75,7 +75,8 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 
 	private int[] beforeFirstAndLastVible = { 0, 9 };
 
-	private View beforeGvView;
+	private View beforeGvView = null;
+	private View firstChildGvView;
 
 	private ObjectMapper mapper = new ObjectMapper();
 	// private List<HotItemInfo> hot_list = new ArrayList<HotItemInfo>();
@@ -327,8 +328,16 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 							android.R.color.transparent));
 					beforeGvView.startAnimation(outScaleAnimation);
 
+				} else {
+					
+					ImageView iv = (ImageView) firstChildGvView
+							.findViewById(R.id.item_layout_dianying_reflact);
+					iv.setVisibility(View.VISIBLE);
+					firstChildGvView.setBackgroundColor(getResources().getColor(
+							android.R.color.transparent));
+					firstChildGvView.startAnimation(outScaleAnimation);
 				}
-				// }
+//				 }
 
 				if (y == 0 || y - popHeight == 0) {// 顶部没有渐影
 
@@ -385,41 +394,58 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 
 				if (!hasFocus) {// 如果gridview没有获取焦点，把item中高亮取消
 
-					if (beforeGvView != null) {
-						ScaleAnimation outScaleAnimation = new ScaleAnimation(
-								1.0f, 0.8f, 1.0f, 0.8f,
-								Animation.RELATIVE_TO_SELF, 0.5f,
-								Animation.RELATIVE_TO_SELF, 0.5f);
+					ScaleAnimation outScaleAnimation = new ScaleAnimation(
+							1.0f, 0.8f, 1.0f, 0.8f,
+							Animation.RELATIVE_TO_SELF, 0.5f,
+							Animation.RELATIVE_TO_SELF, 0.5f);
 
-						outScaleAnimation.setDuration(80);
-						outScaleAnimation.setFillAfter(false);
+					outScaleAnimation.setDuration(80);
+					outScaleAnimation.setFillAfter(false);
+					if (beforeGvView != null) {
 						ImageView iv = (ImageView) beforeGvView
 								.findViewById(R.id.item_layout_dianying_reflact);
 						iv.setVisibility(View.VISIBLE);
 						beforeGvView.setBackgroundColor(getResources()
 								.getColor(android.R.color.transparent));
 						beforeGvView.startAnimation(outScaleAnimation);
+					}else {
+						
+						ImageView iv = (ImageView) firstChildGvView
+								.findViewById(R.id.item_layout_dianying_reflact);
+						iv.setVisibility(View.VISIBLE);
+						firstChildGvView.setBackgroundColor(getResources()
+								.getColor(android.R.color.transparent));
+						firstChildGvView.startAnimation(outScaleAnimation);
 					}
 				} else {
 
+					ScaleAnimation inScaleAnimation = new ScaleAnimation(
+							0.8f, 1.0f, 0.8f, 1.0f,
+							Animation.RELATIVE_TO_SELF, 0.5f,
+							Animation.RELATIVE_TO_SELF, 0.5f);
+					inScaleAnimation.setDuration(80);
+					inScaleAnimation.setFillAfter(false);
 					if (beforeGvView != null) {
 
 						ImageView iv = (ImageView) beforeGvView
 								.findViewById(R.id.item_layout_dianying_reflact);
 						iv.setVisibility(View.GONE);
-
-						ScaleAnimation inScaleAnimation = new ScaleAnimation(
-								0.8f, 1.0f, 0.8f, 1.0f,
-								Animation.RELATIVE_TO_SELF, 0.5f,
-								Animation.RELATIVE_TO_SELF, 0.5f);
-						inScaleAnimation.setDuration(80);
-						inScaleAnimation.setFillAfter(false);
 						beforeGvView.setPadding(10, 10, 10, 10);
 						beforeGvView.setBackgroundColor(getResources()
 								.getColor(R.color.text_active));
 
 						beforeGvView.startAnimation(inScaleAnimation);
 
+					} else {
+						
+						ImageView iv = (ImageView) firstChildGvView
+								.findViewById(R.id.item_layout_dianying_reflact);
+						iv.setVisibility(View.GONE);
+						firstChildGvView.setPadding(10, 10, 10, 10);
+						firstChildGvView.setBackgroundColor(getResources()
+								.getColor(R.color.text_active));
+
+						firstChildGvView.startAnimation(inScaleAnimation);
 					}
 				}
 			}
@@ -711,11 +737,6 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 
 	private void getServiceData(String url) {
 
-		// String url = TOP_ITEM_URL+ "?page_num=1&page_size=50";
-		// String url = StatisticsUtils.getTopItemURL(TOP_ITEM_URL,
-		// REBO_DONGZUO_MOVIE, 1 + "", 50 + "");
-
-		// String url = Constant.BASE_URL;
 		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
 		cb.url(url).type(JSONObject.class).weakHandler(this, "initData");
 
@@ -765,121 +786,6 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 		}
 	}
 
-	// private void getHotServiceData() {
-	// String url = Constant.BASE_URL + "tv_net_top"
-	// + "?page_num=1&page_size=50";
-	//
-	// // String url = Constant.BASE_URL;
-	// AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
-	// cb.url(url).type(JSONObject.class).weakHandler(this, "initHotData");
-	//
-	// cb.SetHeader(app.getHeaders());
-	// aq.ajax(cb);
-	// }
-
-	// public void getServiceData() {
-	// String url = Constant.BASE_URL + "tops"
-	// + "?page_num=1&page_size=50&topic_type=1";
-	// // String url = Constant.BASE_URL + "tv_net_top"
-	// // +"?page_num=1&page_size=1000";
-	// // String url =
-	// //
-	// "http://apitest.yue001.com/joyplus-service/index.php/tv_net_top?app_key=ijoyplus_android_0001bj&page_num=1&page_size=1000";
-	// AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
-	// cb.url(url).type(JSONObject.class).weakHandler(this, "initListData");
-	//
-	// HashMap<String, String> headers = new HashMap<String, String>();
-	// headers.put("User-Agent",
-	// "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:6.0.2) Gecko/20100101 Firefox/6.0.2");
-	// PackageInfo pInfo;
-	// try {
-	// pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-	// headers.put("version", pInfo.versionName);
-	// } catch (NameNotFoundException e) {
-	// // TODO Auto-generated catch block
-	// e.printStackTrace();
-	// }
-	//
-	// headers.put("app_key", Constant.APPKEY);
-	// headers.put("client", "android");
-	// app.setHeaders(headers);
-	// cb.SetHeader(app.getHeaders());
-	//
-	// aq.ajax(cb);
-	//
-	// }
-
-	// private ReturnTops m_ReturnTops = null;
-	//
-	// // private ReturnMainHot m_ReturnTops = null;
-	//
-	// // 初始化list数据函数
-	// public void initListData(String url, JSONObject json, AjaxStatus status)
-	// {
-	// Log.i(TAG, "initListData:" + status.getCode());
-	// if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
-	// return;
-	// }
-	// ObjectMapper mapper = new ObjectMapper();
-	// try {
-	// m_ReturnTops = mapper.readValue(json.toString(), ReturnTops.class);
-	// // m_ReturnTops = mapper.readValue(json.toString(),
-	// // ReturnMainHot.class);
-	// if (BuildConfig.DEBUG)
-	// Log.i(TAG, "initListData:" + json.toString());
-	// // if(BuildConfig.DEBUG) Log.i(TAG, "initListData:" +
-	// // m_ReturnTops.tops.length);
-	// // if (m_ReturnTops.tops.length > 0)
-	// // app.SaveServiceData("movie_tops", json.toString());
-	//
-	// // 创建数据源对象
-	// // getVideoMovies();
-	//
-	// } catch (JsonParseException e) {
-	// // TODO Auto-generated catch block
-	// e.printStackTrace();
-	// } catch (JsonMappingException e) {
-	// // TODO Auto-generated catch block
-	// e.printStackTrace();
-	// } catch (IOException e) {
-	// // TODO Auto-generated catch block
-	// e.printStackTrace();
-	// }
-	//
-	// }
-
-	// public void getVideoMovies() {
-	//
-	// if (m_ReturnTops.tops == null)
-	// return;
-	// for (int i = 0; i < m_ReturnTops.tops.length; i++) {
-	// MovieBangDanData movieBangDanData = new MovieBangDanData();
-	// movieBangDanData.setPic_ID(m_ReturnTops.tops[i].id);
-	// movieBangDanData.setPic_url(m_ReturnTops.tops[i].pic_url);
-	// movieBangDanData.setPic_name(m_ReturnTops.tops[i].name);
-	// movieBangDanData.setRight(m_ReturnTops.tops[i].prod_type);
-	// // if (m_ReturnTops.tops[i].items != null) {
-	// // int length = m_ReturnTops.tops[i].items.length;
-	// // String[] strs = new String[length];
-	// // for (int j = 0; j < length; j++) {
-	// // strs[i] = m_ReturnTops.tops[i].items[j].prod_name;
-	// // }
-	// // movieBangDanData.setPic_lists(strs);
-	// //
-	// // }
-	// dataList.add(movieBangDanData);
-	// }
-	// if (BuildConfig.DEBUG)
-	// Log.i(TAG, dataList.size() + ":size");
-	// adapter.notifyDataSetChanged();
-	//
-	// // movieGv.setSelection(10);
-	// // for(int i=0;i<dataList.size();i++) {
-	// // if(BuildConfig.DEBUG) Log.i(TAG, dataList.get(i) + "");
-	// // }
-	//
-	// }
-
 	private BaseAdapter movieAdapter = new BaseAdapter() {
 
 		@Override
@@ -917,26 +823,10 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 				// Log.i(TAG, "Width:" + popWidth);
 			}
 
-//			if (position == 0 && !isSelectedItem && width != 0) {
 			if (position == 0 && width != 0) {
 
-				// ImageView iv = (ImageView) v
-				// .findViewById(R.id.item_layout_dianying_reflact);
-				// iv.setVisibility(View.GONE);
-				//
-				// ScaleAnimation inScaleAnimation = new ScaleAnimation(0.8f,
-				// 1.0f, 0.8f, 1.0f, Animation.RELATIVE_TO_SELF, 0.5f,
-				// Animation.RELATIVE_TO_SELF, 0.5f);
-				// inScaleAnimation.setDuration(80);
-				// inScaleAnimation.setFillAfter(false);
-				// v.setPadding(10, 10, 10, 10);
-				// v.setBackgroundColor(getResources().getColor(
-				// R.color.text_active));
-				//
-				// v.startAnimation(inScaleAnimation);
 				if (v != null)
-					beforeGvView = v;
-				// isSelectedItem = true;
+					firstChildGvView = v;
 			}
 
 			aq = new AQuery(v);
