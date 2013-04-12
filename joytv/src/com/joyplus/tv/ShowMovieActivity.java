@@ -14,6 +14,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -104,6 +105,16 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 		movieGv.setSelected(true);
 		movieGv.requestFocus();
 		movieGv.setSelection(0);
+		
+		DisplayMetrics dm = new DisplayMetrics();
+
+		getWindowManager().getDefaultDisplay().getMetrics(dm);
+
+//		int width = dm.widthPixels;
+//
+//		int height = dm.heightPixels;
+//		
+//		app.MyToast(aq.getContext(),"Screen-->Width: " + width + " height:" + height);
 
 	}
 

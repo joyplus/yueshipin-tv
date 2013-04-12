@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:background="@color/movie_bg"
     android:orientation="vertical"
-    android:paddingLeft="50dp"
+    android:paddingLeft="35dp"
     android:paddingTop="15dp" >
 
     <include
@@ -34,7 +34,7 @@
             android:layout_weight="5.61"
             android:background="@drawable/menubg"
             android:orientation="horizontal"
-            android:paddingRight="50dp" >
+            android:paddingRight="35dp" >
 
             <TextView
                 android:layout_width="@dimen/layout_zero"
@@ -51,8 +51,10 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="right|center_vertical"
+                android:text="2/123"
                 android:textColor="@color/time_color"
-                android:textSize="@dimen/jishu_text_size" />
+                android:textSize="@dimen/jishu_text_size" 
+                android:visibility="invisible"/>
         </LinearLayout>
     </LinearLayout>
 
@@ -72,9 +74,9 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/layout_zero"
-                android:paddingTop="@dimen/edit_vertical_margin"
+                android:layout_weight="1"
                 android:paddingBottom="@dimen/edit_vertical_margin"
-                android:layout_weight="1" >
+                android:paddingTop="@dimen/edit_vertical_margin" >
 
                 <EditText
                     android:id="@+id/et_search"
@@ -85,8 +87,8 @@
                     android:focusableInTouchMode="false"
                     android:hint="搜索"
                     android:paddingRight="@dimen/menu_horizontal_padding"
-                    android:textSize="15sp" 
-                    android:singleLine="true">
+                    android:singleLine="true"
+                    android:textSize="15sp" >
                 </EditText>
             </LinearLayout>
 
@@ -197,11 +199,43 @@
                         android:text="@string/gaoxiaodongman_play_name" />
                 </LinearLayout>
 
+                <LinearLayout
+                    android:id="@+id/ll_kongbupian"
+                    style="@style/style_6"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/layout_zero"
+                    android:layout_weight="1" 
+                    android:visibility="invisible">
+
+                    <Button
+                        android:id="@+id/bt_kongbupian"
+                        style="@style/style_5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="@string/kongbupian_name" />
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/ll_donghuapian"
+                    style="@style/style_6"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/layout_zero"
+                    android:layout_weight="1" 
+                    android:visibility="invisible">
+
+                    <Button
+                        android:id="@+id/bt_donghuapian"
+                        style="@style/style_5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="@string/donghuapian_name" 
+                        />
+                </LinearLayout>                
+
                 <TextView
                     style="@style/style_4"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/layout_zero"
-                    android:layout_weight="3.73" />
+                    android:layout_weight="1.73" />
 
                 <Button
                     android:id="@+id/bt_zuijinguankan"
@@ -251,115 +285,28 @@
             android:layout_weight="5.61"
             android:orientation="vertical" >
 
-            <LinearLayout
-                android:id="@+id/ll_shoucanggengxin"
+            <FrameLayout
+                android:id="@+id/fl_movie_show"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/layout_zero"
-                android:layout_weight="1"
-                android:orientation="horizontal"
-                android:paddingBottom="@dimen/edit_vertical_margin"
-                android:paddingTop="@dimen/edit_vertical_margin"
-                android:visibility="visible" >
+                android:layout_height="match_parent"
+                android:paddingRight="34dp" >
 
-                <LinearLayout
+                <com.joyplus.tv.ui.MyMovieGridView
+                    android:id="@+id/gv_movie_show"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/menubg"
-                    android:paddingRight="50dp" >
+                    android:gravity="center"
+                    android:listSelector="@android:color/transparent"
+                    android:numColumns="5" >
+                </com.joyplus.tv.ui.MyMovieGridView>
 
-                    <TextView
-                        android:layout_width="@dimen/layout_zero"
-                        android:layout_height="match_parent"
-                        android:layout_marginLeft="@dimen/theme_name_margin"
-                        android:layout_weight="1"
-                        android:gravity="center_vertical"
-                        android:text="@string/shoucang_update_name"
-                        android:textColor="@color/text_normal"
-                        android:textSize="@dimen/menu_up_text_size" />
+                <include
+                    android:id="@+id/inclue_movie_show_item"
+                    android:layout_width="0dip"
+                    android:layout_height="0dip"
+                    layout="@layout/show_item_layout" />
 
-                    <TextView
-                        android:layout_width="@dimen/layout_zero"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="right|center_vertical"
-                        android:text="1/1"
-                        android:textColor="@color/time_color"
-                        android:textSize="@dimen/jishu_text_size" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <ScrollView
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/layout_zero"
-                android:layout_weight="15" >
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical" >
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:paddingRight="50dp" >
-
-                        <com.joyplus.tv.ui.MyGridView
-                            android:id="@+id/gv_dongman_shoucang"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:descendantFocusability="beforeDescendants"
-                            android:numColumns="5" >
-                        </com.joyplus.tv.ui.MyGridView>
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/ll_qitadianshiju"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/edit_vertical_margin"
-                        android:layout_marginTop="@dimen/edit_vertical_margin"
-                        android:background="@color/menu_bg"
-                        android:orientation="horizontal"
-                        android:paddingRight="50dp"
-                        android:visibility="visible" >
-
-                        <TextView
-                            android:layout_width="@dimen/layout_zero"
-                            android:layout_height="match_parent"
-                            android:layout_marginLeft="@dimen/theme_name_margin"
-                            android:layout_weight="1"
-                            android:gravity="center_vertical"
-                            android:text="@string/qitadongman_play_name"
-                            android:textColor="@color/text_normal"
-                            android:textSize="@dimen/menu_up_text_size" />
-
-                        <TextView
-                            android:layout_width="@dimen/layout_zero"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:gravity="right|center_vertical"
-                            android:text="1/678"
-                            android:textColor="@color/time_color"
-                            android:textSize="@dimen/jishu_text_size" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:paddingRight="50dp"
-                        android:visibility="visible" >
-
-                        <com.joyplus.tv.ui.MyGridView
-                            android:id="@+id/gv_qitadianshiju"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:numColumns="5" >
-                        </com.joyplus.tv.ui.MyGridView>
-                    </LinearLayout>
-                </LinearLayout>
-            </ScrollView>
+            </FrameLayout>
         </LinearLayout>
     </LinearLayout>
 

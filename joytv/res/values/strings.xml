@@ -24,7 +24,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="tv_play_name">电视剧</string>
     <string name="shoucang_update_name">收藏更新</string>
-    <string name="oumei_play_name">欧美剧</string>
+    <string name="oumei_play_name">美剧</string>
     <string name="dalu_play_name">大陆剧</string>
     <string name="gangju_play_name">港剧</string>
     <string name="taiju_play_name">台剧</string>

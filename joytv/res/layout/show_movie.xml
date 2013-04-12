@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:background="@color/movie_bg"
     android:orientation="vertical"
-    android:paddingLeft="50dp"
+    android:paddingLeft="35dp"
     android:paddingTop="15dp" >
 
     <include
@@ -34,7 +34,7 @@
             android:layout_weight="5.61"
             android:background="@drawable/menubg"
             android:orientation="horizontal"
-            android:paddingRight="50dp" >
+            android:paddingRight="35dp" >
 
             <TextView
                 android:layout_width="@dimen/layout_zero"
@@ -53,7 +53,8 @@
                 android:gravity="right|center_vertical"
                 android:text="2/123"
                 android:textColor="@color/time_color"
-                android:textSize="@dimen/jishu_text_size" />
+                android:textSize="@dimen/jishu_text_size" 
+                android:visibility="invisible"/>
         </LinearLayout>
     </LinearLayout>
 
@@ -285,7 +286,7 @@
                 android:id="@+id/fl_movie_show"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:paddingRight="50dp" >
+                android:paddingRight="34dp" >
 
                 <com.joyplus.tv.ui.MyMovieGridView
                     android:id="@+id/gv_movie_show"

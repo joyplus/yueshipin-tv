@@ -1,32 +1,73 @@
 package com.joyplus.tv;
 
-import com.joyplus.tv.ui.MyGridView;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONObject;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.ScaleAnimation;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
-public class ShowDongManActivity extends Activity implements
-		View.OnKeyListener, MyKeyEventKey, View.OnClickListener {
+import com.androidquery.AQuery;
+import com.androidquery.callback.AjaxCallback;
+import com.androidquery.callback.AjaxStatus;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.joyplus.tv.Service.Return.ReturnTVBangDanList;
+import com.joyplus.tv.entity.MovieItemData;
+import com.joyplus.tv.ui.MyMovieGridView;
+
+public class ShowDongManActivity extends Activity implements View.OnKeyListener,
+		MyKeyEventKey, BangDanKey, View.OnClickListener {
+
+	private String TAG = "ShowDongManActivity";
+	private AQuery aq;
+	private App app;
 
 	private EditText searchEt;
-	private MyGridView shoucanggengxinGv, qitadongmanGv;
+	private MyMovieGridView dongmanGv;
 	private LinearLayout qinziLL, rexueLL, hougongLL, tuiliLL, jizhanLL,
 			gaoxiaoLL;
 
 	private Button zuijinguankanBtn, zhuijushoucangBtn, lixianshipinBtn,
 			mFenLeiBtn;
+	
+	private View firstFloatView ;
 
 	private View beforeView, activeView;
+
+	private boolean isSelectedItem = true;// GridView中参数是否真正初始化
+
+	private int popWidth, popHeight;
+
+	private boolean isGridViewUp = false;
+
+	private int[] beforeFirstAndLastVible = { 0, 9 };
+
+	private View beforeGvView = null;
+
+	private ObjectMapper mapper = new ObjectMapper();
+
+	private List<MovieItemData> movieList = new ArrayList<MovieItemData>();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -34,17 +75,39 @@ public class ShowDongManActivity extends Activity implements
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.show_dongman);
 
+		app = (App) getApplication();
+		aq = new AQuery(this);
+
 		initView();
 		initState();
+
+		// getServiceData();
+		String url = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
+		TV_DONGMAN, 1 + "", 50 + "");
+		getServiceData(url);// 进入电影界面时，全部分类电影显示获取焦点，并且显示数据
+//		movieGv.setAdapter(movieAdapter);// 网格布局添加适配器
+		dongmanGv.setAdapter(movieAdapter);
+		dongmanGv.setSelected(true);
+		dongmanGv.requestFocus();
+		dongmanGv.setSelection(0);
+		
+		DisplayMetrics dm = new DisplayMetrics();
+
+		getWindowManager().getDefaultDisplay().getMetrics(dm);
+
+//		int width = dm.widthPixels;
+//
+//		int height = dm.heightPixels;
+//		
+//		app.MyToast(aq.getContext(),"Screen-->Width: " + width + " height:" + height);
+
 	}
 
 	private void initView() {
 
 		searchEt = (EditText) findViewById(R.id.et_search);
 		mFenLeiBtn = (Button) findViewById(R.id.bt_quanbufenlei);
-
-		shoucanggengxinGv = (MyGridView) findViewById(R.id.gv_dongman_shoucang);
-		qitadongmanGv = (MyGridView) findViewById(R.id.gv_qitadianshiju);
+		dongmanGv = (MyMovieGridView) findViewById(R.id.gv_movie_show);
 
 		qinziLL = (LinearLayout) findViewById(R.id.ll_qinzidongman);
 		rexueLL = (LinearLayout) findViewById(R.id.ll_rexuedongman);
@@ -56,75 +119,13 @@ public class ShowDongManActivity extends Activity implements
 		zuijinguankanBtn = (Button) findViewById(R.id.bt_zuijinguankan);
 		zhuijushoucangBtn = (Button) findViewById(R.id.bt_zhuijushoucang);
 		lixianshipinBtn = (Button) findViewById(R.id.bt_lixianshipin);
+		
+		firstFloatView = findViewById(R.id.inclue_movie_show_item);
 
-		searchEt.setOnKeyListener(new View.OnKeyListener() {
-
-			@Override
-			public boolean onKey(View v, int keyCode, KeyEvent event) {
-				// TODO Auto-generated method stub
-				int action = event.getAction();
-				if (action == KeyEvent.ACTION_UP) {
-					if (keyCode == KEY_UP) {
-
-						turnToNonButtonState();
-					}
-				}
-				return false;
-			}
-		});
-
-		shoucanggengxinGv.setOnKeyListener(new View.OnKeyListener() {
-
-			@Override
-			public boolean onKey(View v, int keyCode, KeyEvent event) {
-				// TODO Auto-generated method stub
-				int action = event.getAction();
-
-				if (action == KeyEvent.ACTION_UP) {
-					if (keyCode == KEY_RIGHT) {
-
-						turnToNonButtonState();
-					}
-				}
-				return false;
-			}
-		});
-
-		addKeyListener();
-		addClickListener();
+		addListener();
 
 	}
-
-	private void addKeyListener() {
-
-		qinziLL.setOnKeyListener(this);
-		rexueLL.setOnKeyListener(this);
-		hougongLL.setOnKeyListener(this);
-		tuiliLL.setOnKeyListener(this);
-		jizhanLL.setOnKeyListener(this);
-		gaoxiaoLL.setOnKeyListener(this);
-
-		zuijinguankanBtn.setOnKeyListener(this);
-		zhuijushoucangBtn.setOnKeyListener(this);
-		lixianshipinBtn.setOnKeyListener(this);
-		mFenLeiBtn.setOnKeyListener(this);
-	}
-
-	private void addClickListener() {
-
-		qinziLL.setOnClickListener(this);
-		rexueLL.setOnClickListener(this);
-		hougongLL.setOnClickListener(this);
-		tuiliLL.setOnClickListener(this);
-		jizhanLL.setOnClickListener(this);
-		gaoxiaoLL.setOnClickListener(this);
-
-		zuijinguankanBtn.setOnClickListener(this);
-		zhuijushoucangBtn.setOnClickListener(this);
-		lixianshipinBtn.setOnClickListener(this);
-		mFenLeiBtn.setOnClickListener(this);
-	}
-
+	
 	private void initState() {
 
 		beforeView = mFenLeiBtn;
@@ -149,20 +150,311 @@ public class ShowDongManActivity extends Activity implements
 		lixianshipinBtn.setPadding(0, 0, 5, 0);
 		mFenLeiBtn.setPadding(0, 0, 5, 0);
 
-		shoucanggengxinGv.setAdapter(new MovieAdpter());// 网格布局添加适配器
-		qitadongmanGv.setAdapter(new MovieAdpter());// 网格布局添加适配器
-
-		shoucanggengxinGv.setSelection(3);
-
 	}
 
+	private int beforepostion = 0;
+
+	private void addListener() {
+
+		qinziLL.setOnKeyListener(this);
+		rexueLL.setOnKeyListener(this);
+		hougongLL.setOnKeyListener(this);
+		tuiliLL.setOnKeyListener(this);
+		jizhanLL.setOnKeyListener(this);
+		gaoxiaoLL.setOnKeyListener(this);
+
+		zuijinguankanBtn.setOnKeyListener(this);
+		zhuijushoucangBtn.setOnKeyListener(this);
+		lixianshipinBtn.setOnKeyListener(this);
+		mFenLeiBtn.setOnKeyListener(this);
+
+		qinziLL.setOnClickListener(this);
+		rexueLL.setOnClickListener(this);
+		hougongLL.setOnClickListener(this);
+		tuiliLL.setOnClickListener(this);
+		jizhanLL.setOnClickListener(this);
+		gaoxiaoLL.setOnClickListener(this);
+
+		zuijinguankanBtn.setOnClickListener(this);
+		zhuijushoucangBtn.setOnClickListener(this);
+		lixianshipinBtn.setOnClickListener(this);
+		mFenLeiBtn.setOnClickListener(this);
+		
+		searchEt.setOnKeyListener(new View.OnKeyListener() {
+
+			@Override
+			public boolean onKey(View v, int keyCode, KeyEvent event) {
+				// TODO Auto-generated method stub
+				int action = event.getAction();
+				if (action == KeyEvent.ACTION_UP) {
+					if (keyCode == KEY_UP) {
+
+						turnToGridViewState();
+					}
+				}
+				return false;
+			}
+		});
+		
+		dongmanGv.setOnKeyListener(new View.OnKeyListener() {
+
+			@Override
+			public boolean onKey(View v, int keyCode, KeyEvent event) {
+				// TODO Auto-generated method stub
+				int action = event.getAction();
+
+				if (keyCode == KEY_UP) {
+
+					isGridViewUp = true;
+					// isGridViewDown = false;
+				} else if (keyCode == KEY_DOWN) {
+
+					isGridViewUp = false;
+					// isGridViewDown = true;
+				}
+				if (action == KeyEvent.ACTION_UP) {
+					if (keyCode == KEY_RIGHT) {
+
+						turnToGridViewState();
+					}
+					if (!isSelectedItem) {
+
+						 if (keyCode == KEY_RIGHT) {
+						 isSelectedItem = true;
+						 dongmanGv.setSelection(1);
+						 } else if (keyCode == KEY_DOWN) {
+						 isSelectedItem = true;
+						 dongmanGv.setSelection(5);
+						
+						 }
+					}
+
+				}
+				return false;
+			}
+		});
+
+		dongmanGv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				// TODO Auto-generated method stub
+				startActivity(new Intent(ShowDongManActivity.this,
+						ShowXiangqingTv.class));
+			}
+		});
+
+		dongmanGv.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+			@Override
+			public void onItemSelected(AdapterView<?> parent, final View view,
+					int position, long id) {
+				// TODO Auto-generated method stub
+				// if (BuildConfig.DEBUG)
+				Log.i(TAG, "Positon:" + position + " View:" + view + 
+						" beforGvView:" + beforeGvView );
+
+				if (view == null) {
+
+					isSelectedItem = false;
+					return;
+				}
+
+				final float x = view.getX();
+				final float y = view.getY();
+
+				boolean isSmoonthScroll = false;
+
+				boolean isSameContent = position >= beforeFirstAndLastVible[0]
+						&& position <= beforeFirstAndLastVible[1];
+				if (position >= 5 && !isSameContent) {
+
+					if (beforepostion >= beforeFirstAndLastVible[0]
+							&& beforepostion <= beforeFirstAndLastVible[0] + 4) {
+
+						if (isGridViewUp) {
+
+							dongmanGv.smoothScrollBy(-popHeight, 1000);
+							isSmoonthScroll = true;
+						}
+					} else {
+
+						if (!isGridViewUp) {
+
+							dongmanGv.smoothScrollBy(popHeight, 1000 * 2);
+							isSmoonthScroll = true;
+
+						}
+					}
+
+				}
+
+				// if (!isSmoonthScroll) {// 没有强行拖动时候的动画效果
+
+				if (beforeGvView != null) {
+
+					ImageView iv = (ImageView) beforeGvView
+							.findViewById(R.id.item_layout_dianying_reflact);
+					iv.setVisibility(View.VISIBLE);
+					beforeGvView.setBackgroundColor(getResources().getColor(
+							android.R.color.transparent));
+					ScaleAnimation outScaleAnimation = new ScaleAnimation(1.0f,
+							0.8f, 1.0f, 0.8f, Animation.RELATIVE_TO_SELF, 0.5f,
+							Animation.RELATIVE_TO_SELF, 0.5f);
+
+					outScaleAnimation.setDuration(80);
+					outScaleAnimation.setFillAfter(false);
+					beforeGvView.startAnimation(outScaleAnimation);
+					
+					
+					ImageView iv2 = (ImageView) view
+							.findViewById(R.id.item_layout_dianying_reflact);
+					iv2.setVisibility(View.GONE);
+					ScaleAnimation inScaleAnimation = new ScaleAnimation(
+							0.8f, 1.0f, 0.8f, 1.0f,
+							Animation.RELATIVE_TO_SELF, 0.5f,
+							Animation.RELATIVE_TO_SELF, 0.5f);
+					inScaleAnimation.setDuration(80);
+					inScaleAnimation.setFillAfter(false);
+
+					view.setPadding(10, 10, 10, 10);
+					view.setBackgroundColor(getResources()
+							.getColor(R.color.text_active));
+					view.startAnimation(inScaleAnimation);
+
+				} else {
+					
+					ScaleAnimation outScaleAnimation = new ScaleAnimation(0.8f,
+							1.0f, 0.8f, 1.0f, Animation.RELATIVE_TO_SELF, 0.5f,
+							Animation.RELATIVE_TO_SELF, 0.5f);
+
+					outScaleAnimation.setDuration(80);
+					outScaleAnimation.setFillAfter(false);
+					firstFloatView.startAnimation(outScaleAnimation);
+					
+					firstFloatView.setVisibility(View.GONE);
+					ImageView iv = (ImageView) view
+							.findViewById(R.id.item_layout_dianying_reflact);
+					iv.setVisibility(View.GONE);
+					ScaleAnimation inScaleAnimation = new ScaleAnimation(
+							0.8f, 1.0f, 0.8f, 1.0f,
+							Animation.RELATIVE_TO_SELF, 0.5f,
+							Animation.RELATIVE_TO_SELF, 0.5f);
+					inScaleAnimation.setDuration(80);
+					inScaleAnimation.setFillAfter(false);
+
+					view.setPadding(10, 10, 10, 10);
+					view.setBackgroundColor(getResources()
+							.getColor(R.color.text_active));
+					view.startAnimation(inScaleAnimation);
+				}
+//				 }
+
+				if (y == 0 || y - popHeight == 0) {// 顶部没有渐影
+
+					if (!isSmoonthScroll) {
+
+						beforeFirstAndLastVible[0] = dongmanGv
+								.getFirstVisiblePosition();
+						beforeFirstAndLastVible[1] = dongmanGv
+								.getFirstVisiblePosition() + 9;
+					} else {
+
+						beforeFirstAndLastVible[0] = dongmanGv
+								.getFirstVisiblePosition() - 5;
+						beforeFirstAndLastVible[1] = dongmanGv
+								.getFirstVisiblePosition() + 9 - 5;
+					}
+
+				} else {// 顶部有渐影
+
+					if (!isSmoonthScroll) {
+
+						beforeFirstAndLastVible[0] = dongmanGv
+								.getLastVisiblePosition() - 9;
+						beforeFirstAndLastVible[1] = dongmanGv
+								.getLastVisiblePosition();
+					} else {
+
+						beforeFirstAndLastVible[0] = dongmanGv
+								.getLastVisiblePosition() - 9 + 5;
+						beforeFirstAndLastVible[1] = dongmanGv
+								.getLastVisiblePosition() + 5;
+					}
+
+				}
+
+				beforeGvView = view;
+				beforepostion = position;
+
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parent) {
+				// TODO Auto-generated method stub
+
+				isSelectedItem = false;
+			}
+		});
+
+		dongmanGv.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				// TODO Auto-generated method stub
+
+				if (!hasFocus) {// 如果gridview没有获取焦点，把item中高亮取消
+
+					ScaleAnimation outScaleAnimation = new ScaleAnimation(
+							1.0f, 0.8f, 1.0f, 0.8f,
+							Animation.RELATIVE_TO_SELF, 0.5f,
+							Animation.RELATIVE_TO_SELF, 0.5f);
+
+					outScaleAnimation.setDuration(80);
+					outScaleAnimation.setFillAfter(false);
+					if (beforeGvView != null) {
+						ImageView iv = (ImageView) beforeGvView
+								.findViewById(R.id.item_layout_dianying_reflact);
+						iv.setVisibility(View.VISIBLE);
+						beforeGvView.setBackgroundColor(getResources()
+								.getColor(android.R.color.transparent));
+						beforeGvView.startAnimation(outScaleAnimation);
+					} else {
+						
+						firstFloatView.setVisibility(View.GONE);
+					}
+				} else {
+
+					ScaleAnimation inScaleAnimation = new ScaleAnimation(
+							0.8f, 1.0f, 0.8f, 1.0f,
+							Animation.RELATIVE_TO_SELF, 0.5f,
+							Animation.RELATIVE_TO_SELF, 0.5f);
+					inScaleAnimation.setDuration(80);
+					inScaleAnimation.setFillAfter(false);
+					if (beforeGvView != null) {
+
+						ImageView iv = (ImageView) beforeGvView
+								.findViewById(R.id.item_layout_dianying_reflact);
+						iv.setVisibility(View.GONE);
+						beforeGvView.setPadding(10, 10, 10, 10);
+						beforeGvView.setBackgroundColor(getResources()
+								.getColor(R.color.text_active));
+
+						beforeGvView.startAnimation(inScaleAnimation);
+
+					} else {
+						initFirstFloatView();
+					}
+				}
+			}
+		});
+	}
+	
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-//		StatisticsUtils.simulateKey(KeyEvent.KEYCODE_DPAD_LEFT);
-//		StatisticsUtils.simulateKey(KeyEvent.KEYCODE_DPAD_RIGHT);
-//		shoucanggengxinGv.setSelection(0);
 
 	}
 
@@ -199,7 +491,8 @@ public class ShowDongManActivity extends Activity implements
 		}
 	}
 
-	private void turnToNonButtonState() {
+	// 转到类似Gridview组件上
+	private void turnToGridViewState() {
 
 		if (beforeView.getId() == activeView.getId()) {
 
@@ -257,6 +550,7 @@ public class ShowDongManActivity extends Activity implements
 		// TODO Auto-generated method stub
 		int action = event.getAction();
 		if (action == KeyEvent.ACTION_UP) {
+
 			v.setOnClickListener(null);
 
 			if (v instanceof LinearLayout) {
@@ -275,8 +569,7 @@ public class ShowDongManActivity extends Activity implements
 				}
 			} else if (v instanceof Button) {
 				Button button = (Button) v;
-				if (keyCode == KEY_UP || keyCode == KEY_LEFT
-						|| keyCode == KEY_DOWN) {
+				if ((keyCode == KEY_UP || keyCode == KEY_LEFT || keyCode == KEY_DOWN)) {
 					searchEt.setFocusable(true);// 能够获取焦点
 					beforeViewFoucsStateBack();
 					button.setTextColor(getResources().getColor(
@@ -284,22 +577,20 @@ public class ShowDongManActivity extends Activity implements
 					button.setBackgroundResource(R.drawable.text_drawable_selector);
 				}
 			}
-			
+
 			v.setOnClickListener(this);
 		}
 		beforeView = v;
 		return false;
 	}
 
-	/**
-	 * 能够接受 23 和66 但在66值下，没有press效果
-	 */
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
+		 Log.i("Yangzhg", "onClick");
+
 		v.setOnKeyListener(null);
 		if (v instanceof LinearLayout) {
-
 			LinearLayout linearLayout = (LinearLayout) v;
 			if (v.getId() != activeView.getId()) {
 				beforeViewActiveStateBack();
@@ -307,30 +598,184 @@ public class ShowDongManActivity extends Activity implements
 				activeView = v;
 			}
 		} else if (v instanceof Button) {
-
+			Button button = (Button) v;
 			if (v.getId() != activeView.getId()) {
-				Button button = (Button) v;
 				beforeViewActiveStateBack();
 				buttonToActiveState(button);
 				activeView = v;
 			}
-
 		}
+		
+		switch (v.getId()) {
+		case R.id.ll_qinzidongman:
+			String url1 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
+			REBO_QINZI_DONGMAN, 1 + "", 50 + "");
+			app.MyToast(aq.getContext(),"qinzi");
+			getServiceData(url1);
+			break;
+		case R.id.ll_rexuedongman:
+			String url2 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
+			REBO_REXUE_DONGMAN, 1 + "", 50 + "");
+			app.MyToast(aq.getContext(),"ll_rexuedongman");
+			getServiceData(url2);
+			break;
+		case R.id.ll_hougongdongman:
+			String url3 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
+			REBO_HOUGONG_DONGMAN, 1 + "", 50 + "");
+			app.MyToast(aq.getContext(),"ll_hougongdongman");
+			getServiceData(url3);
+			break;
+		case R.id.ll_tuilidongman:
+			String url4 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
+			REBO_TUILI_DONGMAN, 1 + "", 50 + "");
+			app.MyToast(aq.getContext(),"ll_tuilidongman");
+			getServiceData(url4);
+			break;
+		case R.id.ll_jizhandongman:
+			String url5 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
+			REBO_JIZHAN_DONGMAN, 1 + "", 50 + "");
+			app.MyToast(aq.getContext(),"ll_jizhandongman");
+			getServiceData(url5);
+			break;
+		case R.id.ll_gaoxiaodongman:
+			String url6 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
+			REBO_GAOXIAO_DONGMAN, 1 + "", 50 + "");
+			app.MyToast(aq.getContext(),"ll_gaoxiaodongman");
+			getServiceData(url6);
+			break;
+
+		default:
+			break;
+		}
+		beforeGvView = null;
 		v.setOnKeyListener(this);
 	}
 
-	private class MovieAdpter extends BaseAdapter {
+	private void getServiceData(String url) {
 
-		@Override
-		public int getCount() {
-			// TODO Auto-generated method stub
-			return 15;
+		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
+		cb.url(url).type(JSONObject.class).weakHandler(this, "initData");
+
+		cb.SetHeader(app.getHeaders());
+		aq.ajax(cb);
+	}
+
+	public void initData(String url, JSONObject json, AjaxStatus status) {
+
+		if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
+
+			app.MyToast(aq.getContext(),
+					getResources().getString(R.string.networknotwork));
+			return;
 		}
+		try {
+			Log.d(TAG, json.toString());
+			ReturnTVBangDanList result = mapper.readValue(json.toString(),
+					ReturnTVBangDanList.class);
+			// hot_list.clear();
+			if(movieList != null && !movieList.isEmpty()) {
+				
+				movieList.clear();
+			}
+			for (int i = 0; i < result.items.length; i++) {
+
+				MovieItemData movieItemData = new MovieItemData();
+				movieItemData.setMovieName(result.items[i].prod_name);
+				movieItemData.setMoviePicUrl(result.items[i].prod_pic_url);
+				movieItemData.setMovieScore(result.items[i].score);
+				movieList.add(movieItemData);
+			}
+			// Log.d
+
+			movieAdapter.notifyDataSetChanged();
+			beforeGvView = null;
+			initFirstFloatView();
+			dongmanGv.setFocusable(true);
+			dongmanGv.setSelected(true);
+			isSelectedItem = false;
+			dongmanGv.requestFocus();
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	private void  initFirstFloatView() {
+		
+		firstFloatView.setX(0);
+		firstFloatView.setY(0);
+		firstFloatView.setLayoutParams(new FrameLayout.LayoutParams(popWidth, popHeight));
+		firstFloatView.setVisibility(View.VISIBLE);
+		
+//		ImageView iv = (ImageView) firstFloatView.findViewById(R.id.iv_item_layout_haibao);
+		TextView movieName = (TextView) firstFloatView.findViewById(R.id.tv_item_layout_name);
+		TextView movieScore = (TextView) firstFloatView.findViewById(R.id.tv_item_layout_score);
+		aq = new AQuery(firstFloatView);
+		aq.id(R.id.iv_item_layout_haibao).image(
+				movieList.get(0).getMoviePicUrl());
+		movieName.setText(movieList.get(0).getMovieName());
+		movieScore.setText(movieList.get(0).getMovieScore());
+		firstFloatView.setPadding(10, 10, 10, 10);
+		firstFloatView.setBackgroundColor(getResources()
+				.getColor(R.color.text_active));
+		ScaleAnimation inScaleAnimation = new ScaleAnimation(
+				0.8f, 1.0f, 0.8f, 1.0f,
+				Animation.RELATIVE_TO_SELF, 0.5f,
+				Animation.RELATIVE_TO_SELF, 0.5f);
+		inScaleAnimation.setDuration(80);
+		inScaleAnimation.setFillAfter(false);
+		
+		firstFloatView.startAnimation(inScaleAnimation);
+	}
+
+
+	private BaseAdapter movieAdapter = new BaseAdapter() {
 
 		@Override
-		public Object getItem(int position) {
+		public View getView(int position, View convertView, ViewGroup parent) {
 			// TODO Auto-generated method stub
-			return null;
+			View v;
+
+			int width = parent.getWidth() / 5;
+			int height = (int) (width / 1.0f / 264 * 370);
+
+			if (convertView == null) {
+				View view = getLayoutInflater().inflate(
+						R.layout.show_item_layout_dianying, null);
+				v = view;
+			} else {
+
+				v = convertView;
+			}
+			AbsListView.LayoutParams params = new AbsListView.LayoutParams(
+					width, height);
+			v.setLayoutParams(params);
+
+			TextView movieName = (TextView) v
+					.findViewById(R.id.tv_item_layout_name);
+			movieName.setText(movieList.get(position).getMovieName());
+			TextView movieScore = (TextView) v
+					.findViewById(R.id.tv_item_layout_score);
+			movieScore.setText(movieList.get(position).getMovieScore());
+			v.setPadding(10, 10, 10, 10);
+
+			if (width != 0) {
+
+				popWidth = width;
+				popHeight = height;
+				// Log.i(TAG, "Width:" + popWidth);
+			}
+
+			aq = new AQuery(v);
+			aq.id(R.id.iv_item_layout_haibao).image(
+					movieList.get(position).getMoviePicUrl());
+			return v;
 		}
 
 		@Override
@@ -340,14 +785,16 @@ public class ShowDongManActivity extends Activity implements
 		}
 
 		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
+		public Object getItem(int position) {
 			// TODO Auto-generated method stub
-			ImageView iv = new ImageView(getApplicationContext());
-			iv.setBackgroundResource(R.drawable.movie_pic);
-
-			return iv;
+			return movieList.get(position);
 		}
 
-	}
+		@Override
+		public int getCount() {
+			// TODO Auto-generated method stub
+			return movieList.size();
+		}
+	};
 
 }
