@@ -136,7 +136,10 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_below="@+id/textView1"
-                android:divider="@color/listbg" >
+                android:divider="#4D2A08" 
+                android:dividerHeight="1dp"
+                android:listSelector="@drawable/comment_list_selector"
+                android:cacheColorHint="@android:color/transparent">
 
             </ListView>
 
@@ -173,7 +176,7 @@
                         android:textSize="16sp" />
 
                     <TextView
-                        android:id="@+id/listViewItemDetail"
+                        android:id="@+id/textViewItemDetail"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textSize="16sp" />
