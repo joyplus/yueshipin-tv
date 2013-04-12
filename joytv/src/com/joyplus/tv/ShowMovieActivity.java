@@ -30,6 +30,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -64,14 +65,17 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 	private boolean isSelectedItem = true;// GridView中参数是否真正初始化
 	private BaseAdapter adapter;
 
-	private View floatView;
+	// private View floatView;
 
 	private int popWidth, popHeight;
 
 	private boolean isGridViewUp = false;
-//			isGridViewDown = false;
+	// isGridViewDown = false;
 
 	private int[] beforeFirstAndLastVible = { 0, 9 };
+	
+//	private ScaleAnimation inScaleAnimation,outScaleAnimation;
+	private View beforeGvView;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -109,7 +113,7 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 		zhuijushoucangBtn = (Button) findViewById(R.id.bt_zhuijushoucang);
 		lixianshipinBtn = (Button) findViewById(R.id.bt_lixianshipin);
 
-		floatView = findViewById(R.id.inclue_movie_show_item);
+		// floatView = findViewById(R.id.inclue_movie_show_item);
 
 		searchEt.setOnKeyListener(new View.OnKeyListener() {
 
@@ -136,26 +140,26 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 				if (keyCode == KEY_UP) {
 
 					isGridViewUp = true;
-//					isGridViewDown = false;
+					// isGridViewDown = false;
 				} else if (keyCode == KEY_DOWN) {
 
 					isGridViewUp = false;
-//					isGridViewDown = true;
+					// isGridViewDown = true;
 				}
 				if (action == KeyEvent.ACTION_UP) {
 					if (keyCode == KEY_RIGHT) {
 
 						turnToGridViewState();
-					} 
-//					else if (keyCode == KEY_UP) {
-//
-//						isGridViewUp = true;
-////						isGridViewDown = false;
-//					} else if (keyCode == KEY_DOWN) {
-//
-//						isGridViewUp = false;
-////						isGridViewDown = true;
-//					}
+					}
+					// else if (keyCode == KEY_UP) {
+					//
+					// isGridViewUp = true;
+					// // isGridViewDown = false;
+					// } else if (keyCode == KEY_DOWN) {
+					//
+					// isGridViewUp = false;
+					// // isGridViewDown = true;
+					// }
 					if (!isSelectedItem) {
 
 						if (keyCode == KEY_RIGHT) {
@@ -187,7 +191,7 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 		movieGv.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
 			@Override
-			public void onItemSelected(AdapterView<?> parent, View view,
+			public void onItemSelected(AdapterView<?> parent, final View view,
 					int position, long id) {
 				// TODO Auto-generated method stub
 				// if (BuildConfig.DEBUG)
@@ -217,48 +221,49 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 							isSmoonthScroll = true;
 							// movieGv.requestLayout();
 
-							TranslateAnimation translateAnimation = new TranslateAnimation(
-									x, x, y, y + popHeight);
-							translateAnimation.setDuration(1000);
-							translateAnimation.setFillAfter(false);
-//							floatView.layout((int) x, (int) y,
-//									(int) (x + popWidth),
-//									(int) (y + + popHeight + popHeight));
-							floatView.startAnimation(translateAnimation);
+//							TranslateAnimation translateAnimation = new TranslateAnimation(
+//									x, x, y, y + popHeight);
+//							translateAnimation.setDuration(1000);
+//							translateAnimation.setFillAfter(false);
+//							// floatView.layout((int) x, (int) y,
+//							// (int) (x + popWidth),
+//							// (int) (y + + popHeight + popHeight));
+//							floatView.startAnimation(translateAnimation);
 						}
 					} else {
 
 						if (!isGridViewUp) {
 
-							movieGv.smoothScrollBy(popHeight, 1000*2);
-//							movieGv.scrollBy(x, y)
+							movieGv.smoothScrollBy(popHeight, 1000 * 2);
+							// movieGv.scrollBy(x, y)
 							// movieGv.requestLayout();
 							isSmoonthScroll = true;
-							
-							floatView.layout((int) x, (int) y,
-									(int) (x + popWidth),
-									(int) (y + popHeight));
-							TranslateAnimation translateAnimation;
-							
-//							floatView.layout((int) x, (int) y,
-//							(int) (x + popWidth),
-//							(int) (y + + popHeight + popHeight));
-							int jianYingHeight = (int) (y- popHeight);
-							if(jianYingHeight < 0) {
-								
-								jianYingHeight = (int) y;
-							}
-							translateAnimation = new TranslateAnimation(
-									x, x, y, y  - 2 * popHeight - jianYingHeight);
-							translateAnimation.setDuration(1000);
-							translateAnimation.setFillAfter(true);
-							floatView.startAnimation(translateAnimation);
+
+//							floatView
+//									.layout((int) x, (int) y,
+//											(int) (x + popWidth),
+//											(int) (y + popHeight));
+//							TranslateAnimation translateAnimation;
+//
+//							// floatView.layout((int) x, (int) y,
+//							// (int) (x + popWidth),
+//							// (int) (y + + popHeight + popHeight));
+//							int jianYingHeight = (int) (y - popHeight);
+//							if (jianYingHeight < 0) {
+//
+//								jianYingHeight = (int) y;
+//							}
+//							translateAnimation = new TranslateAnimation(x, x,
+//									y, y - 2 * popHeight - jianYingHeight);
+//							translateAnimation.setDuration(1000);
+//							translateAnimation.setFillAfter(true);
+//							floatView.startAnimation(translateAnimation);
 						}
 					}
 
 				}
 
-				if (!isSmoonthScroll) {// 没有强行拖动时候的动画效果
+//				if (!isSmoonthScroll) {// 没有强行拖动时候的动画效果
 
 					ScaleAnimation outScaleAnimation = new ScaleAnimation(1.0f,
 							0.8f, 1.0f, 0.8f, Animation.RELATIVE_TO_SELF, 0.5f,
@@ -266,9 +271,7 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 
 					outScaleAnimation.setDuration(80);
 					outScaleAnimation.setFillAfter(false);
-
-					outScaleAnimation
-							.setAnimationListener(new Animation.AnimationListener() {
+					outScaleAnimation.setAnimationListener(new Animation.AnimationListener() {
 
 								@Override
 								public void onAnimationStart(Animation animation) {
@@ -285,6 +288,9 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 								@Override
 								public void onAnimationEnd(Animation animation) {
 									// TODO Auto-generated method stub
+									ImageView iv = (ImageView) view
+											.findViewById(R.id.item_layout_dianying_reflact);
+									iv.setVisibility(View.GONE);
 									ScaleAnimation inScaleAnimation = new ScaleAnimation(
 											0.8f, 1.0f, 0.8f, 1.0f,
 											Animation.RELATIVE_TO_SELF, 0.5f,
@@ -292,19 +298,26 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 									inScaleAnimation.setDuration(80);
 									inScaleAnimation.setFillAfter(false);
 
-									floatView.layout((int) x, (int) y,
-											(int) (x + popWidth),
-											(int) (y + popHeight));
+//									floatView.layout((int) x, (int) y,
+//											(int) (x + popWidth),
+//											(int) (y + popHeight));
 
-									floatView.setPadding(10, 10, 10, 10);
-									floatView.setBackgroundColor(getResources()
+									view.setPadding(10, 10, 10, 10);
+									view.setBackgroundColor(getResources()
 											.getColor(R.color.text_active));
-									floatView.startAnimation(inScaleAnimation);
+									view.startAnimation(inScaleAnimation);
 								}
 							});
-					floatView.startAnimation(outScaleAnimation);
+					if(beforeGvView != null) {
+						
+						ImageView iv = (ImageView) beforeGvView
+								.findViewById(R.id.item_layout_dianying_reflact);
+						iv.setVisibility(View.VISIBLE);
+						beforeGvView.setBackgroundColor(getResources().getColor(android.R.color.transparent));
+						beforeGvView.startAnimation(outScaleAnimation);
 
-				}
+					}
+//				}
 
 				if (y == 0 || y - popHeight == 0) {// 顶部没有渐影
 
@@ -340,6 +353,7 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 
 				}
 
+				beforeGvView = view;
 				beforepostion = position;
 
 			}
@@ -739,14 +753,31 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 
 			if (position == 0 && !isSelectedItem && width != 0) {
 
-				FrameLayout.LayoutParams params2 = new FrameLayout.LayoutParams(
-						popWidth, popHeight);
-				floatView.setLayoutParams(params2);
-				floatView.setX(movieGv.getX());
-				floatView.setY(movieGv.getY());
-				floatView.setPadding(10, 10, 10, 10);
-				floatView.setBackgroundColor(getResources().getColor(
-						R.color.text_active));
+				// FrameLayout.LayoutParams params2 = new
+				// FrameLayout.LayoutParams(
+				// popWidth, popHeight);
+				// floatView.setLayoutParams(params2);
+				// floatView.setX(movieGv.getX());
+				// floatView.setY(movieGv.getY());
+				// floatView.setPadding(10, 10, 10, 10);
+				// floatView.setBackgroundColor(getResources().getColor(
+				// R.color.text_active));
+
+				ImageView iv = (ImageView) v
+						.findViewById(R.id.item_layout_dianying_reflact);
+				iv.setVisibility(View.GONE);
+
+				ScaleAnimation inScaleAnimation = new ScaleAnimation(0.8f,
+						1.0f, 0.8f, 1.0f, Animation.RELATIVE_TO_SELF, 0.5f,
+						Animation.RELATIVE_TO_SELF, 0.5f);
+				inScaleAnimation.setDuration(80);
+				inScaleAnimation.setFillAfter(false);
+				 v.setPadding(10, 10, 10, 10);
+				 v.setBackgroundColor(getResources().getColor(
+				 R.color.text_active));
+
+				v.startAnimation(inScaleAnimation);
+				beforeGvView = v;
 				isSelectedItem = true;
 			}
 
