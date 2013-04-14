@@ -76,18 +76,28 @@ public class ShowYueDanActivity extends Activity implements View.OnKeyListener,
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.show_tv);
+		setContentView(R.layout.show_yuedan);
 
 		app = (App) getApplication();
 		aq = new AQuery(this);
 
 		Intent intent = getIntent();
 		
-//		String intent.getString(resId)
+		String yuedanType = intent.getStringExtra("yuedan_type");
+		
+		if(yuedanType != null && !yuedanType.equals("")) {
+			
+			int tempInt = Integer.valueOf(yuedanType);
+			if(tempInt == DIANSHIJU_YUEDAN || tempInt == DIANYING_YUEDAN) {
+				
+				defalutYuedan = tempInt;
+			}
+		}
 		
 		if(defalutYuedan == DIANYING_YUEDAN) {
 			
 			String url = StatisticsUtils.getTopURL(TOP_URL, 1+"", 50 + "", 1+ "");
+			Log.i(TAG, "URL--->" + url);
 			getServiceData(url);// 进入电影界面时，全部分类电影显示获取焦点，并且显示数据
 		} else if(defalutYuedan == DIANSHIJU_YUEDAN){
 			
@@ -590,6 +600,38 @@ public class ShowYueDanActivity extends Activity implements View.OnKeyListener,
 		// TODO Auto-generated method stub
 		 Log.i("Yangzhg", "onClick");
 
+			if(activeView == null) {
+				
+				if(defalutYuedan == DIANYING_YUEDAN) {
+					activeView = dianyingyuedanBtn;
+				} else {
+					
+					activeView = dianshijuyuedanBtn;
+				}
+				
+			}
+			
+			if(activeView.getId() == v.getId()) {
+				
+				return;
+			}
+			
+			switch (v.getId()) {
+			case R.id.bt_dianyingyuedan:
+				String url1 = StatisticsUtils.getTopURL(TOP_URL, 1+"", 50 + "", 1+ "");
+				app.MyToast(aq.getContext(),"ll_daluju");
+				getServiceData(url1);
+				break;
+			case R.id.bt_dianshijuyuedan:
+				String url2 = StatisticsUtils.getTopURL(TOP_URL, 1+"", 50 + "", 2+ "");
+				app.MyToast(aq.getContext(),"ll_gangju");
+				getServiceData(url2);
+				break;
+
+			default:
+				break;
+			}
+		 
 		v.setOnKeyListener(null);
 		if (v instanceof LinearLayout) {
 			LinearLayout linearLayout = (LinearLayout) v;
@@ -607,37 +649,6 @@ public class ShowYueDanActivity extends Activity implements View.OnKeyListener,
 			}
 		}
 		
-		if(activeView == null) {
-			
-			if(defalutYuedan == DIANYING_YUEDAN) {
-				activeView = dianyingyuedanBtn;
-			} else {
-				
-				activeView = dianshijuyuedanBtn;
-			}
-			
-		}
-		
-		if(activeView.getId() == v.getId()) {
-			
-			return;
-		}
-		
-		switch (v.getId()) {
-		case R.id.bt_dianyingyuedan:
-			String url1 = StatisticsUtils.getTopURL(TOP_URL, 1+"", 50 + "", 1+ "");
-			app.MyToast(aq.getContext(),"ll_daluju");
-			getServiceData(url1);
-			break;
-		case R.id.ll_gangju:
-			String url2 = StatisticsUtils.getTopURL(TOP_URL, 1+"", 50 + "", 2+ "");
-			app.MyToast(aq.getContext(),"ll_gangju");
-			getServiceData(url2);
-			break;
-
-		default:
-			break;
-		}
 		beforeGvView = null;
 		v.setOnKeyListener(this);
 	}
@@ -670,7 +681,6 @@ public class ShowYueDanActivity extends Activity implements View.OnKeyListener,
 			}
 			for(int i=0; i<result.tops.length; i++){
 				YueDanInfo yuedanInfo = new YueDanInfo();
-				movieList = new ArrayList<YueDanInfo>();
 				yuedanInfo.name = result.tops[i].name;
 				yuedanInfo.id = result.tops[i].id;
 				yuedanInfo.prod_type = result.tops[i].prod_type;

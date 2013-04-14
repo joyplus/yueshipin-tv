@@ -591,6 +591,64 @@ public class ShowTVActivity extends Activity implements View.OnKeyListener,
 		// TODO Auto-generated method stub
 		 Log.i("Yangzhg", "onClick");
 
+			if(activeView == null) {
+				
+				activeView = mFenLeiBtn;
+			}
+			
+			if(activeView.getId() == v.getId()) {
+				
+				return;
+			}
+			
+			switch (v.getId()) {
+			case R.id.ll_daluju:
+				String url1 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
+				REBO_DALU_DIANSHI, 1 + "", 50 + "");
+				app.MyToast(aq.getContext(),"ll_daluju");
+				getServiceData(url1);
+				break;
+			case R.id.ll_gangju:
+				String url2 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
+				REBO_GANGJU_DIANSHI, 1 + "", 50 + "");
+				app.MyToast(aq.getContext(),"ll_gangju");
+				getServiceData(url2);
+				break;
+			case R.id.ll_taiju:
+				String url3 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
+				REBO_TAIJU_DIANSHI, 1 + "", 50 + "");
+				app.MyToast(aq.getContext(),"ll_taiju");
+				getServiceData(url3);
+				break;
+			case R.id.ll_hanju:
+				String url4 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
+				REBO_HANJU_DIANSHI, 1 + "", 50 + "");
+				app.MyToast(aq.getContext(),"ll_hanju");
+				getServiceData(url4);
+				break;
+			case R.id.ll_meiju:
+				String url5 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
+				REBO_OUMEI_DIANSHI, 1 + "", 50 + "");
+				app.MyToast(aq.getContext(),"ll_meiju");
+				getServiceData(url5);
+				break;
+			case R.id.ll_riju:
+				String url6 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
+				REBO_RIJU_DIANSHI, 1 + "", 50 + "");
+				app.MyToast(aq.getContext(),"ll_riju");
+				getServiceData(url6);
+				break;
+			case R.id.bt_quanbufenlei:
+				String url7 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
+						TV_DIANSHIJU, 1 + "", 50 + "");
+				app.MyToast(aq.getContext(),"bt_quanbufenlei");
+				getServiceData(url7);
+				break;
+
+			default:
+				break;
+			}
+		 
 		v.setOnKeyListener(null);
 		if (v instanceof LinearLayout) {
 			LinearLayout linearLayout = (LinearLayout) v;
@@ -608,63 +666,6 @@ public class ShowTVActivity extends Activity implements View.OnKeyListener,
 			}
 		}
 		
-		if(activeView == null) {
-			
-			activeView = mFenLeiBtn;
-		}
-		
-		if(activeView.getId() == v.getId()) {
-			
-			return;
-		}
-		
-		switch (v.getId()) {
-		case R.id.ll_daluju:
-			String url1 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
-			REBO_DALU_DIANSHI, 1 + "", 50 + "");
-			app.MyToast(aq.getContext(),"ll_daluju");
-			getServiceData(url1);
-			break;
-		case R.id.ll_gangju:
-			String url2 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
-			REBO_GANGJU_DIANSHI, 1 + "", 50 + "");
-			app.MyToast(aq.getContext(),"ll_gangju");
-			getServiceData(url2);
-			break;
-		case R.id.ll_taiju:
-			String url3 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
-			REBO_TAIJU_DIANSHI, 1 + "", 50 + "");
-			app.MyToast(aq.getContext(),"ll_taiju");
-			getServiceData(url3);
-			break;
-		case R.id.ll_hanju:
-			String url4 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
-			REBO_HANJU_DIANSHI, 1 + "", 50 + "");
-			app.MyToast(aq.getContext(),"ll_hanju");
-			getServiceData(url4);
-			break;
-		case R.id.ll_meiju:
-			String url5 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
-			REBO_OUMEI_DIANSHI, 1 + "", 50 + "");
-			app.MyToast(aq.getContext(),"ll_meiju");
-			getServiceData(url5);
-			break;
-		case R.id.ll_riju:
-			String url6 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
-			REBO_RIJU_DIANSHI, 1 + "", 50 + "");
-			app.MyToast(aq.getContext(),"ll_riju");
-			getServiceData(url6);
-			break;
-		case R.id.bt_quanbufenlei:
-			String url7 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
-					TV_DIANSHIJU, 1 + "", 50 + "");
-			app.MyToast(aq.getContext(),"bt_quanbufenlei");
-			getServiceData(url7);
-			break;
-
-		default:
-			break;
-		}
 		beforeGvView = null;
 		v.setOnKeyListener(this);
 	}

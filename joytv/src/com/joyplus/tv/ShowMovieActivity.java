@@ -612,6 +612,77 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 		// TODO Auto-generated method stub
 		 Log.i("Yangzhg", "onClick");
 
+		 
+			if(activeView == null) {
+				
+				activeView = mFenLeiBtn;
+			}
+			
+			if(activeView.getId() == v.getId()) {
+				
+				return;
+			}
+			
+			switch (v.getId()) {
+			case R.id.ll_dongzuopian:
+				String url1 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
+				REBO_DONGZUO_MOVIE, 1 + "", 50 + "");
+				app.MyToast(aq.getContext(),"DONGZUO");
+				getServiceData(url1);
+				break;
+			case R.id.ll_kehuanpian:
+				String url2 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
+				REBO_KEHUAN_MOVIE, 1 + "", 50 + "");
+				app.MyToast(aq.getContext(),"ll_kehuanpian");
+				getServiceData(url2);
+				break;
+			case R.id.ll_lunlipian:
+				String url3 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
+				REBO_LUNLI_MOVIE, 1 + "", 50 + "");
+				app.MyToast(aq.getContext(),"ll_lunlipian");
+				getServiceData(url3);
+				break;
+			case R.id.ll_xijupian:
+				String url4 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
+				REBO_XIJU_MOVIE, 1 + "", 50 + "");
+				app.MyToast(aq.getContext(),"ll_xijupian");
+				getServiceData(url4);
+				break;
+			case R.id.ll_aiqingpian:
+				String url5 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
+				REBO_KEHUAN_MOVIE, 1 + "", 50 + "");
+				app.MyToast(aq.getContext(),"ll_aiqingpian");
+				getServiceData(url5);
+				break;
+			case R.id.ll_xuanyipian:
+				String url6 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
+				REBO_KEHUAN_MOVIE, 1 + "", 50 + "");
+				app.MyToast(aq.getContext(),"ll_xuanyipian");
+				getServiceData(url6);
+				break;
+			case R.id.ll_kongbupian:
+				String url7 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
+				REBO_KONGBU_MOVIE, 1 + "", 50 + "");
+				app.MyToast(aq.getContext(),"ll_kongbupian");
+				getServiceData(url7);
+				break;
+			case R.id.ll_donghuapian:
+				String url8 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
+				REBO_DONGHUA_MOVIE, 1 + "", 50 + "");
+				app.MyToast(aq.getContext(),"ll_donghuapian");
+				getServiceData(url8);
+				break;
+			case R.id.bt_quanbufenlei:
+				String url9 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
+						TV_DIANYING, 1 + "", 50 + "");
+				app.MyToast(aq.getContext(),"bt_quanbufenlei");
+				getServiceData(url9);
+				break;
+
+			default:
+				break;
+			}
+		 
 		v.setOnKeyListener(null);
 		if (v instanceof LinearLayout) {
 			LinearLayout linearLayout = (LinearLayout) v;
@@ -627,76 +698,6 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 				buttonToActiveState(button);
 				activeView = v;
 			}
-		}
-		
-		if(activeView == null) {
-			
-			activeView = mFenLeiBtn;
-		}
-		
-		if(activeView.getId() == v.getId()) {
-			
-			return;
-		}
-		
-		switch (v.getId()) {
-		case R.id.ll_dongzuopian:
-			String url1 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
-			REBO_DONGZUO_MOVIE, 1 + "", 50 + "");
-			app.MyToast(aq.getContext(),"DONGZUO");
-			getServiceData(url1);
-			break;
-		case R.id.ll_kehuanpian:
-			String url2 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
-			REBO_KEHUAN_MOVIE, 1 + "", 50 + "");
-			app.MyToast(aq.getContext(),"ll_kehuanpian");
-			getServiceData(url2);
-			break;
-		case R.id.ll_lunlipian:
-			String url3 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
-			REBO_LUNLI_MOVIE, 1 + "", 50 + "");
-			app.MyToast(aq.getContext(),"ll_lunlipian");
-			getServiceData(url3);
-			break;
-		case R.id.ll_xijupian:
-			String url4 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
-			REBO_XIJU_MOVIE, 1 + "", 50 + "");
-			app.MyToast(aq.getContext(),"ll_xijupian");
-			getServiceData(url4);
-			break;
-		case R.id.ll_aiqingpian:
-			String url5 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
-			REBO_KEHUAN_MOVIE, 1 + "", 50 + "");
-			app.MyToast(aq.getContext(),"ll_aiqingpian");
-			getServiceData(url5);
-			break;
-		case R.id.ll_xuanyipian:
-			String url6 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
-			REBO_KEHUAN_MOVIE, 1 + "", 50 + "");
-			app.MyToast(aq.getContext(),"ll_xuanyipian");
-			getServiceData(url6);
-			break;
-		case R.id.ll_kongbupian:
-			String url7 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
-			REBO_KONGBU_MOVIE, 1 + "", 50 + "");
-			app.MyToast(aq.getContext(),"ll_kongbupian");
-			getServiceData(url7);
-			break;
-		case R.id.ll_donghuapian:
-			String url8 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
-			REBO_DONGHUA_MOVIE, 1 + "", 50 + "");
-			app.MyToast(aq.getContext(),"ll_donghuapian");
-			getServiceData(url8);
-			break;
-		case R.id.bt_quanbufenlei:
-			String url9 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
-					TV_DIANYING, 1 + "", 50 + "");
-			app.MyToast(aq.getContext(),"bt_quanbufenlei");
-			getServiceData(url9);
-			break;
-
-		default:
-			break;
 		}
 		beforeGvView = null;
 		v.setOnKeyListener(this);

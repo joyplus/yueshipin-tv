@@ -589,6 +589,64 @@ public class ShowDongManActivity extends Activity implements View.OnKeyListener,
 		// TODO Auto-generated method stub
 		 Log.i("Yangzhg", "onClick");
 
+			if(activeView == null) {
+				
+				activeView = mFenLeiBtn;
+			}
+			
+			if(activeView.getId() == v.getId()) {
+				
+				return;
+			}
+			
+			switch (v.getId()) {
+			case R.id.ll_qinzidongman:
+				String url1 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
+				REBO_QINZI_DONGMAN, 1 + "", 50 + "");
+				app.MyToast(aq.getContext(),"qinzi");
+				getServiceData(url1);
+				break;
+			case R.id.ll_rexuedongman:
+				String url2 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
+				REBO_REXUE_DONGMAN, 1 + "", 50 + "");
+				app.MyToast(aq.getContext(),"ll_rexuedongman");
+				getServiceData(url2);
+				break;
+			case R.id.ll_hougongdongman:
+				String url3 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
+				REBO_HOUGONG_DONGMAN, 1 + "", 50 + "");
+				app.MyToast(aq.getContext(),"ll_hougongdongman");
+				getServiceData(url3);
+				break;
+			case R.id.ll_tuilidongman:
+				String url4 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
+				REBO_TUILI_DONGMAN, 1 + "", 50 + "");
+				app.MyToast(aq.getContext(),"ll_tuilidongman");
+				getServiceData(url4);
+				break;
+			case R.id.ll_jizhandongman:
+				String url5 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
+				REBO_JIZHAN_DONGMAN, 1 + "", 50 + "");
+				app.MyToast(aq.getContext(),"ll_jizhandongman");
+				getServiceData(url5);
+				break;
+			case R.id.ll_gaoxiaodongman:
+				String url6 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
+				REBO_GAOXIAO_DONGMAN, 1 + "", 50 + "");
+				app.MyToast(aq.getContext(),"ll_gaoxiaodongman");
+				getServiceData(url6);
+				break;
+			case R.id.bt_quanbufenlei:
+				String url7 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
+						TV_DONGMAN, 1 + "", 50 + "");
+				app.MyToast(aq.getContext(),"bt_quanbufenlei");
+				getServiceData(url7);
+				break;
+
+			default:
+				break;
+			}
+		 
 		v.setOnKeyListener(null);
 		if (v instanceof LinearLayout) {
 			LinearLayout linearLayout = (LinearLayout) v;
@@ -606,63 +664,6 @@ public class ShowDongManActivity extends Activity implements View.OnKeyListener,
 			}
 		}
 		
-		if(activeView == null) {
-			
-			activeView = mFenLeiBtn;
-		}
-		
-		if(activeView.getId() == v.getId()) {
-			
-			return;
-		}
-		
-		switch (v.getId()) {
-		case R.id.ll_qinzidongman:
-			String url1 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
-			REBO_QINZI_DONGMAN, 1 + "", 50 + "");
-			app.MyToast(aq.getContext(),"qinzi");
-			getServiceData(url1);
-			break;
-		case R.id.ll_rexuedongman:
-			String url2 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
-			REBO_REXUE_DONGMAN, 1 + "", 50 + "");
-			app.MyToast(aq.getContext(),"ll_rexuedongman");
-			getServiceData(url2);
-			break;
-		case R.id.ll_hougongdongman:
-			String url3 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
-			REBO_HOUGONG_DONGMAN, 1 + "", 50 + "");
-			app.MyToast(aq.getContext(),"ll_hougongdongman");
-			getServiceData(url3);
-			break;
-		case R.id.ll_tuilidongman:
-			String url4 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
-			REBO_TUILI_DONGMAN, 1 + "", 50 + "");
-			app.MyToast(aq.getContext(),"ll_tuilidongman");
-			getServiceData(url4);
-			break;
-		case R.id.ll_jizhandongman:
-			String url5 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
-			REBO_JIZHAN_DONGMAN, 1 + "", 50 + "");
-			app.MyToast(aq.getContext(),"ll_jizhandongman");
-			getServiceData(url5);
-			break;
-		case R.id.ll_gaoxiaodongman:
-			String url6 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
-			REBO_GAOXIAO_DONGMAN, 1 + "", 50 + "");
-			app.MyToast(aq.getContext(),"ll_gaoxiaodongman");
-			getServiceData(url6);
-			break;
-		case R.id.bt_quanbufenlei:
-			String url7 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
-					TV_DONGMAN, 1 + "", 50 + "");
-			app.MyToast(aq.getContext(),"bt_quanbufenlei");
-			getServiceData(url7);
-			break;
-
-		default:
-			break;
-		}
 		beforeGvView = null;
 		v.setOnKeyListener(this);
 	}
