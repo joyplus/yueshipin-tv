@@ -53,6 +53,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="5"
                 android:paddingLeft="15dp"
+                android:paddingRight="25dp"
                 android:orientation="vertical" >
 
                 <LinearLayout
@@ -168,7 +169,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_zero"
             android:layout_weight="1"
-            android:paddingLeft="20dp"
+            android:paddingLeft="25dp"
             android:orientation="horizontal">
 
             <LinearLayout
@@ -381,11 +382,16 @@
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="fill_parent">
-                        <LinearLayout android:layout_width="fill_parent"
-                        android:layout_height="40dp"
-                        android:orientation="horizontal"
-                        android:id="@+id/layout">
-	                    </LinearLayout>
+                        <HorizontalScrollView android:layout_width="fill_parent"
+                            android:layout_height="40dp"
+                            android:id="@+id/scrollview"
+                            android:scrollbars="@null">
+                          <LinearLayout android:layout_width="wrap_content"
+	                        android:layout_height="fill_parent"
+	                        android:orientation="horizontal"
+	                        android:id="@+id/layout">  
+	                        </LinearLayout>
+                        </HorizontalScrollView>
 				        <TableLayout android:layout_width="fill_parent"
 				            android:layout_height="fill_parent"
 				            android:id="@+id/table">

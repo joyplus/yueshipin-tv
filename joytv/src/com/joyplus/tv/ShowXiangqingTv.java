@@ -21,10 +21,12 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -52,11 +54,12 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 	private LinearLayout layout;
 	private TableLayout table;
 	private boolean isOver = false;
-	private int num = 45;
+	private int num = 145;
 	private int totle_pagecount;
 	private int selectedIndex;
 	private static final int COUNT = 20;
 	private Handler handler =  new Handler();
+//	private HorizontalScrollView scrollView;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -137,9 +140,6 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 		
 		currentBofangViewPop = biaoqingLL;
 		beforeTempPop = biaoqingLL;
-		
-		layout = (LinearLayout) findViewById(R.id.layout);
-		table  = (TableLayout) findViewById(R.id.table);
 	}
 
 	private void initView() {
@@ -155,6 +155,10 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 
 		xiazaiBt = (Button) findViewById(R.id.bt_xiangqing_xiazai);
 		yingpingBt = (Button) findViewById(R.id.bt_xiangqing_yingping);
+		
+		layout = (LinearLayout) findViewById(R.id.layout);
+//		scrollView = (HorizontalScrollView) findViewById(R.id.scrollview);
+		table  = (TableLayout) findViewById(R.id.table);
 
 		addListener();
 
@@ -228,6 +232,7 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 				}
 			}else{
 				Toast.makeText(this, "click btn = " + v.getId(), 100).show();
+//				scrollView.smoothScrollBy(20, 0);
 			}
 			break;
 		}

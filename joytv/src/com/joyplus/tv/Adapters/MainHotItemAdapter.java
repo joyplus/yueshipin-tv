@@ -74,7 +74,7 @@ public class MainHotItemAdapter extends BaseAdapter {
 //		aq = new AQuery(convertView);
 		holder.image.setTag(hot_list.get(position).prod_pic_url);
 //		holder.image.setImageResource(R.drawable.test1);
-		aq.id(holder.image).image(hot_list.get(position).prod_pic_url,true,true);
+		aq.id(holder.image).image(hot_list.get(position).prod_pic_url,true,true,0,R.drawable.post_normal);
 		if(hot_list.get(position).type == 0){
 			holder.firstTitle.setVisibility(View.VISIBLE);
 		}else{

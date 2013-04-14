@@ -85,7 +85,7 @@ public class MainYueDanItemAdapter extends BaseAdapter {
 			holder.layout.setVisibility(View.VISIBLE);
 			holder.definition.setVisibility(View.VISIBLE);
 			holder.image.setTag(yuedan_list.get(position).pic_url);
-			aq.id(holder.image).image(yuedan_list.get(position).pic_url,true,true);
+			aq.id(holder.image).image(yuedan_list.get(position).pic_url,true,true,0,R.drawable.post_normal);
 			holder.secondTitle.setText(yuedan_list.get(position).name);
 			holder.content.setText(yuedan_list.get(position).content);
 			holder.definition.setImageResource(R.drawable.icon_movie);
@@ -94,7 +94,7 @@ public class MainYueDanItemAdapter extends BaseAdapter {
 			holder.layout.setVisibility(View.VISIBLE);
 			holder.definition.setVisibility(View.VISIBLE);
 			holder.image.setTag(yuedan_list.get(position).pic_url);
-			aq.id(holder.image).image(yuedan_list.get(position).pic_url,true,true);
+			aq.id(holder.image).image(yuedan_list.get(position).pic_url,true,true,0,R.drawable.post_normal);
 			holder.secondTitle.setText(yuedan_list.get(position).name);
 			holder.content.setText(yuedan_list.get(position).content);
 			holder.definition.setImageResource(R.drawable.icon_episode);

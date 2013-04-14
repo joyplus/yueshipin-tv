@@ -370,6 +370,13 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 		checkLogin();
 		getHotServiceData();
 		getHistoryServiceData();
+//		
+//		DisplayMetrics dm = new DisplayMetrics();
+//		this.getWindowManager().getDefaultDisplay().getMetrics(dm);
+//		int width = dm.widthPixels;//屏幕宽度
+//		int height = dm.heightPixels;//屏幕高度
+//		
+//		Toast.makeText(this, "Width:" + width + " Height:" + height, Toast.LENGTH_LONG).show();
     }
     
 	@Override
@@ -704,27 +711,21 @@ public boolean checkLogin() {
 			intent.putExtra("title", str1);
 
 			startActivity(intent);
-
-//			startActivity(new Intent(this,VideoPlayerActivity.class));
 			break;
 		case 2:
-			switch (index) {
-			case 0:
-				startActivity(new Intent(this,ShowMovieActivity.class));
-				break;
-			case 1:
-				startActivity(new Intent(this,ShowTVActivity.class));
-				break;
-			case 2:
-				startActivity(new Intent(this,ShowDongManActivity.class));
-				break;
-			case 3:
-				startActivity(new Intent(this,ShowZongYiActivity.class));
-				break;
-			case 4:
-				startActivity(new Intent(this,ShowSearchActivity.class));
-				break;
+			Intent yuedanIntent = new Intent();
+			YueDanInfo yueDan = yuedan_list.get(index);
+			if(Integer.valueOf(yueDan.prod_type) == 0){
+				yuedanIntent.setClass(Main.this, ShowYueDanActivity.class);
+				if("-1".equals(yueDan.id)){
+					yuedanIntent.putExtra("yuedan_type", "1");
+				}else if("-2".equals(yueDan.id)){
+					yuedanIntent.putExtra("yuedan_type", "2");
+				}
+			}else{
+				yuedanIntent.setClass(Main.this, ShowYueDanListActivity.class);
 			}
+			startActivity(yuedanIntent);
 			break;
 		case 3:
 			switch (index) {
@@ -988,7 +989,7 @@ public boolean checkLogin() {
 			item.prod_id = result.histories[0].prod_id;
 			item.prod_name = result.histories[0].prod_name;
 			item.prod_type = result.histories[0].prod_type;
-			item.prod_pic_url = result.histories[0].prod_pic_url;
+			item.prod_pic_url = result.histories[0].big_prod_pic_url;
 			item.stars = result.histories[0].stars;
 			item.directors = result.histories[0].directors;
 			item.favority_num = result.histories[0].favority_num;
