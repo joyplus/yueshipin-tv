@@ -70,5 +70,6 @@ public interface BangDanKey {
 	String TV_DONGMAN = "7284";//7284 动漫 for TV
 	
 	String TOP_ITEM_URL = Constant.BASE_URL + "top_items";
+	String TOP_URL = Constant.BASE_URL + "tops";
 
 }

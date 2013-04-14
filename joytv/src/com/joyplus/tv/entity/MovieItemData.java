@@ -10,6 +10,13 @@ public class MovieItemData {
 	private String moviePicUrl;
 	private String movieName;
 	private String movieScore;
+	private String movieID;
+	public String getMovieID() {
+		return movieID;
+	}
+	public void setMovieID(String movieID) {
+		this.movieID = movieID;
+	}
 	public String getMoviePicUrl() {
 		return moviePicUrl;
 	}

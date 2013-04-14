@@ -93,5 +93,10 @@ public class StatisticsUtils {
 		
 		return url + "?top_id=" +top_id + "&page_num=" + page_num + "&page_size=" + page_size;
 	}
+	
+	public static String getTopURL(String url, String page_num , String page_size , String topic_type) {
+		
+		return url + "?page_num=" + page_num + "&page_size=" + page_size + "&topic_type=" + topic_type;
+	}
 
 }

@@ -606,6 +606,16 @@ public class ShowDongManActivity extends Activity implements View.OnKeyListener,
 			}
 		}
 		
+		if(activeView == null) {
+			
+			activeView = mFenLeiBtn;
+		}
+		
+		if(activeView.getId() == v.getId()) {
+			
+			return;
+		}
+		
 		switch (v.getId()) {
 		case R.id.ll_qinzidongman:
 			String url1 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
@@ -642,6 +652,12 @@ public class ShowDongManActivity extends Activity implements View.OnKeyListener,
 			REBO_GAOXIAO_DONGMAN, 1 + "", 50 + "");
 			app.MyToast(aq.getContext(),"ll_gaoxiaodongman");
 			getServiceData(url6);
+			break;
+		case R.id.bt_quanbufenlei:
+			String url7 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
+					TV_DONGMAN, 1 + "", 50 + "");
+			app.MyToast(aq.getContext(),"bt_quanbufenlei");
+			getServiceData(url7);
 			break;
 
 		default:

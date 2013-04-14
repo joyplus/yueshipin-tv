@@ -629,6 +629,16 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 			}
 		}
 		
+		if(activeView == null) {
+			
+			activeView = mFenLeiBtn;
+		}
+		
+		if(activeView.getId() == v.getId()) {
+			
+			return;
+		}
+		
 		switch (v.getId()) {
 		case R.id.ll_dongzuopian:
 			String url1 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
@@ -677,6 +687,12 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 			REBO_DONGHUA_MOVIE, 1 + "", 50 + "");
 			app.MyToast(aq.getContext(),"ll_donghuapian");
 			getServiceData(url8);
+			break;
+		case R.id.bt_quanbufenlei:
+			String url9 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
+					TV_DIANYING, 1 + "", 50 + "");
+			app.MyToast(aq.getContext(),"bt_quanbufenlei");
+			getServiceData(url9);
 			break;
 
 		default:

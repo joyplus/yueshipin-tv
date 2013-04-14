@@ -7,7 +7,7 @@
         android:id="@+id/include_item_ani_active"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        layout="@layout/show_item_layout_active" 
+        layout="@layout/show_item_layout_dianying_active" 
         android:visibility="invisible"/>
 
     <include

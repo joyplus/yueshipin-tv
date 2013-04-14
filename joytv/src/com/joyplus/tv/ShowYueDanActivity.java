@@ -1,99 +1,475 @@
 package com.joyplus.tv;
 
-import com.joyplus.tv.ui.MyMovieGridView;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONObject;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.ScaleAnimation;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import com.androidquery.AQuery;
+import com.androidquery.callback.AjaxCallback;
+import com.androidquery.callback.AjaxStatus;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.joyplus.tv.Service.Return.ReturnTops;
+import com.joyplus.tv.entity.YueDanInfo;
+import com.joyplus.tv.ui.MyMovieGridView;
 
 public class ShowYueDanActivity extends Activity implements View.OnKeyListener,
-		MyKeyEventKey, View.OnClickListener {
+		MyKeyEventKey, BangDanKey, View.OnClickListener {
+	
+	public static final int DIANYING_YUEDAN = 1;
+	public static final int DIANSHIJU_YUEDAN = 2;
 
-	private Button zuijinguankanBtn, zhuijushoucangBtn, lixianshipinBtn;
+	private String TAG = "ShowYueDanActivity";
+	private AQuery aq;
+	private App app;
 
-	private Button dianshijuYDBtn, dianyingYDBtn;
+	private EditText searchEt;
+	private MyMovieGridView dinashijuGv;
+
+	private Button zuijinguankanBtn, zhuijushoucangBtn, lixianshipinBtn,
+			dianyingyuedanBtn,dianshijuyuedanBtn;
+	
+	private View firstFloatView ;
 
 	private View beforeView, activeView;
 
-	private MyMovieGridView movieGv;
+	private boolean isSelectedItem = true;// GridView中参数是否真正初始化
+
+	private int popWidth, popHeight;
+
+	private boolean isGridViewUp = false;
+
+	private int[] beforeFirstAndLastVible = { 0, 9 };
+
+	private View beforeGvView = null;
+
+	private ObjectMapper mapper = new ObjectMapper();
+
+	private List<YueDanInfo> movieList = new ArrayList<YueDanInfo>();
+	
+	private int defalutYuedan = 0;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.show_yuedan);
+		setContentView(R.layout.show_tv);
+
+		app = (App) getApplication();
+		aq = new AQuery(this);
+
+		Intent intent = getIntent();
+		
+//		String intent.getString(resId)
+		
+		if(defalutYuedan == DIANYING_YUEDAN) {
+			
+			String url = StatisticsUtils.getTopURL(TOP_URL, 1+"", 50 + "", 1+ "");
+			getServiceData(url);// 进入电影界面时，全部分类电影显示获取焦点，并且显示数据
+		} else if(defalutYuedan == DIANSHIJU_YUEDAN){
+			
+			String url = StatisticsUtils.getTopURL(TOP_URL, 1+"", 50 + "", 2+ "");
+			getServiceData(url);// 进入电影界面时，全部分类电影显示获取焦点，并且显示数据
+		}
+		
+		initView();
+		initState();
+
+		// getServiceData();
+		
+//		movieGv.setAdapter(movieAdapter);// 网格布局添加适配器
+		dinashijuGv.setAdapter(movieAdapter);
+		dinashijuGv.setSelected(true);
+		dinashijuGv.requestFocus();
+		dinashijuGv.setSelection(0);
+		
+		DisplayMetrics dm = new DisplayMetrics();
+
+		getWindowManager().getDefaultDisplay().getMetrics(dm);
+
+//		int width = dm.widthPixels;
+//
+//		int height = dm.heightPixels;
+//		
+//		app.MyToast(aq.getContext(),"Screen-->Width: " + width + " height:" + height);
+
+	}
+
+	private void initView() {
+
+		searchEt = (EditText) findViewById(R.id.et_search);
+		dianyingyuedanBtn = (Button) findViewById(R.id.bt_dianyingyuedan);
+		dianshijuyuedanBtn = (Button) findViewById(R.id.bt_dianshijuyuedan);
+		dinashijuGv = (MyMovieGridView) findViewById(R.id.gv_movie_show);
 
 		zuijinguankanBtn = (Button) findViewById(R.id.bt_zuijinguankan);
 		zhuijushoucangBtn = (Button) findViewById(R.id.bt_zhuijushoucang);
 		lixianshipinBtn = (Button) findViewById(R.id.bt_lixianshipin);
-		movieGv = (MyMovieGridView) findViewById(R.id.gv_movie_show);
+		
+		firstFloatView = findViewById(R.id.inclue_movie_show_item);
 
-		dianshijuYDBtn = (Button) findViewById(R.id.bt_dianshijuyuedan);
-		dianyingYDBtn = (Button) findViewById(R.id.bt_dianyingyuedan);
+		addListener();
 
-		dianyingYDBtn
-				.setTextColor(getResources().getColor(R.color.text_active));// 全部分类首先设为激活状态
-		dianyingYDBtn.setBackgroundResource(R.drawable.menubg);// 在换成这张图片时，会刷新组件的padding
-		dianshijuYDBtn.setPadding(0, 0, 5, 0);
-		dianyingYDBtn.setPadding(0, 0, 5, 0);
+	}
+	
+	private void initState() {
+
+		if(defalutYuedan == DIANYING_YUEDAN) {
+			
+			beforeView = dianyingyuedanBtn;
+			activeView = dianyingyuedanBtn;
+			dianyingyuedanBtn.setTextColor(getResources().getColor(R.color.text_active));// 全部分类首先设为激活状态
+			dianyingyuedanBtn.setBackgroundResource(R.drawable.menubg);// 在换成这张图片时，会刷新组件的padding
+		}else {
+			
+			beforeView = dianshijuyuedanBtn;
+			activeView = dianshijuyuedanBtn;
+			dianshijuyuedanBtn.setTextColor(getResources().getColor(R.color.text_active));// 全部分类首先设为激活状态
+			dianshijuyuedanBtn.setBackgroundResource(R.drawable.menubg);// 在换成这张图片时，会刷新组件的padding
+		}
+
+		searchEt.setFocusable(false);// 搜索焦点消失
+		// movieGv.setNextFocusLeftId(R.id.bt_quanbufenlei);// 网格向左 全部分类获得焦点
+		// movieGv.setNextFocusDownId(R.id.bt_quanbufenlei);// 网格向左 全部分类获得焦点
+		// movieGv.setNextFocusUpId(R.id.bt_quanbufenlei);// 网格向左 全部分类获得焦点
+		// movieGv.setNextFocusRightId(R.id.bt_quanbufenlei);// 网格向左 全部分类获得焦点
+
 		zuijinguankanBtn.setPadding(0, 0, 5, 0);
 		zhuijushoucangBtn.setPadding(0, 0, 5, 0);
 		lixianshipinBtn.setPadding(0, 0, 5, 0);
+		dianyingyuedanBtn.setPadding(0, 0, 5, 0);
+		dianshijuyuedanBtn.setPadding(0, 0, 5, 0);
 
-		beforeView = dianyingYDBtn;
-		activeView = dianyingYDBtn;
-
-		addListener();
-		
-		movieGv.setOnKeyListener(new AbsListView.OnKeyListener() {
-			
-			@Override
-			public boolean onKey(View v, int keyCode, KeyEvent event) {
-				// TODO Auto-generated method stub
-				beforeViewFoucsStateBack();
-				return false;
-			}
-		});
-
-		movieGv.setAdapter(new MovieAdpter());// 网格布局添加适配器
-		movieGv.setSelection(3);
 	}
+
+	private int beforepostion = 0;
 
 	private void addListener() {
 
 		zuijinguankanBtn.setOnKeyListener(this);
 		zhuijushoucangBtn.setOnKeyListener(this);
 		lixianshipinBtn.setOnKeyListener(this);
-
-		dianshijuYDBtn.setOnKeyListener(this);
-		dianyingYDBtn.setOnKeyListener(this);
+		dianyingyuedanBtn.setOnKeyListener(this);
+		dianshijuyuedanBtn.setOnKeyListener(this);
 
 		zuijinguankanBtn.setOnClickListener(this);
 		zhuijushoucangBtn.setOnClickListener(this);
 		lixianshipinBtn.setOnClickListener(this);
+		dianyingyuedanBtn.setOnClickListener(this);
+		dianshijuyuedanBtn.setOnClickListener(this);
+		
+		searchEt.setOnKeyListener(new View.OnKeyListener() {
 
-		dianshijuYDBtn.setOnClickListener(this);
-		dianyingYDBtn.setOnClickListener(this);
+			@Override
+			public boolean onKey(View v, int keyCode, KeyEvent event) {
+				// TODO Auto-generated method stub
+				int action = event.getAction();
+				if (action == KeyEvent.ACTION_UP) {
+					if (keyCode == KEY_UP) {
+
+						turnToGridViewState();
+					}
+				}
+				return false;
+			}
+		});
+		
+		dinashijuGv.setOnKeyListener(new View.OnKeyListener() {
+
+			@Override
+			public boolean onKey(View v, int keyCode, KeyEvent event) {
+				// TODO Auto-generated method stub
+				int action = event.getAction();
+
+				if (keyCode == KEY_UP) {
+
+					isGridViewUp = true;
+					// isGridViewDown = false;
+				} else if (keyCode == KEY_DOWN) {
+
+					isGridViewUp = false;
+					// isGridViewDown = true;
+				}
+				if (action == KeyEvent.ACTION_UP) {
+					if (keyCode == KEY_RIGHT) {
+
+						turnToGridViewState();
+					}
+					if (!isSelectedItem) {
+
+						 if (keyCode == KEY_RIGHT) {
+						 isSelectedItem = true;
+						 dinashijuGv.setSelection(1);
+						 } else if (keyCode == KEY_DOWN) {
+						 isSelectedItem = true;
+						 dinashijuGv.setSelection(5);
+						
+						 }
+					}
+
+				}
+				return false;
+			}
+		});
+
+		dinashijuGv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				// TODO Auto-generated method stub
+				startActivity(new Intent(ShowYueDanActivity.this,
+						ShowYueDanListActivity.class));
+			}
+		});
+
+		dinashijuGv.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+			@Override
+			public void onItemSelected(AdapterView<?> parent, final View view,
+					int position, long id) {
+				// TODO Auto-generated method stub
+				// if (BuildConfig.DEBUG)
+				Log.i(TAG, "Positon:" + position + " View:" + view + 
+						" beforGvView:" + beforeGvView );
+
+				if (view == null) {
+
+					isSelectedItem = false;
+					return;
+				}
+
+				final float x = view.getX();
+				final float y = view.getY();
+
+				boolean isSmoonthScroll = false;
+
+				boolean isSameContent = position >= beforeFirstAndLastVible[0]
+						&& position <= beforeFirstAndLastVible[1];
+				if (position >= 5 && !isSameContent) {
+
+					if (beforepostion >= beforeFirstAndLastVible[0]
+							&& beforepostion <= beforeFirstAndLastVible[0] + 4) {
+
+						if (isGridViewUp) {
+
+							dinashijuGv.smoothScrollBy(-popHeight, 1000);
+							isSmoonthScroll = true;
+						}
+					} else {
+
+						if (!isGridViewUp) {
+
+							dinashijuGv.smoothScrollBy(popHeight, 1000 * 2);
+							isSmoonthScroll = true;
+
+						}
+					}
+
+				}
+
+				// if (!isSmoonthScroll) {// 没有强行拖动时候的动画效果
+
+				if (beforeGvView != null) {
+
+					ImageView iv = (ImageView) beforeGvView
+							.findViewById(R.id.item_layout_dianying_reflact);
+					iv.setVisibility(View.VISIBLE);
+					beforeGvView.setBackgroundColor(getResources().getColor(
+							android.R.color.transparent));
+					ScaleAnimation outScaleAnimation = new ScaleAnimation(1.0f,
+							0.8f, 1.0f, 0.8f, Animation.RELATIVE_TO_SELF, 0.5f,
+							Animation.RELATIVE_TO_SELF, 0.5f);
+
+					outScaleAnimation.setDuration(80);
+					outScaleAnimation.setFillAfter(false);
+					beforeGvView.startAnimation(outScaleAnimation);
+					
+					
+					ImageView iv2 = (ImageView) view
+							.findViewById(R.id.item_layout_dianying_reflact);
+					iv2.setVisibility(View.GONE);
+					ScaleAnimation inScaleAnimation = new ScaleAnimation(
+							0.8f, 1.0f, 0.8f, 1.0f,
+							Animation.RELATIVE_TO_SELF, 0.5f,
+							Animation.RELATIVE_TO_SELF, 0.5f);
+					inScaleAnimation.setDuration(80);
+					inScaleAnimation.setFillAfter(false);
+
+					view.setPadding(10, 10, 10, 10);
+					view.setBackgroundColor(getResources()
+							.getColor(R.color.text_active));
+					view.startAnimation(inScaleAnimation);
+
+				} else {
+					
+					ScaleAnimation outScaleAnimation = new ScaleAnimation(0.8f,
+							1.0f, 0.8f, 1.0f, Animation.RELATIVE_TO_SELF, 0.5f,
+							Animation.RELATIVE_TO_SELF, 0.5f);
+
+					outScaleAnimation.setDuration(80);
+					outScaleAnimation.setFillAfter(false);
+					firstFloatView.startAnimation(outScaleAnimation);
+					
+					firstFloatView.setVisibility(View.GONE);
+					ImageView iv = (ImageView) view
+							.findViewById(R.id.item_layout_dianying_reflact);
+					iv.setVisibility(View.GONE);
+					ScaleAnimation inScaleAnimation = new ScaleAnimation(
+							0.8f, 1.0f, 0.8f, 1.0f,
+							Animation.RELATIVE_TO_SELF, 0.5f,
+							Animation.RELATIVE_TO_SELF, 0.5f);
+					inScaleAnimation.setDuration(80);
+					inScaleAnimation.setFillAfter(false);
+
+					view.setPadding(10, 10, 10, 10);
+					view.setBackgroundColor(getResources()
+							.getColor(R.color.text_active));
+					view.startAnimation(inScaleAnimation);
+				}
+//				 }
+
+				if (y == 0 || y - popHeight == 0) {// 顶部没有渐影
+
+					if (!isSmoonthScroll) {
+
+						beforeFirstAndLastVible[0] = dinashijuGv
+								.getFirstVisiblePosition();
+						beforeFirstAndLastVible[1] = dinashijuGv
+								.getFirstVisiblePosition() + 9;
+					} else {
+
+						beforeFirstAndLastVible[0] = dinashijuGv
+								.getFirstVisiblePosition() - 5;
+						beforeFirstAndLastVible[1] = dinashijuGv
+								.getFirstVisiblePosition() + 9 - 5;
+					}
+
+				} else {// 顶部有渐影
+
+					if (!isSmoonthScroll) {
+
+						beforeFirstAndLastVible[0] = dinashijuGv
+								.getLastVisiblePosition() - 9;
+						beforeFirstAndLastVible[1] = dinashijuGv
+								.getLastVisiblePosition();
+					} else {
+
+						beforeFirstAndLastVible[0] = dinashijuGv
+								.getLastVisiblePosition() - 9 + 5;
+						beforeFirstAndLastVible[1] = dinashijuGv
+								.getLastVisiblePosition() + 5;
+					}
+
+				}
+
+				beforeGvView = view;
+				beforepostion = position;
+
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parent) {
+				// TODO Auto-generated method stub
+
+				isSelectedItem = false;
+			}
+		});
+
+		dinashijuGv.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				// TODO Auto-generated method stub
+
+				if (!hasFocus) {// 如果gridview没有获取焦点，把item中高亮取消
+
+					ScaleAnimation outScaleAnimation = new ScaleAnimation(
+							1.0f, 0.8f, 1.0f, 0.8f,
+							Animation.RELATIVE_TO_SELF, 0.5f,
+							Animation.RELATIVE_TO_SELF, 0.5f);
+
+					outScaleAnimation.setDuration(80);
+					outScaleAnimation.setFillAfter(false);
+					if (beforeGvView != null) {
+						ImageView iv = (ImageView) beforeGvView
+								.findViewById(R.id.item_layout_dianying_reflact);
+						iv.setVisibility(View.VISIBLE);
+						beforeGvView.setBackgroundColor(getResources()
+								.getColor(android.R.color.transparent));
+						beforeGvView.startAnimation(outScaleAnimation);
+					} else {
+						
+						firstFloatView.setVisibility(View.GONE);
+					}
+				} else {
+
+					ScaleAnimation inScaleAnimation = new ScaleAnimation(
+							0.8f, 1.0f, 0.8f, 1.0f,
+							Animation.RELATIVE_TO_SELF, 0.5f,
+							Animation.RELATIVE_TO_SELF, 0.5f);
+					inScaleAnimation.setDuration(80);
+					inScaleAnimation.setFillAfter(false);
+					if (beforeGvView != null) {
+
+						ImageView iv = (ImageView) beforeGvView
+								.findViewById(R.id.item_layout_dianying_reflact);
+						iv.setVisibility(View.GONE);
+						beforeGvView.setPadding(10, 10, 10, 10);
+						beforeGvView.setBackgroundColor(getResources()
+								.getColor(R.color.text_active));
+
+						beforeGvView.startAnimation(inScaleAnimation);
+
+					} else {
+						initFirstFloatView();
+					}
+				}
+			}
+		});
 	}
-
+	
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		// StatisticsUtils.simulateKey(KeyEvent.KEYCODE_DPAD_LEFT);
-		// StatisticsUtils.simulateKey(KeyEvent.KEYCODE_DPAD_RIGHT);
-		// movieGv.setSelection(0);
 
 	}
 
 	private void beforeViewFoucsStateBack() {
-		if (beforeView instanceof Button) {
+
+		if (beforeView instanceof LinearLayout) {
+
+			LinearLayout tempLinearLayout = (LinearLayout) beforeView;
+			if (beforeView.getId() == activeView.getId()) {
+				linearLayoutToActiveState(tempLinearLayout);
+			} else {
+				linearLayoutToPTState(tempLinearLayout);
+			}
+		} else if (beforeView instanceof Button) {
 
 			Button tempButton = (Button) beforeView;
 			if (beforeView.getId() == activeView.getId()) {
@@ -105,11 +481,45 @@ public class ShowYueDanActivity extends Activity implements View.OnKeyListener,
 	}
 
 	private void beforeViewActiveStateBack() {
-		if (activeView instanceof Button) {
+		if (activeView instanceof LinearLayout) {
+
+			LinearLayout tempLinearLayout = (LinearLayout) activeView;
+			linearLayoutToPTState(tempLinearLayout);
+		} else if (activeView instanceof Button) {
 
 			Button tempButton = (Button) activeView;
 			buttonToPTState(tempButton);
 		}
+	}
+
+	// 转到类似Gridview组件上
+	private void turnToGridViewState() {
+
+		if (beforeView.getId() == activeView.getId()) {
+
+			if (activeView instanceof LinearLayout) {
+
+				LinearLayout tempLinearLayout = (LinearLayout) activeView;
+				linearLayoutToActiveState(tempLinearLayout);
+			} else if (activeView instanceof Button) {
+
+				Button tempButton = (Button) activeView;
+				buttonToActiveState(tempButton);
+			}
+		} else {
+			beforeViewFoucsStateBack();
+		}
+
+	}
+
+	private void linearLayoutToPTState(LinearLayout linearLayout) {
+
+		Button tempButton = (Button) linearLayout.getChildAt(0);
+		linearLayout.setBackgroundResource(R.drawable.text_drawable_selector);
+		tempButton.setTextColor(getResources().getColorStateList(
+				R.color.text_color_selector));
+		tempButton.setCompoundDrawablesWithIntrinsicBounds(getResources()
+				.getDrawable(R.drawable.side_hot_normal), null, null, null);
 	}
 
 	private void buttonToPTState(Button button) {
@@ -117,6 +527,16 @@ public class ShowYueDanActivity extends Activity implements View.OnKeyListener,
 		button.setBackgroundResource(R.drawable.text_drawable_selector);
 		button.setTextColor(getResources().getColorStateList(
 				R.color.text_color_selector));
+	}
+
+	private void linearLayoutToActiveState(LinearLayout linearLayout) {
+
+		Button tempButton = (Button) linearLayout.getChildAt(0);
+		linearLayout.setBackgroundResource(R.drawable.menubg);
+		linearLayout.setPadding(0, 0, 5, 0);
+		tempButton.setTextColor(getResources().getColor(R.color.text_active));
+		tempButton.setCompoundDrawablesWithIntrinsicBounds(getResources()
+				.getDrawable(R.drawable.side_hot_active), null, null, null);
 	}
 
 	private void buttonToActiveState(Button button) {
@@ -130,53 +550,249 @@ public class ShowYueDanActivity extends Activity implements View.OnKeyListener,
 	public boolean onKey(View v, int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
 		int action = event.getAction();
-		if (v instanceof Button) {
-			if (action == KeyEvent.ACTION_UP) {
-				Button button = (Button) v;
+		if (action == KeyEvent.ACTION_UP) {
+
+			v.setOnClickListener(null);
+
+			if (v instanceof LinearLayout) {
+				LinearLayout linearLayout = (LinearLayout) v;
+				Button button = (Button) linearLayout.getChildAt(0);
+
 				if (keyCode == KEY_UP || keyCode == KEY_LEFT
 						|| keyCode == KEY_DOWN) {
-					// searchEt.setFocusable(true);//能够获取焦点
+					beforeViewFoucsStateBack();
+					button.setTextColor(getResources().getColor(
+							R.color.text_foucs));
+					button.setCompoundDrawablesWithIntrinsicBounds(
+							getResources().getDrawable(
+									R.drawable.side_hot_active), null, null,
+							null);
+				}
+			} else if (v instanceof Button) {
+				Button button = (Button) v;
+				if ((keyCode == KEY_UP || keyCode == KEY_LEFT || keyCode == KEY_DOWN)) {
+					searchEt.setFocusable(true);// 能够获取焦点
 					beforeViewFoucsStateBack();
 					button.setTextColor(getResources().getColor(
 							R.color.text_foucs));
 					button.setBackgroundResource(R.drawable.text_drawable_selector);
 				}
 			}
+
+			v.setOnClickListener(this);
 		}
 		beforeView = v;
 		return false;
 	}
 
-	/**
-	 * 能够接受 23 和66 但在66值下，没有press效果
-	 */
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
-		if (v instanceof Button) {
+		 Log.i("Yangzhg", "onClick");
 
+		v.setOnKeyListener(null);
+		if (v instanceof LinearLayout) {
+			LinearLayout linearLayout = (LinearLayout) v;
 			if (v.getId() != activeView.getId()) {
-				Button button = (Button) v;
+				beforeViewActiveStateBack();
+				linearLayoutToActiveState(linearLayout);
+				activeView = v;
+			}
+		} else if (v instanceof Button) {
+			Button button = (Button) v;
+			if (v.getId() != activeView.getId()) {
 				beforeViewActiveStateBack();
 				buttonToActiveState(button);
 				activeView = v;
 			}
-
 		}
+		
+		if(activeView == null) {
+			
+			if(defalutYuedan == DIANYING_YUEDAN) {
+				activeView = dianyingyuedanBtn;
+			} else {
+				
+				activeView = dianshijuyuedanBtn;
+			}
+			
+		}
+		
+		if(activeView.getId() == v.getId()) {
+			
+			return;
+		}
+		
+		switch (v.getId()) {
+		case R.id.bt_dianyingyuedan:
+			String url1 = StatisticsUtils.getTopURL(TOP_URL, 1+"", 50 + "", 1+ "");
+			app.MyToast(aq.getContext(),"ll_daluju");
+			getServiceData(url1);
+			break;
+		case R.id.ll_gangju:
+			String url2 = StatisticsUtils.getTopURL(TOP_URL, 1+"", 50 + "", 2+ "");
+			app.MyToast(aq.getContext(),"ll_gangju");
+			getServiceData(url2);
+			break;
+
+		default:
+			break;
+		}
+		beforeGvView = null;
+		v.setOnKeyListener(this);
 	}
 
-	private class MovieAdpter extends BaseAdapter {
+	private void getServiceData(String url) {
 
-		@Override
-		public int getCount() {
-			// TODO Auto-generated method stub
-			return 15;
+		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
+		cb.url(url).type(JSONObject.class).weakHandler(this, "initData");
+
+		cb.SetHeader(app.getHeaders());
+		aq.ajax(cb);
+	}
+
+	public void initData(String url, JSONObject json, AjaxStatus status) {
+
+		if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
+
+			app.MyToast(aq.getContext(),
+					getResources().getString(R.string.networknotwork));
+			return;
 		}
+		try {
+			Log.d(TAG, json.toString());
+			ReturnTops result = mapper.readValue(json.toString(),
+					ReturnTops.class);
+			// hot_list.clear();
+			if(movieList != null && !movieList.isEmpty()) {
+				
+				movieList.clear();
+			}
+			for(int i=0; i<result.tops.length; i++){
+				YueDanInfo yuedanInfo = new YueDanInfo();
+				movieList = new ArrayList<YueDanInfo>();
+				yuedanInfo.name = result.tops[i].name;
+				yuedanInfo.id = result.tops[i].id;
+				yuedanInfo.prod_type = result.tops[i].prod_type;
+				yuedanInfo.pic_url = result.tops[i].big_pic_url;
+				yuedanInfo.num = result.tops[i].num;
+				yuedanInfo.content = result.tops[i].content;
+//				for (int j = 0; j < result.tops[i].items.length; j++) {
+//					ShiPinInfo shipinInfo = new ShiPinInfo();
+//					shipinInfo.setArea(result.tops[i].items[j].area);
+//					shipinInfo.setBig_prod_pic_url(result.tops[i].items[j].big_prod_pic_url);
+//					shipinInfo.setCur_episode(result.tops[i].items[j].cur_episode);
+////					shipinInfo.setCur_item_name(result.tops[i].items[j].cur_i);
+//					shipinInfo.setDefinition(result.tops[i].items[j].definition);
+//					shipinInfo.setDirectors(result.tops[i].items[j].directors);
+//					shipinInfo.setDuration(result.tops[i].items[j].duration);
+//					shipinInfo.setFavority_num(result.tops[i].items[j].favority_num);
+//					shipinInfo.setId(result.tops[i].items[j].id);
+//					shipinInfo.setMax_episode(result.tops[i].items[j].max_episode);
+//					shipinInfo.setProd_id(result.tops[i].items[j].prod_id);
+//					shipinInfo.setProd_name(result.tops[i].items[j].prod_name);
+//					shipinInfo.setProd_pic_url(result.tops[i].items[j].prod_pic_url);
+//					shipinInfo.setProd_type(result.tops[i].items[j].prod_type);
+//					shipinInfo.setPublish_date(result.tops[i].items[j].publish_date);
+//					shipinInfo.setScore(result.tops[i].items[j].score);
+//					shipinInfo.setStars(result.tops[i].items[j].stars);
+//					shipinInfo.setSupport_num(result.tops[i].items[j].support_num);
+//					movieList.add(shipinInfo);
+//				}
+				movieList.add(yuedanInfo);
+				
+			}
+			// Log.d
+
+			movieAdapter.notifyDataSetChanged();
+			beforeGvView = null;
+			initFirstFloatView();
+			dinashijuGv.setFocusable(true);
+			dinashijuGv.setSelected(true);
+			isSelectedItem = false;
+			dinashijuGv.requestFocus();
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	private void  initFirstFloatView() {
+		
+		firstFloatView.setX(0);
+		firstFloatView.setY(0);
+		firstFloatView.setLayoutParams(new FrameLayout.LayoutParams(popWidth, popHeight));
+		firstFloatView.setVisibility(View.VISIBLE);
+		
+//		ImageView iv = (ImageView) firstFloatView.findViewById(R.id.iv_item_layout_haibao);
+		TextView movieName = (TextView) firstFloatView.findViewById(R.id.tv_item_layout_name);
+		TextView movieScore = (TextView) firstFloatView.findViewById(R.id.tv_item_layout_other_info);
+		aq = new AQuery(firstFloatView);
+		aq.id(R.id.iv_item_layout_haibao).image(
+				movieList.get(0).pic_url);
+		movieName.setText(movieList.get(0).name);
+		movieScore.setText(movieList.get(0).num + getString(R.string.yingpianshu));
+		firstFloatView.setPadding(10, 10, 10, 10);
+		firstFloatView.setBackgroundColor(getResources()
+				.getColor(R.color.text_active));
+		ScaleAnimation inScaleAnimation = new ScaleAnimation(
+				0.8f, 1.0f, 0.8f, 1.0f,
+				Animation.RELATIVE_TO_SELF, 0.5f,
+				Animation.RELATIVE_TO_SELF, 0.5f);
+		inScaleAnimation.setDuration(80);
+		inScaleAnimation.setFillAfter(false);
+		
+		firstFloatView.startAnimation(inScaleAnimation);
+	}
+
+
+	private BaseAdapter movieAdapter = new BaseAdapter() {
 
 		@Override
-		public Object getItem(int position) {
+		public View getView(int position, View convertView, ViewGroup parent) {
 			// TODO Auto-generated method stub
-			return null;
+			View v;
+
+			int width = parent.getWidth() / 5;
+			int height = (int) (width / 1.0f / 264 * 370);
+
+			if (convertView == null) {
+				View view = getLayoutInflater().inflate(
+						R.layout.show_item_layout_yuedan, null);
+				v = view;
+			} else {
+
+				v = convertView;
+			}
+			AbsListView.LayoutParams params = new AbsListView.LayoutParams(
+					width, height);
+			v.setLayoutParams(params);
+
+			TextView movieName = (TextView) v
+					.findViewById(R.id.tv_item_layout_name);
+			movieName.setText(movieList.get(position).name);
+			TextView movieScore = (TextView) v
+					.findViewById(R.id.tv_item_layout_other_info);
+			movieScore.setText(movieList.get(position).num + getString(R.string.yingpianshu));
+			v.setPadding(10, 10, 10, 10);
+
+			if (width != 0) {
+
+				popWidth = width;
+				popHeight = height;
+				// Log.i(TAG, "Width:" + popWidth);
+			}
+
+			aq = new AQuery(v);
+			aq.id(R.id.iv_item_layout_haibao).image(
+					movieList.get(position).pic_url);
+			return v;
 		}
 
 		@Override
@@ -186,24 +802,16 @@ public class ShowYueDanActivity extends Activity implements View.OnKeyListener,
 		}
 
 		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
+		public Object getItem(int position) {
 			// TODO Auto-generated method stub
-			View v;
-
-			LinearLayout parentLayout = (LinearLayout) findViewById(R.id.ll_movie_show);
-			int width = parentLayout.getWidth();
-			int height = parent.getHeight();
-
-			v = getLayoutInflater().inflate(R.layout.show_item_show, null);
-			AbsListView.LayoutParams lp = new AbsListView.LayoutParams(
-					width / 5, (height - height / 10) / 2);
-			v.setPadding(20, 20, 20, 20);
-			v.setLayoutParams(lp);
-			convertView = v;
-
-			return convertView;
+			return movieList.get(position);
 		}
 
-	}
+		@Override
+		public int getCount() {
+			// TODO Auto-generated method stub
+			return movieList.size();
+		}
+	};
 
 }

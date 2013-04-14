@@ -240,8 +240,10 @@ public class ShowTVActivity extends Activity implements View.OnKeyListener,
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				// TODO Auto-generated method stub
-				startActivity(new Intent(ShowTVActivity.this,
-						ShowXiangqingTv.class));
+				Intent intent = new Intent(ShowTVActivity.this,
+						ShowXiangqingTv.class);
+				intent.putExtra("ID", movieList.get(position).getMovieID());
+				startActivity(intent);
 			}
 		});
 
@@ -606,6 +608,16 @@ public class ShowTVActivity extends Activity implements View.OnKeyListener,
 			}
 		}
 		
+		if(activeView == null) {
+			
+			activeView = mFenLeiBtn;
+		}
+		
+		if(activeView.getId() == v.getId()) {
+			
+			return;
+		}
+		
 		switch (v.getId()) {
 		case R.id.ll_daluju:
 			String url1 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
@@ -642,6 +654,12 @@ public class ShowTVActivity extends Activity implements View.OnKeyListener,
 			REBO_RIJU_DIANSHI, 1 + "", 50 + "");
 			app.MyToast(aq.getContext(),"ll_riju");
 			getServiceData(url6);
+			break;
+		case R.id.bt_quanbufenlei:
+			String url7 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
+					TV_DIANSHIJU, 1 + "", 50 + "");
+			app.MyToast(aq.getContext(),"bt_quanbufenlei");
+			getServiceData(url7);
 			break;
 
 		default:
@@ -683,6 +701,7 @@ public class ShowTVActivity extends Activity implements View.OnKeyListener,
 				movieItemData.setMovieName(result.items[i].prod_name);
 				movieItemData.setMoviePicUrl(result.items[i].prod_pic_url);
 				movieItemData.setMovieScore(result.items[i].score);
+				movieItemData.setMovieID(result.items[i].id);
 				movieList.add(movieItemData);
 			}
 			// Log.d
