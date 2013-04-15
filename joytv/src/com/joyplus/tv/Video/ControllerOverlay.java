@@ -80,4 +80,6 @@ public interface ControllerOverlay {
 	void setAudioManager(AudioManager mAudioManager);
 	
 	void focusLayoutControl(int index);
+	
+	void setPrepared(boolean mPrepared);
 }

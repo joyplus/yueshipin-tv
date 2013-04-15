@@ -100,6 +100,7 @@ public class MovieControllerOverlay extends FrameLayout implements
 	private TextView mTextViewRate;
 	boolean mShowVolume = false;
 	boolean mShowTimerBar = false;
+	private boolean mPrepared = false;
 	
 	/** 最大声音 */
 	private int mMaxVolume;
@@ -357,7 +358,8 @@ public class MovieControllerOverlay extends FrameLayout implements
 
 		mLayoutTop.setVisibility(View.VISIBLE);
 		mLayoutBottom.setVisibility(View.VISIBLE);
-		mLayoutTime.setVisibility(View.VISIBLE);
+		if(mPrepared)
+			mLayoutTime.setVisibility(View.VISIBLE);
 
 		updateViews();
 		setVisibility(View.VISIBLE);
@@ -640,7 +642,8 @@ public class MovieControllerOverlay extends FrameLayout implements
 			mShowTimerBar = true;
 			mLayoutTop.setVisibility(View.VISIBLE);
 			mLayoutBottom.setVisibility(View.VISIBLE);
-			mLayoutTime.setVisibility(View.VISIBLE);
+			if(mPrepared)
+				mLayoutTime.setVisibility(View.VISIBLE);
 	}
 	public void hideTimerBar() {
 		// TODO Auto-generated method stub
@@ -682,6 +685,9 @@ public class MovieControllerOverlay extends FrameLayout implements
 	// 变更进度条
 	mArcView.SetAngle(mAngle);
 
+	}
+	public void setPrepared(boolean mPrepared){
+		this.mPrepared = mPrepared;
 	}
 
 }
