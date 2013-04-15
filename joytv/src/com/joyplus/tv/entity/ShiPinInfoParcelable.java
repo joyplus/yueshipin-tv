@@ -68,7 +68,7 @@ public class ShiPinInfoParcelable implements Parcelable{
 		dest.writeString(duration);
 	}
 
-	public static final Parcelable.Creator<ShiPinInfoParcelable> SHIPIN_INFO_CREATOR = new Parcelable.Creator<ShiPinInfoParcelable>() {
+	public static final Parcelable.Creator<ShiPinInfoParcelable> CREATOR = new Parcelable.Creator<ShiPinInfoParcelable>() {
 
 		@Override
 		public ShiPinInfoParcelable createFromParcel(Parcel source) {

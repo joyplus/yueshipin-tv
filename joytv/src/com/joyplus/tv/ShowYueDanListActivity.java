@@ -33,6 +33,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joyplus.tv.Service.Return.ReturnTops;
+import com.joyplus.tv.entity.ShiPinInfoParcelable;
 import com.joyplus.tv.entity.YueDanInfo;
 import com.joyplus.tv.ui.MyMovieGridView;
 
@@ -66,9 +67,7 @@ public class ShowYueDanListActivity extends Activity implements
 
 	private View beforeGvView = null;
 
-	private ObjectMapper mapper = new ObjectMapper();
-
-	private List<YueDanInfo> movieList = new ArrayList<YueDanInfo>();
+	private ArrayList<ShiPinInfoParcelable> movieList = new ArrayList<ShiPinInfoParcelable>();
 
 	private int defalutYuedan = 0;
 
@@ -81,6 +80,13 @@ public class ShowYueDanListActivity extends Activity implements
 		app = (App) getApplication();
 		aq = new AQuery(this);
 
+		Intent intent = getIntent();
+		movieList = intent.getParcelableArrayListExtra("yuedan_list_type");
+		
+		if(movieList != null) {
+			
+			Log.i(TAG, "Size:" + movieList.size() + movieList.toString());
+		}
 
 		initView();
 		initState();
@@ -630,24 +636,23 @@ public class ShowYueDanListActivity extends Activity implements
 
 		// ImageView iv = (ImageView)
 		// firstFloatView.findViewById(R.id.iv_item_layout_haibao);
-		TextView movieName = (TextView) firstFloatView
-				.findViewById(R.id.tv_item_layout_name);
-		TextView movieScore = (TextView) firstFloatView
-				.findViewById(R.id.tv_item_layout_other_info);
+		TextView movieName = (TextView) firstFloatView.findViewById(R.id.tv_item_layout_name);
+		TextView movieScore = (TextView) firstFloatView.findViewById(R.id.tv_item_layout_score);
 		aq = new AQuery(firstFloatView);
-		aq.id(R.id.iv_item_layout_haibao).image(movieList.get(0).pic_url);
-		movieName.setText(movieList.get(0).name);
-		movieScore.setText(movieList.get(0).num
-				+ getString(R.string.yingpianshu));
+		aq.id(R.id.iv_item_layout_haibao).image(
+				movieList.get(0).getBig_prod_pic_url());
+		movieName.setText(movieList.get(0).getProd_name());
+		movieScore.setText(movieList.get(0).getScore());
 		firstFloatView.setPadding(10, 10, 10, 10);
-		firstFloatView.setBackgroundColor(getResources().getColor(
-				R.color.text_active));
-		ScaleAnimation inScaleAnimation = new ScaleAnimation(0.8f, 1.0f, 0.8f,
-				1.0f, Animation.RELATIVE_TO_SELF, 0.5f,
+		firstFloatView.setBackgroundColor(getResources()
+				.getColor(R.color.text_active));
+		ScaleAnimation inScaleAnimation = new ScaleAnimation(
+				0.8f, 1.0f, 0.8f, 1.0f,
+				Animation.RELATIVE_TO_SELF, 0.5f,
 				Animation.RELATIVE_TO_SELF, 0.5f);
 		inScaleAnimation.setDuration(80);
 		inScaleAnimation.setFillAfter(false);
-
+		
 		firstFloatView.startAnimation(inScaleAnimation);
 	}
 
@@ -663,7 +668,7 @@ public class ShowYueDanListActivity extends Activity implements
 
 			if (convertView == null) {
 				View view = getLayoutInflater().inflate(
-						R.layout.show_item_layout_yuedan, null);
+						R.layout.show_item_layout_dianying, null);
 				v = view;
 			} else {
 
@@ -675,11 +680,10 @@ public class ShowYueDanListActivity extends Activity implements
 
 			TextView movieName = (TextView) v
 					.findViewById(R.id.tv_item_layout_name);
-			movieName.setText(movieList.get(position).name);
+			movieName.setText(movieList.get(position).getProd_name());
 			TextView movieScore = (TextView) v
-					.findViewById(R.id.tv_item_layout_other_info);
-			movieScore.setText(movieList.get(position).num
-					+ getString(R.string.yingpianshu));
+					.findViewById(R.id.tv_item_layout_score);
+			movieScore.setText(movieList.get(position).getScore());
 			v.setPadding(10, 10, 10, 10);
 
 			if (width != 0) {
@@ -691,7 +695,7 @@ public class ShowYueDanListActivity extends Activity implements
 
 			aq = new AQuery(v);
 			aq.id(R.id.iv_item_layout_haibao).image(
-					movieList.get(position).pic_url);
+					movieList.get(position).getBig_prod_pic_url());
 			return v;
 		}
 
