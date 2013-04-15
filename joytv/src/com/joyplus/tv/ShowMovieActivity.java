@@ -59,7 +59,7 @@ import com.joyplus.tv.ui.NavigateView;
 import com.joyplus.tv.ui.NavigateView.OnResultListener;
 
 public class ShowMovieActivity extends Activity implements View.OnKeyListener,
-		MyKeyEventKey, BangDanKey, View.OnClickListener {
+		MyKeyEventKey, BangDanKey, JieMianConstant,View.OnClickListener {
 
 	private String TAG = "ShowMovieActivity";
 	private AQuery aq;
@@ -92,6 +92,8 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 	private List<MovieItemData> movieList = new ArrayList<MovieItemData>();
 	
 	private PopupWindow popupWindow;
+	
+	private int beforepostion = 0;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -105,7 +107,6 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 		initView();
 		initState();
 
-		// getServiceData();
 		String url = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
 		TV_DIANYING, 1 + "", 50 + "");
 		getServiceData(url);// 进入电影界面时，全部分类电影显示获取焦点，并且显示数据
@@ -114,17 +115,6 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 		movieGv.setSelected(true);
 		movieGv.requestFocus();
 		movieGv.setSelection(0);
-		
-		DisplayMetrics dm = new DisplayMetrics();
-
-		getWindowManager().getDefaultDisplay().getMetrics(dm);
-
-//		int width = dm.widthPixels;
-//
-//		int height = dm.heightPixels;
-//		
-//		app.MyToast(aq.getContext(),"Screen-->Width: " + width + " height:" + height);
-
 	}
 
 	private void initView() {
@@ -158,29 +148,24 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 		activeView = mFenLeiBtn;
 
 		searchEt.setFocusable(false);// 搜索焦点消失
-		// movieGv.setNextFocusLeftId(R.id.bt_quanbufenlei);// 网格向左 全部分类获得焦点
-		// movieGv.setNextFocusDownId(R.id.bt_quanbufenlei);// 网格向左 全部分类获得焦点
-		// movieGv.setNextFocusUpId(R.id.bt_quanbufenlei);// 网格向左 全部分类获得焦点
-		// movieGv.setNextFocusRightId(R.id.bt_quanbufenlei);// 网格向左 全部分类获得焦点
 
 		mFenLeiBtn.setTextColor(getResources().getColor(R.color.text_active));// 全部分类首先设为激活状态
 		mFenLeiBtn.setBackgroundResource(R.drawable.menubg);// 在换成这张图片时，会刷新组件的padding
-		dongzuoLL.setPadding(0, 0, 5, 0);
-		kehuanLL.setPadding(0, 0, 5, 0);
-		lunliLL.setPadding(0, 0, 5, 0);
-		xijuLL.setPadding(0, 0, 5, 0);
-		aiqingLL.setPadding(0, 0, 5, 0);
-		xuanyiLL.setPadding(0, 0, 5, 0);
-		kongbuLL.setPadding(0, 0, 5, 0);
-		donghuaLL.setPadding(0, 0, 5, 0);
-		zuijinguankanBtn.setPadding(0, 0, 5, 0);
-		zhuijushoucangBtn.setPadding(0, 0, 5, 0);
-		lixianshipinBtn.setPadding(0, 0, 5, 0);
-		mFenLeiBtn.setPadding(0, 0, 5, 0);
+		
+		dongzuoLL.setPadding(0, 0, WENZI_PADDING_RIGHT, 0);
+		kehuanLL.setPadding(0, 0, WENZI_PADDING_RIGHT, 0);
+		lunliLL.setPadding(0, 0, WENZI_PADDING_RIGHT, 0);
+		xijuLL.setPadding(0, 0, WENZI_PADDING_RIGHT, 0);
+		aiqingLL.setPadding(0, 0, WENZI_PADDING_RIGHT, 0);
+		xuanyiLL.setPadding(0, 0, WENZI_PADDING_RIGHT, 0);
+		kongbuLL.setPadding(0, 0, WENZI_PADDING_RIGHT, 0);
+		donghuaLL.setPadding(0, 0, WENZI_PADDING_RIGHT, 0);
+		zuijinguankanBtn.setPadding(0, 0, WENZI_PADDING_RIGHT, 0);
+		zhuijushoucangBtn.setPadding(0, 0, WENZI_PADDING_RIGHT, 0);
+		lixianshipinBtn.setPadding(0, 0, WENZI_PADDING_RIGHT, 0);
+		mFenLeiBtn.setPadding(0, 0, WENZI_PADDING_RIGHT, 0);
 
 	}
-
-	private int beforepostion = 0;
 
 	private void addListener() {
 
@@ -333,8 +318,8 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 					iv.setVisibility(View.VISIBLE);
 					beforeGvView.setBackgroundColor(getResources().getColor(
 							android.R.color.transparent));
-					ScaleAnimation outScaleAnimation = new ScaleAnimation(1.0f,
-							0.8f, 1.0f, 0.8f, Animation.RELATIVE_TO_SELF, 0.5f,
+					ScaleAnimation outScaleAnimation = new ScaleAnimation(OUT_ANIMATION_FROM_X,
+							OUT_ANIMATION_TO_X, OUT_ANIMATION_FROM_Y, OUT_ANIMATION_TO_Y, Animation.RELATIVE_TO_SELF, 0.5f,
 							Animation.RELATIVE_TO_SELF, 0.5f);
 
 					outScaleAnimation.setDuration(80);
@@ -346,21 +331,21 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 							.findViewById(R.id.item_layout_dianying_reflact);
 					iv2.setVisibility(View.GONE);
 					ScaleAnimation inScaleAnimation = new ScaleAnimation(
-							0.8f, 1.0f, 0.8f, 1.0f,
+							IN_ANIMATION_FROM_X, IN_ANIMATION_TO_X, IN_ANIMATION_FROM_Y, IN_ANIMATION_TO_Y,
 							Animation.RELATIVE_TO_SELF, 0.5f,
 							Animation.RELATIVE_TO_SELF, 0.5f);
 					inScaleAnimation.setDuration(80);
 					inScaleAnimation.setFillAfter(false);
 
-					view.setPadding(10, 10, 10, 10);
+					view.setPadding(5, 5, 5, 5);
 					view.setBackgroundColor(getResources()
 							.getColor(R.color.text_active));
 					view.startAnimation(inScaleAnimation);
 
 				} else {
 					
-					ScaleAnimation outScaleAnimation = new ScaleAnimation(0.8f,
-							1.0f, 0.8f, 1.0f, Animation.RELATIVE_TO_SELF, 0.5f,
+					ScaleAnimation outScaleAnimation = new ScaleAnimation(OUT_ANIMATION_FROM_X,
+							OUT_ANIMATION_TO_X, OUT_ANIMATION_FROM_Y, OUT_ANIMATION_TO_Y, Animation.RELATIVE_TO_SELF, 0.5f,
 							Animation.RELATIVE_TO_SELF, 0.5f);
 
 					outScaleAnimation.setDuration(80);
@@ -372,13 +357,13 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 							.findViewById(R.id.item_layout_dianying_reflact);
 					iv.setVisibility(View.GONE);
 					ScaleAnimation inScaleAnimation = new ScaleAnimation(
-							0.8f, 1.0f, 0.8f, 1.0f,
+							0.91f, 1.0f, 0.91f, 1.0f,
 							Animation.RELATIVE_TO_SELF, 0.5f,
 							Animation.RELATIVE_TO_SELF, 0.5f);
 					inScaleAnimation.setDuration(80);
 					inScaleAnimation.setFillAfter(false);
 
-					view.setPadding(10, 10, 10, 10);
+					view.setPadding(5, 5, 5, 5);
 					view.setBackgroundColor(getResources()
 							.getColor(R.color.text_active));
 					view.startAnimation(inScaleAnimation);
@@ -566,7 +551,7 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 
 		Button tempButton = (Button) linearLayout.getChildAt(0);
 		linearLayout.setBackgroundResource(R.drawable.menubg);
-		linearLayout.setPadding(0, 0, 5, 0);
+		linearLayout.setPadding(0, 0, WENZI_PADDING_RIGHT, 0);
 		tempButton.setTextColor(getResources().getColor(R.color.text_active));
 		tempButton.setCompoundDrawablesWithIntrinsicBounds(getResources()
 				.getDrawable(R.drawable.side_hot_active), null, null, null);
@@ -575,7 +560,7 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 	private void buttonToActiveState(Button button) {
 
 		button.setBackgroundResource(R.drawable.menubg);
-		button.setPadding(0, 0, 5, 0);
+		button.setPadding(0, 0, WENZI_PADDING_RIGHT, 0);
 		button.setTextColor(getResources().getColor(R.color.text_active));
 	}
 
@@ -790,7 +775,7 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 
 				MovieItemData movieItemData = new MovieItemData();
 				movieItemData.setMovieName(result.results[i].prod_name);
-				movieItemData.setMoviePicUrl(result.results[i].prod_pic_url);
+				movieItemData.setMoviePicUrl(result.results[i].big_prod_pic_url);
 				movieItemData.setMovieScore(result.results[i].score);
 				movieItemData.setMovieID(result.results[i].prod_id);
 				movieItemData.setMovieDuration(result.results[i].duration);
@@ -847,7 +832,7 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 
 				MovieItemData movieItemData = new MovieItemData();
 				movieItemData.setMovieName(result.items[i].prod_name);
-				movieItemData.setMoviePicUrl(result.items[i].prod_pic_url);
+				movieItemData.setMoviePicUrl(result.items[i].big_prod_pic_url);
 				movieItemData.setMovieScore(result.items[i].score);
 				movieItemData.setMovieID(result.items[i].prod_id);
 				movieItemData.setMovieDuration(result.items[i].duration);

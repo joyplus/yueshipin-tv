@@ -9,11 +9,13 @@ import org.json.JSONObject;
 
 import android.app.Instrumentation;
 import android.util.Log;
+import android.view.animation.Animation;
+import android.view.animation.ScaleAnimation;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
 
-public class StatisticsUtils {
+public class StatisticsUtils implements JieMianConstant{
 
 	private static final String TAG = "StatisticsUtils";
 
@@ -171,6 +173,18 @@ public class StatisticsUtils {
 			return sb.toString();
 		}
 		
+	}
+	
+	public static ScaleAnimation getOutScaleAnimation() {
+		
+		ScaleAnimation outScaleAnimation = new ScaleAnimation(OUT_ANIMATION_FROM_X,
+				OUT_ANIMATION_TO_X, OUT_ANIMATION_FROM_Y, OUT_ANIMATION_TO_Y, Animation.RELATIVE_TO_SELF, 0.5f,
+				Animation.RELATIVE_TO_SELF, 0.5f);
+
+		outScaleAnimation.setDuration(80);
+		outScaleAnimation.setFillAfter(false);
+		
+		return outScaleAnimation;
 	}
 
 }

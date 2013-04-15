@@ -25,6 +25,7 @@ public class ReturnTVBangDanList {
 		public String prod_name;
 		public String prod_type;
 		public String prod_pic_url;
+		public String big_prod_pic_url;
 
 		public String stars;
 		public String directors;
