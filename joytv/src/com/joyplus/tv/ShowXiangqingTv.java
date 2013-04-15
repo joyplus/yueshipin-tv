@@ -1,7 +1,8 @@
 package com.joyplus.tv;
 
-import com.joyplus.tv.Video.VideoPlayerActivity;
-import com.joyplus.tv.ui.CustomGallery;
+import java.io.IOException;
+
+import org.json.JSONObject;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -14,27 +15,28 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
-import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.GridView;
-import android.widget.HorizontalScrollView;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.androidquery.AQuery;
+import com.androidquery.callback.AjaxCallback;
+import com.androidquery.callback.AjaxStatus;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.joyplus.tv.Service.Return.ReturnProgramView;
+import com.joyplus.tv.Video.VideoPlayerActivity;
+
 public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 		View.OnKeyListener, MyKeyEventKey {
 
+	private static final String TAG = "ShowXiangqingTv";
 	private LinearLayout bofangLL;
 
 	private Button dingBt,xiaiBt,xiazaiBt, yingpingBt;
@@ -54,12 +56,17 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 	private LinearLayout layout;
 	private TableLayout table;
 	private boolean isOver = false;
-	private int num = 145;
+	private int num = 0;
 	private int totle_pagecount;
 	private int selectedIndex;
 	private static final int COUNT = 20;
+	
+	private String prod_id;
+	
+	private AQuery aq;
+	private App app;
+	private ReturnProgramView date;
 	private Handler handler =  new Handler();
-//	private HorizontalScrollView scrollView;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -67,18 +74,16 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 		super.onCreate(savedInstanceState);
 
 		this.setContentView(R.layout.show_tv_xiangxi_layout);
-
+		Intent intent = getIntent();
+		prod_id = intent.getStringExtra("ID");
+		if(prod_id == null||"".equals(prod_id)){
+			Log.e(TAG, "pram error");
+			finish();
+		}
+		aq = new AQuery(this);
+		app = (App) getApplication();
 		initView();
-		
-		handler.postDelayed(new Runnable() {
-			
-			@Override
-			public void run() {
-				// TODO Auto-generated method stub
-				initButton();
-			}
-		},500);
-		
+		getServiceDate();
 	}
 
 	private void initButton() {
@@ -98,7 +103,7 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 					b.setText((i*COUNT+1) +"-"+(i+1)*COUNT);
 				}
 			}else{
-				if(num-(i+1)*COUNT+1<0){
+				if(num-(i+1)*COUNT<0){
 					b.setText((num-i*COUNT) + "-1");
 				}else{
 					b.setText((num-i*COUNT) + "-" + (num-(i+1)*COUNT+1));
@@ -135,7 +140,6 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 				.findViewById(R.id.ll_gaoqing_gaoqing);
 		biaoqingLL = (LinearLayout) popupView
 				.findViewById(R.id.ll_gaoqing_biaoqing);
-
 		popupWindow = new PopupWindow(popupView);
 		
 		currentBofangViewPop = biaoqingLL;
@@ -157,7 +161,6 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 		yingpingBt = (Button) findViewById(R.id.bt_xiangqing_yingping);
 		
 		layout = (LinearLayout) findViewById(R.id.layout);
-//		scrollView = (HorizontalScrollView) findViewById(R.id.scrollview);
 		table  = (TableLayout) findViewById(R.id.table);
 
 		addListener();
@@ -203,7 +206,7 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 			} else {
 				isXiai = true;
 			}
-			xiaiBt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_dig_active, 0, 0,0);
+			xiaiBt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_fav_active, 0, 0,0);
 			xiaiBt.setTextColor(getResources().getColor(R.color.text_foucs));
 			break;
 		case R.id.ll_xiangqing_bofang_gaoqing:
@@ -250,7 +253,7 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 			break;
 		case R.id.bt_xiangqing_xiai:
 			if (!isXiai) {
-				xiaiBt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ding_selector, 0, 0,0);
+				xiaiBt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.xiai_selector, 0, 0,0);
 			}
 			xiaiBt.setTextColor(getResources().getColor(R.color.time_color));
 			break;
@@ -285,7 +288,7 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 						|| keyCode == KEY_RIGHT) {
 					backToNormalState();
 					dingBt.setSelected(false);
-					xiaiBt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_dig_active, 0, 0,0);
+					xiaiBt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_fav_active, 0, 0,0);
 					xiaiBt.setTextColor(getResources().getColor(
 							R.color.text_foucs));
 				}
@@ -386,8 +389,12 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 			public boolean onKey(View v, int keyCode, KeyEvent event) {
 				// TODO Auto-generated method stub
 				int action = event.getAction();
-
-				if (action == KeyEvent.ACTION_UP) {
+				if(keyCode == KeyEvent.KEYCODE_BACK){
+					if(popupWindow!=null){
+						popupWindow.dismiss();
+					}
+					return true;
+				}else if (action == KeyEvent.ACTION_UP) {
 
 					switch (v.getId()) {
 					case R.id.ll_gaoqing_chaoqing:
@@ -456,6 +463,169 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 			row.setLayoutParams(new LayoutParams(table.getWidth(),35));
 			row.setPadding(0, 5, 0, 5);
 			table.addView(row);
+		}
+	}
+	
+	
+	private void getServiceDate(){
+		String url = Constant.BASE_URL + "program/view" +"?prod_id=" + prod_id;
+		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
+		cb.url(url).type(JSONObject.class).weakHandler(this, "initDate");
+		cb.SetHeader(app.getHeaders());
+		aq.ajax(cb);
+	}
+	
+	public void initDate(String url, JSONObject json, AjaxStatus status){
+		if (status.getCode() == AjaxStatus.NETWORK_ERROR||json == null) {
+			app.MyToast(aq.getContext(),
+					getResources().getString(R.string.networknotwork));
+			return;
+		}
+		Log.d(TAG, "data = " + json.toString());
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			date = null;
+			date  = mapper.readValue(json.toString(), ReturnProgramView.class);
+			if(date == null){
+				Log.e(TAG, "tv date error---->date == null");
+				return;
+			}
+			if("".equals(date.tv.cur_episode)||"0".equals(date.tv.cur_episode)
+					||date.tv.cur_episode.equals(date.tv.max_episode)){
+				isOver = true;
+				num = Integer.valueOf(date.tv.max_episode);
+			}else if(Integer.valueOf(date.tv.cur_episode)>Integer.valueOf(date.tv.max_episode)){
+				isOver = true;
+				num = Integer.valueOf(date.tv.max_episode);
+			}else{
+				isOver = false;
+				num = Integer.valueOf(date.tv.cur_episode);
+			}
+			updateView();
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	private void updateView(){
+		initButton();
+		aq.id(R.id.image).image(date.tv.poster, false, true,0, R.drawable.post_normal);
+		aq.id(R.id.text_name).text(date.tv.name);
+		aq.id(R.id.text_directors).text(date.tv.directors);
+		aq.id(R.id.text_starts).text(date.tv.stars);
+		aq.id(R.id.text_introduce).text(date.tv.summary);
+		aq.id(R.id.bt_xiangqingding).text(date.tv.support_num);
+		aq.id(R.id.bt_xiangqing_xiai).text(date.tv.favority_num);
+		int definition = Integer.valueOf((date.tv.definition));
+		switch (definition) {
+		case 6:
+			aq.id(R.id.img_definition).image(R.drawable.icon_ts);
+			break;
+		case 7:
+			aq.id(R.id.img_definition).image(R.drawable.icon_hd);
+			break;
+		case 8:
+			aq.id(R.id.img_definition).image(R.drawable.icon_bd);
+			break;
+		default:
+			aq.id(R.id.img_definition).gone();
+			break;
+		}
+		updateScore(date.tv.score);
+	}
+	
+	private void updateScore(String score){
+		aq.id(R.id.textView_score).text(date.tv.score);
+		float f = Float.valueOf(score);
+		int i = Math.round(f);
+//		int i = (f%1>=0.5)?(int)(f/1):(int)(f/1+1);
+		switch (i) {
+		case 0:
+			aq.id(R.id.start1).image(R.drawable.star_off);
+			aq.id(R.id.start2).image(R.drawable.star_off);
+			aq.id(R.id.start3).image(R.drawable.star_off);
+			aq.id(R.id.start4).image(R.drawable.star_off);
+			aq.id(R.id.start5).image(R.drawable.star_off);
+			break;
+		case 1:
+			aq.id(R.id.start1).image(R.drawable.star_half);
+			aq.id(R.id.start2).image(R.drawable.star_off);
+			aq.id(R.id.start3).image(R.drawable.star_off);
+			aq.id(R.id.start4).image(R.drawable.star_off);
+			aq.id(R.id.start5).image(R.drawable.star_off);
+			break;
+		case 2:
+			aq.id(R.id.start1).image(R.drawable.star_on);
+			aq.id(R.id.start2).image(R.drawable.star_off);
+			aq.id(R.id.start3).image(R.drawable.star_off);
+			aq.id(R.id.start4).image(R.drawable.star_off);
+			aq.id(R.id.start5).image(R.drawable.star_off);
+			break;
+		case 3:
+			aq.id(R.id.start1).image(R.drawable.star_on);
+			aq.id(R.id.start2).image(R.drawable.star_half);
+			aq.id(R.id.start3).image(R.drawable.star_off);
+			aq.id(R.id.start4).image(R.drawable.star_off);
+			aq.id(R.id.start5).image(R.drawable.star_off);
+			break;
+		case 4:
+			aq.id(R.id.start1).image(R.drawable.star_on);
+			aq.id(R.id.start2).image(R.drawable.star_on);
+			aq.id(R.id.start3).image(R.drawable.star_off);
+			aq.id(R.id.start4).image(R.drawable.star_off);
+			aq.id(R.id.start5).image(R.drawable.star_off);
+			break;
+		case 5:
+			aq.id(R.id.start1).image(R.drawable.star_on);
+			aq.id(R.id.start2).image(R.drawable.star_on);
+			aq.id(R.id.start3).image(R.drawable.star_half);
+			aq.id(R.id.start4).image(R.drawable.star_off);
+			aq.id(R.id.start5).image(R.drawable.star_off);
+			break;
+		case 6:
+			aq.id(R.id.start1).image(R.drawable.star_on);
+			aq.id(R.id.start2).image(R.drawable.star_on);
+			aq.id(R.id.start3).image(R.drawable.star_on);
+			aq.id(R.id.start4).image(R.drawable.star_off);
+			aq.id(R.id.start5).image(R.drawable.star_off);
+			break;
+		case 7:
+			aq.id(R.id.start1).image(R.drawable.star_on);
+			aq.id(R.id.start2).image(R.drawable.star_on);
+			aq.id(R.id.start3).image(R.drawable.star_on);
+			aq.id(R.id.start4).image(R.drawable.star_half);
+			aq.id(R.id.start5).image(R.drawable.star_off);
+			break;
+		case 8:
+			aq.id(R.id.start1).image(R.drawable.star_on);
+			aq.id(R.id.start2).image(R.drawable.star_on);
+			aq.id(R.id.start3).image(R.drawable.star_on);
+			aq.id(R.id.start4).image(R.drawable.star_on);
+			aq.id(R.id.start5).image(R.drawable.star_off);
+			break;
+		case 9:
+			aq.id(R.id.start1).image(R.drawable.star_on);
+			aq.id(R.id.start2).image(R.drawable.star_on);
+			aq.id(R.id.start3).image(R.drawable.star_on);
+			aq.id(R.id.start4).image(R.drawable.star_on);
+			aq.id(R.id.start5).image(R.drawable.star_half);
+			break;
+		case 10:
+			aq.id(R.id.start1).image(R.drawable.star_on);
+			aq.id(R.id.start2).image(R.drawable.star_on);
+			aq.id(R.id.start3).image(R.drawable.star_on);
+			aq.id(R.id.start4).image(R.drawable.star_on);
+			aq.id(R.id.start5).image(R.drawable.star_on);
+			break;
+		default:
+			break;
 		}
 	}
 }

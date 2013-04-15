@@ -83,13 +83,13 @@ public class MainHotItemAdapter extends BaseAdapter {
 		holder.secondTitle.setText(hot_list.get(position).prod_name);
 		holder.score.setText(hot_list.get(position).score);
 		switch (Integer.valueOf(hot_list.get(position).definition)) {
-		case 5:
+		case 8:
 			holder.definition.setImageResource(R.drawable.icon_bd);
 			break;
-		case 4:
+		case 7:
 			holder.definition.setImageResource(R.drawable.icon_hd);
 			break;
-		case 3:
+		case 6:
 			holder.definition.setImageResource(R.drawable.icon_ts);
 			break;
 		default:
@@ -107,6 +107,8 @@ public class MainHotItemAdapter extends BaseAdapter {
 //		aq.id(R.id.image).image(hot_list.get(position).prod_pic_url);
 		return convertView;
 	}
+	
+	
 	
 	class ViewHolder{
 		TextView firstTitle;

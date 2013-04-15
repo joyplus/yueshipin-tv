@@ -36,30 +36,35 @@
                 android:layout_width="@dimen/layout_zero"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:id="@+id/start1"
                 android:src="@drawable/star_on" />
 
             <ImageView
                 android:layout_width="@dimen/layout_zero"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:id="@+id/start2"
                 android:src="@drawable/star_on" />
 
             <ImageView
                 android:layout_width="@dimen/layout_zero"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:id="@+id/start3"
                 android:src="@drawable/star_on" />
 
             <ImageView
                 android:layout_width="@dimen/layout_zero"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:id="@+id/start4"
                 android:src="@drawable/star_on" />
 
             <ImageView
                 android:layout_width="@dimen/layout_zero"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:id="@+id/start5"
                 android:src="@drawable/star_on" />
         </LinearLayout>
 
@@ -73,6 +78,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:id="@+id/textView_score"
                 android:text="@string/xiangqing_fenshu_value" 
                 android:textColor="@color/time_color"
                 android:textSize="20sp"/>

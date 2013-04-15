@@ -265,11 +265,13 @@ public class ReturnProgramView {
 		public String publish_date;
 		public String directors;
 		public String episodes_count;
+		public String cur_episode;
+		public String max_episode;
 		public String stars;
 		public String id;
 		public String area;
 		public String total_comment_number;
-
+		public String definition;
 		public int current_play;
 
 		public EPISODES[] episodes;
@@ -293,7 +295,7 @@ public class ReturnProgramView {
 		public String id;
 		public String area;
 		public String total_comment_number;
-
+		public String definition;
 		public EPISODES[] episodes;
 
 	}
@@ -315,7 +317,7 @@ public class ReturnProgramView {
 		public String id;
 		public String area;
 		public String total_comment_number;
-
+		public String definition;
 		public EPISODES[] episodes;
 
 	}
