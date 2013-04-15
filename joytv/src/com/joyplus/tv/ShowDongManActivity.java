@@ -11,9 +11,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.widget.AbsListView;
@@ -24,7 +26,9 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
@@ -34,7 +38,10 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joyplus.tv.Service.Return.ReturnTVBangDanList;
 import com.joyplus.tv.entity.MovieItemData;
+import com.joyplus.tv.entity.ReturnFilterMovieSearch;
 import com.joyplus.tv.ui.MyMovieGridView;
+import com.joyplus.tv.ui.NavigateView;
+import com.joyplus.tv.ui.NavigateView.OnResultListener;
 
 public class ShowDongManActivity extends Activity implements View.OnKeyListener,
 		MyKeyEventKey, BangDanKey, View.OnClickListener {
@@ -583,6 +590,8 @@ public class ShowDongManActivity extends Activity implements View.OnKeyListener,
 		beforeView = v;
 		return false;
 	}
+	
+	private PopupWindow popupWindow;
 
 	@Override
 	public void onClick(View v) {
@@ -592,6 +601,50 @@ public class ShowDongManActivity extends Activity implements View.OnKeyListener,
 			if(activeView == null) {
 				
 				activeView = mFenLeiBtn;
+			}
+			
+			
+			if(v.getId() == R.id.bt_quanbufenlei) {
+				
+				if(popupWindow ==null){
+					NavigateView view = new NavigateView(this);
+					int [] location = new int[2];
+					mFenLeiBtn.getLocationOnScreen(location);
+					view.Init(getResources().getStringArray(R.array.diqu_dongman_fenlei),
+							getResources().getStringArray(R.array.leixing_dongman_fenlei), 
+							getResources().getStringArray(R.array.shijian_dianying_fenlei), 
+							location[0], 
+							location[1],
+							mFenLeiBtn.getWidth(), 
+							mFenLeiBtn.getHeight(),
+							new OnResultListener() {
+								
+								@Override
+								public void onResult(View v, boolean isBack, String[] choice) {
+									// TODO Auto-generated method stub
+									if(isBack){
+										popupWindow.dismiss();
+									}else{
+										if(popupWindow.isShowing()){
+											popupWindow.dismiss();
+											Toast.makeText(ShowDongManActivity.this, "selected is " + choice[0] + ","+choice[1]+","+choice[2], Toast.LENGTH_LONG).show();
+											String quanbu = getString(R.string.quanbu_name);
+											String quanbufenlei = getString(R.string.quanbufenlei_name);
+											mFenLeiBtn.setText(StatisticsUtils.getQuanBuFenLeiName(choice, quanbufenlei, quanbu));
+											String url = StatisticsUtils.getFilterURL(FILTER_URL, 1+"", 50+"", 131+"") + 
+													StatisticsUtils.getFileterURL3Param(choice, quanbu);
+											Log.i(TAG, "POP--->URL:" + url);
+												getFilterServiceData(url);
+											
+										}
+									}
+								}
+							});
+					view.setLayoutParams(new LayoutParams(0,0));
+					popupWindow = new PopupWindow(view, getWindowManager().getDefaultDisplay().getWidth(),
+							getWindowManager().getDefaultDisplay().getHeight(), true);
+				}
+				popupWindow.showAtLocation(mFenLeiBtn.getRootView(), Gravity.LEFT | Gravity.BOTTOM, 0, 0);
 			}
 			
 			if(activeView.getId() == v.getId()) {
@@ -668,6 +721,65 @@ public class ShowDongManActivity extends Activity implements View.OnKeyListener,
 		
 		beforeGvView = null;
 		v.setOnKeyListener(this);
+	}
+	
+	private void getFilterServiceData(String url) {
+		
+		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
+		cb.url(url).type(JSONObject.class).weakHandler(this, "initFilterData");
+
+		cb.SetHeader(app.getHeaders());
+		aq.ajax(cb);
+	}
+	
+	public void initFilterData(String url, JSONObject json, AjaxStatus status) {
+
+		if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
+
+			app.MyToast(aq.getContext(),
+					getResources().getString(R.string.networknotwork));
+			return;
+		}
+		try {
+			Log.d(TAG, json.toString());
+			ReturnFilterMovieSearch result = mapper.readValue(json.toString(),
+					ReturnFilterMovieSearch.class);
+			// hot_list.clear();
+			if(movieList != null && !movieList.isEmpty()) {
+				
+				movieList.clear();
+			}
+			for (int i = 0; i < result.results.length; i++) {
+
+				MovieItemData movieItemData = new MovieItemData();
+				movieItemData.setMovieName(result.results[i].prod_name);
+				movieItemData.setMoviePicUrl(result.results[i].prod_pic_url);
+				movieItemData.setMovieScore(result.results[i].score);
+				movieItemData.setMovieID(result.results[i].prod_id);
+				movieItemData.setMovieDuration(result.results[i].duration);
+				movieItemData.setMovieCurEpisode(result.results[i].cur_episode);
+				movieItemData.setMovieMaxEpisode(result.results[i].max_episode);
+				movieList.add(movieItemData);
+			}
+			// Log.d
+
+			movieAdapter.notifyDataSetChanged();
+			beforeGvView = null;
+			initFirstFloatView();
+			dongmanGv.setFocusable(true);
+			dongmanGv.setSelected(true);
+			isSelectedItem = false;
+			dongmanGv.requestFocus();
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	private void getServiceData(String url) {
