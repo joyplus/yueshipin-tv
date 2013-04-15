@@ -86,6 +86,9 @@ public class ShowYueDanListActivity extends Activity implements
 		if(movieList != null) {
 			
 			Log.i(TAG, "Size:" + movieList.size() + movieList.toString());
+		} else {
+			
+			return;
 		}
 
 		initView();
@@ -652,6 +655,37 @@ public class ShowYueDanListActivity extends Activity implements
 				movieList.get(0).getBig_prod_pic_url());
 		movieName.setText(movieList.get(0).getProd_name());
 		movieScore.setText(movieList.get(0).getScore());
+		
+		if(movieList.get(0).getProd_type().equals("1")) {
+			
+			String duration = movieList.get(0).getDuration();
+			if(duration != null && !duration.equals("")) {
+				
+				TextView movieDuration = (TextView) firstFloatView
+						.findViewById(R.id.tv_item_layout_other_info);
+				movieDuration.setText(duration);
+			}
+		} else if(movieList.get(0).getProd_type().equals("2")){
+			
+			String curEpisode = movieList.get(0).getCur_episode();
+			String maxEpisode = movieList.get(0).getMax_episode();
+			
+			if(curEpisode == null || curEpisode.equals("0") || 
+					curEpisode.compareTo(maxEpisode) >= 0) {
+				
+				TextView movieUpdate = (TextView) firstFloatView
+						.findViewById(R.id.tv_item_layout_other_info);
+				movieUpdate.setText(
+						maxEpisode + getString(R.string.dianshiju_jiquan));
+				} else if(maxEpisode.compareTo(curEpisode) > 0) {
+					
+					TextView movieUpdate = (TextView) firstFloatView
+							.findViewById(R.id.tv_item_layout_other_info);
+					movieUpdate.setText(getString(R.string.zongyi_gengxinzhi) + 
+							curEpisode);
+			}
+		}
+		
 		firstFloatView.setPadding(10, 10, 10, 10);
 		firstFloatView.setBackgroundColor(getResources()
 				.getColor(R.color.text_active));
@@ -693,6 +727,36 @@ public class ShowYueDanListActivity extends Activity implements
 			TextView movieScore = (TextView) v
 					.findViewById(R.id.tv_item_layout_score);
 			movieScore.setText(movieList.get(position).getScore());
+			
+			if(movieList.get(position).getProd_type().equals("1")) {
+				
+				String duration = movieList.get(position).getDuration();
+				if(duration != null && !duration.equals("")) {
+					
+					TextView movieDuration = (TextView) v
+							.findViewById(R.id.tv_item_layout_other_info);
+					movieDuration.setText(duration);
+				}
+			} else if(movieList.get(position).getProd_type().equals("2")){
+				
+				String curEpisode = movieList.get(position).getCur_episode();
+				String maxEpisode = movieList.get(position).getMax_episode();
+				
+				if(curEpisode == null || curEpisode.equals("0") || 
+						curEpisode.compareTo(maxEpisode) >= 0) {
+					
+					TextView movieUpdate = (TextView) v
+							.findViewById(R.id.tv_item_layout_other_info);
+					movieUpdate.setText(
+							maxEpisode + getString(R.string.dianshiju_jiquan));
+					} else if(maxEpisode.compareTo(curEpisode) > 0) {
+						
+						TextView movieUpdate = (TextView) v
+								.findViewById(R.id.tv_item_layout_other_info);
+						movieUpdate.setText(getString(R.string.zongyi_gengxinzhi) + 
+								curEpisode);
+				}
+			}
 			v.setPadding(10, 10, 10, 10);
 
 			if (width != 0) {

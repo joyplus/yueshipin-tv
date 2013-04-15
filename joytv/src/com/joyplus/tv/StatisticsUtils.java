@@ -1,8 +1,10 @@
 package com.joyplus.tv;
 
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.http.client.utils.URLEncodedUtils;
 import org.json.JSONObject;
 
 import android.app.Instrumentation;
@@ -97,6 +99,78 @@ public class StatisticsUtils {
 	public static String getTopURL(String url, String page_num , String page_size , String topic_type) {
 		
 		return url + "?page_num=" + page_num + "&page_size=" + page_size + "&topic_type=" + topic_type;
+	}
+	
+	/**
+	 * type required 视频的类别，节目类型，1：电影，2：电视剧，3：综艺节目，131：动漫 
+	 * @param url
+	 * @param page_num
+	 * @param page_size
+	 * @param type
+	 * @return
+	 */
+	public static String getFilterURL(String url, String page_num , String page_size , String type) {
+		
+		return url + "?page_num=" + page_num + "&page_size=" + page_size + "&type=" + type;
+	}
+	
+	public static final String YEAR = "&year=";
+	public static final String AREA = "&area=";
+	public static final String SUB_TYPE = "&sub_type=";
+	public static final String[] PARAMS_3 = {AREA , SUB_TYPE,YEAR };
+	
+	public static String getFileterURL3Param(String[] choices , String defaultItemName) {
+		
+		if(choices.length <3 && choices.length != PARAMS_3.length) {
+			
+			return null;
+		}
+		
+		StringBuilder sb = new StringBuilder();
+		for(int i=0;i<choices.length;i++) {
+			
+			if(!choices[i].equals(defaultItemName)){
+				sb.append(PARAMS_3[i]);
+				String encode;
+				if(i!= 2) {
+					
+					encode = URLEncoder.encode(choices[i]);
+				} else {
+					encode = choices[i];
+				}
+				sb.append(encode);
+			}
+		}
+		
+		
+		return sb.toString();
+	}
+	
+	public static String getQuanBuFenLeiName(String[] choices , String defaultQuanbufenlei,String defaultItemName) {
+		
+		if(choices.length <3) {
+			
+			return defaultQuanbufenlei;
+		}
+		
+		if(choices[0].equals(defaultItemName) &&
+				choices[1].equals(defaultItemName) &&
+				choices[2].equals(defaultItemName)) {
+			
+			return defaultQuanbufenlei;
+		} else {
+			StringBuilder sb = new StringBuilder();
+			for(int i=0;i<choices.length;i++) {
+				
+				if(!choices[i].equals(defaultItemName)){
+					sb.append(choices[i] + "/");
+				}
+			}
+			
+			sb.deleteCharAt(sb.length() - 1);
+			return sb.toString();
+		}
+		
 	}
 
 }

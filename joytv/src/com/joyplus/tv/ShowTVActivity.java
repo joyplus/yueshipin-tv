@@ -705,6 +705,8 @@ public class ShowTVActivity extends Activity implements View.OnKeyListener,
 				movieItemData.setMoviePicUrl(result.items[i].prod_pic_url);
 				movieItemData.setMovieScore(result.items[i].score);
 				movieItemData.setMovieID(result.items[i].prod_id);
+				movieItemData.setMovieCurEpisode(result.items[i].cur_episode);
+				movieItemData.setMovieMaxEpisode(result.items[i].max_episode);
 				movieList.add(movieItemData);
 			}
 			// Log.d
@@ -743,6 +745,26 @@ public class ShowTVActivity extends Activity implements View.OnKeyListener,
 				movieList.get(0).getMoviePicUrl());
 		movieName.setText(movieList.get(0).getMovieName());
 		movieScore.setText(movieList.get(0).getMovieScore());
+		
+		
+		String curEpisode = movieList.get(0).getMovieCurEpisode();
+		String maxEpisode = movieList.get(0).getMovieMaxEpisode();
+		
+		if(curEpisode == null || curEpisode.equals("0") || 
+				curEpisode.compareTo(maxEpisode) >= 0) {
+			
+			TextView movieUpdate = (TextView) firstFloatView
+					.findViewById(R.id.tv_item_layout_other_info);
+			movieUpdate.setText(
+					movieList.get(0).getMovieMaxEpisode() + getString(R.string.dianshiju_jiquan));
+			} else if(maxEpisode.compareTo(curEpisode) > 0) {
+				
+				TextView movieUpdate = (TextView) firstFloatView
+						.findViewById(R.id.tv_item_layout_other_info);
+				movieUpdate.setText(getString(R.string.zongyi_gengxinzhi) + 
+						movieList.get(0).getMovieCurEpisode());
+		}
+		
 		firstFloatView.setPadding(10, 10, 10, 10);
 		firstFloatView.setBackgroundColor(getResources()
 				.getColor(R.color.text_active));
@@ -786,6 +808,26 @@ public class ShowTVActivity extends Activity implements View.OnKeyListener,
 					.findViewById(R.id.tv_item_layout_score);
 			movieScore.setText(movieList.get(position).getMovieScore());
 			v.setPadding(10, 10, 10, 10);
+			
+			String curEpisode = movieList.get(position).getMovieCurEpisode();
+			String maxEpisode = movieList.get(position).getMovieMaxEpisode();
+			
+			if(curEpisode == null || curEpisode.equals("0") || 
+					curEpisode.compareTo(maxEpisode) >= 0) {
+				
+				TextView movieUpdate = (TextView) v
+						.findViewById(R.id.tv_item_layout_other_info);
+				movieUpdate.setText(
+						movieList.get(position).getMovieMaxEpisode() + getString(R.string.dianshiju_jiquan));
+				} else if(maxEpisode.compareTo(curEpisode) > 0) {
+					
+					TextView movieUpdate = (TextView) v
+							.findViewById(R.id.tv_item_layout_other_info);
+					movieUpdate.setText(getString(R.string.zongyi_gengxinzhi) + 
+							movieList.get(position).getMovieCurEpisode());
+			}
+			
+			
 
 			if (width != 0) {
 

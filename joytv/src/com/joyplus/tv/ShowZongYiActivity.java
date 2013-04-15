@@ -640,7 +640,8 @@ public class ShowZongYiActivity extends Activity implements View.OnKeyListener,
 				MovieItemData movieItemData = new MovieItemData();
 				movieItemData.setMovieName(result.items[i].prod_name);
 				movieItemData.setMoviePicUrl(result.items[i].prod_pic_url);
-				movieItemData.setMovieScore(result.items[i].score);
+//				movieItemData.setMovieScore(result.items[i].score);
+				movieItemData.setMovieCurEpisode(result.items[i].cur_episode);
 				movieItemData.setMovieID(result.items[i].prod_id);
 				movieList.add(movieItemData);
 			}
@@ -674,12 +675,13 @@ public class ShowZongYiActivity extends Activity implements View.OnKeyListener,
 		
 //		ImageView iv = (ImageView) firstFloatView.findViewById(R.id.iv_item_layout_haibao);
 		TextView movieName = (TextView) firstFloatView.findViewById(R.id.tv_item_layout_name);
-		TextView movieScore = (TextView) firstFloatView.findViewById(R.id.tv_item_layout_score);
+		TextView movieScore = (TextView) firstFloatView.findViewById(R.id.tv_item_active_layout_other_info);
 		aq = new AQuery(firstFloatView);
 		aq.id(R.id.iv_item_layout_haibao).image(
 				movieList.get(0).getMoviePicUrl());
 		movieName.setText(movieList.get(0).getMovieName());
-		movieScore.setText(movieList.get(0).getMovieScore());
+		movieScore.setText(getString(R.string.zongyi_gengxinzhi) + 
+				movieList.get(0).getMovieCurEpisode());
 		firstFloatView.setPadding(10, 10, 10, 10);
 		firstFloatView.setBackgroundColor(getResources()
 				.getColor(R.color.text_active));
@@ -706,7 +708,7 @@ public class ShowZongYiActivity extends Activity implements View.OnKeyListener,
 
 			if (convertView == null) {
 				View view = getLayoutInflater().inflate(
-						R.layout.show_item_layout_dianying, null);
+						R.layout.show_item_layout_yuedan, null);
 				v = view;
 			} else {
 
@@ -720,8 +722,9 @@ public class ShowZongYiActivity extends Activity implements View.OnKeyListener,
 					.findViewById(R.id.tv_item_layout_name);
 			movieName.setText(movieList.get(position).getMovieName());
 			TextView movieScore = (TextView) v
-					.findViewById(R.id.tv_item_layout_score);
-			movieScore.setText(movieList.get(position).getMovieScore());
+					.findViewById(R.id.tv_item_layout_other_info);
+			movieScore.setText(getString(R.string.zongyi_gengxinzhi) + 
+					movieList.get(0).getMovieCurEpisode());
 			v.setPadding(10, 10, 10, 10);
 
 			if (width != 0) {
