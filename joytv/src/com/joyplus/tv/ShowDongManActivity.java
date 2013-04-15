@@ -642,7 +642,9 @@ public class ShowDongManActivity extends Activity implements View.OnKeyListener,
 				app.MyToast(aq.getContext(),"bt_quanbufenlei");
 				getServiceData(url7);
 				break;
-
+			case R.id.bt_zuijinguankan:
+				startActivity(new Intent(this, HistoryActivity.class));
+				break;
 			default:
 				break;
 			}

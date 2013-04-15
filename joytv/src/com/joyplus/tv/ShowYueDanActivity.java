@@ -633,7 +633,9 @@ public class ShowYueDanActivity extends Activity implements View.OnKeyListener,
 				app.MyToast(aq.getContext(),"ll_gangju");
 				getServiceData(url2);
 				break;
-
+			case R.id.bt_zuijinguankan:
+				startActivity(new Intent(this, HistoryActivity.class));
+				break;
 			default:
 				break;
 			}

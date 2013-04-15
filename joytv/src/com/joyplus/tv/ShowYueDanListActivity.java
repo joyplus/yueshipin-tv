@@ -604,6 +604,15 @@ public class ShowYueDanListActivity extends Activity implements
 
 			return;
 		}
+		
+		switch (v.getId()) {
+		case R.id.bt_zuijinguankan:
+			startActivity(new Intent(this, HistoryActivity.class));
+			break;
+
+		default:
+			break;
+		}
 
 		v.setOnKeyListener(null);
 		if (v instanceof LinearLayout) {
