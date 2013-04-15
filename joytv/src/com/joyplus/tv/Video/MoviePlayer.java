@@ -127,7 +127,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		public void run() {
 			mPreparedPercent+=1;
 			sb.setProgress(mPreparedPercent);
-			mHandler.postDelayed(mPreparedProgress, 100);
+			mHandler.postDelayed(mPreparedProgress, 200);
 		}
 	};
 	private final Runnable mProgressChecker = new Runnable() {
@@ -299,14 +299,15 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		if (mVideoView.isPlaying() && position > 1){
 			mHandler.removeCallbacks(mPreparedProgress);
 			mController.showPlayingAtFirstTime();
+			
+			
 			sb.setOnSeekBarChangeListener(sbLis);
+			sb.setProgress(position);
+			this.currentTime = position;
+			setTime(duration);
+			mController.setTimes(position, duration);
 		}
-		
-		sb.setProgress(position);
-		this.currentTime = position;
-		setTime(duration);
 
-		mController.setTimes(position, duration);
 		return position;
 	}
 
@@ -803,8 +804,8 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 	public void onBufferingUpdate(MediaPlayer mp, int percent) {
 		// TODO Auto-generated method stub
 		Log.d(TAG, "onBufferingUpdate:   " + Integer.toString(percent));
-		sb.setMax(100);
-		sb.setProgress(percent);
+//		sb.setMax(100);
+//		sb.setProgress(percent);
 	}
 
 	@Override
