@@ -702,7 +702,7 @@ public class ShowTVActivity extends Activity implements View.OnKeyListener,
 				movieItemData.setMovieName(result.items[i].prod_name);
 				movieItemData.setMoviePicUrl(result.items[i].prod_pic_url);
 				movieItemData.setMovieScore(result.items[i].score);
-				movieItemData.setMovieID(result.items[i].id);
+				movieItemData.setMovieID(result.items[i].prod_id);
 				movieList.add(movieItemData);
 			}
 			// Log.d

@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:background="@color/movie_bg"
     android:orientation="vertical"
-    android:paddingLeft="50dp"
+    android:paddingLeft="35dp"
     android:paddingTop="15dp" >
 
     <include
@@ -34,7 +34,7 @@
             android:layout_weight="5.61"
             android:background="@drawable/menubg"
             android:orientation="horizontal"
-            android:paddingRight="50dp" >
+            android:paddingRight="35dp" >
 
             <TextView
                 android:layout_width="@dimen/layout_zero"
@@ -42,7 +42,7 @@
                 android:layout_marginLeft="@dimen/theme_name_margin"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
-                android:text="周星驰"
+                android:text="@string/yuedan_name"
                 android:textColor="@color/text_active"
                 android:textSize="@dimen/theme_name_text_size" />
 
@@ -53,7 +53,8 @@
                 android:gravity="right|center_vertical"
                 android:text="2/123"
                 android:textColor="@color/time_color"
-                android:textSize="@dimen/jishu_text_size" />
+                android:textSize="@dimen/jishu_text_size" 
+                android:visibility="invisible"/>
         </LinearLayout>
     </LinearLayout>
 
@@ -73,10 +74,9 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/layout_zero"
-                android:paddingTop="@dimen/edit_vertical_margin"
+                android:layout_weight="1"
                 android:paddingBottom="@dimen/edit_vertical_margin"
-                android:layout_weight="1" 
-                android:visibility="invisible">
+                android:paddingTop="@dimen/edit_vertical_margin" >
 
                 <EditText
                     android:id="@+id/et_search"
@@ -87,8 +87,8 @@
                     android:focusableInTouchMode="false"
                     android:hint="搜索"
                     android:paddingRight="@dimen/menu_horizontal_padding"
-                    android:textSize="15sp" 
-                    android:singleLine="true">
+                    android:singleLine="true"
+                    android:textSize="15sp" >
                 </EditText>
             </LinearLayout>
 
@@ -99,35 +99,31 @@
                 android:orientation="vertical" >
 
                 <Button
-                    android:id="@+id/bt_quanbufenlei"
+                    android:id="@+id/bt_dianyingyuedan"
                     style="@style/style_4"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/layout_zero"
                     android:layout_weight="1"
                     android:background="@drawable/text_drawable_selector"
                     android:gravity="right|center_vertical"
-                    android:text="@string/quanbufenlei_name"
+                    android:text="@string/dianyingyuedan_name"
+                    android:textColor="@color/text_color_selector"
+                    android:visibility="invisible" />
+
+                <Button
+                    android:id="@+id/bt_dianshijuyuedan"
+                    style="@style/style_4"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/layout_zero"
+                    android:layout_weight="1"
+                    android:background="@drawable/text_drawable_selector"
+                    android:gravity="right|center_vertical"
+                    android:text="@string/dianshijuyuedan_name"
                     android:textColor="@color/text_color_selector" 
                     android:visibility="invisible"/>
 
                 <LinearLayout
-                    android:id="@+id/ll_dongzuopian"
-                    style="@style/style_6"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/layout_zero"
-                    android:layout_weight="1" 
-                    android:visibility="invisible">
-
-                    <Button
-                        android:id="@+id/bt_dongzuopian"
-                        style="@style/style_5"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:text="@string/dongzuopian_name" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/ll_lunlipian"
+                    android:id="@+id/ll_gangju"
                     style="@style/style_6"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/layout_zero"
@@ -135,15 +131,15 @@
                     android:visibility="invisible" >
 
                     <Button
-                        android:id="@+id/bt_lunlipian"
+                        android:id="@+id/bt_gangju"
                         style="@style/style_5"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:text="@string/lunlipian_pian" />
+                        android:text="@string/gangju_play_name" />
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/ll_xijupian"
+                    android:id="@+id/ll_taiju"
                     style="@style/style_6"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/layout_zero"
@@ -151,15 +147,15 @@
                     android:visibility="invisible">
 
                     <Button
-                        android:id="@+id/bt_xijupian"
+                        android:id="@+id/bt_taiju"
                         style="@style/style_5"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:text="@string/xijupian_name" />
+                        android:text="@string/taiju_play_name" />
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/ll_aiqingpian"
+                    android:id="@+id/ll_hanju"
                     style="@style/style_6"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/layout_zero"
@@ -167,15 +163,15 @@
                     android:visibility="invisible">
 
                     <Button
-                        android:id="@+id/bt_aiqingpian"
+                        android:id="@+id/bt_hanju"
                         style="@style/style_5"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:text="@string/aiqingpian_name" />
+                        android:text="@string/hanju_play_name" />
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/ll_xuanyipian"
+                    android:id="@+id/ll_meiju"
                     style="@style/style_6"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/layout_zero"
@@ -183,11 +179,27 @@
                     android:visibility="invisible">
 
                     <Button
-                        android:id="@+id/bt_xuanyipian"
+                        android:id="@+id/bt_meiju"
                         style="@style/style_5"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:text="@string/xuanyipian_name" />
+                        android:text="@string/oumei_play_name" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_riju"
+                    style="@style/style_6"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/layout_zero"
+                    android:layout_weight="1" 
+                    android:visibility="invisible">
+
+                    <Button
+                        android:id="@+id/bt_riju"
+                        style="@style/style_5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="@string/riju_play_name" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -205,12 +217,28 @@
                         android:layout_height="match_parent"
                         android:text="@string/kongbupian_name" />
                 </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/ll_donghuapian"
+                    style="@style/style_6"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/layout_zero"
+                    android:layout_weight="1" 
+                    android:visibility="invisible">
+
+                    <Button
+                        android:id="@+id/bt_donghuapian"
+                        style="@style/style_5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="@string/donghuapian_name" 
+                        />
+                </LinearLayout>                
 
                 <TextView
                     style="@style/style_4"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/layout_zero"
-                    android:layout_weight="3.73" />
+                    android:layout_weight="1.73" />
 
                 <Button
                     android:id="@+id/bt_zuijinguankan"
@@ -260,21 +288,28 @@
             android:layout_weight="5.61"
             android:orientation="vertical" >
 
-            <LinearLayout
-                android:id="@+id/ll_movie_show"
+            <FrameLayout
+                android:id="@+id/fl_movie_show"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:paddingRight="50dp" >
+                android:paddingRight="34dp" >
 
                 <com.joyplus.tv.ui.MyMovieGridView
                     android:id="@+id/gv_movie_show"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:listSelector="@android:color/black"
+                    android:gravity="center"
+                    android:listSelector="@android:color/transparent"
                     android:numColumns="5" >
                 </com.joyplus.tv.ui.MyMovieGridView>
-            </LinearLayout>
+
+                <include
+                    android:id="@+id/inclue_movie_show_item"
+                    android:layout_width="0dip"
+                    android:layout_height="0dip"
+                    layout="@layout/show_item_layout_child_dianying" />
+
+            </FrameLayout>
         </LinearLayout>
     </LinearLayout>
 

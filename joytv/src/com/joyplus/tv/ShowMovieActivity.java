@@ -263,8 +263,10 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				// TODO Auto-generated method stub
-				startActivity(new Intent(ShowMovieActivity.this,
-						ShowXiangqingMovie.class));
+				Intent intent = new Intent(ShowMovieActivity.this,
+						ShowXiangqingMovie.class);
+				intent.putExtra("ID", movieList.get(position).getMovieID());
+				startActivity(intent);
 			}
 		});
 
@@ -735,6 +737,7 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 				movieItemData.setMovieName(result.items[i].prod_name);
 				movieItemData.setMoviePicUrl(result.items[i].prod_pic_url);
 				movieItemData.setMovieScore(result.items[i].score);
+				movieItemData.setMovieID(result.items[i].prod_id);
 				movieList.add(movieItemData);
 			}
 			// Log.d

@@ -9,6 +9,7 @@ import org.json.JSONObject;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -33,7 +34,10 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joyplus.tv.Service.Return.ReturnTops;
+import com.joyplus.tv.entity.ShiPinInfo;
+import com.joyplus.tv.entity.ShiPinInfoParcelable;
 import com.joyplus.tv.entity.YueDanInfo;
+import com.joyplus.tv.entity.YueDanInfo2;
 import com.joyplus.tv.ui.MyMovieGridView;
 
 public class ShowYueDanActivity extends Activity implements View.OnKeyListener,
@@ -68,7 +72,7 @@ public class ShowYueDanActivity extends Activity implements View.OnKeyListener,
 
 	private ObjectMapper mapper = new ObjectMapper();
 
-	private List<YueDanInfo> movieList = new ArrayList<YueDanInfo>();
+	private List<YueDanInfo2> movieList = new ArrayList<YueDanInfo2>();
 	
 	private int defalutYuedan = 0;
 
@@ -251,8 +255,10 @@ public class ShowYueDanActivity extends Activity implements View.OnKeyListener,
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				// TODO Auto-generated method stub
-				startActivity(new Intent(ShowYueDanActivity.this,
-						ShowYueDanListActivity.class));
+				Intent intent = new Intent(ShowYueDanActivity.this,
+						ShowYueDanListActivity.class);
+				intent.putParcelableArrayListExtra("yuedan_list_type",movieList.get(position).shiPinList);
+				startActivity(intent);
 			}
 		});
 
@@ -680,35 +686,37 @@ public class ShowYueDanActivity extends Activity implements View.OnKeyListener,
 				movieList.clear();
 			}
 			for(int i=0; i<result.tops.length; i++){
-				YueDanInfo yuedanInfo = new YueDanInfo();
+				YueDanInfo2 yuedanInfo = new YueDanInfo2();
+				ArrayList<ShiPinInfoParcelable> tempList = new ArrayList<ShiPinInfoParcelable>();
 				yuedanInfo.name = result.tops[i].name;
 				yuedanInfo.id = result.tops[i].id;
 				yuedanInfo.prod_type = result.tops[i].prod_type;
 				yuedanInfo.pic_url = result.tops[i].big_pic_url;
 				yuedanInfo.num = result.tops[i].num;
 				yuedanInfo.content = result.tops[i].content;
-//				for (int j = 0; j < result.tops[i].items.length; j++) {
-//					ShiPinInfo shipinInfo = new ShiPinInfo();
-//					shipinInfo.setArea(result.tops[i].items[j].area);
-//					shipinInfo.setBig_prod_pic_url(result.tops[i].items[j].big_prod_pic_url);
-//					shipinInfo.setCur_episode(result.tops[i].items[j].cur_episode);
-////					shipinInfo.setCur_item_name(result.tops[i].items[j].cur_i);
-//					shipinInfo.setDefinition(result.tops[i].items[j].definition);
-//					shipinInfo.setDirectors(result.tops[i].items[j].directors);
-//					shipinInfo.setDuration(result.tops[i].items[j].duration);
-//					shipinInfo.setFavority_num(result.tops[i].items[j].favority_num);
-//					shipinInfo.setId(result.tops[i].items[j].id);
-//					shipinInfo.setMax_episode(result.tops[i].items[j].max_episode);
-//					shipinInfo.setProd_id(result.tops[i].items[j].prod_id);
-//					shipinInfo.setProd_name(result.tops[i].items[j].prod_name);
-//					shipinInfo.setProd_pic_url(result.tops[i].items[j].prod_pic_url);
-//					shipinInfo.setProd_type(result.tops[i].items[j].prod_type);
-//					shipinInfo.setPublish_date(result.tops[i].items[j].publish_date);
-//					shipinInfo.setScore(result.tops[i].items[j].score);
-//					shipinInfo.setStars(result.tops[i].items[j].stars);
-//					shipinInfo.setSupport_num(result.tops[i].items[j].support_num);
-//					movieList.add(shipinInfo);
-//				}
+				for (int j = 0; j < result.tops[i].items.length; j++) {
+					ShiPinInfoParcelable shipinInfo = new ShiPinInfoParcelable();
+					shipinInfo.setArea(result.tops[i].items[j].area);
+					shipinInfo.setBig_prod_pic_url(result.tops[i].items[j].big_prod_pic_url);
+					shipinInfo.setCur_episode(result.tops[i].items[j].cur_episode);
+//					shipinInfo.setCur_item_name(result.tops[i].items[j].cur_i);
+					shipinInfo.setDefinition(result.tops[i].items[j].definition);
+					shipinInfo.setDirectors(result.tops[i].items[j].directors);
+					shipinInfo.setDuration(result.tops[i].items[j].duration);
+					shipinInfo.setFavority_num(result.tops[i].items[j].favority_num);
+					shipinInfo.setId(result.tops[i].items[j].id);
+					shipinInfo.setMax_episode(result.tops[i].items[j].max_episode);
+					shipinInfo.setProd_id(result.tops[i].items[j].prod_id);
+					shipinInfo.setProd_name(result.tops[i].items[j].prod_name);
+					shipinInfo.setProd_pic_url(result.tops[i].items[j].prod_pic_url);
+					shipinInfo.setProd_type(result.tops[i].items[j].prod_type);
+					shipinInfo.setPublish_date(result.tops[i].items[j].publish_date);
+					shipinInfo.setScore(result.tops[i].items[j].score);
+					shipinInfo.setStars(result.tops[i].items[j].stars);
+					shipinInfo.setSupport_num(result.tops[i].items[j].support_num);
+					tempList.add(shipinInfo);
+				}
+				yuedanInfo.shiPinList = tempList;
 				movieList.add(yuedanInfo);
 				
 			}
