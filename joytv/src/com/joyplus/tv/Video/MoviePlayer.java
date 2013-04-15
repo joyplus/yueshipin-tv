@@ -125,9 +125,11 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 	// };
 	private final Runnable mPreparedProgress = new Runnable() {
 		public void run() {
+			if(mPreparedPercent<100){
 			mPreparedPercent+=1;
 			sb.setProgress(mPreparedPercent);
 			mHandler.postDelayed(mPreparedProgress, 200);
+			}
 		}
 	};
 	private final Runnable mProgressChecker = new Runnable() {
