@@ -33,7 +33,7 @@
 				    android:gravity="center_vertical|left"
 				    android:id="@+id/title_text"
 				    android:textSize="30sp"
-				    android:text="最近观看"
+				    android:text="追剧收藏"
 				    android:textColor="@color/common_title_selected"
 				    />
                 <TextView android:layout_width="fill_parent"
