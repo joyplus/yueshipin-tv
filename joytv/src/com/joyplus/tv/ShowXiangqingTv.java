@@ -142,8 +142,8 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 				.findViewById(R.id.ll_gaoqing_biaoqing);
 		popupWindow = new PopupWindow(popupView);
 		
-		currentBofangViewPop = biaoqingLL;
-		beforeTempPop = biaoqingLL;
+		currentBofangViewPop = chaoqingLL;
+		beforeTempPop = chaoqingLL;
 	}
 
 	private void initView() {
