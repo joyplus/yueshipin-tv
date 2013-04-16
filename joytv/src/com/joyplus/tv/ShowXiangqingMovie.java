@@ -583,7 +583,7 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 //			aq = new AQuery(convertView);
 			holder.image.setTag(recommendMoviesData.items[position].prod_pic_url);
 //			holder.image.setImageResource(R.drawable.test1);
-			aq.id(holder.image).image(recommendMoviesData.items[position].prod_pic_url,true,true,0,R.drawable.post_normal);
+			aq.id(holder.image).image(recommendMoviesData.items[position].big_prod_pic_url,true,true,0,R.drawable.post_normal);
 			holder.firstTitle.setVisibility(View.INVISIBLE);
 			holder.secondTitle.setText(recommendMoviesData.items[position].prod_name);
 			holder.content.setText(recommendMoviesData.items[position].duration);
@@ -631,6 +631,13 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 			}
 		}
 	}; 
+	
+	@Override
+	protected void onDestroy() {
+		if (aq != null)
+			aq.dismiss();
+		super.onDestroy();
+	}
 	
 	class ViewHolder{
 		TextView firstTitle;

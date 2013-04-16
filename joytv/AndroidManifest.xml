@@ -30,6 +30,7 @@
     </uses-permission>
     <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:name=".App"
@@ -197,13 +198,13 @@
             android:theme="@android:style/Theme.Black.NoTitleBar"
             android:windowSoftInputMode="adjustPan" >
 
-            <!--
-                 <intent-filter>
+            
+                 <!-- <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-            -->
+            </intent-filter> -->
+           
         </activity>
         <activity
             android:name=".HistoryActivity"
@@ -223,7 +224,9 @@
             android:exported="true"
             android:process=":DownloadingService" >
         </service>
-
+		<service
+            android:name="com.saulpower.fayeclient.FayeService">
+        </service>
         <meta-data
             android:name="UMENG_APPKEY"
             android:value="	5160f44856240b223800369a" >
@@ -242,6 +245,11 @@
                 <action android:name="com.example.UPDATE_STATUS" />
             </intent-filter>
         </receiver>
+        <receiver android:name="BootBroadcastReceiver">  
+                <intent-filter>  
+                    <action android:name="android.intent.action.CONNECTIVITY_CHANGE"></action>  
+                </intent-filter>  
+        </receiver>  
     </application>
 
 </manifest>

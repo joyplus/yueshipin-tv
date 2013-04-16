@@ -1,6 +1,7 @@
 package com.joyplus.tv;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -50,6 +51,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.zxing.WriterException;
+import com.joyplus.tv.Adapters.CurrentPlayData;
 import com.joyplus.tv.Adapters.MainHotItemAdapter;
 import com.joyplus.tv.Adapters.MainLibAdapter;
 import com.joyplus.tv.Adapters.MainYueDanItemAdapter;
@@ -63,6 +65,9 @@ import com.joyplus.tv.entity.YueDanInfo;
 import com.joyplus.tv.ui.CustomGallery;
 import com.joyplus.tv.ui.MyScrollLayout;
 import com.joyplus.tv.ui.MyScrollLayout.OnViewChangeListener;
+import com.saulpower.fayeclient.FayeClient;
+import com.saulpower.fayeclient.FayeService;
+import com.saulpower.fayeclient.FayeClient.FayeListener;
 import com.umeng.analytics.MobclickAgent;
 
 
@@ -79,15 +84,6 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 	private List<YueDanInfo> yuedan_list = new ArrayList<YueDanInfo>();
 	private int isHotLoadedFlag = 0;
 	private int isYueDanLoadedFlag = 0;
-
-//	private int[] resouces = {
-//			R.drawable.test1,
-//			R.drawable.test2,
-//			R.drawable.test3,
-//			R.drawable.test4,
-//			R.drawable.test5,
-//			R.drawable.test6
-//		};
 	
 	private int [] resouces_lib_nomal = {
 			R.drawable.movie_normal,
@@ -147,6 +143,9 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 	private TranslateAnimation leftTranslateAnimationStep2;
 	private TranslateAnimation rightTranslateAnimationStep1;
 	private TranslateAnimation rightTranslateAnimationStep2;
+	
+	private FayeClient mClient;
+	private String macAddress;
 	
 //	private Handler mHandler = new Handler();
 	
@@ -701,6 +700,8 @@ public boolean checkLogin() {
 		Toast.makeText(this, "item click index = " + titleGroup.getSelectedTitleIndex()+"[" + index + "]", 100).show();
 		switch (titleGroup.getSelectedTitleIndex()) {
 		case 1:
+//			CurrentPlayData playDate = new CurrentPlayData();
+//			playDate.
 			String str0 = "1004602";
 			String str1 = "贤妻";
 //			String str2 = "http://115.238.173.139:80/play/7B5E398971A46DD67535DBC0A7CD770D27036204.mp4";
@@ -1200,19 +1201,16 @@ public boolean checkLogin() {
 	private Bitmap CreateBarCode(){
 		//根据字符串生成二维码图片并显示在界面上，第二个参数为图片的大小（350*350）
 		Bitmap b = null;
-		String macAddress = null;
-		WifiManager wifiMgr = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-		WifiInfo info = (null == wifiMgr ? null : wifiMgr
-				.getConnectionInfo());
-		if (info != null) {
-			macAddress = info.getMacAddress();
-			try {
-				b =EncodingHandler.createQRCode(macAddress, 500);
-			} catch (WriterException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		String macAddress = StatisticsUtils.getMacAdd(this);
+		String date = Constant.CHANNELHEADER + StatisticsUtils.MD5(macAddress);
+		try {
+			b = EncodingHandler.createQRCode(date, 500);
+		} catch (WriterException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		Intent service = new Intent(this,FayeService.class);  
+        startService(service);
 		return b;
 	}
 

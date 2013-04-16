@@ -628,4 +628,10 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 			break;
 		}
 	}
+	@Override
+	protected void onDestroy() {
+		if (aq != null)
+			aq.dismiss();
+		super.onDestroy();
+	}
 }
