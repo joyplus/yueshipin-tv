@@ -232,8 +232,11 @@ public class ShowDongManActivity extends Activity implements View.OnKeyListener,
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				// TODO Auto-generated method stub
-				startActivity(new Intent(ShowDongManActivity.this,
-						ShowXiangqingTv.class));
+				Intent intent = new Intent(ShowDongManActivity.this,
+						ShowXiangqingTv.class);
+				Log.i(TAG, "ID:" + movieList.get(position).getMovieID());
+				intent.putExtra("ID", movieList.get(position).getMovieID());
+				startActivity(intent);
 			}
 		});
 
@@ -760,6 +763,7 @@ public class ShowDongManActivity extends Activity implements View.OnKeyListener,
 				movieItemData.setMovieName(result.items[i].prod_name);
 				movieItemData.setMoviePicUrl(result.items[i].big_prod_pic_url);
 				movieItemData.setMovieScore(result.items[i].score);
+				movieItemData.setMovieID(result.items[i].prod_id);
 				movieItemData.setMovieCurEpisode(result.items[i].cur_episode);
 				movieItemData.setMovieMaxEpisode(result.items[i].max_episode);
 				movieList.add(movieItemData);
