@@ -587,7 +587,7 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 											String url = StatisticsUtils.getFilterURL(FILTER_URL, 1+"", 50+"", 1+"") + 
 													StatisticsUtils.getFileterURL3Param(choice, quanbu);
 											Log.i(TAG, "POP--->URL:" + url);
-												getFilterServiceData(url);
+												getFilterServiceData(url); 
 											
 										}
 									}
@@ -597,7 +597,7 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 					popupWindow = new PopupWindow(view, getWindowManager().getDefaultDisplay().getWidth(),
 							getWindowManager().getDefaultDisplay().getHeight(), true);
 				}
-				popupWindow.showAtLocation(mFenLeiBtn.getRootView(), Gravity.LEFT | Gravity.BOTTOM, 0, 0);
+				popupWindow.showAtLocation(mFenLeiBtn.getRootView(), Gravity.LEFT | Gravity.TOP, 0, 0);
 			}
 			
 			
@@ -663,6 +663,9 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 //				break;
 			case R.id.bt_zuijinguankan:
 				startActivity(new Intent(this, HistoryActivity.class));
+				break;
+			case R.id.bt_zhuijushoucang:
+				startActivity(new Intent(this, ShowShoucangHistoryActivity.class));
 				break;
 			default:
 				break;
@@ -878,6 +881,7 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 
 				popWidth = width;
 				popHeight = height;
+				movieName.setTextSize(height * 1/17.0f);
 				// Log.i(TAG, "Width:" + popWidth);
 			}
 

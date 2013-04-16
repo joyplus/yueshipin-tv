@@ -645,6 +645,9 @@ public class ShowTVActivity extends Activity implements View.OnKeyListener,
 			case R.id.bt_zuijinguankan:
 				startActivity(new Intent(this, HistoryActivity.class));
 				break;
+			case R.id.bt_zhuijushoucang:
+				startActivity(new Intent(this, ShowShoucangHistoryActivity.class));
+				break;
 			default:
 				break;
 			}

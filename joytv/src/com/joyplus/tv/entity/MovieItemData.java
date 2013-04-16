@@ -15,6 +15,15 @@ public class MovieItemData {
 	private String movieCurEpisode;
 	private String movieMaxEpisode;
 	private String movieDuration;
+	private String movieProType;
+
+	public String getMovieProType() {
+		return movieProType;
+	}
+
+	public void setMovieProType(String movieProType) {
+		this.movieProType = movieProType;
+	}
 
 	public String getMovieMaxEpisode() {
 		return movieMaxEpisode;

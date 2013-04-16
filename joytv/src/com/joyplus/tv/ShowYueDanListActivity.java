@@ -91,6 +91,9 @@ public class ShowYueDanListActivity extends Activity implements
 		lixianshipinBtn = (Button) findViewById(R.id.bt_lixianshipin);
 
 		firstFloatView = findViewById(R.id.inclue_movie_show_item);
+		
+		beforeView = zuijinguankanBtn;
+		activeView = zuijinguankanBtn;
 
 		addListener();
 
@@ -500,6 +503,9 @@ public class ShowYueDanListActivity extends Activity implements
 		switch (v.getId()) {
 		case R.id.bt_zuijinguankan:
 			startActivity(new Intent(this, HistoryActivity.class));
+			break;
+		case R.id.bt_zhuijushoucang:
+			startActivity(new Intent(this, ShowShoucangHistoryActivity.class));
 			break;
 
 		default:
