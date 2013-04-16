@@ -56,6 +56,8 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 	private Button zuijinguankanBtn, zhuijushoucangBtn, lixianshipinBtn,
 			mFenLeiBtn;
 	
+	private LinearLayout topLinearLayout;
+	
 	private View firstFloatView ;
 
 	private View beforeView, activeView;
@@ -120,6 +122,7 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 		lixianshipinBtn = (Button) findViewById(R.id.bt_lixianshipin);
 		
 		firstFloatView = findViewById(R.id.inclue_movie_show_item);
+		topLinearLayout = (LinearLayout) findViewById(R.id.ll_show_movie_top);
 
 		addListener();
 
@@ -594,8 +597,11 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 								}
 							});
 					view.setLayoutParams(new LayoutParams(0,0));
-					popupWindow = new PopupWindow(view, getWindowManager().getDefaultDisplay().getWidth(),
-							getWindowManager().getDefaultDisplay().getHeight(), true);
+//					popupWindow = new PopupWindow(view, getWindowManager().getDefaultDisplay().getWidth(),
+//							getWindowManager().getDefaultDisplay().getHeight(), true);
+					int width = topLinearLayout.getWidth();
+					int height = topLinearLayout.getHeight();
+					popupWindow = new PopupWindow(view,width,height, true);
 				}
 				popupWindow.showAtLocation(mFenLeiBtn.getRootView(), Gravity.LEFT | Gravity.TOP, 0, 0);
 			}
