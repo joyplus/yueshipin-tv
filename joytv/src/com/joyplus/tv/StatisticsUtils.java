@@ -116,6 +116,11 @@ public class StatisticsUtils implements JieMianConstant{
 		return url + "?page_num=" + page_num + "&page_size=" + page_size + "&type=" + type;
 	}
 	
+	public static String getSearchURL(String url, String page_num , String page_size , String keyword ) {
+		
+		return url + "?page_num=" + page_num + "&page_size=" + page_size + "&keyword=" + keyword;
+	}
+	
 	public static final String YEAR = "&year=";
 	public static final String AREA = "&area=";
 	public static final String SUB_TYPE = "&sub_type=";

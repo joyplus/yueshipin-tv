@@ -881,6 +881,7 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 
 				popWidth = width;
 				popHeight = height;
+				movieName.setTextSize(height * 1/17.0f);
 				// Log.i(TAG, "Width:" + popWidth);
 			}
 
