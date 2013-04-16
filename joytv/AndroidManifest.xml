@@ -52,8 +52,10 @@
         </activity>
         <activity
             android:name=".Video.VideoPlayerActivity"
+            android:launchMode="singleTop"
             android:configChanges="orientation|keyboardHidden|navigation"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
+          
         </activity>
         <activity
             android:name="com.umeng.fb.ui.SendFeedback"
