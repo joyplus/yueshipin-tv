@@ -6,7 +6,7 @@ public class CurrentPlayData {
 	public String prod_name;//视频名称
 	public String prod_url;//播放地址
 	public String prod_src;//来源
-	public int prod_time;//开始播放时间
+	public long prod_time;//开始播放时间
 	public int prod_qua;//清晰度
 	public int CurrentCategory = 0;//跟prod_type一样，这个是index序号
 	public int CurrentIndex = 0;//电视剧和综艺用，index序号

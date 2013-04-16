@@ -47,6 +47,7 @@ import android.widget.MediaController.MediaPlayerControl;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 
 import com.joyplus.tv.R;
+import com.joyplus.tv.StatisticsUtils;
 
 public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		MediaPlayer.OnCompletionListener, MediaPlayer.OnPreparedListener,
@@ -202,7 +203,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		} else {
 			final Integer bookmark = mBookmarker.getBookmark(mUri);
 			if (bookmark != null) {
-				saveTime.setText(formatDuration(bookmark));
+				saveTime.setText(StatisticsUtils.formatDuration(bookmark));
 				mVideoView.seekTo(bookmark);
 				// showResumeDialog(mContext, bookmark);
 			}
@@ -237,7 +238,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		builder.setTitle(R.string.resume_playing_title);
 		builder.setMessage(String.format(
 				context.getString(R.string.resume_playing_message),
-				formatDuration(bookmark)));
+				StatisticsUtils.formatDuration(bookmark)));
 		builder.setOnCancelListener(new OnCancelListener() {
 			public void onCancel(DialogInterface dialog) {
 				onCompletion();
@@ -319,23 +320,11 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		}
 		this.totalTime = totalTime;
 		sb.setMax(totalTime);
-		textView2.setText(formatDuration(totalTime));
+		textView2.setText(StatisticsUtils.formatDuration(totalTime));
 
 	}
 
-	private String formatDuration(long duration) {
-		duration = duration / 1000;
-		int h = (int) duration / 3600;
-		int m = (int) (duration - h * 3600) / 60;
-		int s = (int) duration - (h * 3600 + m * 60);
-		String durationValue;
-		if (h == 0) {
-			durationValue = String.format("%1$02d:%2$02d", m, s);
-		} else {
-			durationValue = String.format("%1$d:%2$02d:%3$02d", h, m, s);
-		}
-		return durationValue;
-	}
+
 
 	private void startVideo() {
 		// For streams that we expect to be slow to start up, show a
@@ -678,7 +667,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 
 			mLayoutBottomTime.setLayoutParams(parms);
 
-			textView1.setText(formatDuration(JUMP_TIME));
+			textView1.setText(StatisticsUtils.formatDuration(JUMP_TIME));
 			textView1.setVisibility(View.VISIBLE);
 
 			sb.setMax(totalTime);
@@ -769,7 +758,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 				parms.bottomMargin = 20 + 10;
 				mLayoutBottomTime.setLayoutParams(parms);
 
-				textView1.setText(formatDuration(progress));
+				textView1.setText(StatisticsUtils.formatDuration(progress));
 				textView1.setVisibility(View.VISIBLE);
 			}
 			// TODO Auto-generated method stub
