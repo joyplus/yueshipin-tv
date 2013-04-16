@@ -213,7 +213,7 @@ public class MovieControllerOverlay extends FrameLayout implements
 		if (mCurrentPlayData != null) {
 			if (mCurrentPlayData.prod_time != 0L) {
 				TextView mViewTime = (TextView) rootView
-						.findViewById(R.id.textView1);
+						.findViewById(R.id.textView7);
 				;
 				mViewTime.setText(StatisticsUtils
 						.formatDuration(mCurrentPlayData.prod_time));

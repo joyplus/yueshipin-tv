@@ -140,7 +140,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		}
 	};
 
-	public MoviePlayer(View rootView, Context movieActivity, Uri videoUri,
+	public MoviePlayer(View rootView, Context movieActivity, int Time, Uri videoUri,
 			Bundle savedInstance, boolean canReplay) {
 		this.mContext = movieActivity;
 		mVideoView = (VideoView) rootView.findViewById(R.id.surface_view);
@@ -201,7 +201,11 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 			mVideoView.suspend();
 			mHasPaused = true;
 		} else {
-			final Integer bookmark = mBookmarker.getBookmark(mUri);
+			final Integer bookmark;
+			if(Time == 0 )
+				bookmark = mBookmarker.getBookmark(mUri);
+			else
+				bookmark = Time;
 			if (bookmark != null) {
 				saveTime.setText(StatisticsUtils.formatDuration(bookmark));
 				mVideoView.seekTo(bookmark);
