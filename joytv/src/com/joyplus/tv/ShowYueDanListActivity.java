@@ -182,32 +182,32 @@ public class ShowYueDanListActivity extends Activity implements
 					public void onItemClick(AdapterView<?> parent, View view,
 							int position, long id) {
 						// TODO Auto-generated method stub
-						Intent intent = new Intent(ShowYueDanListActivity.this,
-								ShowXiangqingTv.class);
+						Intent intent = new Intent();
 //						Log.i(TAG, "ID:" + movieList.get(position).getMovieID());
 						String pro_type = movieList.get(position).getProd_type();
-						
+						Log.i(TAG, "pro_type:" + pro_type);
 						if(pro_type != null && !pro_type.equals("")) {
 							
 							if(pro_type.equals("2")) {
-								
+								Log.i(TAG, "pro_type:" + pro_type + "   --->2");
 								intent.putExtra("ID", movieList.get(position).getProd_id());
 								startActivity(intent);
 								startActivity(new Intent(ShowYueDanListActivity.this,
 										ShowXiangqingTv.class));
 							} else if(pro_type.equals("1")) {
-								
+								Log.i(TAG, "pro_type:" + pro_type + "   --->1");
 								intent.putExtra("ID", movieList.get(position).getProd_id());
 								startActivity(intent);
 								startActivity(new Intent(ShowYueDanListActivity.this,
 										ShowXiangqingMovie.class));
-							} else if(pro_type.equals("131")) {
-								
-								intent.putExtra("ID", movieList.get(position).getProd_id());
-								startActivity(intent);
-								startActivity(new Intent(ShowYueDanListActivity.this,
-										ShowXiangqingDongman.class));
-							}
+							} 
+//							else if(pro_type.equals("131")) {
+//								
+//								intent.putExtra("ID", movieList.get(position).getProd_id());
+//								startActivity(intent);
+//								startActivity(new Intent(ShowYueDanListActivity.this,
+//										ShowXiangqingDongman.class));
+//							}
 						}
 					}
 				});
