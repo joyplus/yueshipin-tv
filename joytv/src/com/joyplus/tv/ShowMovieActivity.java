@@ -1,33 +1,21 @@
 package com.joyplus.tv;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.json.JSONObject;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.view.animation.ScaleAnimation;
-import android.view.animation.TranslateAnimation;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
@@ -46,12 +34,7 @@ import com.androidquery.callback.AjaxStatus;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.joyplus.tv.Adapters.MainHotItemAdapter;
-import com.joyplus.tv.Adapters.MovieBangDanData;
-import com.joyplus.tv.Service.Return.ReturnMainHot;
 import com.joyplus.tv.Service.Return.ReturnTVBangDanList;
-import com.joyplus.tv.Service.Return.ReturnTops;
-import com.joyplus.tv.entity.HotItemInfo;
 import com.joyplus.tv.entity.MovieItemData;
 import com.joyplus.tv.entity.ReturnFilterMovieSearch;
 import com.joyplus.tv.ui.MyMovieGridView;
@@ -318,56 +301,26 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 					iv.setVisibility(View.VISIBLE);
 					beforeGvView.setBackgroundColor(getResources().getColor(
 							android.R.color.transparent));
-					ScaleAnimation outScaleAnimation = new ScaleAnimation(OUT_ANIMATION_FROM_X,
-							OUT_ANIMATION_TO_X, OUT_ANIMATION_FROM_Y, OUT_ANIMATION_TO_Y, Animation.RELATIVE_TO_SELF, 0.5f,
-							Animation.RELATIVE_TO_SELF, 0.5f);
-
-					outScaleAnimation.setDuration(80);
-					outScaleAnimation.setFillAfter(false);
+					ScaleAnimation outScaleAnimation = StatisticsUtils.getOutScaleAnimation();
 					beforeGvView.startAnimation(outScaleAnimation);
-					
-					
-					ImageView iv2 = (ImageView) view
-							.findViewById(R.id.item_layout_dianying_reflact);
-					iv2.setVisibility(View.GONE);
-					ScaleAnimation inScaleAnimation = new ScaleAnimation(
-							IN_ANIMATION_FROM_X, IN_ANIMATION_TO_X, IN_ANIMATION_FROM_Y, IN_ANIMATION_TO_Y,
-							Animation.RELATIVE_TO_SELF, 0.5f,
-							Animation.RELATIVE_TO_SELF, 0.5f);
-					inScaleAnimation.setDuration(80);
-					inScaleAnimation.setFillAfter(false);
-
-					view.setPadding(5, 5, 5, 5);
-					view.setBackgroundColor(getResources()
-							.getColor(R.color.text_active));
-					view.startAnimation(inScaleAnimation);
 
 				} else {
 					
-					ScaleAnimation outScaleAnimation = new ScaleAnimation(OUT_ANIMATION_FROM_X,
-							OUT_ANIMATION_TO_X, OUT_ANIMATION_FROM_Y, OUT_ANIMATION_TO_Y, Animation.RELATIVE_TO_SELF, 0.5f,
-							Animation.RELATIVE_TO_SELF, 0.5f);
-
-					outScaleAnimation.setDuration(80);
-					outScaleAnimation.setFillAfter(false);
+					ScaleAnimation outScaleAnimation = StatisticsUtils.getOutScaleAnimation();
 					firstFloatView.startAnimation(outScaleAnimation);
-					
 					firstFloatView.setVisibility(View.GONE);
-					ImageView iv = (ImageView) view
-							.findViewById(R.id.item_layout_dianying_reflact);
-					iv.setVisibility(View.GONE);
-					ScaleAnimation inScaleAnimation = new ScaleAnimation(
-							0.91f, 1.0f, 0.91f, 1.0f,
-							Animation.RELATIVE_TO_SELF, 0.5f,
-							Animation.RELATIVE_TO_SELF, 0.5f);
-					inScaleAnimation.setDuration(80);
-					inScaleAnimation.setFillAfter(false);
-
-					view.setPadding(5, 5, 5, 5);
-					view.setBackgroundColor(getResources()
-							.getColor(R.color.text_active));
-					view.startAnimation(inScaleAnimation);
 				}
+				
+				ImageView iv = (ImageView) view
+						.findViewById(R.id.item_layout_dianying_reflact);
+				iv.setVisibility(View.GONE);
+				ScaleAnimation inScaleAnimation = StatisticsUtils.getInScaleAnimation();
+
+				view.setPadding(GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING, 
+						GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING);
+				view.setBackgroundColor(getResources()
+						.getColor(R.color.text_active));
+				view.startAnimation(inScaleAnimation);
 //				 }
 
 				if (y == 0 || y - popHeight == 0) {// 顶部没有渐影
@@ -425,13 +378,7 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 
 				if (!hasFocus) {// 如果gridview没有获取焦点，把item中高亮取消
 
-					ScaleAnimation outScaleAnimation = new ScaleAnimation(
-							1.0f, 0.8f, 1.0f, 0.8f,
-							Animation.RELATIVE_TO_SELF, 0.5f,
-							Animation.RELATIVE_TO_SELF, 0.5f);
-
-					outScaleAnimation.setDuration(80);
-					outScaleAnimation.setFillAfter(false);
+					ScaleAnimation outScaleAnimation = StatisticsUtils.getOutScaleAnimation();
 					if (beforeGvView != null) {
 						ImageView iv = (ImageView) beforeGvView
 								.findViewById(R.id.item_layout_dianying_reflact);
@@ -445,18 +392,14 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 					}
 				} else {
 
-					ScaleAnimation inScaleAnimation = new ScaleAnimation(
-							0.8f, 1.0f, 0.8f, 1.0f,
-							Animation.RELATIVE_TO_SELF, 0.5f,
-							Animation.RELATIVE_TO_SELF, 0.5f);
-					inScaleAnimation.setDuration(80);
-					inScaleAnimation.setFillAfter(false);
+					ScaleAnimation inScaleAnimation = StatisticsUtils.getInScaleAnimation();
 					if (beforeGvView != null) {
 
 						ImageView iv = (ImageView) beforeGvView
 								.findViewById(R.id.item_layout_dianying_reflact);
 						iv.setVisibility(View.GONE);
-						beforeGvView.setPadding(10, 10, 10, 10);
+						beforeGvView.setPadding(GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING,
+								GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING);
 						beforeGvView.setBackgroundColor(getResources()
 								.getColor(R.color.text_active));
 
@@ -866,12 +809,12 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 		firstFloatView.setLayoutParams(new FrameLayout.LayoutParams(popWidth, popHeight));
 		firstFloatView.setVisibility(View.VISIBLE);
 		
-//		ImageView iv = (ImageView) firstFloatView.findViewById(R.id.iv_item_layout_haibao);
 		TextView movieName = (TextView) firstFloatView.findViewById(R.id.tv_item_layout_name);
 		TextView movieScore = (TextView) firstFloatView.findViewById(R.id.tv_item_layout_score);
 		aq = new AQuery(firstFloatView);
 		aq.id(R.id.iv_item_layout_haibao).image(
 				movieList.get(0).getMoviePicUrl());
+		
 		movieName.setText(movieList.get(0).getMovieName());
 		movieScore.setText(movieList.get(0).getMovieScore());
 		
@@ -882,15 +825,11 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 					.findViewById(R.id.tv_item_layout_other_info);
 			movieDuration.setText(duration);
 		}
-		firstFloatView.setPadding(10, 10, 10, 10);
+		firstFloatView.setPadding(GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING,
+				GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING);
 		firstFloatView.setBackgroundColor(getResources()
 				.getColor(R.color.text_active));
-		ScaleAnimation inScaleAnimation = new ScaleAnimation(
-				0.8f, 1.0f, 0.8f, 1.0f,
-				Animation.RELATIVE_TO_SELF, 0.5f,
-				Animation.RELATIVE_TO_SELF, 0.5f);
-		inScaleAnimation.setDuration(80);
-		inScaleAnimation.setFillAfter(false);
+		ScaleAnimation inScaleAnimation = StatisticsUtils.getInScaleAnimation();
 		
 		firstFloatView.startAnimation(inScaleAnimation);
 	}
@@ -904,7 +843,7 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 			View v;
 
 			int width = parent.getWidth() / 5;
-			int height = (int) (width / 1.0f / 264 * 370);
+			int height = (int) (width / 1.0f / STANDARD_PIC_WIDTH * STANDARD_PIC_HEIGHT);
 
 			if (convertView == null) {
 				View view = getLayoutInflater().inflate(
@@ -924,7 +863,8 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 			TextView movieScore = (TextView) v
 					.findViewById(R.id.tv_item_layout_score);
 			movieScore.setText(movieList.get(position).getMovieScore());
-			v.setPadding(10, 10, 10, 10);
+			v.setPadding(GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING,
+					GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING);
 			
 			String duration = movieList.get(position).getMovieDuration();
 			if(duration != null && !duration.equals("")) {

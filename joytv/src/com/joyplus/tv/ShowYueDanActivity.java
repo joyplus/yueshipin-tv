@@ -41,7 +41,7 @@ import com.joyplus.tv.entity.YueDanInfo2;
 import com.joyplus.tv.ui.MyMovieGridView;
 
 public class ShowYueDanActivity extends Activity implements View.OnKeyListener,
-		MyKeyEventKey, BangDanKey, View.OnClickListener {
+		MyKeyEventKey, BangDanKey, JieMianConstant,View.OnClickListener {
 	
 	public static final int DIANYING_YUEDAN = 1;
 	public static final int DIANSHIJU_YUEDAN = 2;
@@ -112,24 +112,10 @@ public class ShowYueDanActivity extends Activity implements View.OnKeyListener,
 		initView();
 		initState();
 
-		// getServiceData();
-		
-//		movieGv.setAdapter(movieAdapter);// 网格布局添加适配器
 		dinashijuGv.setAdapter(movieAdapter);
 		dinashijuGv.setSelected(true);
 		dinashijuGv.requestFocus();
 		dinashijuGv.setSelection(0);
-		
-		DisplayMetrics dm = new DisplayMetrics();
-
-		getWindowManager().getDefaultDisplay().getMetrics(dm);
-
-//		int width = dm.widthPixels;
-//
-//		int height = dm.heightPixels;
-//		
-//		app.MyToast(aq.getContext(),"Screen-->Width: " + width + " height:" + height);
-
 	}
 
 	private void initView() {
@@ -166,16 +152,12 @@ public class ShowYueDanActivity extends Activity implements View.OnKeyListener,
 		}
 
 		searchEt.setFocusable(false);// 搜索焦点消失
-		// movieGv.setNextFocusLeftId(R.id.bt_quanbufenlei);// 网格向左 全部分类获得焦点
-		// movieGv.setNextFocusDownId(R.id.bt_quanbufenlei);// 网格向左 全部分类获得焦点
-		// movieGv.setNextFocusUpId(R.id.bt_quanbufenlei);// 网格向左 全部分类获得焦点
-		// movieGv.setNextFocusRightId(R.id.bt_quanbufenlei);// 网格向左 全部分类获得焦点
 
-		zuijinguankanBtn.setPadding(0, 0, 5, 0);
-		zhuijushoucangBtn.setPadding(0, 0, 5, 0);
-		lixianshipinBtn.setPadding(0, 0, 5, 0);
-		dianyingyuedanBtn.setPadding(0, 0, 5, 0);
-		dianshijuyuedanBtn.setPadding(0, 0, 5, 0);
+		zuijinguankanBtn.setPadding(0, 0, WENZI_PADDING_RIGHT, 0);
+		zhuijushoucangBtn.setPadding(0, 0, WENZI_PADDING_RIGHT, 0);
+		lixianshipinBtn.setPadding(0, 0, WENZI_PADDING_RIGHT, 0);
+		dianyingyuedanBtn.setPadding(0, 0, WENZI_PADDING_RIGHT, 0);
+		dianshijuyuedanBtn.setPadding(0, 0, WENZI_PADDING_RIGHT, 0);
 
 	}
 
@@ -316,56 +298,27 @@ public class ShowYueDanActivity extends Activity implements View.OnKeyListener,
 					iv.setVisibility(View.VISIBLE);
 					beforeGvView.setBackgroundColor(getResources().getColor(
 							android.R.color.transparent));
-					ScaleAnimation outScaleAnimation = new ScaleAnimation(1.0f,
-							0.8f, 1.0f, 0.8f, Animation.RELATIVE_TO_SELF, 0.5f,
-							Animation.RELATIVE_TO_SELF, 0.5f);
-
-					outScaleAnimation.setDuration(80);
-					outScaleAnimation.setFillAfter(false);
+					ScaleAnimation outScaleAnimation = StatisticsUtils.getOutScaleAnimation();
 					beforeGvView.startAnimation(outScaleAnimation);
-					
-					
-					ImageView iv2 = (ImageView) view
-							.findViewById(R.id.item_layout_dianying_reflact);
-					iv2.setVisibility(View.GONE);
-					ScaleAnimation inScaleAnimation = new ScaleAnimation(
-							0.8f, 1.0f, 0.8f, 1.0f,
-							Animation.RELATIVE_TO_SELF, 0.5f,
-							Animation.RELATIVE_TO_SELF, 0.5f);
-					inScaleAnimation.setDuration(80);
-					inScaleAnimation.setFillAfter(false);
-
-					view.setPadding(10, 10, 10, 10);
-					view.setBackgroundColor(getResources()
-							.getColor(R.color.text_active));
-					view.startAnimation(inScaleAnimation);
 
 				} else {
 					
-					ScaleAnimation outScaleAnimation = new ScaleAnimation(0.8f,
-							1.0f, 0.8f, 1.0f, Animation.RELATIVE_TO_SELF, 0.5f,
-							Animation.RELATIVE_TO_SELF, 0.5f);
-
-					outScaleAnimation.setDuration(80);
-					outScaleAnimation.setFillAfter(false);
+					ScaleAnimation outScaleAnimation = StatisticsUtils.getOutScaleAnimation();
 					firstFloatView.startAnimation(outScaleAnimation);
 					
 					firstFloatView.setVisibility(View.GONE);
-					ImageView iv = (ImageView) view
-							.findViewById(R.id.item_layout_dianying_reflact);
-					iv.setVisibility(View.GONE);
-					ScaleAnimation inScaleAnimation = new ScaleAnimation(
-							0.8f, 1.0f, 0.8f, 1.0f,
-							Animation.RELATIVE_TO_SELF, 0.5f,
-							Animation.RELATIVE_TO_SELF, 0.5f);
-					inScaleAnimation.setDuration(80);
-					inScaleAnimation.setFillAfter(false);
-
-					view.setPadding(10, 10, 10, 10);
-					view.setBackgroundColor(getResources()
-							.getColor(R.color.text_active));
-					view.startAnimation(inScaleAnimation);
 				}
+				
+				ImageView iv2 = (ImageView) view
+						.findViewById(R.id.item_layout_dianying_reflact);
+				iv2.setVisibility(View.GONE);
+				ScaleAnimation inScaleAnimation = StatisticsUtils.getInScaleAnimation();
+
+				view.setPadding(GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING, 
+						GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING);
+				view.setBackgroundColor(getResources()
+						.getColor(R.color.text_active));
+				view.startAnimation(inScaleAnimation);
 //				 }
 
 				if (y == 0 || y - popHeight == 0) {// 顶部没有渐影
@@ -423,13 +376,7 @@ public class ShowYueDanActivity extends Activity implements View.OnKeyListener,
 
 				if (!hasFocus) {// 如果gridview没有获取焦点，把item中高亮取消
 
-					ScaleAnimation outScaleAnimation = new ScaleAnimation(
-							1.0f, 0.8f, 1.0f, 0.8f,
-							Animation.RELATIVE_TO_SELF, 0.5f,
-							Animation.RELATIVE_TO_SELF, 0.5f);
-
-					outScaleAnimation.setDuration(80);
-					outScaleAnimation.setFillAfter(false);
+					ScaleAnimation outScaleAnimation = StatisticsUtils.getOutScaleAnimation();
 					if (beforeGvView != null) {
 						ImageView iv = (ImageView) beforeGvView
 								.findViewById(R.id.item_layout_dianying_reflact);
@@ -443,18 +390,14 @@ public class ShowYueDanActivity extends Activity implements View.OnKeyListener,
 					}
 				} else {
 
-					ScaleAnimation inScaleAnimation = new ScaleAnimation(
-							0.8f, 1.0f, 0.8f, 1.0f,
-							Animation.RELATIVE_TO_SELF, 0.5f,
-							Animation.RELATIVE_TO_SELF, 0.5f);
-					inScaleAnimation.setDuration(80);
-					inScaleAnimation.setFillAfter(false);
+					ScaleAnimation inScaleAnimation = StatisticsUtils.getInScaleAnimation();
 					if (beforeGvView != null) {
 
 						ImageView iv = (ImageView) beforeGvView
 								.findViewById(R.id.item_layout_dianying_reflact);
 						iv.setVisibility(View.GONE);
-						beforeGvView.setPadding(10, 10, 10, 10);
+						beforeGvView.setPadding(GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING, 
+								GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING);
 						beforeGvView.setBackgroundColor(getResources()
 								.getColor(R.color.text_active));
 
@@ -549,7 +492,7 @@ public class ShowYueDanActivity extends Activity implements View.OnKeyListener,
 
 		Button tempButton = (Button) linearLayout.getChildAt(0);
 		linearLayout.setBackgroundResource(R.drawable.menubg);
-		linearLayout.setPadding(0, 0, 5, 0);
+		linearLayout.setPadding(0, 0, WENZI_PADDING_RIGHT, 0);
 		tempButton.setTextColor(getResources().getColor(R.color.text_active));
 		tempButton.setCompoundDrawablesWithIntrinsicBounds(getResources()
 				.getDrawable(R.drawable.side_hot_active), null, null, null);
@@ -558,7 +501,7 @@ public class ShowYueDanActivity extends Activity implements View.OnKeyListener,
 	private void buttonToActiveState(Button button) {
 
 		button.setBackgroundResource(R.drawable.menubg);
-		button.setPadding(0, 0, 5, 0);
+		button.setPadding(0, 0, WENZI_PADDING_RIGHT, 0);
 		button.setTextColor(getResources().getColor(R.color.text_active));
 	}
 
@@ -750,23 +693,19 @@ public class ShowYueDanActivity extends Activity implements View.OnKeyListener,
 		firstFloatView.setLayoutParams(new FrameLayout.LayoutParams(popWidth, popHeight));
 		firstFloatView.setVisibility(View.VISIBLE);
 		
-//		ImageView iv = (ImageView) firstFloatView.findViewById(R.id.iv_item_layout_haibao);
 		TextView movieName = (TextView) firstFloatView.findViewById(R.id.tv_item_layout_name);
 		TextView movieScore = (TextView) firstFloatView.findViewById(R.id.tv_item_layout_other_info);
+		
 		aq = new AQuery(firstFloatView);
 		aq.id(R.id.iv_item_layout_haibao).image(
 				movieList.get(0).pic_url);
 		movieName.setText(movieList.get(0).name);
 		movieScore.setText(movieList.get(0).num + getString(R.string.yingpianshu));
-		firstFloatView.setPadding(10, 10, 10, 10);
+		firstFloatView.setPadding(GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING, 
+				GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING);
 		firstFloatView.setBackgroundColor(getResources()
 				.getColor(R.color.text_active));
-		ScaleAnimation inScaleAnimation = new ScaleAnimation(
-				0.8f, 1.0f, 0.8f, 1.0f,
-				Animation.RELATIVE_TO_SELF, 0.5f,
-				Animation.RELATIVE_TO_SELF, 0.5f);
-		inScaleAnimation.setDuration(80);
-		inScaleAnimation.setFillAfter(false);
+		ScaleAnimation inScaleAnimation = StatisticsUtils.getInScaleAnimation();
 		
 		firstFloatView.startAnimation(inScaleAnimation);
 	}
@@ -780,7 +719,7 @@ public class ShowYueDanActivity extends Activity implements View.OnKeyListener,
 			View v;
 
 			int width = parent.getWidth() / 5;
-			int height = (int) (width / 1.0f / 264 * 370);
+			int height = (int) (width / 1.0f / STANDARD_PIC_WIDTH * STANDARD_PIC_HEIGHT);
 
 			if (convertView == null) {
 				View view = getLayoutInflater().inflate(
@@ -800,7 +739,7 @@ public class ShowYueDanActivity extends Activity implements View.OnKeyListener,
 			TextView movieScore = (TextView) v
 					.findViewById(R.id.tv_item_layout_other_info);
 			movieScore.setText(movieList.get(position).num + getString(R.string.yingpianshu));
-			v.setPadding(10, 10, 10, 10);
+			v.setPadding(GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING);
 
 			if (width != 0) {
 

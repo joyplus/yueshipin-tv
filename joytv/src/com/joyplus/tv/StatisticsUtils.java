@@ -186,5 +186,17 @@ public class StatisticsUtils implements JieMianConstant{
 		
 		return outScaleAnimation;
 	}
+	
+	public static ScaleAnimation getInScaleAnimation() {
+		
+		ScaleAnimation inScaleAnimation = new ScaleAnimation(
+				IN_ANIMATION_FROM_X, IN_ANIMATION_TO_X, IN_ANIMATION_FROM_Y, IN_ANIMATION_TO_Y,
+				Animation.RELATIVE_TO_SELF, 0.5f,
+				Animation.RELATIVE_TO_SELF, 0.5f);
+		inScaleAnimation.setDuration(80);
+		inScaleAnimation.setFillAfter(false);
+		
+		return inScaleAnimation;
+	}
 
 }

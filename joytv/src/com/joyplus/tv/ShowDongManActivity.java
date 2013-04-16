@@ -44,7 +44,7 @@ import com.joyplus.tv.ui.NavigateView;
 import com.joyplus.tv.ui.NavigateView.OnResultListener;
 
 public class ShowDongManActivity extends Activity implements View.OnKeyListener,
-		MyKeyEventKey, BangDanKey, View.OnClickListener {
+		MyKeyEventKey, BangDanKey, JieMianConstant,View.OnClickListener {
 
 	private String TAG = "ShowDongManActivity";
 	private AQuery aq;
@@ -92,22 +92,10 @@ public class ShowDongManActivity extends Activity implements View.OnKeyListener,
 		String url = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
 		TV_DONGMAN, 1 + "", 50 + "");
 		getServiceData(url);// 进入电影界面时，全部分类电影显示获取焦点，并且显示数据
-//		movieGv.setAdapter(movieAdapter);// 网格布局添加适配器
 		dongmanGv.setAdapter(movieAdapter);
 		dongmanGv.setSelected(true);
 		dongmanGv.requestFocus();
 		dongmanGv.setSelection(0);
-		
-		DisplayMetrics dm = new DisplayMetrics();
-
-		getWindowManager().getDefaultDisplay().getMetrics(dm);
-
-//		int width = dm.widthPixels;
-//
-//		int height = dm.heightPixels;
-//		
-//		app.MyToast(aq.getContext(),"Screen-->Width: " + width + " height:" + height);
-
 	}
 
 	private void initView() {
@@ -139,23 +127,20 @@ public class ShowDongManActivity extends Activity implements View.OnKeyListener,
 		activeView = mFenLeiBtn;
 
 		searchEt.setFocusable(false);// 搜索焦点消失
-		// movieGv.setNextFocusLeftId(R.id.bt_quanbufenlei);// 网格向左 全部分类获得焦点
-		// movieGv.setNextFocusDownId(R.id.bt_quanbufenlei);// 网格向左 全部分类获得焦点
-		// movieGv.setNextFocusUpId(R.id.bt_quanbufenlei);// 网格向左 全部分类获得焦点
-		// movieGv.setNextFocusRightId(R.id.bt_quanbufenlei);// 网格向左 全部分类获得焦点
 
 		mFenLeiBtn.setTextColor(getResources().getColor(R.color.text_active));// 全部分类首先设为激活状态
 		mFenLeiBtn.setBackgroundResource(R.drawable.menubg);// 在换成这张图片时，会刷新组件的padding
-		qinziLL.setPadding(0, 0, 5, 0);
-		rexueLL.setPadding(0, 0, 5, 0);
-		hougongLL.setPadding(0, 0, 5, 0);
-		tuiliLL.setPadding(0, 0, 5, 0);
-		jizhanLL.setPadding(0, 0, 5, 0);
-		gaoxiaoLL.setPadding(0, 0, 5, 0);
-		zuijinguankanBtn.setPadding(0, 0, 5, 0);
-		zhuijushoucangBtn.setPadding(0, 0, 5, 0);
-		lixianshipinBtn.setPadding(0, 0, 5, 0);
-		mFenLeiBtn.setPadding(0, 0, 5, 0);
+		
+		qinziLL.setPadding(0, 0, WENZI_PADDING_RIGHT, 0);
+		rexueLL.setPadding(0, 0, WENZI_PADDING_RIGHT, 0);
+		hougongLL.setPadding(0, 0, WENZI_PADDING_RIGHT, 0);
+		tuiliLL.setPadding(0, 0, WENZI_PADDING_RIGHT, 0);
+		jizhanLL.setPadding(0, 0, WENZI_PADDING_RIGHT, 0);
+		gaoxiaoLL.setPadding(0, 0, WENZI_PADDING_RIGHT, 0);
+		zuijinguankanBtn.setPadding(0, 0, WENZI_PADDING_RIGHT, 0);
+		zhuijushoucangBtn.setPadding(0, 0, WENZI_PADDING_RIGHT, 0);
+		lixianshipinBtn.setPadding(0, 0, WENZI_PADDING_RIGHT, 0);
+		mFenLeiBtn.setPadding(0, 0, WENZI_PADDING_RIGHT, 0);
 
 	}
 
@@ -306,56 +291,27 @@ public class ShowDongManActivity extends Activity implements View.OnKeyListener,
 					iv.setVisibility(View.VISIBLE);
 					beforeGvView.setBackgroundColor(getResources().getColor(
 							android.R.color.transparent));
-					ScaleAnimation outScaleAnimation = new ScaleAnimation(1.0f,
-							0.8f, 1.0f, 0.8f, Animation.RELATIVE_TO_SELF, 0.5f,
-							Animation.RELATIVE_TO_SELF, 0.5f);
-
-					outScaleAnimation.setDuration(80);
-					outScaleAnimation.setFillAfter(false);
+					ScaleAnimation outScaleAnimation = StatisticsUtils.getOutScaleAnimation();
 					beforeGvView.startAnimation(outScaleAnimation);
-					
-					
-					ImageView iv2 = (ImageView) view
-							.findViewById(R.id.item_layout_dianying_reflact);
-					iv2.setVisibility(View.GONE);
-					ScaleAnimation inScaleAnimation = new ScaleAnimation(
-							0.8f, 1.0f, 0.8f, 1.0f,
-							Animation.RELATIVE_TO_SELF, 0.5f,
-							Animation.RELATIVE_TO_SELF, 0.5f);
-					inScaleAnimation.setDuration(80);
-					inScaleAnimation.setFillAfter(false);
-
-					view.setPadding(10, 10, 10, 10);
-					view.setBackgroundColor(getResources()
-							.getColor(R.color.text_active));
-					view.startAnimation(inScaleAnimation);
 
 				} else {
 					
-					ScaleAnimation outScaleAnimation = new ScaleAnimation(0.8f,
-							1.0f, 0.8f, 1.0f, Animation.RELATIVE_TO_SELF, 0.5f,
-							Animation.RELATIVE_TO_SELF, 0.5f);
-
-					outScaleAnimation.setDuration(80);
-					outScaleAnimation.setFillAfter(false);
+					ScaleAnimation outScaleAnimation = StatisticsUtils.getOutScaleAnimation();
 					firstFloatView.startAnimation(outScaleAnimation);
 					
 					firstFloatView.setVisibility(View.GONE);
-					ImageView iv = (ImageView) view
-							.findViewById(R.id.item_layout_dianying_reflact);
-					iv.setVisibility(View.GONE);
-					ScaleAnimation inScaleAnimation = new ScaleAnimation(
-							0.8f, 1.0f, 0.8f, 1.0f,
-							Animation.RELATIVE_TO_SELF, 0.5f,
-							Animation.RELATIVE_TO_SELF, 0.5f);
-					inScaleAnimation.setDuration(80);
-					inScaleAnimation.setFillAfter(false);
-
-					view.setPadding(10, 10, 10, 10);
-					view.setBackgroundColor(getResources()
-							.getColor(R.color.text_active));
-					view.startAnimation(inScaleAnimation);
 				}
+				
+				ImageView iv2 = (ImageView) view
+						.findViewById(R.id.item_layout_dianying_reflact);
+				iv2.setVisibility(View.GONE);
+				ScaleAnimation inScaleAnimation = StatisticsUtils.getInScaleAnimation();
+
+				view.setPadding(GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING,
+						GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING);
+				view.setBackgroundColor(getResources()
+						.getColor(R.color.text_active));
+				view.startAnimation(inScaleAnimation);
 //				 }
 
 				if (y == 0 || y - popHeight == 0) {// 顶部没有渐影
@@ -413,13 +369,7 @@ public class ShowDongManActivity extends Activity implements View.OnKeyListener,
 
 				if (!hasFocus) {// 如果gridview没有获取焦点，把item中高亮取消
 
-					ScaleAnimation outScaleAnimation = new ScaleAnimation(
-							1.0f, 0.8f, 1.0f, 0.8f,
-							Animation.RELATIVE_TO_SELF, 0.5f,
-							Animation.RELATIVE_TO_SELF, 0.5f);
-
-					outScaleAnimation.setDuration(80);
-					outScaleAnimation.setFillAfter(false);
+					ScaleAnimation outScaleAnimation = StatisticsUtils.getOutScaleAnimation();
 					if (beforeGvView != null) {
 						ImageView iv = (ImageView) beforeGvView
 								.findViewById(R.id.item_layout_dianying_reflact);
@@ -433,18 +383,14 @@ public class ShowDongManActivity extends Activity implements View.OnKeyListener,
 					}
 				} else {
 
-					ScaleAnimation inScaleAnimation = new ScaleAnimation(
-							0.8f, 1.0f, 0.8f, 1.0f,
-							Animation.RELATIVE_TO_SELF, 0.5f,
-							Animation.RELATIVE_TO_SELF, 0.5f);
-					inScaleAnimation.setDuration(80);
-					inScaleAnimation.setFillAfter(false);
+					ScaleAnimation inScaleAnimation = StatisticsUtils.getInScaleAnimation();
 					if (beforeGvView != null) {
 
 						ImageView iv = (ImageView) beforeGvView
 								.findViewById(R.id.item_layout_dianying_reflact);
 						iv.setVisibility(View.GONE);
-						beforeGvView.setPadding(10, 10, 10, 10);
+						beforeGvView.setPadding(GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING,
+								GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING);
 						beforeGvView.setBackgroundColor(getResources()
 								.getColor(R.color.text_active));
 
@@ -539,7 +485,7 @@ public class ShowDongManActivity extends Activity implements View.OnKeyListener,
 
 		Button tempButton = (Button) linearLayout.getChildAt(0);
 		linearLayout.setBackgroundResource(R.drawable.menubg);
-		linearLayout.setPadding(0, 0, 5, 0);
+		linearLayout.setPadding(0, 0, WENZI_PADDING_RIGHT, 0);
 		tempButton.setTextColor(getResources().getColor(R.color.text_active));
 		tempButton.setCompoundDrawablesWithIntrinsicBounds(getResources()
 				.getDrawable(R.drawable.side_hot_active), null, null, null);
@@ -548,7 +494,7 @@ public class ShowDongManActivity extends Activity implements View.OnKeyListener,
 	private void buttonToActiveState(Button button) {
 
 		button.setBackgroundResource(R.drawable.menubg);
-		button.setPadding(0, 0, 5, 0);
+		button.setPadding(0, 0, WENZI_PADDING_RIGHT, 0);
 		button.setTextColor(getResources().getColor(R.color.text_active));
 	}
 
@@ -753,7 +699,7 @@ public class ShowDongManActivity extends Activity implements View.OnKeyListener,
 
 				MovieItemData movieItemData = new MovieItemData();
 				movieItemData.setMovieName(result.results[i].prod_name);
-				movieItemData.setMoviePicUrl(result.results[i].prod_pic_url);
+				movieItemData.setMoviePicUrl(result.results[i].big_prod_pic_url);
 				movieItemData.setMovieScore(result.results[i].score);
 				movieItemData.setMovieID(result.results[i].prod_id);
 				movieItemData.setMovieDuration(result.results[i].duration);
@@ -812,7 +758,7 @@ public class ShowDongManActivity extends Activity implements View.OnKeyListener,
 
 				MovieItemData movieItemData = new MovieItemData();
 				movieItemData.setMovieName(result.items[i].prod_name);
-				movieItemData.setMoviePicUrl(result.items[i].prod_pic_url);
+				movieItemData.setMoviePicUrl(result.items[i].big_prod_pic_url);
 				movieItemData.setMovieScore(result.items[i].score);
 				movieItemData.setMovieCurEpisode(result.items[i].cur_episode);
 				movieItemData.setMovieMaxEpisode(result.items[i].max_episode);
@@ -846,15 +792,16 @@ public class ShowDongManActivity extends Activity implements View.OnKeyListener,
 		firstFloatView.setLayoutParams(new FrameLayout.LayoutParams(popWidth, popHeight));
 		firstFloatView.setVisibility(View.VISIBLE);
 		
-//		ImageView iv = (ImageView) firstFloatView.findViewById(R.id.iv_item_layout_haibao);
 		TextView movieName = (TextView) firstFloatView.findViewById(R.id.tv_item_layout_name);
 		TextView movieScore = (TextView) firstFloatView.findViewById(R.id.tv_item_layout_score);
+		
 		aq = new AQuery(firstFloatView);
 		aq.id(R.id.iv_item_layout_haibao).image(
 				movieList.get(0).getMoviePicUrl());
 		movieName.setText(movieList.get(0).getMovieName());
 		movieScore.setText(movieList.get(0).getMovieScore());
-		firstFloatView.setPadding(10, 10, 10, 10);
+		firstFloatView.setPadding(GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING, 
+				GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING);
 		
 		String curEpisode = movieList.get(0).getMovieCurEpisode();
 		String maxEpisode = movieList.get(0).getMovieMaxEpisode();
@@ -876,13 +823,7 @@ public class ShowDongManActivity extends Activity implements View.OnKeyListener,
 		
 		firstFloatView.setBackgroundColor(getResources()
 				.getColor(R.color.text_active));
-		ScaleAnimation inScaleAnimation = new ScaleAnimation(
-				0.8f, 1.0f, 0.8f, 1.0f,
-				Animation.RELATIVE_TO_SELF, 0.5f,
-				Animation.RELATIVE_TO_SELF, 0.5f);
-		inScaleAnimation.setDuration(80);
-		inScaleAnimation.setFillAfter(false);
-		
+		ScaleAnimation inScaleAnimation = StatisticsUtils.getInScaleAnimation();
 		firstFloatView.startAnimation(inScaleAnimation);
 	}
 
@@ -895,7 +836,7 @@ public class ShowDongManActivity extends Activity implements View.OnKeyListener,
 			View v;
 
 			int width = parent.getWidth() / 5;
-			int height = (int) (width / 1.0f / 264 * 370);
+			int height = (int) (width / 1.0f / STANDARD_PIC_WIDTH * STANDARD_PIC_HEIGHT);
 
 			if (convertView == null) {
 				View view = getLayoutInflater().inflate(
@@ -934,7 +875,8 @@ public class ShowDongManActivity extends Activity implements View.OnKeyListener,
 							movieList.get(position).getMovieCurEpisode());
 			}
 			
-			v.setPadding(10, 10, 10, 10);
+			v.setPadding(GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING, 
+					GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING);
 
 			if (width != 0) {
 
