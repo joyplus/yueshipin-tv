@@ -91,6 +91,9 @@ public class ShowYueDanListActivity extends Activity implements
 		lixianshipinBtn = (Button) findViewById(R.id.bt_lixianshipin);
 
 		firstFloatView = findViewById(R.id.inclue_movie_show_item);
+		
+		beforeView = zuijinguankanBtn;
+		activeView = zuijinguankanBtn;
 
 		addListener();
 
