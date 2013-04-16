@@ -182,6 +182,11 @@ public class ShowYueDanListActivity extends Activity implements
 					public void onItemClick(AdapterView<?> parent, View view,
 							int position, long id) {
 						// TODO Auto-generated method stub
+						Intent intent = new Intent(ShowYueDanListActivity.this,
+								ShowXiangqingTv.class);
+//						Log.i(TAG, "ID:" + movieList.get(position).getMovieID());
+						intent.putExtra("ID", movieList.get(position).getProd_id());
+						startActivity(intent);
 						startActivity(new Intent(ShowYueDanListActivity.this,
 								ShowXiangqingTv.class));
 					}
