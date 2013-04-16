@@ -1,5 +1,6 @@
 package com.joyplus.tv.ui;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -45,6 +46,7 @@ public class NavigateView extends RelativeLayout implements OnItemSelectedListen
 	private int selected_gallery3_last = 0;
 	private OnResultListener resultListener;
 	private int selectedIndex = 1;
+	private Context mContext;
 	private Handler handler = new Handler();
 	
 	private BroadcastReceiver recvier = new BroadcastReceiver(){
@@ -173,6 +175,7 @@ public class NavigateView extends RelativeLayout implements OnItemSelectedListen
 	
 	public NavigateView(Context context) {
 		super(context);
+		this.mContext = context;
 		// TODO Auto-generated constructor stub
 	}
 	
@@ -242,11 +245,7 @@ public class NavigateView extends RelativeLayout implements OnItemSelectedListen
 		rootView.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT,LayoutParams.FILL_PARENT));
 		addView(rootView);
 		
-		IntentFilter filter = new IntentFilter("KEY_EVENT_KEYCODE_DPAD_CENTER");
-		filter.addAction("KEY_EVENT_KEYCODE_BACK");
-		filter.addAction("KEY_EVENT_KEYCODE_DPAD_UP");
-		filter.addAction("KEY_EVENT_KEYCODE_DPAD_DOWN");
-		getContext().registerReceiver(recvier, filter);
+		
 		gallery1.requestFocus();
 		selectedIndex = 1;
 //		highlightLayout.layout(lineLayout1.getLeft(), lineLayout1.getTop(), lineLayout1.getRight(),lineLayout1.getBottom());
@@ -421,6 +420,12 @@ public class NavigateView extends RelativeLayout implements OnItemSelectedListen
 	protected void onAttachedToWindow() {
 		// TODO Auto-generated method stub
 		super.onAttachedToWindow();
+		Log.d(TAG, "onAttachedToWindow ------ registerReceiver");
+		IntentFilter filter = new IntentFilter("KEY_EVENT_KEYCODE_DPAD_CENTER");
+		filter.addAction("KEY_EVENT_KEYCODE_BACK");
+		filter.addAction("KEY_EVENT_KEYCODE_DPAD_UP");
+		filter.addAction("KEY_EVENT_KEYCODE_DPAD_DOWN");
+		mContext.registerReceiver(recvier, filter);
 		handler.postDelayed(new Runnable() {
 			
 			@Override
@@ -457,6 +462,15 @@ public class NavigateView extends RelativeLayout implements OnItemSelectedListen
 //			}
 //		}, 1000);
 	}
+	
+	@Override
+	protected void onDetachedFromWindow() {
+		// TODO Auto-generated method stub
+		Log.d(TAG, "onDetachedFromWindow ----  unregisterReceiver");
+		mContext.unregisterReceiver(recvier);
+		super.onDetachedFromWindow();
+	}
+	
 	
 	public interface OnResultListener{
 		abstract void onResult(View v, boolean isBack, String[] choice);

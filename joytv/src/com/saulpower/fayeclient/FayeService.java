@@ -5,10 +5,15 @@ import java.net.URI;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.joyplus.tv.App;
 import com.joyplus.tv.Constant;
 import com.joyplus.tv.ShowMovieActivity;
 import com.joyplus.tv.ShowXiangqingMovie;
 import com.joyplus.tv.StatisticsUtils;
+import com.joyplus.tv.Adapters.CurrentPlayData;
+import com.joyplus.tv.Service.Return.ReturnProgramReviews;
+import com.joyplus.tv.Service.Return.ReturnProgramView;
+import com.joyplus.tv.Video.VideoPlayerActivity;
 import com.saulpower.fayeclient.FayeClient.FayeListener;
 
 import android.R.integer;
@@ -39,6 +44,7 @@ public class FayeService extends Service implements FayeListener{
 //	private FayeClient phoneClient;
 	private BroadcastReceiver receiver;
 	private Handler handler = new Handler();
+	private App app;
 
 	@Override
 	public void onCreate() {
@@ -48,6 +54,7 @@ public class FayeService extends Service implements FayeListener{
 		String macAdd = StatisticsUtils.getMacAdd(this);
 		channel = Constant.FAYECHANNEL_TV_BASE + StatisticsUtils.MD5(macAdd);
 		preferences = getSharedPreferences("userIdDate",0);
+		app = (App) getApplication();
 		IntentFilter filter = new IntentFilter(SENDACTION);
 		receiver = new BroadcastReceiver(){
 			@Override
@@ -171,6 +178,7 @@ public class FayeService extends Service implements FayeListener{
 					//notify to UI 
 					
 					JSONObject bandSuccessObj = new JSONObject();
+					bandSuccessObj.put("tv_channel", channel);
 					bandSuccessObj.put("push_type","32");
 					bandSuccessObj.put("user_id", phoneID);
 					bandSuccessObj.put("result", "success");
@@ -178,6 +186,7 @@ public class FayeService extends Service implements FayeListener{
 				}else{
 					JSONObject bandSuccessObj = new JSONObject();
 					bandSuccessObj.put("push_type","32");
+					bandSuccessObj.put("tv_channel", channel);
 					bandSuccessObj.put("user_id", preferences.getString("phoneID", "-1"));
 					bandSuccessObj.put("result", "fail");
 					myClient.sendMessage(bandSuccessObj);
@@ -213,10 +222,18 @@ public class FayeService extends Service implements FayeListener{
 				break;
 			case 41://投影视频
 				if(preferences.getBoolean("isBand", false)){
-					Intent intent = new Intent(this,ShowXiangqingMovie.class);
+					CurrentPlayData playDate = new CurrentPlayData();
+					Intent intent = new Intent(this,VideoPlayerActivity.class);
 //					intent.putExtra("ID", json.getString("prod_id"));
 					intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-					intent.putExtra("ID", 1010460+"");
+					playDate.prod_id = json.getString("prod_id");
+					playDate.prod_type = Integer.valueOf(json.getString("prod_type"));
+					playDate.prod_name = json.getString("prod_name");
+					playDate.prod_url = json.getString("prod_url");
+					playDate.prod_src = json.getString("prod_src");
+					playDate.prod_time = Math.round(Float.valueOf(json.getString("prod_time"))*1000);
+					playDate.prod_qua = Integer.valueOf(json.getString("prod_qua"));
+					app.setCurrentPlayData(playDate);
 					startActivity(intent);
 				}
 			default:

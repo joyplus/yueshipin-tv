@@ -1,6 +1,6 @@
 package com.joyplus.tv.entity;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class YueDanInfo {
 	
@@ -11,5 +11,5 @@ public class YueDanInfo {
 	public String pic_url;
 	public String num;
 	public String content;
-	public List<ShiPinInfo> shiPinList;
+	public ArrayList<ShiPinInfoParcelable> shiPinList;
 }

@@ -61,6 +61,7 @@ import com.joyplus.tv.Service.Return.ReturnUserPlayHistories;
 import com.joyplus.tv.Video.VideoPlayerActivity;
 import com.joyplus.tv.entity.HotItemInfo;
 import com.joyplus.tv.entity.ShiPinInfo;
+import com.joyplus.tv.entity.ShiPinInfoParcelable;
 import com.joyplus.tv.entity.YueDanInfo;
 import com.joyplus.tv.ui.CustomGallery;
 import com.joyplus.tv.ui.MyScrollLayout;
@@ -719,11 +720,12 @@ public boolean checkLogin() {
 			if(Integer.valueOf(yueDan.prod_type) == 0){
 				yuedanIntent.setClass(Main.this, ShowYueDanActivity.class);
 				if("-1".equals(yueDan.id)){
-					yuedanIntent.putExtra("yuedan_type", "1");
+					yuedanIntent.putExtra("yuedan_type", "1"); 
 				}else if("-2".equals(yueDan.id)){
 					yuedanIntent.putExtra("yuedan_type", "2");
 				}
 			}else{
+				yuedanIntent.putParcelableArrayListExtra("yuedan_list_type", yuedan_list.get(index).shiPinList);
 				yuedanIntent.setClass(Main.this, ShowYueDanListActivity.class);
 			}
 			startActivity(yuedanIntent);
@@ -750,7 +752,7 @@ public boolean checkLogin() {
 		case 4:
 			switch (index) {
 			case 0:
-//				startActivity(new Intent(this,ShowMovieActivity.class));
+				startActivity(new Intent(this,ShowShoucangHistoryActivity.class));
 				break;
 			case 1:
 				startActivity(new Intent(this,HistoryActivity.class));
@@ -827,7 +829,7 @@ public boolean checkLogin() {
 			ReturnTops result  = mapper.readValue(json.toString(), ReturnTops.class);
 			for(int i=0; i<result.tops.length; i++){
 				YueDanInfo yuedanInfo = new YueDanInfo();
-				List<ShiPinInfo> shiPinInfos = new ArrayList<ShiPinInfo>();
+				ArrayList<ShiPinInfoParcelable> shiPinInfos = new ArrayList<ShiPinInfoParcelable>();
 				yuedanInfo.name = result.tops[i].name;
 				yuedanInfo.id = result.tops[i].id;
 				yuedanInfo.prod_type = result.tops[i].prod_type;
@@ -835,7 +837,7 @@ public boolean checkLogin() {
 				yuedanInfo.num = result.tops[i].num;
 				yuedanInfo.content = result.tops[i].content;
 				for (int j = 0; j < result.tops[i].items.length; j++) {
-					ShiPinInfo shipinInfo = new ShiPinInfo();
+					ShiPinInfoParcelable shipinInfo = new ShiPinInfoParcelable();
 					shipinInfo.setArea(result.tops[i].items[j].area);
 					shipinInfo.setBig_prod_pic_url(result.tops[i].items[j].big_prod_pic_url);
 					shipinInfo.setCur_episode(result.tops[i].items[j].cur_episode);
