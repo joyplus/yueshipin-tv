@@ -40,6 +40,9 @@ import com.joyplus.tv.entity.ReturnFilterMovieSearch;
 import com.joyplus.tv.ui.MyMovieGridView;
 import com.joyplus.tv.ui.NavigateView;
 import com.joyplus.tv.ui.NavigateView.OnResultListener;
+import com.joyplus.tv.utils.BangDanKey;
+import com.joyplus.tv.utils.JieMianConstant;
+import com.joyplus.tv.utils.MyKeyEventKey;
 
 public class ShowZongYiActivity extends Activity implements View.OnKeyListener,
 		MyKeyEventKey,JieMianConstant, BangDanKey, View.OnClickListener {
@@ -736,14 +739,12 @@ public class ShowZongYiActivity extends Activity implements View.OnKeyListener,
 		
 		TextView movieName = (TextView) firstFloatView.findViewById(R.id.tv_item_layout_name);
 		TextView otherInfo = (TextView) firstFloatView.findViewById(R.id.tv_item_active_layout_other_info);
-		TextView score = (TextView) firstFloatView.findViewById(R.id.tv_item_acitve_layout_score);
 		aq = new AQuery(firstFloatView);
 		aq.id(R.id.iv_item_layout_haibao).image(
 				movieList.get(0).getMoviePicUrl());
 		movieName.setText(movieList.get(0).getMovieName());
 		otherInfo.setText(getString(R.string.zongyi_gengxinzhi) + 
 				movieList.get(0).getMovieCurEpisode());
-		score.setVisibility(View.INVISIBLE);
 		firstFloatView.setPadding(GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING, 
 				GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING);
 		firstFloatView.setBackgroundColor(getResources()
@@ -787,7 +788,6 @@ public class ShowZongYiActivity extends Activity implements View.OnKeyListener,
 			viewItemHodler.nameTv.setText(movieList.get(position).getMovieName());
 			viewItemHodler.otherInfo.setText(getString(R.string.zongyi_gengxinzhi) + 
 					movieList.get(0).getMovieCurEpisode());
-			viewItemHodler.scoreTv.setVisibility(View.INVISIBLE);
 			if (width != 0) {
 
 				popWidth = width;

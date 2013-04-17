@@ -31,6 +31,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joyplus.tv.entity.MovieItemData;
 import com.joyplus.tv.entity.ReturnFilterMovieSearch;
 import com.joyplus.tv.ui.MyMovieGridView;
+import com.joyplus.tv.utils.BangDanKey;
+import com.joyplus.tv.utils.JieMianConstant;
+import com.joyplus.tv.utils.MyKeyEventKey;
 
 public class ShowSearchActivity extends Activity implements
 		View.OnKeyListener, MyKeyEventKey, JieMianConstant,BangDanKey, View.OnClickListener {
@@ -427,7 +430,6 @@ public class ShowSearchActivity extends Activity implements
 		aq.id(R.id.iv_item_layout_haibao).image(
 				movieList.get(0).getMoviePicUrl());
 		movieName.setText(movieList.get(0).getMovieName());
-		movieScore.setText(movieList.get(0).getMovieScore());
 		
 		String proType = movieList.get(0).getMovieProType();
 		
@@ -435,6 +437,7 @@ public class ShowSearchActivity extends Activity implements
 			
 			if(proType.equals("1")) {
 				
+				movieScore.setText(movieList.get(0).getMovieScore());
 				String duration = movieList.get(0).getMovieDuration();
 				if(duration != null && !duration.equals("")) {
 					
@@ -443,7 +446,7 @@ public class ShowSearchActivity extends Activity implements
 					movieDuration.setText(duration);
 				}
 			} else if(proType.equals("2")){
-				
+				movieScore.setText(movieList.get(0).getMovieScore());
 				String curEpisode = movieList.get(0).getMovieCurEpisode();
 				String maxEpisode = movieList.get(0).getMovieMaxEpisode();
 				
@@ -517,7 +520,6 @@ public class ShowSearchActivity extends Activity implements
 			}
 			
 			viewItemHodler.nameTv.setText(movieList.get(0).getMovieName());
-			viewItemHodler.scoreTv.setText(movieList.get(0).getMovieScore());
 			
 			String proType = movieList.get(0).getMovieProType();
 			
@@ -525,6 +527,7 @@ public class ShowSearchActivity extends Activity implements
 				
 				if(proType.equals("1")) {
 					
+					viewItemHodler.scoreTv.setText(movieList.get(0).getMovieScore());
 					String duration = movieList.get(0).getMovieDuration();
 					if(duration != null && !duration.equals("")) {
 						
@@ -532,6 +535,7 @@ public class ShowSearchActivity extends Activity implements
 					}
 				} else if(proType.equals("2")){
 					
+					viewItemHodler.scoreTv.setText(movieList.get(0).getMovieScore());
 					String curEpisode = movieList.get(0).getMovieCurEpisode();
 					String maxEpisode = movieList.get(0).getMovieMaxEpisode();
 					

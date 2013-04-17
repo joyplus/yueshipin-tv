@@ -18,6 +18,7 @@ import android.view.animation.ScaleAnimation;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
+import com.joyplus.tv.utils.JieMianConstant;
 
 public class StatisticsUtils implements JieMianConstant{
 

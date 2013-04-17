@@ -34,6 +34,9 @@ import com.joyplus.tv.Service.Return.ReturnTops;
 import com.joyplus.tv.entity.ShiPinInfoParcelable;
 import com.joyplus.tv.entity.YueDanInfo2;
 import com.joyplus.tv.ui.MyMovieGridView;
+import com.joyplus.tv.utils.BangDanKey;
+import com.joyplus.tv.utils.JieMianConstant;
+import com.joyplus.tv.utils.MyKeyEventKey;
 
 public class ShowYueDanActivity extends Activity implements View.OnKeyListener,
 		MyKeyEventKey, BangDanKey, JieMianConstant,View.OnClickListener {
@@ -741,7 +744,6 @@ public class ShowYueDanActivity extends Activity implements View.OnKeyListener,
 
 			viewItemHodler.nameTv.setText(movieList.get(position).name);
 			viewItemHodler.otherInfo.setText(movieList.get(position).num + getString(R.string.yingpianshu));
-			viewItemHodler.scoreTv.setVisibility(View.INVISIBLE);
 
 			if (width != 0) {
 
