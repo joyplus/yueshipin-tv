@@ -702,6 +702,7 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 	
 	private void getFilterServiceData(String url) {
 		
+		firstFloatView.setVisibility(View.INVISIBLE);
 		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
 		cb.url(url).type(JSONObject.class).weakHandler(this, "initFilterData");
 
@@ -730,7 +731,13 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 
 				MovieItemData movieItemData = new MovieItemData();
 				movieItemData.setMovieName(result.results[i].prod_name);
-				movieItemData.setMoviePicUrl(result.results[i].big_prod_pic_url);
+				String bigPicUrl = result.results[i].big_prod_pic_url;
+				if(bigPicUrl == null || bigPicUrl.equals("")) {
+					
+					bigPicUrl = result.results[i].prod_pic_url;
+				}
+				movieItemData.setMoviePicUrl(bigPicUrl);
+//				movieItemData.setMoviePicUrl(result.results[i].big_prod_pic_url);
 				movieItemData.setMovieScore(result.results[i].score);
 				movieItemData.setMovieID(result.results[i].prod_id);
 				movieItemData.setMovieDuration(result.results[i].duration);
@@ -759,6 +766,7 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 
 	private void getServiceData(String url) {
 
+		firstFloatView.setVisibility(View.INVISIBLE);
 		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
 		cb.url(url).type(JSONObject.class).weakHandler(this, "initData");
 
@@ -787,7 +795,13 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 
 				MovieItemData movieItemData = new MovieItemData();
 				movieItemData.setMovieName(result.items[i].prod_name);
-				movieItemData.setMoviePicUrl(result.items[i].big_prod_pic_url);
+				String bigPicUrl = result.items[i].big_prod_pic_url;
+				if(bigPicUrl == null || bigPicUrl.equals("")) {
+					
+					bigPicUrl = result.items[i].prod_pic_url;
+				}
+				movieItemData.setMoviePicUrl(bigPicUrl);
+//				movieItemData.setMoviePicUrl(result.items[i].big_prod_pic_url);
 				movieItemData.setMovieScore(result.items[i].score);
 				movieItemData.setMovieID(result.items[i].prod_id);
 				movieItemData.setMovieDuration(result.items[i].duration);
@@ -824,8 +838,10 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 		TextView movieName = (TextView) firstFloatView.findViewById(R.id.tv_item_layout_name);
 		TextView movieScore = (TextView) firstFloatView.findViewById(R.id.tv_item_layout_score);
 		aq = new AQuery(firstFloatView);
-		aq.id(R.id.iv_item_layout_haibao).image(
-				movieList.get(0).getMoviePicUrl());
+//		aq.id(R.id.iv_item_layout_haibao).image(
+//				movieList.get(0).getMoviePicUrl());
+		aq.id(R.id.iv_item_layout_haibao).image(movieList.get(0).getMoviePicUrl(), 
+				true, true,0, R.drawable.post_active);
 		
 		movieName.setText(movieList.get(0).getMovieName());
 		movieScore.setText(movieList.get(0).getMovieScore());
@@ -895,8 +911,10 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 			}
 
 			aq = new AQuery(convertView);
-			aq.id(R.id.iv_item_layout_haibao).image(
-					movieList.get(position).getMoviePicUrl());
+//			aq.id(R.id.iv_item_layout_haibao).image(
+//					movieList.get(position).getMoviePicUrl());
+			aq.id(R.id.iv_item_layout_haibao).image(movieList.get(position).getMoviePicUrl(), 
+					true, true,0, R.drawable.post_normal);
 			return convertView;
 		}
 
