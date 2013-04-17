@@ -538,8 +538,8 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 		initButton();
 		aq.id(R.id.image).image(date.show.poster, false, true,0, R.drawable.post_normal);
 		aq.id(R.id.text_name).text(date.show.name);
-		aq.id(R.id.text_directors).text(date.show.directors);
-		aq.id(R.id.text_starts).text(date.show.stars);
+		aq.id(R.id.text_directors).text(date.show.stars);
+		aq.id(R.id.text_starts).text(date.show.publish_date);
 		aq.id(R.id.text_introduce).text(date.show.summary);
 		aq.id(R.id.bt_xiangqingding).text(date.show.support_num);
 		aq.id(R.id.bt_xiangqing_xiai).text(date.show.favority_num);
