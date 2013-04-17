@@ -2,6 +2,8 @@ package com.joyplus.tv;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,10 +52,12 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.zxing.WriterException;
+import com.joyplus.tv.Adapters.CurrentPlayData;
 import com.joyplus.tv.Adapters.MainHotItemAdapter;
 import com.joyplus.tv.Adapters.MainLibAdapter;
 import com.joyplus.tv.Adapters.MainYueDanItemAdapter;
 import com.joyplus.tv.Service.Return.ReturnMainHot;
+import com.joyplus.tv.Service.Return.ReturnMainHot.URLS;
 import com.joyplus.tv.Service.Return.ReturnTops;
 import com.joyplus.tv.Service.Return.ReturnUserPlayHistories;
 import com.joyplus.tv.Video.VideoPlayerActivity;
@@ -755,18 +759,113 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 		Toast.makeText(this, "item click index = " + titleGroup.getSelectedTitleIndex()+"[" + index + "]", 100).show();
 		switch (titleGroup.getSelectedTitleIndex()) {
 		case 1:
-//			CurrentPlayData playDate = new CurrentPlayData();
-//			playDate.
-			String str0 = "1004602";
-			String str1 = "贤妻";
-//			String str2 = "http://115.238.173.139:80/play/7B5E398971A46DD67535DBC0A7CD770D27036204.mp4";
-			String str2 = "http://221.130.179.68/29/51/83/kingsoft/movie/657D7A4D3E64B8532E41CADC9D9CAEE5-huobiteren1.mp4?crypt=74086bf4aa7f2e300&b=800&gn=132&nc=1&bf=30&p2p=1&video_type=mp4&check=0&tm=1364180400&key=9d5cb867ee5942a6739730a0241725fd&opck=1&lgn=letv&proxy=3702889383&cipi=2026698610&tsnp=1&tag=ios&tag=kingsoft&sign=coopdown&realext=.mp4&test=m3u8";
-
-			Intent intent = new Intent(this, VideoPlayerActivity.class);
-			intent.putExtra("prod_url", str2);
-			intent.putExtra("title", str1);
-
-			startActivity(intent);
+			HotItemInfo info = hot_list.get(index);
+			Intent intent;
+			if(info.type==0){
+				//历史
+				CurrentPlayData playDate = new CurrentPlayData();
+				intent = new Intent(this,VideoPlayerActivity.class);
+				playDate.prod_id = info.prod_id;
+				playDate.prod_type = Integer.valueOf(info.prod_type);
+				playDate.prod_name = info.prod_name;
+				playDate.prod_url = info.video_url;
+//				playDate.prod_src = "";
+				if(!"".equals(info.playback_time)){
+					playDate.prod_time = Long.valueOf(info.playback_time);
+				}
+//				playDate.prod_qua = Integer.valueOf(info.definition);
+				app.setCurrentPlayData(playDate);
+				startActivity(intent);
+			}else if(info.type == 1){
+				int prod_type = Integer.valueOf(info.prod_type);
+				switch (prod_type) {
+				case 1:
+					ArrayList<PLAY_URLS_INDEX> list = new ArrayList<PLAY_URLS_INDEX>();
+					for(int i=0; i<info.play_urls.length; i++){
+						PLAY_URLS_INDEX indexObj = new PLAY_URLS_INDEX();
+						indexObj.source = info.play_urls[i].source;
+						indexObj.urls = info.play_urls[i].urls;
+						if (indexObj.source.equalsIgnoreCase("letv")) {
+							indexObj.index = 0;
+						} else if (indexObj.source.equalsIgnoreCase("fengxing")) {
+							indexObj.index = 1;
+						} else if (indexObj.source.equalsIgnoreCase("qiyi")) {
+							indexObj.index = 2;
+						} else if (indexObj.source.equalsIgnoreCase("youku")) {
+							indexObj.index = 3;
+						} else if (indexObj.source.equalsIgnoreCase("sinahd")) {
+							indexObj.index = 4;
+						} else if (indexObj.source.equalsIgnoreCase("sohu")) {
+							indexObj.index = 5;
+						} else if (indexObj.source.equalsIgnoreCase("56")) {
+							indexObj.index = 6;
+						} else if (indexObj.source.equalsIgnoreCase("qq")) {
+							indexObj.index = 7;
+						} else if (indexObj.source.equalsIgnoreCase("pptv")) {
+							indexObj.index = 8;
+						} else if (indexObj.source.equalsIgnoreCase("m1905")) {
+							indexObj.index = 9;
+						}
+						list.add(indexObj);
+					}
+					if(list.size()<1){
+						Collections.sort(list, new EComparatorIndex());
+					}
+					PLAY_URLS_INDEX index1 = list.get(0);
+					URLS[] urls = index1.urls;
+					List<URLS_INDEX> list1 = new ArrayList<Main.URLS_INDEX>();
+					String videoUrl;
+					for(int i=0; i<urls.length; i++){
+						URLS_INDEX url_index = new URLS_INDEX();
+						url_index.type = urls[i].type.trim();
+						url_index.url = urls[i].url.trim();
+						if(url_index.type.equalsIgnoreCase("mp4")){
+							url_index.index = 1;
+						}else if(urls[i].type.trim().equalsIgnoreCase("hd2")){
+							url_index.index = 2;
+						}else if(urls[i].type.trim().equalsIgnoreCase("flv")){
+							url_index.index = 3;
+						}else if(urls[i].type.trim().equalsIgnoreCase("3GP")){
+							url_index.index = 4;
+						}
+						list1.add(url_index);
+					}
+					if(list.size()<1){
+						Collections.sort(list1, new EComparatorIndex1());
+					}
+					videoUrl = list1.get(0).url;
+					Log.d(TAG, "url---->" + videoUrl);
+					Log.d(TAG, "name---->" + info.prod_name);
+					CurrentPlayData playDate = new CurrentPlayData();
+					intent = new Intent(this,VideoPlayerActivity.class);
+					playDate.prod_id = info.prod_id;
+					playDate.prod_type = Integer.valueOf(info.prod_type);
+					playDate.prod_name = info.prod_name;
+					playDate.prod_url = videoUrl;
+//					playDate.prod_src = "";
+					if(!"".equals(info.playback_time)){
+						playDate.prod_time = Long.valueOf(info.playback_time);
+					}
+//					playDate.prod_qua = Integer.valueOf(info.definition);
+					app.setCurrentPlayData(playDate);
+					startActivity(intent);
+					break;
+				case 2:
+					intent = new Intent(this,ShowXiangqingTv.class);
+					intent.putExtra("ID", info.prod_id);
+					startActivity(intent);
+					break;
+				case 3:
+//					intent = new Intent(this,ShowXiangqingDongman.class);
+//					intent.putExtra("ID", info.prod_id);
+					break;
+				case 131:
+					intent = new Intent(this,ShowXiangqingDongman.class);
+					intent.putExtra("ID", info.prod_id);
+					startActivity(intent);
+					break;
+				}
+			}
 			break;
 		case 2:
 			Intent yuedanIntent = new Intent();
@@ -1127,6 +1226,7 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 				item.definition = result.items[i].definition;
 				item.prod_summary = result.items[i].prod_summary;
 				item.duration = result.items[i].duration;
+				item.play_urls = result.items[i].play_urls;
 				item.playback_time = "";
 				hot_list.add(item);
 				View hotView = LayoutInflater.from(Main.this).inflate(R.layout.layout_hot, null);
@@ -1313,6 +1413,50 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 		Intent service = new Intent(this,FayeService.class);  
         startService(service);
 		return b;
+	}
+	
+	
+	// 将片源排序
+	class EComparatorIndex implements Comparator {
+
+		@Override
+		public int compare(Object first, Object second) {
+			// TODO Auto-generated method stub
+			int first_name = ((PLAY_URLS_INDEX) first).index;
+			int second_name = ((PLAY_URLS_INDEX) second).index;
+			if (first_name - second_name < 0) {
+				return -1;
+			} else {
+				return 1;
+			}
+		}
+	}
+	
+	class EComparatorIndex1 implements Comparator {
+
+		@Override
+		public int compare(Object first, Object second) {
+			// TODO Auto-generated method stub
+			int first_name = ((URLS_INDEX) first).index;
+			int second_name = ((URLS_INDEX) second).index;
+			if (first_name - second_name < 0) {
+				return -1;
+			} else {
+				return 1;
+			}
+		}
+	}
+	
+	class PLAY_URLS_INDEX{
+		int index;
+		public String source;
+		public URLS[] urls;
+	}
+	
+	class URLS_INDEX{
+		int index;
+		public String type;
+		public String url;
 	}
 
 }

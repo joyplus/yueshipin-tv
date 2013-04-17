@@ -1,5 +1,8 @@
 package com.joyplus.tv.entity;
 
+import com.joyplus.tv.Service.Return.ReturnMainHot.PLAY_URLS;
+import com.joyplus.tv.Service.Return.ReturnMainHot.URLS;
+
 public class HotItemInfo{
 	
 		public int type; //0 历史 ； 1正常
@@ -28,4 +31,5 @@ public class HotItemInfo{
 		public String prod_subname;
 		public String play_type;
 		
+		public PLAY_URLS[] play_urls;
 	}

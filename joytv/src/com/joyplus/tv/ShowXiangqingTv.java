@@ -491,7 +491,9 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 				Log.e(TAG, "tv date error---->date == null");
 				return;
 			}
-			if("".equals(date.tv.cur_episode)||"0".equals(date.tv.cur_episode)
+			if("".equals(date.tv.max_episode)||"0".equals(date.tv.max_episode)){
+				num = 0;
+			}else if("".equals(date.tv.cur_episode)||"0".equals(date.tv.cur_episode)
 					||date.tv.cur_episode.equals(date.tv.max_episode)){
 				isOver = true;
 				num = Integer.valueOf(date.tv.max_episode);

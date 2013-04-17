@@ -50,9 +50,24 @@ public class ReturnMainHot {
 		public String prod_summary;
 		public String duration;
 		
+		public PLAY_URLS[] play_urls;
 		
 		public String cur_item_url;
 		public String max_episode;
 		public String cur_item_name;
+		
+		
+	}
+	
+	public static class PLAY_URLS{
+		public String source;
+		public URLS[] urls;
+	}
+	
+	
+	public static class URLS{
+		public String type;
+		public String url;
+		public String file;
 	}
 }
