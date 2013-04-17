@@ -96,6 +96,9 @@ public class ShowYueDanActivity extends Activity implements View.OnKeyListener,
 			}
 		}
 		
+		initView();
+		initState();
+		
 		if(defalutYuedan == DIANYING_YUEDAN) {
 			
 			String url = StatisticsUtils.getTopURL(TOP_URL, 1+"", 50 + "", 1+ "");
@@ -106,9 +109,6 @@ public class ShowYueDanActivity extends Activity implements View.OnKeyListener,
 			String url = StatisticsUtils.getTopURL(TOP_URL, 1+"", 50 + "", 2+ "");
 			getServiceData(url);// 进入电影界面时，全部分类电影显示获取焦点，并且显示数据
 		}
-		
-		initView();
-		initState();
 
 		dinashijuGv.setAdapter(movieAdapter);
 		dinashijuGv.setSelected(true);
@@ -237,7 +237,11 @@ public class ShowYueDanActivity extends Activity implements View.OnKeyListener,
 				// TODO Auto-generated method stub
 				Intent intent = new Intent(ShowYueDanActivity.this,
 						ShowYueDanListActivity.class);
-				intent.putParcelableArrayListExtra("yuedan_list_type",movieList.get(position).shiPinList);
+//				intent.putParcelableArrayListExtra("yuedan_list_type",movieList.get(position).shiPinList);
+				Bundle bundle = new Bundle();
+				bundle.putString("ID", movieList.get(position).id);
+				bundle.putString("NAME", movieList.get(position).name);
+				intent.putExtras(bundle);
 				startActivity(intent);
 			}
 		});
@@ -634,7 +638,7 @@ public class ShowYueDanActivity extends Activity implements View.OnKeyListener,
 			}
 			for(int i=0; i<result.tops.length; i++){
 				YueDanInfo2 yuedanInfo = new YueDanInfo2();
-				ArrayList<ShiPinInfoParcelable> tempList = new ArrayList<ShiPinInfoParcelable>();
+//				ArrayList<ShiPinInfoParcelable> tempList = new ArrayList<ShiPinInfoParcelable>();
 				yuedanInfo.name = result.tops[i].name;
 				yuedanInfo.id = result.tops[i].id;
 				yuedanInfo.prod_type = result.tops[i].prod_type;
@@ -646,29 +650,29 @@ public class ShowYueDanActivity extends Activity implements View.OnKeyListener,
 				yuedanInfo.pic_url = bigPicUrl;
 				yuedanInfo.num = result.tops[i].num;
 				yuedanInfo.content = result.tops[i].content;
-				for (int j = 0; j < result.tops[i].items.length; j++) {
-					ShiPinInfoParcelable shipinInfo = new ShiPinInfoParcelable();
-					shipinInfo.setArea(result.tops[i].items[j].area);
-					shipinInfo.setBig_prod_pic_url(result.tops[i].items[j].big_prod_pic_url);
-					shipinInfo.setCur_episode(result.tops[i].items[j].cur_episode);
-//					shipinInfo.setCur_item_name(result.tops[i].items[j].cur_i);
-					shipinInfo.setDefinition(result.tops[i].items[j].definition);
-					shipinInfo.setDirectors(result.tops[i].items[j].directors);
-					shipinInfo.setDuration(result.tops[i].items[j].duration);
-					shipinInfo.setFavority_num(result.tops[i].items[j].favority_num);
-					shipinInfo.setId(result.tops[i].items[j].id);
-					shipinInfo.setMax_episode(result.tops[i].items[j].max_episode);
-					shipinInfo.setProd_id(result.tops[i].items[j].prod_id);
-					shipinInfo.setProd_name(result.tops[i].items[j].prod_name);
-					shipinInfo.setProd_pic_url(result.tops[i].items[j].prod_pic_url);
-					shipinInfo.setProd_type(result.tops[i].items[j].prod_type);
-					shipinInfo.setPublish_date(result.tops[i].items[j].publish_date);
-					shipinInfo.setScore(result.tops[i].items[j].score);
-					shipinInfo.setStars(result.tops[i].items[j].stars);
-					shipinInfo.setSupport_num(result.tops[i].items[j].support_num);
-					tempList.add(shipinInfo);
-				}
-				yuedanInfo.shiPinList = tempList;
+//				for (int j = 0; j < result.tops[i].items.length; j++) {
+//					ShiPinInfoParcelable shipinInfo = new ShiPinInfoParcelable();
+//					shipinInfo.setArea(result.tops[i].items[j].area);
+//					shipinInfo.setBig_prod_pic_url(result.tops[i].items[j].big_prod_pic_url);
+//					shipinInfo.setCur_episode(result.tops[i].items[j].cur_episode);
+////					shipinInfo.setCur_item_name(result.tops[i].items[j].cur_i);
+//					shipinInfo.setDefinition(result.tops[i].items[j].definition);
+//					shipinInfo.setDirectors(result.tops[i].items[j].directors);
+//					shipinInfo.setDuration(result.tops[i].items[j].duration);
+//					shipinInfo.setFavority_num(result.tops[i].items[j].favority_num);
+//					shipinInfo.setId(result.tops[i].items[j].id);
+//					shipinInfo.setMax_episode(result.tops[i].items[j].max_episode);
+//					shipinInfo.setProd_id(result.tops[i].items[j].prod_id);
+//					shipinInfo.setProd_name(result.tops[i].items[j].prod_name);
+//					shipinInfo.setProd_pic_url(result.tops[i].items[j].prod_pic_url);
+//					shipinInfo.setProd_type(result.tops[i].items[j].prod_type);
+//					shipinInfo.setPublish_date(result.tops[i].items[j].publish_date);
+//					shipinInfo.setScore(result.tops[i].items[j].score);
+//					shipinInfo.setStars(result.tops[i].items[j].stars);
+//					shipinInfo.setSupport_num(result.tops[i].items[j].support_num);
+//					tempList.add(shipinInfo);
+//				}
+//				yuedanInfo.shiPinList = tempList;
 				movieList.add(yuedanInfo);
 				
 			}
