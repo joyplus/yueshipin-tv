@@ -226,9 +226,9 @@ public class MovieControllerOverlay extends FrameLayout implements
 			}
 			ImageView mImageSrc = (ImageView) rootView.findViewById(R.id.imageView1);
 			if (mCurrentPlayData.prod_qua == 0)
-				mImageSrc.setBackgroundResource(R.drawable.player_720p);
+				mImageSrc.setImageResource(R.drawable.player_720p);
 			else 
-				mImageSrc.setBackgroundResource(R.drawable.player_1080p);
+				mImageSrc.setImageResource(R.drawable.player_1080p);
 
 			// prod_id= mCurrentPlayData.prod_id;
 			// prod_name = mCurrentPlayData.prod_name;
