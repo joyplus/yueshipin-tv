@@ -103,6 +103,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 	private View mLayoutBottomTime;
 	private int totalTime;
 	private int currentTime;
+	private int firstJumpTime;
 
 	private AudioManager mAudioManager;
 	/** 最大声音 */
@@ -201,11 +202,14 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 			mVideoView.suspend();
 			mHasPaused = true;
 		} else {
-			final Integer bookmark;
-			if(Time == 0 )
-				bookmark = mBookmarker.getBookmark(mUri);
-			else
+			Integer bookmark = 0;
+			firstJumpTime = 0;
+			if(Time > 0 ){
+				firstJumpTime = Time;
 				bookmark = Time;
+			}
+			else
+				bookmark = mBookmarker.getBookmark(mUri);
 			if (bookmark != null) {
 				saveTime.setText(StatisticsUtils.formatDuration(bookmark));
 				mVideoView.seekTo(bookmark);
@@ -790,9 +794,11 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		Log.d(TAG, "onPrepared");
 		mVideoWidth = mp.getVideoWidth();
 		mVideoHeight = mp.getVideoHeight();
-		mController.setPrepared(true);
-		sb.setProgress(100);
-		mHandler.post(mProgressChecker);
+//		if(firstJumpTime < 1 ){
+			mController.setPrepared(true);
+			sb.setProgress(100);
+			mHandler.post(mProgressChecker);
+//		}
 	}
 
 	@Override
@@ -814,6 +820,11 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 	public void onSeekComplete(MediaPlayer mp) {
 		// TODO Auto-generated method stub
 		Log.d(TAG, "onSeekComplete");
+//		if(firstJumpTime > 0 ){
+//			mController.setPrepared(true);
+//			sb.setProgress(100);
+//			mHandler.post(mProgressChecker);
+//		}
 	}
 
 	@Override
