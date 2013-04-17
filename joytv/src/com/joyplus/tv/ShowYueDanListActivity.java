@@ -89,6 +89,7 @@ public class ShowYueDanListActivity extends Activity implements
 		if(name != null && id != null && !name.equals("")
 				&& !id.equals("")) {
 			initView();
+			
 			initState();
 
 			yuedanListTv.setText(name);

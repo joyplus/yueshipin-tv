@@ -40,7 +40,7 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 	private static final String TAG = "ShowXiangqingMovie";
 	private LinearLayout bofangLL;
 
-	private Button dingBt,xiaiBt,xiazaiBt, yingpingBt;
+	private Button dingBt,xiaiBt, yingpingBt;
 	private Button bofangBt,gaoqingBt;
 
 	private View beforeView;
@@ -68,7 +68,7 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 
-		this.setContentView(R.layout.show_dianying_xiangxi_layout);
+		this.setContentView(R.layout.show_xiangxi_dianying_layout);
 		aq = new AQuery(this);
 		app = (App) getApplication();
 		prod_id = getIntent().getStringExtra("ID");
@@ -107,21 +107,17 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 		gaoqingBt = (Button) findViewById(R.id.bt_xiangqing_gaoqing);
 
 
-		xiazaiBt = (Button) findViewById(R.id.bt_xiangqing_xiazai);
 		yingpingBt = (Button) findViewById(R.id.bt_xiangqing_yingping);
 		
 		tuijianGv = (GridView) findViewById(R.id.gv_xiangqing_tuijian);
-//		tuijianGv.setAdapter(tuiJianAdapter);
+		
+		bofangLL.requestFocus();
 
 		addListener();
 
 		initPopWindow();
 
-		xiazaiBt.setFocusable(false);
-		// bofangLL.setFocusable(true);
-
 		beforeView = dingBt;
-//		dingBt.setSelected(true);
 
 	}
 
@@ -136,7 +132,6 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 		xiaiBt.setOnClickListener(this);
 		bofangLL.setOnClickListener(this);
 		yingpingBt.setOnClickListener(this);
-//		tujianGv.setOnClickListener(this);
 	}
 
 	@Override

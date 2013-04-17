@@ -79,7 +79,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/textView_score"
-                android:text="@string/xiangqing_fenshu_value" 
                 android:textColor="@color/time_color"
                 android:textSize="20sp"/>
         </LinearLayout>

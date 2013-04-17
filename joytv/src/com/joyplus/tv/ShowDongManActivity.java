@@ -9,14 +9,12 @@ import org.json.JSONObject;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
-import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
@@ -240,7 +238,7 @@ public class ShowDongManActivity extends Activity implements View.OnKeyListener,
 					int position, long id) {
 				// TODO Auto-generated method stub
 				Intent intent = new Intent(ShowDongManActivity.this,
-						ShowXiangqingTv.class);
+						ShowXiangqingDongman.class);
 				Log.i(TAG, "ID:" + movieList.get(position).getMovieID());
 				intent.putExtra("ID", movieList.get(position).getMovieID());
 				startActivity(intent);

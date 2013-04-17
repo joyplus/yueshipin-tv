@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -14,6 +15,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.ScaleAnimation;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
@@ -111,7 +113,25 @@ public class ShowSearchActivity extends Activity implements
 					
 					String url = StatisticsUtils.getSearchURL(SEARCH_URL, 1 + "", 30 + "",searchStr);
 					getServiceData(url);
+//					searchEt.
 				}
+			}
+		});
+		
+		searchEt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+			
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				// TODO Auto-generated method stub
+				if(hasFocus==true){
+					((InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE))
+					    .showSoftInput(searchEt, InputMethodManager.SHOW_FORCED);
+
+					}else{ //ie searchBoxEditText doesn't have focus
+					((InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE))
+					    .hideSoftInputFromWindow(searchEt.getWindowToken(), 0);
+
+					}
 			}
 		});
 
@@ -159,8 +179,38 @@ public class ShowSearchActivity extends Activity implements
 					public void onItemClick(AdapterView<?> parent, View view,
 							int position, long id) {
 						// TODO Auto-generated method stub
-						startActivity(new Intent(ShowSearchActivity.this,
-								ShowXiangqingTv.class));
+						String pro_type = movieList.get(position).getMovieProType();
+						Log.i(TAG, "pro_type:" + pro_type);
+						if(pro_type != null && !pro_type.equals("")) {
+							
+							if(pro_type.equals("2")) {
+								Log.i(TAG, "pro_type:" + pro_type + "   --->2");
+								Intent intent = new Intent(ShowSearchActivity.this,
+										ShowXiangqingTv.class);
+								intent.putExtra("ID", movieList.get(position).getMovieID());
+								startActivity(intent);
+//								startActivity();
+							} else if(pro_type.equals("1")) {
+								Log.i(TAG, "pro_type:" + pro_type + "   --->1");
+								Intent intent = new Intent(ShowSearchActivity.this,
+										ShowXiangqingMovie.class);
+								intent.putExtra("ID", movieList.get(position).getMovieID());
+								startActivity(intent);
+//								startActivity();
+							} else if(pro_type.equals("131")) {
+								
+								Intent intent = new Intent(ShowSearchActivity.this,
+										ShowXiangqingDongman.class);
+								intent.putExtra("ID", movieList.get(position).getMovieID());
+								startActivity(intent);
+							} else if(pro_type.equals("3")) {
+								
+								Intent intent = new Intent(ShowSearchActivity.this,
+										ShowXiangqingZongYi.class);
+								intent.putExtra("ID", movieList.get(position).getMovieID());
+								startActivity(intent);
+							}
+						}
 					}
 				});
 
@@ -454,7 +504,7 @@ public class ShowSearchActivity extends Activity implements
 							.findViewById(R.id.tv_item_layout_other_info);
 					movieDuration.setText(duration);
 				}
-			} else if(proType.equals("2")){
+			} else if(proType.equals("2") || proType.equals("131")){
 				movieScore.setText(movieList.get(0).getMovieScore());
 				String curEpisode = movieList.get(0).getMovieCurEpisode();
 				String maxEpisode = movieList.get(0).getMovieMaxEpisode();
@@ -542,7 +592,7 @@ public class ShowSearchActivity extends Activity implements
 						
 						viewItemHodler.otherInfo.setText(duration);
 					}
-				} else if(proType.equals("2")){
+				} else if(proType.equals("2") || proType.equals("131")){
 					
 					viewItemHodler.scoreTv.setText(movieList.get(0).getMovieScore());
 					String curEpisode = movieList.get(0).getMovieCurEpisode();

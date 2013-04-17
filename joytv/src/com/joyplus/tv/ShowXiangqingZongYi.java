@@ -34,10 +34,10 @@ import com.joyplus.tv.Service.Return.ReturnProgramView;
 import com.joyplus.tv.Video.VideoPlayerActivity;
 import com.joyplus.tv.utils.MyKeyEventKey;
 
-public class ShowXiangqingDongman extends Activity implements View.OnClickListener,
+public class ShowXiangqingZongYi extends Activity implements View.OnClickListener,
 		View.OnKeyListener, MyKeyEventKey {
 
-	private static final String TAG = "ShowXiangqingDongman";
+	private static final String TAG = "ShowXiangqingZongYi";
 	private LinearLayout bofangLL;
 
 	private Button dingBt,xiaiBt, yingpingBt;
@@ -74,7 +74,7 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 
-		this.setContentView(R.layout.show_xiangxi_dongman_layout);
+		this.setContentView(R.layout.show_xiangqing_zongyi);
 		Intent intent = getIntent();
 		prod_id = intent.getStringExtra("ID");
 		if(prod_id == null||"".equals(prod_id)){
@@ -97,6 +97,7 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 //			b.setWidth(table.getWidth()/5);
 //			b.setHeight(layout.getHeight());
 			b.setLayoutParams(new LayoutParams((table.getWidth()-80)/5,35));
+			isOver = false;
 			if(isOver){
 				if((i+1)*COUNT>num){
 					b.setText((i*COUNT+1) +"-"+num);
@@ -112,7 +113,7 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 				
 			}
 			b.setBackgroundResource(R.drawable.xiangqing_button_selector);
-			b.setId((i+1)*10000);
+			b.setId((i+1)*10001);
 			b.setOnClickListener(this);
 			layout.addView(b);
 			if(i!=totle_pagecount-1){
@@ -168,7 +169,6 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 		addListener();
 
 		initPopWindow();
-
 
 		beforeView = dingBt;
 
@@ -440,13 +440,22 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 				btn.setWidth((table.getWidth()-80)/5);
 				btn.setTextSize(18);
 				btn.setHeight(25);
-				if(isOver){
-					btn.setText("" + (j*5+i+1 + (selectedIndex-1)*COUNT));
-					btn.setId(j*5+i+1 + (selectedIndex-1)*COUNT);
-				}else{
-					btn.setText("" + (num-((j*5+i)+ (selectedIndex-1)*COUNT)));
-					btn.setId(num-((j*5+i)+ (selectedIndex-1)*COUNT));
+//				isOver = true;//综艺总为没有完结
+//				if(isOver){
+//					btn.setText("" + (j*5+i+1 + (selectedIndex-1)*COUNT));
+				int tempCount = (j*5+i+1 + (selectedIndex-1)*COUNT) - 1;
+//				Log.i(TAG, "Count:" + count2);
+				if(tempCount <= date.show.episodes.length - 1) {
+					
+					btn.setText(date.show.episodes[((j*5+i+1 + (selectedIndex-1)*COUNT)) - 1].name + "");
 				}
+				btn.setId(j*5+i+1 + (selectedIndex-1)*COUNT);
+//				}
+//				else{
+//					btn.setText("" + (num-((j*5+i)+ (selectedIndex-1)*COUNT)));
+////					btn.setText(date.show.episodes[(num-((j*5+i)+ (selectedIndex-1)*COUNT)] + "");
+//					btn.setId(num-((j*5+i)+ (selectedIndex-1)*COUNT));
+//				}
 				btn.setOnClickListener(this);
 				btn.setOnKeyListener(this);
 				btn.setBackgroundResource(R.drawable.xiangqing_button_selector);
@@ -470,12 +479,12 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 	private void getServiceDate(){
 		String url = Constant.BASE_URL + "program/view" +"?prod_id=" + prod_id;
 		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
-		cb.url(url).type(JSONObject.class).weakHandler(this, "initData");
+		cb.url(url).type(JSONObject.class).weakHandler(this, "initDate");
 		cb.SetHeader(app.getHeaders());
 		aq.ajax(cb);
 	}
 	
-	public void initData(String url, JSONObject json, AjaxStatus status){
+	public void initDate(String url, JSONObject json, AjaxStatus status){
 		if (status.getCode() == AjaxStatus.NETWORK_ERROR||json == null) {
 			app.MyToast(aq.getContext(),
 					getResources().getString(R.string.networknotwork));
@@ -490,17 +499,24 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 				Log.e(TAG, "tv date error---->date == null");
 				return;
 			}
-			if("".equals(date.tv.cur_episode)||"0".equals(date.tv.cur_episode)
-					||date.tv.cur_episode.equals(date.tv.max_episode)){
-				isOver = true;
-				num = Integer.valueOf(date.tv.max_episode);
-			}else if(Integer.valueOf(date.tv.cur_episode)>Integer.valueOf(date.tv.max_episode)){
-				isOver = true;
-				num = Integer.valueOf(date.tv.max_episode);
-			}else{
-				isOver = false;
-				num = Integer.valueOf(date.tv.cur_episode);
+//			if("".equals(date.tv.cur_episode)||"0".equals(date.tv.cur_episode)
+//					||date.tv.cur_episode.equals(date.tv.max_episode)){
+//				isOver = true;
+//				num = Integer.valueOf(date.tv.max_episode);
+//			}else if(Integer.valueOf(date.tv.cur_episode)>Integer.valueOf(date.tv.max_episode)){
+//				isOver = true;
+//				num = Integer.valueOf(date.tv.max_episode);
+//			}else{
+//				isOver = false;
+//				num = Integer.valueOf(date.tv.cur_episode);
+//			}
+			
+			if(date.show.episodes.length <= 0) {
+				
+				return;
 			}
+			
+			num = Integer.valueOf(date.show.episodes.length);
 			updateView();
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
@@ -516,14 +532,14 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 	
 	private void updateView(){
 		initButton();
-		aq.id(R.id.image).image(date.tv.poster, false, true,0, R.drawable.post_normal);
-		aq.id(R.id.text_name).text(date.tv.name);
-		aq.id(R.id.text_directors).text(date.tv.directors);
-		aq.id(R.id.text_starts).text(date.tv.stars);
-		aq.id(R.id.text_introduce).text(date.tv.summary);
-		aq.id(R.id.bt_xiangqingding).text(date.tv.support_num);
-		aq.id(R.id.bt_xiangqing_xiai).text(date.tv.favority_num);
-		int definition = Integer.valueOf((date.tv.definition));
+		aq.id(R.id.image).image(date.show.poster, false, true,0, R.drawable.post_normal);
+		aq.id(R.id.text_name).text(date.show.name);
+		aq.id(R.id.text_directors).text(date.show.directors);
+		aq.id(R.id.text_starts).text(date.show.stars);
+		aq.id(R.id.text_introduce).text(date.show.summary);
+		aq.id(R.id.bt_xiangqingding).text(date.show.support_num);
+		aq.id(R.id.bt_xiangqing_xiai).text(date.show.favority_num);
+		int definition = Integer.valueOf((date.show.definition));
 		switch (definition) {
 		case 6:
 			aq.id(R.id.img_definition).image(R.drawable.icon_ts);
@@ -538,11 +554,11 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 			aq.id(R.id.img_definition).gone();
 			break;
 		}
-		updateScore(date.tv.score);
+		updateScore(date.show.score);
 	}
 	
 	private void updateScore(String score){
-		aq.id(R.id.textView_score).text(date.tv.score);
+		aq.id(R.id.textView_score).text(date.show.score);
 		float f = Float.valueOf(score);
 		int i = Math.round(f);
 //		int i = (f%1>=0.5)?(int)(f/1):(int)(f/1+1);
@@ -627,5 +643,11 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 		default:
 			break;
 		}
+	}
+	@Override
+	protected void onDestroy() {
+		if (aq != null)
+			aq.dismiss();
+		super.onDestroy();
 	}
 }

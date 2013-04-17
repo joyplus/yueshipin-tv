@@ -70,7 +70,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="left|center_vertical"
-                            android:text="@string/xiangqing_dianying_title_name"
                             android:textColor="@color/text_bg_foucs"
                             android:singleLine="true"
                             android:textSize="25sp" />
@@ -105,7 +104,6 @@
                         android:id="@+id/text_directors"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/xiangqing_daoyan_names_name"
                         android:textColor="@color/daoyan_names_name_color"
                         android:singleLine="true"
                         android:textSize="20sp" />
@@ -128,7 +126,6 @@
                         android:id="@+id/text_starts"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/xiangqing_zhuyan_names_name"
                         android:textColor="@color/daoyan_names_name_color"
                         android:singleLine="true"
                         android:textSize="20sp" />
@@ -147,7 +144,6 @@
                      android:layout_marginTop="10dp"
                      android:layout_width="match_parent"
                      android:layout_height="match_parent"
-                     android:text="@string/xiangqing_juqingjianjie_content"
                      android:textColor="@color/daoyan_names_name_color"
                      android:maxLines="5"
                      android:ellipsize="end"
@@ -182,7 +178,6 @@
                         android:background="@drawable/xiangqing_button_selector"
                         android:drawableLeft="@drawable/ding_selector"
                         android:gravity="right|center_vertical"
-                        android:text="8888"
                         android:textColor="@color/ding_selector"
                         android:textSize="17sp" />
                 </LinearLayout>
@@ -205,7 +200,6 @@
                         android:background="@drawable/xiangqing_button_selector"
                         android:drawableLeft="@drawable/xiai_selector"
                         android:gravity="right|center_vertical"
-                        android:text="8888"
                         android:textColor="@color/ding_selector"
                         android:textSize="17sp" />
                 </LinearLayout>
