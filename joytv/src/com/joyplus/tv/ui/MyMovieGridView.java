@@ -1,6 +1,6 @@
 package com.joyplus.tv.ui;
 
-import com.joyplus.tv.MyKeyEventKey;
+import com.joyplus.tv.utils.MyKeyEventKey;
 
 import android.content.Context;
 import android.util.AttributeSet;

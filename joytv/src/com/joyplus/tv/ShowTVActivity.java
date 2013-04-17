@@ -42,6 +42,9 @@ import com.joyplus.tv.entity.ReturnFilterMovieSearch;
 import com.joyplus.tv.ui.MyMovieGridView;
 import com.joyplus.tv.ui.NavigateView;
 import com.joyplus.tv.ui.NavigateView.OnResultListener;
+import com.joyplus.tv.utils.BangDanKey;
+import com.joyplus.tv.utils.JieMianConstant;
+import com.joyplus.tv.utils.MyKeyEventKey;
 
 public class ShowTVActivity extends Activity implements View.OnKeyListener,
 		MyKeyEventKey, BangDanKey, JieMianConstant,View.OnClickListener {

@@ -31,6 +31,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joyplus.tv.entity.MovieItemData;
 import com.joyplus.tv.entity.ReturnFilterMovieSearch;
 import com.joyplus.tv.ui.MyMovieGridView;
+import com.joyplus.tv.utils.BangDanKey;
+import com.joyplus.tv.utils.JieMianConstant;
+import com.joyplus.tv.utils.MyKeyEventKey;
 
 public class ShowSearchActivity extends Activity implements
 		View.OnKeyListener, MyKeyEventKey, JieMianConstant,BangDanKey, View.OnClickListener {

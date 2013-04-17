@@ -1,4 +1,4 @@
-package com.joyplus.tv;
+package com.joyplus.tv.utils;
 
 public interface JieMianConstant {
 	

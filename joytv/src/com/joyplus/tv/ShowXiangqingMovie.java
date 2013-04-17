@@ -32,6 +32,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joyplus.tv.Service.Return.ReturnProgramRelatedVideos;
 import com.joyplus.tv.Service.Return.ReturnProgramView;
 import com.joyplus.tv.Video.VideoPlayerActivity;
+import com.joyplus.tv.utils.MyKeyEventKey;
 
 public class ShowXiangqingMovie extends Activity implements View.OnClickListener,
 		View.OnKeyListener, MyKeyEventKey {
