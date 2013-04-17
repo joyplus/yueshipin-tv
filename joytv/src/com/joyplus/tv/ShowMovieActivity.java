@@ -880,6 +880,7 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 				viewItemHodler.nameTv = (TextView) convertView.findViewById(R.id.tv_item_layout_name);
 				viewItemHodler.scoreTv = (TextView) convertView.findViewById(R.id.tv_item_layout_score);
 				viewItemHodler.otherInfo = (TextView) convertView.findViewById(R.id.tv_item_layout_other_info);
+				viewItemHodler.haibaoIv = (ImageView) convertView.findViewById(R.id.iv_item_active_layout_haibao);
 				convertView.setTag(viewItemHodler);
 				
 			} else {
@@ -892,6 +893,7 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 			convertView.setLayoutParams(params);
 			convertView.setPadding(GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING,
 					GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING);
+			
 
 			viewItemHodler.nameTv.setText(movieList.get(position).getMovieName());
 			viewItemHodler.scoreTv.setText(movieList.get(position).getMovieScore());
@@ -942,6 +944,7 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 		TextView nameTv;
 		TextView scoreTv;
 		TextView otherInfo;
+		ImageView haibaoIv;
 	}
 
 }

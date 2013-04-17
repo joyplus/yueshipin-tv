@@ -266,7 +266,8 @@
                     android:background="@drawable/text_drawable_selector"
                     android:gravity="right|center_vertical"
                     android:text="@string/lixianshipin_name"
-                    android:textColor="@color/text_color_selector" />
+                    android:textColor="@color/text_color_selector" 
+                    android:visibility="invisible"/>
 
                 <TextView
                     style="@style/style_4"
