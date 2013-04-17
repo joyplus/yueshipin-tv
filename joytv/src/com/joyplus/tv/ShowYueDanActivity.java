@@ -607,6 +607,7 @@ public class ShowYueDanActivity extends Activity implements View.OnKeyListener,
 
 	private void getServiceData(String url) {
 
+		firstFloatView.setVisibility(View.INVISIBLE);
 		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
 		cb.url(url).type(JSONObject.class).weakHandler(this, "initData");
 
@@ -637,7 +638,12 @@ public class ShowYueDanActivity extends Activity implements View.OnKeyListener,
 				yuedanInfo.name = result.tops[i].name;
 				yuedanInfo.id = result.tops[i].id;
 				yuedanInfo.prod_type = result.tops[i].prod_type;
-				yuedanInfo.pic_url = result.tops[i].big_pic_url;
+				String bigPicUrl = result.tops[i].big_pic_url;
+				if(bigPicUrl == null || bigPicUrl.equals("")) {
+					
+					bigPicUrl = result.tops[i].pic_url;
+				}
+				yuedanInfo.pic_url = bigPicUrl;
 				yuedanInfo.num = result.tops[i].num;
 				yuedanInfo.content = result.tops[i].content;
 				for (int j = 0; j < result.tops[i].items.length; j++) {
@@ -698,8 +704,10 @@ public class ShowYueDanActivity extends Activity implements View.OnKeyListener,
 		TextView movieScore = (TextView) firstFloatView.findViewById(R.id.tv_item_layout_other_info);
 		
 		aq = new AQuery(firstFloatView);
-		aq.id(R.id.iv_item_layout_haibao).image(
-				movieList.get(0).pic_url);
+//		aq.id(R.id.iv_item_layout_haibao).image(
+//				movieList.get(0).pic_url);
+		aq.id(R.id.iv_item_layout_haibao).image(movieList.get(0).pic_url, 
+				true, true,0, R.drawable.post_active);
 		movieName.setText(movieList.get(0).name);
 		movieScore.setText(movieList.get(0).num + getString(R.string.yingpianshu));
 		firstFloatView.setPadding(GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING, 
@@ -753,8 +761,10 @@ public class ShowYueDanActivity extends Activity implements View.OnKeyListener,
 			}
 
 			aq = new AQuery(convertView);
-			aq.id(R.id.iv_item_layout_haibao).image(
-					movieList.get(position).pic_url);
+//			aq.id(R.id.iv_item_layout_haibao).image(
+//					movieList.get(position).pic_url);
+			aq.id(R.id.iv_item_layout_haibao).image(movieList.get(position).pic_url, 
+					true, true,0, R.drawable.post_normal);
 			return convertView;
 		}
 

@@ -574,8 +574,15 @@ public class ShowYueDanListActivity extends Activity implements
 		TextView movieName = (TextView) firstFloatView.findViewById(R.id.tv_item_layout_name);
 		TextView movieScore = (TextView) firstFloatView.findViewById(R.id.tv_item_layout_score);
 		aq = new AQuery(firstFloatView);
-		aq.id(R.id.iv_item_layout_haibao).image(
-				movieList.get(0).getBig_prod_pic_url());
+		String bigPicUrl = movieList.get(0).getBig_prod_pic_url();
+		if(bigPicUrl == null || bigPicUrl.equals("")) {
+			
+			bigPicUrl = movieList.get(0).getProd_pic_url();
+		}
+//		aq.id(R.id.iv_item_layout_haibao).image(
+//				movieList.get(0).getBig_prod_pic_url());
+		aq.id(R.id.iv_item_layout_haibao).image(bigPicUrl, 
+				true, true,0, R.drawable.post_active);
 		movieName.setText(movieList.get(0).getProd_name());
 		movieScore.setText(movieList.get(0).getScore());
 		
@@ -686,8 +693,15 @@ public class ShowYueDanListActivity extends Activity implements
 			}
 
 			aq = new AQuery(convertView);
-			aq.id(R.id.iv_item_layout_haibao).image(
-					movieList.get(position).getBig_prod_pic_url());
+//			aq.id(R.id.iv_item_layout_haibao).image(
+//					movieList.get(position).getBig_prod_pic_url());
+			String bigPicUrl = movieList.get(position).getBig_prod_pic_url();
+			if(bigPicUrl == null || bigPicUrl.equals("")) {
+				
+				bigPicUrl = movieList.get(position).getProd_pic_url();
+			}
+			aq.id(R.id.iv_item_layout_haibao).image(bigPicUrl, 
+					true, true,0, R.drawable.post_normal);
 			return convertView;
 		}
 
