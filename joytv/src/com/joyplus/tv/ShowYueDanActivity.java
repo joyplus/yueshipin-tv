@@ -741,7 +741,6 @@ public class ShowYueDanActivity extends Activity implements View.OnKeyListener,
 
 			viewItemHodler.nameTv.setText(movieList.get(position).name);
 			viewItemHodler.otherInfo.setText(movieList.get(position).num + getString(R.string.yingpianshu));
-			viewItemHodler.scoreTv.setVisibility(View.INVISIBLE);
 
 			if (width != 0) {
 
