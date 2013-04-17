@@ -9,13 +9,10 @@ import org.json.JSONObject;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
@@ -34,9 +31,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joyplus.tv.Service.Return.ReturnTops;
-import com.joyplus.tv.entity.ShiPinInfo;
 import com.joyplus.tv.entity.ShiPinInfoParcelable;
-import com.joyplus.tv.entity.YueDanInfo;
 import com.joyplus.tv.entity.YueDanInfo2;
 import com.joyplus.tv.ui.MyMovieGridView;
 
@@ -719,30 +714,34 @@ public class ShowYueDanActivity extends Activity implements View.OnKeyListener,
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			// TODO Auto-generated method stub
-			View v;
+			GridViewItemHodler viewItemHodler = null;
 
 			int width = parent.getWidth() / 5;
 			int height = (int) (width / 1.0f / STANDARD_PIC_WIDTH * STANDARD_PIC_HEIGHT);
 
 			if (convertView == null) {
-				View view = getLayoutInflater().inflate(
-						R.layout.show_item_layout_yuedan, null);
-				v = view;
+				viewItemHodler = new GridViewItemHodler();
+				convertView = getLayoutInflater().inflate(
+						R.layout.show_item_layout_dianying, null);
+				viewItemHodler.nameTv = (TextView) convertView.findViewById(R.id.tv_item_layout_name);
+				viewItemHodler.scoreTv = (TextView) convertView.findViewById(R.id.tv_item_layout_score);
+				viewItemHodler.otherInfo = (TextView) convertView.findViewById(R.id.tv_item_layout_other_info);
+				convertView.setTag(viewItemHodler);
+				
 			} else {
 
-				v = convertView;
+				viewItemHodler = (GridViewItemHodler) convertView.getTag();
 			}
+			
 			AbsListView.LayoutParams params = new AbsListView.LayoutParams(
 					width, height);
-			v.setLayoutParams(params);
+			convertView.setLayoutParams(params);
+			convertView.setPadding(GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING,
+					GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING);
 
-			TextView movieName = (TextView) v
-					.findViewById(R.id.tv_item_layout_name);
-			movieName.setText(movieList.get(position).name);
-			TextView movieScore = (TextView) v
-					.findViewById(R.id.tv_item_layout_other_info);
-			movieScore.setText(movieList.get(position).num + getString(R.string.yingpianshu));
-			v.setPadding(GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING);
+			viewItemHodler.nameTv.setText(movieList.get(position).name);
+			viewItemHodler.otherInfo.setText(movieList.get(position).num + getString(R.string.yingpianshu));
+			viewItemHodler.scoreTv.setVisibility(View.INVISIBLE);
 
 			if (width != 0) {
 
@@ -751,10 +750,10 @@ public class ShowYueDanActivity extends Activity implements View.OnKeyListener,
 				// Log.i(TAG, "Width:" + popWidth);
 			}
 
-			aq = new AQuery(v);
+			aq = new AQuery(convertView);
 			aq.id(R.id.iv_item_layout_haibao).image(
 					movieList.get(position).pic_url);
-			return v;
+			return convertView;
 		}
 
 		@Override
@@ -775,5 +774,12 @@ public class ShowYueDanActivity extends Activity implements View.OnKeyListener,
 			return movieList.size();
 		}
 	};
+	
+	 private class GridViewItemHodler {
+			
+		TextView nameTv;
+		TextView scoreTv;
+		TextView otherInfo;
+	}
 
 }

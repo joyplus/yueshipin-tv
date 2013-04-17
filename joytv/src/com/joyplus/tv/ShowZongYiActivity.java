@@ -15,7 +15,6 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
-import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
@@ -736,13 +735,15 @@ public class ShowZongYiActivity extends Activity implements View.OnKeyListener,
 		firstFloatView.setVisibility(View.VISIBLE);
 		
 		TextView movieName = (TextView) firstFloatView.findViewById(R.id.tv_item_layout_name);
-		TextView movieScore = (TextView) firstFloatView.findViewById(R.id.tv_item_active_layout_other_info);
+		TextView otherInfo = (TextView) firstFloatView.findViewById(R.id.tv_item_active_layout_other_info);
+		TextView score = (TextView) firstFloatView.findViewById(R.id.tv_item_acitve_layout_score);
 		aq = new AQuery(firstFloatView);
 		aq.id(R.id.iv_item_layout_haibao).image(
 				movieList.get(0).getMoviePicUrl());
 		movieName.setText(movieList.get(0).getMovieName());
-		movieScore.setText(getString(R.string.zongyi_gengxinzhi) + 
+		otherInfo.setText(getString(R.string.zongyi_gengxinzhi) + 
 				movieList.get(0).getMovieCurEpisode());
+		score.setVisibility(View.INVISIBLE);
 		firstFloatView.setPadding(GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING, 
 				GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING);
 		firstFloatView.setBackgroundColor(getResources()
@@ -758,33 +759,35 @@ public class ShowZongYiActivity extends Activity implements View.OnKeyListener,
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			// TODO Auto-generated method stub
-			View v;
+			GridViewItemHodler viewItemHodler = null;
 
 			int width = parent.getWidth() / 5;
 			int height = (int) (width / 1.0f / STANDARD_PIC_WIDTH * STANDARD_PIC_HEIGHT);
 
 			if (convertView == null) {
-				View view = getLayoutInflater().inflate(
-						R.layout.show_item_layout_yuedan, null);
-				v = view;
+				viewItemHodler = new GridViewItemHodler();
+				convertView = getLayoutInflater().inflate(
+						R.layout.show_item_layout_dianying, null);
+				viewItemHodler.nameTv = (TextView) convertView.findViewById(R.id.tv_item_layout_name);
+				viewItemHodler.scoreTv = (TextView) convertView.findViewById(R.id.tv_item_layout_score);
+				viewItemHodler.otherInfo = (TextView) convertView.findViewById(R.id.tv_item_layout_other_info);
+				convertView.setTag(viewItemHodler);
+				
 			} else {
 
-				v = convertView;
+				viewItemHodler = (GridViewItemHodler) convertView.getTag();
 			}
+			
 			AbsListView.LayoutParams params = new AbsListView.LayoutParams(
 					width, height);
-			v.setLayoutParams(params);
-
-			TextView movieName = (TextView) v
-					.findViewById(R.id.tv_item_layout_name);
-			movieName.setText(movieList.get(position).getMovieName());
-			TextView movieScore = (TextView) v
-					.findViewById(R.id.tv_item_layout_other_info);
-			movieScore.setText(getString(R.string.zongyi_gengxinzhi) + 
-					movieList.get(0).getMovieCurEpisode());
-			v.setPadding(GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING, 
+			convertView.setLayoutParams(params);
+			convertView.setPadding(GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING,
 					GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING);
 
+			viewItemHodler.nameTv.setText(movieList.get(position).getMovieName());
+			viewItemHodler.otherInfo.setText(getString(R.string.zongyi_gengxinzhi) + 
+					movieList.get(0).getMovieCurEpisode());
+			viewItemHodler.scoreTv.setVisibility(View.INVISIBLE);
 			if (width != 0) {
 
 				popWidth = width;
@@ -792,10 +795,10 @@ public class ShowZongYiActivity extends Activity implements View.OnKeyListener,
 				// Log.i(TAG, "Width:" + popWidth);
 			}
 
-			aq = new AQuery(v);
+			aq = new AQuery(convertView);
 			aq.id(R.id.iv_item_layout_haibao).image(
 					movieList.get(position).getMoviePicUrl());
-			return v;
+			return convertView;
 		}
 
 		@Override
@@ -816,5 +819,12 @@ public class ShowZongYiActivity extends Activity implements View.OnKeyListener,
 			return movieList.size();
 		}
 	};
+	
+	 private class GridViewItemHodler {
+			
+		TextView nameTv;
+		TextView scoreTv;
+		TextView otherInfo;
+	}
 
 }

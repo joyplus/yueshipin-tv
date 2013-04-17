@@ -847,29 +847,33 @@ public class ShowDongManActivity extends Activity implements View.OnKeyListener,
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			// TODO Auto-generated method stub
-			View v;
+			GridViewItemHodler viewItemHodler = null;
 
 			int width = parent.getWidth() / 5;
 			int height = (int) (width / 1.0f / STANDARD_PIC_WIDTH * STANDARD_PIC_HEIGHT);
 
 			if (convertView == null) {
-				View view = getLayoutInflater().inflate(
+				viewItemHodler = new GridViewItemHodler();
+				convertView = getLayoutInflater().inflate(
 						R.layout.show_item_layout_dianying, null);
-				v = view;
+				viewItemHodler.nameTv = (TextView) convertView.findViewById(R.id.tv_item_layout_name);
+				viewItemHodler.scoreTv = (TextView) convertView.findViewById(R.id.tv_item_layout_score);
+				viewItemHodler.otherInfo = (TextView) convertView.findViewById(R.id.tv_item_layout_other_info);
+				convertView.setTag(viewItemHodler);
+				
 			} else {
 
-				v = convertView;
+				viewItemHodler = (GridViewItemHodler) convertView.getTag();
 			}
+			
 			AbsListView.LayoutParams params = new AbsListView.LayoutParams(
 					width, height);
-			v.setLayoutParams(params);
-
-			TextView movieName = (TextView) v
-					.findViewById(R.id.tv_item_layout_name);
-			movieName.setText(movieList.get(position).getMovieName());
-			TextView movieScore = (TextView) v
-					.findViewById(R.id.tv_item_layout_score);
-			movieScore.setText(movieList.get(position).getMovieScore());
+			convertView.setLayoutParams(params);
+			convertView.setPadding(GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING,
+					GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING);
+			
+			viewItemHodler.nameTv.setText(movieList.get(position).getMovieName());
+			viewItemHodler.scoreTv.setText(movieList.get(position).getMovieScore());
 			
 			String curEpisode = movieList.get(position).getMovieCurEpisode();
 			String maxEpisode = movieList.get(position).getMovieMaxEpisode();
@@ -877,20 +881,13 @@ public class ShowDongManActivity extends Activity implements View.OnKeyListener,
 			if(curEpisode == null || curEpisode.equals("0") || 
 					curEpisode.compareTo(maxEpisode) >= 0) {
 				
-				TextView movieUpdate = (TextView) v
-						.findViewById(R.id.tv_item_layout_other_info);
-				movieUpdate.setText(
+				viewItemHodler.otherInfo.setText(
 						movieList.get(position).getMovieMaxEpisode() + getString(R.string.dianshiju_jiquan));
 				} else if(maxEpisode.compareTo(curEpisode) > 0) {
 					
-					TextView movieUpdate = (TextView) v
-							.findViewById(R.id.tv_item_layout_other_info);
-					movieUpdate.setText(getString(R.string.zongyi_gengxinzhi) + 
+					viewItemHodler.otherInfo.setText(getString(R.string.zongyi_gengxinzhi) + 
 							movieList.get(position).getMovieCurEpisode());
 			}
-			
-			v.setPadding(GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING, 
-					GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING);
 
 			if (width != 0) {
 
@@ -899,10 +896,10 @@ public class ShowDongManActivity extends Activity implements View.OnKeyListener,
 				// Log.i(TAG, "Width:" + popWidth);
 			}
 
-			aq = new AQuery(v);
+			aq = new AQuery(convertView);
 			aq.id(R.id.iv_item_layout_haibao).image(
 					movieList.get(position).getMoviePicUrl());
-			return v;
+			return convertView;
 		}
 
 		@Override
@@ -923,5 +920,12 @@ public class ShowDongManActivity extends Activity implements View.OnKeyListener,
 			return movieList.size();
 		}
 	};
+	
+	 private class GridViewItemHodler {
+			
+		TextView nameTv;
+		TextView scoreTv;
+		TextView otherInfo;
+	}
 
 }

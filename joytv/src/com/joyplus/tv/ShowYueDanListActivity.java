@@ -620,40 +620,45 @@ public class ShowYueDanListActivity extends Activity implements
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			// TODO Auto-generated method stub
-			View v;
+			GridViewItemHodler viewItemHodler = null;
 
 			int width = parent.getWidth() / 5;
 			int height = (int) (width / 1.0f / STANDARD_PIC_WIDTH * STANDARD_PIC_HEIGHT);
 
 			if (convertView == null) {
-				View view = getLayoutInflater().inflate(
+				viewItemHodler = new GridViewItemHodler();
+				convertView = getLayoutInflater().inflate(
 						R.layout.show_item_layout_dianying, null);
-				v = view;
+				viewItemHodler.nameTv = (TextView) convertView.findViewById(R.id.tv_item_layout_name);
+				viewItemHodler.scoreTv = (TextView) convertView.findViewById(R.id.tv_item_layout_score);
+				viewItemHodler.otherInfo = (TextView) convertView.findViewById(R.id.tv_item_layout_other_info);
+				convertView.setTag(viewItemHodler);
+				
 			} else {
 
-				v = convertView;
+				viewItemHodler = (GridViewItemHodler) convertView.getTag();
 			}
+			
 			AbsListView.LayoutParams params = new AbsListView.LayoutParams(
 					width, height);
-			v.setLayoutParams(params);
+			convertView.setLayoutParams(params);
+			convertView.setPadding(GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING,
+					GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING);
 
-			TextView movieName = (TextView) v
-					.findViewById(R.id.tv_item_layout_name);
-			movieName.setText(movieList.get(position).getProd_name());
-			TextView movieScore = (TextView) v
-					.findViewById(R.id.tv_item_layout_score);
-			movieScore.setText(movieList.get(position).getScore());
+			viewItemHodler.nameTv.setText(movieList.get(position).getProd_name());
+//			viewItemHodler.scoreTv.setText(movieList.get(position).getMovieScore());
 			
 			if(movieList.get(position).getProd_type().equals("1")) {
 				
 				String duration = movieList.get(position).getDuration();
 				if(duration != null && !duration.equals("")) {
 					
-					TextView movieDuration = (TextView) v
-							.findViewById(R.id.tv_item_layout_other_info);
-					movieDuration.setText(duration);
+					viewItemHodler.scoreTv.setText(movieList.get(position).getScore());
+					viewItemHodler.otherInfo.setText(duration);
 				}
 			} else if(movieList.get(position).getProd_type().equals("2")){
+				
+				viewItemHodler.scoreTv.setText(movieList.get(position).getScore());
 				
 				String curEpisode = movieList.get(position).getCur_episode();
 				String maxEpisode = movieList.get(position).getMax_episode();
@@ -661,20 +666,14 @@ public class ShowYueDanListActivity extends Activity implements
 				if(curEpisode == null || curEpisode.equals("0") || 
 						curEpisode.compareTo(maxEpisode) >= 0) {
 					
-					TextView movieUpdate = (TextView) v
-							.findViewById(R.id.tv_item_layout_other_info);
-					movieUpdate.setText(
+					viewItemHodler.otherInfo.setText(
 							maxEpisode + getString(R.string.dianshiju_jiquan));
 					} else if(maxEpisode.compareTo(curEpisode) > 0) {
 						
-						TextView movieUpdate = (TextView) v
-								.findViewById(R.id.tv_item_layout_other_info);
-						movieUpdate.setText(getString(R.string.zongyi_gengxinzhi) + 
+						viewItemHodler.otherInfo.setText(getString(R.string.zongyi_gengxinzhi) + 
 								curEpisode);
 				}
 			}
-			v.setPadding(GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING, 
-					GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING);
 
 			if (width != 0) {
 
@@ -683,10 +682,10 @@ public class ShowYueDanListActivity extends Activity implements
 				// Log.i(TAG, "Width:" + popWidth);
 			}
 
-			aq = new AQuery(v);
+			aq = new AQuery(convertView);
 			aq.id(R.id.iv_item_layout_haibao).image(
 					movieList.get(position).getBig_prod_pic_url());
-			return v;
+			return convertView;
 		}
 
 		@Override
@@ -707,5 +706,12 @@ public class ShowYueDanListActivity extends Activity implements
 			return movieList.size();
 		}
 	};
+	
+	 private class GridViewItemHodler {
+			
+		TextView nameTv;
+		TextView scoreTv;
+		TextView otherInfo;
+	}
 
 }

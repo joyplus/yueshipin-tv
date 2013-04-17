@@ -30,7 +30,6 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joyplus.tv.entity.MovieItemData;
 import com.joyplus.tv.entity.ReturnFilterMovieSearch;
-import com.joyplus.tv.entity.ShiPinInfoParcelable;
 import com.joyplus.tv.ui.MyMovieGridView;
 
 public class ShowSearchActivity extends Activity implements
@@ -493,29 +492,32 @@ public class ShowSearchActivity extends Activity implements
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			// TODO Auto-generated method stub
-			View v;
+			GridViewItemHodler viewItemHodler = null;
 
 			int width = parent.getWidth() / 5;
 			int height = (int) (width / 1.0f / STANDARD_PIC_WIDTH * STANDARD_PIC_HEIGHT);
 
 			if (convertView == null) {
-				View view = getLayoutInflater().inflate(
+				viewItemHodler = new GridViewItemHodler();
+				convertView = getLayoutInflater().inflate(
 						R.layout.show_item_layout_dianying, null);
-				v = view;
+				viewItemHodler.nameTv = (TextView) convertView.findViewById(R.id.tv_item_layout_name);
+				viewItemHodler.scoreTv = (TextView) convertView.findViewById(R.id.tv_item_layout_score);
+				viewItemHodler.otherInfo = (TextView) convertView.findViewById(R.id.tv_item_layout_other_info);
+				convertView.setTag(viewItemHodler);
+				
+				AbsListView.LayoutParams params = new AbsListView.LayoutParams(
+						width, height);
+				convertView.setLayoutParams(params);
+				convertView.setPadding(GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING,
+						GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING);
 			} else {
 
-				v = convertView;
+				viewItemHodler = (GridViewItemHodler) convertView.getTag();
 			}
-			AbsListView.LayoutParams params = new AbsListView.LayoutParams(
-					width, height);
-			v.setLayoutParams(params);
-
-			TextView movieName = (TextView) v
-					.findViewById(R.id.tv_item_layout_name);
-			TextView movieScore = (TextView) v
-					.findViewById(R.id.tv_item_layout_score);
-			movieName.setText(movieList.get(0).getMovieName());
-			movieScore.setText(movieList.get(0).getMovieScore());
+			
+			viewItemHodler.nameTv.setText(movieList.get(0).getMovieName());
+			viewItemHodler.scoreTv.setText(movieList.get(0).getMovieScore());
 			
 			String proType = movieList.get(0).getMovieProType();
 			
@@ -526,9 +528,7 @@ public class ShowSearchActivity extends Activity implements
 					String duration = movieList.get(0).getMovieDuration();
 					if(duration != null && !duration.equals("")) {
 						
-						TextView movieDuration = (TextView) firstFloatView
-								.findViewById(R.id.tv_item_layout_other_info);
-						movieDuration.setText(duration);
+						viewItemHodler.otherInfo.setText(duration);
 					}
 				} else if(proType.equals("2")){
 					
@@ -540,15 +540,11 @@ public class ShowSearchActivity extends Activity implements
 						if(curEpisode == null || curEpisode.equals("0") || 
 								curEpisode.compareTo(maxEpisode) >= 0) {
 							
-							TextView movieUpdate = (TextView) firstFloatView
-									.findViewById(R.id.tv_item_layout_other_info);
-							movieUpdate.setText(
+							viewItemHodler.otherInfo.setText(
 									maxEpisode + getString(R.string.dianshiju_jiquan));
 							} else if(maxEpisode.compareTo(curEpisode) > 0) {
-								
-								TextView movieUpdate = (TextView) firstFloatView
-										.findViewById(R.id.tv_item_layout_other_info);
-								movieUpdate.setText(getString(R.string.zongyi_gengxinzhi) + 
+
+								viewItemHodler.otherInfo.setText(getString(R.string.zongyi_gengxinzhi) + 
 										curEpisode);
 						}
 					}
@@ -558,15 +554,11 @@ public class ShowSearchActivity extends Activity implements
 					String curEpisode = movieList.get(0).getMovieCurEpisode();
 					if(curEpisode != null && !curEpisode.equals("")) {
 						
-						TextView movieUpdate = (TextView) firstFloatView
-								.findViewById(R.id.tv_item_layout_other_info);
-						movieUpdate.setText(getString(R.string.zongyi_gengxinzhi) + 
+						viewItemHodler.otherInfo.setText(getString(R.string.zongyi_gengxinzhi) + 
 								movieList.get(0).getMovieCurEpisode());
 					}
 				}
 			}
-			v.setPadding(GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING, 
-					GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING);
 
 			if (width != 0) {
 
@@ -575,10 +567,10 @@ public class ShowSearchActivity extends Activity implements
 				// Log.i(TAG, "Width:" + popWidth);
 			}
 
-			aq = new AQuery(v);
+			aq = new AQuery(convertView);
 			aq.id(R.id.iv_item_layout_haibao).image(
 					movieList.get(0).getMoviePicUrl());
-			return v;
+			return convertView;
 		}
 
 		@Override
@@ -599,5 +591,12 @@ public class ShowSearchActivity extends Activity implements
 			return movieList.size();
 		}
 	};
+	
+	 private class GridViewItemHodler {
+			
+		TextView nameTv;
+		TextView scoreTv;
+		TextView otherInfo;
+	}
 
 }

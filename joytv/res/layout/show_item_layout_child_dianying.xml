@@ -100,7 +100,6 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
-            android:text="6.6"
             android:textColor="@color/daoyan_name_color"
             android:textSize="14sp" />
     </RelativeLayout>
