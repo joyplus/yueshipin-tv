@@ -74,7 +74,7 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 
-		this.setContentView(R.layout.show_tv_xiangxi_layout);
+		this.setContentView(R.layout.show_xiangqing_zongyi);
 		Intent intent = getIntent();
 		prod_id = intent.getStringExtra("ID");
 		if(prod_id == null||"".equals(prod_id)){
@@ -534,14 +534,14 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 	
 	private void updateView(){
 		initButton();
-		aq.id(R.id.image).image(date.tv.poster, false, true,0, R.drawable.post_normal);
-		aq.id(R.id.text_name).text(date.tv.name);
-		aq.id(R.id.text_directors).text(date.tv.directors);
-		aq.id(R.id.text_starts).text(date.tv.stars);
-		aq.id(R.id.text_introduce).text(date.tv.summary);
-		aq.id(R.id.bt_xiangqingding).text(date.tv.support_num);
-		aq.id(R.id.bt_xiangqing_xiai).text(date.tv.favority_num);
-		int definition = Integer.valueOf((date.tv.definition));
+		aq.id(R.id.image).image(date.show.poster, false, true,0, R.drawable.post_normal);
+		aq.id(R.id.text_name).text(date.show.name);
+		aq.id(R.id.text_directors).text(date.show.directors);
+		aq.id(R.id.text_starts).text(date.show.stars);
+		aq.id(R.id.text_introduce).text(date.show.summary);
+		aq.id(R.id.bt_xiangqingding).text(date.show.support_num);
+		aq.id(R.id.bt_xiangqing_xiai).text(date.show.favority_num);
+		int definition = Integer.valueOf((date.show.definition));
 		switch (definition) {
 		case 6:
 			aq.id(R.id.img_definition).image(R.drawable.icon_ts);
@@ -556,11 +556,11 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 			aq.id(R.id.img_definition).gone();
 			break;
 		}
-		updateScore(date.tv.score);
+		updateScore(date.show.score);
 	}
 	
 	private void updateScore(String score){
-		aq.id(R.id.textView_score).text(date.tv.score);
+		aq.id(R.id.textView_score).text(date.show.score);
 		float f = Float.valueOf(score);
 		int i = Math.round(f);
 //		int i = (f%1>=0.5)?(int)(f/1):(int)(f/1+1);
