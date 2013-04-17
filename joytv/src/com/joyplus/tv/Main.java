@@ -42,6 +42,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -77,15 +78,77 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 	private String TAG = "Main";
 	private App app;
 	private AQuery aq;
+	
+	private int initStep = 0;
+	
+	private static final int DIALOG_WAITING = 0;
+	
+	private static final int MESSAGE_STEP1_SUCESS = 100; //热播列表加载完成
+	private static final int MESSAGE_STEP2_SUCESS = MESSAGE_STEP1_SUCESS + 1; //悦单加载完成
+	
+	private static final int MESSAGE_START_TIMEOUT = MESSAGE_STEP2_SUCESS + 1;//stating画面超时
+	private static final int MESSAGE_UPDATEUSER = MESSAGE_START_TIMEOUT + 1;//userid确认或者更改
+	
+	
+	private static final int MESSAGE_UPDATEUSER_HISTORY_SUCEESS = MESSAGE_UPDATEUSER;
+	
+	private ImageView startingImageView;
+	private RelativeLayout rootLayout;
 	private Map<String, String> headers;
 	private Handler handler = new Handler(){
 
 		@Override
 		public void handleMessage(Message msg) {
 			// TODO Auto-generated method stub
-			super.handleMessage(msg);
-			aq.id(R.id.iv_head_user_icon).image(app.getUserInfo().getUserAvatarUrl());
-			aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
+			switch (msg.what) {
+			case MESSAGE_UPDATEUSER://userInfo相关验证完成
+				initStep += 1;
+				Log.d(TAG, "MESSAGE_UPDATEUSER --- >Initstep = " + initStep);
+				aq.id(R.id.iv_head_user_icon).image(app.getUserInfo().getUserAvatarUrl());
+				aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
+				getHistoryServiceData();
+				break;
+			case MESSAGE_STEP1_SUCESS://热播列表加载完成
+				initStep +=1;
+				Log.d(TAG, "MESSAGE_STEP1_SUCESS --- >Initstep = " + initStep);
+				if(initStep ==3){
+					if(startingImageView.getVisibility() == View.VISIBLE){
+						startingImageView.setVisibility(View.GONE);
+						rootLayout.setVisibility(View.VISIBLE);
+						gallery1.requestFocus();
+						handler.removeMessages(MESSAGE_START_TIMEOUT);
+					}else{
+						removeDialog(DIALOG_WAITING);
+						gallery1.requestFocus();
+					}
+				}
+				break;//悦单加载完成
+			case MESSAGE_STEP2_SUCESS://悦单加载完成
+				initStep +=1;
+				Log.d(TAG, "MESSAGE_STEP2_SUCESS --- >Initstep = " + initStep);
+				if(initStep ==3){
+					if(startingImageView.getVisibility() == View.VISIBLE){
+						startingImageView.setVisibility(View.GONE);
+						rootLayout.setVisibility(View.VISIBLE);
+						gallery1.requestFocus();
+						handler.removeMessages(MESSAGE_START_TIMEOUT);
+					}else{
+						removeDialog(DIALOG_WAITING);
+						gallery1.requestFocus();
+					}
+				}
+				break;
+			case MESSAGE_START_TIMEOUT://超时还未加载好
+				if(initStep<3){
+					startingImageView.setVisibility(View.GONE);
+					contentLayout.setVisibility(View.INVISIBLE);
+					showDialog(DIALOG_WAITING);
+				}
+				break;
+			default:
+				break;
+			}
+			
 		}
 		
 	};
@@ -186,6 +249,8 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+        startingImageView = (ImageView) findViewById(R.id.image_starting);
+        rootLayout = (RelativeLayout) findViewById(R.id.root_layout);
         gallery1 = (CustomGallery) findViewById(R.id.gallery);
         contentLayout = (LinearLayout) findViewById(R.id.contentlayout);
         noticeView = (TextView) findViewById(R.id.notice_text);
@@ -403,7 +468,10 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 			ReadLocalAppKey();
 		checkLogin();
 		getHotServiceData();
-		getHistoryServiceData();
+		getMovieYueDanServiceData();
+		getTVYueDanServiceData();
+		handler.sendEmptyMessageDelayed(MESSAGE_START_TIMEOUT, 30*1000);
+//		getHistoryServiceData();
 //		
 //		DisplayMetrics dm = new DisplayMetrics();
 //		this.getWindowManager().getDefaultDisplay().getMetrics(dm);
@@ -435,7 +503,7 @@ public boolean checkLogin() {
 	String usr_id = null;
 	usr_id = app.GetServiceData("userId");
 	if(usr_id == null){
-		String macAddress = null;
+		macAddress = null;
 		WifiManager wifiMgr = (WifiManager) getSystemService(Context.WIFI_SERVICE);
 		WifiInfo info = (null == wifiMgr ? null : wifiMgr
 				.getConnectionInfo());
@@ -456,15 +524,49 @@ public boolean checkLogin() {
 			cb.params(params).url(url).type(JSONObject.class)
 					.weakHandler(this, "CallServiceResult");
 			aq.ajax(cb);
-		}else {
-			UserInfo currentUserInfo = new UserInfo();
-			currentUserInfo.setUserId(app.getUserData("userId"));
-			currentUserInfo.setUserName(app.getUserData("userName"));
-			currentUserInfo.setUserAvatarUrl(app.getUserData("userAvatarUrl"));
-			app.setUser(currentUserInfo);
 		}
+	}else {
+		UserInfo currentUserInfo = new UserInfo();
+		currentUserInfo.setUserId(app.getUserData("userId"));
+		currentUserInfo.setUserName(app.getUserData("userName"));
+		currentUserInfo.setUserAvatarUrl(app.getUserData("userAvatarUrl"));
+		headers.put("user_id", currentUserInfo.getUserId());
+		app.setUser(currentUserInfo);
+//			handler.sendEmptyMessage(MESSAGE_UPDATEUSER);
+		checkBand();
+		
 	}
 	return false;
+}
+
+private void checkBand(){
+	String url = Constant.FAYESERVERURL_CHECKBAND + "?user_id=" + app.getUserData("userId") + "&tv_channel=" + Constant.FAYECHANNEL_TV_BASE+StatisticsUtils.MD5(macAddress);
+
+//	String url = Constant.BASE_URL;
+	AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
+	cb.url(url).type(JSONObject.class).weakHandler(this, "CheckBandResult");
+
+	cb.SetHeader(app.getHeaders());
+	aq.ajax(cb);
+}
+
+public void CheckBandResult(String url, JSONObject json, AjaxStatus status){
+
+	Log.d(TAG, json.toString());
+	if (json != null) {
+		try {
+			String result = json.getString("status");
+			if("1".equals(result)){
+				updateUser(app.getUserData("phoneID"));
+			}else{
+				handler.sendEmptyMessage(MESSAGE_UPDATEUSER);
+			}
+		} catch (JSONException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+	}
 }
 
 public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
@@ -487,7 +589,9 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 			app.SaveUserData("userName", json.getString("nickname"));
 			app.SaveUserData("userAvatarUrl", json.getString("pic_url"));
 			app.setUser(currentUserInfo);
-//			headers.put("user_id", currentUserInfo.get);
+			headers.put("user_id", currentUserInfo.getUserId());
+//			handler.sendEmptyMessage(MESSAGE_UPDATEUSER);
+			checkBand();
 		} catch (JSONException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -643,6 +747,9 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
 //		Toast.makeText(this, "key code = " + keyCode, 100).show();
+		if(initStep>3){
+			return true;
+		}
 		switch (keyCode) {
 		case KeyEvent.KEYCODE_DPAD_UP:
 			titleGroup.selectPreTitle();
@@ -878,7 +985,11 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 					yuedanIntent.putExtra("yuedan_type", "2");
 				}
 			}else{
-				yuedanIntent.putParcelableArrayListExtra("yuedan_list_type", yuedan_list.get(index).shiPinList);
+				Bundle bundle = new Bundle();
+				bundle.putString("ID", yuedan_list.get(index).id);
+				bundle.putString("NAME", yuedan_list.get(index).name);
+				yuedanIntent.putExtras(bundle);
+//				yuedanIntent.putParcelableArrayListExtra("yuedan_list_type", yuedan_list.get(index).shiPinList);
 				yuedanIntent.setClass(Main.this, ShowYueDanListActivity.class);
 			}
 			startActivity(yuedanIntent);
@@ -939,7 +1050,7 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 	}
 	
 	public void getHistoryServiceData() {
-		String url = Constant.BASE_URL + "user/playHistories" +"?page_num=1&page_size=1&userid=4742";
+		String url = Constant.BASE_URL + "user/playHistories" +"?page_num=1&page_size=1";
 
 //		String url = Constant.BASE_URL;
 		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
@@ -1096,11 +1207,10 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 				yuedanInfo2.id = "-2";
 				yuedan_list.add(yuedanInfo2);
 //				itemFram.setVisibility(View.VISIBLE);
-				if(titleGroup.getSelectedTitleIndex() == 2){
-					itemFram.setVisibility(View.VISIBLE);
-					gallery1.setAdapter(new MainYueDanItemAdapter(Main.this, yuedan_list));
-					gallery1.setSelection(0);
-				}
+//				itemFram.setVisibility(View.VISIBLE);
+//				gallery1.setAdapter(new MainYueDanItemAdapter(Main.this, yuedan_list));
+//				gallery1.setSelection(0);
+				handler.sendEmptyMessage(MESSAGE_STEP2_SUCESS);
 				return ;
 			}
 		} catch (JsonParseException e) {
@@ -1127,16 +1237,25 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 		try {
 			ReturnUserPlayHistories result  = mapper.readValue(json.toString(), ReturnUserPlayHistories.class);
 			HotItemInfo item  =  new HotItemInfo();
+			if(hot_list.size()>0){
+				if(hot_list.get(0).type == 0){
+					hot_list.remove(0);
+					hot_contentViews.remove(0);
+				}
+			}
 			if(result.histories.length == 0){
 				if(isHotLoadedFlag == 1){
 					if(titleGroup.getSelectedTitleIndex()==1){
 						itemFram.setVisibility(View.VISIBLE);
 						gallery1.setAdapter(new MainHotItemAdapter(Main.this, hot_list));
 						gallery1.setSelection(1);
+						handler.sendEmptyMessage(MESSAGE_STEP1_SUCESS);
 					}
 					isHotLoadedFlag = 2;	
-				}else{
+				}else if(isHotLoadedFlag == 0){
 					isHotLoadedFlag = 1;
+				}else if(isHotLoadedFlag == 2){
+					handler.sendEmptyMessage(MESSAGE_UPDATEUSER_HISTORY_SUCEESS);
 				}
 				return ;
 			}
@@ -1158,7 +1277,7 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 			item.prod_summary = result.histories[0].prod_summary;
 			item.duration = result.histories[0].duration;
 			item.playback_time = result.histories[0].playback_time;
-			hot_list.add(0,item);
+			
 			View hotView = LayoutInflater.from(Main.this).inflate(R.layout.layout_hot, null);
 			TextView hot_name_tv = (TextView) hotView.findViewById(R.id.hot_content_name);
 			TextView hot_score_tv = (TextView) hotView.findViewById(R.id.hot_content_score);
@@ -1171,6 +1290,7 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 			hot_directors_tv.setText(item.directors);
 			hot_starts_tv.setText(item.stars);
 			hot_introduce_tv.setText(item.prod_summary);
+			hot_list.add(0,item);
 			hot_contentViews.add(0,hotView);
 			Log.d(TAG, "lengh = " + hot_contentViews.size());
 			if(isHotLoadedFlag ==1 ){
@@ -1178,9 +1298,14 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 					itemFram.setVisibility(View.VISIBLE);
 					gallery1.setAdapter(new MainHotItemAdapter(Main.this, hot_list));
 					gallery1.setSelection(1);
+					handler.sendEmptyMessage(MESSAGE_STEP1_SUCESS);
 				}
 				isHotLoadedFlag = 2;
 				return;
+			}else if(isHotLoadedFlag == 0){
+				isHotLoadedFlag = 1;
+			}else if(isHotLoadedFlag == 2){
+				handler.sendEmptyMessage(MESSAGE_UPDATEUSER_HISTORY_SUCEESS);
 			}
 			isHotLoadedFlag = 1;
 		} catch (JsonParseException e) {
@@ -1360,8 +1485,9 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 			currentUserInfo.setUserId(app.getUserData("userId"));
 			currentUserInfo.setUserName(app.getUserData("userName"));
 			currentUserInfo.setUserAvatarUrl(app.getUserData("userAvatarUrl"));
+			headers.put("user_id", currentUserInfo.getUserId());
 			app.setUser(currentUserInfo);
-			handler.sendEmptyMessage(0);
+			handler.sendEmptyMessage(MESSAGE_UPDATEUSER);
 		}else{
 			String url = Constant.BASE_URL + "user/view?userid=" + userId;
 			AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
@@ -1388,8 +1514,9 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 				}
 				currentUserInfo.setUserName(json.getString("nickname"));
 				currentUserInfo.setUserAvatarUrl(json.getString("pic_url"));
+				headers.put("user_id", currentUserInfo.getUserId());
 				app.setUser(currentUserInfo);
-				handler.sendEmptyMessage(0);
+				handler.sendEmptyMessage(MESSAGE_UPDATEUSER);
 //				headers.put("user_id", currentUserInfo.get);
 			} catch (JSONException e1) {
 				// TODO Auto-generated catch block
