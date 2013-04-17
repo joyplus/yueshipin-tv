@@ -39,18 +39,31 @@ import com.androidquery.callback.BitmapAjaxCallback;
 import com.androidquery.util.AQUtility;
 import com.joyplus.tv.Adapters.CurrentPlayData;
 import com.joyplus.tv.Service.Return.ReturnProgramView;
+import com.joyplus.tv.ui.UserInfo;
 import com.parse.Parse;
+import com.parse.ParseFacebookUtils.Permissions.User;
 
 @SuppressLint("DefaultLocale")
 public class App extends Application {
 	private final String TAG = "App";
 
 	private static App instance;
-	public String UserID;
+//	public String UserID;
+//	
+	private UserInfo user;
+	
 	private Map<String, String> headers;
 	private CurrentPlayData mCurrentPlayData;
 	private ReturnProgramView m_ReturnProgramView = null;
 
+	public void setUser(UserInfo user){
+		this.user = user;
+	}
+	
+	public UserInfo getUserInfo(){
+		return this.user;
+	}
+	
 	public ReturnProgramView get_ReturnProgramView() {
 		return m_ReturnProgramView;
 	}
@@ -160,6 +173,18 @@ public class App extends Application {
 				"ServiceData", 0).edit();
 		sharedatab.putString(where, Data);
 		sharedatab.commit();
+	}
+	
+	public void SaveUserData(String where, String Data) {
+		SharedPreferences.Editor sharedatab = getSharedPreferences(
+				"userData", 0).edit();
+		sharedatab.putString(where, Data);
+		sharedatab.commit();
+	}
+	
+	public String getUserData(String where) {
+		SharedPreferences sharedata = getSharedPreferences("userData", 0);
+		return sharedata.getString(where, null);
 	}
 
 	public void DeleteServiceData(String where) {

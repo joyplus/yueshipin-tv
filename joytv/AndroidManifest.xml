@@ -256,11 +256,6 @@
                 <action android:name="com.example.UPDATE_STATUS" />
             </intent-filter>
         </receiver>
-        <receiver android:name="BootBroadcastReceiver">  
-                <intent-filter>  
-                    <action android:name="android.intent.action.CONNECTIVITY_CHANGE"></action>  
-                </intent-filter>  
-        </receiver>  
     </application>
 
 </manifest>

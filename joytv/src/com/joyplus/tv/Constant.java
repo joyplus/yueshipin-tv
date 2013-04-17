@@ -57,7 +57,7 @@ IOS: ijoyplusios001bj
 //	public static String Parse_ClientKey = "Y2lKxqco7mN3qBmZ05S8jxSP8nhN92hSN4OHDZR8";
 	
 	//faye 相关（二维码扫描）
-	public static final String FAYESERVERURL = "http://comettest.joyplus.tv:8000/bindtv";
+	public static final String FAYESERVERURL = "http://comettest.joyplus.tv:8080/bindtv";
 	public static final String FAYECHANNEL_TV_BASE = "/screencast/CHANNEL_TV_";
 	public static final String FAYECHANNEL_MOBILE_BASE = "/screencast/CHANNEL_MOBILE_";
 	public static final String CHANNELHEADER = "joy";

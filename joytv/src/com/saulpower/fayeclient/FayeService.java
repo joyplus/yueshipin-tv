@@ -34,12 +34,13 @@ public class FayeService extends Service implements FayeListener{
 	private static final String TAG = "FayeService";
 	
 	public static final String SENDACTION = "chennel_send_message";
-	public static final String RECIVEACTION = "chennel_receive_message";
+	public static final String ACTION_RECIVEACTION_BAND = "chennel_receive_message_band";
+	public static final String ACTION_RECIVEACTION_UNBAND = "chennel_receive_message_unband";
 	
 	private String serverUrl;
 	private String channel;
-	private String phoneChannel;
-	private SharedPreferences preferences;
+//	private String phoneChannel;
+//	private SharedPreferences preferences;
 	private FayeClient myClient;
 //	private FayeClient phoneClient;
 	private BroadcastReceiver receiver;
@@ -53,7 +54,7 @@ public class FayeService extends Service implements FayeListener{
 		serverUrl = Constant.FAYESERVERURL;
 		String macAdd = StatisticsUtils.getMacAdd(this);
 		channel = Constant.FAYECHANNEL_TV_BASE + StatisticsUtils.MD5(macAdd);
-		preferences = getSharedPreferences("userIdDate",0);
+//		preferences = getSharedPreferences("userIdDate",0);
 		app = (App) getApplication();
 		IntentFilter filter = new IntentFilter(SENDACTION);
 		receiver = new BroadcastReceiver(){
@@ -166,17 +167,13 @@ public class FayeService extends Service implements FayeListener{
 		try {
 			int push_type = Integer.valueOf(json.getString("push_type")) ;
 			String phoneID = null;
-			Editor edit = preferences.edit();
 			switch (push_type) {
 			case 31://绑定
 				phoneID = json.getString("user_id");
-				if(!preferences.getBoolean("isBand", false)){
+				if(app.getUserData("isBand") == null||"0".equals(app.getUserData("isBand"))){
 					Log.d(TAG, "phone id = " + phoneID);
-					edit.putBoolean("isBand", true);
-					edit.putString("phoneID", phoneID);
-					edit.commit();
-					//notify to UI 
-					
+					app.SaveUserData("isBand", "1");
+					app.SaveUserData("phoneID", phoneID);
 					JSONObject bandSuccessObj = new JSONObject();
 					bandSuccessObj.put("tv_channel", channel);
 					bandSuccessObj.put("push_type","32");
@@ -184,14 +181,26 @@ public class FayeService extends Service implements FayeListener{
 					bandSuccessObj.put("result", "success");
 					myClient.sendMessage(bandSuccessObj);
 				}else{
+					
+					String lastPhoneId = app.getUserData("phoneID");
+					app.SaveUserData("isBand", "1");
+					app.SaveUserData("phoneID", phoneID);
+					
+					JSONObject unBandObj = new JSONObject();
+					unBandObj.put("tv_channel", channel);
+					unBandObj.put("push_type","33");
+					unBandObj.put("user_id", lastPhoneId);
+					myClient.sendMessage(unBandObj);
+					
 					JSONObject bandSuccessObj = new JSONObject();
-					bandSuccessObj.put("push_type","32");
 					bandSuccessObj.put("tv_channel", channel);
-					bandSuccessObj.put("user_id", preferences.getString("phoneID", "-1"));
-					bandSuccessObj.put("result", "fail");
+					bandSuccessObj.put("push_type","32");
+					bandSuccessObj.put("user_id", phoneID);
+					bandSuccessObj.put("result", "success");
 					myClient.sendMessage(bandSuccessObj);
 				}
-				
+				Intent bandIntent = new Intent(ACTION_RECIVEACTION_BAND);
+				sendBroadcast(bandIntent);
 				break;
 //			case 32://取消绑定
 //				phoneID = json.getString("user_id");
@@ -211,17 +220,19 @@ public class FayeService extends Service implements FayeListener{
 //				break;
 			case 33://取消绑定
 				phoneID = json.getString("user_id");
-				if(!preferences.getBoolean("isBand", false)){
+				if(app.getUserData("isBand") == null||"0".equals(app.getUserData("isBand"))){
 					return ;//tv 端收到解除绑定 但是自己的状态为未绑定时不处理
-				}else if(phoneID.equals(preferences.getString("phoneID", "-1"))){
-					edit.putBoolean("isBand", false);
-					edit.putString("phoneID", "-1");
-					edit.commit();
+				}else if(phoneID.equals(app.getUserData("phoneID"))){
+					app.SaveUserData("isBand", "0");
+					app.SaveUserData("phoneID", "-1"); 
+					//notify to UI 
+					Log.d(TAG, "send broadCast");
+					Intent unbandIntent = new Intent(ACTION_RECIVEACTION_UNBAND);
+					sendBroadcast(unbandIntent);
 				}
-				//notify to UI 
 				break;
 			case 41://投影视频
-				if(preferences.getBoolean("isBand", false)){
+				if(app.getUserData("isBand") != null||"1".equals(app.getUserData("isBand"))){
 					CurrentPlayData playDate = new CurrentPlayData();
 					Intent intent = new Intent(this,VideoPlayerActivity.class);
 //					intent.putExtra("ID", json.getString("prod_id"));

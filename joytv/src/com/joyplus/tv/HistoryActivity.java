@@ -55,11 +55,7 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 	private List<HotItemInfo> zongyiHistoryList = new ArrayList<HotItemInfo>();
 	
 	private View  selectedView;
-	
 	private ListView listView;
-	
-	private PopupWindow popupWindow;
-	
 	private App app;
 	private AQuery aq;
 	@Override
@@ -171,31 +167,44 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 				holder.img = (ImageView) convertView.findViewById(R.id.image);
 				holder.directors = (TextView) convertView.findViewById(R.id.directors);
 				holder.stars = (TextView) convertView.findViewById(R.id.stars);
+				holder.directors_notice = (TextView) convertView.findViewById(R.id.directors_notice);
+				holder.stars_notice = (TextView) convertView.findViewById(R.id.stars_notice);
 				holder.content = (TextView) convertView.findViewById(R.id.content);
 				convertView.setTag(holder);
 			}else{
 				holder = (ViewHolder) convertView.getTag();
 			}
-			holder.title.setText(data.get(position).prod_name);
-			holder.directors.setText(data.get(position).directors);
-			holder.stars.setText(data.get(position).stars);
-			int prod_type = Integer.valueOf(data.get(position).prod_type);
-			String playBack_time = formatDuration(Integer.valueOf(data.get(position).playback_time));
-			switch (prod_type) {
-			case 1:
-				holder.content.setText("上次观看到：" + playBack_time);
-				break;
-			case 2:
-				holder.content.setText("上次观看到：第" + data.get(position).cur_episode+"集"+playBack_time);
-				break;
-			case 3:
-				holder.content.setText("上次观看到：第" + data.get(position).cur_episode+"期"+playBack_time);
-				break;
-			case 131:
-				holder.content.setText("上次观看到：第" + data.get(position).cur_episode+"集"+playBack_time);
-				break;
+			if(data.size()>0){
+				holder.title.setText(data.get(position).prod_name);
+				holder.directors.setText(data.get(position).directors);
+				holder.stars.setText(data.get(position).stars);
+				int prod_type = Integer.valueOf(data.get(position).prod_type);
+				String playBack_time = formatDuration(Integer.valueOf(data.get(position).playback_time));
+				switch (prod_type) {
+				case 1:
+					holder.content.setText("上次观看到：" + playBack_time);
+					break;
+				case 2:
+					holder.content.setText("上次观看到：第" + data.get(position).cur_episode+"集"+playBack_time);
+					break;
+				case 3:
+					holder.content.setText("上次观看到：第" + data.get(position).cur_episode+"期"+playBack_time);
+					break;
+				case 131:
+					holder.content.setText("上次观看到：第" + data.get(position).cur_episode+"集"+playBack_time);
+					break;
+				}
+				aq.id(holder.img).image(data.get(position).prod_pic_url);
+			}else{
+				holder.img.setImageResource(R.drawable.post_normal);
+				holder.title.setText("您还未观看过任何影片。去热播看看最近流行什么吧^_^~");
+				holder.stars.setVisibility(View.GONE);
+				holder.directors.setVisibility(View.GONE);
+				holder.content.setVisibility(View.GONE);
+				holder.stars_notice.setVisibility(View.GONE);
+				holder.directors_notice.setVisibility(View.GONE);
 			}
-			aq.id(holder.img).image(data.get(position).prod_pic_url);
+			
 			convertView.setBackgroundResource(R.drawable.historty_listitem_drawable_selector);
 			return convertView;
 		}
@@ -203,7 +212,7 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 	}
 	
 	private String formatDuration(int duration) {
-		duration = duration / 1000;
+//		duration = duration;
 		int h = duration / 3600;
 		int m = (duration - h * 3600) / 60;
 		int s = duration - (h * 3600 + m * 60);
@@ -231,37 +240,7 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 			btn_fenlei_all.setBackgroundResource(R.drawable.menubg);
 			selectedButton = btn_fenlei_all;
 			selectedButton.setPadding(0, 0, 5, 0);
-			if(popupWindow ==null){
-				NavigateView view = new NavigateView(this);
-				int [] location = new int[2];
-				btn_fenlei_all.getLocationOnScreen(location);
-				view.Init(getResources().getStringArray(R.array.navigator_area),
-						getResources().getStringArray(R.array.navigator_classification), 
-						getResources().getStringArray(R.array.navigator_year), 
-						location[0], 
-						location[1],
-						btn_fenlei_all.getWidth(), 
-						btn_fenlei_all.getHeight(),
-						new OnResultListener() {
-							
-							@Override
-							public void onResult(View v, boolean isBack, String[] choice) {
-								// TODO Auto-generated method stub
-								if(isBack){
-									popupWindow.dismiss();
-								}else{
-									if(popupWindow.isShowing()){
-										popupWindow.dismiss();
-										Toast.makeText(HistoryActivity.this, "selected is " + choice[0] + ","+choice[1]+","+choice[2], Toast.LENGTH_LONG).show();
-									}
-								}
-							}
-						});
-				view.setLayoutParams(new LayoutParams(0,0));
-				popupWindow = new PopupWindow(view, getWindowManager().getDefaultDisplay().getWidth(),
-						getWindowManager().getDefaultDisplay().getHeight(), true);
-			}
-			popupWindow.showAtLocation(listView, Gravity.LEFT | Gravity.BOTTOM, 0, 0);
+			getHistoryData(0);
 			break;
 		case R.id.fenlei_movie:
 			selectedButton.setTextColor(getResources().getColorStateList(R.color.text_color_selector));
@@ -270,6 +249,7 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 			btn_fenlei_movie.setBackgroundResource(R.drawable.menubg);
 			selectedButton = btn_fenlei_movie;
 			selectedButton.setPadding(0, 0, 5, 0);
+			getHistoryData(1);
 			break;
 		case R.id.fenlei_tv:
 			selectedButton.setTextColor(getResources().getColorStateList(R.color.text_color_selector));
@@ -278,6 +258,7 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 			btn_fenlei_tv.setBackgroundResource(R.drawable.menubg);
 			selectedButton = btn_fenlei_tv;
 			selectedButton.setPadding(0, 0, 5, 0);
+			getHistoryData(2);
 			break;
 		case R.id.fenlei_dongman:
 			selectedButton.setTextColor(getResources().getColorStateList(R.color.text_color_selector));
@@ -286,6 +267,7 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 			btn_fenlei_dongman.setBackgroundResource(R.drawable.menubg);
 			selectedButton = btn_fenlei_dongman;
 			selectedButton.setPadding(0, 0, 5, 0);
+			getHistoryData(131);
 			break;
 		case R.id.fenlei_zongyi:
 			selectedButton.setTextColor(getResources().getColorStateList(R.color.text_color_selector));
@@ -294,6 +276,7 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 			btn_fenlei_zongyi.setBackgroundResource(R.drawable.menubg);
 			selectedButton = btn_fenlei_zongyi;
 			selectedButton.setPadding(0, 0, 5, 0);
+			getHistoryData(3);
 			break;
 		default:
 			break;
@@ -315,7 +298,7 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 	
 	
 	private void getHistoryData(int type){
-		String url = Constant.BASE_URL + "user/playHistories" +"?page_num=1&page_size=10&userid=4742";
+		String url = Constant.BASE_URL + "user/playHistories" +"?page_num=1&page_size=10&userid=" + app.getUserInfo().getUserId();
 		if(type!=0){
 			url = url + "&vod_type=" + type;
 		}
@@ -415,7 +398,7 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 				break;
 			case 3:
 				zongyiHistoryList = list;
-				listView.setAdapter(new HistortyAdapter(zongyiHistoryList));
+				listView.setAdapter(new HistortyAdapter(zongyiHistoryList));  
 				break;
 			case 131:
 				dongmanHistoryList = list;
@@ -439,7 +422,9 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 	class ViewHolder{
 		TextView title;
 		TextView stars;
+		TextView stars_notice;
 		TextView directors;
+		TextView directors_notice;
 		TextView content;
 		ImageView img;
 	}

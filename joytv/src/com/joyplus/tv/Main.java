@@ -1,7 +1,6 @@
 package com.joyplus.tv;
 
 import java.io.IOException;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,8 +10,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Bitmap;
@@ -20,13 +21,13 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.ViewGroup.MarginLayoutParams;
 import android.view.animation.AccelerateInterpolator;
@@ -36,9 +37,7 @@ import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -51,7 +50,6 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.zxing.WriterException;
-import com.joyplus.tv.Adapters.CurrentPlayData;
 import com.joyplus.tv.Adapters.MainHotItemAdapter;
 import com.joyplus.tv.Adapters.MainLibAdapter;
 import com.joyplus.tv.Adapters.MainYueDanItemAdapter;
@@ -60,15 +58,14 @@ import com.joyplus.tv.Service.Return.ReturnTops;
 import com.joyplus.tv.Service.Return.ReturnUserPlayHistories;
 import com.joyplus.tv.Video.VideoPlayerActivity;
 import com.joyplus.tv.entity.HotItemInfo;
-import com.joyplus.tv.entity.ShiPinInfo;
 import com.joyplus.tv.entity.ShiPinInfoParcelable;
 import com.joyplus.tv.entity.YueDanInfo;
 import com.joyplus.tv.ui.CustomGallery;
 import com.joyplus.tv.ui.MyScrollLayout;
 import com.joyplus.tv.ui.MyScrollLayout.OnViewChangeListener;
+import com.joyplus.tv.ui.UserInfo;
 import com.saulpower.fayeclient.FayeClient;
 import com.saulpower.fayeclient.FayeService;
-import com.saulpower.fayeclient.FayeClient.FayeListener;
 import com.umeng.analytics.MobclickAgent;
 
 
@@ -77,7 +74,17 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 	private App app;
 	private AQuery aq;
 	private Map<String, String> headers;
-	private Handler handler = new Handler();
+	private Handler handler = new Handler(){
+
+		@Override
+		public void handleMessage(Message msg) {
+			// TODO Auto-generated method stub
+			super.handleMessage(msg);
+			aq.id(R.id.iv_head_user_icon).image(app.getUserInfo().getUserAvatarUrl());
+			aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
+		}
+		
+	};
 	ObjectMapper mapper = new ObjectMapper();
 	private List<View> hot_contentViews = new ArrayList<View>();
 	private List<View> yuedan_contentViews = new ArrayList<View>();
@@ -148,6 +155,26 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 	private FayeClient mClient;
 	private String macAddress;
 	
+	
+	private BroadcastReceiver receiver = new BroadcastReceiver(){
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			// TODO Auto-generated method stub
+			String action = intent.getAction();
+			if(FayeService.ACTION_RECIVEACTION_BAND.equals(action)){
+				//band
+				updateUser(app.getUserData("phoneID"));
+			}else if(FayeService.ACTION_RECIVEACTION_UNBAND.equals(action)){
+				//unband by mobile
+				Log.d(TAG, "unband userId = " + app.getUserData("userId"));
+				updateUser(app.getUserData("userId"));
+			}
+		}
+
+		
+	};
+	
 //	private Handler mHandler = new Handler();
 	
     /** Called when the activity is first created. */
@@ -161,8 +188,6 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
         titleGroup = (MyScrollLayout) findViewById(R.id.group);
         titleGroup.setFocusable(false);
         titleGroup.setFocusableInTouchMode(false);
-        
-        
         
         kuView = LayoutInflater.from(Main.this).inflate(R.layout.layout_lib, null);
         myView = LayoutInflater.from(Main.this).inflate(R.layout.layout_my, null);
@@ -360,6 +385,11 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		IntentFilter filter = new IntentFilter();
+        filter.addAction(FayeService.ACTION_RECIVEACTION_BAND);
+        filter.addAction(FayeService.ACTION_RECIVEACTION_UNBAND);
+        registerReceiver(receiver, filter);
 	
 		headers.put("app_key", Constant.APPKEY);
 		headers.put("client","android");
@@ -383,6 +413,7 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 	protected void onDestroy() {
 		if (aq != null)
 			aq.dismiss();
+		unregisterReceiver(receiver);
 		super.onDestroy();
 	}
 	public void ReadLocalAppKey() {
@@ -397,10 +428,9 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 	}
 }
 public boolean checkLogin() {
-	String UserInfo = null;
-	UserInfo = app.GetServiceData("UserInfo");
-	if (UserInfo == null) {
-		// 1. 在客户端生成一个唯一的UUID
+	String usr_id = null;
+	usr_id = app.GetServiceData("userId");
+	if(usr_id == null){
 		String macAddress = null;
 		WifiManager wifiMgr = (WifiManager) getSystemService(Context.WIFI_SERVICE);
 		WifiInfo info = (null == wifiMgr ? null : wifiMgr
@@ -422,20 +452,44 @@ public boolean checkLogin() {
 			cb.params(params).url(url).type(JSONObject.class)
 					.weakHandler(this, "CallServiceResult");
 			aq.ajax(cb);
+		}else {
+			UserInfo currentUserInfo = new UserInfo();
+			currentUserInfo.setUserId(app.getUserData("userId"));
+			currentUserInfo.setUserName(app.getUserData("userName"));
+			currentUserInfo.setUserAvatarUrl(app.getUserData("userAvatarUrl"));
+			app.setUser(currentUserInfo);
 		}
-	} else {
-		JSONObject json;
+	}
+	return false;
+}
+
+public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
+
+	Log.d(TAG, json.toString());
+	if (json != null) {
 		try {
-			json = new JSONObject(UserInfo);
-			app.UserID = json.getString("user_id").trim();
-			headers.put("user_id", app.UserID);
+			UserInfo currentUserInfo = new UserInfo();
+			if(json.has("user_id"))
+			{
+				currentUserInfo.setUserId(json.getString("user_id").trim());
+			}
+			else
+			{
+				currentUserInfo.setUserId(json.getString("id").trim());
+			}
+			currentUserInfo.setUserName(json.getString("nickname"));
+			currentUserInfo.setUserAvatarUrl(json.getString("pic_url"));
+			app.SaveUserData("userId", currentUserInfo.getUserId());
+			app.SaveUserData("userName", json.getString("nickname"));
+			app.SaveUserData("userAvatarUrl", json.getString("pic_url"));
+			app.setUser(currentUserInfo);
+//			headers.put("user_id", currentUserInfo.get);
 		} catch (JSONException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-
+		
 	}
-	return false;
 }
     
 	@Override
@@ -1199,6 +1253,51 @@ public boolean checkLogin() {
 //		}
 //	}
 	
+	private void updateUser(String userId) {
+		// TODO Auto-generated method stub
+		if(userId.equals(app.getUserData("userId"))){
+			UserInfo currentUserInfo = new UserInfo();
+			currentUserInfo.setUserId(app.getUserData("userId"));
+			currentUserInfo.setUserName(app.getUserData("userName"));
+			currentUserInfo.setUserAvatarUrl(app.getUserData("userAvatarUrl"));
+			app.setUser(currentUserInfo);
+			handler.sendEmptyMessage(0);
+		}else{
+			String url = Constant.BASE_URL + "user/view?userid=" + userId;
+			AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
+			cb.url(url).type(JSONObject.class).weakHandler(this, "getBandUserInfoResult");
+			cb.SetHeader(app.getHeaders());
+			aq.ajax(cb);
+		}
+	}
+	
+	
+	public void getBandUserInfoResult(String url, JSONObject json, AjaxStatus status){
+
+		if (json != null) {
+			Log.d(TAG, json.toString());
+			try {
+				UserInfo currentUserInfo = new UserInfo();
+				if(json.has("user_id"))
+				{
+					currentUserInfo.setUserId(json.getString("user_id").trim());
+				}
+				else
+				{
+					currentUserInfo.setUserId(json.getString("id").trim());
+				}
+				currentUserInfo.setUserName(json.getString("nickname"));
+				currentUserInfo.setUserAvatarUrl(json.getString("pic_url"));
+				app.setUser(currentUserInfo);
+				handler.sendEmptyMessage(0);
+//				headers.put("user_id", currentUserInfo.get);
+			} catch (JSONException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			
+		}
+	}
 	
 	private Bitmap CreateBarCode(){
 		//根据字符串生成二维码图片并显示在界面上，第二个参数为图片的大小（350*350）
