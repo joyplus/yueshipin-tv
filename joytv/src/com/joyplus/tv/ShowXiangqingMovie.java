@@ -15,6 +15,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.GridView;
@@ -132,6 +134,19 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 		xiaiBt.setOnClickListener(this);
 		bofangLL.setOnClickListener(this);
 		yingpingBt.setOnClickListener(this);
+		
+		tuijianGv.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				// TODO Auto-generated method stub
+				Intent intent = new Intent(ShowXiangqingMovie.this,
+						ShowXiangqingMovie.class);
+				intent.putExtra("ID", recommendMoviesData.items[position].prod_id);
+				startActivity(intent);
+			}
+		});
 	}
 
 	@Override
