@@ -220,7 +220,11 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 			startActivity(intent);
 			break;
 		case R.id.bt_xiangqing_yingping:
-			startActivity(new Intent(this, DetailComment.class));
+			Intent yingpingIntent = new Intent(this, DetailComment.class);
+			yingpingIntent.putExtra("ID", prod_id);
+			
+			startActivity(yingpingIntent);
+			break;
 		default:
 			
 			if(v.getId()>=10000){

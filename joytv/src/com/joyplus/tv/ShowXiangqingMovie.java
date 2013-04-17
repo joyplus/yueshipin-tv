@@ -172,7 +172,10 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 		case R.id.gv_xiangqing_tuijian:
 			break;
 		case R.id.bt_xiangqing_yingping:
-			startActivity(new Intent(this, DetailComment.class));
+			Intent yingpingIntent = new Intent(this, DetailComment.class);
+			yingpingIntent.putExtra("ID", prod_id);
+			
+			startActivity(yingpingIntent);
 			break;
 		default:
 			break;
