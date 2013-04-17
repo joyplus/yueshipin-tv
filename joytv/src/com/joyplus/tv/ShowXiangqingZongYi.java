@@ -40,7 +40,7 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 	private static final String TAG = "ShowXiangqingZongYi";
 	private LinearLayout bofangLL;
 
-	private Button dingBt,xiaiBt,xiazaiBt, yingpingBt;
+	private Button dingBt,xiaiBt, yingpingBt;
 	private Button bofangBt,gaoqingBt;
 
 	private View beforeView;
@@ -159,21 +159,18 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 		gaoqingBt = (Button) findViewById(R.id.bt_xiangqing_gaoqing);
 
 
-		xiazaiBt = (Button) findViewById(R.id.bt_xiangqing_xiazai);
 		yingpingBt = (Button) findViewById(R.id.bt_xiangqing_yingping);
 		
 		layout = (LinearLayout) findViewById(R.id.layout);
 		table  = (TableLayout) findViewById(R.id.table);
+		
+		bofangLL.requestFocus();
 
 		addListener();
 
 		initPopWindow();
 
-		xiazaiBt.setFocusable(false);
-		// bofangLL.setFocusable(true);
-
 		beforeView = dingBt;
-//		dingBt.setSelected(true);
 
 	}
 
@@ -460,6 +457,7 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 //					btn.setId(num-((j*5+i)+ (selectedIndex-1)*COUNT));
 //				}
 				btn.setOnClickListener(this);
+				btn.setOnKeyListener(this);
 				btn.setBackgroundResource(R.drawable.xiangqing_button_selector);
 				if(j*5+i+1>count){
 					btn.setVisibility(View.INVISIBLE);

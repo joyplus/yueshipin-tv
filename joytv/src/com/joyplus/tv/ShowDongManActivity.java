@@ -238,7 +238,7 @@ public class ShowDongManActivity extends Activity implements View.OnKeyListener,
 					int position, long id) {
 				// TODO Auto-generated method stub
 				Intent intent = new Intent(ShowDongManActivity.this,
-						ShowXiangqingTv.class);
+						ShowXiangqingDongman.class);
 				Log.i(TAG, "ID:" + movieList.get(position).getMovieID());
 				intent.putExtra("ID", movieList.get(position).getMovieID());
 				startActivity(intent);
