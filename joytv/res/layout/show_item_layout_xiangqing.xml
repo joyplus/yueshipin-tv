@@ -12,7 +12,7 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:scaleType="fitXY"
-            android:src="@drawable/test3" />
+            android:src="@drawable/post_normal" />
     </LinearLayout>
 
     <RelativeLayout
@@ -24,8 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:id="@+id/img_definition"
-            android:src="@drawable/icon_bd" />
+            android:id="@+id/img_definition"/>
     </RelativeLayout>
 
 </FrameLayout>

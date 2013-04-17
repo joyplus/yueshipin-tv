@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -14,6 +15,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.ScaleAnimation;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
@@ -111,7 +113,25 @@ public class ShowSearchActivity extends Activity implements
 					
 					String url = StatisticsUtils.getSearchURL(SEARCH_URL, 1 + "", 30 + "",searchStr);
 					getServiceData(url);
+//					searchEt.
 				}
+			}
+		});
+		
+		searchEt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+			
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				// TODO Auto-generated method stub
+				if(hasFocus==true){
+					((InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE))
+					    .showSoftInput(searchEt, InputMethodManager.SHOW_FORCED);
+
+					}else{ //ie searchBoxEditText doesn't have focus
+					((InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE))
+					    .hideSoftInputFromWindow(searchEt.getWindowToken(), 0);
+
+					}
 			}
 		});
 
@@ -181,6 +201,12 @@ public class ShowSearchActivity extends Activity implements
 								
 								Intent intent = new Intent(ShowSearchActivity.this,
 										ShowXiangqingDongman.class);
+								intent.putExtra("ID", movieList.get(position).getMovieID());
+								startActivity(intent);
+							} else if(pro_type.equals("3")) {
+								
+								Intent intent = new Intent(ShowSearchActivity.this,
+										ShowXiangqingZongYi.class);
 								intent.putExtra("ID", movieList.get(position).getMovieID());
 								startActivity(intent);
 							}

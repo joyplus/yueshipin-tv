@@ -68,7 +68,7 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 
-		this.setContentView(R.layout.show_dianying_xiangxi_layout);
+		this.setContentView(R.layout.show_xiangxi_dianying_layout);
 		aq = new AQuery(this);
 		app = (App) getApplication();
 		prod_id = getIntent().getStringExtra("ID");

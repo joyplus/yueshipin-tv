@@ -74,7 +74,7 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 
-		this.setContentView(R.layout.show_dongman_xiangxi_layout);
+		this.setContentView(R.layout.show_xiangxi_dongman_layout);
 		Intent intent = getIntent();
 		prod_id = intent.getStringExtra("ID");
 		if(prod_id == null||"".equals(prod_id)){
