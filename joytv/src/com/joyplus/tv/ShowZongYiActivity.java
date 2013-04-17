@@ -208,7 +208,7 @@ public class ShowZongYiActivity extends Activity implements View.OnKeyListener,
 					int position, long id) {
 				// TODO Auto-generated method stub
 				Intent intent = new Intent(ShowZongYiActivity.this,
-						ShowXiangqingTv.class);
+						ShowXiangqingZongYi.class);
 				intent.putExtra("ID", movieList.get(position).getMovieID());
 				startActivity(intent);
 			}
