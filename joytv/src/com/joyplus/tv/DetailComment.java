@@ -133,10 +133,11 @@ public class DetailComment extends Activity implements
 //		fade_out = AnimationUtils.loadAnimation(this,
 //				R.anim.comment_fade_out);
 		 Intent intent = getIntent();
-		 prod_id = intent.getStringExtra("prod_id");
-		 prod_name = intent.getStringExtra("prod_name");
-		 prod_dou = intent.getStringExtra("prod_dou");
-		 prod_url  = intent.getStringExtra("prod_url");
+		 Bundle bundle = intent.getExtras();
+		 prod_id = bundle.getString("prod_id");
+		 prod_name = bundle.getString("prod_name");
+		 prod_dou =bundle.getString("prod_dou");
+		 prod_url  =bundle.getString("prod_url");
 
 //		prod_id = "6524";
 //		prod_name = "那年冬天,风在吹";
