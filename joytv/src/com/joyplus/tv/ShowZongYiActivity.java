@@ -512,6 +512,14 @@ public class ShowZongYiActivity extends Activity implements View.OnKeyListener,
 		beforeView = v;
 		return false;
 	}
+	
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		if (aq != null)
+			aq.dismiss();
+		super.onDestroy();
+	}
 
 	private PopupWindow popupWindow;
 	

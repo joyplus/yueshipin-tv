@@ -550,6 +550,14 @@ public class ShowTVActivity extends Activity implements View.OnKeyListener,
 		return false;
 	}
 	
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		if (aq != null)
+			aq.dismiss();
+		super.onDestroy();
+	}
+	
 	private PopupWindow popupWindow;
 
 	@Override
@@ -755,6 +763,8 @@ public class ShowTVActivity extends Activity implements View.OnKeyListener,
 				movieItemData.setMovieScore(result.results[i].score);
 				movieItemData.setMovieID(result.results[i].prod_id);
 				movieItemData.setMovieDuration(result.results[i].duration);
+				movieItemData.setMovieCurEpisode(result.results[i].cur_episode);
+				movieItemData.setMovieMaxEpisode(result.results[i].max_episode);
 				recommendList.add(movieItemData);
 			}
 			String url2 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 

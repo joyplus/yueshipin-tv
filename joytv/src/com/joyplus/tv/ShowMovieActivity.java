@@ -554,6 +554,14 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 		beforeView = v;
 		return false;
 	}
+	
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		if (aq != null)
+			aq.dismiss();
+		super.onDestroy();
+	}
 
 	@Override
 	public void onClick(View v) {

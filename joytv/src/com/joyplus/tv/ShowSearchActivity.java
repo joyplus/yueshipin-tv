@@ -406,6 +406,14 @@ public class ShowSearchActivity extends Activity implements
 		Log.i("Yangzhg", "onClick");
 	}
 	
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		if (aq != null)
+			aq.dismiss();
+		super.onDestroy();
+	}
+	
 	
 	private void getServiceData(String url) {
 		

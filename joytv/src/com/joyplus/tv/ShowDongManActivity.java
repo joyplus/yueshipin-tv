@@ -545,6 +545,14 @@ public class ShowDongManActivity extends Activity implements View.OnKeyListener,
 		return false;
 	}
 	
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		if (aq != null)
+			aq.dismiss();
+		super.onDestroy();
+	}
+
 	private PopupWindow popupWindow;
 
 	@Override
