@@ -194,6 +194,7 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 			bundle.putString("prod_name", movieData.movie.name);
 			bundle.putString("prod_dou", movieData.movie.score);
 			bundle.putString("prod_url", movieData.movie.poster);
+			yingpingIntent.putExtras(bundle);
 			startActivity(yingpingIntent);
 			break;
 		default:

@@ -227,6 +227,7 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 			bundle.putString("prod_name", date.tv.name);
 			bundle.putString("prod_dou", date.tv.score);
 			bundle.putString("prod_url", date.tv.poster);
+			yingpingIntent.putExtras(bundle);
 			startActivity(yingpingIntent);
 			break;
 		default:

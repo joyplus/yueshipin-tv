@@ -514,6 +514,8 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 		button.setTextColor(getResources().getColor(R.color.text_active));
 	}
 
+	
+	
 	@Override
 	public boolean onKey(View v, int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
