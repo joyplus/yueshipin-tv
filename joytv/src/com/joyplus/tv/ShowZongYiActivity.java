@@ -91,10 +91,11 @@ public class ShowZongYiActivity extends Activity implements View.OnKeyListener,
 		initView();
 		initState();
 
+		dinashijuGv.setAdapter(movieAdapter);
+		
 		String url = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
 				REBO_ZONGYI, 1 + "", 50 + "");
 		getServiceData(url);// 进入电影界面时，全部分类电影显示获取焦点，并且显示数据
-		dinashijuGv.setAdapter(movieAdapter);
 		dinashijuGv.setSelected(true);
 		dinashijuGv.requestFocus();
 		dinashijuGv.setSelection(0);
@@ -761,14 +762,19 @@ public class ShowZongYiActivity extends Activity implements View.OnKeyListener,
 		
 		TextView movieName = (TextView) firstFloatView.findViewById(R.id.tv_item_layout_name);
 		TextView otherInfo = (TextView) firstFloatView.findViewById(R.id.tv_item_active_layout_other_info);
-		aq = new AQuery(firstFloatView);
-//		aq.id(R.id.iv_item_layout_haibao).image(
-//				movieList.get(0).getMoviePicUrl());
-		aq.id(R.id.iv_item_layout_haibao).image(movieList.get(0).getMoviePicUrl(), 
-				true, true,0, R.drawable.post_active);
-		movieName.setText(movieList.get(0).getMovieName());
-		otherInfo.setText(getString(R.string.zongyi_gengxinzhi) + 
-				movieList.get(0).getMovieCurEpisode());
+		
+		if(movieList.size() > 0 ) {
+			
+			aq = new AQuery(firstFloatView);
+//			aq.id(R.id.iv_item_layout_haibao).image(
+//					movieList.get(0).getMoviePicUrl());
+			aq.id(R.id.iv_item_layout_haibao).image(movieList.get(0).getMoviePicUrl(), 
+					true, true,0, R.drawable.post_active);
+			movieName.setText(movieList.get(0).getMovieName());
+			otherInfo.setText(getString(R.string.zongyi_gengxinzhi) + 
+					movieList.get(0).getMovieCurEpisode());
+		}
+	
 		firstFloatView.setPadding(GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING, 
 				GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING);
 		firstFloatView.setBackgroundColor(getResources()
@@ -808,16 +814,22 @@ public class ShowZongYiActivity extends Activity implements View.OnKeyListener,
 			convertView.setLayoutParams(params);
 			convertView.setPadding(GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING,
 					GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING);
-
-			viewItemHodler.nameTv.setText(movieList.get(position).getMovieName());
-			viewItemHodler.otherInfo.setText(getString(R.string.zongyi_gengxinzhi) + 
-					movieList.get(0).getMovieCurEpisode());
+			
 			if (width != 0) {
 
 				popWidth = width;
 				popHeight = height;
 				// Log.i(TAG, "Width:" + popWidth);
 			}
+			
+			if(movieList.size() <= 0) {
+				
+				return convertView;
+			}
+
+			viewItemHodler.nameTv.setText(movieList.get(position).getMovieName());
+			viewItemHodler.otherInfo.setText(getString(R.string.zongyi_gengxinzhi) + 
+					movieList.get(0).getMovieCurEpisode());
 
 			aq = new AQuery(convertView);
 //			aq.id(R.id.iv_item_layout_haibao).image(
@@ -836,12 +848,20 @@ public class ShowZongYiActivity extends Activity implements View.OnKeyListener,
 		@Override
 		public Object getItem(int position) {
 			// TODO Auto-generated method stub
+			if(movieList.size() <= 0 ) {
+				
+				return null;
+			}
 			return movieList.get(position);
 		}
 
 		@Override
 		public int getCount() {
 			// TODO Auto-generated method stub
+			if(movieList.size() <= 0 ) {
+				
+				return DEFAULT_ITEM_NUM;
+			}
 			return movieList.size();
 		}
 	};

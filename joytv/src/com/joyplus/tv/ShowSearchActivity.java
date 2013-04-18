@@ -576,15 +576,16 @@ public class ShowSearchActivity extends Activity implements
 				viewItemHodler.otherInfo = (TextView) convertView.findViewById(R.id.tv_item_layout_other_info);
 				convertView.setTag(viewItemHodler);
 				
-				AbsListView.LayoutParams params = new AbsListView.LayoutParams(
-						width, height);
-				convertView.setLayoutParams(params);
-				convertView.setPadding(GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING,
-						GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING);
 			} else {
 
 				viewItemHodler = (GridViewItemHodler) convertView.getTag();
 			}
+			
+			AbsListView.LayoutParams params = new AbsListView.LayoutParams(
+					width, height);
+			convertView.setLayoutParams(params);
+			convertView.setPadding(GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING,
+					GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING);
 			
 			viewItemHodler.nameTv.setText(movieList.get(0).getMovieName());
 			

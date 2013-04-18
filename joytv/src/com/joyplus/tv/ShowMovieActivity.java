@@ -97,10 +97,11 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 		initView();
 		initState();
 
+		movieGv.setAdapter(movieAdapter);
+		
 		String urlNormal = StatisticsUtils.getFilterURL(FILTER_URL, 1+"", 10+"", MOVIE_TYPE);
 		getSaveTenServiceData(urlNormal,true);
 //		movieGv.setAdapter(movieAdapter);// 网格布局添加适配器
-		movieGv.setAdapter(movieAdapter);
 		movieGv.setSelected(true);
 		movieGv.requestFocus();
 		movieGv.setSelection(0);
@@ -932,22 +933,27 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 		
 		TextView movieName = (TextView) firstFloatView.findViewById(R.id.tv_item_layout_name);
 		TextView movieScore = (TextView) firstFloatView.findViewById(R.id.tv_item_layout_score);
-		aq = new AQuery(firstFloatView);
-//		aq.id(R.id.iv_item_layout_haibao).image(
-//				movieList.get(0).getMoviePicUrl());
-		aq.id(R.id.iv_item_layout_haibao).image(movieList.get(0).getMoviePicUrl(), 
-				true, true,0, R.drawable.post_active);
 		
-		movieName.setText(movieList.get(0).getMovieName());
-		movieScore.setText(movieList.get(0).getMovieScore());
-		
-		String duration = movieList.get(0).getMovieDuration();
-		if(duration != null && !duration.equals("")) {
+		if(movieList.size() > 0) {
 			
-			TextView movieDuration = (TextView) firstFloatView
-					.findViewById(R.id.tv_item_layout_other_info);
-			movieDuration.setText(duration);
+			aq = new AQuery(firstFloatView);
+//			aq.id(R.id.iv_item_layout_haibao).image(
+//					movieList.get(0).getMoviePicUrl());
+			aq.id(R.id.iv_item_layout_haibao).image(movieList.get(0).getMoviePicUrl(), 
+					true, true,0, R.drawable.post_active);
+			
+			movieName.setText(movieList.get(0).getMovieName());
+			movieScore.setText(movieList.get(0).getMovieScore());
+			
+			String duration = movieList.get(0).getMovieDuration();
+			if(duration != null && !duration.equals("")) {
+				
+				TextView movieDuration = (TextView) firstFloatView
+						.findViewById(R.id.tv_item_layout_other_info);
+				movieDuration.setText(duration);
+			}
 		}
+
 		firstFloatView.setPadding(GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING,
 				GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING);
 		firstFloatView.setBackgroundColor(getResources()
@@ -989,6 +995,16 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 			convertView.setPadding(GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING,
 					GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING);
 			
+			if (width != 0) {
+
+				popWidth = width;
+				popHeight = height;
+			}
+			
+			if(movieList.size() <= 0) {
+				
+				return convertView;
+			}
 
 			viewItemHodler.nameTv.setText(movieList.get(position).getMovieName());
 			viewItemHodler.scoreTv.setText(movieList.get(position).getMovieScore());
@@ -997,14 +1013,6 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 			if(duration != null && !duration.equals("")) {
 				
 				viewItemHodler.otherInfo.setText(movieList.get(position).getMovieDuration());
-			}
-
-			if (width != 0) {
-
-				popWidth = width;
-				popHeight = height;
-//				movieName.setTextSize(height * 1/17.0f);
-				// Log.i(TAG, "Width:" + popWidth);
 			}
 
 			aq = new AQuery(convertView);
@@ -1024,12 +1032,20 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 		@Override
 		public Object getItem(int position) {
 			// TODO Auto-generated method stub
+			if(movieList.size() <= 0 ) {
+				
+				return null;
+			}
 			return movieList.get(position);
 		}
 
 		@Override
 		public int getCount() {
 			// TODO Auto-generated method stub
+			if(movieList.size() <= 0 ) {
+				
+				return DEFAULT_ITEM_NUM;
+			}
 			return movieList.size();
 		}
 	};

@@ -18,5 +18,7 @@ public interface JieMianConstant {
 	
 	int STANDARD_PIC_WIDTH = 264;
 	int STANDARD_PIC_HEIGHT = 370;
+	
+	int DEFAULT_ITEM_NUM = 20;
 
 }

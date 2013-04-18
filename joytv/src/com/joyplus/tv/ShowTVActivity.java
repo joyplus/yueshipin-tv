@@ -95,10 +95,11 @@ public class ShowTVActivity extends Activity implements View.OnKeyListener,
 		initView();
 		initState();
 
+		dinashijuGv.setAdapter(movieAdapter);
+		
 		String urlNormal = StatisticsUtils.getFilterURL(FILTER_URL, 1+"", 10+"", TV_TYPE);
 		getSaveTenServiceData(urlNormal,true);
 		
-		dinashijuGv.setAdapter(movieAdapter);
 		dinashijuGv.setSelected(true);
 		dinashijuGv.requestFocus();
 		dinashijuGv.setSelection(0);
@@ -918,31 +919,35 @@ public class ShowTVActivity extends Activity implements View.OnKeyListener,
 //		ImageView iv = (ImageView) firstFloatView.findViewById(R.id.iv_item_layout_haibao);
 		TextView movieName = (TextView) firstFloatView.findViewById(R.id.tv_item_layout_name);
 		TextView movieScore = (TextView) firstFloatView.findViewById(R.id.tv_item_layout_score);
-		aq = new AQuery(firstFloatView);
-//		aq.id(R.id.iv_item_layout_haibao).image(
-//				movieList.get(0).getMoviePicUrl());
-		aq.id(R.id.iv_item_layout_haibao).image(movieList.get(0).getMoviePicUrl(), 
-				true, true,0, R.drawable.post_active);
-		movieName.setText(movieList.get(0).getMovieName());
-		movieScore.setText(movieList.get(0).getMovieScore());
 		
-		
-		String curEpisode = movieList.get(0).getMovieCurEpisode();
-		String maxEpisode = movieList.get(0).getMovieMaxEpisode();
-		
-		if(curEpisode == null || curEpisode.equals("0") || 
-				curEpisode.compareTo(maxEpisode) >= 0) {
+		if(movieList.size() > 0) {
 			
-			TextView movieUpdate = (TextView) firstFloatView
-					.findViewById(R.id.tv_item_layout_other_info);
-			movieUpdate.setText(
-					movieList.get(0).getMovieMaxEpisode() + getString(R.string.dianshiju_jiquan));
-			} else if(maxEpisode.compareTo(curEpisode) > 0) {
+			aq = new AQuery(firstFloatView);
+//			aq.id(R.id.iv_item_layout_haibao).image(
+//					movieList.get(0).getMoviePicUrl());
+			aq.id(R.id.iv_item_layout_haibao).image(movieList.get(0).getMoviePicUrl(), 
+					true, true,0, R.drawable.post_active);
+			movieName.setText(movieList.get(0).getMovieName());
+			movieScore.setText(movieList.get(0).getMovieScore());
+			
+			
+			String curEpisode = movieList.get(0).getMovieCurEpisode();
+			String maxEpisode = movieList.get(0).getMovieMaxEpisode();
+			
+			if(curEpisode == null || curEpisode.equals("0") || 
+					curEpisode.compareTo(maxEpisode) >= 0) {
 				
 				TextView movieUpdate = (TextView) firstFloatView
 						.findViewById(R.id.tv_item_layout_other_info);
-				movieUpdate.setText(getString(R.string.zongyi_gengxinzhi) + 
-						movieList.get(0).getMovieCurEpisode());
+				movieUpdate.setText(
+						movieList.get(0).getMovieMaxEpisode() + getString(R.string.dianshiju_jiquan));
+				} else if(maxEpisode.compareTo(curEpisode) > 0) {
+					
+					TextView movieUpdate = (TextView) firstFloatView
+							.findViewById(R.id.tv_item_layout_other_info);
+					movieUpdate.setText(getString(R.string.zongyi_gengxinzhi) + 
+							movieList.get(0).getMovieCurEpisode());
+			}
 		}
 		
 		firstFloatView.setPadding(GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING,
@@ -984,6 +989,18 @@ public class ShowTVActivity extends Activity implements View.OnKeyListener,
 			convertView.setLayoutParams(params);
 			convertView.setPadding(GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING,
 					GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING);
+			if (width != 0) {
+
+				popWidth = width;
+				popHeight = height;
+				// Log.i(TAG, "Width:" + popWidth);
+			}
+			
+			if(movieList.size() <= 0) {
+				
+				return convertView;
+				
+			}
 			
 			viewItemHodler.nameTv.setText(movieList.get(position).getMovieName());
 			viewItemHodler.scoreTv.setText(movieList.get(position).getMovieScore());
@@ -1000,14 +1017,6 @@ public class ShowTVActivity extends Activity implements View.OnKeyListener,
 					
 					viewItemHodler.otherInfo.setText(getString(R.string.zongyi_gengxinzhi) + 
 							movieList.get(position).getMovieCurEpisode());
-			}
-			
-
-			if (width != 0) {
-
-				popWidth = width;
-				popHeight = height;
-				// Log.i(TAG, "Width:" + popWidth);
 			}
 
 			aq = new AQuery(convertView);
@@ -1027,12 +1036,22 @@ public class ShowTVActivity extends Activity implements View.OnKeyListener,
 		@Override
 		public Object getItem(int position) {
 			// TODO Auto-generated method stub
+			if(movieList.size() <= 0 ) {
+				
+				return null;
+			}
+			
 			return movieList.get(position);
 		}
 
 		@Override
 		public int getCount() {
 			// TODO Auto-generated method stub
+			if(movieList.size() <= 0 ) {
+				
+				return DEFAULT_ITEM_NUM;
+			}
+			
 			return movieList.size();
 		}
 	};

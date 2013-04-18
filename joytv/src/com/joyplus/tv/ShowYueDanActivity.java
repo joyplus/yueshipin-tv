@@ -99,6 +99,8 @@ public class ShowYueDanActivity extends Activity implements View.OnKeyListener,
 		initView();
 		initState();
 		
+		dinashijuGv.setAdapter(movieAdapter);
+		
 		if(defalutYuedan == DIANYING_YUEDAN) {
 			
 			String url = StatisticsUtils.getTopURL(TOP_URL, 1+"", 50 + "", 1+ "");
@@ -110,7 +112,6 @@ public class ShowYueDanActivity extends Activity implements View.OnKeyListener,
 			getServiceData(url);// 进入电影界面时，全部分类电影显示获取焦点，并且显示数据
 		}
 
-		dinashijuGv.setAdapter(movieAdapter);
 		dinashijuGv.setSelected(true);
 		dinashijuGv.requestFocus();
 		dinashijuGv.setSelection(0);
@@ -715,13 +716,16 @@ public class ShowYueDanActivity extends Activity implements View.OnKeyListener,
 		TextView movieName = (TextView) firstFloatView.findViewById(R.id.tv_item_layout_name);
 		TextView movieScore = (TextView) firstFloatView.findViewById(R.id.tv_item_layout_other_info);
 		
-		aq = new AQuery(firstFloatView);
-//		aq.id(R.id.iv_item_layout_haibao).image(
-//				movieList.get(0).pic_url);
-		aq.id(R.id.iv_item_layout_haibao).image(movieList.get(0).pic_url, 
-				true, true,0, R.drawable.post_active);
-		movieName.setText(movieList.get(0).name);
-		movieScore.setText(movieList.get(0).num + getString(R.string.yingpianshu));
+		if(movieList.size() > 0) {
+			
+			aq = new AQuery(firstFloatView);
+//			aq.id(R.id.iv_item_layout_haibao).image(
+//					movieList.get(0).pic_url);
+			aq.id(R.id.iv_item_layout_haibao).image(movieList.get(0).pic_url, 
+					true, true,0, R.drawable.post_active);
+			movieName.setText(movieList.get(0).name);
+			movieScore.setText(movieList.get(0).num + getString(R.string.yingpianshu));
+		}
 		firstFloatView.setPadding(GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING, 
 				GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING);
 		firstFloatView.setBackgroundColor(getResources()
@@ -761,16 +765,21 @@ public class ShowYueDanActivity extends Activity implements View.OnKeyListener,
 			convertView.setLayoutParams(params);
 			convertView.setPadding(GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING,
 					GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING);
-
-			viewItemHodler.nameTv.setText(movieList.get(position).name);
-			viewItemHodler.otherInfo.setText(movieList.get(position).num + getString(R.string.yingpianshu));
-
+			
 			if (width != 0) {
 
 				popWidth = width;
 				popHeight = height;
 				// Log.i(TAG, "Width:" + popWidth);
 			}
+			
+			if(movieList.size() <= 0) {
+				
+				return convertView;
+			}
+
+			viewItemHodler.nameTv.setText(movieList.get(position).name);
+			viewItemHodler.otherInfo.setText(movieList.get(position).num + getString(R.string.yingpianshu));
 
 			aq = new AQuery(convertView);
 //			aq.id(R.id.iv_item_layout_haibao).image(
@@ -789,12 +798,20 @@ public class ShowYueDanActivity extends Activity implements View.OnKeyListener,
 		@Override
 		public Object getItem(int position) {
 			// TODO Auto-generated method stub
+			if(movieList.size() <= 0 ) {
+				
+				return null;
+			}
 			return movieList.get(position);
 		}
 
 		@Override
 		public int getCount() {
 			// TODO Auto-generated method stub
+			if(movieList.size() <= 0 ) {
+				
+				return DEFAULT_ITEM_NUM;
+			}
 			return movieList.size();
 		}
 	};
