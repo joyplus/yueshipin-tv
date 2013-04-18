@@ -60,6 +60,7 @@ IOS: ijoyplusios001bj
 	public static final String FAYESERVERURL = "http://comettest.joyplus.tv:8080/bindtv";
 	public static final String FAYESERVERURL_CHECKBAND = "http://comettest.joyplus.tv:8080/api/check_binding";
 	public static final String FAYECHANNEL_TV_BASE = "/screencast/CHANNEL_TV_";
+	public static final String FAYECHANNEL_TV_HEAD = "/screencast/";
 	public static final String FAYECHANNEL_MOBILE_BASE = "/screencast/CHANNEL_MOBILE_";
 	public static final String CHANNELHEADER = "joy";
 	

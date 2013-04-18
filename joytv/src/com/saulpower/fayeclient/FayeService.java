@@ -5,29 +5,21 @@ import java.net.URI;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.joyplus.tv.App;
-import com.joyplus.tv.Constant;
-import com.joyplus.tv.ShowMovieActivity;
-import com.joyplus.tv.ShowXiangqingMovie;
-import com.joyplus.tv.StatisticsUtils;
-import com.joyplus.tv.Adapters.CurrentPlayData;
-import com.joyplus.tv.Service.Return.ReturnProgramReviews;
-import com.joyplus.tv.Service.Return.ReturnProgramView;
-import com.joyplus.tv.Video.VideoPlayerActivity;
-import com.saulpower.fayeclient.FayeClient.FayeListener;
-
-import android.R.integer;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.graphics.Movie;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
+
+import com.joyplus.tv.App;
+import com.joyplus.tv.Constant;
+import com.joyplus.tv.StatisticsUtils;
+import com.joyplus.tv.Adapters.CurrentPlayData;
+import com.joyplus.tv.Video.VideoPlayerActivity;
+import com.saulpower.fayeclient.FayeClient.FayeListener;
 
 public class FayeService extends Service implements FayeListener{
 
@@ -175,7 +167,7 @@ public class FayeService extends Service implements FayeListener{
 					app.SaveUserData("isBand", "1");
 					app.SaveUserData("phoneID", phoneID);
 					JSONObject bandSuccessObj = new JSONObject();
-					bandSuccessObj.put("tv_channel", channel);
+					bandSuccessObj.put("tv_channel", channel.replace(Constant.FAYECHANNEL_TV_HEAD, ""));
 					bandSuccessObj.put("push_type","32");
 					bandSuccessObj.put("user_id", phoneID);
 					bandSuccessObj.put("result", "success");
@@ -193,7 +185,7 @@ public class FayeService extends Service implements FayeListener{
 					myClient.sendMessage(unBandObj);
 					
 					JSONObject bandSuccessObj = new JSONObject();
-					bandSuccessObj.put("tv_channel", channel);
+					bandSuccessObj.put("tv_channel", channel.replace(Constant.FAYECHANNEL_TV_HEAD, ""));
 					bandSuccessObj.put("push_type","32");
 					bandSuccessObj.put("user_id", phoneID);
 					bandSuccessObj.put("result", "success");

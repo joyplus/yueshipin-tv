@@ -94,7 +94,7 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 	private static final int MESSAGE_UPDATEUSER = MESSAGE_START_TIMEOUT + 1;//userid确认或者更改
 	
 	
-	private static final int MESSAGE_UPDATEUSER_HISTORY_SUCEESS = MESSAGE_UPDATEUSER;
+	private static final int MESSAGE_UPDATEUSER_HISTORY_SUCEESS = MESSAGE_UPDATEUSER + 1;
 	
 	private ImageView startingImageView;
 	private RelativeLayout rootLayout;
@@ -106,25 +106,27 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 			// TODO Auto-generated method stub
 			switch (msg.what) {
 			case MESSAGE_UPDATEUSER://userInfo相关验证完成
-				initStep += 1;
+				if(initStep ==0){
+					initStep += 1;
+					getHotServiceData();
+				}
 				Log.d(TAG, "MESSAGE_UPDATEUSER --- >Initstep = " + initStep);
-				aq.id(R.id.iv_head_user_icon).image(app.getUserInfo().getUserAvatarUrl());
+				aq.id(R.id.iv_head_user_icon).image(app.getUserInfo().getUserAvatarUrl(),false,true,0,R.drawable.avatar);
 				aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
 				getHistoryServiceData();
-				getHotServiceData();
 				break;
 			case MESSAGE_STEP1_SUCESS://热播列表加载完成
-				initStep +=1;
 				Log.d(TAG, "MESSAGE_STEP1_SUCESS --- >Initstep = " + initStep); 
-				if(initStep ==2){
+				if(initStep ==1){
+					initStep +=1;
 					getMovieYueDanServiceData();
 					getTVYueDanServiceData();
 				}
 				break;//悦单加载完成
 			case MESSAGE_STEP2_SUCESS://悦单加载完成
-				initStep +=1;
 				Log.d(TAG, "MESSAGE_STEP2_SUCESS --- >Initstep = " + initStep);
-				if(initStep ==3){
+				if(initStep ==2){
+					initStep +=1;
 					if(startingImageView.getVisibility() == View.VISIBLE){
 						startingImageView.setVisibility(View.GONE);
 						startingImageView.startAnimation(alpha_disappear);
@@ -143,6 +145,13 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 					contentLayout.setVisibility(View.INVISIBLE);
 					showDialog(DIALOG_WAITING);
 				}
+				break;
+			case MESSAGE_UPDATEUSER_HISTORY_SUCEESS://超时还未加载好
+//				if(initStep<3){
+//					startingImageView.setVisibility(View.GONE);
+//					contentLayout.setVisibility(View.INVISIBLE);
+//					showDialog(DIALOG_WAITING);
+//				}
 				break;
 			default:
 				break;
@@ -537,14 +546,18 @@ public boolean checkLogin() {
 }
 
 private void checkBand(){
-	String url = Constant.FAYESERVERURL_CHECKBAND + "?user_id=" + app.getUserData("userId") + "&tv_channel=" + Constant.FAYECHANNEL_TV_BASE+StatisticsUtils.MD5(macAddress);
-
-//	String url = Constant.BASE_URL;
-	AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
-	cb.url(url).type(JSONObject.class).weakHandler(this, "CheckBandResult");
-
-	cb.SetHeader(app.getHeaders());
-	aq.ajax(cb);
+	
+	if(app.getUserData("isBand") == null||"0".equals(app.getUserData("isBand"))){
+		handler.sendEmptyMessage(MESSAGE_UPDATEUSER); 
+	}else{
+		String url = Constant.FAYESERVERURL_CHECKBAND + "?user_id=" + app.getUserData("phoneID") + "&tv_channel=" + (Constant.FAYECHANNEL_TV_BASE+StatisticsUtils.MD5(macAddress)).replace(Constant.FAYECHANNEL_TV_HEAD, "");
+//		String url = Constant.BASE_URL;
+		Log.d(TAG, url);
+		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
+		cb.url(url).type(JSONObject.class).weakHandler(this, "CheckBandResult");
+		cb.SetHeader(app.getHeaders());
+		aq.ajax(cb);
+	}
 }
 
 public void CheckBandResult(String url, JSONObject json, AjaxStatus status){
@@ -556,7 +569,7 @@ public void CheckBandResult(String url, JSONObject json, AjaxStatus status){
 			if("1".equals(result)){
 				updateUser(app.getUserData("phoneID"));
 			}else{
-				handler.sendEmptyMessage(MESSAGE_UPDATEUSER);
+//				handler.sendEmptyMessage(MESSAGE_UPDATEUSER);
 			}
 		} catch (JSONException e1) {
 			// TODO Auto-generated catch block
@@ -1245,13 +1258,16 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 					if(titleGroup.getSelectedTitleIndex()==1){
 						itemFram.setVisibility(View.VISIBLE);
 						gallery1.setAdapter(new MainHotItemAdapter(Main.this, hot_list));
-						gallery1.setSelection(1);
+						gallery1.setSelection(0);
 						handler.sendEmptyMessage(MESSAGE_STEP1_SUCESS);
 					}
 					isHotLoadedFlag = 2;	
 				}else if(isHotLoadedFlag == 0){
 					isHotLoadedFlag = 1;
 				}else if(isHotLoadedFlag == 2){
+					itemFram.setVisibility(View.VISIBLE);
+					gallery1.setAdapter(new MainHotItemAdapter(Main.this, hot_list));
+					gallery1.setSelection(0);
 					handler.sendEmptyMessage(MESSAGE_UPDATEUSER_HISTORY_SUCEESS);
 				}
 				return ;
@@ -1294,7 +1310,13 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 				if(titleGroup.getSelectedTitleIndex()==1){
 					itemFram.setVisibility(View.VISIBLE);
 					gallery1.setAdapter(new MainHotItemAdapter(Main.this, hot_list));
-					gallery1.setSelection(1);
+					if(hot_list.size()>0){
+						if(hot_list.get(0).type == 0){
+							gallery1.setSelection(1);
+						}else{
+							gallery1.setSelection(0);
+						}
+					}
 					handler.sendEmptyMessage(MESSAGE_STEP1_SUCESS);
 				}
 				isHotLoadedFlag = 2;
@@ -1302,7 +1324,18 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 			}else if(isHotLoadedFlag == 0){
 				isHotLoadedFlag = 1;
 			}else if(isHotLoadedFlag == 2){
-				handler.sendEmptyMessage(MESSAGE_UPDATEUSER_HISTORY_SUCEESS);
+				if(titleGroup.getSelectedTitleIndex()==1){
+					itemFram.setVisibility(View.VISIBLE);
+					gallery1.setAdapter(new MainHotItemAdapter(Main.this, hot_list));
+					if(hot_list.size()>0){
+						if(hot_list.get(0).type == 0){
+							gallery1.setSelection(1);
+						}else{
+							gallery1.setSelection(0);
+						}
+					}
+					handler.sendEmptyMessage(MESSAGE_UPDATEUSER_HISTORY_SUCEESS);
+				}
 			}
 			isHotLoadedFlag = 1;
 		} catch (JsonParseException e) {
@@ -1370,7 +1403,13 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 			if(isHotLoadedFlag == 1){
 				if(titleGroup.getSelectedTitleIndex() == 1){
 					gallery1.setAdapter(new MainHotItemAdapter(Main.this, hot_list));
-					gallery1.setSelection(1);
+					if(hot_list.size()>0){
+						if(hot_list.get(0).type == 0){
+							gallery1.setSelection(1);
+						}else{
+							gallery1.setSelection(0);
+						}
+					}
 					itemFram.setVisibility(View.VISIBLE);
 					handler.sendEmptyMessage(MESSAGE_STEP1_SUCESS);
 				}
