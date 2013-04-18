@@ -144,9 +144,9 @@ public class DetailComment extends Activity implements
 //		prod_dou = "3.5";
 //		prod_url = "http://img3.douban.com/view/photo/photo/public/p1869602430.jpg";
 
-		aq.id(R.id.textView_dou).text(prod_dou);
+//		aq.id(R.id.textView_dou).text(prod_dou);
 		aq.id(R.id.textView1).text(prod_name);
-		aq.id(R.id.imageViewBarCode).image(prod_url, true, true, 0,
+		aq.id(R.id.image).image(prod_url, true, true, 0,
 				R.drawable.movie_pic);
 
 		scrollViewItemDetail = (ScrollView) findViewById(R.id.scrollViewItemDetail);
@@ -154,8 +154,10 @@ public class DetailComment extends Activity implements
 		mtextViewItemDetail = (TextView) findViewById(R.id.textViewItemDetail);
 		if (prod_id != null)
 			CheckSaveData();
-		if (Float.parseFloat(prod_dou) > 0)
-			InitDou();
+		if (prod_dou != null)
+			updateScore(prod_dou);
+//		if (Float.parseFloat(prod_dou) > 0)
+//			InitDou();
 		// MobclickAgent.setDebugMode(true);
 	}
 
@@ -452,7 +454,93 @@ public class DetailComment extends Activity implements
 		}
 		return super.onKeyDown(keyCode, event);
 	}
-
+	private void updateScore(String score){
+		aq.id(R.id.textView_score).text(score);
+		float f = Float.valueOf(score);
+		int i = Math.round(f);
+//		int i = (f%1>=0.5)?(int)(f/1):(int)(f/1+1);
+		switch (i) {
+		case 0:
+			aq.id(R.id.start1).image(R.drawable.star_off);
+			aq.id(R.id.start2).image(R.drawable.star_off);
+			aq.id(R.id.start3).image(R.drawable.star_off);
+			aq.id(R.id.start4).image(R.drawable.star_off);
+			aq.id(R.id.start5).image(R.drawable.star_off);
+			break;
+		case 1:
+			aq.id(R.id.start1).image(R.drawable.star_half);
+			aq.id(R.id.start2).image(R.drawable.star_off);
+			aq.id(R.id.start3).image(R.drawable.star_off);
+			aq.id(R.id.start4).image(R.drawable.star_off);
+			aq.id(R.id.start5).image(R.drawable.star_off);
+			break;
+		case 2:
+			aq.id(R.id.start1).image(R.drawable.star_on);
+			aq.id(R.id.start2).image(R.drawable.star_off);
+			aq.id(R.id.start3).image(R.drawable.star_off);
+			aq.id(R.id.start4).image(R.drawable.star_off);
+			aq.id(R.id.start5).image(R.drawable.star_off);
+			break;
+		case 3:
+			aq.id(R.id.start1).image(R.drawable.star_on);
+			aq.id(R.id.start2).image(R.drawable.star_half);
+			aq.id(R.id.start3).image(R.drawable.star_off);
+			aq.id(R.id.start4).image(R.drawable.star_off);
+			aq.id(R.id.start5).image(R.drawable.star_off);
+			break;
+		case 4:
+			aq.id(R.id.start1).image(R.drawable.star_on);
+			aq.id(R.id.start2).image(R.drawable.star_on);
+			aq.id(R.id.start3).image(R.drawable.star_off);
+			aq.id(R.id.start4).image(R.drawable.star_off);
+			aq.id(R.id.start5).image(R.drawable.star_off);
+			break;
+		case 5:
+			aq.id(R.id.start1).image(R.drawable.star_on);
+			aq.id(R.id.start2).image(R.drawable.star_on);
+			aq.id(R.id.start3).image(R.drawable.star_half);
+			aq.id(R.id.start4).image(R.drawable.star_off);
+			aq.id(R.id.start5).image(R.drawable.star_off);
+			break;
+		case 6:
+			aq.id(R.id.start1).image(R.drawable.star_on);
+			aq.id(R.id.start2).image(R.drawable.star_on);
+			aq.id(R.id.start3).image(R.drawable.star_on);
+			aq.id(R.id.start4).image(R.drawable.star_off);
+			aq.id(R.id.start5).image(R.drawable.star_off);
+			break;
+		case 7:
+			aq.id(R.id.start1).image(R.drawable.star_on);
+			aq.id(R.id.start2).image(R.drawable.star_on);
+			aq.id(R.id.start3).image(R.drawable.star_on);
+			aq.id(R.id.start4).image(R.drawable.star_half);
+			aq.id(R.id.start5).image(R.drawable.star_off);
+			break;
+		case 8:
+			aq.id(R.id.start1).image(R.drawable.star_on);
+			aq.id(R.id.start2).image(R.drawable.star_on);
+			aq.id(R.id.start3).image(R.drawable.star_on);
+			aq.id(R.id.start4).image(R.drawable.star_on);
+			aq.id(R.id.start5).image(R.drawable.star_off);
+			break;
+		case 9:
+			aq.id(R.id.start1).image(R.drawable.star_on);
+			aq.id(R.id.start2).image(R.drawable.star_on);
+			aq.id(R.id.start3).image(R.drawable.star_on);
+			aq.id(R.id.start4).image(R.drawable.star_on);
+			aq.id(R.id.start5).image(R.drawable.star_half);
+			break;
+		case 10:
+			aq.id(R.id.start1).image(R.drawable.star_on);
+			aq.id(R.id.start2).image(R.drawable.star_on);
+			aq.id(R.id.start3).image(R.drawable.star_on);
+			aq.id(R.id.start4).image(R.drawable.star_on);
+			aq.id(R.id.start5).image(R.drawable.star_on);
+			break;
+		default:
+			break;
+		}
+	}
 	static class ViewHolder {
 		ImageView imageView1;
 		TextView textView01;
