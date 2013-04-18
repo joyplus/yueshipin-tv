@@ -126,15 +126,15 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 	// }
 	// }
 	// };
-	private final Runnable mPreparedProgress = new Runnable() {
-		public void run() {
-			if(mPreparedPercent<100){
-			mPreparedPercent+=1;
-			sb.setProgress(mPreparedPercent);
-			mHandler.postDelayed(mPreparedProgress, 200);
-			}
-		}
-	};
+//	private final Runnable mPreparedProgress = new Runnable() {
+//		public void run() {
+//			if(mPreparedPercent<100){
+//			mPreparedPercent+=1;
+//			sb.setProgress(mPreparedPercent);
+//			mHandler.postDelayed(mPreparedProgress, 200);
+//			}
+//		}
+//	};
 	private final Runnable mProgressChecker = new Runnable() {
 		public void run() {
 			int pos = setProgress();
@@ -152,8 +152,8 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		mUri = videoUri;
 
 		sb = (SeekBar) rootView.findViewById(R.id.seekBar1);
-		sb.setMax(100);
-		mHandler.post(mPreparedProgress);
+//		sb.setMax(100);
+//		mHandler.post(mPreparedProgress);
 
 		textView1 = (TextView) rootView.findViewById(R.id.textViewTime1);
 		textView2 = (TextView) rootView.findViewById(R.id.textViewTime2);
@@ -309,10 +309,9 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		int duration = mVideoView.getDuration();
 		
 		if (mVideoView.isPlaying() && position > 1){
-			mHandler.removeCallbacks(mPreparedProgress);
+//			mHandler.removeCallbacks(mPreparedProgress);
 			mController.showPlayingAtFirstTime();
-			
-			
+			sb.setMax(duration);
 			sb.setOnSeekBarChangeListener(sbLis);
 			sb.setProgress(position);
 			this.currentTime = position;
@@ -522,6 +521,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 				playVideo();
 			}
 			return true;
+		case KeyEvent.KEYCODE_DPAD_CENTER:
 		case KeyEvent.KEYCODE_ENTER:
 			if (JUMP_TIME_TIMES != 0) {// 快进模式
 				mDragging = false;
@@ -533,6 +533,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 				mController.HidingTimes();
 			} else {
 				if (mController.isHidden()) {
+					mController.hideVolume();
 					mController.show();
 				}
 				if (mVideoView.isPlaying()) {
@@ -727,13 +728,18 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 				|| keyCode == KeyEvent.KEYCODE_DPAD_RIGHT
 				|| keyCode == KeyEvent.KEYCODE_MEDIA_REWIND
 				|| keyCode == KeyEvent.KEYCODE_DPAD_LEFT
-				|| keyCode == KeyEvent.KEYCODE_MEDIA_PAUSE;
+				|| keyCode == KeyEvent.KEYCODE_MEDIA_PAUSE
+				|| keyCode == KeyEvent.KEYCODE_DPAD_CENTER
+				|| keyCode == KeyEvent.KEYCODE_ENTER;
 	}
 
 	private static boolean isFastForwardKey(int keyCode) {
 		return keyCode == KeyEvent.KEYCODE_ENTER
+				|| keyCode == KeyEvent.KEYCODE_ENTER
 				|| keyCode == KeyEvent.KEYCODE_DPAD_LEFT
-				|| keyCode == KeyEvent.KEYCODE_DPAD_RIGHT;
+				|| keyCode == KeyEvent.KEYCODE_DPAD_RIGHT
+				|| keyCode == KeyEvent.KEYCODE_DPAD_DOWN
+				|| keyCode == KeyEvent.KEYCODE_DPAD_UP;
 	}
 
 	// VOLUME
@@ -802,7 +808,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		mVideoHeight = mp.getVideoHeight();
 //		if(firstJumpTime < 1 ){
 			mController.setPrepared(true);
-			sb.setProgress(100);
+//			sb.setProgress(100);
 			mHandler.post(mProgressChecker);
 //		}
 	}

@@ -68,7 +68,7 @@ public interface ControllerOverlay {
 	void hide();
 
 	void setTimes(int currentTime, int totalTime);
-	
+	void hideVolume();
 	void HidingTimes();
 	void ShowTimes();
 	

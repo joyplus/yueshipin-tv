@@ -102,6 +102,8 @@ public class MovieControllerOverlay extends FrameLayout implements
 	private long mStartRX = 0;
 
 	private TextView mTextViewRate;
+	private TextView mTextViewPreparedPercent;
+	private long mPreparedPercent = 0;
 	boolean mShowVolume = false;
 	boolean mShowTimerBar = false;
 	private boolean mPrepared = false;
@@ -142,6 +144,7 @@ public class MovieControllerOverlay extends FrameLayout implements
 
 		loadingView = rootView.findViewById(R.id.LayoutPreload);
 		mTextViewRate = (TextView) rootView.findViewById(R.id.textView4);
+		mTextViewPreparedPercent = (TextView) rootView.findViewById(R.id.textView5);
 
 		mLayoutControl = rootView.findViewById(R.id.LayoutControl);
 		mLayoutControl.setOnTouchListener(this);
@@ -182,7 +185,7 @@ public class MovieControllerOverlay extends FrameLayout implements
 			mTextViewRate
 					.setText("Your device does not support traffic stat monitoring.");
 		} else {
-			handler.postDelayed(mRunnable, 500);
+			handler.post(mRunnable);
 		}
 
 		startHidingRunnable = new Runnable() {
@@ -229,7 +232,11 @@ public class MovieControllerOverlay extends FrameLayout implements
 				mImageSrc.setImageResource(R.drawable.player_720p);
 			else 
 				mImageSrc.setImageResource(R.drawable.player_1080p);
-
+			
+			if(mCurrentPlayData.prod_time == 0){
+				rootView.findViewById(R.id.textView6).setVisibility(View.GONE);
+				rootView.findViewById(R.id.textView7).setVisibility(View.GONE);
+			}
 			// prod_id= mCurrentPlayData.prod_id;
 			// prod_name = mCurrentPlayData.prod_name;
 			// prod_url = mCurrentPlayData.prod_url;
@@ -393,8 +400,7 @@ public class MovieControllerOverlay extends FrameLayout implements
 
 		mLayoutTop.setVisibility(View.VISIBLE);
 		mLayoutBottom.setVisibility(View.VISIBLE);
-		if (mPrepared)
-			mLayoutTime.setVisibility(View.VISIBLE);
+		mLayoutTime.setVisibility(View.VISIBLE);
 
 		updateViews();
 		setVisibility(View.VISIBLE);
@@ -670,10 +676,13 @@ public class MovieControllerOverlay extends FrameLayout implements
 			timeTakenMillis = System.currentTimeMillis() - beginTimeMillis;
 			beginTimeMillis = System.currentTimeMillis();
 			// check how long there is until we reach the desired refresh rate
-			m_bitrate = (rxBytes - rxByteslast) * 8 * 1000 / timeTakenMillis;
+			m_bitrate = ((rxBytes - rxByteslast) * 8 * 1000 / timeTakenMillis)/8000;
 			rxByteslast = rxBytes;
-
-			mTextViewRate.setText(Long.toString(m_bitrate / 8000) + "kb/s");
+			
+			mTextViewRate.setText("（"+Long.toString(m_bitrate) + "kb/s");
+			mPreparedPercent = mPreparedPercent + m_bitrate;
+			if(mPreparedPercent >=100 && mPreparedPercent/100 <=100)
+				mTextViewPreparedPercent.setText("）,已完成"+Long.toString(mPreparedPercent/100) + "%");
 
 			// Fun_downloadrate();
 			handler.postDelayed(mRunnable, 500);
@@ -686,8 +695,7 @@ public class MovieControllerOverlay extends FrameLayout implements
 		mShowTimerBar = true;
 		mLayoutTop.setVisibility(View.VISIBLE);
 		mLayoutBottom.setVisibility(View.VISIBLE);
-		if (mPrepared)
-			mLayoutTime.setVisibility(View.VISIBLE);
+		mLayoutTime.setVisibility(View.VISIBLE);
 	}
 
 	public void hideTimerBar() {
@@ -699,6 +707,10 @@ public class MovieControllerOverlay extends FrameLayout implements
 
 	public void showVolume(int index) {
 		// TODO Auto-generated method stub
+		if(mLayoutControl.getVisibility() == View.VISIBLE){
+			mLayoutControl.setAnimation(null);
+			mLayoutControl.setVisibility(View.GONE);
+		}
 		if (!mShowVolume) {
 			mShowVolume = true;
 			mLayoutVolume.setVisibility(View.VISIBLE);
@@ -711,6 +723,7 @@ public class MovieControllerOverlay extends FrameLayout implements
 	public void hideVolume() {
 		// TODO Auto-generated method stub
 		mShowVolume = false;
+		mLayoutVolume.setAnimation(null);
 		mLayoutVolume.setVisibility(View.GONE);
 	}
 
