@@ -150,6 +150,8 @@ public class ShowTVActivity extends Activity implements View.OnKeyListener,
 		zhuijushoucangBtn.setPadding(0, 0, WENZI_PADDING_RIGHT, 0);
 		lixianshipinBtn.setPadding(0, 0, WENZI_PADDING_RIGHT, 0);
 		mFenLeiBtn.setPadding(0, 0, WENZI_PADDING_RIGHT, 0);
+		
+		dinashijuGv.setNextFocusLeftId(activeView.getId());
 
 	}
 
@@ -263,6 +265,8 @@ public class ShowTVActivity extends Activity implements View.OnKeyListener,
 					isSelectedItem = false;
 					return;
 				}
+				
+				dinashijuGv.setNextFocusLeftId(activeView.getId());//如果向左那就跳掉激活
 
 				final float x = view.getX();
 				final float y = view.getY();
@@ -277,7 +281,7 @@ public class ShowTVActivity extends Activity implements View.OnKeyListener,
 							&& beforepostion <= beforeFirstAndLastVible[0] + 4) {
 
 						if (isGridViewUp) {
-
+//							dinashijuGv.setNextFocusLeftId(activeView.getId());//如果向左那就跳掉激活
 							dinashijuGv.smoothScrollBy(-popHeight, 1000);
 							isSmoonthScroll = true;
 						}
@@ -949,6 +953,7 @@ public class ShowTVActivity extends Activity implements View.OnKeyListener,
 							movieList.get(0).getMovieCurEpisode());
 			}
 		}
+
 		
 		firstFloatView.setPadding(GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING,
 				GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING);
@@ -999,7 +1004,6 @@ public class ShowTVActivity extends Activity implements View.OnKeyListener,
 			if(movieList.size() <= 0) {
 				
 				return convertView;
-				
 			}
 			
 			viewItemHodler.nameTv.setText(movieList.get(position).getMovieName());
