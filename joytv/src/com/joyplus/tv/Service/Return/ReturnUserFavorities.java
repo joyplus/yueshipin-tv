@@ -22,6 +22,7 @@ public class ReturnUserFavorities {
 		public String content_id;
 		public String content_name;
 		public String content_pic_url;
+		public String big_content_pic_url;
 		public String content_type;
 		public String directors;
 		public String area;

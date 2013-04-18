@@ -343,7 +343,7 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 		initHistoryData(url, json, status, 3);
 	}
 	public void initDongmanHistoryData(String url, JSONObject json, AjaxStatus status){
-		initHistoryData(url, json, status, 4);
+		initHistoryData(url, json, status, 131);
 	}
 	
 	

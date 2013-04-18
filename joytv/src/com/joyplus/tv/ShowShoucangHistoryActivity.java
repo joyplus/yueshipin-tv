@@ -34,6 +34,7 @@ import com.androidquery.callback.AjaxStatus;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.joyplus.tv.Service.Return.ReturnUserFavorities;
 import com.joyplus.tv.Service.Return.ReturnUserPlayHistories;
 import com.joyplus.tv.entity.HotItemInfo;
 import com.joyplus.tv.ui.NavigateView;
@@ -58,7 +59,6 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 	
 	private ListView listView;
 	
-	private PopupWindow popupWindow;
 	
 	private App app;
 	private AQuery aq;
@@ -171,31 +171,44 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 				holder.img = (ImageView) convertView.findViewById(R.id.image);
 				holder.directors = (TextView) convertView.findViewById(R.id.directors);
 				holder.stars = (TextView) convertView.findViewById(R.id.stars);
+				holder.directors_notice = (TextView) convertView.findViewById(R.id.directors_notice);
+				holder.stars_notice = (TextView) convertView.findViewById(R.id.stars_notice);
 				holder.content = (TextView) convertView.findViewById(R.id.content);
 				convertView.setTag(holder);
 			}else{
 				holder = (ViewHolder) convertView.getTag();
 			}
-			holder.title.setText(data.get(position).prod_name);
-			holder.directors.setText(data.get(position).directors);
-			holder.stars.setText(data.get(position).stars);
-			int prod_type = Integer.valueOf(data.get(position).prod_type);
-			String playBack_time = formatDuration(Integer.valueOf(data.get(position).playback_time));
-			switch (prod_type) {
-			case 1:
-				holder.content.setText("上次观看到：" + playBack_time);
-				break;
-			case 2:
-				holder.content.setText("上次观看到：第" + data.get(position).cur_episode+"集"+playBack_time);
-				break;
-			case 3:
-				holder.content.setText("上次观看到：第" + data.get(position).cur_episode+"期"+playBack_time);
-				break;
-			case 131:
-				holder.content.setText("上次观看到：第" + data.get(position).cur_episode+"集"+playBack_time);
-				break;
+			if(data.size()>0){
+				holder.title.setText(data.get(position).prod_name);
+				holder.directors.setText(data.get(position).directors);
+				holder.stars.setText(data.get(position).stars);
+				int prod_type = Integer.valueOf(data.get(position).prod_type);
+//				String playBack_time = formatDuration(Integer.valueOf(data.get(position).playback_time));
+				String playBack_time = data.get(position).playback_time;
+				switch (prod_type) {
+				case 1:
+					holder.content.setText("上次观看到：" + playBack_time);
+					break;
+				case 2:
+					holder.content.setText("上次观看到：第" + data.get(position).cur_episode+"集"+playBack_time);
+					break;
+				case 3:
+					holder.content.setText("上次观看到：第" + data.get(position).cur_episode+"期"+playBack_time);
+					break;
+				case 131:
+					holder.content.setText("上次观看到：第" + data.get(position).cur_episode+"集"+playBack_time);
+					break;
+				}
+				aq.id(holder.img).image(data.get(position).prod_pic_url);
+			}else{
+				holder.img.setImageResource(R.drawable.post_normal);
+				holder.title.setText("您还未收藏过任何影片。去热播看看最近流行什么吧^_^~");
+				holder.stars.setVisibility(View.GONE);
+				holder.directors.setVisibility(View.GONE);
+				holder.content.setVisibility(View.GONE);
+				holder.stars_notice.setVisibility(View.GONE);
+				holder.directors_notice.setVisibility(View.GONE);
 			}
-			aq.id(holder.img).image(data.get(position).prod_pic_url);
 			convertView.setBackgroundResource(R.drawable.historty_listitem_drawable_selector);
 			return convertView;
 		}
@@ -231,37 +244,7 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 			btn_fenlei_all.setBackgroundResource(R.drawable.menubg);
 			selectedButton = btn_fenlei_all;
 			selectedButton.setPadding(0, 0, 5, 0);
-			if(popupWindow ==null){
-				NavigateView view = new NavigateView(this);
-				int [] location = new int[2];
-				btn_fenlei_all.getLocationOnScreen(location);
-				view.Init(getResources().getStringArray(R.array.navigator_area),
-						getResources().getStringArray(R.array.navigator_classification), 
-						getResources().getStringArray(R.array.navigator_year), 
-						location[0], 
-						location[1],
-						btn_fenlei_all.getWidth(), 
-						btn_fenlei_all.getHeight(),
-						new OnResultListener() {
-							
-							@Override
-							public void onResult(View v, boolean isBack, String[] choice) {
-								// TODO Auto-generated method stub
-								if(isBack){
-									popupWindow.dismiss();
-								}else{
-									if(popupWindow.isShowing()){
-										popupWindow.dismiss();
-										Toast.makeText(ShowShoucangHistoryActivity.this, "selected is " + choice[0] + ","+choice[1]+","+choice[2], Toast.LENGTH_LONG).show();
-									}
-								}
-							}
-						});
-				view.setLayoutParams(new LayoutParams(0,0));
-				popupWindow = new PopupWindow(view, getWindowManager().getDefaultDisplay().getWidth(),
-						getWindowManager().getDefaultDisplay().getHeight(), true);
-			}
-			popupWindow.showAtLocation(listView, Gravity.LEFT | Gravity.BOTTOM, 0, 0);
+			getHistoryData(0);
 			break;
 		case R.id.fenlei_movie:
 			selectedButton.setTextColor(getResources().getColorStateList(R.color.text_color_selector));
@@ -270,6 +253,7 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 			btn_fenlei_movie.setBackgroundResource(R.drawable.menubg);
 			selectedButton = btn_fenlei_movie;
 			selectedButton.setPadding(0, 0, 5, 0);
+			getHistoryData(1);
 			break;
 		case R.id.fenlei_tv:
 			selectedButton.setTextColor(getResources().getColorStateList(R.color.text_color_selector));
@@ -278,6 +262,7 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 			btn_fenlei_tv.setBackgroundResource(R.drawable.menubg);
 			selectedButton = btn_fenlei_tv;
 			selectedButton.setPadding(0, 0, 5, 0);
+			getHistoryData(2);
 			break;
 		case R.id.fenlei_dongman:
 			selectedButton.setTextColor(getResources().getColorStateList(R.color.text_color_selector));
@@ -286,6 +271,7 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 			btn_fenlei_dongman.setBackgroundResource(R.drawable.menubg);
 			selectedButton = btn_fenlei_dongman;
 			selectedButton.setPadding(0, 0, 5, 0);
+			getHistoryData(131);
 			break;
 		case R.id.fenlei_zongyi:
 			selectedButton.setTextColor(getResources().getColorStateList(R.color.text_color_selector));
@@ -294,6 +280,7 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 			btn_fenlei_zongyi.setBackgroundResource(R.drawable.menubg);
 			selectedButton = btn_fenlei_zongyi;
 			selectedButton.setPadding(0, 0, 5, 0);
+			getHistoryData(3);
 			break;
 		default:
 			break;
@@ -315,7 +302,7 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 	
 	
 	private void getHistoryData(int type){
-		String url = Constant.BASE_URL + "user/playHistories" +"?page_num=1&page_size=10&userid=4742";
+		String url = Constant.BASE_URL + "user/favorities" +"?page_num=1&page_size=10&userid="+app.getUserInfo().getUserId();
 		if(type!=0){
 			url = url + "&vod_type=" + type;
 		}
@@ -360,7 +347,7 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 		initHistoryData(url, json, status, 3);
 	}
 	public void initDongmanHistoryData(String url, JSONObject json, AjaxStatus status){
-		initHistoryData(url, json, status, 4);
+		initHistoryData(url, json, status, 131);
 	}
 	
 	
@@ -373,31 +360,22 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 		}
 		Log.d(TAG, "history data = " + json.toString());
 		try {
-			ReturnUserPlayHistories result  = mapper.readValue(json.toString(), ReturnUserPlayHistories.class);
+			ReturnUserFavorities result  = mapper.readValue(json.toString(), ReturnUserFavorities.class);
 			List<HotItemInfo> list = new ArrayList<HotItemInfo>();
-			for(int i=0; i<result.histories.length; i++){
+			for(int i=0; i<result.favorities.length; i++){
 				HotItemInfo item  =  new HotItemInfo();
-				item.id = result.histories[i].id;
-				item.prod_id = result.histories[i].prod_id;
-				item.prod_name = result.histories[i].prod_name;
-				item.prod_type = result.histories[i].prod_type;
-				item.prod_pic_url = result.histories[i].prod_pic_url;
-				item.stars = result.histories[i].stars;
-				item.directors = result.histories[i].directors;
-				item.favority_num = result.histories[i].favority_num;
-				item.support_num = result.histories[i].support_num;
-				item.publish_date = result.histories[i].publish_date;
-				item.score = result.histories[i].score;
-				item.area = result.histories[i].area;
-				item.cur_episode = result.histories[i].cur_episode;
-				item.max_episode = result.histories[i].max_episode;
-				item.definition = result.histories[i].definition;
-				item.prod_summary = result.histories[i].prod_summary;
-				item.duration = result.histories[i].duration;
-				item.video_url = result.histories[i].video_url;
-				item.playback_time = result.histories[i].playback_time;
-				item.prod_subname = result.histories[i].prod_subname;
-				item.play_type = result.histories[i].play_type;
+//				item.id = result.favorities[i].id;
+				item.prod_id = result.favorities[i].content_id;
+				item.prod_name = result.favorities[i].content_name;
+				item.prod_type = result.favorities[i].content_type;
+				item.prod_pic_url = result.favorities[i].big_content_pic_url;
+				item.stars = result.favorities[i].stars;
+				item.directors = result.favorities[i].directors;
+				item.favority_num = result.favorities[i].favority_num;
+				item.support_num = result.favorities[i].support_num;
+				item.publish_date = result.favorities[i].publish_date;
+				item.score = result.favorities[i].score;
+				item.area = result.favorities[i].area;
 				list.add(item);
 			}
 			switch (type) {
@@ -439,11 +417,12 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 	class ViewHolder{
 		TextView title;
 		TextView stars;
+		TextView stars_notice;
 		TextView directors;
+		TextView directors_notice;
 		TextView content;
 		ImageView img;
 	}
-	
 	
 //	class HistoryData{
 //		public String id;

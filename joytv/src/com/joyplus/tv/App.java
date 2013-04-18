@@ -261,91 +261,42 @@ public class App extends Application {
 				return false;
 			}
 		}
-//		// 模拟火狐ios发用请求 使用userAgent
-//		AndroidHttpClient mAndroidHttpClient = AndroidHttpClient
-//				.newInstance(Constant.USER_AGENT_IOS);
-//
-//		HttpParams httpParams = mAndroidHttpClient.getParams();
-//		// 连接时间最长5秒，可以更改
-//		HttpConnectionParams.setConnectionTimeout(httpParams, 20000);
-//
-//		try {
-//			URL url = new URL(srcUrl);
-//			HttpGet mHttpGet = new HttpGet(url.toURI());
-//			HttpResponse response = mAndroidHttpClient.execute(mHttpGet);
-//
-//			// 限定连接时间
-//
-//			StatusLine statusLine = response.getStatusLine();
-//			int status = statusLine.getStatusCode();
-//
-//			Header headertop = response.getFirstHeader("Content-Type");// 拿到重新定位后的header
-//			String type = headertop.getValue().toLowerCase();// 从header重新取出信息
-//			Header header_length = response.getFirstHeader("Content-Length");
-//			String lengthStr = header_length.getValue();
-//			int length = 0;
-//			try {
-//				length = Integer.parseInt(lengthStr);
-//			} finally {
-//			}
-//			
-//			if (BuildConfig.DEBUG)
-//				Log.i(TAG, "HTTP STATUS : " + status);
-//
-//			// 如果资源来源为风行，那就对url进行重定向 如果不是就只是简单判断
-//			// 风行资源id 为 1
-//			// 如果拿到资源直接返回url 如果没有拿到资源，并且要进行跳转,那就使用递归跳转
-//			if(!type.startsWith("text/html") && status >= 200 && status <= 299
-//					&& length > 100){
-//				// 正确的话直接返回，不进行下面的步骤
-//				mAndroidHttpClient.close();
-//				list.add(srcUrl);
-//			}else if (status > 299 && status < 400) {
-//				if (BuildConfig.DEBUG)
-//					Log.i(TAG, "NOT OK   start");
-//
-//				// if(sourceId != null && sourceId.equals(FENGXING)) {
-//
-//				if (BuildConfig.DEBUG)
-//					Log.i(TAG, "NOT OK start");
-//				if (status == HttpStatus.SC_MOVED_PERMANENTLY || // 网址被永久移除
-//						status == HttpStatus.SC_MOVED_TEMPORARILY || // 网址暂时性移除
-//						status == HttpStatus.SC_SEE_OTHER || // 重新定位资源
-//						status == HttpStatus.SC_TEMPORARY_REDIRECT) {// 暂时定向
-//
-//					Header header = response.getFirstHeader("Location");// 拿到重新定位后的header
-//					String location = header.getValue();// 从header重新取出信息
-//					list.add(location);
-//
-//					mAndroidHttpClient.close();// 关闭此次连接
-//
-//					if (BuildConfig.DEBUG)
-//						Log.i(TAG, "Location: " + location);
-//					// 进行下一次递归
-//					simulateFirfoxRequest(userAgent, new String[] { location,
-//							FENGXING }, list);
-//				} else {
-//
-//					// 如果地址真的不存在，那就往里面加NULL字符串
-//					mAndroidHttpClient.close();
-//					list.add(NOT_VALID_LINK);
-//				}
-//				// } else {
-//				//
-//				// //如果地址真的不存在，那就往里面加NULL字符串
-//				// mAndroidHttpClient.close();
-//				// list.add(NOT_VALID_LINK);
-//				// }
-//			}
-//
-//		} catch (Exception e) {
-//			// TODO Auto-generated catch block
-//			if (BuildConfig.DEBUG)
-//				Log.i(TAG, "NOT OK" + e);
-//			// 如果地址真的不存在，那就往里面加NULL字符串
-//			mAndroidHttpClient.close();
-//			e.printStackTrace();
-//		}
+		// 模拟火狐ios发用请求 使用userAgent
+		AndroidHttpClient mAndroidHttpClient = AndroidHttpClient
+				.newInstance(Constant.USER_AGENT_IOS);
+
+		HttpParams httpParams = mAndroidHttpClient.getParams();
+		// 连接时间最长5秒，可以更改
+		HttpConnectionParams.setConnectionTimeout(httpParams, 20000);
+
+		try {
+			URL url = new URL(srcUrl);
+			HttpGet mHttpGet = new HttpGet(url.toURI());
+			HttpResponse response = mAndroidHttpClient.execute(mHttpGet);
+
+			// 限定连接时间
+
+			StatusLine statusLine = response.getStatusLine();
+			int status = statusLine.getStatusCode();
+
+			Header headertop = response.getFirstHeader("Content-Type");// 拿到重新定位后的header
+			String type = headertop.getValue().toLowerCase();// 从header重新取出信息
+			Header header_length = response.getFirstHeader("Content-Length");
+			String lengthStr = header_length.getValue();
+			Log.i(TAG, "HTTP STATUS : " + status);
+			
+			if(!type.startsWith("text/html") && status == 200){
+				return true;
+			}
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			if (BuildConfig.DEBUG)
+				Log.i(TAG, "NOT OK" + e);
+			// 如果地址真的不存在，那就往里面加NULL字符串
+			mAndroidHttpClient.close();
+			e.printStackTrace();
+		}
 		return true;
 	}
 

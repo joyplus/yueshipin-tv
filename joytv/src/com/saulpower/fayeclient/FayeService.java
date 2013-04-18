@@ -180,7 +180,7 @@ public class FayeService extends Service implements FayeListener{
 					app.SaveUserData("phoneID", phoneID);
 					
 					JSONObject unBandObj = new JSONObject();
-					unBandObj.put("tv_channel", channel);
+					unBandObj.put("tv_channel", channel.replace(Constant.FAYECHANNEL_TV_HEAD, ""));
 					unBandObj.put("push_type","33");
 					unBandObj.put("user_id", lastPhoneId);
 					myClient.sendMessage(unBandObj);
