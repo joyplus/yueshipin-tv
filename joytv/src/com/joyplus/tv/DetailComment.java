@@ -132,14 +132,16 @@ public class DetailComment extends Activity implements
 		fade_in = AnimationUtils.loadAnimation(this, R.anim.comment_fade_in);
 //		fade_out = AnimationUtils.loadAnimation(this,
 //				R.anim.comment_fade_out);
-		// Intent intent = getIntent();
-		// prod_id = intent.getStringExtra("prod_id");
-		// prod_name = intent.getStringExtra("prod_name");
+		 Intent intent = getIntent();
+		 prod_id = intent.getStringExtra("prod_id");
+		 prod_name = intent.getStringExtra("prod_name");
+		 prod_dou = intent.getStringExtra("prod_dou");
+		 prod_url  = intent.getStringExtra("prod_url");
 
-		prod_id = "6524";
-		prod_name = "那年冬天,风在吹";
-		prod_dou = "3.5";
-		prod_url = "http://img3.douban.com/view/photo/photo/public/p1869602430.jpg";
+//		prod_id = "6524";
+//		prod_name = "那年冬天,风在吹";
+//		prod_dou = "3.5";
+//		prod_url = "http://img3.douban.com/view/photo/photo/public/p1869602430.jpg";
 
 		aq.id(R.id.textView_dou).text(prod_dou);
 		aq.id(R.id.textView1).text(prod_name);

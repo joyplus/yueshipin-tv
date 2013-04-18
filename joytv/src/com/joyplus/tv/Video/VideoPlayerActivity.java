@@ -98,9 +98,10 @@ public class VideoPlayerActivity extends Activity {
 			prod_qua = mCurrentPlayData.prod_qua;
 			mTime = (int)mCurrentPlayData.prod_time;
 		}
-		if(prod_url == null)	
-			prod_url ="http://g3.letv.cn/vod/v2/MjUvNDgvOTEvbGV0di11dHMvMjM0OTQzOC1BVkMtOTU4ODczLUFBQy0xMjc3MjQtNjA4MDk2MC04MjkxMTA0MzYtNjI1NjNmMTQxNDMxNGFkODY3ZGRjMGNhMTFkNjIxNjgtMTM2NDkxMjMxOTkxMC5tcDQ=?b=1090&mmsid=2341519&tm=1365557814&platid=1&splatid=2&key=75e40c4fc8927605afe8456dc0f9b207&m3u8=ios,2341519?_r0.3129199950490147&test=m3u8";
-	
+		if(prod_url == null)
+			finish();
+//			prod_url ="http://g3.letv.cn/vod/v2/MjUvNDgvOTEvbGV0di11dHMvMjM0OTQzOC1BVkMtOTU4ODczLUFBQy0xMjc3MjQtNjA4MDk2MC04MjkxMTA0MzYtNjI1NjNmMTQxNDMxNGFkODY3ZGRjMGNhMTFkNjIxNjgtMTM2NDkxMjMxOTkxMC5tcDQ=?b=1090&mmsid=2341519&tm=1365557814&platid=1&splatid=2&key=75e40c4fc8927605afe8456dc0f9b207&m3u8=ios,2341519?_r0.3129199950490147&test=m3u8";
+//	
 		((TextView) findViewById(R.id.textView1)).setText(prod_name);
 		mFinishOnCompletion = intent.getBooleanExtra(
 				MediaStore.EXTRA_FINISH_ON_COMPLETION, true);
