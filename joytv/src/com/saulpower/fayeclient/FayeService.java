@@ -113,6 +113,7 @@ public class FayeService extends Service implements FayeListener{
 	public void disconnectedFromServer() {
 		// TODO Auto-generated method stub
 		Log.w(TAG, "server disconnected!----->"); 
+		myClient.connectToServer(null);
 	}
 
 	@Override

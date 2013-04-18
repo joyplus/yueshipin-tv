@@ -227,7 +227,7 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 	private TranslateAnimation rightTranslateAnimationStep1;
 	private TranslateAnimation rightTranslateAnimationStep2;
 	
-	private FayeClient mClient;
+//	private FayeClient mClient;
 	private String macAddress;
 	
 	
@@ -1337,7 +1337,6 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 					handler.sendEmptyMessage(MESSAGE_UPDATEUSER_HISTORY_SUCEESS);
 				}
 			}
-			isHotLoadedFlag = 1;
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
