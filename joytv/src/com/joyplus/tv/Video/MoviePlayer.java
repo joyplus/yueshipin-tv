@@ -21,6 +21,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 
+import android.R.integer;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -321,7 +322,12 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 
 		return position;
 	}
-
+	public int getCurrentPositon(){
+		return mVideoView.getCurrentPosition();
+	}
+	public int getDuration(){
+		return mVideoView.getDuration();
+	}
 	public void setTime(int totalTime) {
 		if (this.totalTime == totalTime) {
 			return;

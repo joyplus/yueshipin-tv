@@ -17,6 +17,10 @@
 package com.joyplus.tv.Video;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.json.JSONObject;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -26,6 +30,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.media.AudioManager;
@@ -44,13 +49,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.webkit.URLUtil;
 import android.widget.TextView;
 
+import com.androidquery.AQuery;
+import com.androidquery.callback.AjaxCallback;
+import com.androidquery.callback.AjaxStatus;
 import com.joyplus.tv.App;
+import com.joyplus.tv.Constant;
 import com.joyplus.tv.Main;
 import com.joyplus.tv.R;
 import com.joyplus.tv.Adapters.CurrentPlayData;
 import com.joyplus.tv.Service.Return.ReturnProgramView;
+import com.umeng.analytics.MobclickAgent;
 
 /**
  * This activity plays a video from a specified URI.
@@ -63,6 +74,7 @@ public class VideoPlayerActivity extends Activity {
 	private boolean mFinishOnCompletion;
 	private Uri mUri;
 	private App app;
+	private AQuery aq;
 	private String prod_id = null;
 	private String prod_name = null;
 	private String prod_url = null;//播放地址
@@ -71,19 +83,23 @@ public class VideoPlayerActivity extends Activity {
 	private CurrentPlayData mCurrentPlayData = null;
 	private ReturnProgramView m_ReturnProgramView = null;
 	private AudioManager mAudioManager;
+	private static String MOVIE_PLAY = "电影播放";
+	private static String TV_PLAY = "电视剧播放";
+	private static String SHOW_PLAY = "综艺播放";
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		app = (App) getApplication();
-
+		aq = new AQuery(this);
+		
 		setContentView(R.layout.video_player);
 		View rootView = findViewById(R.id.root);
 
 		Intent intent = getIntent();
 		prod_name = intent.getStringExtra("title");
 		prod_url = intent.getStringExtra("prod_url");
-		prod_name = "越来越好之村晚";
+		prod_name = "未命名";
 //		prod_url = "http://221.130.179.66/25/36/53/kingsoft/movie/47978987920B0079FF686B6370B4E039-xiyoupian.mp4?crypt=61740d1aa7f2e300&b=800&gn=132&nc=1&bf=30&p2p=1&video_type=mp4&check=0&tm=1364191200&key=af7b9ad0697560c682a0070cf225e65e&opck=1&lgn=letv&proxy=3702889363&cipi=2026698610&tsnp=1&tag=ios&tag=kingsoft&sign=coopdown&realext=.mp4test=m3u8";
 //		
 	
@@ -196,9 +212,62 @@ public class VideoPlayerActivity extends Activity {
 	@Override
 	public void onPause() {
 		mPlayer.onPause();
+		
+		MobclickAgent.onEventEnd(this, MOVIE_PLAY);
+		MobclickAgent.onEventEnd(this, TV_PLAY);
+		MobclickAgent.onEventEnd(this, SHOW_PLAY);
+		MobclickAgent.onPause(this);
+		if (mPlayer != null && URLUtil.isNetworkUrl(prod_url)) {
+			/*
+			 * 获取当前播放时间和总时间,将播放时间和总时间放在服务器上
+			 */
+			SaveToServer(mPlayer. getCurrentPositon()/ 1000, mPlayer.getDuration());
+
+		}
 		super.onPause();
 	}
+	public void SaveToServer(long playback_time, long duration) {
+		String url = Constant.BASE_URL + "program/play";
 
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("app_key", Constant.APPKEY);// required string
+												// 申请应用时分配的AppKey。
+		params.put("prod_id", prod_id);// required string
+											// 视频id
+		params.put("prod_name", prod_name);// required
+            // string 视频名字
+		if(mCurrentPlayData != null && mCurrentPlayData.prod_type != 1){
+			params.put("prod_subname",
+					Integer.toString(mCurrentPlayData.CurrentIndex + 1));// required
+		}
+
+		// string
+		// 视频的集数
+		params.put("prod_type", mCurrentPlayData.prod_type);// required int 视频类别
+												// 1：电影，2：电视剧，3：综艺，4：视频
+		params.put("playback_time", playback_time);// _time required int
+													// 上次播放时间，单位：秒
+		params.put("duration", duration);// required int 视频时长， 单位：秒
+		params.put("play_type", "1");// required string
+		// 播放的类别 1: 视频地址播放
+		// 2:webview播放
+		params.put("video_url", prod_url);// required
+		// string
+		// 视频url
+		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
+		cb.SetHeader(app.getHeaders());
+		cb.params(params).url(url).type(JSONObject.class)
+				.weakHandler(this, "CallProgramPlayResult");
+		aq.ajax(cb);
+
+	}
+
+	public void CallProgramPlayResult(String url, JSONObject json,
+			AjaxStatus status) {
+		/*
+		 * 保存历史播放记录的回调函数 prod_id index 播放时间
+		 */
+	}
 	@Override
 	public void onResume() {
 		mPlayer.onResume();
@@ -214,6 +283,8 @@ public class VideoPlayerActivity extends Activity {
 	@Override
 	public void onDestroy() {
 		mPlayer.onDestroy();
+		if (aq != null)
+			aq.dismiss();
 		super.onDestroy();
 	}
 
