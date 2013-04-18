@@ -12,8 +12,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
@@ -69,6 +72,7 @@ import com.joyplus.tv.ui.CustomGallery;
 import com.joyplus.tv.ui.MyScrollLayout;
 import com.joyplus.tv.ui.MyScrollLayout.OnViewChangeListener;
 import com.joyplus.tv.ui.UserInfo;
+import com.joyplus.tv.ui.WaitingDialog;
 import com.saulpower.fayeclient.FayeClient;
 import com.saulpower.fayeclient.FayeService;
 import com.umeng.analytics.MobclickAgent;
@@ -107,20 +111,14 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 				aq.id(R.id.iv_head_user_icon).image(app.getUserInfo().getUserAvatarUrl());
 				aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
 				getHistoryServiceData();
+				getHotServiceData();
 				break;
 			case MESSAGE_STEP1_SUCESS://热播列表加载完成
 				initStep +=1;
-				Log.d(TAG, "MESSAGE_STEP1_SUCESS --- >Initstep = " + initStep);
-				if(initStep ==3){
-					if(startingImageView.getVisibility() == View.VISIBLE){
-						startingImageView.setVisibility(View.GONE);
-						rootLayout.setVisibility(View.VISIBLE);
-						gallery1.requestFocus();
-						handler.removeMessages(MESSAGE_START_TIMEOUT);
-					}else{
-						removeDialog(DIALOG_WAITING);
-						gallery1.requestFocus();
-					}
+				Log.d(TAG, "MESSAGE_STEP1_SUCESS --- >Initstep = " + initStep); 
+				if(initStep ==2){
+					getMovieYueDanServiceData();
+					getTVYueDanServiceData();
 				}
 				break;//悦单加载完成
 			case MESSAGE_STEP2_SUCESS://悦单加载完成
@@ -129,6 +127,7 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 				if(initStep ==3){
 					if(startingImageView.getVisibility() == View.VISIBLE){
 						startingImageView.setVisibility(View.GONE);
+						startingImageView.startAnimation(alpha_disappear);
 						rootLayout.setVisibility(View.VISIBLE);
 						gallery1.requestFocus();
 						handler.removeMessages(MESSAGE_START_TIMEOUT);
@@ -269,7 +268,7 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 			public void OnViewChange(int index) {
 				// TODO Auto-generated method stub
 				gallery1.startAnimation(alpha_appear);
-				handler.removeCallbacksAndMessages(null);
+				handler.removeCallbacks(null, null);
 				switch (index) {
 				case 1:
 					if(isHotLoadedFlag == 2){
@@ -467,10 +466,8 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 		if(!Constant.TestEnv)
 			ReadLocalAppKey();
 		checkLogin();
-		getHotServiceData();
-		getMovieYueDanServiceData();
-		getTVYueDanServiceData();
-		handler.sendEmptyMessageDelayed(MESSAGE_START_TIMEOUT, 30*1000);
+//		getHotServiceData();
+		handler.sendEmptyMessageDelayed(MESSAGE_START_TIMEOUT, 10*1000);
 //		getHistoryServiceData();
 //		
 //		DisplayMetrics dm = new DisplayMetrics();
@@ -634,7 +631,7 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 					aq.id(highlightImageView).image(hot_list.get(arg2).prod_pic_url,true,true);
 				}
 				noticeView.setText(arg2+ 1 + "/" + hot_list.size());
-				handler.removeCallbacksAndMessages(null);
+				handler.removeCallbacks(null, null);
 				handler.postDelayed((new Runnable() {
 					
 					@Override
@@ -659,7 +656,7 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 						highlightImageView.setImageResource(R.drawable.more_episode_active);
 					}
 					noticeView.setText(arg2+ 1 + "/" + yuedan_list.size());
-					handler.removeCallbacksAndMessages(null);
+					handler.removeCallbacks(null, null);
 					handler.postDelayed((new Runnable() {
 						
 						@Override
@@ -693,7 +690,7 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 						}
 					}
 					noticeView.setText(arg2+ 1 + "/" + yuedan_list.size());
-					handler.removeCallbacksAndMessages(null);
+					handler.removeCallbacks(null, null);
 					handler.postDelayed((new Runnable() {
 						
 						@Override
@@ -1033,16 +1030,16 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 			}
 			break;
 		default:
-			break;
+			break; 
 		}
 	}
 	
 	
-	public void getHotServiceData() {
+	public void getHotServiceData() { 
 		String url = Constant.BASE_URL + "tv_net_top" +"?page_num=1&page_size=10";
 
 //		String url = Constant.BASE_URL;
-		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
+		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>(); 
 		cb.url(url).type(JSONObject.class).weakHandler(this, "initHotData");
 
 		cb.SetHeader(app.getHeaders());
@@ -1375,6 +1372,7 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 					gallery1.setAdapter(new MainHotItemAdapter(Main.this, hot_list));
 					gallery1.setSelection(1);
 					itemFram.setVisibility(View.VISIBLE);
+					handler.sendEmptyMessage(MESSAGE_STEP1_SUCESS);
 				}
 				isHotLoadedFlag = 2;
 				return ;
@@ -1478,7 +1476,7 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 //		}
 //	}
 	
-	private void updateUser(String userId) {
+	private void updateUser(String userId) { 
 		// TODO Auto-generated method stub
 		if(userId.equals(app.getUserData("userId"))){
 			UserInfo currentUserInfo = new UserInfo();
@@ -1542,6 +1540,28 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 		return b;
 	}
 	
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		// TODO Auto-generated method stub
+		switch (id) {
+		case DIALOG_WAITING:
+			WaitingDialog dlg = new WaitingDialog(this);
+			dlg.show();
+			dlg.setOnCancelListener(new OnCancelListener() {
+				
+				@Override
+				public void onCancel(DialogInterface dialog) {
+					// TODO Auto-generated method stub
+					finish();
+				}
+			});
+			dlg.setDialogWindowStyle();
+			return dlg;
+		default:
+			return super.onCreateDialog(id);
+		}
+	}
+	
 	
 	// 将片源排序
 	class EComparatorIndex implements Comparator {
@@ -1573,6 +1593,7 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 			}
 		}
 	}
+	
 	
 	class PLAY_URLS_INDEX{
 		int index;
