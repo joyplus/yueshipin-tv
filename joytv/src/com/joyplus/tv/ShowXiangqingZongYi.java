@@ -223,8 +223,12 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 			break;
 		case R.id.bt_xiangqing_yingping:
 			Intent yingpingIntent = new Intent(this, DetailComment.class);
-			yingpingIntent.putExtra("ID", prod_id);
-			
+//			yingpingIntent.putExtra("ID", prod_id);
+			Bundle bundle = new Bundle();
+			bundle.putString("prod_id", prod_id);
+			bundle.putString("prod_name", date.tv.name);
+			bundle.putString("prod_dou", date.tv.score);
+			bundle.putString("prod_url", date.tv.poster);
 			startActivity(yingpingIntent);
 			break;
 		default:

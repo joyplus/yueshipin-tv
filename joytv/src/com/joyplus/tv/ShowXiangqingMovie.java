@@ -188,8 +188,12 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 			break;
 		case R.id.bt_xiangqing_yingping:
 			Intent yingpingIntent = new Intent(this, DetailComment.class);
-			yingpingIntent.putExtra("ID", prod_id);
-			
+//			yingpingIntent.putExtra("ID", prod_id);
+			Bundle bundle = new Bundle();
+			bundle.putString("prod_id", prod_id);
+			bundle.putString("prod_name", movieData.movie.name);
+			bundle.putString("prod_dou", movieData.movie.score);
+			bundle.putString("prod_url", movieData.movie.poster);
 			startActivity(yingpingIntent);
 			break;
 		default:

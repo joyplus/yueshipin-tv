@@ -80,6 +80,8 @@ public class ShowTVActivity extends Activity implements View.OnKeyListener,
 	private ObjectMapper mapper = new ObjectMapper();
 
 	private List<MovieItemData> movieList = new ArrayList<MovieItemData>();
+	private List<MovieItemData> recommendList = new ArrayList<MovieItemData>();
+	private boolean isRecommendData = true;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -93,9 +95,11 @@ public class ShowTVActivity extends Activity implements View.OnKeyListener,
 		initView();
 		initState();
 
-		String url = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
-		TV_DIANSHIJU, 1 + "", 50 + "");
-		getServiceData(url);// 进入电影界面时，全部分类电影显示获取焦点，并且显示数据
+//		String url = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
+//		TV_DIANSHIJU, 1 + "", 50 + "");
+		String urlNormal = StatisticsUtils.getFilterURL(FILTER_URL, 1+"", 10+"", TV_TYPE);
+		getSaveTenServiceData(urlNormal,true);
+		
 		dinashijuGv.setAdapter(movieAdapter);
 		dinashijuGv.setSelected(true);
 		dinashijuGv.requestFocus();
@@ -584,11 +588,20 @@ public class ShowTVActivity extends Activity implements View.OnKeyListener,
 											Toast.makeText(ShowTVActivity.this, "selected is " + choice[0] + ","+choice[1]+","+choice[2], Toast.LENGTH_LONG).show();
 											String quanbu = getString(R.string.quanbu_name);
 											String quanbufenlei = getString(R.string.quanbufenlei_name);
-											mFenLeiBtn.setText(StatisticsUtils.getQuanBuFenLeiName(choice, quanbufenlei, quanbu));
-											String url = StatisticsUtils.getFilterURL(FILTER_URL, 1+"", 50+"", 2+"") + 
+											String tempStr = StatisticsUtils.getQuanBuFenLeiName(choice, quanbufenlei, quanbu);
+											mFenLeiBtn.setText(tempStr);
+											
+											if(tempStr.equals(quanbufenlei)) {
+												
+												String urlNormal = StatisticsUtils.getFilterURL(FILTER_URL, 1+"", 10+"", TV_TYPE);
+												getSaveTenServiceData(urlNormal,true);
+												
+												return;
+											}
+											String url = StatisticsUtils.getFilterURL(FILTER_URL, 1+"", 50+"", TV_TYPE) + 
 													StatisticsUtils.getFileterURL3Param(choice, quanbu);
 											Log.i(TAG, "POP--->URL:" + url);
-												getFilterServiceData(url);
+												getFilterServiceData(url , true); 
 											
 										}
 									}
@@ -614,43 +627,43 @@ public class ShowTVActivity extends Activity implements View.OnKeyListener,
 				String url1 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
 				REBO_DALU_DIANSHI, 1 + "", 50 + "");
 				app.MyToast(aq.getContext(),"ll_daluju");
-				getServiceData(url1);
+				getInitDataServiceData(url1,false);
 				break;
 			case R.id.ll_gangju:
 				String url2 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
 				REBO_GANGJU_DIANSHI, 1 + "", 50 + "");
 				app.MyToast(aq.getContext(),"ll_gangju");
-				getServiceData(url2);
+				getInitDataServiceData(url2,false);
 				break;
 			case R.id.ll_taiju:
 				String url3 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
 				REBO_TAIJU_DIANSHI, 1 + "", 50 + "");
 				app.MyToast(aq.getContext(),"ll_taiju");
-				getServiceData(url3);
+				getInitDataServiceData(url3,false);;
 				break;
 			case R.id.ll_hanju:
 				String url4 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
 				REBO_HANJU_DIANSHI, 1 + "", 50 + "");
 				app.MyToast(aq.getContext(),"ll_hanju");
-				getServiceData(url4);
+				getInitDataServiceData(url4,false);
 				break;
 			case R.id.ll_meiju:
 				String url5 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
 				REBO_OUMEI_DIANSHI, 1 + "", 50 + "");
 				app.MyToast(aq.getContext(),"ll_meiju");
-				getServiceData(url5);
+				getInitDataServiceData(url5,false);
 				break;
 			case R.id.ll_riju:
 				String url6 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
 				REBO_RIJU_DIANSHI, 1 + "", 50 + "");
 				app.MyToast(aq.getContext(),"ll_riju");
-				getServiceData(url6);
+				getInitDataServiceData(url6,false);
 				break;
 			case R.id.bt_quanbufenlei:
 				String url7 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
 						TV_DIANSHIJU, 1 + "", 50 + "");
 				app.MyToast(aq.getContext(),"bt_quanbufenlei");
-				getServiceData(url7);
+				getInitDataServiceData(url7,false);
 				break;
 			case R.id.bt_zuijinguankan:
 				startActivity(new Intent(this, HistoryActivity.class));
@@ -683,14 +696,80 @@ public class ShowTVActivity extends Activity implements View.OnKeyListener,
 		v.setOnKeyListener(this);
 	}
 	
-	private void getFilterServiceData(String url) {
+	private void getInitDataServiceData(String url , boolean isRecommend) {
 		
+		this.isRecommendData = isRecommend;//是否添加10部提取影片
+		
+		getServiceData(url, "initData");
+	}
+	
+	private void getFilterServiceData(String url , boolean isRecommend) {
+		this.isRecommendData = isRecommend;//是否添加10部提取影片
+		
+		getServiceData(url, "initFilterData");
+	}
+	
+	private void getSaveTenServiceData(String url , boolean isRecommend) {
+		this.isRecommendData = isRecommend;//是否添加10部提取影片
+		
+		getServiceData(url, "saveTenQuanBuFenLeiData");
+	}
+	
+	private void getServiceData(String url , String interfaceName) {
+
 		firstFloatView.setVisibility(View.INVISIBLE);
 		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
-		cb.url(url).type(JSONObject.class).weakHandler(this, "initFilterData");
+//		cb.url(url).type(JSONObject.class).weakHandler(this, "initData");
+		cb.url(url).type(JSONObject.class).weakHandler(this, interfaceName);
 
 		cb.SetHeader(app.getHeaders());
 		aq.ajax(cb);
+	}
+	
+	public void saveTenQuanBuFenLeiData(String url, JSONObject json, AjaxStatus status) {
+
+		if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
+
+			app.MyToast(aq.getContext(),
+					getResources().getString(R.string.networknotwork));
+			return;
+		}
+		try {
+			Log.d(TAG, "saveTenQuanBuFenLeiData---->" + json.toString());
+			ReturnFilterMovieSearch result = mapper.readValue(json.toString(),
+					ReturnFilterMovieSearch.class);
+			if(recommendList != null && !recommendList.isEmpty()) {
+				
+				recommendList.clear();
+			}
+			for (int i = 0; i < result.results.length; i++) {
+
+				MovieItemData movieItemData = new MovieItemData();
+				movieItemData.setMovieName(result.results[i].prod_name);
+				String bigPicUrl = result.results[i].big_prod_pic_url;
+				if(bigPicUrl == null || bigPicUrl.equals("")) {
+					
+					bigPicUrl = result.results[i].prod_pic_url;
+				}
+				movieItemData.setMoviePicUrl(bigPicUrl);
+				movieItemData.setMovieScore(result.results[i].score);
+				movieItemData.setMovieID(result.results[i].prod_id);
+				movieItemData.setMovieDuration(result.results[i].duration);
+				recommendList.add(movieItemData);
+			}
+			String url2 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
+					TV_DIANSHIJU, 1 + "", 50 + "");
+			getInitDataServiceData(url2 , true);// 进入电影界面时，全部分类电影显示获取焦点，并且显示数据
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public void initFilterData(String url, JSONObject json, AjaxStatus status) {
@@ -705,7 +784,6 @@ public class ShowTVActivity extends Activity implements View.OnKeyListener,
 			Log.d(TAG, json.toString());
 			ReturnFilterMovieSearch result = mapper.readValue(json.toString(),
 					ReturnFilterMovieSearch.class);
-			// hot_list.clear();
 			if(movieList != null && !movieList.isEmpty()) {
 				
 				movieList.clear();
@@ -720,7 +798,6 @@ public class ShowTVActivity extends Activity implements View.OnKeyListener,
 					bigPicUrl = result.results[i].prod_pic_url;
 				}
 				movieItemData.setMoviePicUrl(bigPicUrl);
-//				movieItemData.setMoviePicUrl(result.results[i].big_prod_pic_url);
 				movieItemData.setMovieScore(result.results[i].score);
 				movieItemData.setMovieID(result.results[i].prod_id);
 				movieItemData.setMovieDuration(result.results[i].duration);
@@ -728,7 +805,6 @@ public class ShowTVActivity extends Activity implements View.OnKeyListener,
 				movieItemData.setMovieMaxEpisode(result.results[i].max_episode);
 				movieList.add(movieItemData);
 			}
-			// Log.d
 
 			movieAdapter.notifyDataSetChanged();
 			beforeGvView = null;
@@ -749,16 +825,6 @@ public class ShowTVActivity extends Activity implements View.OnKeyListener,
 		}
 	}
 
-	private void getServiceData(String url) {
-
-		firstFloatView.setVisibility(View.INVISIBLE);
-		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
-		cb.url(url).type(JSONObject.class).weakHandler(this, "initData");
-
-		cb.SetHeader(app.getHeaders());
-		aq.ajax(cb);
-	}
-
 	public void initData(String url, JSONObject json, AjaxStatus status) {
 
 		if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
@@ -771,7 +837,7 @@ public class ShowTVActivity extends Activity implements View.OnKeyListener,
 			Log.d(TAG, json.toString());
 			ReturnTVBangDanList result = mapper.readValue(json.toString(),
 					ReturnTVBangDanList.class);
-			// hot_list.clear();
+			
 			if(movieList != null && !movieList.isEmpty()) {
 				
 				movieList.clear();
@@ -786,14 +852,34 @@ public class ShowTVActivity extends Activity implements View.OnKeyListener,
 					bigPicUrl = result.items[i].prod_pic_url;
 				}
 				movieItemData.setMoviePicUrl(bigPicUrl);
-//				movieItemData.setMoviePicUrl(result.items[i].big_prod_pic_url);
 				movieItemData.setMovieScore(result.items[i].score);
 				movieItemData.setMovieID(result.items[i].prod_id);
 				movieItemData.setMovieCurEpisode(result.items[i].cur_episode);
 				movieItemData.setMovieMaxEpisode(result.items[i].max_episode);
 				movieList.add(movieItemData);
 			}
-			// Log.d
+			
+			if(isRecommendData) {//如果是全部分类，那就加上10个推荐数据
+				
+				for(MovieItemData movieItemData : recommendList) {
+					
+					boolean isSame = false;
+					for (int i = 0; i < result.items.length; i++) {
+						
+						String proId = movieItemData.getMovieID();
+						if(proId.equals(result.items[i].prod_id)){
+							
+							isSame = true;
+							break;//符合条件跳出本次循环
+							
+						}
+					}
+					if(!isSame) {
+						
+						movieList.add(movieItemData);
+					}
+				}
+			}
 
 			movieAdapter.notifyDataSetChanged();
 			beforeGvView = null;
