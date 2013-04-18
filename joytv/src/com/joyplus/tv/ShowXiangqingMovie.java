@@ -24,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
@@ -189,13 +190,24 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 		case R.id.bt_xiangqing_yingping:
 			Intent yingpingIntent = new Intent(this, DetailComment.class);
 //			yingpingIntent.putExtra("ID", prod_id);
-			Bundle bundle = new Bundle();
-			bundle.putString("prod_id", prod_id);
-			bundle.putString("prod_name", movieData.movie.name);
-			bundle.putString("prod_dou", movieData.movie.score);
-			bundle.putString("prod_url", movieData.movie.poster);
-			yingpingIntent.putExtras(bundle);
-			startActivity(yingpingIntent);
+			int yingpingSize = movieData.comments.length;
+			Log.i(TAG, "Comments : " + yingpingSize);
+			
+			if(yingpingSize >0) {
+				
+				Bundle bundle = new Bundle();
+				bundle.putString("prod_id", prod_id);
+				bundle.putString("prod_name", movieData.movie.name);
+				bundle.putString("prod_dou", movieData.movie.score);
+				bundle.putString("prod_url", movieData.movie.poster);
+				yingpingIntent.putExtras(bundle);
+				startActivity(yingpingIntent);
+			} else {
+				
+				Toast.makeText(this, getString(R.string.xiangqing_yingping_no),
+						Toast.LENGTH_SHORT).show();
+			}
+			
 			break;
 		default:
 			break;

@@ -224,13 +224,22 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 		case R.id.bt_xiangqing_yingping:
 			Intent yingpingIntent = new Intent(this, DetailComment.class);
 //			yingpingIntent.putExtra("ID", prod_id);
-			Bundle bundle = new Bundle();
-			bundle.putString("prod_id", prod_id);
-			bundle.putString("prod_name", date.tv.name);
-			bundle.putString("prod_dou", date.tv.score);
-			bundle.putString("prod_url", date.tv.poster);
-			yingpingIntent.putExtras(bundle);
-			startActivity(yingpingIntent);
+			int yingpingSize = date.comments.length;
+			
+			if(yingpingSize >0) {
+				
+				Bundle bundle = new Bundle();
+				bundle.putString("prod_id", prod_id);
+				bundle.putString("prod_name", date.tv.name);
+				bundle.putString("prod_dou", date.tv.score);
+				bundle.putString("prod_url", date.tv.poster);
+				yingpingIntent.putExtras(bundle);
+				startActivity(yingpingIntent);
+			} else {
+				
+				Toast.makeText(this, getString(R.string.xiangqing_yingping_no),
+						Toast.LENGTH_SHORT).show();
+			}
 			break;
 		default:
 			
