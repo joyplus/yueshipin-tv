@@ -7,7 +7,10 @@ import java.util.List;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -61,13 +64,15 @@ public class ShowDongManActivity extends Activity implements View.OnKeyListener,
 	
 	private LinearLayout topLinearLayout;
 	
+	private LinearLayout shouchangTitleLL;
+	
 	private View firstFloatView ;
 
 	private View beforeView, activeView;
 
 	private boolean isSelectedItem = true;// GridView中参数是否真正初始化
 
-	private int popWidth, popHeight;
+	private int popWidth = 0, popHeight = 0 , qitaLayoutHegiht = 0;
 
 	private boolean isGridViewUp = false;
 
@@ -80,6 +85,8 @@ public class ShowDongManActivity extends Activity implements View.OnKeyListener,
 	private List<MovieItemData> movieList = new ArrayList<MovieItemData>();
 	private List<MovieItemData> recommendList = new ArrayList<MovieItemData>();
 	private boolean isRecommendData = true;
+	
+	private boolean isShoucangDataExist = true;//测试 时 为true
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -122,6 +129,12 @@ public class ShowDongManActivity extends Activity implements View.OnKeyListener,
 		firstFloatView = findViewById(R.id.inclue_movie_show_item);
 		
 		topLinearLayout = (LinearLayout) findViewById(R.id.ll_show_movie_top);
+		shouchangTitleLL = (LinearLayout) findViewById(R.id.ll_shoucanggengxin);
+		
+		if(isShoucangDataExist) {
+			
+			shouchangTitleLL.setVisibility(View.VISIBLE);
+		}
 
 		addListener();
 
@@ -238,11 +251,14 @@ public class ShowDongManActivity extends Activity implements View.OnKeyListener,
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				// TODO Auto-generated method stub
-				Intent intent = new Intent(ShowDongManActivity.this,
-						ShowXiangqingDongman.class);
-				Log.i(TAG, "ID:" + movieList.get(position).getMovieID());
-				intent.putExtra("ID", movieList.get(position).getMovieID());
-				startActivity(intent);
+				if(movieList.size() > 0) {
+					
+					Intent intent = new Intent(ShowDongManActivity.this,
+							ShowXiangqingDongman.class);
+					Log.i(TAG, "ID:" + movieList.get(position).getMovieID());
+					intent.putExtra("ID", movieList.get(position).getMovieID());
+					startActivity(intent);
+				}
 			}
 		});
 
@@ -986,11 +1002,10 @@ public class ShowDongManActivity extends Activity implements View.OnKeyListener,
 			convertView.setPadding(GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING,
 					GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING);
 			
-			if (width != 0) {
+			if (width != 0 && popWidth != 0) {
 
 				popWidth = width;
 				popHeight = height;
-				// Log.i(TAG, "Width:" + popWidth);
 			}
 			
 			if(movieList.size() <= 0) {

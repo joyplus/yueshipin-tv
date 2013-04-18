@@ -269,8 +269,8 @@
                     android:background="@drawable/text_drawable_selector"
                     android:gravity="right|center_vertical"
                     android:text="@string/lixianshipin_name"
-                    android:textColor="@color/text_color_selector" 
-                    android:visibility="invisible"/>
+                    android:textColor="@color/text_color_selector"
+                    android:visibility="invisible" />
 
                 <TextView
                     style="@style/style_4"
@@ -294,8 +294,7 @@
                 android:layout_weight="1"
                 android:orientation="horizontal"
                 android:paddingBottom="@dimen/edit_vertical_margin"
-                android:paddingTop="@dimen/edit_vertical_margin"
-                android:visibility="visible" >
+                android:paddingTop="@dimen/edit_vertical_margin" >
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -304,6 +303,7 @@
                     android:paddingRight="50dp" >
 
                     <TextView
+                        android:id="@+id/tv_shoucanggengxin_name"
                         android:layout_width="@dimen/layout_zero"
                         android:layout_height="match_parent"
                         android:layout_marginLeft="@dimen/theme_name_margin"
@@ -323,34 +323,83 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <RelativeLayout
-                android:id="@+id/ll_movie_show2"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/layout_zero"
-                android:layout_weight="15" >
+                android:layout_weight="15"
+                android:orientation="vertical" >
 
-                <FrameLayout
-                    android:id="@+id/fl_movie_show"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:paddingRight="34dp" >
-
-                    <com.joyplus.tv.ui.MyMovieGridView
-                        android:id="@+id/gv_movie_show"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:listSelector="@android:color/transparent"
-                        android:numColumns="5" >
-                    </com.joyplus.tv.ui.MyMovieGridView>
+                    android:layout_height="@dimen/layout_zero"
+                    android:layout_weight="1.85"
+                    android:orientation="vertical" >
 
                     <include
-                        android:id="@+id/inclue_movie_show_item"
-                        android:layout_width="0dip"
-                        android:layout_height="0dip"
-                        layout="@layout/show_item_layout_child_dianying" />
-                </FrameLayout>
-            </RelativeLayout>
+                        android:id="@+id/inclue_shoucang_dongman"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/layout_zero"
+                        android:layout_weight="10"
+                        layout="@layout/shoucang_item_layout" />
+
+                    <LinearLayout
+                        android:id="@+id/ll_qitadianshiju"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/layout_zero"
+                        android:layout_marginBottom="20dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_weight="1"
+                        android:background="@color/menu_bg"
+                        android:orientation="horizontal" >
+
+                        <TextView
+                            android:layout_width="@dimen/layout_zero"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="@dimen/theme_name_margin"
+                            android:layout_weight="1"
+                            android:gravity="center_vertical"
+                            android:text="@string/qitadongman_play_name"
+                            android:textColor="@color/text_normal"
+                            android:textSize="@dimen/menu_up_text_size" />
+
+                        <TextView
+                            android:layout_width="@dimen/layout_zero"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="right|center_vertical"
+                            android:textColor="@color/time_color"
+                            android:textSize="@dimen/jishu_text_size" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/layout_zero"
+                    android:layout_weight="1"
+                    android:paddingRight="34dp" >
+
+                    <FrameLayout
+                        android:id="@+id/fl_movie_show"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" >
+
+                        <com.joyplus.tv.ui.MyMovieGridView
+                            android:id="@+id/gv_movie_show"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:listSelector="@android:color/transparent"
+                            android:numColumns="5" >
+                        </com.joyplus.tv.ui.MyMovieGridView>
+
+                        <include
+                            android:id="@+id/inclue_movie_show_item"
+                            android:layout_width="0dip"
+                            android:layout_height="0dip"
+                            layout="@layout/show_item_layout_child_dianying" />
+                    </FrameLayout>
+                </LinearLayout>
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 
