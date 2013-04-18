@@ -95,8 +95,6 @@ public class ShowTVActivity extends Activity implements View.OnKeyListener,
 		initView();
 		initState();
 
-//		String url = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
-//		TV_DIANSHIJU, 1 + "", 50 + "");
 		String urlNormal = StatisticsUtils.getFilterURL(FILTER_URL, 1+"", 10+"", TV_TYPE);
 		getSaveTenServiceData(urlNormal,true);
 		
