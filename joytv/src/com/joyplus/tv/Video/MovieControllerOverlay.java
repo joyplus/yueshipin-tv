@@ -482,7 +482,10 @@ public class MovieControllerOverlay extends FrameLayout implements
 	}
 
 	public void onAnimationEnd(Animation animation) {
-		hide();
+		if(mShowVolume)
+			hideVolume();
+		else
+			hide();
 	}
 
 	public void onClick(View view) {
