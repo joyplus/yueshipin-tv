@@ -69,7 +69,7 @@ public class ShowSearchActivity extends Activity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.show_yuedan_list);
+		setContentView(R.layout.show_search);
 
 		aq = new AQuery(this);
 		app = (App) getApplication();
