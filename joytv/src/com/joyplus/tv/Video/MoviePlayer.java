@@ -20,8 +20,11 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.util.Arrays;
+import java.util.Comparator;
 
 import android.R.integer;
+import android.R.string;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -40,6 +43,7 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.URLUtil;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -47,8 +51,12 @@ import android.widget.VideoView;
 import android.widget.MediaController.MediaPlayerControl;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 
+import com.androidquery.AQuery;
+import com.joyplus.tv.App;
 import com.joyplus.tv.R;
 import com.joyplus.tv.StatisticsUtils;
+import com.joyplus.tv.Adapters.CurrentPlayData;
+import com.joyplus.tv.Service.Return.ReturnProgramView;
 
 public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		MediaPlayer.OnCompletionListener, MediaPlayer.OnPreparedListener,
@@ -74,6 +82,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 	private int JUMP_TIME = 0;
 	private int JUMP_TIME_TIMES = 0;// 检查是否处在快进模式中
 	private int CURRENT_KEY = 0;
+	private int prod_type = 0;
 
 	private int seekBarWidthOffset = 24;
 
@@ -100,6 +109,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 	private TextView textView2;
 	private TextView mTextViewTime2;
 	private TextView saveTime;
+	private TextView mTextViewProdName;
 
 	private View mLayoutBottomTime;
 	private int totalTime;
@@ -126,15 +136,15 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 	// }
 	// }
 	// };
-//	private final Runnable mPreparedProgress = new Runnable() {
-//		public void run() {
-//			if(mPreparedPercent<100){
-//			mPreparedPercent+=1;
-//			sb.setProgress(mPreparedPercent);
-//			mHandler.postDelayed(mPreparedProgress, 200);
-//			}
-//		}
-//	};
+	// private final Runnable mPreparedProgress = new Runnable() {
+	// public void run() {
+	// if(mPreparedPercent<100){
+	// mPreparedPercent+=1;
+	// sb.setProgress(mPreparedPercent);
+	// mHandler.postDelayed(mPreparedProgress, 200);
+	// }
+	// }
+	// };
 	private final Runnable mProgressChecker = new Runnable() {
 		public void run() {
 			int pos = setProgress();
@@ -142,19 +152,20 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		}
 	};
 
-	public MoviePlayer(View rootView, Context movieActivity, int Time, Uri videoUri,
-			Bundle savedInstance, boolean canReplay) {
+	public MoviePlayer(View rootView, Context movieActivity, int Time,
+			int prod_type, Uri videoUri, Bundle savedInstance, boolean canReplay) {
 		this.mContext = movieActivity;
 		mVideoView = (VideoView) rootView.findViewById(R.id.surface_view);
 
 		mBookmarker = new Bookmarker(mContext);
 		// mActionBar = movieActivity.getActionBar();
 		mUri = videoUri;
+		this.prod_type = prod_type;
 
 		sb = (SeekBar) rootView.findViewById(R.id.seekBar1);
-//		sb.setMax(100);
-//		mHandler.post(mPreparedProgress);
-
+		// sb.setMax(100);
+		// mHandler.post(mPreparedProgress);
+		mTextViewProdName = (TextView) rootView.findViewById(R.id.textView1);
 		textView1 = (TextView) rootView.findViewById(R.id.textViewTime1);
 		textView2 = (TextView) rootView.findViewById(R.id.textViewTime2);
 		mTextViewTime2 = (TextView) rootView.findViewById(R.id.textViewTimes);
@@ -205,11 +216,10 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		} else {
 			Integer bookmark = 0;
 			firstJumpTime = 0;
-			if(Time > 0 ){
+			if (Time > 0) {
 				firstJumpTime = Time;
 				bookmark = Time;
-			}
-			else
+			} else
 				bookmark = mBookmarker.getBookmark(mUri);
 			if (bookmark != null) {
 				saveTime.setText(StatisticsUtils.formatDuration(bookmark));
@@ -218,6 +228,15 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 			}
 			startVideo();
 		}
+	}
+
+	public void setVideoURI(Uri mUri, int Time) {
+		mUri = mUri;
+		mVideoView.setVideoURI(mUri);
+		if (Time > 0)
+			mVideoView.seekTo(Time);
+		mVideoView.start();
+		mHasPaused = false;
 	}
 
 	public void setAudioManager(AudioManager mAudioManager) {
@@ -288,7 +307,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 				pauseVideo();
 			}
 		}
-//		mHandler.post(mProgressChecker);
+		// mHandler.post(mProgressChecker);
 	}
 
 	public void onDestroy() {
@@ -307,9 +326,9 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		}
 		int position = mVideoView.getCurrentPosition();
 		int duration = mVideoView.getDuration();
-		
-		if (mVideoView.isPlaying() && position > 1){
-//			mHandler.removeCallbacks(mPreparedProgress);
+
+		if (mVideoView.isPlaying() && position > 1) {
+			// mHandler.removeCallbacks(mPreparedProgress);
 			mController.showPlayingAtFirstTime();
 			sb.setMax(duration);
 			sb.setOnSeekBarChangeListener(sbLis);
@@ -321,12 +340,15 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 
 		return position;
 	}
-	public int getCurrentPositon(){
+
+	public int getCurrentPositon() {
 		return mVideoView.getCurrentPosition();
 	}
-	public int getDuration(){
+
+	public int getDuration() {
 		return mVideoView.getDuration();
 	}
+
 	public void setTime(int totalTime) {
 		if (this.totalTime == totalTime) {
 			return;
@@ -336,8 +358,6 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		textView2.setText(StatisticsUtils.formatDuration(totalTime));
 
 	}
-
-
 
 	private void startVideo() {
 		// For streams that we expect to be slow to start up, show a
@@ -353,7 +373,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 
 		mVideoView.start();
 		mHasPaused = false;
-//		setProgress();
+		// setProgress();
 	}
 
 	public void playVideo() {
@@ -361,7 +381,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		mVideoView.start();
 		mController.showPlaying();
 
-//		setProgress();
+		// setProgress();
 	}
 
 	public void pauseVideo() {
@@ -407,14 +427,14 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 	public void onSeekEnd(int time) {
 		mDragging = false;
 		mVideoView.seekTo(time);
-//		setProgress();
+		// setProgress();
 	}
 
 	public void onShown() {
 		mShowing = true;
 		// mActionBar.show();
 		showSystemUi(true);
-//		setProgress();
+		// setProgress();
 	}
 
 	public void onHidden() {
@@ -756,10 +776,11 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		@Override
 		public void onProgressChanged(SeekBar seekBar, int progress,
 				boolean fromUser) {
-//			if (mVideoView.isPlaying() && mVideoView.getCurrentPosition() > 1){
-//				mHandler.removeCallbacks(mPreparedProgress);
-//				mController.showPlayingAtFirstTime();
-//			}
+			// if (mVideoView.isPlaying() && mVideoView.getCurrentPosition() >
+			// 1){
+			// mHandler.removeCallbacks(mPreparedProgress);
+			// mController.showPlayingAtFirstTime();
+			// }
 
 			if (JUMP_TIME_TIMES == 0) {
 				RelativeLayout.LayoutParams parms = new RelativeLayout.LayoutParams(
@@ -780,10 +801,16 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 
 				textView1.setText(StatisticsUtils.formatDuration(progress));
 				textView1.setVisibility(View.VISIBLE);
+				if (totalTime >0 && totalTime - progress <= 10000
+						&& (prod_type == 2 || prod_type == 3)) {
+
+					OnContinueVideoPlay();
+				}
 			}
 			// TODO Auto-generated method stub
 		}
 
+	
 		@Override
 		public void onStartTrackingTouch(SeekBar seekBar) {
 			// TODO Auto-generated method stub
@@ -806,19 +833,19 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		Log.d(TAG, "onPrepared");
 		mVideoWidth = mp.getVideoWidth();
 		mVideoHeight = mp.getVideoHeight();
-//		if(firstJumpTime < 1 ){
-			mController.setPrepared(true);
-//			sb.setProgress(100);
-			mHandler.post(mProgressChecker);
-//		}
+		// if(firstJumpTime < 1 ){
+		mController.setPrepared(true);
+		// sb.setProgress(100);
+		mHandler.post(mProgressChecker);
+		// }
 	}
 
 	@Override
 	public void onBufferingUpdate(MediaPlayer mp, int percent) {
 		// TODO Auto-generated method stub
 		Log.d(TAG, "onBufferingUpdate:   " + Integer.toString(percent));
-//		sb.setMax(100);
-//		sb.setProgress(percent);
+		// sb.setMax(100);
+		// sb.setProgress(percent);
 	}
 
 	@Override
@@ -832,11 +859,11 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 	public void onSeekComplete(MediaPlayer mp) {
 		// TODO Auto-generated method stub
 		Log.d(TAG, "onSeekComplete");
-//		if(firstJumpTime > 0 ){
-//			mController.setPrepared(true);
-//			sb.setProgress(100);
-//			mHandler.post(mProgressChecker);
-//		}
+		// if(firstJumpTime > 0 ){
+		// mController.setPrepared(true);
+		// sb.setProgress(100);
+		// mHandler.post(mProgressChecker);
+		// }
 	}
 
 	@Override
@@ -870,6 +897,288 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		}
 		return true;
 	}
+	public void OnPreVideoPlay() {
+		App app = (App) this.mContext.getApplicationContext();
+		CurrentPlayData mCurrentPlayData = app.getCurrentPlayData();
+		ReturnProgramView m_ReturnProgramView = app.get_ReturnProgramView();
+		if (mCurrentPlayData != null && m_ReturnProgramView != null) {
+			String[] video_index = { "letv",
+				"fengxing","qiyi","youku","sinahd","sohu","56","qq","pptv","m1905"};
+			int index = mCurrentPlayData.CurrentIndex-1;
+			mCurrentPlayData.CurrentIndex -=1;
+			app.setCurrentPlayData(mCurrentPlayData);
+			
+			String PROD_SOURCE = null;
+			String title = null;
+
+			switch (mCurrentPlayData.prod_type) {
+			case 1:
+				break;
+			case 2:
+				if (m_ReturnProgramView.tv.episodes[index].down_urls != null) {
+//					videoSourceSort(m_ReturnProgramView.tv.episodes[index].down_urls);
+					for (int i = 0; i < m_ReturnProgramView.tv.episodes[index].down_urls.length; i++) {
+
+						for (int j = 0; j < video_index.length; j++) {
+							if (PROD_SOURCE == null
+									&& m_ReturnProgramView.tv.episodes[index].down_urls[i].source
+											.trim()
+											.equalsIgnoreCase(
+													video_index[j])) {
+
+								String name = m_ReturnProgramView.tv.name;
+								title = "第" + m_ReturnProgramView.tv.episodes[index].name + "集";
+								mTextViewProdName.setText(name+title);
+								PROD_SOURCE = GetSource(m_ReturnProgramView,mCurrentPlayData.prod_type,index, i);
+								
+								//yangzhg
+								StatisticsUtils.StatisticsClicksShow(new AQuery(mContext),
+										app, m_ReturnProgramView.tv.id, m_ReturnProgramView.tv.name,
+										m_ReturnProgramView.tv.episodes[index].name, 2);
+
+								break;
+							}
+						}
+					}
+				}
+				break;
+			case 3:
+				if (m_ReturnProgramView.show.episodes[index].down_urls != null) {
+//					videoSourceSort(m_ReturnProgramView.show.episodes[index].down_urls);
+					for (int i = 0; i < m_ReturnProgramView.show.episodes[index].down_urls.length; i++) {
+						for (int j = 0; j < video_index.length; j++) {
+
+							if (PROD_SOURCE == null
+									&& m_ReturnProgramView.show.episodes[index].down_urls[i].source
+											.trim()
+											.equalsIgnoreCase(
+													video_index[j])) {
+
+								String name = m_ReturnProgramView.show.name;
+								title = m_ReturnProgramView.show.episodes[index].name;
+
+								mTextViewProdName.setText(name+title);
+								PROD_SOURCE =  GetSource(m_ReturnProgramView,mCurrentPlayData.prod_type,index, i);
+								
+								//yangzhg
+								StatisticsUtils.StatisticsClicksShow(new AQuery(mContext),
+										app, m_ReturnProgramView.show.id, m_ReturnProgramView.show.name,
+										m_ReturnProgramView.show.episodes[index].name, 3);
+
+								break;
+							}
+						}
+					}
+
+				}
+				break;
+			}
+
+//			ShowQuality();
+
+			if (PROD_SOURCE != null)
+				setVideoURI(Uri.parse(PROD_SOURCE), 0);
+		}
+	}
+	public void OnContinueVideoPlay() {
+		App app = (App) this.mContext.getApplicationContext();
+		CurrentPlayData mCurrentPlayData = app.getCurrentPlayData();
+		ReturnProgramView m_ReturnProgramView = app.get_ReturnProgramView();
+		if (mCurrentPlayData != null && m_ReturnProgramView != null) {
+			String[] video_index = { "letv",
+				"fengxing","qiyi","youku","sinahd","sohu","56","qq","pptv","m1905"};
+			int index = mCurrentPlayData.CurrentIndex+1;
+			mCurrentPlayData.CurrentIndex +=1;
+			app.setCurrentPlayData(mCurrentPlayData);
+			
+			String PROD_SOURCE = null;
+			String title = null;
+
+			switch (mCurrentPlayData.prod_type) {
+			case 1:
+				break;
+			case 2:
+				if (m_ReturnProgramView.tv.episodes[index].down_urls != null) {
+//					videoSourceSort(m_ReturnProgramView.tv.episodes[index].down_urls);
+					for (int i = 0; i < m_ReturnProgramView.tv.episodes[index].down_urls.length; i++) {
+
+						for (int j = 0; j < video_index.length; j++) {
+							if (PROD_SOURCE == null
+									&& m_ReturnProgramView.tv.episodes[index].down_urls[i].source
+											.trim()
+											.equalsIgnoreCase(
+													video_index[j])) {
+
+								String name = m_ReturnProgramView.tv.name;
+								title = "第" + m_ReturnProgramView.tv.episodes[index].name + "集";
+								mTextViewProdName.setText(name+title);
+								PROD_SOURCE = GetSource(m_ReturnProgramView,mCurrentPlayData.prod_type,index, i);
+								
+								//yangzhg
+								StatisticsUtils.StatisticsClicksShow(new AQuery(mContext),
+										app, m_ReturnProgramView.tv.id, m_ReturnProgramView.tv.name,
+										m_ReturnProgramView.tv.episodes[index].name, 2);
+
+								break;
+							}
+						}
+					}
+				}
+				break;
+			case 3:
+				if (m_ReturnProgramView.show.episodes[index].down_urls != null) {
+//					videoSourceSort(m_ReturnProgramView.show.episodes[index].down_urls);
+					for (int i = 0; i < m_ReturnProgramView.show.episodes[index].down_urls.length; i++) {
+						for (int j = 0; j < video_index.length; j++) {
+
+							if (PROD_SOURCE == null
+									&& m_ReturnProgramView.show.episodes[index].down_urls[i].source
+											.trim()
+											.equalsIgnoreCase(
+													video_index[j])) {
+
+								String name = m_ReturnProgramView.show.name;
+								title = m_ReturnProgramView.show.episodes[index].name;
+
+								mTextViewProdName.setText(name+title);
+								PROD_SOURCE =  GetSource(m_ReturnProgramView,mCurrentPlayData.prod_type,index, i);
+								
+								//yangzhg
+								StatisticsUtils.StatisticsClicksShow(new AQuery(mContext),
+										app, m_ReturnProgramView.show.id, m_ReturnProgramView.show.name,
+										m_ReturnProgramView.show.episodes[index].name, 3);
+
+								break;
+							}
+						}
+					}
+
+				}
+				break;
+			}
+
+//			ShowQuality();
+
+			if (PROD_SOURCE != null)
+				setVideoURI(Uri.parse(PROD_SOURCE), 0);
+		}
+	}
+	private boolean CheckUrl(String urlLink) {
+
+		// url本身不正常 直接返回
+		if (urlLink == null || urlLink.length() <= 0) {
+
+			return false;
+		} else {
+
+			if (!URLUtil.isValidUrl(urlLink)) {
+
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	private String GetSource(ReturnProgramView m_ReturnProgramView,int CurrentCategory,int proi_index, int sourceIndex) {
+		String PROD_SOURCE = null;
+		String[] quality_index = {"hd2","mp4", "flv","3gp"};
+		switch (CurrentCategory) {
+		case 1:
+			break;
+		case 2:
+			for (int k = 0; k < m_ReturnProgramView.tv.episodes[proi_index].down_urls[sourceIndex].urls.length; k++) {
+				ReturnProgramView.DOWN_URLS.URLS CurrentURLS = m_ReturnProgramView.tv.episodes[proi_index].down_urls[sourceIndex].urls[k];
+				if (CurrentURLS != null
+						&& CurrentURLS.url != null
+						&& CheckUrl(
+								CurrentURLS.url.trim())) {
+					for (int i = 0; i < quality_index.length; i++) {
+						if (PROD_SOURCE == null
+								&& CurrentURLS.type.trim().equalsIgnoreCase(
+										quality_index[i])) {
+							PROD_SOURCE = CurrentURLS.url.trim();
+							break;
+						}
+					}
+				}
+				if (PROD_SOURCE != null)
+					break;
+			}
+			break;
+		case 3:
+			for (int k = 0; k < m_ReturnProgramView.show.episodes[proi_index].down_urls[sourceIndex].urls.length; k++) {
+				ReturnProgramView.DOWN_URLS.URLS CurrentURLS = m_ReturnProgramView.show.episodes[proi_index].down_urls[sourceIndex].urls[k];
+				if (CurrentURLS != null
+						&& CurrentURLS.url != null
+						&& CheckUrl(
+								CurrentURLS.url.trim())) {
+					for (int i = 0; i < quality_index.length; i++) {
+						if (PROD_SOURCE == null
+								&& CurrentURLS.type.trim().equalsIgnoreCase(
+										quality_index[i])) {
+							PROD_SOURCE = CurrentURLS.url.trim();
+							break;
+						}
+					}
+				}
+				if (PROD_SOURCE != null)
+					break;
+			}
+			break;
+
+		}
+
+		return PROD_SOURCE;
+
+	}
+//	// 给片源赋权值
+//	public void videoSourceSort(DOWN_URLS[] down_urls) {
+//		if (down_urls != null) {
+//			for (int j = 0; j < down_urls.length; j++) {
+//				if (down_urls[j].source.equalsIgnoreCase("letv")) {
+//					down_urls[j].index = 0;
+//				} else if (down_urls[j].source.equalsIgnoreCase("fengxing")) {
+//					down_urls[j].index = 1;
+//				} else if (down_urls[j].source.equalsIgnoreCase("qiyi")) {
+//					down_urls[j].index = 2;
+//				} else if (down_urls[j].source.equalsIgnoreCase("youku")) {
+//					down_urls[j].index = 3;
+//				} else if (down_urls[j].source.equalsIgnoreCase("sinahd")) {
+//					down_urls[j].index = 4;
+//				} else if (down_urls[j].source.equalsIgnoreCase("sohu")) {
+//					down_urls[j].index = 5;
+//				} else if (down_urls[j].source.equalsIgnoreCase("56")) {
+//					down_urls[j].index = 6;
+//				} else if (down_urls[j].source.equalsIgnoreCase("qq")) {
+//					down_urls[j].index = 7;
+//				} else if (down_urls[j].source.equalsIgnoreCase("pptv")) {
+//					down_urls[j].index = 8;
+//				} else if (down_urls[j].source.equalsIgnoreCase("m1905")) {
+//					down_urls[j].index = 9;
+//				}
+//			}
+//			if (down_urls.length > 1) {
+//				Arrays.sort(down_urls, new EComparatorIndex());
+//			}
+//		}
+//	}
+//
+//	// 将片源排序
+//	class EComparatorIndex implements Comparator {
+//
+//		@Override
+//		public int compare(Object first, Object second) {
+//			// TODO Auto-generated method stub
+//			int first_name = ((DOWN_URLS) first).index;
+//			int second_name = ((DOWN_URLS) second).index;
+//			if (first_name - second_name < 0) {
+//				return -1;
+//			} else {
+//				return 1;
+//			}
+//		}
+//	}
 
 }
 

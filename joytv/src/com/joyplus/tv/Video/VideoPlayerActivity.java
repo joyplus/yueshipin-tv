@@ -76,6 +76,7 @@ public class VideoPlayerActivity extends Activity {
 	private App app;
 	private AQuery aq;
 	private String prod_id = null;
+	private int prod_type = 0;
 	private String prod_name = null;
 	private String prod_url = null;//播放地址
 	private String prod_src = null;//来源
@@ -112,7 +113,17 @@ public class VideoPlayerActivity extends Activity {
 			prod_url = mCurrentPlayData.prod_url;
 			prod_src = mCurrentPlayData.prod_src;
 			prod_qua = mCurrentPlayData.prod_qua;
+			prod_type = mCurrentPlayData.prod_type;
 			mTime = (int)mCurrentPlayData.prod_time;
+			if(prod_type ==2 && prod_type ==3){
+				if(mCurrentPlayData.CurrentIndex == 0)
+					aq.id(R.id.imageControl_r).gone();
+				
+			}
+//			else {
+//				aq.id(R.id.imageControl_r).getView().setVisibility(View.)
+//				aq.id(R.id.imageControl_t).v
+//			}
 		}
 		if(prod_url == null)
 			finish();
@@ -121,7 +132,7 @@ public class VideoPlayerActivity extends Activity {
 		((TextView) findViewById(R.id.textView1)).setText(prod_name);
 		mFinishOnCompletion = intent.getBooleanExtra(
 				MediaStore.EXTRA_FINISH_ON_COMPLETION, true);
-		mPlayer = new MoviePlayer(rootView, this, mTime,Uri.parse(prod_url),
+		mPlayer = new MoviePlayer(rootView, this, mTime,prod_type,Uri.parse(prod_url),
 				savedInstanceState, !mFinishOnCompletion) {
 			@Override
 			public void onCompletion() {
@@ -145,6 +156,26 @@ public class VideoPlayerActivity extends Activity {
 		win.setAttributes(winParams);
 
 	}
+	@Override
+	protected void onNewIntent(Intent intent) {
+		// TODO Auto-generated method stub
+		mCurrentPlayData = app.getCurrentPlayData();
+		m_ReturnProgramView = app.get_ReturnProgramView();
+		int mTime = 0;
+		if(mCurrentPlayData != null){
+			prod_id= mCurrentPlayData.prod_id;
+			prod_name = mCurrentPlayData.prod_name;
+			prod_url = mCurrentPlayData.prod_url;
+			prod_src = mCurrentPlayData.prod_src;
+			prod_qua = mCurrentPlayData.prod_qua;
+			mTime = (int)mCurrentPlayData.prod_time;
+		}
+		if (mPlayer != null && URLUtil.isNetworkUrl(prod_url)){
+			mPlayer.setVideoURI(Uri.parse(prod_url), mTime);
+		}
+		super.onNewIntent(intent);
+
+	}
 
 	public void OnClickPause(View v) {
 		if(mPlayer.isPause())
@@ -153,13 +184,17 @@ public class VideoPlayerActivity extends Activity {
 			mPlayer.pauseVideo();
 	}
 	public void OnClickPre(View v) {
-
+		if (mPlayer != null){
+			mPlayer.OnPreVideoPlay();
+		}
 	}
 	public void OnClickContinue(View v) {
 
 	}
 	public void OnClickNext(View v) {
-
+		if (mPlayer != null){
+			mPlayer.OnContinueVideoPlay();
+		}
 	}
 	public void OnClickFav(View v) {
 
