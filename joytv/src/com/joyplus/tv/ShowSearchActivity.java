@@ -14,14 +14,12 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.ScaleAnimation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.androidquery.AQuery;
@@ -30,10 +28,12 @@ import com.androidquery.callback.AjaxStatus;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.joyplus.tv.entity.GridViewItemHodler;
 import com.joyplus.tv.entity.MovieItemData;
 import com.joyplus.tv.entity.ReturnFilterMovieSearch;
 import com.joyplus.tv.ui.MyMovieGridView;
 import com.joyplus.tv.utils.BangDanKey;
+import com.joyplus.tv.utils.ItemStateUtils;
 import com.joyplus.tv.utils.JieMianConstant;
 import com.joyplus.tv.utils.MyKeyEventKey;
 
@@ -231,7 +231,6 @@ public class ShowSearchActivity extends Activity implements
 							return;
 						}
 
-						final float x = view.getX();
 						final float y = view.getY();
 
 						boolean isSmoonthScroll = false;
@@ -262,69 +261,34 @@ public class ShowSearchActivity extends Activity implements
 
 						}
 
-						// if (!isSmoonthScroll) {// 没有强行拖动时候的动画效果
-
 						if (beforeGvView != null) {
 
-							ImageView iv = (ImageView) beforeGvView
-									.findViewById(R.id.item_layout_dianying_reflact);
-							iv.setVisibility(View.VISIBLE);
-							beforeGvView.setBackgroundColor(getResources()
-									.getColor(android.R.color.transparent));
-							ScaleAnimation outScaleAnimation = StatisticsUtils.getOutScaleAnimation();
-							beforeGvView.startAnimation(outScaleAnimation);
-
+							ItemStateUtils.viewOutAnimation(getApplicationContext(),
+									beforeGvView);
 						} else {
 
-							ScaleAnimation outScaleAnimation = StatisticsUtils.getOutScaleAnimation();
-							firstFloatView.startAnimation(outScaleAnimation);
-
-							firstFloatView.setVisibility(View.GONE);
+							ItemStateUtils.floatViewOutAnimaiton(firstFloatView);
 						}
-						
-						ImageView iv2 = (ImageView) view
-								.findViewById(R.id.item_layout_dianying_reflact);
-						iv2.setVisibility(View.GONE);
-						ScaleAnimation inScaleAnimation = StatisticsUtils.getInScaleAnimation();
 
-						view.setPadding(GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING,
-								GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING);
-						view.setBackgroundColor(getResources().getColor(
-								R.color.text_active));
-						view.startAnimation(inScaleAnimation);
-						// }
+						ItemStateUtils.viewInAnimation(getApplicationContext(), view);
+
+						int[] firstAndLastVisible = new int[2];
+						firstAndLastVisible[0] = dinashijuGv.getFirstVisiblePosition();
+						firstAndLastVisible[1] = dinashijuGv.getLastVisiblePosition();
 
 						if (y == 0 || y - popHeight == 0) {// 顶部没有渐影
 
-							if (!isSmoonthScroll) {
-
-								beforeFirstAndLastVible[0] = dinashijuGv
-										.getFirstVisiblePosition();
-								beforeFirstAndLastVible[1] = dinashijuGv
-										.getFirstVisiblePosition() + 9;
-							} else {
-
-								beforeFirstAndLastVible[0] = dinashijuGv
-										.getFirstVisiblePosition() - 5;
-								beforeFirstAndLastVible[1] = dinashijuGv
-										.getFirstVisiblePosition() + 9 - 5;
-							}
+							beforeFirstAndLastVible = ItemStateUtils
+									.reCaculateFirstAndLastVisbile(
+											beforeFirstAndLastVible,
+											firstAndLastVisible, isSmoonthScroll, false);
 
 						} else {// 顶部有渐影
 
-							if (!isSmoonthScroll) {
-
-								beforeFirstAndLastVible[0] = dinashijuGv
-										.getLastVisiblePosition() - 9;
-								beforeFirstAndLastVible[1] = dinashijuGv
-										.getLastVisiblePosition();
-							} else {
-
-								beforeFirstAndLastVible[0] = dinashijuGv
-										.getLastVisiblePosition() - 9 + 5;
-								beforeFirstAndLastVible[1] = dinashijuGv
-										.getLastVisiblePosition() + 5;
-							}
+							beforeFirstAndLastVible = ItemStateUtils
+									.reCaculateFirstAndLastVisbile(
+											beforeFirstAndLastVible,
+											firstAndLastVisible, isSmoonthScroll, true);
 
 						}
 
@@ -349,32 +313,21 @@ public class ShowSearchActivity extends Activity implements
 
 				if (!hasFocus) {// 如果gridview没有获取焦点，把item中高亮取消
 
-					ScaleAnimation outScaleAnimation = StatisticsUtils.getOutScaleAnimation();
 					if (beforeGvView != null) {
-						ImageView iv = (ImageView) beforeGvView
-								.findViewById(R.id.item_layout_dianying_reflact);
-						iv.setVisibility(View.VISIBLE);
-						beforeGvView.setBackgroundColor(getResources()
-								.getColor(android.R.color.transparent));
-						beforeGvView.startAnimation(outScaleAnimation);
+
+						ItemStateUtils.viewOutAnimation(
+								getApplicationContext(), beforeGvView);
 					} else {
 
-						firstFloatView.setVisibility(View.GONE);
+						// firstFloatView.setVisibility(View.GONE);
+						ItemStateUtils.floatViewOutAnimaiton(firstFloatView);
 					}
 				} else {
 
-					ScaleAnimation inScaleAnimation = StatisticsUtils.getInScaleAnimation();
 					if (beforeGvView != null) {
 
-						ImageView iv = (ImageView) beforeGvView
-								.findViewById(R.id.item_layout_dianying_reflact);
-						iv.setVisibility(View.GONE);
-						beforeGvView.setPadding(GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING,
-								GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING);
-						beforeGvView.setBackgroundColor(getResources()
-								.getColor(R.color.text_active));
-
-						beforeGvView.startAnimation(inScaleAnimation);
+						ItemStateUtils.viewInAnimation(getApplicationContext(),
+								beforeGvView);
 
 					} else {
 						initFirstFloatView();
@@ -548,13 +501,8 @@ public class ShowSearchActivity extends Activity implements
 			}
 		}
 		
-		firstFloatView.setPadding(GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING,
-				GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING);
-		firstFloatView.setBackgroundColor(getResources()
-				.getColor(R.color.text_active));
-		ScaleAnimation inScaleAnimation = StatisticsUtils.getInScaleAnimation();
-		
-		firstFloatView.startAnimation(inScaleAnimation);
+		ItemStateUtils.floatViewInAnimaiton(getApplicationContext(),
+				firstFloatView);
 	}
 
 	private BaseAdapter movieAdapter = new BaseAdapter() {
@@ -584,8 +532,8 @@ public class ShowSearchActivity extends Activity implements
 			AbsListView.LayoutParams params = new AbsListView.LayoutParams(
 					width, height);
 			convertView.setLayoutParams(params);
-			convertView.setPadding(GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING,
-					GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING);
+			convertView.setPadding(GRIDVIEW_ITEM_PADDING_LEFT, GRIDVIEW_ITEM_PADDING,
+					GRIDVIEW_ITEM_PADDING_LEFT, GRIDVIEW_ITEM_PADDING);
 			
 			viewItemHodler.nameTv.setText(movieList.get(0).getMovieName());
 			
@@ -640,8 +588,6 @@ public class ShowSearchActivity extends Activity implements
 			}
 
 			aq = new AQuery(convertView);
-//			aq.id(R.id.iv_item_layout_haibao).image(
-//					movieList.get(0).getMoviePicUrl());
 			aq.id(R.id.iv_item_layout_haibao).image(movieList.get(position).getMoviePicUrl(), 
 					true, true,0, R.drawable.post_normal);
 			
@@ -666,12 +612,5 @@ public class ShowSearchActivity extends Activity implements
 			return movieList.size();
 		}
 	};
-	
-	 private class GridViewItemHodler {
-			
-		TextView nameTv;
-		TextView scoreTv;
-		TextView otherInfo;
-	}
 
 }

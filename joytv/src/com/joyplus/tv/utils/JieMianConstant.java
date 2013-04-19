@@ -15,6 +15,7 @@ public interface JieMianConstant {
 	float IN_ANIMATION_TO_Y = 1.0f;
 	
 	int GRIDVIEW_ITEM_PADDING = 5;
+	int GRIDVIEW_ITEM_PADDING_LEFT = 15;
 	
 	int STANDARD_PIC_WIDTH = 264;
 	int STANDARD_PIC_HEIGHT = 370;

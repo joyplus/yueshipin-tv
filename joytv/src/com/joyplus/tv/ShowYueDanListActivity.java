@@ -6,8 +6,10 @@ import java.util.ArrayList;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -15,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
@@ -33,16 +36,19 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joyplus.tv.Service.Return.ReturnTVBangDanList;
 import com.joyplus.tv.Service.Return.ReturnTops;
+import com.joyplus.tv.entity.GridViewItemHodler;
 import com.joyplus.tv.entity.MovieItemData;
 import com.joyplus.tv.entity.ShiPinInfoParcelable;
 import com.joyplus.tv.entity.YueDanInfo2;
 import com.joyplus.tv.ui.MyMovieGridView;
 import com.joyplus.tv.utils.BangDanKey;
+import com.joyplus.tv.utils.ItemStateUtils;
 import com.joyplus.tv.utils.JieMianConstant;
 import com.joyplus.tv.utils.MyKeyEventKey;
 
-public class ShowYueDanListActivity extends Activity implements
-		View.OnKeyListener, MyKeyEventKey, JieMianConstant,BangDanKey, View.OnClickListener {
+public class ShowYueDanListActivity extends Activity implements View.OnKeyListener,
+MyKeyEventKey, BangDanKey, JieMianConstant, View.OnClickListener,
+View.OnFocusChangeListener {
 
 	private String TAG = "ShowYueDanListActivity";
 	private AQuery aq;
@@ -51,13 +57,13 @@ public class ShowYueDanListActivity extends Activity implements
 	private EditText searchEt;
 	private MyMovieGridView dinashijuGv;
 
-	private Button zuijinguankanBtn, zhuijushoucangBtn, lixianshipinBtn;
+	private Button zuijinguankanBtn, zhuijushoucangBtn;
 	
 	private TextView yuedanListTv;
 
 	private View firstFloatView;
 
-	private View beforeView, activeView;
+	private View  activeView;
 
 	private boolean isSelectedItem = true;// GridView中参数是否真正初始化
 
@@ -113,12 +119,12 @@ public class ShowYueDanListActivity extends Activity implements
 
 		zuijinguankanBtn = (Button) findViewById(R.id.bt_zuijinguankan);
 		zhuijushoucangBtn = (Button) findViewById(R.id.bt_zhuijushoucang);
-		lixianshipinBtn = (Button) findViewById(R.id.bt_lixianshipin);
 
 		firstFloatView = findViewById(R.id.inclue_movie_show_item);
 		yuedanListTv = (TextView) findViewById(R.id.tv_yuedanlist_name);
 		
-		beforeView = zuijinguankanBtn;
+		dinashijuGv.setNextFocusLeftId(R.id.bt_zuijinguankan);
+		
 		activeView = zuijinguankanBtn;
 
 		addListener();
@@ -126,12 +132,9 @@ public class ShowYueDanListActivity extends Activity implements
 	}
 
 	private void initState() {
-
-		searchEt.setFocusable(false);// 搜索焦点消失
-
-		zuijinguankanBtn.setPadding(0, 0, WENZI_PADDING_RIGHT, 0);
-		zhuijushoucangBtn.setPadding(0, 0, WENZI_PADDING_RIGHT, 0);
-		lixianshipinBtn.setPadding(0, 0, WENZI_PADDING_RIGHT, 0);
+		
+		ItemStateUtils.setItemPadding(zuijinguankanBtn);
+		ItemStateUtils.setItemPadding(zhuijushoucangBtn);
 
 	}
 
@@ -141,27 +144,12 @@ public class ShowYueDanListActivity extends Activity implements
 
 		zuijinguankanBtn.setOnKeyListener(this);
 		zhuijushoucangBtn.setOnKeyListener(this);
-		lixianshipinBtn.setOnKeyListener(this);
 
 		zuijinguankanBtn.setOnClickListener(this);
 		zhuijushoucangBtn.setOnClickListener(this);
-		lixianshipinBtn.setOnClickListener(this);
-
-		searchEt.setOnKeyListener(new View.OnKeyListener() {
-
-			@Override
-			public boolean onKey(View v, int keyCode, KeyEvent event) {
-				// TODO Auto-generated method stub
-				int action = event.getAction();
-				if (action == KeyEvent.ACTION_UP) {
-					if (keyCode == KEY_UP) {
-
-						turnToGridViewState();
-					}
-				}
-				return false;
-			}
-		});
+		
+		zuijinguankanBtn.setOnFocusChangeListener(this);
+		zhuijushoucangBtn.setOnFocusChangeListener(this);
 
 		dinashijuGv.setOnKeyListener(new View.OnKeyListener() {
 
@@ -182,7 +170,6 @@ public class ShowYueDanListActivity extends Activity implements
 				if (action == KeyEvent.ACTION_UP) {
 					if (keyCode == KEY_RIGHT) {
 
-						turnToGridViewState();
 					}
 					if (!isSelectedItem) {
 
@@ -220,7 +207,6 @@ public class ShowYueDanListActivity extends Activity implements
 										ShowXiangqingTv.class);
 								intent.putExtra("ID", movieList.get(position).getMovieID());
 								startActivity(intent);
-//								startActivity();
 							} else if(pro_type.equals("1")) {
 								Log.i(TAG, "pro_type:" + pro_type + "   --->1");
 								Intent intent = new Intent(ShowYueDanListActivity.this,
@@ -257,7 +243,6 @@ public class ShowYueDanListActivity extends Activity implements
 							return;
 						}
 
-						final float x = view.getX();
 						final float y = view.getY();
 
 						boolean isSmoonthScroll = false;
@@ -288,69 +273,34 @@ public class ShowYueDanListActivity extends Activity implements
 
 						}
 
-						// if (!isSmoonthScroll) {// 没有强行拖动时候的动画效果
-
 						if (beforeGvView != null) {
 
-							ImageView iv = (ImageView) beforeGvView
-									.findViewById(R.id.item_layout_dianying_reflact);
-							iv.setVisibility(View.VISIBLE);
-							beforeGvView.setBackgroundColor(getResources()
-									.getColor(android.R.color.transparent));
-							ScaleAnimation outScaleAnimation = StatisticsUtils.getOutScaleAnimation();
-							beforeGvView.startAnimation(outScaleAnimation);
-
+							ItemStateUtils.viewOutAnimation(getApplicationContext(),
+									beforeGvView);
 						} else {
 
-							ScaleAnimation outScaleAnimation = StatisticsUtils.getOutScaleAnimation();
-							firstFloatView.startAnimation(outScaleAnimation);
-
-							firstFloatView.setVisibility(View.GONE);
+							ItemStateUtils.floatViewOutAnimaiton(firstFloatView);
 						}
-						
-						ImageView iv2 = (ImageView) view
-								.findViewById(R.id.item_layout_dianying_reflact);
-						iv2.setVisibility(View.GONE);
-						ScaleAnimation inScaleAnimation = StatisticsUtils.getInScaleAnimation();
 
-						view.setPadding(GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING,
-								GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING);
-						view.setBackgroundColor(getResources().getColor(
-								R.color.text_active));
-						view.startAnimation(inScaleAnimation);
-						// }
+						ItemStateUtils.viewInAnimation(getApplicationContext(), view);
+
+						int[] firstAndLastVisible = new int[2];
+						firstAndLastVisible[0] = dinashijuGv.getFirstVisiblePosition();
+						firstAndLastVisible[1] = dinashijuGv.getLastVisiblePosition();
 
 						if (y == 0 || y - popHeight == 0) {// 顶部没有渐影
 
-							if (!isSmoonthScroll) {
-
-								beforeFirstAndLastVible[0] = dinashijuGv
-										.getFirstVisiblePosition();
-								beforeFirstAndLastVible[1] = dinashijuGv
-										.getFirstVisiblePosition() + 9;
-							} else {
-
-								beforeFirstAndLastVible[0] = dinashijuGv
-										.getFirstVisiblePosition() - 5;
-								beforeFirstAndLastVible[1] = dinashijuGv
-										.getFirstVisiblePosition() + 9 - 5;
-							}
+							beforeFirstAndLastVible = ItemStateUtils
+									.reCaculateFirstAndLastVisbile(
+											beforeFirstAndLastVible,
+											firstAndLastVisible, isSmoonthScroll, false);
 
 						} else {// 顶部有渐影
 
-							if (!isSmoonthScroll) {
-
-								beforeFirstAndLastVible[0] = dinashijuGv
-										.getLastVisiblePosition() - 9;
-								beforeFirstAndLastVible[1] = dinashijuGv
-										.getLastVisiblePosition();
-							} else {
-
-								beforeFirstAndLastVible[0] = dinashijuGv
-										.getLastVisiblePosition() - 9 + 5;
-								beforeFirstAndLastVible[1] = dinashijuGv
-										.getLastVisiblePosition() + 5;
-							}
+							beforeFirstAndLastVible = ItemStateUtils
+									.reCaculateFirstAndLastVisbile(
+											beforeFirstAndLastVible,
+											firstAndLastVisible, isSmoonthScroll, true);
 
 						}
 
@@ -375,32 +325,23 @@ public class ShowYueDanListActivity extends Activity implements
 
 				if (!hasFocus) {// 如果gridview没有获取焦点，把item中高亮取消
 
-					ScaleAnimation outScaleAnimation = StatisticsUtils.getOutScaleAnimation();
 					if (beforeGvView != null) {
-						ImageView iv = (ImageView) beforeGvView
-								.findViewById(R.id.item_layout_dianying_reflact);
-						iv.setVisibility(View.VISIBLE);
-						beforeGvView.setBackgroundColor(getResources()
-								.getColor(android.R.color.transparent));
-						beforeGvView.startAnimation(outScaleAnimation);
+
+						ItemStateUtils.viewOutAnimation(
+								getApplicationContext(), beforeGvView);
 					} else {
 
-						firstFloatView.setVisibility(View.GONE);
+						// firstFloatView.setVisibility(View.GONE);
+						ItemStateUtils.floatViewOutAnimaiton(firstFloatView);
 					}
 				} else {
 
-					ScaleAnimation inScaleAnimation = StatisticsUtils.getInScaleAnimation();
+					dinashijuGv.setNextFocusLeftId(activeView.getId());
+
 					if (beforeGvView != null) {
 
-						ImageView iv = (ImageView) beforeGvView
-								.findViewById(R.id.item_layout_dianying_reflact);
-						iv.setVisibility(View.GONE);
-						beforeGvView.setPadding(GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING,
-								GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING);
-						beforeGvView.setBackgroundColor(getResources()
-								.getColor(R.color.text_active));
-
-						beforeGvView.startAnimation(inScaleAnimation);
+						ItemStateUtils.viewInAnimation(getApplicationContext(),
+								beforeGvView);
 
 					} else {
 						initFirstFloatView();
@@ -408,141 +349,65 @@ public class ShowYueDanListActivity extends Activity implements
 				}
 			}
 		});
+		
+		searchEt.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+
+				Editable editable = searchEt.getText();
+				String searchStr = editable.toString();
+
+				if (searchStr != null && !searchStr.equals("")) {
+
+					String url = StatisticsUtils.getSearchURL(SEARCH_URL,
+							1 + "", 30 + "", searchStr);
+//					getFilterServiceData(url, false);
+				}
+			}
+		});
+
+		searchEt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				// TODO Auto-generated method stub
+				if (hasFocus == true) {
+					((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
+							.showSoftInput(v, InputMethodManager.SHOW_FORCED);
+
+				} else { // ie searchBoxEditText doesn't have focus
+					((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
+							.hideSoftInputFromWindow(v.getWindowToken(), 0);
+
+				}
+			}
+		});
 	}
 
 	@Override
-	protected void onResume() {
+	public void onFocusChange(View v, boolean hasFocus) {
 		// TODO Auto-generated method stub
-		super.onResume();
 
-	}
+		if (hasFocus) {
 
-	private void beforeViewFoucsStateBack() {
-
-		if (beforeView instanceof LinearLayout) {
-
-			LinearLayout tempLinearLayout = (LinearLayout) beforeView;
-			if (beforeView.getId() == activeView.getId()) {
-				linearLayoutToActiveState(tempLinearLayout);
-			} else {
-				linearLayoutToPTState(tempLinearLayout);
-			}
-		} else if (beforeView instanceof Button) {
-
-			Button tempButton = (Button) beforeView;
-			if (beforeView.getId() == activeView.getId()) {
-				buttonToActiveState(tempButton);
-			} else {
-				buttonToPTState(tempButton);
-			}
-		}
-	}
-
-	private void beforeViewActiveStateBack() {
-		if (activeView instanceof LinearLayout) {
-
-			LinearLayout tempLinearLayout = (LinearLayout) activeView;
-			linearLayoutToPTState(tempLinearLayout);
-		} else if (activeView instanceof Button) {
-
-			Button tempButton = (Button) activeView;
-			buttonToPTState(tempButton);
-		}
-	}
-
-	// 转到类似Gridview组件上
-	private void turnToGridViewState() {
-
-		if (beforeView.getId() == activeView.getId()) {
-
-			if (activeView instanceof LinearLayout) {
-
-				LinearLayout tempLinearLayout = (LinearLayout) activeView;
-				linearLayoutToActiveState(tempLinearLayout);
-			} else if (activeView instanceof Button) {
-
-				Button tempButton = (Button) activeView;
-				buttonToActiveState(tempButton);
-			}
+			ItemStateUtils.viewToFocusState(getApplicationContext(), v);
 		} else {
-			beforeViewFoucsStateBack();
+
+			ItemStateUtils.viewToOutFocusState(getApplicationContext(), v,
+					activeView);
 		}
 
-	}
-
-	private void linearLayoutToPTState(LinearLayout linearLayout) {
-
-		Button tempButton = (Button) linearLayout.getChildAt(0);
-		linearLayout.setBackgroundResource(R.drawable.text_drawable_selector);
-		tempButton.setTextColor(getResources().getColorStateList(
-				R.color.text_color_selector));
-		tempButton.setCompoundDrawablesWithIntrinsicBounds(getResources()
-				.getDrawable(R.drawable.side_hot_normal), null, null, null);
-	}
-
-	private void buttonToPTState(Button button) {
-
-		button.setBackgroundResource(R.drawable.text_drawable_selector);
-		button.setTextColor(getResources().getColorStateList(
-				R.color.text_color_selector));
-	}
-
-	private void linearLayoutToActiveState(LinearLayout linearLayout) {
-
-		Button tempButton = (Button) linearLayout.getChildAt(0);
-		linearLayout.setBackgroundResource(R.drawable.menubg);
-		linearLayout.setPadding(0, 0, WENZI_PADDING_RIGHT, 0);
-		tempButton.setTextColor(getResources().getColor(R.color.text_active));
-		tempButton.setCompoundDrawablesWithIntrinsicBounds(getResources()
-				.getDrawable(R.drawable.side_hot_active), null, null, null);
-	}
-
-	private void buttonToActiveState(Button button) {
-
-		button.setBackgroundResource(R.drawable.menubg);
-		button.setPadding(0, 0, WENZI_PADDING_RIGHT, 0);
-		button.setTextColor(getResources().getColor(R.color.text_active));
 	}
 
 	@Override
 	public boolean onKey(View v, int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
 		int action = event.getAction();
-		if (action == KeyEvent.ACTION_UP) {
-
-			v.setOnClickListener(null);
-
-			if (v instanceof LinearLayout) {
-				LinearLayout linearLayout = (LinearLayout) v;
-				Button button = (Button) linearLayout.getChildAt(0);
-
-				if (keyCode == KEY_UP || keyCode == KEY_LEFT
-						|| keyCode == KEY_DOWN) {
-					beforeViewFoucsStateBack();
-					button.setTextColor(getResources().getColor(
-							R.color.text_foucs));
-					button.setCompoundDrawablesWithIntrinsicBounds(
-							getResources().getDrawable(
-									R.drawable.side_hot_active), null, null,
-							null);
-				}
-			} else if (v instanceof Button) {
-				Button button = (Button) v;
-				if ((keyCode == KEY_UP || keyCode == KEY_LEFT || keyCode == KEY_DOWN)) {
-					searchEt.setFocusable(true);// 能够获取焦点
-					beforeViewFoucsStateBack();
-					button.setTextColor(getResources().getColor(
-							R.color.text_foucs));
-					button.setBackgroundResource(R.drawable.text_drawable_selector);
-				}
-			}
-
-			v.setOnClickListener(this);
-		}
-		beforeView = v;
 		return false;
 	}
-	
+
 	@Override
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
@@ -550,7 +415,6 @@ public class ShowYueDanListActivity extends Activity implements
 			aq.dismiss();
 		super.onDestroy();
 	}
-
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
@@ -573,21 +437,12 @@ public class ShowYueDanListActivity extends Activity implements
 			break;
 		}
 
-		v.setOnKeyListener(null);
-		if (v instanceof LinearLayout) {
-			LinearLayout linearLayout = (LinearLayout) v;
-			if (v.getId() != activeView.getId()) {
-				beforeViewActiveStateBack();
-				linearLayoutToActiveState(linearLayout);
-				activeView = v;
-			}
-		} else if (v instanceof Button) {
-			Button button = (Button) v;
-			if (v.getId() != activeView.getId()) {
-				beforeViewActiveStateBack();
-				buttonToActiveState(button);
-				activeView = v;
-			}
+		View tempView = ItemStateUtils.viewToActive(getApplicationContext(), v,
+				activeView);
+
+		if (tempView != null) {
+
+			activeView = tempView;
 		}
 
 		beforeGvView = null;
@@ -619,7 +474,7 @@ public class ShowYueDanListActivity extends Activity implements
 			Log.d(TAG, json.toString());
 			ReturnTVBangDanList result = mapper.readValue(json.toString(),
 					ReturnTVBangDanList.class);
-			// hot_list.clear();
+
 			if(movieList != null && !movieList.isEmpty()) {
 				
 				movieList.clear();
@@ -634,7 +489,6 @@ public class ShowYueDanListActivity extends Activity implements
 					bigPicUrl = result.items[i].prod_pic_url;
 				}
 				movieItemData.setMoviePicUrl(bigPicUrl);
-//				movieItemData.setMoviePicUrl(result.items[i].big_prod_pic_url);
 				movieItemData.setMovieScore(result.items[i].score);
 				movieItemData.setMovieID(result.items[i].prod_id);
 				movieItemData.setMovieCurEpisode(result.items[i].cur_episode);
@@ -642,8 +496,6 @@ public class ShowYueDanListActivity extends Activity implements
 				movieItemData.setMovieProType(result.items[i].prod_type);
 				movieList.add(movieItemData);
 			}
-			// Log.d
-
 			movieAdapter.notifyDataSetChanged();
 			beforeGvView = null;
 			initFirstFloatView();
@@ -677,8 +529,6 @@ public class ShowYueDanListActivity extends Activity implements
 		if(movieList.size() > 0) {
 			
 			aq = new AQuery(firstFloatView);
-//			aq.id(R.id.iv_item_layout_haibao).image(
-//					movieList.get(0).getBig_prod_pic_url());
 			aq.id(R.id.iv_item_layout_haibao).image(movieList.get(0).getMoviePicUrl(), 
 					true, true,0, R.drawable.post_active);
 			movieName.setText(movieList.get(0).getMovieName());
@@ -714,15 +564,9 @@ public class ShowYueDanListActivity extends Activity implements
 				}
 			}
 		}
-
 		
-		firstFloatView.setPadding(GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING,
-				GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING);
-		firstFloatView.setBackgroundColor(getResources()
-				.getColor(R.color.text_active));
-		ScaleAnimation inScaleAnimation = StatisticsUtils.getInScaleAnimation();
-		
-		firstFloatView.startAnimation(inScaleAnimation);
+		ItemStateUtils.floatViewInAnimaiton(getApplicationContext(),
+				firstFloatView);
 	}
 
 	private BaseAdapter movieAdapter = new BaseAdapter() {
@@ -752,8 +596,8 @@ public class ShowYueDanListActivity extends Activity implements
 			AbsListView.LayoutParams params = new AbsListView.LayoutParams(
 					width, height);
 			convertView.setLayoutParams(params);
-			convertView.setPadding(GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING,
-					GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING);
+			convertView.setPadding(GRIDVIEW_ITEM_PADDING_LEFT, GRIDVIEW_ITEM_PADDING,
+					GRIDVIEW_ITEM_PADDING_LEFT, GRIDVIEW_ITEM_PADDING);
 			
 			if (width != 0) {
 
@@ -768,7 +612,6 @@ public class ShowYueDanListActivity extends Activity implements
 			}
 
 			viewItemHodler.nameTv.setText(movieList.get(position).getMovieName());
-//			viewItemHodler.scoreTv.setText(movieList.get(position).getMovieScore());
 			
 			if(movieList.get(position).getMovieProType().equals("1")) {
 				
@@ -798,8 +641,6 @@ public class ShowYueDanListActivity extends Activity implements
 			}
 
 			aq = new AQuery(convertView);
-//			aq.id(R.id.iv_item_layout_haibao).image(
-//					movieList.get(position).getBig_prod_pic_url());
 			aq.id(R.id.iv_item_layout_haibao).image(movieList.get(position).getMoviePicUrl(), 
 					true, true,0, R.drawable.post_normal);
 			return convertView;
@@ -831,12 +672,5 @@ public class ShowYueDanListActivity extends Activity implements
 			return movieList.size();
 		}
 	};
-	
-	 private class GridViewItemHodler {
-			
-		TextView nameTv;
-		TextView scoreTv;
-		TextView otherInfo;
-	}
 
 }
