@@ -31,8 +31,10 @@ import com.androidquery.callback.AjaxStatus;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.joyplus.tv.Adapters.YueDanAdapter;
 import com.joyplus.tv.Service.Return.ReturnTops;
 import com.joyplus.tv.entity.GridViewItemHodler;
+import com.joyplus.tv.entity.MovieItemData;
 import com.joyplus.tv.entity.YueDanInfo2;
 import com.joyplus.tv.ui.MyMovieGridView;
 import com.joyplus.tv.utils.BangDanKey;
@@ -71,11 +73,17 @@ View.OnFocusChangeListener {
 
 	private View beforeGvView = null;
 
-	private ObjectMapper mapper = new ObjectMapper();
-
-	private List<YueDanInfo2> movieList = new ArrayList<YueDanInfo2>();
+	private List<MovieItemData> dianyingYueDanList = new ArrayList<MovieItemData>();
+	private List<MovieItemData> dianshijuYueDanList = new ArrayList<MovieItemData>();
+	private List<MovieItemData> filterList = new ArrayList<MovieItemData>();
+	
+	private List<MovieItemData>[] lists = null;
 	
 	private int defalutYuedan = 0;
+	
+	private int currentItemPostion;
+	
+	private YueDanAdapter yueDanAdapter;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -99,25 +107,44 @@ View.OnFocusChangeListener {
 			}
 		}
 		
+		currentItemPostion = defalutYuedan;
+		
 		initView();
 		initState();
 		
-		dinashijuGv.setAdapter(movieAdapter);
+
+		clearList();
+		initLists();
+		
+		yueDanAdapter = new YueDanAdapter(this);
+		dinashijuGv.setAdapter(yueDanAdapter);
 		
 		if(defalutYuedan == DIANYING_YUEDAN) {
 			
 			String url = StatisticsUtils.getTopURL(TOP_URL, 1+"", 50 + "", 1+ "");
 			Log.i(TAG, "URL--->" + url);
-			getServiceData(url);// 进入电影界面时，全部分类电影显示获取焦点，并且显示数据
+			getUnQuanbuData(url);// 进入电影界面时，全部分类电影显示获取焦点，并且显示数据
 		} else if(defalutYuedan == DIANSHIJU_YUEDAN){
 			
 			String url = StatisticsUtils.getTopURL(TOP_URL, 1+"", 50 + "", 2+ "");
-			getServiceData(url);// 进入电影界面时，全部分类电影显示获取焦点，并且显示数据
+			getUnQuanbuData(url);// 进入电影界面时，全部分类电影显示获取焦点，并且显示数据
 		}
 
 		dinashijuGv.setSelected(true);
 		dinashijuGv.requestFocus();
 		dinashijuGv.setSelection(0);
+	}
+	
+	private void clearList() {
+
+		StatisticsUtils.clearList(dianyingYueDanList);
+		StatisticsUtils.clearList(dianshijuYueDanList);
+	}
+	
+	private void initLists() {
+		lists = new List[2];
+		lists[0] = dianyingYueDanList;
+		lists[1] = dianshijuYueDanList;
 	}
 
 	private void initView() {
@@ -219,13 +246,18 @@ View.OnFocusChangeListener {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				// TODO Auto-generated method stub
-				Intent intent = new Intent(ShowYueDanActivity.this,
-						ShowYueDanListActivity.class);
-				Bundle bundle = new Bundle();
-				bundle.putString("ID", movieList.get(position).id);
-				bundle.putString("NAME", movieList.get(position).name);
-				intent.putExtras(bundle);
-				startActivity(intent);
+				List<MovieItemData> list = yueDanAdapter.getMovieList();
+				if(list != null && !list.isEmpty()) {
+					
+					Intent intent = new Intent(ShowYueDanActivity.this,
+							ShowYueDanListActivity.class);
+					Bundle bundle = new Bundle();
+					bundle.putString("ID", list.get(position).getMovieID());
+					bundle.putString("NAME", list.get(position).getMovieName());
+					intent.putExtras(bundle);
+					startActivity(intent);
+				}
+
 			}
 		});
 
@@ -364,7 +396,7 @@ View.OnFocusChangeListener {
 
 					String url = StatisticsUtils.getSearchURL(SEARCH_URL,
 							1 + "", 30 + "", searchStr);
-//					getFilterServiceData(url);
+					getFilterData(url);
 				}
 			}
 		});
@@ -385,6 +417,53 @@ View.OnFocusChangeListener {
 				}
 			}
 		});
+	}
+	
+	private void  initFirstFloatView() {
+		
+		firstFloatView.setX(0);
+		firstFloatView.setY(0);
+		firstFloatView.setLayoutParams(new FrameLayout.LayoutParams(popWidth, popHeight));
+		firstFloatView.setVisibility(View.VISIBLE);
+		
+		TextView movieName = (TextView) firstFloatView.findViewById(R.id.tv_item_layout_name);
+		TextView movieScore = (TextView) firstFloatView.findViewById(R.id.tv_item_layout_other_info);
+		
+		List<MovieItemData> list = yueDanAdapter.getMovieList();
+		if (list != null && !list.isEmpty()) {
+			
+			aq = new AQuery(firstFloatView);
+			aq.id(R.id.iv_item_layout_haibao).image(list.get(0).getMoviePicUrl(), 
+					true, true,0, R.drawable.post_active);
+			movieName.setText(list.get(0).getMovieName());
+			movieScore.setText(list.get(0).getMovieName() + getString(R.string.yingpianshu));
+		}
+		
+		ItemStateUtils.floatViewInAnimaiton(getApplicationContext(),
+				firstFloatView);
+	}
+	
+	private void notifyAdapter(List<MovieItemData> list) {
+		
+		int height=yueDanAdapter.getHeight()
+				,width = yueDanAdapter.getWidth();
+		
+		if(height !=0 && width !=0) {
+			
+			popWidth = width;
+			popHeight = height;
+		}
+		
+		yueDanAdapter.setList(list);
+		
+		dinashijuGv.setSelection(0);
+		yueDanAdapter.notifyDataSetChanged();
+		beforeGvView = null;
+		initFirstFloatView();
+		dinashijuGv.setFocusable(true);
+		dinashijuGv.setSelected(true);
+		isSelectedItem = false;
+		dinashijuGv.requestFocus();
 	}
 	
 	@Override
@@ -414,7 +493,15 @@ View.OnFocusChangeListener {
 		// TODO Auto-generated method stub
 		if (aq != null)
 			aq.dismiss();
+		
+		clearAllList();
 		super.onDestroy();
+	}
+	
+	private void clearAllList() {
+		
+		clearList();
+		StatisticsUtils.clearList(filterList);
 	}
 
 	@Override
@@ -440,14 +527,28 @@ View.OnFocusChangeListener {
 			
 			switch (v.getId()) {
 			case R.id.bt_dianyingyuedan:
+				currentItemPostion = 0;
 				String url1 = StatisticsUtils.getTopURL(TOP_URL, 1+"", 50 + "", 1+ "");
 				app.MyToast(aq.getContext(),"ll_daluju");
-				getServiceData(url1);
+				if(dianyingYueDanList != null && !dianyingYueDanList.isEmpty()) {
+					
+					notifyAdapter(dianyingYueDanList);
+				} else {
+					
+					getUnQuanbuData(url1);
+				}
 				break;
 			case R.id.bt_dianshijuyuedan:
+				currentItemPostion = 1;
 				String url2 = StatisticsUtils.getTopURL(TOP_URL, 1+"", 50 + "", 2+ "");
 				app.MyToast(aq.getContext(),"ll_gangju");
-				getServiceData(url2);
+				if(dianshijuYueDanList != null && !dianshijuYueDanList.isEmpty()) {
+					
+					notifyAdapter(dianshijuYueDanList);
+				} else {
+					
+					getUnQuanbuData(url2);
+				}
 				break;
 			case R.id.bt_zuijinguankan:
 				startActivity(new Intent(this, HistoryActivity.class));
@@ -469,18 +570,30 @@ View.OnFocusChangeListener {
 		
 		beforeGvView = null;
 	}
-
-	private void getServiceData(String url) {
+	
+	private void getUnQuanbuData(String url) {
+		
+		getServiceData(url, "initUnQuanbu");
+	}
+	
+	private void getFilterData(String url) {
+		currentItemPostion = -1;
+		
+		getServiceData(url, "initFiler");
+	}
+	
+	private void getServiceData(String url, String interfaceName) {
 
 		firstFloatView.setVisibility(View.INVISIBLE);
 		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
-		cb.url(url).type(JSONObject.class).weakHandler(this, "initData");
+		// cb.url(url).type(JSONObject.class).weakHandler(this, "initData");
+		cb.url(url).type(JSONObject.class).weakHandler(this, interfaceName);
 
 		cb.SetHeader(app.getHeaders());
 		aq.ajax(cb);
 	}
-
-	public void initData(String url, JSONObject json, AjaxStatus status) {
+	
+	public void initUnQuanbu(String url, JSONObject json, AjaxStatus status) {
 
 		if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
 
@@ -490,62 +603,16 @@ View.OnFocusChangeListener {
 		}
 		try {
 			Log.d(TAG, json.toString());
-			ReturnTops result = mapper.readValue(json.toString(),
-					ReturnTops.class);
-			// hot_list.clear();
-			if(movieList != null && !movieList.isEmpty()) {
+			if(currentItemPostion != -1) {
 				
-				movieList.clear();
-			}
-			for(int i=0; i<result.tops.length; i++){
-				YueDanInfo2 yuedanInfo = new YueDanInfo2();
-//				ArrayList<ShiPinInfoParcelable> tempList = new ArrayList<ShiPinInfoParcelable>();
-				yuedanInfo.name = result.tops[i].name;
-				yuedanInfo.id = result.tops[i].id;
-				yuedanInfo.prod_type = result.tops[i].prod_type;
-				String bigPicUrl = result.tops[i].big_pic_url;
-				if(bigPicUrl == null || bigPicUrl.equals("")) {
+				if(currentItemPostion >= 0 && currentItemPostion < lists.length) {
 					
-					bigPicUrl = result.tops[i].pic_url;
+					lists[currentItemPostion] = StatisticsUtils.returnTopsJson(json.toString());
+					
+					notifyAdapter(lists[currentItemPostion]);
 				}
-				yuedanInfo.pic_url = bigPicUrl;
-				yuedanInfo.num = result.tops[i].num;
-				yuedanInfo.content = result.tops[i].content;
-//				for (int j = 0; j < result.tops[i].items.length; j++) {
-//					ShiPinInfoParcelable shipinInfo = new ShiPinInfoParcelable();
-//					shipinInfo.setArea(result.tops[i].items[j].area);
-//					shipinInfo.setBig_prod_pic_url(result.tops[i].items[j].big_prod_pic_url);
-//					shipinInfo.setCur_episode(result.tops[i].items[j].cur_episode);
-////					shipinInfo.setCur_item_name(result.tops[i].items[j].cur_i);
-//					shipinInfo.setDefinition(result.tops[i].items[j].definition);
-//					shipinInfo.setDirectors(result.tops[i].items[j].directors);
-//					shipinInfo.setDuration(result.tops[i].items[j].duration);
-//					shipinInfo.setFavority_num(result.tops[i].items[j].favority_num);
-//					shipinInfo.setId(result.tops[i].items[j].id);
-//					shipinInfo.setMax_episode(result.tops[i].items[j].max_episode);
-//					shipinInfo.setProd_id(result.tops[i].items[j].prod_id);
-//					shipinInfo.setProd_name(result.tops[i].items[j].prod_name);
-//					shipinInfo.setProd_pic_url(result.tops[i].items[j].prod_pic_url);
-//					shipinInfo.setProd_type(result.tops[i].items[j].prod_type);
-//					shipinInfo.setPublish_date(result.tops[i].items[j].publish_date);
-//					shipinInfo.setScore(result.tops[i].items[j].score);
-//					shipinInfo.setStars(result.tops[i].items[j].stars);
-//					shipinInfo.setSupport_num(result.tops[i].items[j].support_num);
-//					tempList.add(shipinInfo);
-//				}
-//				yuedanInfo.shiPinList = tempList;
-				movieList.add(yuedanInfo);
-				
-			}
-			// Log.d
 
-			movieAdapter.notifyDataSetChanged();
-			beforeGvView = null;
-			initFirstFloatView();
-			dinashijuGv.setFocusable(true);
-			dinashijuGv.setSelected(true);
-			isSelectedItem = false;
-			dinashijuGv.requestFocus();
+			}
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -558,106 +625,31 @@ View.OnFocusChangeListener {
 		}
 	}
 	
-	private void  initFirstFloatView() {
+	public void initFiler(String url, JSONObject json, AjaxStatus status) {
 		
-		firstFloatView.setX(0);
-		firstFloatView.setY(0);
-		firstFloatView.setLayoutParams(new FrameLayout.LayoutParams(popWidth, popHeight));
-		firstFloatView.setVisibility(View.VISIBLE);
-		
-		TextView movieName = (TextView) firstFloatView.findViewById(R.id.tv_item_layout_name);
-		TextView movieScore = (TextView) firstFloatView.findViewById(R.id.tv_item_layout_other_info);
-		
-		if(movieList.size() > 0) {
-			
-			aq = new AQuery(firstFloatView);
-			aq.id(R.id.iv_item_layout_haibao).image(movieList.get(0).pic_url, 
-					true, true,0, R.drawable.post_active);
-			movieName.setText(movieList.get(0).name);
-			movieScore.setText(movieList.get(0).num + getString(R.string.yingpianshu));
+		if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
+
+			app.MyToast(aq.getContext(),
+					getResources().getString(R.string.networknotwork));
+			return;
 		}
 		
-		ItemStateUtils.floatViewInAnimaiton(getApplicationContext(),
-				firstFloatView);
+		try {
+			Log.d(TAG, json.toString());
+			StatisticsUtils.clearList(filterList);
+			filterList = StatisticsUtils.returnFilterMovieSearchJson(json.toString());
+			
+			notifyAdapter(filterList);
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
-
-
-	private BaseAdapter movieAdapter = new BaseAdapter() {
-
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-			// TODO Auto-generated method stub
-			GridViewItemHodler viewItemHodler = null;
-
-			int width = parent.getWidth() / 5;
-			int height = (int) (width / 1.0f / STANDARD_PIC_WIDTH * STANDARD_PIC_HEIGHT);
-
-			if (convertView == null) {
-				viewItemHodler = new GridViewItemHodler();
-				convertView = getLayoutInflater().inflate(
-						R.layout.show_item_layout_dianying, null);
-				viewItemHodler.nameTv = (TextView) convertView.findViewById(R.id.tv_item_layout_name);
-				viewItemHodler.scoreTv = (TextView) convertView.findViewById(R.id.tv_item_layout_score);
-				viewItemHodler.otherInfo = (TextView) convertView.findViewById(R.id.tv_item_layout_other_info);
-				convertView.setTag(viewItemHodler);
-				
-			} else {
-
-				viewItemHodler = (GridViewItemHodler) convertView.getTag();
-			}
-			
-			AbsListView.LayoutParams params = new AbsListView.LayoutParams(
-					width, height);
-			convertView.setLayoutParams(params);
-			convertView.setPadding(GRIDVIEW_ITEM_PADDING_LEFT, GRIDVIEW_ITEM_PADDING,
-					GRIDVIEW_ITEM_PADDING_LEFT, GRIDVIEW_ITEM_PADDING);
-			
-			if (width != 0) {
-
-				popWidth = width;
-				popHeight = height;
-				// Log.i(TAG, "Width:" + popWidth);
-			}
-			
-			if(movieList.size() <= 0) {
-				
-				return convertView;
-			}
-
-			viewItemHodler.nameTv.setText(movieList.get(position).name);
-			viewItemHodler.otherInfo.setText(movieList.get(position).num + getString(R.string.yingpianshu));
-
-			aq = new AQuery(convertView);
-			aq.id(R.id.iv_item_layout_haibao).image(movieList.get(position).pic_url, 
-					true, true,0, R.drawable.post_normal);
-			return convertView;
-		}
-
-		@Override
-		public long getItemId(int position) {
-			// TODO Auto-generated method stub
-			return position;
-		}
-
-		@Override
-		public Object getItem(int position) {
-			// TODO Auto-generated method stub
-			if(movieList.size() <= 0 ) {
-				
-				return null;
-			}
-			return movieList.get(position);
-		}
-
-		@Override
-		public int getCount() {
-			// TODO Auto-generated method stub
-			if(movieList.size() <= 0 ) {
-				
-				return DEFAULT_ITEM_NUM;
-			}
-			return movieList.size();
-		}
-	};
 
 }

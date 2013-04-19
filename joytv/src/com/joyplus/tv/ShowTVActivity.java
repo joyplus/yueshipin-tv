@@ -35,6 +35,7 @@ import com.androidquery.callback.AjaxStatus;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.joyplus.tv.Adapters.DianShijuAdapter;
 import com.joyplus.tv.Service.Return.ReturnTVBangDanList;
 import com.joyplus.tv.entity.GridViewItemHodler;
 import com.joyplus.tv.entity.MovieItemData;
@@ -79,11 +80,21 @@ View.OnFocusChangeListener {
 
 	private View beforeGvView = null;
 
-	private ObjectMapper mapper = new ObjectMapper();
-
-	private List<MovieItemData> movieList = new ArrayList<MovieItemData>();
 	private List<MovieItemData> recommendList = new ArrayList<MovieItemData>();
-	private boolean isRecommendData = true;
+
+	private List<MovieItemData> quanbufenleiList = new ArrayList<MovieItemData>();
+	private List<MovieItemData> dalujuList = new ArrayList<MovieItemData>();
+	private List<MovieItemData> ganjuList = new ArrayList<MovieItemData>();
+	private List<MovieItemData> taijuList = new ArrayList<MovieItemData>();
+	private List<MovieItemData> hanjuList = new ArrayList<MovieItemData>();
+	private List<MovieItemData> meijuList = new ArrayList<MovieItemData>();
+	private List<MovieItemData> rijuList = new ArrayList<MovieItemData>();
+	private List<MovieItemData> filterList = new ArrayList<MovieItemData>();
+	
+	private List<MovieItemData>[] lists = null;
+	
+	private DianShijuAdapter dianShijuAdapter =  null;
+	private int currentItemPostion = -1;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -96,15 +107,51 @@ View.OnFocusChangeListener {
 
 		initView();
 		initState();
-
-		dinashijuGv.setAdapter(movieAdapter);
 		
-		String urlNormal = StatisticsUtils.getFilterURL(FILTER_URL, 1+"", 10+"", TV_TYPE);
-		getSaveTenServiceData(urlNormal,true);
+		clearList();
+		initLists();
+
+		dianShijuAdapter = new DianShijuAdapter(this);
+		dinashijuGv.setAdapter(dianShijuAdapter);
+		
+//		String urlNormal = StatisticsUtils.getFilterURL(FILTER_URL, 1+"", 10+"", TV_TYPE);
+		String url2 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL,
+				TV_DIANSHIJU, 1 + "", 50 + "");
+		getQuan10Data(url2);
+//		getSaveTenServiceData(urlNormal,true);
 		
 		dinashijuGv.setSelected(true);
 		dinashijuGv.requestFocus();
 		dinashijuGv.setSelection(0);
+	}
+	
+	private void clearList() {
+
+		StatisticsUtils.clearList(quanbufenleiList);
+		StatisticsUtils.clearList(dalujuList);
+		StatisticsUtils.clearList(ganjuList);
+		StatisticsUtils.clearList(taijuList);
+		StatisticsUtils.clearList(hanjuList);
+		StatisticsUtils.clearList(meijuList);
+		StatisticsUtils.clearList(rijuList);
+		StatisticsUtils.clearList(recommendList);
+	}
+	
+	private void clearAllList() {
+		
+		clearList();
+		StatisticsUtils.clearList(filterList);
+	}
+	
+	private void initLists() {
+		
+		lists = new List[6];
+		lists[0] = dalujuList;
+		lists[1] = ganjuList;
+		lists[2] = taijuList;
+		lists[3] = hanjuList;
+		lists[4] = meijuList;
+		lists[5] = rijuList;
 	}
 
 	private void initView() {
@@ -231,10 +278,15 @@ View.OnFocusChangeListener {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				// TODO Auto-generated method stub
-				Intent intent = new Intent(ShowTVActivity.this,
-						ShowXiangqingTv.class);
-				intent.putExtra("ID", movieList.get(position).getMovieID());
-				startActivity(intent);
+				List<MovieItemData> list = dianShijuAdapter.getMovieList();
+				
+				if(list != null && !list.isEmpty()) {
+					
+					Intent intent = new Intent(ShowTVActivity.this,
+							ShowXiangqingTv.class);
+					intent.putExtra("ID", list.get(position).getMovieID());
+					startActivity(intent);
+				}
 			}
 		});
 
@@ -374,7 +426,7 @@ View.OnFocusChangeListener {
 
 					String url = StatisticsUtils.getSearchURL(SEARCH_URL,
 							1 + "", 30 + "", searchStr);
-					getFilterServiceData(url, false);
+					getFilterData(url);
 				}
 			}
 		});
@@ -395,6 +447,72 @@ View.OnFocusChangeListener {
 				}
 			}
 		});
+	}
+	
+	private void  initFirstFloatView() {
+		
+		firstFloatView.setX(0);
+		firstFloatView.setY(0);
+		firstFloatView.setLayoutParams(new FrameLayout.LayoutParams(popWidth, popHeight));
+		firstFloatView.setVisibility(View.VISIBLE);
+		
+		TextView movieName = (TextView) firstFloatView.findViewById(R.id.tv_item_layout_name);
+		TextView movieScore = (TextView) firstFloatView.findViewById(R.id.tv_item_layout_score);
+		
+		List<MovieItemData> list = dianShijuAdapter.getMovieList();
+		if (list != null && !list.isEmpty()) {
+			
+			aq = new AQuery(firstFloatView);
+			aq.id(R.id.iv_item_layout_haibao).image(list.get(0).getMoviePicUrl(), 
+					true, true,0, R.drawable.post_active);
+			movieName.setText(list.get(0).getMovieName());
+			movieScore.setText(list.get(0).getMovieScore());
+			
+			
+			String curEpisode = list.get(0).getMovieCurEpisode();
+			String maxEpisode = list.get(0).getMovieMaxEpisode();
+			
+			if(curEpisode == null || curEpisode.equals("0") || 
+					curEpisode.compareTo(maxEpisode) >= 0) {
+				
+				TextView movieUpdate = (TextView) firstFloatView
+						.findViewById(R.id.tv_item_layout_other_info);
+				movieUpdate.setText(
+						list.get(0).getMovieMaxEpisode() + getString(R.string.dianshiju_jiquan));
+				} else if(maxEpisode.compareTo(curEpisode) > 0) {
+					
+					TextView movieUpdate = (TextView) firstFloatView
+							.findViewById(R.id.tv_item_layout_other_info);
+					movieUpdate.setText(getString(R.string.zongyi_gengxinzhi) + 
+							list.get(0).getMovieCurEpisode());
+			}
+		}
+		
+		ItemStateUtils.floatViewInAnimaiton(getApplicationContext(),
+				firstFloatView);
+	}
+	
+	private void notifyAdapter(List<MovieItemData> list) {
+		
+		int height=dianShijuAdapter.getHeight()
+				,width = dianShijuAdapter.getWidth();
+		
+		if(height !=0 && width !=0) {
+			
+			popWidth = width;
+			popHeight = height;
+		}
+		
+		dianShijuAdapter.setList(list);
+		
+		dinashijuGv.setSelection(0);
+		dianShijuAdapter.notifyDataSetChanged();
+		beforeGvView = null;
+		initFirstFloatView();
+		dinashijuGv.setFocusable(true);
+		dinashijuGv.setSelected(true);
+		isSelectedItem = false;
+		dinashijuGv.requestFocus();
 	}
 	
 	@Override
@@ -424,6 +542,8 @@ View.OnFocusChangeListener {
 		// TODO Auto-generated method stub
 		if (aq != null)
 			aq.dismiss();
+		
+		clearAllList();
 		super.onDestroy();
 	}
 	
@@ -463,22 +583,7 @@ View.OnFocusChangeListener {
 										if(popupWindow.isShowing()){
 											popupWindow.dismiss();
 											Toast.makeText(ShowTVActivity.this, "selected is " + choice[0] + ","+choice[1]+","+choice[2], Toast.LENGTH_LONG).show();
-											String quanbu = getString(R.string.quanbu_name);
-											String quanbufenlei = getString(R.string.quanbufenlei_name);
-											String tempStr = StatisticsUtils.getQuanBuFenLeiName(choice, quanbufenlei, quanbu);
-											mFenLeiBtn.setText(tempStr);
-											
-											if(tempStr.equals(quanbufenlei)) {
-												
-												String urlNormal = StatisticsUtils.getFilterURL(FILTER_URL, 1+"", 10+"", TV_TYPE);
-												getSaveTenServiceData(urlNormal,true);
-												
-												return;
-											}
-											String url = StatisticsUtils.getFilterURL(FILTER_URL, 1+"", 50+"", TV_TYPE) + 
-													StatisticsUtils.getFileterURL3Param(choice, quanbu);
-											Log.i(TAG, "POP--->URL:" + url);
-												getFilterServiceData(url , true); 
+											filterSource(choice);
 											
 										}
 									}
@@ -501,47 +606,89 @@ View.OnFocusChangeListener {
 			
 			switch (v.getId()) {
 			case R.id.ll_daluju:
+				currentItemPostion = 0;
 				String url1 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
 				REBO_DALU_DIANSHI, 1 + "", 50 + "");
 				app.MyToast(aq.getContext(),"ll_daluju");
-				getInitDataServiceData(url1,false);
+				if(dalujuList != null && !dalujuList.isEmpty()) {
+					
+					notifyAdapter(dalujuList);
+				} else {
+					
+					getUnQuanbuData(url1);
+				}
 				break;
 			case R.id.ll_gangju:
+				currentItemPostion = 1;
 				String url2 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
 				REBO_GANGJU_DIANSHI, 1 + "", 50 + "");
 				app.MyToast(aq.getContext(),"ll_gangju");
-				getInitDataServiceData(url2,false);
+				if(ganjuList != null && !ganjuList.isEmpty()) {
+					
+					notifyAdapter(ganjuList);
+				} else {
+					
+					getUnQuanbuData(url2);
+				}
 				break;
 			case R.id.ll_taiju:
+				currentItemPostion = 2;
 				String url3 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
 				REBO_TAIJU_DIANSHI, 1 + "", 50 + "");
 				app.MyToast(aq.getContext(),"ll_taiju");
-				getInitDataServiceData(url3,false);;
+				if(taijuList != null && !taijuList.isEmpty()) {
+					
+					notifyAdapter(taijuList);
+				} else {
+					
+					getUnQuanbuData(url3);
+				}
 				break;
 			case R.id.ll_hanju:
+				currentItemPostion = 3;
 				String url4 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
 				REBO_HANJU_DIANSHI, 1 + "", 50 + "");
 				app.MyToast(aq.getContext(),"ll_hanju");
-				getInitDataServiceData(url4,false);
+				if(hanjuList != null && !hanjuList.isEmpty()) {
+					
+					notifyAdapter(hanjuList);
+				} else {
+					
+					getUnQuanbuData(url4);
+				}
 				break;
 			case R.id.ll_meiju:
+				currentItemPostion = 4;
 				String url5 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
 				REBO_OUMEI_DIANSHI, 1 + "", 50 + "");
 				app.MyToast(aq.getContext(),"ll_meiju");
-				getInitDataServiceData(url5,false);
+				if(meijuList != null && !meijuList.isEmpty()) {
+					
+					notifyAdapter(meijuList);
+				} else {
+					
+					getUnQuanbuData(url5);
+				}
 				break;
 			case R.id.ll_riju:
+				currentItemPostion = 5;
 				String url6 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
 				REBO_RIJU_DIANSHI, 1 + "", 50 + "");
 				app.MyToast(aq.getContext(),"ll_riju");
-				getInitDataServiceData(url6,false);
+				if(rijuList != null && !rijuList.isEmpty()) {
+					
+					notifyAdapter(rijuList);
+				} else {
+					
+					getUnQuanbuData(url6);
+				}
 				break;
-			case R.id.bt_quanbufenlei:
-				String url7 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
-						TV_DIANSHIJU, 1 + "", 50 + "");
-				app.MyToast(aq.getContext(),"bt_quanbufenlei");
-				getInitDataServiceData(url7,false);
-				break;
+//			case R.id.bt_quanbufenlei:
+//				String url7 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
+//						TV_DIANSHIJU, 1 + "", 50 + "");
+//				app.MyToast(aq.getContext(),"bt_quanbufenlei");
+//				getInitDataServiceData(url7,false);
+//				break;
 			case R.id.bt_zuijinguankan:
 				startActivity(new Intent(this, HistoryActivity.class));
 				break;
@@ -563,37 +710,75 @@ View.OnFocusChangeListener {
 		beforeGvView = null;
 	}
 	
-	private void getInitDataServiceData(String url , boolean isRecommend) {
+	private void filterSource (String[] choice) {
 		
-		this.isRecommendData = isRecommend;//是否添加10部提取影片
-		
-		getServiceData(url, "initData");
+		String quanbu = getString(R.string.quanbu_name);
+		String quanbufenlei = getString(R.string.quanbufenlei_name);
+		String tempStr = StatisticsUtils
+				.getQuanBuFenLeiName(choice,
+						quanbufenlei, quanbu);
+		mFenLeiBtn.setText(tempStr);
+
+		if (tempStr.equals(quanbufenlei)) {
+
+			if(quanbufenleiList != null && !quanbufenleiList.isEmpty()) {
+				
+				notifyAdapter(quanbufenleiList);
+			} else {
+				
+				String url2 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL,
+						TV_DIANSHIJU, 1 + "", 50 + "");
+				getQuan10Data(url2);
+			}
+
+			return;
+		}
+		String url = StatisticsUtils
+				.getFilterURL(FILTER_URL,
+						1 + "", 50 + "",
+						TV_TYPE)
+				+ StatisticsUtils
+						.getFileterURL3Param(
+								choice, quanbu);
+		Log.i(TAG, "POP--->URL:" + url);
+		getFilterData(url);
 	}
 	
-	private void getFilterServiceData(String url , boolean isRecommend) {
-		this.isRecommendData = isRecommend;//是否添加10部提取影片
+	private void getQuan10Data(String url) {
+		currentItemPostion = -1;
 		
-		getServiceData(url, "initFilterData");
+		getServiceData(url, "initQuan10Data");
 	}
 	
-	private void getSaveTenServiceData(String url , boolean isRecommend) {
-		this.isRecommendData = isRecommend;//是否添加10部提取影片
+	private void getQuanbuData(String url) {
+		currentItemPostion = -1;
 		
-		getServiceData(url, "saveTenQuanBuFenLeiData");
+		getServiceData(url, "initQuanbuData");
 	}
 	
-	private void getServiceData(String url , String interfaceName) {
+	private void getUnQuanbuData(String url) {
+		
+		getServiceData(url, "initUnQuanbu");
+	}
+	
+	private void getFilterData(String url) {
+		currentItemPostion = -1;
+		
+		getServiceData(url, "initFiler");
+	}
+	
+	private void getServiceData(String url, String interfaceName) {
 
 		firstFloatView.setVisibility(View.INVISIBLE);
 		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
-//		cb.url(url).type(JSONObject.class).weakHandler(this, "initData");
+		// cb.url(url).type(JSONObject.class).weakHandler(this, "initData");
 		cb.url(url).type(JSONObject.class).weakHandler(this, interfaceName);
 
 		cb.SetHeader(app.getHeaders());
 		aq.ajax(cb);
 	}
 	
-	public void saveTenQuanBuFenLeiData(String url, JSONObject json, AjaxStatus status) {
+	public void initQuan10Data(String url, JSONObject json, AjaxStatus status) {
 
 		if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
 
@@ -602,33 +787,10 @@ View.OnFocusChangeListener {
 			return;
 		}
 		try {
-			Log.d(TAG, "saveTenQuanBuFenLeiData---->" + json.toString());
-			ReturnFilterMovieSearch result = mapper.readValue(json.toString(),
-					ReturnFilterMovieSearch.class);
-			if(recommendList != null && !recommendList.isEmpty()) {
-				
-				recommendList.clear();
-			}
-			for (int i = 0; i < result.results.length; i++) {
-
-				MovieItemData movieItemData = new MovieItemData();
-				movieItemData.setMovieName(result.results[i].prod_name);
-				String bigPicUrl = result.results[i].big_prod_pic_url;
-				if(bigPicUrl == null || bigPicUrl.equals("")) {
-					
-					bigPicUrl = result.results[i].prod_pic_url;
-				}
-				movieItemData.setMoviePicUrl(bigPicUrl);
-				movieItemData.setMovieScore(result.results[i].score);
-				movieItemData.setMovieID(result.results[i].prod_id);
-				movieItemData.setMovieDuration(result.results[i].duration);
-				movieItemData.setMovieCurEpisode(result.results[i].cur_episode);
-				movieItemData.setMovieMaxEpisode(result.results[i].max_episode);
-				recommendList.add(movieItemData);
-			}
-			String url2 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
-					TV_DIANSHIJU, 1 + "", 50 + "");
-			getInitDataServiceData(url2 , true);// 进入电影界面时，全部分类电影显示获取焦点，并且显示数据
+			Log.d(TAG, json.toString());
+			recommendList = StatisticsUtils.returnTVBangDanList_TVJson(json.toString());
+			String urlNormal = StatisticsUtils.getFilterURL(FILTER_URL, 1+"", 10+"", TV_TYPE);
+			getQuanbuData(urlNormal);
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -641,7 +803,7 @@ View.OnFocusChangeListener {
 		}
 	}
 	
-	public void initFilterData(String url, JSONObject json, AjaxStatus status) {
+	public void initQuanbuData(String url, JSONObject json, AjaxStatus status) {
 
 		if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
 
@@ -651,112 +813,31 @@ View.OnFocusChangeListener {
 		}
 		try {
 			Log.d(TAG, json.toString());
-			ReturnFilterMovieSearch result = mapper.readValue(json.toString(),
-					ReturnFilterMovieSearch.class);
-			if(movieList != null && !movieList.isEmpty()) {
-				
-				movieList.clear();
-			}
-			for (int i = 0; i < result.results.length; i++) {
+			quanbufenleiList = StatisticsUtils.returnFilterMovieSearch_TVJson(json.toString());
 
-				MovieItemData movieItemData = new MovieItemData();
-				movieItemData.setMovieName(result.results[i].prod_name);
-				String bigPicUrl = result.results[i].big_prod_pic_url;
-				if(bigPicUrl == null || bigPicUrl.equals("")) {
+				if(recommendList != null && !recommendList.isEmpty()) {
 					
-					bigPicUrl = result.results[i].prod_pic_url;
-				}
-				movieItemData.setMoviePicUrl(bigPicUrl);
-				movieItemData.setMovieScore(result.results[i].score);
-				movieItemData.setMovieID(result.results[i].prod_id);
-				movieItemData.setMovieDuration(result.results[i].duration);
-				movieItemData.setMovieCurEpisode(result.results[i].cur_episode);
-				movieItemData.setMovieMaxEpisode(result.results[i].max_episode);
-				movieList.add(movieItemData);
-			}
+					for (MovieItemData movieItemData : recommendList) {
 
-			movieAdapter.notifyDataSetChanged();
-			beforeGvView = null;
-			initFirstFloatView();
-			dinashijuGv.setFocusable(true);
-			dinashijuGv.setSelected(true);
-			isSelectedItem = false;
-			dinashijuGv.requestFocus();
-		} catch (JsonParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+						boolean isSame = false;
+						for (int i = 0; i < quanbufenleiList.size(); i++) {
 
-	public void initData(String url, JSONObject json, AjaxStatus status) {
+							String proId = movieItemData.getMovieID();
+							if (proId.equals(quanbufenleiList.get(i).getMovieID())) {
 
-		if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
+								isSame = true;
+								break;// 符合条件跳出本次循环
 
-			app.MyToast(aq.getContext(),
-					getResources().getString(R.string.networknotwork));
-			return;
-		}
-		try {
-			Log.d(TAG, json.toString());
-			ReturnTVBangDanList result = mapper.readValue(json.toString(),
-					ReturnTVBangDanList.class);
-			
-			if(movieList != null && !movieList.isEmpty()) {
-				
-				movieList.clear();
-			}
-			for (int i = 0; i < result.items.length; i++) {
+							}
+						}
+						if (!isSame) {
 
-				MovieItemData movieItemData = new MovieItemData();
-				movieItemData.setMovieName(result.items[i].prod_name);
-				String bigPicUrl = result.items[i].big_prod_pic_url;
-				if(bigPicUrl == null || bigPicUrl.equals("")) {
-					
-					bigPicUrl = result.items[i].prod_pic_url;
-				}
-				movieItemData.setMoviePicUrl(bigPicUrl);
-				movieItemData.setMovieScore(result.items[i].score);
-				movieItemData.setMovieID(result.items[i].prod_id);
-				movieItemData.setMovieCurEpisode(result.items[i].cur_episode);
-				movieItemData.setMovieMaxEpisode(result.items[i].max_episode);
-				movieList.add(movieItemData);
-			}
-			
-			if(isRecommendData) {//如果是全部分类，那就加上10个推荐数据
-				
-				for(MovieItemData movieItemData : recommendList) {
-					
-					boolean isSame = false;
-					for (int i = 0; i < result.items.length; i++) {
-						
-						String proId = movieItemData.getMovieID();
-						if(proId.equals(result.items[i].prod_id)){
-							
-							isSame = true;
-							break;//符合条件跳出本次循环
-							
+							quanbufenleiList.add(movieItemData);
 						}
 					}
-					if(!isSame) {
-						
-						movieList.add(movieItemData);
-					}
 				}
-			}
-
-			movieAdapter.notifyDataSetChanged();
-			beforeGvView = null;
-			initFirstFloatView();
-			dinashijuGv.setFocusable(true);
-			dinashijuGv.setSelected(true);
-			isSelectedItem = false;
-			dinashijuGv.requestFocus();
+			
+			notifyAdapter(quanbufenleiList);
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -769,139 +850,63 @@ View.OnFocusChangeListener {
 		}
 	}
 	
-	private void  initFirstFloatView() {
-		
-		firstFloatView.setX(0);
-		firstFloatView.setY(0);
-		firstFloatView.setLayoutParams(new FrameLayout.LayoutParams(popWidth, popHeight));
-		firstFloatView.setVisibility(View.VISIBLE);
-		
-		TextView movieName = (TextView) firstFloatView.findViewById(R.id.tv_item_layout_name);
-		TextView movieScore = (TextView) firstFloatView.findViewById(R.id.tv_item_layout_score);
-		
-		if(movieList.size() > 0) {
-			
-			aq = new AQuery(firstFloatView);
-			aq.id(R.id.iv_item_layout_haibao).image(movieList.get(0).getMoviePicUrl(), 
-					true, true,0, R.drawable.post_active);
-			movieName.setText(movieList.get(0).getMovieName());
-			movieScore.setText(movieList.get(0).getMovieScore());
-			
-			
-			String curEpisode = movieList.get(0).getMovieCurEpisode();
-			String maxEpisode = movieList.get(0).getMovieMaxEpisode();
-			
-			if(curEpisode == null || curEpisode.equals("0") || 
-					curEpisode.compareTo(maxEpisode) >= 0) {
-				
-				TextView movieUpdate = (TextView) firstFloatView
-						.findViewById(R.id.tv_item_layout_other_info);
-				movieUpdate.setText(
-						movieList.get(0).getMovieMaxEpisode() + getString(R.string.dianshiju_jiquan));
-				} else if(maxEpisode.compareTo(curEpisode) > 0) {
-					
-					TextView movieUpdate = (TextView) firstFloatView
-							.findViewById(R.id.tv_item_layout_other_info);
-					movieUpdate.setText(getString(R.string.zongyi_gengxinzhi) + 
-							movieList.get(0).getMovieCurEpisode());
-			}
+	public void initUnQuanbu(String url, JSONObject json, AjaxStatus status) {
+
+		if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
+
+			app.MyToast(aq.getContext(),
+					getResources().getString(R.string.networknotwork));
+			return;
 		}
-		
-		ItemStateUtils.floatViewInAnimaiton(getApplicationContext(),
-				firstFloatView);
+		try {
+			Log.d(TAG, json.toString());
+			if(currentItemPostion != -1) {
+				
+				if(currentItemPostion >= 0 && currentItemPostion < lists.length) {
+					
+					lists[currentItemPostion] = StatisticsUtils.returnTVBangDanList_TVJson(json.toString());
+					
+					notifyAdapter(lists[currentItemPostion]);
+				}
+
+			}
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
+	
+	public void initFiler(String url, JSONObject json, AjaxStatus status) {
+		
+		if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
 
-
-	private BaseAdapter movieAdapter = new BaseAdapter() {
-
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-			// TODO Auto-generated method stub
-			GridViewItemHodler viewItemHodler = null;
-
-			int width = parent.getWidth() / 5;
-			int height = (int) (width / 1.0f / STANDARD_PIC_WIDTH * STANDARD_PIC_HEIGHT);
-
-			if (convertView == null) {
-				viewItemHodler = new GridViewItemHodler();
-				convertView = getLayoutInflater().inflate(
-						R.layout.show_item_layout_dianying, null);
-				viewItemHodler.nameTv = (TextView) convertView.findViewById(R.id.tv_item_layout_name);
-				viewItemHodler.scoreTv = (TextView) convertView.findViewById(R.id.tv_item_layout_score);
-				viewItemHodler.otherInfo = (TextView) convertView.findViewById(R.id.tv_item_layout_other_info);
-				convertView.setTag(viewItemHodler);
-				
-			} else {
-
-				viewItemHodler = (GridViewItemHodler) convertView.getTag();
-			}
-			
-			AbsListView.LayoutParams params = new AbsListView.LayoutParams(
-					width, height);
-			convertView.setLayoutParams(params);
-			convertView.setPadding(GRIDVIEW_ITEM_PADDING_LEFT, GRIDVIEW_ITEM_PADDING,
-					GRIDVIEW_ITEM_PADDING_LEFT, GRIDVIEW_ITEM_PADDING);
-			if (width != 0) {
-
-				popWidth = width;
-				popHeight = height;
-			}
-			
-			if(movieList.size() <= 0) {
-				
-				return convertView;
-			}
-			
-			viewItemHodler.nameTv.setText(movieList.get(position).getMovieName());
-			viewItemHodler.scoreTv.setText(movieList.get(position).getMovieScore());
-			
-			String curEpisode = movieList.get(position).getMovieCurEpisode();
-			String maxEpisode = movieList.get(position).getMovieMaxEpisode();
-			
-			if(curEpisode == null || curEpisode.equals("0") || 
-					curEpisode.compareTo(maxEpisode) >= 0) {
-				
-				viewItemHodler.otherInfo.setText(
-						movieList.get(position).getMovieMaxEpisode() + getString(R.string.dianshiju_jiquan));
-				} else if(maxEpisode.compareTo(curEpisode) > 0) {
-					
-					viewItemHodler.otherInfo.setText(getString(R.string.zongyi_gengxinzhi) + 
-							movieList.get(position).getMovieCurEpisode());
-			}
-
-			aq = new AQuery(convertView);
-			aq.id(R.id.iv_item_layout_haibao).image(movieList.get(position).getMoviePicUrl(), 
-					true, true,0, R.drawable.post_normal);
-			return convertView;
+			app.MyToast(aq.getContext(),
+					getResources().getString(R.string.networknotwork));
+			return;
 		}
-
-		@Override
-		public long getItemId(int position) {
-			// TODO Auto-generated method stub
-			return position;
-		}
-
-		@Override
-		public Object getItem(int position) {
-			// TODO Auto-generated method stub
-			if(movieList.size() <= 0 ) {
-				
-				return null;
-			}
+		
+		try {
+			Log.d(TAG, json.toString());
+			StatisticsUtils.clearList(filterList);
+			filterList = StatisticsUtils.returnFilterMovieSearch_TVJson(json.toString());
 			
-			return movieList.get(position);
+			notifyAdapter(filterList);
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-
-		@Override
-		public int getCount() {
-			// TODO Auto-generated method stub
-			if(movieList.size() <= 0 ) {
-				
-				return DEFAULT_ITEM_NUM;
-			}
-			
-			return movieList.size();
-		}
-	};
+	}
 
 }

@@ -84,7 +84,6 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 	private List<MovieItemData> filterList = new ArrayList<MovieItemData>();
 	
 	private List<MovieItemData>[] lists = null;
-	private boolean isRecommendData = true;
 
 	private PopupWindow popupWindow;
 
@@ -133,6 +132,12 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 		StatisticsUtils.clearList(kongbuList);
 		StatisticsUtils.clearList(donghuaList);
 		StatisticsUtils.clearList(recommendList);
+	}
+	
+	private void clearAllList() {
+		
+		clearList();
+		StatisticsUtils.clearList(filterList);
 	}
 	
 	private void initLists() {
@@ -535,7 +540,7 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 		if (aq != null)
 			aq.dismiss();
 		
-		clearList();
+		clearAllList();
 		super.onDestroy();
 	}
 
@@ -839,8 +844,6 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 			Log.d(TAG, json.toString());
 			quanbufenleiList = StatisticsUtils.returnFilterMovieSearchJson(json.toString());
 
-			if (isRecommendData) {// 如果是全部分类，那就加上10个推荐数据
-
 				if(recommendList != null && !recommendList.isEmpty()) {
 					
 					for (MovieItemData movieItemData : recommendList) {
@@ -862,7 +865,6 @@ public class ShowMovieActivity extends Activity implements View.OnKeyListener,
 						}
 					}
 				}
-			}
 			
 			notifyAdapter(quanbufenleiList);
 		} catch (JsonParseException e) {

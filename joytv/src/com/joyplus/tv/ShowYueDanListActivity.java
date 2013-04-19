@@ -2,6 +2,7 @@ package com.joyplus.tv;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.json.JSONObject;
 
@@ -34,6 +35,7 @@ import com.androidquery.callback.AjaxStatus;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.joyplus.tv.Adapters.SearchAdapter;
 import com.joyplus.tv.Service.Return.ReturnTVBangDanList;
 import com.joyplus.tv.Service.Return.ReturnTops;
 import com.joyplus.tv.entity.GridViewItemHodler;
@@ -75,7 +77,10 @@ View.OnFocusChangeListener {
 
 	private View beforeGvView = null;
 
-	private ArrayList<MovieItemData> movieList = new ArrayList<MovieItemData>();
+	private List<MovieItemData> yuedanList = new ArrayList<MovieItemData>();
+	private List<MovieItemData> filterList = new ArrayList<MovieItemData>();
+	
+	private SearchAdapter yueAdapter;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -97,10 +102,14 @@ View.OnFocusChangeListener {
 			initView();
 			
 			initState();
+			
+			StatisticsUtils.clearList(yuedanList);
+			
+			yueAdapter = new SearchAdapter(this);
 
 			yuedanListTv.setText(name);
-			dinashijuGv.setAdapter(movieAdapter);
-			getServiceData(StatisticsUtils.getTopItemURL(TOP_ITEM_URL, id, 1 + "", 50 + ""));
+			dinashijuGv.setAdapter(yueAdapter);
+			getUnQuanbuData(StatisticsUtils.getTopItemURL(TOP_ITEM_URL, id, 1 + "", 50 + ""));
 			dinashijuGv.setSelected(true);
 			dinashijuGv.requestFocus();
 			dinashijuGv.setSelection(0);
@@ -110,6 +119,12 @@ View.OnFocusChangeListener {
 			finish();
 		}
 
+	}
+	
+	private void clearAllList() {
+		
+		StatisticsUtils.clearList(yuedanList);
+		StatisticsUtils.clearList(filterList);
 	}
 
 	private void initView() {
@@ -195,34 +210,37 @@ View.OnFocusChangeListener {
 					public void onItemClick(AdapterView<?> parent, View view,
 							int position, long id) {
 						// TODO Auto-generated method stub
-//						Intent intent = new Intent();
-//						Log.i(TAG, "ID:" + movieList.get(position).getMovieID());
-						String pro_type = movieList.get(position).getMovieProType();
-						Log.i(TAG, "pro_type:" + pro_type);
-						if(pro_type != null && !pro_type.equals("")) {
-							
-							if(pro_type.equals("2")) {
-								Log.i(TAG, "pro_type:" + pro_type + "   --->2");
-								Intent intent = new Intent(ShowYueDanListActivity.this,
-										ShowXiangqingTv.class);
-								intent.putExtra("ID", movieList.get(position).getMovieID());
-								startActivity(intent);
-							} else if(pro_type.equals("1")) {
-								Log.i(TAG, "pro_type:" + pro_type + "   --->1");
-								Intent intent = new Intent(ShowYueDanListActivity.this,
-										ShowXiangqingMovie.class);
-								intent.putExtra("ID", movieList.get(position).getMovieID());
-								startActivity(intent);
-//								startActivity();
-							} 
-//							else if(pro_type.equals("131")) {
-//								
-//								intent.putExtra("ID", movieList.get(position).getProd_id());
-//								startActivity(intent);
-//								startActivity(new Intent(ShowYueDanListActivity.this,
-//										ShowXiangqingDongman.class));
-//							}
+
+						List<MovieItemData> list = yueAdapter.getMovieList();
+						if(list != null && !list.isEmpty()) {
+							String pro_type = list.get(position).getMovieProType();
+							Log.i(TAG, "pro_type:" + pro_type);
+							if(pro_type != null && !pro_type.equals("")) {
+								
+								if(pro_type.equals("2")) {
+									Log.i(TAG, "pro_type:" + pro_type + "   --->2");
+									Intent intent = new Intent(ShowYueDanListActivity.this,
+											ShowXiangqingTv.class);
+									intent.putExtra("ID", list.get(position).getMovieID());
+									startActivity(intent);
+								} else if(pro_type.equals("1")) {
+									Log.i(TAG, "pro_type:" + pro_type + "   --->1");
+									Intent intent = new Intent(ShowYueDanListActivity.this,
+											ShowXiangqingMovie.class);
+									intent.putExtra("ID", list.get(position).getMovieID());
+									startActivity(intent);
+//									startActivity();
+								} 
+//								else if(pro_type.equals("131")) {
+//									
+//									intent.putExtra("ID", movieList.get(position).getProd_id());
+//									startActivity(intent);
+//									startActivity(new Intent(ShowYueDanListActivity.this,
+//											ShowXiangqingDongman.class));
+//								}
+							}
 						}
+
 					}
 				});
 
@@ -363,7 +381,7 @@ View.OnFocusChangeListener {
 
 					String url = StatisticsUtils.getSearchURL(SEARCH_URL,
 							1 + "", 30 + "", searchStr);
-//					getFilterServiceData(url, false);
+					getFilterData(url);
 				}
 			}
 		});
@@ -384,6 +402,84 @@ View.OnFocusChangeListener {
 				}
 			}
 		});
+	}
+	
+	private void initFirstFloatView() {
+
+		firstFloatView.setX(0);
+		firstFloatView.setY(0);
+		firstFloatView.setLayoutParams(new FrameLayout.LayoutParams(popWidth,
+				popHeight));
+		firstFloatView.setVisibility(View.VISIBLE);
+
+		TextView movieName = (TextView) firstFloatView.findViewById(R.id.tv_item_layout_name);
+		TextView movieScore = (TextView) firstFloatView.findViewById(R.id.tv_item_layout_score);
+		
+		List<MovieItemData> list = yueAdapter.getMovieList();
+		if (list != null && !list.isEmpty()) {
+			
+			aq = new AQuery(firstFloatView);
+			aq.id(R.id.iv_item_layout_haibao).image(list.get(0).getMoviePicUrl(), 
+					true, true,0, R.drawable.post_active);
+			movieName.setText(list.get(0).getMovieName());
+			movieScore.setText(list.get(0).getMovieScore());
+			
+			if(list.get(0).getMovieProType().equals("1")) {
+				
+				String duration = list.get(0).getMovieDuration();
+				if(duration != null && !duration.equals("")) {
+					
+					TextView movieDuration = (TextView) firstFloatView
+							.findViewById(R.id.tv_item_layout_other_info);
+					movieDuration.setText(duration);
+				}
+			} else if(list.get(0).getMovieProType().equals("2")){
+				
+				String curEpisode = list.get(0).getMovieCurEpisode();
+				String maxEpisode = list.get(0).getMovieMaxEpisode();
+				
+				if(curEpisode == null || curEpisode.equals("0") || 
+						curEpisode.compareTo(maxEpisode) >= 0) {
+					
+					TextView movieUpdate = (TextView) firstFloatView
+							.findViewById(R.id.tv_item_layout_other_info);
+					movieUpdate.setText(
+							maxEpisode + getString(R.string.dianshiju_jiquan));
+					} else if(maxEpisode.compareTo(curEpisode) > 0) {
+						
+						TextView movieUpdate = (TextView) firstFloatView
+								.findViewById(R.id.tv_item_layout_other_info);
+						movieUpdate.setText(getString(R.string.zongyi_gengxinzhi) + 
+								curEpisode);
+				}
+			}
+		}
+		
+		ItemStateUtils.floatViewInAnimaiton(getApplicationContext(),
+				firstFloatView);
+	}
+	
+	private void notifyAdapter(List<MovieItemData> list) {
+		
+		int height=yueAdapter.getHeight()
+				,width = yueAdapter.getWidth();
+		
+		if(height !=0 && width !=0) {
+			
+			popWidth = width;
+			popHeight = height;
+		}
+		
+		yueAdapter.setList(list);
+		
+		dinashijuGv.setSelection(0);
+		yueAdapter.notifyDataSetChanged();
+		beforeGvView = null;
+		initFirstFloatView();
+		dinashijuGv.setFocusable(true);
+		dinashijuGv.setSelected(true);
+		isSelectedItem = false;
+		dinashijuGv.requestFocus();
 	}
 
 	@Override
@@ -413,6 +509,8 @@ View.OnFocusChangeListener {
 		// TODO Auto-generated method stub
 		if (aq != null)
 			aq.dismiss();
+		
+		clearAllList();
 		super.onDestroy();
 	}
 	@Override
@@ -449,20 +547,28 @@ View.OnFocusChangeListener {
 		v.setOnKeyListener(this);
 	}
 	
-
-	private ObjectMapper mapper = new ObjectMapper();
-
-	private void getServiceData(String url) {
+	private void getUnQuanbuData(String url) {
+		
+		getServiceData(url, "initUnQuanbu");
+	}
+	
+	private void getFilterData(String url) {
+		
+		getServiceData(url, "initFiler");
+	}
+	
+	private void getServiceData(String url, String interfaceName) {
 
 		firstFloatView.setVisibility(View.INVISIBLE);
 		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
-		cb.url(url).type(JSONObject.class).weakHandler(this, "initData");
+		// cb.url(url).type(JSONObject.class).weakHandler(this, "initData");
+		cb.url(url).type(JSONObject.class).weakHandler(this, interfaceName);
 
 		cb.SetHeader(app.getHeaders());
 		aq.ajax(cb);
 	}
-
-	public void initData(String url, JSONObject json, AjaxStatus status) {
+	
+	public void initUnQuanbu(String url, JSONObject json, AjaxStatus status) {
 
 		if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
 
@@ -472,37 +578,10 @@ View.OnFocusChangeListener {
 		}
 		try {
 			Log.d(TAG, json.toString());
-			ReturnTVBangDanList result = mapper.readValue(json.toString(),
-					ReturnTVBangDanList.class);
-
-			if(movieList != null && !movieList.isEmpty()) {
 				
-				movieList.clear();
-			}
-			for (int i = 0; i < result.items.length; i++) {
-
-				MovieItemData movieItemData = new MovieItemData();
-				movieItemData.setMovieName(result.items[i].prod_name);
-				String bigPicUrl = result.items[i].big_prod_pic_url;
-				if(bigPicUrl == null || bigPicUrl.equals("")) {
 					
-					bigPicUrl = result.items[i].prod_pic_url;
-				}
-				movieItemData.setMoviePicUrl(bigPicUrl);
-				movieItemData.setMovieScore(result.items[i].score);
-				movieItemData.setMovieID(result.items[i].prod_id);
-				movieItemData.setMovieCurEpisode(result.items[i].cur_episode);
-				movieItemData.setMovieMaxEpisode(result.items[i].max_episode);
-				movieItemData.setMovieProType(result.items[i].prod_type);
-				movieList.add(movieItemData);
-			}
-			movieAdapter.notifyDataSetChanged();
-			beforeGvView = null;
-			initFirstFloatView();
-			dinashijuGv.setFocusable(true);
-			dinashijuGv.setSelected(true);
-			isSelectedItem = false;
-			dinashijuGv.requestFocus();
+			 yuedanList = StatisticsUtils.returnTVBangDanList_YueDanListJson(json.toString());
+			 notifyAdapter(yuedanList);
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -514,163 +593,32 @@ View.OnFocusChangeListener {
 			e.printStackTrace();
 		}
 	}
-
-	private void initFirstFloatView() {
-
-		firstFloatView.setX(0);
-		firstFloatView.setY(0);
-		firstFloatView.setLayoutParams(new FrameLayout.LayoutParams(popWidth,
-				popHeight));
-		firstFloatView.setVisibility(View.VISIBLE);
-
-		TextView movieName = (TextView) firstFloatView.findViewById(R.id.tv_item_layout_name);
-		TextView movieScore = (TextView) firstFloatView.findViewById(R.id.tv_item_layout_score);
+	
+	public void initFiler(String url, JSONObject json, AjaxStatus status) {
 		
-		if(movieList.size() > 0) {
-			
-			aq = new AQuery(firstFloatView);
-			aq.id(R.id.iv_item_layout_haibao).image(movieList.get(0).getMoviePicUrl(), 
-					true, true,0, R.drawable.post_active);
-			movieName.setText(movieList.get(0).getMovieName());
-			movieScore.setText(movieList.get(0).getMovieScore());
-			
-			if(movieList.get(0).getMovieProType().equals("1")) {
-				
-				String duration = movieList.get(0).getMovieDuration();
-				if(duration != null && !duration.equals("")) {
-					
-					TextView movieDuration = (TextView) firstFloatView
-							.findViewById(R.id.tv_item_layout_other_info);
-					movieDuration.setText(duration);
-				}
-			} else if(movieList.get(0).getMovieProType().equals("2")){
-				
-				String curEpisode = movieList.get(0).getMovieCurEpisode();
-				String maxEpisode = movieList.get(0).getMovieMaxEpisode();
-				
-				if(curEpisode == null || curEpisode.equals("0") || 
-						curEpisode.compareTo(maxEpisode) >= 0) {
-					
-					TextView movieUpdate = (TextView) firstFloatView
-							.findViewById(R.id.tv_item_layout_other_info);
-					movieUpdate.setText(
-							maxEpisode + getString(R.string.dianshiju_jiquan));
-					} else if(maxEpisode.compareTo(curEpisode) > 0) {
-						
-						TextView movieUpdate = (TextView) firstFloatView
-								.findViewById(R.id.tv_item_layout_other_info);
-						movieUpdate.setText(getString(R.string.zongyi_gengxinzhi) + 
-								curEpisode);
-				}
-			}
+		if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
+
+			app.MyToast(aq.getContext(),
+					getResources().getString(R.string.networknotwork));
+			return;
 		}
 		
-		ItemStateUtils.floatViewInAnimaiton(getApplicationContext(),
-				firstFloatView);
+		try {
+			Log.d(TAG, json.toString());
+			StatisticsUtils.clearList(filterList);
+			filterList = StatisticsUtils.returnFilterMovieSearchJson(json.toString());
+			
+			notifyAdapter(filterList);
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
-
-	private BaseAdapter movieAdapter = new BaseAdapter() {
-
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-			// TODO Auto-generated method stub
-			GridViewItemHodler viewItemHodler = null;
-
-			int width = parent.getWidth() / 5;
-			int height = (int) (width / 1.0f / STANDARD_PIC_WIDTH * STANDARD_PIC_HEIGHT);
-
-			if (convertView == null) {
-				viewItemHodler = new GridViewItemHodler();
-				convertView = getLayoutInflater().inflate(
-						R.layout.show_item_layout_dianying, null);
-				viewItemHodler.nameTv = (TextView) convertView.findViewById(R.id.tv_item_layout_name);
-				viewItemHodler.scoreTv = (TextView) convertView.findViewById(R.id.tv_item_layout_score);
-				viewItemHodler.otherInfo = (TextView) convertView.findViewById(R.id.tv_item_layout_other_info);
-				convertView.setTag(viewItemHodler);
-				
-			} else {
-
-				viewItemHodler = (GridViewItemHodler) convertView.getTag();
-			}
-			
-			AbsListView.LayoutParams params = new AbsListView.LayoutParams(
-					width, height);
-			convertView.setLayoutParams(params);
-			convertView.setPadding(GRIDVIEW_ITEM_PADDING_LEFT, GRIDVIEW_ITEM_PADDING,
-					GRIDVIEW_ITEM_PADDING_LEFT, GRIDVIEW_ITEM_PADDING);
-			
-			if (width != 0) {
-
-				popWidth = width;
-				popHeight = height;
-				// Log.i(TAG, "Width:" + popWidth);
-			}
-			
-			if(movieList.size() <= 0) {
-				
-				return convertView;
-			}
-
-			viewItemHodler.nameTv.setText(movieList.get(position).getMovieName());
-			
-			if(movieList.get(position).getMovieProType().equals("1")) {
-				
-				String duration = movieList.get(position).getMovieDuration();
-				viewItemHodler.scoreTv.setText(movieList.get(position).getMovieScore());
-				if(duration != null && !duration.equals("")) {
-					
-					viewItemHodler.otherInfo.setText(duration);
-				}
-			} else if(movieList.get(position).getMovieProType().equals("2")){
-				
-				viewItemHodler.scoreTv.setText(movieList.get(position).getMovieScore());
-				
-				String curEpisode = movieList.get(position).getMovieCurEpisode();
-				String maxEpisode = movieList.get(position).getMovieMaxEpisode();
-				
-				if(curEpisode == null || curEpisode.equals("0") || 
-						curEpisode.compareTo(maxEpisode) >= 0) {
-					
-					viewItemHodler.otherInfo.setText(
-							maxEpisode + getString(R.string.dianshiju_jiquan));
-					} else if(maxEpisode.compareTo(curEpisode) > 0) {
-						
-						viewItemHodler.otherInfo.setText(getString(R.string.zongyi_gengxinzhi) + 
-								curEpisode);
-				}
-			}
-
-			aq = new AQuery(convertView);
-			aq.id(R.id.iv_item_layout_haibao).image(movieList.get(position).getMoviePicUrl(), 
-					true, true,0, R.drawable.post_normal);
-			return convertView;
-		}
-
-		@Override
-		public long getItemId(int position) {
-			// TODO Auto-generated method stub
-			return position;
-		}
-
-		@Override
-		public Object getItem(int position) {
-			// TODO Auto-generated method stub
-			if(movieList.size() <= 0 ) {
-				
-				return null;
-			}
-			return movieList.get(position);
-		}
-
-		@Override
-		public int getCount() {
-			// TODO Auto-generated method stub
-			if(movieList.size() <= 0 ) {
-				
-				return DEFAULT_ITEM_NUM;
-			}
-			return movieList.size();
-		}
-	};
 
 }

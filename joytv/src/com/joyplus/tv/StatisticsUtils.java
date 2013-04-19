@@ -24,8 +24,10 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joyplus.tv.Service.Return.ReturnTVBangDanList;
+import com.joyplus.tv.Service.Return.ReturnTops;
 import com.joyplus.tv.entity.MovieItemData;
 import com.joyplus.tv.entity.ReturnFilterMovieSearch;
+import com.joyplus.tv.entity.YueDanInfo2;
 import com.joyplus.tv.utils.JieMianConstant;
 
 public class StatisticsUtils implements JieMianConstant{
@@ -360,5 +362,141 @@ public class StatisticsUtils implements JieMianConstant{
 		
 		return list;
 		
+	}
+	
+	public static List<MovieItemData> returnTVBangDanList_TVJson(String json) throws JsonParseException, JsonMappingException, IOException {
+		
+		if(json == null || json.equals("")) {
+			
+			return null;
+		}
+		ObjectMapper mapper = new ObjectMapper();
+		
+		ReturnTVBangDanList result = mapper.readValue(json,
+				ReturnTVBangDanList.class);
+		
+		List<MovieItemData> list = new ArrayList<MovieItemData>();
+		
+		for (int i = 0; i < result.items.length; i++) {
+
+			MovieItemData movieItemData = new MovieItemData();
+			movieItemData.setMovieName(result.items[i].prod_name);
+			String bigPicUrl = result.items[i].big_prod_pic_url;
+			if(bigPicUrl == null || bigPicUrl.equals("")) {
+				
+				bigPicUrl = result.items[i].prod_pic_url;
+			}
+			movieItemData.setMoviePicUrl(bigPicUrl);
+			movieItemData.setMovieScore(result.items[i].score);
+			movieItemData.setMovieID(result.items[i].prod_id);
+			movieItemData.setMovieCurEpisode(result.items[i].cur_episode);
+			movieItemData.setMovieMaxEpisode(result.items[i].max_episode);
+			list.add(movieItemData);
+		}
+		
+		return list;
+		
+	}
+	
+	public static List<MovieItemData> returnFilterMovieSearch_TVJson(String json) throws JsonParseException, JsonMappingException, IOException {
+		
+		if(json == null || json.equals("")) {
+			
+			return null;
+		}
+		ObjectMapper mapper = new ObjectMapper();
+		
+		ReturnFilterMovieSearch result = mapper.readValue(json.toString(),
+				ReturnFilterMovieSearch.class);
+		
+		List<MovieItemData> list = new ArrayList<MovieItemData>();
+		
+		for (int i = 0; i < result.results.length; i++) {
+
+			MovieItemData movieItemData = new MovieItemData();
+			movieItemData.setMovieName(result.results[i].prod_name);
+			String bigPicUrl = result.results[i].big_prod_pic_url;
+			if(bigPicUrl == null || bigPicUrl.equals("")) {
+				
+				bigPicUrl = result.results[i].prod_pic_url;
+			}
+			movieItemData.setMoviePicUrl(bigPicUrl);
+			movieItemData.setMovieScore(result.results[i].score);
+			movieItemData.setMovieID(result.results[i].prod_id);
+			movieItemData.setMovieDuration(result.results[i].duration);
+			movieItemData.setMovieCurEpisode(result.results[i].cur_episode);
+			movieItemData.setMovieMaxEpisode(result.results[i].max_episode);
+			list.add(movieItemData);
+		}
+		
+		return list;
+		
+	}
+	
+	public static List<MovieItemData> returnTopsJson(String json) throws JsonParseException, JsonMappingException, IOException {
+		
+		if(json == null || json.equals("")) {
+			
+			return null;
+		}
+		ObjectMapper mapper = new ObjectMapper();
+		
+		ReturnTops result = mapper.readValue(json.toString(),
+				ReturnTops.class);
+		
+		List<MovieItemData> list = new ArrayList<MovieItemData>();
+		
+		for(int i=0; i<result.tops.length; i++){
+			MovieItemData movieItemData = new MovieItemData();
+			movieItemData.setMovieName(result.tops[i].name);
+			movieItemData.setMovieID(result.tops[i].id);
+			movieItemData.setMovieProType(result.tops[i].prod_type);
+			String bigPicUrl = result.tops[i].big_pic_url;
+			if(bigPicUrl == null || bigPicUrl.equals("")) {
+				
+				bigPicUrl = result.tops[i].pic_url;
+			}
+			movieItemData.setMoviePicUrl(bigPicUrl);
+			movieItemData.setNum(result.tops[i].num);
+//			yuedanInfo.content = result.tops[i].content;
+			list.add(movieItemData);
+			
+		}
+		
+		return list;
+	}
+	
+	public static List<MovieItemData> returnTVBangDanList_YueDanListJson(String json) throws JsonParseException, JsonMappingException, IOException {
+		
+		if(json == null || json.equals("")) {
+			
+			return null;
+		}
+		ObjectMapper mapper = new ObjectMapper();
+		
+		ReturnTVBangDanList result = mapper.readValue(json,
+				ReturnTVBangDanList.class);
+		
+		List<MovieItemData> list = new ArrayList<MovieItemData>();
+		
+		for (int i = 0; i < result.items.length; i++) {
+
+			MovieItemData movieItemData = new MovieItemData();
+			movieItemData.setMovieName(result.items[i].prod_name);
+			String bigPicUrl = result.items[i].big_prod_pic_url;
+			if(bigPicUrl == null || bigPicUrl.equals("")) {
+				
+				bigPicUrl = result.items[i].prod_pic_url;
+			}
+			movieItemData.setMoviePicUrl(bigPicUrl);
+			movieItemData.setMovieScore(result.items[i].score);
+			movieItemData.setMovieID(result.items[i].prod_id);
+			movieItemData.setMovieCurEpisode(result.items[i].cur_episode);
+			movieItemData.setMovieMaxEpisode(result.items[i].max_episode);
+			movieItemData.setMovieProType(result.items[i].prod_type);
+			list.add(movieItemData);
+		}
+		
+		return list;
 	}
 }
