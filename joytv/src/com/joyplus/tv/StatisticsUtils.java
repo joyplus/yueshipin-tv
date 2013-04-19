@@ -1,11 +1,13 @@
 package com.joyplus.tv;
 
+import java.io.IOException;
 import java.net.URLEncoder;
 import java.security.MessageDigest;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import org.apache.http.client.utils.URLEncodedUtils;
 import org.json.JSONObject;
 
 import android.app.Instrumentation;
@@ -18,6 +20,12 @@ import android.view.animation.ScaleAnimation;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.joyplus.tv.Service.Return.ReturnTVBangDanList;
+import com.joyplus.tv.entity.MovieItemData;
+import com.joyplus.tv.entity.ReturnFilterMovieSearch;
 import com.joyplus.tv.utils.JieMianConstant;
 
 public class StatisticsUtils implements JieMianConstant{
@@ -278,5 +286,79 @@ public class StatisticsUtils implements JieMianConstant{
 			durationValue = String.format("%1$d:%2$02d:%3$02d", h, m, s);
 		}
 		return durationValue;
+	}
+	
+	public  static void clearList(List list) {
+
+		if (list != null && !list.isEmpty()) {
+
+			list.clear();
+		}
+	}
+	
+	public static List<MovieItemData> returnFilterMovieSearchJson(String json) throws JsonParseException, JsonMappingException, IOException {
+		
+		if(json == null || json.equals("")) {
+			
+			return null;
+		}
+		ObjectMapper mapper = new ObjectMapper();
+		
+		ReturnFilterMovieSearch result = mapper.readValue(json.toString(),
+				ReturnFilterMovieSearch.class);
+		
+		List<MovieItemData> list = new ArrayList<MovieItemData>();
+		
+		for (int i = 0; i < result.results.length; i++) {
+
+			MovieItemData movieItemData = new MovieItemData();
+			movieItemData.setMovieName(result.results[i].prod_name);
+			String bigPicUrl = result.results[i].big_prod_pic_url;
+			if (bigPicUrl == null || bigPicUrl.equals("")) {
+
+				bigPicUrl = result.results[i].prod_pic_url;
+			}
+			movieItemData.setMoviePicUrl(bigPicUrl);
+			movieItemData.setMovieScore(result.results[i].score);
+			movieItemData.setMovieID(result.results[i].prod_id);
+			movieItemData.setMovieDuration(result.results[i].duration);
+			list.add(movieItemData);
+		}
+		
+		return list;
+		
+	}
+	
+	public static List<MovieItemData> returnTVBangDanListJson(String json) throws JsonParseException, JsonMappingException, IOException {
+		
+		if(json == null || json.equals("")) {
+			
+			return null;
+		}
+		ObjectMapper mapper = new ObjectMapper();
+		
+		ReturnTVBangDanList result = mapper.readValue(json,
+				ReturnTVBangDanList.class);
+		
+		List<MovieItemData> list = new ArrayList<MovieItemData>();
+		
+		for (int i = 0; i < result.items.length; i++) {
+
+			MovieItemData movieItemData = new MovieItemData();
+			movieItemData.setMovieName(result.items[i].prod_name);
+			String bigPicUrl = result.items[i].big_prod_pic_url;
+			if (bigPicUrl == null || bigPicUrl.equals("")) {
+
+				bigPicUrl = result.items[i].prod_pic_url;
+			}
+			movieItemData.setMoviePicUrl(bigPicUrl);
+			movieItemData.setMovieScore(result.items[i].score);
+			movieItemData.setMovieID(result.items[i].prod_id);
+			movieItemData.setMovieDuration(result.items[i].duration);
+			list.add(movieItemData);
+		}
+		
+		return list;
+		
 	}
 }
