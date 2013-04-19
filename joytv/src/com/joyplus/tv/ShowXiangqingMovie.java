@@ -828,32 +828,32 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 					for(int j =0;j<movieData.movie.episodes[0].down_urls[i].urls.length; j++){
 							URLS_INDEX url_index = new URLS_INDEX();
 							url_index.url  = movieData.movie.episodes[0].down_urls[i].urls[j].url;
-							if (movieData.movie.episodes[0].down_urls[i].source.trim().equalsIgnoreCase("wangpan")) {
+							if (movieData.movie.episodes[0].down_urls[i].source.trim().equalsIgnoreCase(Constant.video_index[0])) {
 								url_index.souces = 0;
-							} else if (movieData.movie.episodes[0].down_urls[i].source.trim().equalsIgnoreCase("letv_fee")) {
+							} else if (movieData.movie.episodes[0].down_urls[i].source.trim().equalsIgnoreCase(Constant.video_index[1])) {
 								url_index.souces = 1;
-							} else if (movieData.movie.episodes[0].down_urls[i].source.trim().equalsIgnoreCase("letv")) {
+							} else if (movieData.movie.episodes[0].down_urls[i].source.trim().equalsIgnoreCase(Constant.video_index[2])) {
 								url_index.souces = 2;
-							} else if (movieData.movie.episodes[0].down_urls[i].source.trim().equalsIgnoreCase("fengxing")) {
+							} else if (movieData.movie.episodes[0].down_urls[i].source.trim().equalsIgnoreCase(Constant.video_index[3])) {
 								url_index.souces = 3;
-							} else if (movieData.movie.episodes[0].down_urls[i].source.trim().equalsIgnoreCase("qiyi")) {
+							} else if (movieData.movie.episodes[0].down_urls[i].source.trim().equalsIgnoreCase(Constant.video_index[4])) {
 								url_index.souces = 4;
-							} else if (movieData.movie.episodes[0].down_urls[i].source.trim().equalsIgnoreCase("youku")) {
+							} else if (movieData.movie.episodes[0].down_urls[i].source.trim().equalsIgnoreCase(Constant.video_index[5])) {
 								url_index.souces = 5;
-							} else if (movieData.movie.episodes[0].down_urls[i].source.trim().equalsIgnoreCase("sinahd")) {
+							} else if (movieData.movie.episodes[0].down_urls[i].source.trim().equalsIgnoreCase(Constant.video_index[6])) {
 								url_index.souces = 6;
-							} else if (movieData.movie.episodes[0].down_urls[i].source.trim().equalsIgnoreCase("sohu")) {
+							} else if (movieData.movie.episodes[0].down_urls[i].source.trim().equalsIgnoreCase(Constant.video_index[7])) {
 								url_index.souces = 7;
-							} else if (movieData.movie.episodes[0].down_urls[i].source.trim().equalsIgnoreCase("56")) {
+							} else if (movieData.movie.episodes[0].down_urls[i].source.trim().equalsIgnoreCase(Constant.video_index[8])) {
 								url_index.souces = 8;
-							} else if (movieData.movie.episodes[0].down_urls[i].source.trim().equalsIgnoreCase("qq")) {
+							} else if (movieData.movie.episodes[0].down_urls[i].source.trim().equalsIgnoreCase(Constant.video_index[9])) {
 								url_index.souces = 9;
-							} else if (movieData.movie.episodes[0].down_urls[i].source.trim().equalsIgnoreCase("pptv")) {
+							} else if (movieData.movie.episodes[0].down_urls[i].source.trim().equalsIgnoreCase(Constant.video_index[10])) {
 								url_index.souces = 10;
-							} else if (movieData.movie.episodes[0].down_urls[i].source.trim().equalsIgnoreCase("m1905")) {
+							} else if (movieData.movie.episodes[0].down_urls[i].source.trim().equalsIgnoreCase(Constant.video_index[11])) {
 								url_index.souces = 11;
 							}
-							if(movieData.movie.episodes[0].down_urls[i].urls[j].type.trim().equalsIgnoreCase("mp4")){
+							if(movieData.movie.episodes[0].down_urls[i].urls[j].type.trim().equalsIgnoreCase(Constant.video_index[0])){
 								url_index.defination = 1;
 							}else if(movieData.movie.episodes[0].down_urls[i].urls[j].type.trim().equalsIgnoreCase("hd2")){
 								url_index.defination = 2;

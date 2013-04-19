@@ -12,7 +12,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.androidquery.AQuery;
+import com.fasterxml.jackson.databind.ser.std.StdArraySerializers.IntArraySerializer;
 import com.joyplus.tv.R;
+import com.joyplus.tv.StatisticsUtils;
 import com.joyplus.tv.entity.HotItemInfo;
 
 public class MainHotItemAdapter extends BaseAdapter {
@@ -77,8 +79,55 @@ public class MainHotItemAdapter extends BaseAdapter {
 		aq.id(holder.image).image(hot_list.get(position).prod_pic_url,true,true,0,R.drawable.post_normal);
 		if(hot_list.get(position).type == 0){
 			holder.firstTitle.setVisibility(View.VISIBLE);
+			if(hot_list.get(position).playback_time!=null&&"".equals(hot_list.get(position).playback_time)){
+				holder.content.setText(StatisticsUtils.formatDuration(Long.valueOf(hot_list.get(position).playback_time)));
+			}else{
+				holder.content.setText("");
+			}
 		}else{
 			holder.firstTitle.setVisibility(View.GONE);
+			int type = Integer.valueOf(hot_list.get(position).prod_type);
+			switch (type) {
+			case 1:
+				if("".equals(hot_list.get(position).duration)){
+					holder.content.setText("时长未知");
+				}else{
+					holder.content.setText("时长："+hot_list.get(position).duration);
+				}
+				break;
+			case 2:
+				if("".equals(hot_list.get(position).max_episode)){
+					holder.content.setText("更新到第" + hot_list.get(position).cur_episode+"集");
+				}else if(!hot_list.get(position).cur_episode.equals(hot_list.get(position).max_episode)){
+					if("".equals(hot_list.get(position).cur_episode)||"0".equals(hot_list.get(position).cur_episode)){
+						holder.content.setText(hot_list.get(position).max_episode + "集全");
+					}else{
+						holder.content.setText("更新到第" + hot_list.get(position).cur_episode+"集");
+					}
+				}else {
+					holder.content.setText(hot_list.get(position).max_episode + "集全");
+				}
+				break;
+			case 3:
+				holder.content.setText("更新到" + hot_list.get(position).cur_episode+"期");
+				break;
+			case 131:
+				if("".equals(hot_list.get(position).max_episode)){
+					holder.content.setText("更新到第" + hot_list.get(position).cur_episode+"集");
+				}else if(!hot_list.get(position).cur_episode.equals(hot_list.get(position).max_episode)){
+					if("".equals(hot_list.get(position).cur_episode)||"0".equals(hot_list.get(position).cur_episode)){
+						holder.content.setText(hot_list.get(position).max_episode + "集全");
+					}else{
+						holder.content.setText("更新到第" + hot_list.get(position).cur_episode+"集");
+					}
+				}else {
+					holder.content.setText(hot_list.get(position).max_episode + "集全");
+				}
+				break;
+			default:
+				holder.content.setVisibility(View.INVISIBLE);
+				break;
+			}
 		}
 		holder.secondTitle.setText(hot_list.get(position).prod_name);
 		holder.score.setText(hot_list.get(position).score);

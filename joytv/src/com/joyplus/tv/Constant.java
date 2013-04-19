@@ -66,7 +66,7 @@ IOS: ijoyplusios001bj
 	
 	public static final String[] video_dont_support_extensions = { ".m3u",
 			".m3u8" };
-	public static final String[] video_index = { "letv",
+	public static final String[] video_index = { "wangpan","letv_fee","letv",
 	"fengxing","qiyi","youku","sinahd","sohu","56","qq","pptv","m1905"};
 	/*
 	 *  "type": flv,3gp：标清 (普清就是标清) ,"mp4", mp4:高清，hd2：超清

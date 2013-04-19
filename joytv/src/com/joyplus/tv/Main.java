@@ -645,7 +645,7 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 					aq.id(highlightImageView).image(hot_list.get(arg2).prod_pic_url,true,true);
 				}
 				noticeView.setText(arg2+ 1 + "/" + hot_list.size());
-				handler.removeCallbacks(null, null);
+				handler.removeCallbacks(null, null); 
 				handler.postDelayed((new Runnable() {
 					
 					@Override
@@ -997,13 +997,14 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 	
 	
 	public void getHotServiceData() { 
-		String url = Constant.BASE_URL + "tv_net_top" +"?page_num=1&page_size=10";
+//		String url = Constant.BASE_URL + "tv_net_top" +"?page_num=1&page_size=1000";
+		String url = "http://api.joyplus.tv/joyplus-service/index.php/tv_net_top?page_num=1&page_size=1000&app_key=ijoyplus_android_0001";
 
 //		String url = Constant.BASE_URL;
 		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>(); 
 		cb.url(url).type(JSONObject.class).weakHandler(this, "initHotData");
 
-		cb.SetHeader(app.getHeaders());
+//		cb.SetHeader(app.getHeaders());
 		aq.ajax(cb);
 	}
 	
@@ -1329,6 +1330,7 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 				item.score = result.items[i].score;
 				item.area = result.items[i].area;
 				item.cur_episode = result.items[i].cur_episode;
+				item.max_episode = result.items[i].max_episode;
 				item.definition = result.items[i].definition;
 				item.prod_summary = result.items[i].prod_summary;
 				item.duration = result.items[i].duration;
@@ -1552,8 +1554,6 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 			return super.onCreateDialog(id);
 		}
 	}
-	
-	
 	
 	
 	

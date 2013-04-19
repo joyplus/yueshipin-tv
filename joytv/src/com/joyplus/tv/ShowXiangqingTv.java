@@ -1,6 +1,8 @@
 package com.joyplus.tv;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.json.JSONObject;
 
@@ -203,6 +205,7 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 			} else {
 				isXiai = true;
 			}
+			shoucang();
 			xiaiBt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_fav_active, 0, 0,0);
 			xiaiBt.setTextColor(getResources().getColor(R.color.text_foucs));
 			break;
@@ -210,14 +213,17 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 			// bofangLL.setN
 			// xiaiIv.setImageResource(R.drawable.icon_fav_active);
 			// xiaiTv.setTextColor(getResources().getColor(R.color.text_foucs));
-			String str0 = "984192";
-			String str1 = "西游降魔篇";
-			String str2 = "http://221.130.179.66/25/36/53/kingsoft/movie/47978987920B0079FF686B6370B4E039-xiyoupian.mp4?crypt=61740d1aa7f2e300&b=800&gn=132&nc=1&bf=30&p2p=1&video_type=mp4&check=0&tm=1364191200&key=af7b9ad0697560c682a0070cf225e65e&opck=1&lgn=letv&proxy=3702889363&cipi=2026698610&tsnp=1&tag=ios&tag=kingsoft&sign=coopdown&realext=.mp4test=m3u8";
-
-			Intent intent = new Intent(this, VideoPlayerActivity.class);
-			intent.putExtra("prod_url", str2);
-			intent.putExtra("title", str1);
-			startActivity(intent);
+			
+			
+			
+//			String str0 = "984192";
+//			String str1 = "西游降魔篇";
+//			String str2 = "http://221.130.179.66/25/36/53/kingsoft/movie/47978987920B0079FF686B6370B4E039-xiyoupian.mp4?crypt=61740d1aa7f2e300&b=800&gn=132&nc=1&bf=30&p2p=1&video_type=mp4&check=0&tm=1364191200&key=af7b9ad0697560c682a0070cf225e65e&opck=1&lgn=letv&proxy=3702889363&cipi=2026698610&tsnp=1&tag=ios&tag=kingsoft&sign=coopdown&realext=.mp4test=m3u8";
+//
+//			Intent intent = new Intent(this, VideoPlayerActivity.class);
+//			intent.putExtra("prod_url", str2);
+//			intent.putExtra("title", str1);
+//			startActivity(intent);
 			break;
 		case R.id.bt_xiangqing_yingping:
 			Intent yingpingIntent = new Intent(this, DetailComment.class);
@@ -651,5 +657,19 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 		if (aq != null)
 			aq.dismiss();
 		super.onDestroy();
+	}
+	
+	private void shoucang(){
+		String url = Constant.BASE_URL + "program/favority";
+
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("prod_id", prod_id);
+
+		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
+		cb.SetHeader(app.getHeaders());
+
+		cb.params(params).url(url).type(JSONObject.class)
+				.weakHandler(this, "shoucangResult");
+		aq.ajax(cb);
 	}
 }
