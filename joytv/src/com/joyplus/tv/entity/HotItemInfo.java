@@ -25,7 +25,7 @@ public class HotItemInfo{
 		public String duration;
 		
 		public String playback_time;
-		
+//		public String souce;//来源
 		public String max_episode;
 		public String video_url;
 		public String prod_subname;

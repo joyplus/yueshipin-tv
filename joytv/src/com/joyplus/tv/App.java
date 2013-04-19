@@ -248,7 +248,7 @@ public class App extends Application {
 	 * @param urlLink
 	 * @return
 	 */
-	private boolean CheckUrl(String srcUrl) {
+	public boolean CheckUrl(String srcUrl) {
 
 		// url本身不正常 直接返回
 		if (srcUrl == null || srcUrl.length() <= 0) {
@@ -267,7 +267,7 @@ public class App extends Application {
 
 		HttpParams httpParams = mAndroidHttpClient.getParams();
 		// 连接时间最长5秒，可以更改
-		HttpConnectionParams.setConnectionTimeout(httpParams, 20000);
+		HttpConnectionParams.setConnectionTimeout(httpParams, 2000);
 
 		try {
 			URL url = new URL(srcUrl);
@@ -285,8 +285,12 @@ public class App extends Application {
 			String lengthStr = header_length.getValue();
 			Log.i(TAG, "HTTP STATUS : " + status);
 			
-			if(!type.startsWith("text/html") && status == 200){
+			mAndroidHttpClient.close();
+			
+			if(status != 404){
 				return true;
+			}else{
+				return false;
 			}
 
 		} catch (Exception e) {
@@ -296,8 +300,8 @@ public class App extends Application {
 			// 如果地址真的不存在，那就往里面加NULL字符串
 			mAndroidHttpClient.close();
 			e.printStackTrace();
+			return false;
 		}
-		return true;
 	}
 
 }

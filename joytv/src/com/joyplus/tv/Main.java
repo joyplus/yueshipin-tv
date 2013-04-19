@@ -3,7 +3,6 @@ package com.joyplus.tv;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,7 +60,6 @@ import com.joyplus.tv.Adapters.MainHotItemAdapter;
 import com.joyplus.tv.Adapters.MainLibAdapter;
 import com.joyplus.tv.Adapters.MainYueDanItemAdapter;
 import com.joyplus.tv.Service.Return.ReturnMainHot;
-import com.joyplus.tv.Service.Return.ReturnMainHot.URLS;
 import com.joyplus.tv.Service.Return.ReturnTops;
 import com.joyplus.tv.Service.Return.ReturnUserPlayHistories;
 import com.joyplus.tv.Video.VideoPlayerActivity;
@@ -73,7 +71,9 @@ import com.joyplus.tv.ui.MyScrollLayout;
 import com.joyplus.tv.ui.MyScrollLayout.OnViewChangeListener;
 import com.joyplus.tv.ui.UserInfo;
 import com.joyplus.tv.ui.WaitingDialog;
-import com.saulpower.fayeclient.FayeClient;
+import com.joyplus.tv.utils.DefinationComparatorIndex;
+import com.joyplus.tv.utils.SouceComparatorIndex1;
+import com.joyplus.tv.utils.URLS_INDEX;
 import com.saulpower.fayeclient.FayeService;
 import com.umeng.analytics.MobclickAgent;
 
@@ -133,6 +133,7 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 						rootLayout.setVisibility(View.VISIBLE);
 						gallery1.requestFocus();
 						handler.removeMessages(MESSAGE_START_TIMEOUT);
+						new Thread(new CheckPlayUrl()).start();
 					}else{
 						removeDialog(DIALOG_WAITING);
 						gallery1.requestFocus();
@@ -569,7 +570,7 @@ public void CheckBandResult(String url, JSONObject json, AjaxStatus status){
 			if("1".equals(result)){
 				updateUser(app.getUserData("phoneID"));
 			}else{
-//				handler.sendEmptyMessage(MESSAGE_UPDATEUSER);
+				handler.sendEmptyMessage(MESSAGE_UPDATEUSER);
 			}
 		} catch (JSONException e1) {
 			// TODO Auto-generated catch block
@@ -897,60 +898,7 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 				int prod_type = Integer.valueOf(info.prod_type);
 				switch (prod_type) {
 				case 1:
-					ArrayList<PLAY_URLS_INDEX> list = new ArrayList<PLAY_URLS_INDEX>();
-					for(int i=0; i<info.play_urls.length; i++){
-						PLAY_URLS_INDEX indexObj = new PLAY_URLS_INDEX();
-						indexObj.source = info.play_urls[i].source;
-						indexObj.urls = info.play_urls[i].urls;
-						if (indexObj.source.equalsIgnoreCase("letv")) {
-							indexObj.index = 0;
-						} else if (indexObj.source.equalsIgnoreCase("fengxing")) {
-							indexObj.index = 1;
-						} else if (indexObj.source.equalsIgnoreCase("qiyi")) {
-							indexObj.index = 2;
-						} else if (indexObj.source.equalsIgnoreCase("youku")) {
-							indexObj.index = 3;
-						} else if (indexObj.source.equalsIgnoreCase("sinahd")) {
-							indexObj.index = 4;
-						} else if (indexObj.source.equalsIgnoreCase("sohu")) {
-							indexObj.index = 5;
-						} else if (indexObj.source.equalsIgnoreCase("56")) {
-							indexObj.index = 6;
-						} else if (indexObj.source.equalsIgnoreCase("qq")) {
-							indexObj.index = 7;
-						} else if (indexObj.source.equalsIgnoreCase("pptv")) {
-							indexObj.index = 8;
-						} else if (indexObj.source.equalsIgnoreCase("m1905")) {
-							indexObj.index = 9;
-						}
-						list.add(indexObj);
-					}
-					if(list.size()<1){
-						Collections.sort(list, new EComparatorIndex());
-					}
-					PLAY_URLS_INDEX index1 = list.get(0);
-					URLS[] urls = index1.urls;
-					List<URLS_INDEX> list1 = new ArrayList<Main.URLS_INDEX>();
-					String videoUrl;
-					for(int i=0; i<urls.length; i++){
-						URLS_INDEX url_index = new URLS_INDEX();
-						url_index.type = urls[i].type.trim();
-						url_index.url = urls[i].url.trim();
-						if(url_index.type.equalsIgnoreCase("mp4")){
-							url_index.index = 1;
-						}else if(urls[i].type.trim().equalsIgnoreCase("hd2")){
-							url_index.index = 2;
-						}else if(urls[i].type.trim().equalsIgnoreCase("flv")){
-							url_index.index = 3;
-						}else if(urls[i].type.trim().equalsIgnoreCase("3GP")){
-							url_index.index = 4;
-						}
-						list1.add(url_index);
-					}
-					if(list.size()<1){
-						Collections.sort(list1, new EComparatorIndex1());
-					}
-					videoUrl = list1.get(0).url;
+					String videoUrl = info.video_url;
 					Log.d(TAG, "url---->" + videoUrl);
 					Log.d(TAG, "name---->" + info.prod_name);
 					CurrentPlayData playDate = new CurrentPlayData();
@@ -1311,7 +1259,7 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 			if(isHotLoadedFlag ==1 ){
 				if(titleGroup.getSelectedTitleIndex()==1){
 					itemFram.setVisibility(View.VISIBLE);
-					removeSameInHotList();
+//					removeSameInHotList();
 					gallery1.setAdapter(new MainHotItemAdapter(Main.this, hot_list));
 					if(hot_list.size()>0){
 						if(hot_list.get(0).type == 0){
@@ -1329,7 +1277,7 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 			}else if(isHotLoadedFlag == 2){
 				if(titleGroup.getSelectedTitleIndex()==1){
 					itemFram.setVisibility(View.VISIBLE);
-					removeSameInHotList();
+//					removeSameInHotList();
 					gallery1.setAdapter(new MainHotItemAdapter(Main.this, hot_list));
 					if(hot_list.size()>0){
 						if(hot_list.get(0).type == 0){
@@ -1405,7 +1353,7 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 			
 			if(isHotLoadedFlag == 1){
 				if(titleGroup.getSelectedTitleIndex() == 1){
-					removeSameInHotList();
+//					removeSameInHotList();
 					gallery1.setAdapter(new MainHotItemAdapter(Main.this, hot_list));
 					if(hot_list.size()>0){
 						if(hot_list.get(0).type == 0){
@@ -1606,63 +1554,105 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 	}
 	
 	
-	// 将片源排序
-	class EComparatorIndex implements Comparator {
+	
+	
+	
+//	class PLAY_URLS_INDEX{
+//		int index;
+////		public String source;
+//		public String url;
+//		public URLS[] urls;
+//	}
+	
+//	class URLS_INDEX{
+//		int souces;
+//		int defination;
+//		String url;
+//	}
+	
+//	private void removeSameInHotList(){
+//		HotItemInfo info = hot_list.get(0);
+//		if(info.type == 0){
+//			Log.d(TAG, "---------------------> remove same");
+//			if(hot_list.size()>1){
+//				for(int i=1; i<hot_list.size();i++){
+//					HotItemInfo info2 = hot_list.get(i);
+//					if(info.prod_id.equals(info2.prod_id)){
+//						hot_list.remove(info2);
+//					}
+//				}
+//			}
+//		}
+//	}
+	
+	class CheckPlayUrl implements Runnable{
 
 		@Override
-		public int compare(Object first, Object second) {
+		public void run() {
 			// TODO Auto-generated method stub
-			int first_name = ((PLAY_URLS_INDEX) first).index;
-			int second_name = ((PLAY_URLS_INDEX) second).index;
-			if (first_name - second_name < 0) {
-				return -1;
-			} else {
-				return 1;
-			}
-		}
-	}
-	
-	class EComparatorIndex1 implements Comparator {
-
-		@Override
-		public int compare(Object first, Object second) {
-			// TODO Auto-generated method stub
-			int first_name = ((URLS_INDEX) first).index;
-			int second_name = ((URLS_INDEX) second).index;
-			if (first_name - second_name < 0) {
-				return -1;
-			} else {
-				return 1;
-			}
-		}
-	}
-	
-	
-	class PLAY_URLS_INDEX{
-		int index;
-		public String source;
-		public URLS[] urls;
-	}
-	
-	class URLS_INDEX{
-		int index;
-		public String type;
-		public String url;
-	}
-	
-	private void removeSameInHotList(){
-		HotItemInfo info = hot_list.get(0);
-		if(info.type == 0){
-			Log.d(TAG, "---------------------> remove same");
-			if(hot_list.size()>1){
-				for(int i=1; i<hot_list.size();i++){
-					HotItemInfo info2 = hot_list.get(i);
-					if(info.prod_id.equals(info2.prod_id)){
-						hot_list.remove(info2);
+			
+			for(int i=0; i<hot_list.size(); i++){
+				HotItemInfo info = hot_list.get(i);
+				if(info.type>0){
+					List<URLS_INDEX> playUrls = new ArrayList<URLS_INDEX>();
+					for(int j =0;j<info.play_urls.length; j++){
+						for(int k =0;k<info.play_urls[j].urls.length; k++){
+							URLS_INDEX url_index = new URLS_INDEX();
+							url_index.url  = info.play_urls[j].urls[k].url;
+							if (info.play_urls[j].source.trim().equalsIgnoreCase("wangpan")) {
+								url_index.souces = 0;
+							} else if (info.play_urls[j].source.trim().equalsIgnoreCase("letv_fee")) {
+								url_index.souces = 1;
+							} else if (info.play_urls[j].source.trim().equalsIgnoreCase("letv")) {
+								url_index.souces = 2;
+							} else if (info.play_urls[j].source.trim().equalsIgnoreCase("fengxing")) {
+								url_index.souces = 3;
+							} else if (info.play_urls[j].source.trim().equalsIgnoreCase("qiyi")) {
+								url_index.souces = 4;
+							} else if (info.play_urls[j].source.trim().equalsIgnoreCase("youku")) {
+								url_index.souces = 5;
+							} else if (info.play_urls[j].source.trim().equalsIgnoreCase("sinahd")) {
+								url_index.souces = 6;
+							} else if (info.play_urls[j].source.trim().equalsIgnoreCase("sohu")) {
+								url_index.souces = 7;
+							} else if (info.play_urls[j].source.trim().equalsIgnoreCase("56")) {
+								url_index.souces = 8;
+							} else if (info.play_urls[j].source.trim().equalsIgnoreCase("qq")) {
+								url_index.souces = 9;
+							} else if (info.play_urls[j].source.trim().equalsIgnoreCase("pptv")) {
+								url_index.souces = 10;
+							} else if (info.play_urls[j].source.trim().equalsIgnoreCase("m1905")) {
+								url_index.souces = 11;
+							}
+							if(info.play_urls[j].urls[k].type.trim().equalsIgnoreCase("mp4")){
+								url_index.defination = 1;
+							}else if(info.play_urls[j].urls[k].type.trim().equalsIgnoreCase("hd2")){
+								url_index.defination = 2;
+							}else if(info.play_urls[j].urls[k].type.trim().equalsIgnoreCase("flv")){
+								url_index.defination = 3;
+							}else if(info.play_urls[j].urls[k].type.trim().equalsIgnoreCase("3GP")){
+								url_index.defination = 4;
+							} 
+							playUrls.add(url_index);
+						}
+					}
+					
+					if(playUrls.size()>1){
+						Collections.sort(playUrls, new DefinationComparatorIndex());
+						Collections.sort(playUrls, new SouceComparatorIndex1());
+					}
+					Log.d(TAG, "test------------------"+i+"playUrls size = " +playUrls.size()+"name = " + info.prod_name);
+					for(int n=0; info.video_url==null&&n<playUrls.size(); n++){
+						String url = playUrls.get(n).url;
+						if(app.CheckUrl(url)){
+							Log.d(TAG, "url-------ok----->" + url);
+							hot_list.get(i).video_url = url;
+						}
 					}
 				}
 			}
 		}
+		
 	}
 
 }

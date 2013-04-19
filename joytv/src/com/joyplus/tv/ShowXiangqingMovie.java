@@ -1,12 +1,19 @@
 package com.joyplus.tv;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.json.JSONObject;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -32,10 +39,14 @@ import com.androidquery.callback.AjaxStatus;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.joyplus.tv.Adapters.CurrentPlayData;
 import com.joyplus.tv.Service.Return.ReturnProgramRelatedVideos;
 import com.joyplus.tv.Service.Return.ReturnProgramView;
 import com.joyplus.tv.Video.VideoPlayerActivity;
+import com.joyplus.tv.utils.DefinationComparatorIndex;
 import com.joyplus.tv.utils.MyKeyEventKey;
+import com.joyplus.tv.utils.SouceComparatorIndex1;
+import com.joyplus.tv.utils.URLS_INDEX;
 
 public class ShowXiangqingMovie extends Activity implements View.OnClickListener,
 		View.OnKeyListener, MyKeyEventKey {
@@ -58,13 +69,72 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 	private LinearLayout chaoqingLL, gaoqingLL, biaoqingLL;
 	
 	private GridView tuijianGv;
-	
+	/**
+	 * 高清地址
+	 */
+	private String gaoqing_url;
+	/**
+	 * 超清地址
+	 */
+	private String chaoqing_url;
+	/**
+	 * 标清地址
+	 */
+	private String puqing_url;
 	private ReturnProgramView movieData;
 	private ReturnProgramRelatedVideos recommendMoviesData;
 	
 	private AQuery aq;
 	private App app;
 	private String prod_id;
+	
+	private int supportDefination;
+	
+	private Handler handler = new Handler(){
+
+		@Override
+		public void handleMessage(Message msg) {
+			// TODO Auto-generated method stub
+			initPopWindowData();
+			int sign = -1;
+			LinearLayout[] linLayouts = {chaoqingLL,gaoqingLL,biaoqingLL};
+			int[] strIds = {R.string.gaoqing_chaogaoqing,R.string.gaoqing_gaoqing,R.string.gaoqing_biaoqing};
+			if(gaoqing_url==null){
+				supportDefination-=1;
+				gaoqingLL.setVisibility(View.GONE);
+				sign = 1;
+			}
+			if(chaoqing_url==null){
+				supportDefination-=1;
+				chaoqingLL.setVisibility(View.GONE);
+				sign = 0;
+			}
+			if(puqing_url==null){
+				supportDefination-=1;
+				biaoqingLL.setVisibility(View.GONE);
+				sign =2;
+			}
+			Log.d(TAG, "sign = " + sign);
+			
+			if(supportDefination == 0) {
+				
+				bofangLL.setEnabled(false);
+			} else if(supportDefination == 1) {
+				
+				for (int i = 0; i < linLayouts.length; i++) {
+					if(sign == i) {
+						
+						LinearLayout ll = linLayouts[i];
+						Button button1= (Button) ll.getChildAt(0);
+						Button button2= (Button) ll.getChildAt(1);
+						button2.setText(strIds[i]);
+					}
+				}
+			}
+			
+		}
+		
+	};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +144,7 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 		this.setContentView(R.layout.show_xiangxi_dianying_layout);
 		aq = new AQuery(this);
 		app = (App) getApplication();
+		supportDefination = 3;
 		prod_id = getIntent().getStringExtra("ID");
 		if(prod_id==null||"".equals(prod_id)){
 			Log.e(TAG, "pram error prod_id is error value");
@@ -169,6 +240,7 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 			} else {
 				isXiai = true;
 			}
+			shoucang();
 			xiaiBt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_fav_active, 0, 0,0);
 			xiaiBt.setTextColor(getResources().getColor(R.color.text_foucs));
 			break;
@@ -176,13 +248,26 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 			// bofangLL.setN
 			// xiaiIv.setImageResource(R.drawable.icon_fav_active);
 			// xiaiTv.setTextColor(getResources().getColor(R.color.text_foucs));
-			String str0 = "984192";
-			String str1 = "西游降魔篇";
-			String str2 = "http://221.130.179.66/25/36/53/kingsoft/movie/47978987920B0079FF686B6370B4E039-xiyoupian.mp4?crypt=61740d1aa7f2e300&b=800&gn=132&nc=1&bf=30&p2p=1&video_type=mp4&check=0&tm=1364191200&key=af7b9ad0697560c682a0070cf225e65e&opck=1&lgn=letv&proxy=3702889363&cipi=2026698610&tsnp=1&tag=ios&tag=kingsoft&sign=coopdown&realext=.mp4test=m3u8";
+//			String str0 = "984192";
+//			String str1 = "西游降魔篇";
+//			String str2 = "http://221.130.179.66/25/36/53/kingsoft/movie/47978987920B0079FF686B6370B4E039-xiyoupian.mp4?crypt=61740d1aa7f2e300&b=800&gn=132&nc=1&bf=30&p2p=1&video_type=mp4&check=0&tm=1364191200&key=af7b9ad0697560c682a0070cf225e65e&opck=1&lgn=letv&proxy=3702889363&cipi=2026698610&tsnp=1&tag=ios&tag=kingsoft&sign=coopdown&realext=.mp4test=m3u8";
 
 			Intent intent = new Intent(this, VideoPlayerActivity.class);
-			intent.putExtra("prod_url", str2);
-			intent.putExtra("title", str1);
+			CurrentPlayData playDate = new CurrentPlayData();
+			intent = new Intent(this,VideoPlayerActivity.class);
+			playDate.prod_id = movieData.movie.id;
+			playDate.prod_type = 1;
+			playDate.prod_name = movieData.movie.name;
+			if(gaoqing_url!=null){
+				playDate.prod_url = gaoqing_url;
+			}else if(chaoqing_url != null){
+				playDate.prod_url = chaoqing_url;
+			}else if(puqing_url !=null){
+				playDate.prod_url = puqing_url;
+			}
+//			playDate.prod_src = "";
+//			playDate.prod_qua = Integer.valueOf(info.definition);
+			app.setCurrentPlayData(playDate);
 			startActivity(intent);
 			break;
 		case R.id.gv_xiangqing_tuijian:
@@ -273,17 +358,31 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 					Log.i("Yangzhg", "UPPPPPPPP!");
 					if (keyCode == KEY_UP && beforeView.getId() == v.getId()
 							&& !isPopupWindowShow) {
-						initPopWindowData();
-						int width = v.getWidth();
-						int height = v.getHeight() * 3;
-						int locationY = v.getHeight() * 2;
-						int[] location = new int[2];
-						v.getLocationOnScreen(location);
-						popupWindow.setFocusable(true);
-						popupWindow.setWidth(width + 10);
-						popupWindow.setHeight(height + 40);
-						popupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
-								location[0] - 6, location[1] - locationY -40);
+						if(supportDefination == 3) {
+							
+							int width = v.getWidth();
+							int height = v.getHeight() * 3;
+							int locationY = v.getHeight() * 2;
+							int[] location = new int[2];
+							v.getLocationOnScreen(location);
+							popupWindow.setFocusable(true);
+							popupWindow.setWidth(width + 10);
+							popupWindow.setHeight(height + 40);
+							popupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
+									location[0] - 6, location[1] - locationY -40);
+						} else if(supportDefination == 2) {
+							
+							int width = v.getWidth();
+							int height = v.getHeight() * 2;
+							int locationY = v.getHeight() * 1;
+							int[] location = new int[2];
+							v.getLocationOnScreen(location);
+							popupWindow.setFocusable(true);
+							popupWindow.setWidth(width + 10);
+							popupWindow.setHeight(height + 40);
+							popupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
+									location[0] - 6, location[1] - locationY -40);
+						}
 
 					} else {
 
@@ -334,18 +433,37 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				int id = v.getId();
+				Intent intent = new Intent(ShowXiangqingMovie.this, VideoPlayerActivity.class);
+				CurrentPlayData playDate = new CurrentPlayData();
+				playDate.prod_id = movieData.movie.id;
+				playDate.prod_type = 1;
+				playDate.prod_name = movieData.movie.name;
+//				if(gaoqing_url!=null){
+//					playDate.prod_url = gaoqing_url;
+//				}else if(chaoqing_url != null){
+//					playDate.prod_url = chaoqing_url;
+//				}else if(puqing_url !=null){
+//					playDate.prod_url = puqing_url;
+//				}
+//				playDate.prod_src = "";
+//				playDate.prod_qua = Integer.valueOf(info.definition);
+				app.setCurrentPlayData(playDate);
+				startActivity(intent);
 				switch (id) {
 				case R.id.ll_gaoqing_chaoqing:
 					gaoqingBt.setText(R.string.gaoqing_chaogaoqing);
 					currentBofangViewPop = v;
+					playDate.prod_url = chaoqing_url;
 					break;
 				case R.id.ll_gaoqing_gaoqing:
 					gaoqingBt.setText(R.string.gaoqing_gaoqing);
 					currentBofangViewPop = v;
+					playDate.prod_url = gaoqing_url;
 					break;
 				case R.id.ll_gaoqing_biaoqing:
 					gaoqingBt.setText(R.string.gaoqing_biaoqing);
 					currentBofangViewPop = v;
+					playDate.prod_url = puqing_url;
 					break;
 				default:
 					break;
@@ -354,6 +472,7 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 				if (popupWindow.isShowing()) {
 					popupWindow.dismiss();
 				}
+				startActivity(intent);
 			}
 		};
 		chaoqingLL.setOnClickListener(gaoqingListener);
@@ -439,6 +558,7 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 		try {
 			movieData = null;
 			movieData  = mapper.readValue(json.toString(), ReturnProgramView.class);
+			new Thread(new CheckPlayUrl()).start();
 			if(movieData!=null){
 				updateView();
 			}
@@ -592,6 +712,24 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 		}
 	}
 	
+	private void shoucang(){
+		String url = Constant.BASE_URL + "program/favority";
+
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("prod_id", prod_id);
+
+		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
+		cb.SetHeader(app.getHeaders());
+
+		cb.params(params).url(url).type(JSONObject.class)
+				.weakHandler(this, "shoucangResult");
+		aq.ajax(cb);
+	}
+	
+	public void shoucangResult(String url, JSONObject json, AjaxStatus status){
+		Log.d(TAG, json.toString());
+	}
+	
 	private BaseAdapter tuiJianAdapter = new BaseAdapter() {
 		
 		@Override
@@ -677,5 +815,92 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 		TextView score;
 		ImageView image;
 		ImageView definition;
+	}
+	
+	
+	class CheckPlayUrl implements Runnable{
+
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			List<URLS_INDEX> playUrls = new ArrayList<URLS_INDEX>();
+			for(int i=0; i<movieData.movie.episodes[0].down_urls.length; i++){
+					for(int j =0;j<movieData.movie.episodes[0].down_urls[i].urls.length; j++){
+							URLS_INDEX url_index = new URLS_INDEX();
+							url_index.url  = movieData.movie.episodes[0].down_urls[i].urls[j].url;
+							if (movieData.movie.episodes[0].down_urls[i].source.trim().equalsIgnoreCase("wangpan")) {
+								url_index.souces = 0;
+							} else if (movieData.movie.episodes[0].down_urls[i].source.trim().equalsIgnoreCase("letv_fee")) {
+								url_index.souces = 1;
+							} else if (movieData.movie.episodes[0].down_urls[i].source.trim().equalsIgnoreCase("letv")) {
+								url_index.souces = 2;
+							} else if (movieData.movie.episodes[0].down_urls[i].source.trim().equalsIgnoreCase("fengxing")) {
+								url_index.souces = 3;
+							} else if (movieData.movie.episodes[0].down_urls[i].source.trim().equalsIgnoreCase("qiyi")) {
+								url_index.souces = 4;
+							} else if (movieData.movie.episodes[0].down_urls[i].source.trim().equalsIgnoreCase("youku")) {
+								url_index.souces = 5;
+							} else if (movieData.movie.episodes[0].down_urls[i].source.trim().equalsIgnoreCase("sinahd")) {
+								url_index.souces = 6;
+							} else if (movieData.movie.episodes[0].down_urls[i].source.trim().equalsIgnoreCase("sohu")) {
+								url_index.souces = 7;
+							} else if (movieData.movie.episodes[0].down_urls[i].source.trim().equalsIgnoreCase("56")) {
+								url_index.souces = 8;
+							} else if (movieData.movie.episodes[0].down_urls[i].source.trim().equalsIgnoreCase("qq")) {
+								url_index.souces = 9;
+							} else if (movieData.movie.episodes[0].down_urls[i].source.trim().equalsIgnoreCase("pptv")) {
+								url_index.souces = 10;
+							} else if (movieData.movie.episodes[0].down_urls[i].source.trim().equalsIgnoreCase("m1905")) {
+								url_index.souces = 11;
+							}
+							if(movieData.movie.episodes[0].down_urls[i].urls[j].type.trim().equalsIgnoreCase("mp4")){
+								url_index.defination = 1;
+							}else if(movieData.movie.episodes[0].down_urls[i].urls[j].type.trim().equalsIgnoreCase("hd2")){
+								url_index.defination = 2;
+							}else if(movieData.movie.episodes[0].down_urls[i].urls[j].type.trim().equalsIgnoreCase("flv")){
+								url_index.defination = 3;
+							}else if(movieData.movie.episodes[0].down_urls[i].urls[j].type.trim().equalsIgnoreCase("3GP")){
+								url_index.defination = 4;
+							} 
+							playUrls.add(url_index);
+						}
+					}
+					
+					if(playUrls.size()>1){
+						Collections.sort(playUrls, new DefinationComparatorIndex());
+						Collections.sort(playUrls, new SouceComparatorIndex1());
+					}
+					Log.d(TAG, "test----------------playUrls size = " +playUrls.size());
+					for(int n=0; n<playUrls.size(); n++){
+						
+						switch (playUrls.get(n).defination) {
+						case 1:
+							if(gaoqing_url==null&&app.CheckUrl(playUrls.get(n).url)){
+								Log.d(TAG, "gaoqing_url-------ok----->" + playUrls.get(n).url);
+								gaoqing_url = playUrls.get(n).url;
+							}
+							break;
+						case 2:
+							if(chaoqing_url==null&&app.CheckUrl(playUrls.get(n).url)){
+								Log.d(TAG, "chaoqing_url-------ok----->" + playUrls.get(n).url);
+								chaoqing_url = playUrls.get(n).url;
+							}
+							break;
+						case 3:
+							if(puqing_url==null&&app.CheckUrl(playUrls.get(n).url)){
+								Log.d(TAG, "puqing_url-------ok----->" + playUrls.get(n).url);
+								puqing_url = playUrls.get(n).url;
+							}
+							break;
+						case 4:
+							if(puqing_url==null&&app.CheckUrl(playUrls.get(n).url)){
+								Log.d(TAG, "puqing_url-------ok----->" + playUrls.get(n).url);
+								puqing_url = playUrls.get(n).url;
+							}
+							break;
+						}
+				}
+				handler.sendEmptyMessage(0);	
+			}
 	}
 }
