@@ -139,15 +139,16 @@
                      android:text="@string/xiangqing_juqingjianjie_name"
                      android:textColor="@color/daoyan_name_color"
                      android:textSize="20sp" />
-                 <TextView
-                     android:id="@+id/text_introduce"
-                     android:layout_marginTop="10dp"
-                     android:layout_width="match_parent"
-                     android:layout_height="match_parent"
-                     android:textColor="@color/daoyan_names_name_color"
-                     android:maxLines="5"
-                     android:ellipsize="end"
-                     android:textSize="20sp" />
+                 <TextView android:layout_width="fill_parent"
+			        android:layout_height="fill_parent"
+			        android:layout_marginTop="10dp"
+			        android:textSize="20sp"
+			        android:maxLines="4"
+			        android:ellipsize="end"
+			       	android:lineSpacingExtra="5dip"
+			        android:textColor="@color/hot_content_content"
+			        android:id="@+id/text_introduce"
+		        	/>
             </LinearLayout>
         </LinearLayout>
 
@@ -360,6 +361,7 @@
                 android:id="@+id/ll_xiangqing_gv_parent"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginTop="15dp"
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"
                 android:layout_below="@id/rl_xiangqing_hotline" >

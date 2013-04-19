@@ -1,7 +1,10 @@
 package com.joyplus.tv;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.json.JSONObject;
@@ -10,6 +13,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.style.URLSpan;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -32,9 +36,15 @@ import com.androidquery.callback.AjaxStatus;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.joyplus.tv.Adapters.CurrentPlayData;
 import com.joyplus.tv.Service.Return.ReturnProgramView;
+import com.joyplus.tv.Service.Return.ReturnProgramView.DOWN_URLS;
+import com.joyplus.tv.Service.Return.ReturnProgramView.EPISODES;
 import com.joyplus.tv.Video.VideoPlayerActivity;
+import com.joyplus.tv.utils.DefinationComparatorIndex;
 import com.joyplus.tv.utils.MyKeyEventKey;
+import com.joyplus.tv.utils.SouceComparatorIndex1;
+import com.joyplus.tv.utils.URLS_INDEX;
 
 public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 		View.OnKeyListener, MyKeyEventKey {
@@ -224,6 +234,8 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 //			intent.putExtra("prod_url", str2);
 //			intent.putExtra("title", str1);
 //			startActivity(intent);
+			play(0);
+			
 			break;
 		case R.id.bt_xiangqing_yingping:
 			Intent yingpingIntent = new Intent(this, DetailComment.class);
@@ -256,6 +268,7 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 				}
 			}else{
 				Toast.makeText(this, "click btn = " + v.getId(), 100).show();
+				play(v.getId()-1);
 //				scrollView.smoothScrollBy(20, 0);
 			}
 			break;
@@ -659,6 +672,88 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 		super.onDestroy();
 	}
 	
+	private void play(int index){
+		CurrentPlayData playDate = new CurrentPlayData();
+		Intent intent = new Intent(this,VideoPlayerActivity.class);
+		playDate.prod_id = prod_id;
+		playDate.prod_type = 2;
+		playDate.prod_name = date.tv.name;
+//		playDate.prod_url = date.tv.episodes[0].down_urls[0].urls[0].url;
+//		playDate.prod_src = date.tv.episodes[0].down_urls[0].source;
+		playDate.prod_url = getBofangList(index).get(0).url;
+		playDate.prod_src = getBofangList(index).get(0).source_from;
+//		if(Constant.player_quality_index[0].equals(date.tv.episodes[0].down_urls[0].urls[0].type)){
+//			//mp4
+//		}else if(Constant.player_quality_index[1].equals(date.tv.episodes[0].down_urls[0].urls[0].type)){
+//			//hd2
+//		}else {
+//			//other
+//		}
+//		playDate.prod_qua = Integer.valueOf(info.definition);
+		playDate.CurrentIndex = index;
+		app.set_ReturnProgramView(date);
+		app.setCurrentPlayData(playDate);
+		startActivity(intent);
+	}
+	
+	private List<URLS_INDEX> getBofangList(int index){
+		List<URLS_INDEX> list = new ArrayList<URLS_INDEX>();
+		
+		DOWN_URLS[] urls = date.tv.episodes[index].down_urls;
+		
+		for(int i=0;i<urls.length; i++){
+			for(int j=0; j<urls[i].urls.length; j++){
+				URLS_INDEX url_index = new URLS_INDEX();
+				url_index.source_from = urls[i].source;
+				url_index.url = urls[i].urls[j].url;
+				if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[0])) {
+					url_index.souces = 0;
+				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[1])) {
+					url_index.souces = 1;
+				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[2])) {
+					url_index.souces = 2;
+				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[3])) {
+					url_index.souces = 3;
+				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[4])) {
+					url_index.souces = 4;
+				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[5])) {
+					url_index.souces = 5;
+				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[6])) {
+					url_index.souces = 6;
+				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[7])) {
+					url_index.souces = 7;
+				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[8])) {
+					url_index.souces = 8;
+				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[9])) {
+					url_index.souces = 9;
+				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[10])) {
+					url_index.souces = 10;
+				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[11])) {
+					url_index.souces = 11;
+				} else {
+					url_index.souces = 12;
+				}
+				if(urls[i].urls[j].type.trim().equalsIgnoreCase(Constant.player_quality_index[1])){
+					url_index.defination = 1;
+				}else if(urls[i].urls[j].type.trim().equalsIgnoreCase(Constant.player_quality_index[0])){
+					url_index.defination = 2;
+				}else if(urls[i].urls[j].type.trim().equalsIgnoreCase(Constant.player_quality_index[2])){
+					url_index.defination = 3;
+				}else if(urls[i].urls[j].type.trim().equalsIgnoreCase(Constant.player_quality_index[3])){
+					url_index.defination = 4;
+				} else {
+					url_index.defination = 5;
+				}
+				list.add(url_index);
+			}
+		}
+		if(list.size()>1){
+			Collections.sort(list, new DefinationComparatorIndex());
+			Collections.sort(list, new SouceComparatorIndex1());
+		}
+		return list;
+	}
+	
 	private void shoucang(){
 		String url = Constant.BASE_URL + "program/favority";
 
@@ -671,5 +766,9 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 		cb.params(params).url(url).type(JSONObject.class)
 				.weakHandler(this, "shoucangResult");
 		aq.ajax(cb);
+	}
+	
+	public void shoucangResult(String url, JSONObject json, AjaxStatus status){
+		Log.d(TAG, json.toString());
 	}
 }

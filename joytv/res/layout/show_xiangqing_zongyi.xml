@@ -71,7 +71,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="left|center_vertical"
-                            android:text="@string/xiangqing_dianying_title_name"
                             android:textColor="@color/text_bg_foucs"
                             android:singleLine="true"
                             android:textSize="25sp" />
@@ -108,7 +107,6 @@
                         android:id="@+id/text_directors"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/xiangqing_daoyan_names_name"
                         android:textColor="@color/hot_content_content"
                         android:singleLine="true"
                         android:textSize="20sp" />
@@ -131,7 +129,6 @@
                         android:id="@+id/text_starts"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/xiangqing_zhuyan_names_name"
                         android:textColor="@color/hot_content_content"
                         android:singleLine="true"
                         android:textSize="20sp" />
@@ -145,16 +142,16 @@
                     android:textColor="@color/hot_content_notice"
                     android:textSize="20sp" />
 
-                <TextView
-                    android:id="@+id/text_introduce"
-                    android:layout_marginTop="10dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="fill_parent"
-                    android:maxLines="5"
-                    android:ellipsize="end"
-                    android:text="@string/xiangqing_juqingjianjie_content"
-                    android:textColor="@color/hot_content_content"
-                    android:textSize="20sp" />
+                <TextView android:layout_width="fill_parent"
+			        android:layout_height="fill_parent"
+			        android:layout_marginTop="10dp"
+			        android:textSize="20sp"
+			        android:maxLines="4"
+			        android:ellipsize="end"
+			       	android:lineSpacingExtra="5dip"
+			        android:textColor="@color/hot_content_content"
+			        android:id="@+id/text_introduce"
+		        	/>
             </LinearLayout>
         </LinearLayout>
 
@@ -347,6 +344,7 @@
 			<LinearLayout android:layout_width="fill_parent"
 			    android:layout_height="fill_parent"
 			    android:orientation="horizontal"
+			    android:layout_marginTop="15dp"
 			     android:layout_below="@id/rl_xiangqing_hotline"
 			    >
 			    <LinearLayout android:layout_width="0dp"
@@ -379,6 +377,7 @@
                         </HorizontalScrollView>
 				        <TableLayout android:layout_width="fill_parent"
 				            android:layout_height="fill_parent"
+				            android:layout_marginTop="15dp"
 				            android:id="@+id/table">
 				        </TableLayout>
                     </LinearLayout>

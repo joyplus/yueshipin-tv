@@ -254,7 +254,20 @@ public class StatisticsUtils implements JieMianConstant{
         return hexValue.toString();  
     } 
 	public static  String formatDuration(long duration) {
-//		duration = duration / 1000;
+		duration = duration / 1000;
+		int h = (int) duration / 3600;
+		int m = (int) (duration - h * 3600) / 60;
+		int s = (int) duration - (h * 3600 + m * 60);
+		String durationValue;
+		if (h == 0) {
+			durationValue = String.format("%1$02d:%2$02d", m, s);
+		} else {
+			durationValue = String.format("%1$d:%2$02d:%3$02d", h, m, s);
+		}
+		return durationValue;
+	}
+	
+	public static  String formatDuration1(long duration) {
 		int h = (int) duration / 3600;
 		int m = (int) (duration - h * 3600) / 60;
 		int s = (int) duration - (h * 3600 + m * 60);

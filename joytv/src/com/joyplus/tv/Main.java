@@ -898,16 +898,14 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 				int prod_type = Integer.valueOf(info.prod_type);
 				switch (prod_type) {
 				case 1:
-					String videoUrl = info.video_url;
-					Log.d(TAG, "url---->" + videoUrl);
 					Log.d(TAG, "name---->" + info.prod_name);
 					CurrentPlayData playDate = new CurrentPlayData();
 					intent = new Intent(this,VideoPlayerActivity.class);
 					playDate.prod_id = info.prod_id;
 					playDate.prod_type = Integer.valueOf(info.prod_type);
 					playDate.prod_name = info.prod_name;
-					playDate.prod_url = videoUrl;
-//					playDate.prod_src = "";
+					playDate.prod_url = info.video_url;
+					playDate.prod_src = info.source;
 					if(!"".equals(info.playback_time)){
 						playDate.prod_time = Long.valueOf(info.playback_time);
 					}
@@ -1599,40 +1597,45 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 						for(int k =0;k<info.play_urls[j].urls.length; k++){
 							URLS_INDEX url_index = new URLS_INDEX();
 							url_index.url  = info.play_urls[j].urls[k].url;
-							if (info.play_urls[j].source.trim().equalsIgnoreCase("wangpan")) {
+							url_index.source_from = info.play_urls[j].source;
+							if (info.play_urls[j].source.trim().equalsIgnoreCase(Constant.video_index[0])) {
 								url_index.souces = 0;
-							} else if (info.play_urls[j].source.trim().equalsIgnoreCase("letv_fee")) {
+							} else if (info.play_urls[j].source.trim().equalsIgnoreCase(Constant.video_index[1])) {
 								url_index.souces = 1;
-							} else if (info.play_urls[j].source.trim().equalsIgnoreCase("letv")) {
+							} else if (info.play_urls[j].source.trim().equalsIgnoreCase(Constant.video_index[2])) {
 								url_index.souces = 2;
-							} else if (info.play_urls[j].source.trim().equalsIgnoreCase("fengxing")) {
+							} else if (info.play_urls[j].source.trim().equalsIgnoreCase(Constant.video_index[3])) {
 								url_index.souces = 3;
-							} else if (info.play_urls[j].source.trim().equalsIgnoreCase("qiyi")) {
+							} else if (info.play_urls[j].source.trim().equalsIgnoreCase(Constant.video_index[4])) {
 								url_index.souces = 4;
-							} else if (info.play_urls[j].source.trim().equalsIgnoreCase("youku")) {
+							} else if (info.play_urls[j].source.trim().equalsIgnoreCase(Constant.video_index[5])) {
 								url_index.souces = 5;
-							} else if (info.play_urls[j].source.trim().equalsIgnoreCase("sinahd")) {
+							} else if (info.play_urls[j].source.trim().equalsIgnoreCase(Constant.video_index[6])) {
 								url_index.souces = 6;
-							} else if (info.play_urls[j].source.trim().equalsIgnoreCase("sohu")) {
+							} else if (info.play_urls[j].source.trim().equalsIgnoreCase(Constant.video_index[7])) {
 								url_index.souces = 7;
-							} else if (info.play_urls[j].source.trim().equalsIgnoreCase("56")) {
+							} else if (info.play_urls[j].source.trim().equalsIgnoreCase(Constant.video_index[8])) {
 								url_index.souces = 8;
-							} else if (info.play_urls[j].source.trim().equalsIgnoreCase("qq")) {
+							} else if (info.play_urls[j].source.trim().equalsIgnoreCase(Constant.video_index[9])) {
 								url_index.souces = 9;
-							} else if (info.play_urls[j].source.trim().equalsIgnoreCase("pptv")) {
+							} else if (info.play_urls[j].source.trim().equalsIgnoreCase(Constant.video_index[10])) {
 								url_index.souces = 10;
-							} else if (info.play_urls[j].source.trim().equalsIgnoreCase("m1905")) {
+							} else if (info.play_urls[j].source.trim().equalsIgnoreCase(Constant.video_index[11])) {
 								url_index.souces = 11;
+							} else{
+								url_index.souces = 12;
 							}
-							if(info.play_urls[j].urls[k].type.trim().equalsIgnoreCase("mp4")){
+							if(info.play_urls[j].urls[k].type.trim().equalsIgnoreCase(Constant.player_quality_index[1])){
 								url_index.defination = 1;
-							}else if(info.play_urls[j].urls[k].type.trim().equalsIgnoreCase("hd2")){
+							}else if(info.play_urls[j].urls[k].type.trim().equalsIgnoreCase(Constant.player_quality_index[0])){
 								url_index.defination = 2;
-							}else if(info.play_urls[j].urls[k].type.trim().equalsIgnoreCase("flv")){
+							}else if(info.play_urls[j].urls[k].type.trim().equalsIgnoreCase(Constant.player_quality_index[2])){
 								url_index.defination = 3;
-							}else if(info.play_urls[j].urls[k].type.trim().equalsIgnoreCase("3GP")){
+							}else if(info.play_urls[j].urls[k].type.trim().equalsIgnoreCase(Constant.player_quality_index[3])){
 								url_index.defination = 4;
-							} 
+							}else {
+								url_index.defination = 5;
+							}
 							playUrls.add(url_index);
 						}
 					}
@@ -1647,6 +1650,7 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 						if(app.CheckUrl(url)){
 							Log.d(TAG, "url-------ok----->" + url);
 							hot_list.get(i).video_url = url;
+							hot_list.get(i).source = playUrls.get(n).source_from;
 						}
 					}
 				}

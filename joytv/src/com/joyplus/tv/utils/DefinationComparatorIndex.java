@@ -11,8 +11,10 @@ public class DefinationComparatorIndex implements Comparator {
 			int second_name = ((URLS_INDEX) second).defination;
 			if (first_name - second_name < 0) {
 				return -1;
-			} else {
+			} else if(first_name - second_name > 0){
 				return 1;
+			} else{
+				return 0;
 			}
 		}
 	}

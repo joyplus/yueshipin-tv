@@ -9,8 +9,8 @@ public class HotItemInfo{
 	
 		public String id;
 		public String prod_id;
-		public String prod_name;
-		public String prod_type; //1，电影; 2，电视剧; 3，综艺; 4，动漫;
+		public String prod_name; 
+		public String prod_type; //1，电影; 2，电视剧; 3，综艺; 131，动漫;
 		public String prod_pic_url;
 		public String stars;
 		public String directors;
@@ -25,9 +25,9 @@ public class HotItemInfo{
 		public String duration;
 		
 		public String playback_time;
-//		public String souce;//来源
 		public String max_episode;
 		public String video_url;
+		public String source;//来源
 		public String prod_subname;
 		public String play_type;
 		
