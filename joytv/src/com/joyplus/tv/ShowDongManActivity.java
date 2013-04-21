@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONObject;
-
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -36,10 +34,7 @@ import com.joyplus.tv.entity.MovieItemData;
 import com.joyplus.tv.ui.MyMovieGridView;
 import com.joyplus.tv.ui.NavigateView;
 import com.joyplus.tv.ui.NavigateView.OnResultListener;
-import com.joyplus.tv.utils.BangDanKey;
 import com.joyplus.tv.utils.ItemStateUtils;
-import com.joyplus.tv.utils.JieMianConstant;
-import com.joyplus.tv.utils.MyKeyEventKey;
 
 public class ShowDongManActivity extends AbstractShowActivity{
 
