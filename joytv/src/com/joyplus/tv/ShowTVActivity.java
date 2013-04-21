@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONObject;
-
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,12 +13,9 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -34,23 +29,13 @@ import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joyplus.tv.Adapters.DianShijuAdapter;
-import com.joyplus.tv.Service.Return.ReturnTVBangDanList;
-import com.joyplus.tv.entity.GridViewItemHodler;
 import com.joyplus.tv.entity.MovieItemData;
-import com.joyplus.tv.entity.ReturnFilterMovieSearch;
 import com.joyplus.tv.ui.MyMovieGridView;
 import com.joyplus.tv.ui.NavigateView;
 import com.joyplus.tv.ui.NavigateView.OnResultListener;
-import com.joyplus.tv.utils.BangDanKey;
 import com.joyplus.tv.utils.ItemStateUtils;
-import com.joyplus.tv.utils.JieMianConstant;
-import com.joyplus.tv.utils.MyKeyEventKey;
-
-public class ShowTVActivity extends Activity implements View.OnKeyListener,
-MyKeyEventKey, BangDanKey, JieMianConstant, View.OnClickListener,
-View.OnFocusChangeListener {
+public class ShowTVActivity extends AbstractShowActivity{
 
 	private String TAG = "ShowTVActivity";
 	private AQuery aq;
@@ -95,6 +80,8 @@ View.OnFocusChangeListener {
 	
 	private DianShijuAdapter dianShijuAdapter =  null;
 	private int currentItemPostion = -1;
+	
+	private int beforepostion = 0;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -104,58 +91,220 @@ View.OnFocusChangeListener {
 
 		app = (App) getApplication();
 		aq = new AQuery(this);
-
-		initView();
-		initState();
 		
-		clearList();
-		initLists();
+		initActivity();
 
 		dianShijuAdapter = new DianShijuAdapter(this);
 		dinashijuGv.setAdapter(dianShijuAdapter);
-		
-//		String urlNormal = StatisticsUtils.getFilterURL(FILTER_URL, 1+"", 10+"", TV_TYPE);
+
 		String url2 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL,
 				TV_DIANSHIJU, 1 + "", 50 + "");
 		getQuan10Data(url2);
-//		getSaveTenServiceData(urlNormal,true);
 		
 		dinashijuGv.setSelected(true);
 		dinashijuGv.requestFocus();
 		dinashijuGv.setSelection(0);
 	}
 	
-	private void clearList() {
+	@Override
+	public void onFocusChange(View v, boolean hasFocus) {
+		// TODO Auto-generated method stub
 
-		StatisticsUtils.clearList(quanbufenleiList);
-		StatisticsUtils.clearList(dalujuList);
-		StatisticsUtils.clearList(ganjuList);
-		StatisticsUtils.clearList(taijuList);
-		StatisticsUtils.clearList(hanjuList);
-		StatisticsUtils.clearList(meijuList);
-		StatisticsUtils.clearList(rijuList);
-		StatisticsUtils.clearList(recommendList);
+		if (hasFocus) {
+
+			ItemStateUtils.viewToFocusState(getApplicationContext(), v);
+		} else {
+
+			ItemStateUtils.viewToOutFocusState(getApplicationContext(), v,
+					activeView);
+		}
+
+	}
+
+	@Override
+	public boolean onKey(View v, int keyCode, KeyEvent event) {
+		// TODO Auto-generated method stub
+		int action = event.getAction();
+		return false;
+	}
+
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		if (aq != null)
+			aq.dismiss();
+		
+		clearLists();
+		super.onDestroy();
 	}
 	
-	private void clearAllList() {
-		
-		clearList();
-		StatisticsUtils.clearList(filterList);
-	}
-	
-	private void initLists() {
-		
-		lists = new List[6];
-		lists[0] = dalujuList;
-		lists[1] = ganjuList;
-		lists[2] = taijuList;
-		lists[3] = hanjuList;
-		lists[4] = meijuList;
-		lists[5] = rijuList;
+	private PopupWindow popupWindow;
+
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+		 Log.i("Yangzhg", "onClick");
+
+			if(activeView == null) {
+				
+				activeView = mFenLeiBtn;
+			}
+			
+			if(v.getId() == R.id.bt_quanbufenlei) {
+				
+				if(popupWindow ==null){
+					NavigateView view = new NavigateView(this);
+					int [] location = new int[2];
+					mFenLeiBtn.getLocationOnScreen(location);
+					view.Init(getResources().getStringArray(R.array.diqu_dianshiju_fenlei),
+							getResources().getStringArray(R.array.leixing_dianshiju_fenlei), 
+							getResources().getStringArray(R.array.shijian_dianying_fenlei), 
+							location[0], 
+							location[1],
+							mFenLeiBtn.getWidth(), 
+							mFenLeiBtn.getHeight(),
+							new OnResultListener() {
+								
+								@Override
+								public void onResult(View v, boolean isBack, String[] choice) {
+									// TODO Auto-generated method stub
+									if(isBack){
+										popupWindow.dismiss();
+									}else{
+										if(popupWindow.isShowing()){
+											popupWindow.dismiss();
+											Toast.makeText(ShowTVActivity.this, "selected is " + choice[0] + ","+choice[1]+","+choice[2], Toast.LENGTH_LONG).show();
+											filterVideoSource(choice);
+											
+										}
+									}
+								}
+							});
+					view.setLayoutParams(new LayoutParams(0,0));
+//					popupWindow = new PopupWindow(view, getWindowManager().getDefaultDisplay().getWidth(),
+//							getWindowManager().getDefaultDisplay().getHeight(), true);
+					int width = topLinearLayout.getWidth();
+					int height = topLinearLayout.getHeight();
+					popupWindow = new PopupWindow(view,width,height, true);
+				}
+				popupWindow.showAtLocation(mFenLeiBtn.getRootView(), Gravity.LEFT | Gravity.BOTTOM, 0, 0);
+			}
+			
+			if(activeView.getId() == v.getId()) {
+				
+				return;
+			}
+			
+			switch (v.getId()) {
+			case R.id.ll_daluju:
+				currentItemPostion = 0;
+				String url1 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
+				REBO_DALU_DIANSHI, 1 + "", 50 + "");
+				app.MyToast(aq.getContext(),"ll_daluju");
+				if(dalujuList != null && !dalujuList.isEmpty()) {
+					
+					notifyAdapter(dalujuList);
+				} else {
+					
+					getUnQuanbuData(url1);
+				}
+				break;
+			case R.id.ll_gangju:
+				currentItemPostion = 1;
+				String url2 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
+				REBO_GANGJU_DIANSHI, 1 + "", 50 + "");
+				app.MyToast(aq.getContext(),"ll_gangju");
+				if(ganjuList != null && !ganjuList.isEmpty()) {
+					
+					notifyAdapter(ganjuList);
+				} else {
+					
+					getUnQuanbuData(url2);
+				}
+				break;
+			case R.id.ll_taiju:
+				currentItemPostion = 2;
+				String url3 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
+				REBO_TAIJU_DIANSHI, 1 + "", 50 + "");
+				app.MyToast(aq.getContext(),"ll_taiju");
+				if(taijuList != null && !taijuList.isEmpty()) {
+					
+					notifyAdapter(taijuList);
+				} else {
+					
+					getUnQuanbuData(url3);
+				}
+				break;
+			case R.id.ll_hanju:
+				currentItemPostion = 3;
+				String url4 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
+				REBO_HANJU_DIANSHI, 1 + "", 50 + "");
+				app.MyToast(aq.getContext(),"ll_hanju");
+				if(hanjuList != null && !hanjuList.isEmpty()) {
+					
+					notifyAdapter(hanjuList);
+				} else {
+					
+					getUnQuanbuData(url4);
+				}
+				break;
+			case R.id.ll_meiju:
+				currentItemPostion = 4;
+				String url5 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
+				REBO_OUMEI_DIANSHI, 1 + "", 50 + "");
+				app.MyToast(aq.getContext(),"ll_meiju");
+				if(meijuList != null && !meijuList.isEmpty()) {
+					
+					notifyAdapter(meijuList);
+				} else {
+					
+					getUnQuanbuData(url5);
+				}
+				break;
+			case R.id.ll_riju:
+				currentItemPostion = 5;
+				String url6 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
+				REBO_RIJU_DIANSHI, 1 + "", 50 + "");
+				app.MyToast(aq.getContext(),"ll_riju");
+				if(rijuList != null && !rijuList.isEmpty()) {
+					
+					notifyAdapter(rijuList);
+				} else {
+					
+					getUnQuanbuData(url6);
+				}
+				break;
+//			case R.id.bt_quanbufenlei:
+//				String url7 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
+//						TV_DIANSHIJU, 1 + "", 50 + "");
+//				app.MyToast(aq.getContext(),"bt_quanbufenlei");
+//				getInitDataServiceData(url7,false);
+//				break;
+			case R.id.bt_zuijinguankan:
+				startActivity(new Intent(this, HistoryActivity.class));
+				break;
+			case R.id.bt_zhuijushoucang:
+				startActivity(new Intent(this, ShowShoucangHistoryActivity.class));
+				break;
+			default:
+				break;
+			}
+		 
+			View tempView = ItemStateUtils.viewToActive(getApplicationContext(), v,
+					activeView);
+
+			if (tempView != null) {
+
+				activeView = tempView;
+			}
+
+		beforeGvView = null;
 	}
 
-	private void initView() {
-
+	@Override
+	protected void initView() {
+		// TODO Auto-generated method stub
+		
 		searchEt = (EditText) findViewById(R.id.et_search);
 		mFenLeiBtn = (Button) findViewById(R.id.bt_quanbufenlei);
 		dinashijuGv = (MyMovieGridView) findViewById(R.id.gv_movie_show);
@@ -175,33 +324,12 @@ View.OnFocusChangeListener {
 		topLinearLayout = (LinearLayout) findViewById(R.id.ll_show_movie_top);
 		
 		dinashijuGv.setNextFocusLeftId(R.id.bt_quanbufenlei);
-
-		addListener();
-
-	}
-	
-	private void initState() {
-		
-		activeView = mFenLeiBtn;
-		
-		ItemStateUtils.buttonToActiveState(getApplicationContext(), mFenLeiBtn);
-		
-		ItemStateUtils.setItemPadding(dalujuLL);
-		ItemStateUtils.setItemPadding(ganjuLL);
-		ItemStateUtils.setItemPadding(taijuLL);
-		ItemStateUtils.setItemPadding(hanjuLL);
-		ItemStateUtils.setItemPadding(meijuLL);
-		ItemStateUtils.setItemPadding(rijuLL);
-		ItemStateUtils.setItemPadding(zuijinguankanBtn);
-		ItemStateUtils.setItemPadding(zhuijushoucangBtn);
-		ItemStateUtils.setItemPadding(mFenLeiBtn);
-
 	}
 
-	private int beforepostion = 0;
-
-	private void addListener() {
-
+	@Override
+	protected void initViewListener() {
+		// TODO Auto-generated method stub
+		
 		dalujuLL.setOnKeyListener(this);
 		ganjuLL.setOnKeyListener(this);
 		taijuLL.setOnKeyListener(this);
@@ -448,8 +576,57 @@ View.OnFocusChangeListener {
 			}
 		});
 	}
-	
-	private void  initFirstFloatView() {
+
+	@Override
+	protected void initViewState() {
+		// TODO Auto-generated method stub
+		
+		activeView = mFenLeiBtn;
+		
+		ItemStateUtils.buttonToActiveState(getApplicationContext(), mFenLeiBtn);
+		
+		ItemStateUtils.setItemPadding(dalujuLL);
+		ItemStateUtils.setItemPadding(ganjuLL);
+		ItemStateUtils.setItemPadding(taijuLL);
+		ItemStateUtils.setItemPadding(hanjuLL);
+		ItemStateUtils.setItemPadding(meijuLL);
+		ItemStateUtils.setItemPadding(rijuLL);
+		ItemStateUtils.setItemPadding(zuijinguankanBtn);
+		ItemStateUtils.setItemPadding(zhuijushoucangBtn);
+		ItemStateUtils.setItemPadding(mFenLeiBtn);
+	}
+
+	@Override
+	protected void clearLists() {
+		// TODO Auto-generated method stub
+		
+		StatisticsUtils.clearList(quanbufenleiList);
+		StatisticsUtils.clearList(dalujuList);
+		StatisticsUtils.clearList(ganjuList);
+		StatisticsUtils.clearList(taijuList);
+		StatisticsUtils.clearList(hanjuList);
+		StatisticsUtils.clearList(meijuList);
+		StatisticsUtils.clearList(rijuList);
+		StatisticsUtils.clearList(recommendList);
+		StatisticsUtils.clearList(filterList);
+	}
+
+	@Override
+	protected void initLists() {
+		// TODO Auto-generated method stub
+		
+		lists = new List[6];
+		lists[0] = dalujuList;
+		lists[1] = ganjuList;
+		lists[2] = taijuList;
+		lists[3] = hanjuList;
+		lists[4] = meijuList;
+		lists[5] = rijuList;
+	}
+
+	@Override
+	protected void initFirstFloatView() {
+		// TODO Auto-generated method stub
 		
 		firstFloatView.setX(0);
 		firstFloatView.setY(0);
@@ -491,8 +668,10 @@ View.OnFocusChangeListener {
 		ItemStateUtils.floatViewInAnimaiton(getApplicationContext(),
 				firstFloatView);
 	}
-	
-	private void notifyAdapter(List<MovieItemData> list) {
+
+	@Override
+	protected void notifyAdapter(List<MovieItemData> list) {
+		// TODO Auto-generated method stub
 		
 		int height=dianShijuAdapter.getHeight()
 				,width = dianShijuAdapter.getWidth();
@@ -514,203 +693,10 @@ View.OnFocusChangeListener {
 		isSelectedItem = false;
 		dinashijuGv.requestFocus();
 	}
-	
-	@Override
-	public void onFocusChange(View v, boolean hasFocus) {
-		// TODO Auto-generated method stub
-
-		if (hasFocus) {
-
-			ItemStateUtils.viewToFocusState(getApplicationContext(), v);
-		} else {
-
-			ItemStateUtils.viewToOutFocusState(getApplicationContext(), v,
-					activeView);
-		}
-
-	}
 
 	@Override
-	public boolean onKey(View v, int keyCode, KeyEvent event) {
+	protected void filterVideoSource(String[] choice) {
 		// TODO Auto-generated method stub
-		int action = event.getAction();
-		return false;
-	}
-
-	@Override
-	protected void onDestroy() {
-		// TODO Auto-generated method stub
-		if (aq != null)
-			aq.dismiss();
-		
-		clearAllList();
-		super.onDestroy();
-	}
-	
-	private PopupWindow popupWindow;
-
-	@Override
-	public void onClick(View v) {
-		// TODO Auto-generated method stub
-		 Log.i("Yangzhg", "onClick");
-
-			if(activeView == null) {
-				
-				activeView = mFenLeiBtn;
-			}
-			
-			if(v.getId() == R.id.bt_quanbufenlei) {
-				
-				if(popupWindow ==null){
-					NavigateView view = new NavigateView(this);
-					int [] location = new int[2];
-					mFenLeiBtn.getLocationOnScreen(location);
-					view.Init(getResources().getStringArray(R.array.diqu_dianshiju_fenlei),
-							getResources().getStringArray(R.array.leixing_dianshiju_fenlei), 
-							getResources().getStringArray(R.array.shijian_dianying_fenlei), 
-							location[0], 
-							location[1],
-							mFenLeiBtn.getWidth(), 
-							mFenLeiBtn.getHeight(),
-							new OnResultListener() {
-								
-								@Override
-								public void onResult(View v, boolean isBack, String[] choice) {
-									// TODO Auto-generated method stub
-									if(isBack){
-										popupWindow.dismiss();
-									}else{
-										if(popupWindow.isShowing()){
-											popupWindow.dismiss();
-											Toast.makeText(ShowTVActivity.this, "selected is " + choice[0] + ","+choice[1]+","+choice[2], Toast.LENGTH_LONG).show();
-											filterSource(choice);
-											
-										}
-									}
-								}
-							});
-					view.setLayoutParams(new LayoutParams(0,0));
-//					popupWindow = new PopupWindow(view, getWindowManager().getDefaultDisplay().getWidth(),
-//							getWindowManager().getDefaultDisplay().getHeight(), true);
-					int width = topLinearLayout.getWidth();
-					int height = topLinearLayout.getHeight();
-					popupWindow = new PopupWindow(view,width,height, true);
-				}
-				popupWindow.showAtLocation(mFenLeiBtn.getRootView(), Gravity.LEFT | Gravity.BOTTOM, 0, 0);
-			}
-			
-			if(activeView.getId() == v.getId()) {
-				
-				return;
-			}
-			
-			switch (v.getId()) {
-			case R.id.ll_daluju:
-				currentItemPostion = 0;
-				String url1 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
-				REBO_DALU_DIANSHI, 1 + "", 50 + "");
-				app.MyToast(aq.getContext(),"ll_daluju");
-				if(dalujuList != null && !dalujuList.isEmpty()) {
-					
-					notifyAdapter(dalujuList);
-				} else {
-					
-					getUnQuanbuData(url1);
-				}
-				break;
-			case R.id.ll_gangju:
-				currentItemPostion = 1;
-				String url2 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
-				REBO_GANGJU_DIANSHI, 1 + "", 50 + "");
-				app.MyToast(aq.getContext(),"ll_gangju");
-				if(ganjuList != null && !ganjuList.isEmpty()) {
-					
-					notifyAdapter(ganjuList);
-				} else {
-					
-					getUnQuanbuData(url2);
-				}
-				break;
-			case R.id.ll_taiju:
-				currentItemPostion = 2;
-				String url3 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
-				REBO_TAIJU_DIANSHI, 1 + "", 50 + "");
-				app.MyToast(aq.getContext(),"ll_taiju");
-				if(taijuList != null && !taijuList.isEmpty()) {
-					
-					notifyAdapter(taijuList);
-				} else {
-					
-					getUnQuanbuData(url3);
-				}
-				break;
-			case R.id.ll_hanju:
-				currentItemPostion = 3;
-				String url4 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
-				REBO_HANJU_DIANSHI, 1 + "", 50 + "");
-				app.MyToast(aq.getContext(),"ll_hanju");
-				if(hanjuList != null && !hanjuList.isEmpty()) {
-					
-					notifyAdapter(hanjuList);
-				} else {
-					
-					getUnQuanbuData(url4);
-				}
-				break;
-			case R.id.ll_meiju:
-				currentItemPostion = 4;
-				String url5 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
-				REBO_OUMEI_DIANSHI, 1 + "", 50 + "");
-				app.MyToast(aq.getContext(),"ll_meiju");
-				if(meijuList != null && !meijuList.isEmpty()) {
-					
-					notifyAdapter(meijuList);
-				} else {
-					
-					getUnQuanbuData(url5);
-				}
-				break;
-			case R.id.ll_riju:
-				currentItemPostion = 5;
-				String url6 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
-				REBO_RIJU_DIANSHI, 1 + "", 50 + "");
-				app.MyToast(aq.getContext(),"ll_riju");
-				if(rijuList != null && !rijuList.isEmpty()) {
-					
-					notifyAdapter(rijuList);
-				} else {
-					
-					getUnQuanbuData(url6);
-				}
-				break;
-//			case R.id.bt_quanbufenlei:
-//				String url7 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
-//						TV_DIANSHIJU, 1 + "", 50 + "");
-//				app.MyToast(aq.getContext(),"bt_quanbufenlei");
-//				getInitDataServiceData(url7,false);
-//				break;
-			case R.id.bt_zuijinguankan:
-				startActivity(new Intent(this, HistoryActivity.class));
-				break;
-			case R.id.bt_zhuijushoucang:
-				startActivity(new Intent(this, ShowShoucangHistoryActivity.class));
-				break;
-			default:
-				break;
-			}
-		 
-			View tempView = ItemStateUtils.viewToActive(getApplicationContext(), v,
-					activeView);
-
-			if (tempView != null) {
-
-				activeView = tempView;
-			}
-
-		beforeGvView = null;
-	}
-	
-	private void filterSource (String[] choice) {
 		
 		String quanbu = getString(R.string.quanbu_name);
 		String quanbufenlei = getString(R.string.quanbufenlei_name);
@@ -743,32 +729,45 @@ View.OnFocusChangeListener {
 		Log.i(TAG, "POP--->URL:" + url);
 		getFilterData(url);
 	}
-	
-	private void getQuan10Data(String url) {
-		currentItemPostion = -1;
-		
-		getServiceData(url, "initQuan10Data");
-	}
-	
-	private void getQuanbuData(String url) {
-		currentItemPostion = -1;
-		
-		getServiceData(url, "initQuanbuData");
-	}
-	
-	private void getUnQuanbuData(String url) {
-		
-		getServiceData(url, "initUnQuanbu");
-	}
-	
-	private void getFilterData(String url) {
-		currentItemPostion = -1;
-		
-		getServiceData(url, "initFiler");
-	}
-	
-	private void getServiceData(String url, String interfaceName) {
 
+	@Override
+	protected void getQuan10Data(String url) {
+		// TODO Auto-generated method stub
+		
+		currentItemPostion = -1;
+		
+		getServiceData(url, "initQuan10ServiceData");
+	}
+
+	@Override
+	protected void getQuanbuData(String url) {
+		// TODO Auto-generated method stub
+		
+		currentItemPostion = -1;
+		
+		getServiceData(url, "initQuanbuServiceData");
+	}
+
+	@Override
+	protected void getUnQuanbuData(String url) {
+		// TODO Auto-generated method stub
+		
+		getServiceData(url, "initUnQuanbuServiceData");
+	}
+
+	@Override
+	protected void getFilterData(String url) {
+		// TODO Auto-generated method stub
+		
+		currentItemPostion = -1;
+		
+		getServiceData(url, "initFilerServiceData");
+	}
+
+	@Override
+	protected void getServiceData(String url, String interfaceName) {
+		// TODO Auto-generated method stub
+		
 		firstFloatView.setVisibility(View.INVISIBLE);
 		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
 		// cb.url(url).type(JSONObject.class).weakHandler(this, "initData");
@@ -777,9 +776,12 @@ View.OnFocusChangeListener {
 		cb.SetHeader(app.getHeaders());
 		aq.ajax(cb);
 	}
-	
-	public void initQuan10Data(String url, JSONObject json, AjaxStatus status) {
 
+	@Override
+	public void initQuan10ServiceData(String url, JSONObject json,
+			AjaxStatus status) {
+		// TODO Auto-generated method stub
+		
 		if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
 
 			app.MyToast(aq.getContext(),
@@ -802,9 +804,12 @@ View.OnFocusChangeListener {
 			e.printStackTrace();
 		}
 	}
-	
-	public void initQuanbuData(String url, JSONObject json, AjaxStatus status) {
 
+	@Override
+	public void initQuanbuServiceData(String url, JSONObject json,
+			AjaxStatus status) {
+		// TODO Auto-generated method stub
+		
 		if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
 
 			app.MyToast(aq.getContext(),
@@ -849,9 +854,12 @@ View.OnFocusChangeListener {
 			e.printStackTrace();
 		}
 	}
-	
-	public void initUnQuanbu(String url, JSONObject json, AjaxStatus status) {
 
+	@Override
+	public void initUnQuanbuServiceData(String url, JSONObject json,
+			AjaxStatus status) {
+		// TODO Auto-generated method stub
+		
 		if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
 
 			app.MyToast(aq.getContext(),
@@ -881,8 +889,11 @@ View.OnFocusChangeListener {
 			e.printStackTrace();
 		}
 	}
-	
-	public void initFiler(String url, JSONObject json, AjaxStatus status) {
+
+	@Override
+	public void initFilerServiceData(String url, JSONObject json,
+			AjaxStatus status) {
+		// TODO Auto-generated method stub
 		
 		if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
 

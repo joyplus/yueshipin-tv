@@ -41,9 +41,7 @@ import com.joyplus.tv.utils.ItemStateUtils;
 import com.joyplus.tv.utils.JieMianConstant;
 import com.joyplus.tv.utils.MyKeyEventKey;
 
-public class ShowDongManActivity extends Activity implements
-		View.OnKeyListener, MyKeyEventKey, BangDanKey, JieMianConstant,
-		View.OnClickListener, View.OnFocusChangeListener {
+public class ShowDongManActivity extends AbstractShowActivity{
 
 	private String TAG = "ShowDongManActivity";
 	private AQuery aq;
@@ -92,6 +90,7 @@ public class ShowDongManActivity extends Activity implements
 	private boolean isShoucangDataExist = true;// 测试 时 为true
 	
 	private int currentItemPostion = -1;
+	private int beforepostion = 0;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -101,12 +100,8 @@ public class ShowDongManActivity extends Activity implements
 
 		app = (App) getApplication();
 		aq = new AQuery(this);
-
-		initView();
-		initState();
 		
-		clearList();
-		initLists();
+		initActivity();
 
 		dongmanAdapter = new DianShijuAdapter(this);
 		dongmanGv.setAdapter(dongmanAdapter);
@@ -115,45 +110,218 @@ public class ShowDongManActivity extends Activity implements
 				TV_DONGMAN, 1 + "", 50 + "");
 		getQuan10Data(url2);
 
-//		String urlNormal = StatisticsUtils.getFilterURL(FILTER_URL, 1 + "",
-//				10 + "", DONGMAN_TYPE);
-
 		dongmanGv.setSelected(true);
 		dongmanGv.requestFocus();
 		dongmanGv.setSelection(0);
 	}
-	
-	private void clearList() {
 
-		StatisticsUtils.clearList(quanbufenleiList);
-		StatisticsUtils.clearList(qinziList);
-		StatisticsUtils.clearList(rexueList);
-		StatisticsUtils.clearList(hougongList);
-		StatisticsUtils.clearList(tuiliList);
-		StatisticsUtils.clearList(jizhanList);
-		StatisticsUtils.clearList(gaoxiaoList);
-		StatisticsUtils.clearList(recommendList);
+	@Override
+	public void onFocusChange(View v, boolean hasFocus) {
+		// TODO Auto-generated method stub
+
+		if (hasFocus) {
+
+			ItemStateUtils.viewToFocusState(getApplicationContext(), v);
+		} else {
+
+			ItemStateUtils.viewToOutFocusState(getApplicationContext(), v,
+					activeView);
+		}
+
 	}
-	
-	private void clearAllList() {
+
+	@Override
+	public boolean onKey(View v, int keyCode, KeyEvent event) {
+		// TODO Auto-generated method stub
+		int action = event.getAction();
+		return false;
+	}
+
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		if (aq != null)
+			aq.dismiss();
+		clearLists();
+		super.onDestroy();
+	}
+
+	private PopupWindow popupWindow;
+
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+		Log.i("Yangzhg", "onClick");
+
+		if (activeView == null) {
+
+			activeView = mFenLeiBtn;
+		}
+
+		if (v.getId() == R.id.bt_quanbufenlei) {
+
+			if (popupWindow == null) {
+				NavigateView view = new NavigateView(this);
+				int[] location = new int[2];
+				mFenLeiBtn.getLocationOnScreen(location);
+				view.Init(
+						getResources().getStringArray(
+								R.array.diqu_dongman_fenlei),
+						getResources().getStringArray(
+								R.array.leixing_dongman_fenlei),
+						getResources().getStringArray(
+								R.array.shijian_dianying_fenlei), location[0],
+						location[1], mFenLeiBtn.getWidth(), mFenLeiBtn
+								.getHeight(), new OnResultListener() {
+
+							@Override
+							public void onResult(View v, boolean isBack,
+									String[] choice) {
+								// TODO Auto-generated method stub
+								if (isBack) {
+									popupWindow.dismiss();
+								} else {
+									if (popupWindow.isShowing()) {
+										popupWindow.dismiss();
+										Toast.makeText(
+												ShowDongManActivity.this,
+												"selected is " + choice[0]
+														+ "," + choice[1] + ","
+														+ choice[2],
+												Toast.LENGTH_LONG).show();
+										filterVideoSource(choice);
+
+									}
+								}
+							}
+						});
+				view.setLayoutParams(new LayoutParams(0, 0));
+				// popupWindow = new PopupWindow(view,
+				// getWindowManager().getDefaultDisplay().getWidth(),
+				// getWindowManager().getDefaultDisplay().getHeight(), true);
+				int width = topLinearLayout.getWidth();
+				int height = topLinearLayout.getHeight();
+				popupWindow = new PopupWindow(view, width, height, true);
+			}
+			popupWindow.showAtLocation(mFenLeiBtn.getRootView(), Gravity.LEFT
+					| Gravity.BOTTOM, 0, 0);
+		}
+
+		if (activeView.getId() == v.getId()) {
+
+			return;
+		}
+
+		switch (v.getId()) {
+		case R.id.ll_qinzidongman:
+			currentItemPostion = 0;
+			String url1 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL,
+					REBO_QINZI_DONGMAN, 1 + "", 50 + "");
+			app.MyToast(aq.getContext(), "qinzi");
+			if(qinziList != null && !qinziList.isEmpty()) {
+				
+				notifyAdapter(qinziList);
+			} else {
+				
+				getUnQuanbuData(url1);
+			}
+			break;
+		case R.id.ll_rexuedongman:
+			currentItemPostion = 1;
+			String url2 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL,
+					REBO_REXUE_DONGMAN, 1 + "", 50 + "");
+			app.MyToast(aq.getContext(), "ll_rexuedongman");
+			if(rexueList != null && !rexueList.isEmpty()) {
+				
+				notifyAdapter(rexueList);
+			} else {
+				
+				getUnQuanbuData(url2);
+			}
+			break;
+		case R.id.ll_hougongdongman:
+			currentItemPostion = 2;
+			String url3 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL,
+					REBO_HOUGONG_DONGMAN, 1 + "", 50 + "");
+			app.MyToast(aq.getContext(), "ll_hougongdongman");
+			if(hougongList != null && !hougongList.isEmpty()) {
+				
+				notifyAdapter(hougongList);
+			} else {
+				
+				getUnQuanbuData(url3);
+			}
+			break;
+		case R.id.ll_tuilidongman:
+			currentItemPostion = 3;
+			String url4 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL,
+					REBO_TUILI_DONGMAN, 1 + "", 50 + "");
+			app.MyToast(aq.getContext(), "ll_tuilidongman");
+			if(tuiliList != null && !tuiliList.isEmpty()) {
+				
+				notifyAdapter(tuiliList);
+			} else {
+				
+				getUnQuanbuData(url4);
+			}
+			break;
+		case R.id.ll_jizhandongman:
+			currentItemPostion = 4;
+			String url5 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL,
+					REBO_JIZHAN_DONGMAN, 1 + "", 50 + "");
+			app.MyToast(aq.getContext(), "ll_jizhandongman");
+			if(tuiliList != null && !tuiliList.isEmpty()) {
+				
+				notifyAdapter(tuiliList);
+			} else {
+				
+				getUnQuanbuData(url5);
+			}
+			break;
+		case R.id.ll_gaoxiaodongman:
+			currentItemPostion = 5;
+			String url6 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL,
+					REBO_GAOXIAO_DONGMAN, 1 + "", 50 + "");
+			app.MyToast(aq.getContext(), "ll_gaoxiaodongman");
+			if(gaoxiaoList != null && !gaoxiaoList.isEmpty()) {
+				
+				notifyAdapter(gaoxiaoList);
+			} else {
+				
+				getUnQuanbuData(url6);
+			}
+			break;
+//		case R.id.bt_quanbufenlei:
+//			String url7 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL,
+//					TV_DONGMAN, 1 + "", 50 + "");
+//			app.MyToast(aq.getContext(), "bt_quanbufenlei");
+//			getInitDataServiceData(url7, false);
+//			break;
+		case R.id.bt_zuijinguankan:
+			startActivity(new Intent(this, HistoryActivity.class));
+			break;
+		case R.id.bt_zhuijushoucang:
+			startActivity(new Intent(this, ShowShoucangHistoryActivity.class));
+			break;
+		default:
+			break;
+		}
+
+		View tempView = ItemStateUtils.viewToActive(getApplicationContext(), v,
+				activeView);
+
+		if (tempView != null) {
+
+			activeView = tempView;
+		}
+
+		beforeGvView = null;
+	}
+
+	@Override
+	protected void initView() {
+		// TODO Auto-generated method stub
 		
-		clearList();
-		StatisticsUtils.clearList(filterList);
-	}
-	
-	private void initLists() {
-		
-		lists = new List[6];
-		lists[0] = qinziList;
-		lists[1] = rexueList;
-		lists[2] = hougongList;
-		lists[3] = tuiliList;
-		lists[4] = jizhanList;
-		lists[5] = gaoxiaoList;
-	}
-
-	private void initView() {
-
 		searchEt = (EditText) findViewById(R.id.et_search);
 		mFenLeiBtn = (Button) findViewById(R.id.bt_quanbufenlei);
 		dongmanGv = (MyMovieGridView) findViewById(R.id.gv_movie_show);
@@ -179,33 +347,12 @@ public class ShowDongManActivity extends Activity implements
 
 			shouchangTitleLL.setVisibility(View.VISIBLE);
 		}
-
-		addListener();
-
 	}
 
-	private void initState() {
-
-		activeView = mFenLeiBtn;
-
-		ItemStateUtils.buttonToActiveState(getApplicationContext(), mFenLeiBtn);
-
-		ItemStateUtils.setItemPadding(qinziLL);
-		ItemStateUtils.setItemPadding(rexueLL);
-		ItemStateUtils.setItemPadding(hougongLL);
-		ItemStateUtils.setItemPadding(tuiliLL);
-		ItemStateUtils.setItemPadding(jizhanLL);
-		ItemStateUtils.setItemPadding(gaoxiaoLL);
-		ItemStateUtils.setItemPadding(zuijinguankanBtn);
-		ItemStateUtils.setItemPadding(zhuijushoucangBtn);
-		ItemStateUtils.setItemPadding(mFenLeiBtn);
-
-	}
-
-	private int beforepostion = 0;
-
-	private void addListener() {
-
+	@Override
+	protected void initViewListener() {
+		// TODO Auto-generated method stub
+		
 		qinziLL.setOnKeyListener(this);
 		rexueLL.setOnKeyListener(this);
 		hougongLL.setOnKeyListener(this);
@@ -458,9 +605,58 @@ public class ShowDongManActivity extends Activity implements
 			}
 		});
 	}
-	
-	private void initFirstFloatView() {
 
+	@Override
+	protected void initViewState() {
+		// TODO Auto-generated method stub
+		
+		activeView = mFenLeiBtn;
+
+		ItemStateUtils.buttonToActiveState(getApplicationContext(), mFenLeiBtn);
+
+		ItemStateUtils.setItemPadding(qinziLL);
+		ItemStateUtils.setItemPadding(rexueLL);
+		ItemStateUtils.setItemPadding(hougongLL);
+		ItemStateUtils.setItemPadding(tuiliLL);
+		ItemStateUtils.setItemPadding(jizhanLL);
+		ItemStateUtils.setItemPadding(gaoxiaoLL);
+		ItemStateUtils.setItemPadding(zuijinguankanBtn);
+		ItemStateUtils.setItemPadding(zhuijushoucangBtn);
+		ItemStateUtils.setItemPadding(mFenLeiBtn);
+	}
+
+	@Override
+	protected void clearLists() {
+		// TODO Auto-generated method stub
+		
+		StatisticsUtils.clearList(quanbufenleiList);
+		StatisticsUtils.clearList(qinziList);
+		StatisticsUtils.clearList(rexueList);
+		StatisticsUtils.clearList(hougongList);
+		StatisticsUtils.clearList(tuiliList);
+		StatisticsUtils.clearList(jizhanList);
+		StatisticsUtils.clearList(gaoxiaoList);
+		StatisticsUtils.clearList(recommendList);
+		StatisticsUtils.clearList(filterList);
+	}
+
+	@Override
+	protected void initLists() {
+		// TODO Auto-generated method stub
+		
+		lists = new List[6];
+		lists[0] = qinziList;
+		lists[1] = rexueList;
+		lists[2] = hougongList;
+		lists[3] = tuiliList;
+		lists[4] = jizhanList;
+		lists[5] = gaoxiaoList;
+	}
+
+	@Override
+	protected void initFirstFloatView() {
+		// TODO Auto-generated method stub
+		
 		firstFloatView.setX(0);
 		firstFloatView.setY(0);
 		firstFloatView.setLayoutParams(new FrameLayout.LayoutParams(popWidth,
@@ -509,8 +705,10 @@ public class ShowDongManActivity extends Activity implements
 		ItemStateUtils.floatViewInAnimaiton(getApplicationContext(),
 				firstFloatView);
 	}
-	
-	private void notifyAdapter(List<MovieItemData> list) {
+
+	@Override
+	protected void notifyAdapter(List<MovieItemData> list) {
+		// TODO Auto-generated method stub
 		
 		int height=dongmanAdapter.getHeight()
 				,width = dongmanAdapter.getWidth();
@@ -534,209 +732,8 @@ public class ShowDongManActivity extends Activity implements
 	}
 
 	@Override
-	public void onFocusChange(View v, boolean hasFocus) {
+	protected void filterVideoSource(String[] choice) {
 		// TODO Auto-generated method stub
-
-		if (hasFocus) {
-
-			ItemStateUtils.viewToFocusState(getApplicationContext(), v);
-		} else {
-
-			ItemStateUtils.viewToOutFocusState(getApplicationContext(), v,
-					activeView);
-		}
-
-	}
-
-	@Override
-	public boolean onKey(View v, int keyCode, KeyEvent event) {
-		// TODO Auto-generated method stub
-		int action = event.getAction();
-		return false;
-	}
-
-	@Override
-	protected void onDestroy() {
-		// TODO Auto-generated method stub
-		if (aq != null)
-			aq.dismiss();
-		clearAllList();
-		super.onDestroy();
-	}
-
-	private PopupWindow popupWindow;
-
-	@Override
-	public void onClick(View v) {
-		// TODO Auto-generated method stub
-		Log.i("Yangzhg", "onClick");
-
-		if (activeView == null) {
-
-			activeView = mFenLeiBtn;
-		}
-
-		if (v.getId() == R.id.bt_quanbufenlei) {
-
-			if (popupWindow == null) {
-				NavigateView view = new NavigateView(this);
-				int[] location = new int[2];
-				mFenLeiBtn.getLocationOnScreen(location);
-				view.Init(
-						getResources().getStringArray(
-								R.array.diqu_dongman_fenlei),
-						getResources().getStringArray(
-								R.array.leixing_dongman_fenlei),
-						getResources().getStringArray(
-								R.array.shijian_dianying_fenlei), location[0],
-						location[1], mFenLeiBtn.getWidth(), mFenLeiBtn
-								.getHeight(), new OnResultListener() {
-
-							@Override
-							public void onResult(View v, boolean isBack,
-									String[] choice) {
-								// TODO Auto-generated method stub
-								if (isBack) {
-									popupWindow.dismiss();
-								} else {
-									if (popupWindow.isShowing()) {
-										popupWindow.dismiss();
-										Toast.makeText(
-												ShowDongManActivity.this,
-												"selected is " + choice[0]
-														+ "," + choice[1] + ","
-														+ choice[2],
-												Toast.LENGTH_LONG).show();
-										filterSource(choice);
-
-									}
-								}
-							}
-						});
-				view.setLayoutParams(new LayoutParams(0, 0));
-				// popupWindow = new PopupWindow(view,
-				// getWindowManager().getDefaultDisplay().getWidth(),
-				// getWindowManager().getDefaultDisplay().getHeight(), true);
-				int width = topLinearLayout.getWidth();
-				int height = topLinearLayout.getHeight();
-				popupWindow = new PopupWindow(view, width, height, true);
-			}
-			popupWindow.showAtLocation(mFenLeiBtn.getRootView(), Gravity.LEFT
-					| Gravity.BOTTOM, 0, 0);
-		}
-
-		if (activeView.getId() == v.getId()) {
-
-			return;
-		}
-
-		switch (v.getId()) {
-		case R.id.ll_qinzidongman:
-			currentItemPostion = 0;
-			String url1 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL,
-					REBO_QINZI_DONGMAN, 1 + "", 50 + "");
-			app.MyToast(aq.getContext(), "qinzi");
-			if(qinziList != null && !qinziList.isEmpty()) {
-				
-				notifyAdapter(qinziList);
-			} else {
-				
-				getUnQuanbuData(url1);
-			}
-			break;
-		case R.id.ll_rexuedongman:
-			currentItemPostion = 1;
-			String url2 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL,
-					REBO_REXUE_DONGMAN, 1 + "", 50 + "");
-			app.MyToast(aq.getContext(), "ll_rexuedongman");
-			if(rexueList != null && !rexueList.isEmpty()) {
-				
-				notifyAdapter(rexueList);
-			} else {
-				
-				getUnQuanbuData(url2);
-			}
-			break;
-		case R.id.ll_hougongdongman:
-			currentItemPostion = 2;
-			String url3 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL,
-					REBO_HOUGONG_DONGMAN, 1 + "", 50 + "");
-			app.MyToast(aq.getContext(), "ll_hougongdongman");
-			if(hougongList != null && !hougongList.isEmpty()) {
-				
-				notifyAdapter(hougongList);
-			} else {
-				
-				getUnQuanbuData(url3);
-			}
-			break;
-		case R.id.ll_tuilidongman:
-			currentItemPostion = 3;
-			String url4 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL,
-					REBO_TUILI_DONGMAN, 1 + "", 50 + "");
-			app.MyToast(aq.getContext(), "ll_tuilidongman");
-			if(tuiliList != null && !tuiliList.isEmpty()) {
-				
-				notifyAdapter(tuiliList);
-			} else {
-				
-				getUnQuanbuData(url4);
-			}
-			break;
-		case R.id.ll_jizhandongman:
-			currentItemPostion = 4;
-			String url5 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL,
-					REBO_JIZHAN_DONGMAN, 1 + "", 50 + "");
-			app.MyToast(aq.getContext(), "ll_jizhandongman");
-			if(tuiliList != null && !tuiliList.isEmpty()) {
-				
-				notifyAdapter(tuiliList);
-			} else {
-				
-				getUnQuanbuData(url5);
-			}
-			break;
-		case R.id.ll_gaoxiaodongman:
-			currentItemPostion = 5;
-			String url6 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL,
-					REBO_GAOXIAO_DONGMAN, 1 + "", 50 + "");
-			app.MyToast(aq.getContext(), "ll_gaoxiaodongman");
-			if(gaoxiaoList != null && !gaoxiaoList.isEmpty()) {
-				
-				notifyAdapter(gaoxiaoList);
-			} else {
-				
-				getUnQuanbuData(url6);
-			}
-			break;
-//		case R.id.bt_quanbufenlei:
-//			String url7 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL,
-//					TV_DONGMAN, 1 + "", 50 + "");
-//			app.MyToast(aq.getContext(), "bt_quanbufenlei");
-//			getInitDataServiceData(url7, false);
-//			break;
-		case R.id.bt_zuijinguankan:
-			startActivity(new Intent(this, HistoryActivity.class));
-			break;
-		case R.id.bt_zhuijushoucang:
-			startActivity(new Intent(this, ShowShoucangHistoryActivity.class));
-			break;
-		default:
-			break;
-		}
-
-		View tempView = ItemStateUtils.viewToActive(getApplicationContext(), v,
-				activeView);
-
-		if (tempView != null) {
-
-			activeView = tempView;
-		}
-
-		beforeGvView = null;
-	}
-	
-	private void filterSource (String[] choice) {
 		
 		String quanbu = getString(R.string.quanbu_name);
 		String quanbufenlei = getString(R.string.quanbufenlei_name);
@@ -769,32 +766,45 @@ public class ShowDongManActivity extends Activity implements
 		Log.i(TAG, "POP--->URL:" + url);
 		getFilterData(url);
 	}
-	
-	private void getQuan10Data(String url) {
-		currentItemPostion = -1;
-		
-		getServiceData(url, "initQuan10Data");
-	}
-	
-	private void getQuanbuData(String url) {
-		currentItemPostion = -1;
-		
-		getServiceData(url, "initQuanbuData");
-	}
-	
-	private void getUnQuanbuData(String url) {
-		
-		getServiceData(url, "initUnQuanbu");
-	}
-	
-	private void getFilterData(String url) {
-		currentItemPostion = -1;
-		
-		getServiceData(url, "initFiler");
-	}
-	
-	private void getServiceData(String url, String interfaceName) {
 
+	@Override
+	protected void getQuan10Data(String url) {
+		// TODO Auto-generated method stub
+		
+		currentItemPostion = -1;
+		
+		getServiceData(url, "initQuan10ServiceData");
+	}
+
+	@Override
+	protected void getQuanbuData(String url) {
+		// TODO Auto-generated method stub
+		
+		currentItemPostion = -1;
+		
+		getServiceData(url, "initQuanbuServiceData");
+	}
+
+	@Override
+	protected void getUnQuanbuData(String url) {
+		// TODO Auto-generated method stub
+		
+		getServiceData(url, "initUnQuanbuServiceData");
+	}
+
+	@Override
+	protected void getFilterData(String url) {
+		// TODO Auto-generated method stub
+		
+		currentItemPostion = -1;
+		
+		getServiceData(url, "initFilerServiceData");
+	}
+
+	@Override
+	protected void getServiceData(String url, String interfaceName) {
+		// TODO Auto-generated method stub
+		
 		firstFloatView.setVisibility(View.INVISIBLE);
 		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
 		// cb.url(url).type(JSONObject.class).weakHandler(this, "initData");
@@ -803,34 +813,12 @@ public class ShowDongManActivity extends Activity implements
 		cb.SetHeader(app.getHeaders());
 		aq.ajax(cb);
 	}
-	
-	public void initQuan10Data(String url, JSONObject json, AjaxStatus status) {
 
-		if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
-
-			app.MyToast(aq.getContext(),
-					getResources().getString(R.string.networknotwork));
-			return;
-		}
-		try {
-			Log.d(TAG, json.toString());
-			recommendList = StatisticsUtils.returnTVBangDanList_TVJson(json.toString());
-			String urlNormal = StatisticsUtils.getFilterURL(FILTER_URL, 1+"", 10+"", DONGMAN_TYPE);
-			getQuanbuData(urlNormal);
-		} catch (JsonParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	public void initQuanbuData(String url, JSONObject json, AjaxStatus status) {
-
+	@Override
+	public void initQuanbuServiceData(String url, JSONObject json,
+			AjaxStatus status) {
+		// TODO Auto-generated method stub
+		
 		if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
 
 			app.MyToast(aq.getContext(),
@@ -875,9 +863,12 @@ public class ShowDongManActivity extends Activity implements
 			e.printStackTrace();
 		}
 	}
-	
-	public void initUnQuanbu(String url, JSONObject json, AjaxStatus status) {
 
+	@Override
+	public void initUnQuanbuServiceData(String url, JSONObject json,
+			AjaxStatus status) {
+		// TODO Auto-generated method stub
+		
 		if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
 
 			app.MyToast(aq.getContext(),
@@ -907,8 +898,11 @@ public class ShowDongManActivity extends Activity implements
 			e.printStackTrace();
 		}
 	}
-	
-	public void initFiler(String url, JSONObject json, AjaxStatus status) {
+
+	@Override
+	public void initFilerServiceData(String url, JSONObject json,
+			AjaxStatus status) {
+		// TODO Auto-generated method stub
 		
 		if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
 
@@ -923,6 +917,34 @@ public class ShowDongManActivity extends Activity implements
 			filterList = StatisticsUtils.returnFilterMovieSearch_TVJson(json.toString());
 			
 			notifyAdapter(filterList);
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void initQuan10ServiceData(String url, JSONObject json,
+			AjaxStatus status) {
+		// TODO Auto-generated method stub
+		
+		if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
+
+			app.MyToast(aq.getContext(),
+					getResources().getString(R.string.networknotwork));
+			return;
+		}
+		try {
+			Log.d(TAG, json.toString());
+			recommendList = StatisticsUtils.returnTVBangDanList_TVJson(json.toString());
+			String urlNormal = StatisticsUtils.getFilterURL(FILTER_URL, 1+"", 10+"", DONGMAN_TYPE);
+			getQuanbuData(urlNormal);
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
