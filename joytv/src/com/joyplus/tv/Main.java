@@ -578,8 +578,10 @@ public void CheckBandResult(String url, JSONObject json, AjaxStatus status){
 		try {
 			String result = json.getString("status");
 			if("1".equals(result)){
+				app.SaveUserData("isBand","1");
 				updateUser(app.getUserData("phoneID"));
 			}else{
+				app.SaveUserData("isBand","0");
 				handler.sendEmptyMessage(MESSAGE_UPDATEUSER);
 			}
 		} catch (JSONException e1) {
