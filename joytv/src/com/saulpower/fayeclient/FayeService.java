@@ -259,7 +259,7 @@ public class FayeService extends Service implements FayeListener{
 				}
 				if(app.getUserData("isBand") != null&&"1".equals(app.getUserData("isBand"))&&phoneID.equals(json.get("user_id"))){
 					Intent intent = new Intent(Constant.VIDEOPLAYERCMD);
-					intent.putExtra("cmd", "403");
+					intent.putExtra("cmd", 403);
 					intent.putExtra("content", "");
 					intent.putExtra("prod_url", json.getString("prod_url"));
 					sendBroadcast(intent);
@@ -272,7 +272,7 @@ public class FayeService extends Service implements FayeListener{
 				}
 				if(app.getUserData("isBand") != null&&"1".equals(app.getUserData("isBand"))&&phoneID.equals(json.get("user_id"))){
 					Intent intent = new Intent(Constant.VIDEOPLAYERCMD);
-					intent.putExtra("cmd", "405");
+					intent.putExtra("cmd", 405);
 					intent.putExtra("content", "");
 					intent.putExtra("prod_url", json.getString("prod_url"));
 					sendBroadcast(intent);
@@ -285,7 +285,7 @@ public class FayeService extends Service implements FayeListener{
 				}
 				if(app.getUserData("isBand") != null&&"1".equals(app.getUserData("isBand"))&&phoneID.equals(json.get("user_id"))){
 					Intent intent = new Intent(Constant.VIDEOPLAYERCMD);
-					intent.putExtra("cmd", "407");
+					intent.putExtra("cmd", 407);
 					intent.putExtra("content", json.getString("prod_time"));
 					intent.putExtra("prod_url", json.getString("prod_url"));
 					sendBroadcast(intent);

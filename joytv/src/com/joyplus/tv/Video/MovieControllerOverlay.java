@@ -222,6 +222,46 @@ public class MovieControllerOverlay extends FrameLayout implements
 		hide();
 	}
 
+	public void returnShowView() {
+		mCurrentPlayData = app.getCurrentPlayData();
+		if (mCurrentPlayData.prod_type == 2 || mCurrentPlayData.prod_type == 3) {
+			rootView.findViewById(R.id.imageControl_t).setVisibility(
+					View.VISIBLE);
+			rootView.findViewById(R.id.imageControl_b).setVisibility(
+					View.VISIBLE);
+			rootView.findViewById(R.id.imageControl_l).setVisibility(
+					View.VISIBLE);
+			rootView.findViewById(R.id.imageControl_r).setVisibility(
+					View.VISIBLE);
+			if (mCurrentPlayData.CurrentIndex > 0)
+				rootView.findViewById(R.id.imageControl_r).setEnabled(true);
+			else
+				rootView.findViewById(R.id.imageControl_r).setEnabled(false);
+
+			ReturnProgramView m_ReturnProgramView = app.get_ReturnProgramView();
+			if (m_ReturnProgramView != null) {
+				switch (mCurrentPlayData.prod_type) {
+				case 2:
+					if (mCurrentPlayData.CurrentIndex < m_ReturnProgramView.tv.episodes.length)
+						rootView.findViewById(R.id.imageControl_l).setEnabled(
+								true);
+					else
+						rootView.findViewById(R.id.imageControl_l).setEnabled(
+								false);
+					break;
+				case 3:
+					if (mCurrentPlayData.CurrentIndex < m_ReturnProgramView.show.episodes.length)
+						rootView.findViewById(R.id.imageControl_l).setEnabled(
+								true);
+					else
+						rootView.findViewById(R.id.imageControl_l).setEnabled(
+								false);
+					break;
+				}
+			}
+		}
+	}
+
 	public void reViewControlView() {
 		mCurrentPlayData = app.getCurrentPlayData();
 		if (mCurrentPlayData != null) {
@@ -249,53 +289,60 @@ public class MovieControllerOverlay extends FrameLayout implements
 				rootView.findViewById(R.id.textView6).setVisibility(View.GONE);
 				rootView.findViewById(R.id.textView7).setVisibility(View.GONE);
 			}
-			if (mCurrentPlayData.prod_type == 2
-					|| mCurrentPlayData.prod_type == 3) {
-				rootView.findViewById(R.id.imageControl_t).setVisibility(
-						View.VISIBLE);
-				rootView.findViewById(R.id.imageControl_b).setVisibility(
-						View.VISIBLE);
-				rootView.findViewById(R.id.imageControl_l).setVisibility(
-						View.VISIBLE);
-				rootView.findViewById(R.id.imageControl_r).setVisibility(
-						View.VISIBLE);
-				if (mCurrentPlayData.CurrentIndex > 0)
-					rootView.findViewById(R.id.imageControl_r).setEnabled(true);
-				else
-					rootView.findViewById(R.id.imageControl_r)
-							.setEnabled(false);
-				
-				ReturnProgramView m_ReturnProgramView = app.get_ReturnProgramView();
-				if (m_ReturnProgramView != null) {
-					switch (mCurrentPlayData.prod_type) {
-					case 2:
-						if (mCurrentPlayData.CurrentIndex < m_ReturnProgramView.tv.episodes.length)
-							rootView.findViewById(R.id.imageControl_l)
-									.setEnabled(true);
-						else
-							rootView.findViewById(R.id.imageControl_l)
-									.setEnabled(false);
-						break;
-					case 3:
-						if (mCurrentPlayData.CurrentIndex < m_ReturnProgramView.show.episodes.length)
-							rootView.findViewById(R.id.imageControl_l)
-									.setEnabled(true);
-						else
-							rootView.findViewById(R.id.imageControl_l)
-									.setEnabled(false);
-						break;
-					}
-				}
-			} else if (mCurrentPlayData.prod_type == 1) {
-				rootView.findViewById(R.id.imageControl_t).setVisibility(
-						View.GONE);
-				rootView.findViewById(R.id.imageControl_b).setVisibility(
-						View.GONE);
-				rootView.findViewById(R.id.imageControl_l).setVisibility(
-						View.GONE);
-				rootView.findViewById(R.id.imageControl_r).setVisibility(
-						View.GONE);
-			}
+			rootView.findViewById(R.id.imageControl_t).setVisibility(View.GONE);
+			rootView.findViewById(R.id.imageControl_b).setVisibility(View.GONE);
+			rootView.findViewById(R.id.imageControl_l).setVisibility(View.GONE);
+			rootView.findViewById(R.id.imageControl_r).setVisibility(View.GONE);
+			// if (mCurrentPlayData.prod_type == 2
+			// || mCurrentPlayData.prod_type == 3) {
+			// rootView.findViewById(R.id.imageControl_t).setVisibility(
+			// View.VISIBLE);
+			// rootView.findViewById(R.id.imageControl_b).setVisibility(
+			// View.VISIBLE);
+			// rootView.findViewById(R.id.imageControl_l).setVisibility(
+			// View.VISIBLE);
+			// rootView.findViewById(R.id.imageControl_r).setVisibility(
+			// View.VISIBLE);
+			// if (mCurrentPlayData.CurrentIndex > 0)
+			// rootView.findViewById(R.id.imageControl_r).setEnabled(true);
+			// else
+			// rootView.findViewById(R.id.imageControl_r)
+			// .setEnabled(false);
+			//
+			// ReturnProgramView m_ReturnProgramView =
+			// app.get_ReturnProgramView();
+			// if (m_ReturnProgramView != null) {
+			// switch (mCurrentPlayData.prod_type) {
+			// case 2:
+			// if (mCurrentPlayData.CurrentIndex <
+			// m_ReturnProgramView.tv.episodes.length)
+			// rootView.findViewById(R.id.imageControl_l)
+			// .setEnabled(true);
+			// else
+			// rootView.findViewById(R.id.imageControl_l)
+			// .setEnabled(false);
+			// break;
+			// case 3:
+			// if (mCurrentPlayData.CurrentIndex <
+			// m_ReturnProgramView.show.episodes.length)
+			// rootView.findViewById(R.id.imageControl_l)
+			// .setEnabled(true);
+			// else
+			// rootView.findViewById(R.id.imageControl_l)
+			// .setEnabled(false);
+			// break;
+			// }
+			// }
+			// } else if (mCurrentPlayData.prod_type == 1) {
+			// rootView.findViewById(R.id.imageControl_t).setVisibility(
+			// View.GONE);
+			// rootView.findViewById(R.id.imageControl_b).setVisibility(
+			// View.GONE);
+			// rootView.findViewById(R.id.imageControl_l).setVisibility(
+			// View.GONE);
+			// rootView.findViewById(R.id.imageControl_r).setVisibility(
+			// View.GONE);
+			// }
 
 		}
 
@@ -688,7 +735,6 @@ public class MovieControllerOverlay extends FrameLayout implements
 		} else {
 			mLayoutControl.setVisibility(View.GONE);
 		}
-
 		// mLayoutControl
 		// .setImageResource(state == State.PAUSED ?
 		// R.drawable.player_s_ic_vidcontrol_play

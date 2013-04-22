@@ -622,10 +622,8 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 					pauseVideo();
 					mController.focusLayoutControl(0);
 					CURRENT_KEY = 0;
-				} else {
-					playVideo();
-				}
-				return true;
+					return true;
+				} 
 			}
 
 		}
