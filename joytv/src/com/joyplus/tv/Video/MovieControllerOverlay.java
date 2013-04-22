@@ -49,6 +49,7 @@ import com.joyplus.tv.App;
 import com.joyplus.tv.R;
 import com.joyplus.tv.StatisticsUtils;
 import com.joyplus.tv.Adapters.CurrentPlayData;
+import com.joyplus.tv.Service.Return.ReturnProgramView;
 import com.joyplus.tv.ui.ArcView;
 
 /**
@@ -213,6 +214,7 @@ public class MovieControllerOverlay extends FrameLayout implements
 		hideAnimation.setAnimationListener(this);
 
 		mCurrentPlayData = app.getCurrentPlayData();
+		ReturnProgramView m_ReturnProgramView = app.get_ReturnProgramView();
 		if (mCurrentPlayData != null) {
 			if (mCurrentPlayData.prod_time != 0L) {
 				TextView mViewTime = (TextView) rootView
@@ -237,6 +239,34 @@ public class MovieControllerOverlay extends FrameLayout implements
 				rootView.findViewById(R.id.textView6).setVisibility(View.GONE);
 				rootView.findViewById(R.id.textView7).setVisibility(View.GONE);
 			}
+			if(mCurrentPlayData.prod_type ==2 && mCurrentPlayData.prod_type ==3){
+				if(mCurrentPlayData.CurrentIndex >0)
+					rootView.findViewById(R.id.imageControl_l).setEnabled(true);
+				else 
+					rootView.findViewById(R.id.imageControl_l).setEnabled(false);
+
+				switch (mCurrentPlayData.prod_type) {
+				case 2:
+					if(mCurrentPlayData.CurrentIndex < m_ReturnProgramView.tv.episodes.length)
+						rootView.findViewById(R.id.imageControl_r).setEnabled(true);
+					else
+						rootView.findViewById(R.id.imageControl_r).setEnabled(false);
+					break;
+				case 3:
+					if(mCurrentPlayData.CurrentIndex < m_ReturnProgramView.show.episodes.length)
+						rootView.findViewById(R.id.imageControl_r).setEnabled(true);
+					else
+						rootView.findViewById(R.id.imageControl_r).setEnabled(false);
+					break;
+				}
+			}
+			else{
+				rootView.findViewById(R.id.imageControl_t).setVisibility(View.INVISIBLE);
+				rootView.findViewById(R.id.imageControl_b).setVisibility(View.INVISIBLE);
+				rootView.findViewById(R.id.imageControl_l).setVisibility(View.INVISIBLE);
+				rootView.findViewById(R.id.imageControl_r).setVisibility(View.INVISIBLE);
+			}
+			
 			// prod_id= mCurrentPlayData.prod_id;
 			// prod_name = mCurrentPlayData.prod_name;
 			// prod_url = mCurrentPlayData.prod_url;
