@@ -136,7 +136,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 	private int mVideoWidth = 0;
 	private int mVideoHeight = 0;
 	private int mPreparedPercent = 0;
-	
+
 	private String PROD_SOURCE = null;
 
 	// private final Runnable mPlayingChecker = new Runnable() {
@@ -195,6 +195,8 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		mVideoView.setOnCompletionListener(this);
 		mVideoView.setOnPreparedListener(this);
 
+		PROD_SOURCE = mUri.toString();
+
 		mVideoView.setVideoURI(mUri);
 		mVideoView.setOnTouchListener(new View.OnTouchListener() {
 			public boolean onTouch(View v, MotionEvent event) {
@@ -248,8 +250,8 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		mVideoView.setVideoURI(mUri);
 		if (Time > 0)
 			mVideoView.seekTo(Time);
-//		mVideoView.start();
-//		mHasPaused = false;
+		// mVideoView.start();
+		// mHasPaused = false;
 		startVideo();
 
 	}
@@ -359,6 +361,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 	public int getCurrentPositon() {
 		return mVideoView.getCurrentPosition();
 	}
+
 	public String getCurrentUrl() {
 		return PROD_SOURCE;
 	}
@@ -618,12 +621,15 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 				mController.HidingTimes();
 				return true;
 			}else if (prod_type != 1 ) {
+				mController.returnShowView();
 				if (mVideoView.isPlaying()) {
 					pauseVideo();
 					mController.focusLayoutControl(0);
 					CURRENT_KEY = 0;
+				} else {
+					playVideo();
+				}
 					return true;
-				} 
 			}
 
 		}
@@ -823,7 +829,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 
 				textView1.setText(StatisticsUtils.formatDuration(progress));
 				textView1.setVisibility(View.VISIBLE);
-				if (totalTime >0 && totalTime - progress <= 10000
+				if (totalTime > 0 && totalTime - progress <= 10000
 						&& (prod_type == 2 || prod_type == 3)) {
 
 					OnContinueVideoPlay();
@@ -832,7 +838,6 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 			// TODO Auto-generated method stub
 		}
 
-	
 		@Override
 		public void onStartTrackingTouch(SeekBar seekBar) {
 			// TODO Auto-generated method stub
@@ -919,17 +924,18 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		}
 		return true;
 	}
+
 	public void OnPreVideoPlay() {
 		App app = (App) this.mContext.getApplicationContext();
 		CurrentPlayData mCurrentPlayData = app.getCurrentPlayData();
 		ReturnProgramView m_ReturnProgramView = app.get_ReturnProgramView();
 		if (mCurrentPlayData != null && m_ReturnProgramView != null) {
-			String[] video_index = { "letv",
-				"fengxing","qiyi","youku","sinahd","sohu","56","qq","pptv","m1905"};
-			int index = mCurrentPlayData.CurrentIndex-1;
-			mCurrentPlayData.CurrentIndex -=1;
+			String[] video_index = { "letv", "fengxing", "qiyi", "youku",
+					"sinahd", "sohu", "56", "qq", "pptv", "m1905" };
+			int index = mCurrentPlayData.CurrentIndex - 1;
+			mCurrentPlayData.CurrentIndex -= 1;
 			app.setCurrentPlayData(mCurrentPlayData);
-			
+
 			String title = null;
 
 			switch (mCurrentPlayData.prod_type) {
@@ -937,25 +943,32 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 				break;
 			case 2:
 				if (m_ReturnProgramView.tv.episodes[index].down_urls != null) {
-//					videoSourceSort(m_ReturnProgramView.tv.episodes[index].down_urls);
+					// videoSourceSort(m_ReturnProgramView.tv.episodes[index].down_urls);
 					for (int i = 0; i < m_ReturnProgramView.tv.episodes[index].down_urls.length; i++) {
 
 						for (int j = 0; j < video_index.length; j++) {
 							if (PROD_SOURCE == null
 									&& m_ReturnProgramView.tv.episodes[index].down_urls[i].source
-											.trim()
-											.equalsIgnoreCase(
+											.trim().equalsIgnoreCase(
 													video_index[j])) {
 
 								String name = m_ReturnProgramView.tv.name;
-								title = "第" + m_ReturnProgramView.tv.episodes[index].name + "集";
-								mTextViewProdName.setText(name+title);
-								PROD_SOURCE = GetSource(m_ReturnProgramView,mCurrentPlayData.prod_type,index, i);
-								
-								//yangzhg
-								StatisticsUtils.StatisticsClicksShow(new AQuery(mContext),
-										app, m_ReturnProgramView.tv.id, m_ReturnProgramView.tv.name,
-										m_ReturnProgramView.tv.episodes[index].name, 2);
+								title = "第"
+										+ m_ReturnProgramView.tv.episodes[index].name
+										+ "集";
+								mTextViewProdName.setText(name + title);
+								PROD_SOURCE = GetSource(m_ReturnProgramView,
+										mCurrentPlayData.prod_type, index, i);
+
+								// yangzhg
+								StatisticsUtils
+										.StatisticsClicksShow(
+												new AQuery(mContext),
+												app,
+												m_ReturnProgramView.tv.id,
+												m_ReturnProgramView.tv.name,
+												m_ReturnProgramView.tv.episodes[index].name,
+												2);
 
 								break;
 							}
@@ -965,26 +978,31 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 				break;
 			case 3:
 				if (m_ReturnProgramView.show.episodes[index].down_urls != null) {
-//					videoSourceSort(m_ReturnProgramView.show.episodes[index].down_urls);
+					// videoSourceSort(m_ReturnProgramView.show.episodes[index].down_urls);
 					for (int i = 0; i < m_ReturnProgramView.show.episodes[index].down_urls.length; i++) {
 						for (int j = 0; j < video_index.length; j++) {
 
 							if (PROD_SOURCE == null
 									&& m_ReturnProgramView.show.episodes[index].down_urls[i].source
-											.trim()
-											.equalsIgnoreCase(
+											.trim().equalsIgnoreCase(
 													video_index[j])) {
 
 								String name = m_ReturnProgramView.show.name;
 								title = m_ReturnProgramView.show.episodes[index].name;
 
-								mTextViewProdName.setText(name+title);
-								PROD_SOURCE =  GetSource(m_ReturnProgramView,mCurrentPlayData.prod_type,index, i);
-								
-								//yangzhg
-								StatisticsUtils.StatisticsClicksShow(new AQuery(mContext),
-										app, m_ReturnProgramView.show.id, m_ReturnProgramView.show.name,
-										m_ReturnProgramView.show.episodes[index].name, 3);
+								mTextViewProdName.setText(name + title);
+								PROD_SOURCE = GetSource(m_ReturnProgramView,
+										mCurrentPlayData.prod_type, index, i);
+
+								// yangzhg
+								StatisticsUtils
+										.StatisticsClicksShow(
+												new AQuery(mContext),
+												app,
+												m_ReturnProgramView.show.id,
+												m_ReturnProgramView.show.name,
+												m_ReturnProgramView.show.episodes[index].name,
+												3);
 
 								break;
 							}
@@ -995,22 +1013,22 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 				break;
 			}
 
-//			ShowQuality();
+			// ShowQuality();
 
 			if (PROD_SOURCE != null)
 				setVideoURI(Uri.parse(PROD_SOURCE), 0);
 		}
 	}
+
 	public void OnContinueVideoPlay() {
 		App app = (App) this.mContext.getApplicationContext();
 		CurrentPlayData mCurrentPlayData = app.getCurrentPlayData();
 		ReturnProgramView m_ReturnProgramView = app.get_ReturnProgramView();
 		if (mCurrentPlayData != null && m_ReturnProgramView != null) {
-			int index = mCurrentPlayData.CurrentIndex+1;
-			mCurrentPlayData.CurrentIndex +=1;
+			int index = mCurrentPlayData.CurrentIndex + 1;
+			mCurrentPlayData.CurrentIndex += 1;
 			app.setCurrentPlayData(mCurrentPlayData);
-			
-			
+
 			String title = null;
 
 			switch (mCurrentPlayData.prod_type) {
@@ -1018,25 +1036,32 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 				break;
 			case 2:
 				if (m_ReturnProgramView.tv.episodes[index].down_urls != null) {
-//					videoSourceSort(m_ReturnProgramView.tv.episodes[index].down_urls);
+					// videoSourceSort(m_ReturnProgramView.tv.episodes[index].down_urls);
 					for (int i = 0; i < m_ReturnProgramView.tv.episodes[index].down_urls.length; i++) {
 
 						for (int j = 0; j < Constant.video_index.length; j++) {
 							if (PROD_SOURCE == null
 									&& m_ReturnProgramView.tv.episodes[index].down_urls[i].source
-											.trim()
-											.equalsIgnoreCase(
+											.trim().equalsIgnoreCase(
 													Constant.video_index[j])) {
 
 								String name = m_ReturnProgramView.tv.name;
-								title = "第" + m_ReturnProgramView.tv.episodes[index].name + "集";
-								mTextViewProdName.setText(name+title);
-								PROD_SOURCE = GetSource(m_ReturnProgramView,mCurrentPlayData.prod_type,index, i);
-								
-								//yangzhg
-								StatisticsUtils.StatisticsClicksShow(new AQuery(mContext),
-										app, m_ReturnProgramView.tv.id, m_ReturnProgramView.tv.name,
-										m_ReturnProgramView.tv.episodes[index].name, 2);
+								title = "第"
+										+ m_ReturnProgramView.tv.episodes[index].name
+										+ "集";
+								mTextViewProdName.setText(name + title);
+								PROD_SOURCE = GetSource(m_ReturnProgramView,
+										mCurrentPlayData.prod_type, index, i);
+
+								// yangzhg
+								StatisticsUtils
+										.StatisticsClicksShow(
+												new AQuery(mContext),
+												app,
+												m_ReturnProgramView.tv.id,
+												m_ReturnProgramView.tv.name,
+												m_ReturnProgramView.tv.episodes[index].name,
+												2);
 
 								break;
 							}
@@ -1046,26 +1071,31 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 				break;
 			case 3:
 				if (m_ReturnProgramView.show.episodes[index].down_urls != null) {
-//					videoSourceSort(m_ReturnProgramView.show.episodes[index].down_urls);
+					// videoSourceSort(m_ReturnProgramView.show.episodes[index].down_urls);
 					for (int i = 0; i < m_ReturnProgramView.show.episodes[index].down_urls.length; i++) {
 						for (int j = 0; j < Constant.video_index.length; j++) {
 
 							if (PROD_SOURCE == null
 									&& m_ReturnProgramView.show.episodes[index].down_urls[i].source
-											.trim()
-											.equalsIgnoreCase(
+											.trim().equalsIgnoreCase(
 													Constant.video_index[j])) {
 
 								String name = m_ReturnProgramView.show.name;
 								title = m_ReturnProgramView.show.episodes[index].name;
 
-								mTextViewProdName.setText(name+title);
-								PROD_SOURCE =  GetSource(m_ReturnProgramView,mCurrentPlayData.prod_type,index, i);
-								
-								//yangzhg
-								StatisticsUtils.StatisticsClicksShow(new AQuery(mContext),
-										app, m_ReturnProgramView.show.id, m_ReturnProgramView.show.name,
-										m_ReturnProgramView.show.episodes[index].name, 3);
+								mTextViewProdName.setText(name + title);
+								PROD_SOURCE = GetSource(m_ReturnProgramView,
+										mCurrentPlayData.prod_type, index, i);
+
+								// yangzhg
+								StatisticsUtils
+										.StatisticsClicksShow(
+												new AQuery(mContext),
+												app,
+												m_ReturnProgramView.show.id,
+												m_ReturnProgramView.show.name,
+												m_ReturnProgramView.show.episodes[index].name,
+												3);
 
 								break;
 							}
@@ -1076,12 +1106,13 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 				break;
 			}
 
-//			ShowQuality();
+			// ShowQuality();
 
 			if (PROD_SOURCE != null)
 				setVideoURI(Uri.parse(PROD_SOURCE), 0);
 		}
 	}
+
 	private boolean CheckUrl(String srcUrl) {
 
 		// url本身不正常 直接返回
@@ -1096,60 +1127,60 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 			}
 		}
 		return true;
-//		// 模拟火狐ios发用请求 使用userAgent
-//		AndroidHttpClient mAndroidHttpClient = AndroidHttpClient
-//				.newInstance(Constant.USER_AGENT_IOS);
-//
-//		HttpParams httpParams = mAndroidHttpClient.getParams();
-//		// 连接时间最长5秒，可以更改
-//		HttpConnectionParams.setConnectionTimeout(httpParams, 2000);
-//
-//		try {
-//			URL url = new URL(srcUrl);
-//			HttpGet mHttpGet = new HttpGet(url.toURI());
-//			HttpResponse response = mAndroidHttpClient.execute(mHttpGet);
-//
-//			// 限定连接时间
-//
-//			StatusLine statusLine = response.getStatusLine();
-//			int status = statusLine.getStatusCode();
-//
-//			Header headertop = response.getFirstHeader("Content-Type");// 拿到重新定位后的header
-//			String type = headertop.getValue().toLowerCase();// 从header重新取出信息
-//			Header header_length = response.getFirstHeader("Content-Length");
-//			String lengthStr = header_length.getValue();
-//			Log.i(TAG, "HTTP STATUS : " + status);
-//			
-//			mAndroidHttpClient.close();
-//			
-//			if(status != 404){
-//				return true;
-//			}else{
-//				return false;
-//			}
-//
-//		} catch (Exception e) {
-//			// TODO Auto-generated catch block
-//			if (BuildConfig.DEBUG)
-//				Log.i(TAG, "NOT OK" + e);
-//			// 如果地址真的不存在，那就往里面加NULL字符串
-//			mAndroidHttpClient.close();
-//			e.printStackTrace();
-//			return false;
-//		}
+		// // 模拟火狐ios发用请求 使用userAgent
+		// AndroidHttpClient mAndroidHttpClient = AndroidHttpClient
+		// .newInstance(Constant.USER_AGENT_IOS);
+		//
+		// HttpParams httpParams = mAndroidHttpClient.getParams();
+		// // 连接时间最长5秒，可以更改
+		// HttpConnectionParams.setConnectionTimeout(httpParams, 2000);
+		//
+		// try {
+		// URL url = new URL(srcUrl);
+		// HttpGet mHttpGet = new HttpGet(url.toURI());
+		// HttpResponse response = mAndroidHttpClient.execute(mHttpGet);
+		//
+		// // 限定连接时间
+		//
+		// StatusLine statusLine = response.getStatusLine();
+		// int status = statusLine.getStatusCode();
+		//
+		// Header headertop = response.getFirstHeader("Content-Type");//
+		// 拿到重新定位后的header
+		// String type = headertop.getValue().toLowerCase();// 从header重新取出信息
+		// Header header_length = response.getFirstHeader("Content-Length");
+		// String lengthStr = header_length.getValue();
+		// Log.i(TAG, "HTTP STATUS : " + status);
+		//
+		// mAndroidHttpClient.close();
+		//
+		// if(status != 404){
+		// return true;
+		// }else{
+		// return false;
+		// }
+		//
+		// } catch (Exception e) {
+		// // TODO Auto-generated catch block
+		// if (BuildConfig.DEBUG)
+		// Log.i(TAG, "NOT OK" + e);
+		// // 如果地址真的不存在，那就往里面加NULL字符串
+		// mAndroidHttpClient.close();
+		// e.printStackTrace();
+		// return false;
+		// }
 	}
 
-	private String GetSource(ReturnProgramView m_ReturnProgramView,int CurrentCategory,int proi_index, int sourceIndex) {
+	private String GetSource(ReturnProgramView m_ReturnProgramView,
+			int CurrentCategory, int proi_index, int sourceIndex) {
 		switch (CurrentCategory) {
 		case 1:
 			break;
 		case 2:
 			for (int k = 0; k < m_ReturnProgramView.tv.episodes[proi_index].down_urls[sourceIndex].urls.length; k++) {
 				ReturnProgramView.DOWN_URLS.URLS CurrentURLS = m_ReturnProgramView.tv.episodes[proi_index].down_urls[sourceIndex].urls[k];
-				if (CurrentURLS != null
-						&& CurrentURLS.url != null
-						&& CheckUrl(
-								CurrentURLS.url.trim())) {
+				if (CurrentURLS != null && CurrentURLS.url != null
+						&& CheckUrl(CurrentURLS.url.trim())) {
 					for (int i = 0; i < Constant.quality_index.length; i++) {
 						if (PROD_SOURCE == null
 								&& CurrentURLS.type.trim().equalsIgnoreCase(
@@ -1166,10 +1197,8 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		case 3:
 			for (int k = 0; k < m_ReturnProgramView.show.episodes[proi_index].down_urls[sourceIndex].urls.length; k++) {
 				ReturnProgramView.DOWN_URLS.URLS CurrentURLS = m_ReturnProgramView.show.episodes[proi_index].down_urls[sourceIndex].urls[k];
-				if (CurrentURLS != null
-						&& CurrentURLS.url != null
-						&& CheckUrl(
-								CurrentURLS.url.trim())) {
+				if (CurrentURLS != null && CurrentURLS.url != null
+						&& CheckUrl(CurrentURLS.url.trim())) {
 					for (int i = 0; i < Constant.quality_index.length; i++) {
 						if (PROD_SOURCE == null
 								&& CurrentURLS.type.trim().equalsIgnoreCase(
@@ -1189,53 +1218,53 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		return PROD_SOURCE;
 
 	}
-//	// 给片源赋权值
-//	public void videoSourceSort(DOWN_URLS[] down_urls) {
-//		if (down_urls != null) {
-//			for (int j = 0; j < down_urls.length; j++) {
-//				if (down_urls[j].source.equalsIgnoreCase("letv")) {
-//					down_urls[j].index = 0;
-//				} else if (down_urls[j].source.equalsIgnoreCase("fengxing")) {
-//					down_urls[j].index = 1;
-//				} else if (down_urls[j].source.equalsIgnoreCase("qiyi")) {
-//					down_urls[j].index = 2;
-//				} else if (down_urls[j].source.equalsIgnoreCase("youku")) {
-//					down_urls[j].index = 3;
-//				} else if (down_urls[j].source.equalsIgnoreCase("sinahd")) {
-//					down_urls[j].index = 4;
-//				} else if (down_urls[j].source.equalsIgnoreCase("sohu")) {
-//					down_urls[j].index = 5;
-//				} else if (down_urls[j].source.equalsIgnoreCase("56")) {
-//					down_urls[j].index = 6;
-//				} else if (down_urls[j].source.equalsIgnoreCase("qq")) {
-//					down_urls[j].index = 7;
-//				} else if (down_urls[j].source.equalsIgnoreCase("pptv")) {
-//					down_urls[j].index = 8;
-//				} else if (down_urls[j].source.equalsIgnoreCase("m1905")) {
-//					down_urls[j].index = 9;
-//				}
-//			}
-//			if (down_urls.length > 1) {
-//				Arrays.sort(down_urls, new EComparatorIndex());
-//			}
-//		}
-//	}
-//
-//	// 将片源排序
-//	class EComparatorIndex implements Comparator {
-//
-//		@Override
-//		public int compare(Object first, Object second) {
-//			// TODO Auto-generated method stub
-//			int first_name = ((DOWN_URLS) first).index;
-//			int second_name = ((DOWN_URLS) second).index;
-//			if (first_name - second_name < 0) {
-//				return -1;
-//			} else {
-//				return 1;
-//			}
-//		}
-//	}
+	// // 给片源赋权值
+	// public void videoSourceSort(DOWN_URLS[] down_urls) {
+	// if (down_urls != null) {
+	// for (int j = 0; j < down_urls.length; j++) {
+	// if (down_urls[j].source.equalsIgnoreCase("letv")) {
+	// down_urls[j].index = 0;
+	// } else if (down_urls[j].source.equalsIgnoreCase("fengxing")) {
+	// down_urls[j].index = 1;
+	// } else if (down_urls[j].source.equalsIgnoreCase("qiyi")) {
+	// down_urls[j].index = 2;
+	// } else if (down_urls[j].source.equalsIgnoreCase("youku")) {
+	// down_urls[j].index = 3;
+	// } else if (down_urls[j].source.equalsIgnoreCase("sinahd")) {
+	// down_urls[j].index = 4;
+	// } else if (down_urls[j].source.equalsIgnoreCase("sohu")) {
+	// down_urls[j].index = 5;
+	// } else if (down_urls[j].source.equalsIgnoreCase("56")) {
+	// down_urls[j].index = 6;
+	// } else if (down_urls[j].source.equalsIgnoreCase("qq")) {
+	// down_urls[j].index = 7;
+	// } else if (down_urls[j].source.equalsIgnoreCase("pptv")) {
+	// down_urls[j].index = 8;
+	// } else if (down_urls[j].source.equalsIgnoreCase("m1905")) {
+	// down_urls[j].index = 9;
+	// }
+	// }
+	// if (down_urls.length > 1) {
+	// Arrays.sort(down_urls, new EComparatorIndex());
+	// }
+	// }
+	// }
+	//
+	// // 将片源排序
+	// class EComparatorIndex implements Comparator {
+	//
+	// @Override
+	// public int compare(Object first, Object second) {
+	// // TODO Auto-generated method stub
+	// int first_name = ((DOWN_URLS) first).index;
+	// int second_name = ((DOWN_URLS) second).index;
+	// if (first_name - second_name < 0) {
+	// return -1;
+	// } else {
+	// return 1;
+	// }
+	// }
+	// }
 
 }
 

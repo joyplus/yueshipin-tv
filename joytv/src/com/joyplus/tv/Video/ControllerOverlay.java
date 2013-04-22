@@ -88,4 +88,6 @@ public interface ControllerOverlay {
 	void focusLayoutControl(int index);
 
 	void setPrepared(boolean mPrepared);
+	
+	void returnShowView();
 }

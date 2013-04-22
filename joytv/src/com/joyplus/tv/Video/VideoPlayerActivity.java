@@ -194,7 +194,7 @@ public class VideoPlayerActivity extends Activity {
 						mPlayer.pauseVideo();
 					break;
 				case 407:
-				case 409:
+				
 					if(Integer.parseInt(mContent) <= mPlayer.getDuration()){
 						if(mPlayer.getDuration() - Integer.parseInt(mContent) >10000 && 
 								mCurrentPlayData.prod_type != 1)// 下一集
@@ -202,6 +202,9 @@ public class VideoPlayerActivity extends Activity {
 						else
 							mPlayer.onSeekMove(Integer.parseInt(mContent));
 					}
+					break;
+				case 409:
+					finish();
 					break;
 				}
 

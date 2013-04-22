@@ -252,6 +252,7 @@ public class FayeService extends Service implements FayeListener{
 					responseObj.put("prod_url", playDate.prod_url);
 					myClient.sendMessage(responseObj);
 				}
+				break;
 			case 403://视频推送后，手机发送播放指令消息
 				phoneID = app.getUserData("phoneID");
 				if(phoneID ==null){
@@ -286,7 +287,21 @@ public class FayeService extends Service implements FayeListener{
 				if(app.getUserData("isBand") != null&&"1".equals(app.getUserData("isBand"))&&phoneID.equals(json.get("user_id"))){
 					Intent intent = new Intent(Constant.VIDEOPLAYERCMD);
 					intent.putExtra("cmd", 407);
-					intent.putExtra("content", json.getString("prod_time"));
+//					intent.putExtra("content", json.getString("prod_time"));
+					intent.putExtra("content", Math.round(Float.valueOf(json.getString("prod_time"))*1000) + "");
+					intent.putExtra("prod_url", json.getString("prod_url"));
+					sendBroadcast(intent);
+				}
+				break;
+			case 409://退出指令消息
+				phoneID = app.getUserData("phoneID");
+				if(phoneID ==null){
+					return;
+				}
+				if(app.getUserData("isBand") != null&&"1".equals(app.getUserData("isBand"))&&phoneID.equals(json.get("user_id"))){
+					Intent intent = new Intent(Constant.VIDEOPLAYERCMD);
+					intent.putExtra("cmd", 409);
+					intent.putExtra("content", "");
 					intent.putExtra("prod_url", json.getString("prod_url"));
 					sendBroadcast(intent);
 				}
