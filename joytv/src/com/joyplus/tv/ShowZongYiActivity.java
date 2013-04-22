@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.json.JSONObject;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,15 +14,13 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -34,19 +31,12 @@ import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joyplus.tv.Adapters.ZongyiAdapter;
-import com.joyplus.tv.Service.Return.ReturnTVBangDanList;
-import com.joyplus.tv.entity.GridViewItemHodler;
 import com.joyplus.tv.entity.MovieItemData;
-import com.joyplus.tv.entity.ReturnFilterMovieSearch;
 import com.joyplus.tv.ui.MyMovieGridView;
 import com.joyplus.tv.ui.NavigateView;
 import com.joyplus.tv.ui.NavigateView.OnResultListener;
-import com.joyplus.tv.utils.BangDanKey;
 import com.joyplus.tv.utils.ItemStateUtils;
-import com.joyplus.tv.utils.JieMianConstant;
-import com.joyplus.tv.utils.MyKeyEventKey;
 
 public class ShowZongYiActivity extends AbstractShowActivity {
 
@@ -95,7 +85,7 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 		
 		initActivity();
 
-		zongyiAdapter = new ZongyiAdapter(this);
+		zongyiAdapter = new ZongyiAdapter(this,aq);
 		dinashijuGv.setAdapter(zongyiAdapter);
 		
 		String url = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
@@ -513,9 +503,11 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 		List<MovieItemData> list = zongyiAdapter.getMovieList();
 		if (list != null && !list.isEmpty()) {
 			
-			aq = new AQuery(firstFloatView);
-			aq.id(R.id.iv_item_layout_haibao).image(list.get(0).getMoviePicUrl(), 
-					true, true,0, R.drawable.post_active);
+			FrameLayout inFrameLayout = (FrameLayout) firstFloatView.findViewById(R.id.inclue_movie_show_item);
+			ImageView haibaoIv = (ImageView) inFrameLayout.findViewById(R.id.iv_item_layout_haibao);
+			aq.id(haibaoIv).image(
+					list.get(0).getMoviePicUrl(), true, true, 0,
+					R.drawable.post_active);
 			movieName.setText(list.get(0).getMovieName());
 			otherInfo.setText(getString(R.string.zongyi_gengxinzhi) + 
 					list.get(0).getMovieCurEpisode());

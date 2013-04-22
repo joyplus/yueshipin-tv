@@ -20,6 +20,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -97,7 +98,7 @@ public class ShowMovieActivity extends AbstractShowActivity {
 		
 		initActivity();//初始化界面
 
-		movieAdapter = new MovieAdapter(this);
+		movieAdapter = new MovieAdapter(this,aq);
 		movieGv.setAdapter(movieAdapter);
 
 		String url2 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL,
@@ -686,8 +687,9 @@ public class ShowMovieActivity extends AbstractShowActivity {
 		List<MovieItemData> list = movieAdapter.getMovieList();
 		if (list != null && !list.isEmpty()) {
 
-			aq = new AQuery(firstFloatView);
-			aq.id(R.id.iv_item_layout_haibao).image(
+			FrameLayout inFrameLayout = (FrameLayout) firstFloatView.findViewById(R.id.inclue_movie_show_item);
+			ImageView haibaoIv = (ImageView) inFrameLayout.findViewById(R.id.iv_item_layout_haibao);
+			aq.id(haibaoIv).image(
 					list.get(0).getMoviePicUrl(), true, true, 0,
 					R.drawable.post_active);
 

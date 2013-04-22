@@ -13,7 +13,8 @@
         android:clickable="true"
         android:focusable="true"
         android:padding="5dp" 
-        android:id="@+id/ll_shoucang_item_1">
+        android:id="@+id/ll_shoucang_item_1"
+        android:visibility="invisible">
 
         <include
             android:id="@+id/inclue_shoucang_item_1"
@@ -30,7 +31,8 @@
         android:clickable="true"
         android:focusable="true"
         android:padding="5dp" 
-        android:id="@+id/ll_shoucang_item_2">
+        android:id="@+id/ll_shoucang_item_2"
+        android:visibility="invisible">
 
         <include
             android:id="@+id/inclue_shoucang_item_2"
@@ -47,7 +49,8 @@
         android:clickable="true"
         android:focusable="true"
         android:padding="5dp"
-        android:id="@+id/ll_shoucang_item_3" >
+        android:id="@+id/ll_shoucang_item_3" 
+        android:visibility="invisible">
 
         <include
             android:id="@+id/inclue_shoucang_item_3"
@@ -64,7 +67,8 @@
         android:clickable="true"
         android:focusable="true"
         android:padding="5dp" 
-        android:id="@+id/ll_shoucang_item_4">
+        android:id="@+id/ll_shoucang_item_4"
+        android:visibility="invisible">
 
         <include
             android:id="@+id/inclue_shoucang_item_4"
@@ -81,11 +85,13 @@
         android:clickable="true"
         android:focusable="true"
         android:padding="5dp" 
-        android:id="@+id/ll_shoucang_item_5">
-        <ImageView 
+        android:id="@+id/ll_shoucang_item_5"
+        android:visibility="invisible">
+        <include
+            android:id="@+id/inclue_shoucang_item_5"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/more_movie"/>
+            layout="@layout/show_item_layout_dianying" />
     </LinearLayout>
 
 </LinearLayout>

@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.json.JSONObject;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,13 +13,11 @@ import android.text.Editable;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.androidquery.AQuery;
@@ -28,17 +25,10 @@ import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joyplus.tv.Adapters.SearchAdapter;
-import com.joyplus.tv.entity.GridViewItemHodler;
 import com.joyplus.tv.entity.MovieItemData;
-import com.joyplus.tv.entity.ReturnFilterMovieSearch;
 import com.joyplus.tv.ui.MyMovieGridView;
-import com.joyplus.tv.utils.BangDanKey;
 import com.joyplus.tv.utils.ItemStateUtils;
-import com.joyplus.tv.utils.JieMianConstant;
-import com.joyplus.tv.utils.MyKeyEventKey;
-import com.umeng.common.net.s;
 
 public class ShowSearchActivity extends AbstractShowActivity {
 
@@ -77,7 +67,7 @@ public class ShowSearchActivity extends AbstractShowActivity {
 		
 		initActivity();
 		
-		searchAdapter = new SearchAdapter(this);
+		searchAdapter = new SearchAdapter(this,aq);
 	}
 	
 	@Override
@@ -400,10 +390,10 @@ public class ShowSearchActivity extends AbstractShowActivity {
 		
 		List<MovieItemData> list = searchAdapter.getMovieList();
 		if (list != null && !list.isEmpty()) {
-			aq = new AQuery(firstFloatView);
-//			aq.id(R.id.iv_item_layout_haibao).image(
-//					movieList.get(0).getMoviePicUrl());
-			aq.id(R.id.iv_item_layout_haibao).image(movieList.get(0).getMoviePicUrl(), 
+
+			FrameLayout inFrameLayout = (FrameLayout) firstFloatView.findViewById(R.id.inclue_movie_show_item);
+			ImageView haibaoIv = (ImageView) inFrameLayout.findViewById(R.id.iv_item_layout_haibao);
+			aq.id(haibaoIv).image(movieList.get(0).getMoviePicUrl(), 
 					true, true,0, R.drawable.post_active);
 			movieName.setText(movieList.get(0).getMovieName());
 			

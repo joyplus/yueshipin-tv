@@ -19,8 +19,10 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,7 +38,7 @@ import com.joyplus.tv.ui.NavigateView;
 import com.joyplus.tv.ui.NavigateView.OnResultListener;
 import com.joyplus.tv.utils.ItemStateUtils;
 
-public class ShowDongManActivity extends AbstractShowActivity{
+public class ShowDongManActivity extends AbstractShowAddShouCangActivity{
 
 	private String TAG = "ShowDongManActivity";
 	private AQuery aq;
@@ -51,7 +53,8 @@ public class ShowDongManActivity extends AbstractShowActivity{
 
 	private LinearLayout topLinearLayout;
 
-	private LinearLayout shouchangTitleLL;
+	private LinearLayout shouchangTitleLL,includeDongman5LL,qitaDongmanLLTitle;
+	private LinearLayout shoucang_5_qitaTitleLL;
 
 	private View firstFloatView;
 
@@ -77,12 +80,13 @@ public class ShowDongManActivity extends AbstractShowActivity{
 	private List<MovieItemData> jizhanList = new ArrayList<MovieItemData>();
 	private List<MovieItemData> gaoxiaoList = new ArrayList<MovieItemData>();
 	private List<MovieItemData> filterList = new ArrayList<MovieItemData>();
+	private List<MovieItemData> shoucangList = new ArrayList<MovieItemData>();
 	
 	private List<MovieItemData>[] lists = null;
 	
 	private DianShijuAdapter dongmanAdapter = null;
 
-	private boolean isShoucangDataExist = true;// 测试 时 为true
+	private boolean isShoucangDataExist = true;// 判断收藏数据是否存在
 	
 	private int currentItemPostion = -1;
 	private int beforepostion = 0;
@@ -104,6 +108,11 @@ public class ShowDongManActivity extends AbstractShowActivity{
 		String url2 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL,
 				TV_DONGMAN, 1 + "", 50 + "");
 		getQuan10Data(url2);
+		
+//		String favUrl = Constant.BASE_URL + "user/favorities" +"?page_num=1&page_size=10&userid="+app.getUserInfo().getUserId();
+//		String favUrl = Constant.BASE_URL + "user/favorities" +"?page_num=1&page_size=10&userid=152151";
+		String favUrl = StatisticsUtils.getUserFavURL(FAV_URL, 1 + "", 10 + "","", app.getUserInfo().getUserId());
+		getShoucangData(favUrl);
 
 		dongmanGv.setSelected(true);
 		dongmanGv.requestFocus();
@@ -335,13 +344,11 @@ public class ShowDongManActivity extends AbstractShowActivity{
 
 		topLinearLayout = (LinearLayout) findViewById(R.id.ll_show_movie_top);
 		shouchangTitleLL = (LinearLayout) findViewById(R.id.ll_shoucanggengxin);
+		includeDongman5LL = (LinearLayout) findViewById(R.id.inclue_shoucang_dongman);
+		qitaDongmanLLTitle = (LinearLayout) findViewById(R.id.ll_qinzidongman);
+		shoucang_5_qitaTitleLL = (LinearLayout) findViewById(R.id.ll_shoucang_5_qita_title);
 
 		dongmanGv.setNextFocusLeftId(R.id.bt_quanbufenlei);
-
-		if (isShoucangDataExist) {
-
-			shouchangTitleLL.setVisibility(View.VISIBLE);
-		}
 	}
 
 	@Override
@@ -633,6 +640,7 @@ public class ShowDongManActivity extends AbstractShowActivity{
 		StatisticsUtils.clearList(gaoxiaoList);
 		StatisticsUtils.clearList(recommendList);
 		StatisticsUtils.clearList(filterList);
+		StatisticsUtils.clearList(shoucangList);
 	}
 
 	@Override
@@ -666,10 +674,9 @@ public class ShowDongManActivity extends AbstractShowActivity{
 		List<MovieItemData> list = dongmanAdapter.getMovieList();
 		if (list != null && !list.isEmpty()) {
 
-			aq = new AQuery(firstFloatView);
-			// aq.id(R.id.iv_item_layout_haibao).image(
-			// movieList.get(0).getMoviePicUrl());
-			aq.id(R.id.iv_item_layout_haibao).image(
+			FrameLayout inFrameLayout = (FrameLayout) firstFloatView.findViewById(R.id.inclue_movie_show_item);
+			ImageView haibaoIv = (ImageView) inFrameLayout.findViewById(R.id.iv_item_layout_haibao);
+			aq.id(haibaoIv).image(
 					list.get(0).getMoviePicUrl(), true, true, 0,
 					R.drawable.post_active);
 			movieName.setText(list.get(0).getMovieName());
@@ -950,6 +957,122 @@ public class ShowDongManActivity extends AbstractShowActivity{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	protected void getShoucangData(String url) {
+		// TODO Auto-generated method stub
+		
+		getServiceData(url, "initShoucangServiceData");
+	}
+
+	@Override
+	public void initShoucangServiceData(String url, JSONObject json,
+			AjaxStatus status) {
+		// TODO Auto-generated method stub
+		
+		if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
+
+			app.MyToast(aq.getContext(),
+					getResources().getString(R.string.networknotwork));
+			return;
+		}
+		try {
+			Log.d(TAG, json.toString());
+			shoucangList = StatisticsUtils.returnUserFavoritiesJson(json.toString());
+			
+			int size = shoucangList.size();
+			initShoucangView(size);
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	protected void initShoucangView(int size) {
+		// TODO Auto-generated method stub
+		//如果size为0，用户没有收藏任何影片
+		if(size <= 0 ) {
+			
+			isShoucangDataExist = false;
+		} else {
+			isShoucangDataExist = true;
+
+			shouchangTitleLL.setVisibility(View.VISIBLE);
+			shoucang_5_qitaTitleLL.setVisibility(View.VISIBLE);
+			
+			int visibleSize = 0;
+			boolean isOver5 = false;
+			
+			if(size > 0 && size <=5) {//如果为0到5,能显示多少，就显示多少
+				
+				visibleSize = size;
+			}else if (size > 5) {//如果大于5，最后一个为显示更多
+				
+				visibleSize = 5;
+				isOver5 = true;
+			}
+			
+			LinearLayout[] lls = new LinearLayout[visibleSize];
+			
+			if(isOver5) {//如果大于5，最后一个为显示更多
+				
+				for (int i = 0; i < lls.length; i++) {
+					
+					lls[i] = (LinearLayout) findViewById(SHOUCANG_ID_5_ITEMS_LL[i]);
+					lls[i].setVisibility(View.VISIBLE);
+					if(i == 4) {
+						
+						LinearLayout nameAndInfoLL = (LinearLayout) lls[i].findViewById(R.id.ll_item_name_otherinfo);
+						nameAndInfoLL.setVisibility(View.INVISIBLE);
+						ImageView iv = (ImageView)lls[i] 
+								.findViewById(R.id.item_layout_dianying_reflact);
+						ImageView haiBaoIv = (ImageView)lls[i] 
+								.findViewById(R.id.iv_item_active_layout_haibao);
+						iv.setVisibility(View.GONE);
+						haiBaoIv.setBackgroundResource(R.drawable.more_movie);
+					} else {
+						
+						TextView movieName = (TextView) lls[i]
+								.findViewById(R.id.tv_item_layout_name);
+						TextView movieScore = (TextView) lls[i]
+								.findViewById(R.id.tv_item_layout_score);
+						movieName.setText(shoucangList.get(i).getMovieName());
+						movieScore.setText(shoucangList.get(i).getMovieScore());
+					}
+					
+				}
+				
+			} else {//如果为0到5,能显示多少，就显示多少
+				
+				for (int i = 0; i < lls.length; i++) {
+					
+					lls[i] = (LinearLayout) findViewById(SHOUCANG_ID_5_ITEMS_LL[i]);
+					lls[i].setVisibility(View.VISIBLE);
+					RelativeLayout include = (RelativeLayout) lls[i].findViewById(SHOUCANG_ID_5_ITEMS_INCLUDE[i]);
+					TextView movieName = (TextView) lls[i]
+							.findViewById(R.id.tv_item_layout_name);
+					TextView movieScore = (TextView) lls[i]
+							.findViewById(R.id.tv_item_layout_score);
+					movieName.setText(shoucangList.get(i).getMovieName());
+					movieScore.setText(shoucangList.get(i).getMovieScore());
+					String picUrl = shoucangList.get(i).getMoviePicUrl();
+					ImageView haiboIv = (ImageView) include.findViewById(R.id.iv_item_layout_haibao);
+					aq.id(haiboIv).image(shoucangList.get(i).getMoviePicUrl(), 
+							true, true,0, R.drawable.post_normal);
+					
+				}
+			}
+		}
+		
+
 	}
 
 }

@@ -75,6 +75,7 @@ public interface BangDanKey {
 	String TOP_URL = Constant.BASE_URL + "tops";
 	String FILTER_URL = Constant.BASE_URL + "filter";
 	String SEARCH_URL = Constant.BASE_URL + "search";
+	String FAV_URL = Constant.BASE_URL + "user/favorities";
 	
 	String MOVIE_TYPE = "1";
 	String TV_TYPE = "2";

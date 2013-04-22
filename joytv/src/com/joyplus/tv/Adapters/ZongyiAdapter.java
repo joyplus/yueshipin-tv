@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.androidquery.AQuery;
@@ -23,10 +24,12 @@ public class ZongyiAdapter extends BaseAdapter implements JieMianConstant{
 	private List<MovieItemData> movieList = new ArrayList<MovieItemData>();
 
 	private Context context;
+	private AQuery aq;
 	
-	public ZongyiAdapter(Context context) {
+	public ZongyiAdapter(Context context,AQuery aq) {
 		
 		this.context = context;
+		this.aq = aq;
 	}
 
 	@Override
@@ -78,7 +81,7 @@ public class ZongyiAdapter extends BaseAdapter implements JieMianConstant{
 			viewItemHodler.otherInfo = (TextView) convertView
 					.findViewById(R.id.tv_item_layout_other_info);
 			viewItemHodler.haibaoIv = (ImageView) convertView
-					.findViewById(R.id.iv_item_active_layout_haibao);
+					.findViewById(R.id.iv_item_layout_haibao);
 			convertView.setTag(viewItemHodler);
 
 		} else {
@@ -108,8 +111,7 @@ public class ZongyiAdapter extends BaseAdapter implements JieMianConstant{
 		viewItemHodler.otherInfo.setText(context.getString(R.string.zongyi_gengxinzhi) + 
 				movieList.get(position).getMovieCurEpisode());
 
-		AQuery aq = new AQuery(convertView);
-		aq.id(R.id.iv_item_layout_haibao).image(movieList.get(position).getMoviePicUrl(), 
+		aq.id(viewItemHodler.haibaoIv).image(movieList.get(position).getMoviePicUrl(), 
 				true, true,0, R.drawable.post_normal);
 		return convertView;
 	}

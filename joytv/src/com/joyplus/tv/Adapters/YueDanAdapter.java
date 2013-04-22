@@ -24,10 +24,12 @@ public class YueDanAdapter extends BaseAdapter implements JieMianConstant{
 	private List<MovieItemData> movieList = new ArrayList<MovieItemData>();
 
 	private Context context;
+	private AQuery aq;
 	
-	public YueDanAdapter(Context context) {
+	public YueDanAdapter(Context context,AQuery aq) {
 		
 		this.context = context;
+		this.aq = aq;
 	}
 
 	@Override
@@ -79,7 +81,7 @@ public class YueDanAdapter extends BaseAdapter implements JieMianConstant{
 			viewItemHodler.otherInfo = (TextView) convertView
 					.findViewById(R.id.tv_item_layout_other_info);
 			viewItemHodler.haibaoIv = (ImageView) convertView
-					.findViewById(R.id.iv_item_active_layout_haibao);
+					.findViewById(R.id.iv_item_layout_haibao);
 			convertView.setTag(viewItemHodler);
 
 		} else {
@@ -108,8 +110,7 @@ public class YueDanAdapter extends BaseAdapter implements JieMianConstant{
 		viewItemHodler.nameTv.setText(movieList.get(position).getMovieName());
 		viewItemHodler.otherInfo.setText(movieList.get(position).getNum() + context.getString(R.string.yingpianshu));
 
-		AQuery aq = new AQuery(convertView);
-		aq.id(R.id.iv_item_layout_haibao).image(movieList.get(position).getMoviePicUrl(), 
+		aq.id(viewItemHodler.haibaoIv).image(movieList.get(position).getMoviePicUrl(), 
 				true, true,0, R.drawable.post_normal);
 		return convertView;
 	}

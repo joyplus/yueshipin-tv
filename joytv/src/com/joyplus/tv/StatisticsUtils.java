@@ -25,6 +25,8 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joyplus.tv.Service.Return.ReturnTVBangDanList;
 import com.joyplus.tv.Service.Return.ReturnTops;
+import com.joyplus.tv.Service.Return.ReturnUserFavorities;
+import com.joyplus.tv.entity.HotItemInfo;
 import com.joyplus.tv.entity.MovieItemData;
 import com.joyplus.tv.entity.ReturnFilterMovieSearch;
 import com.joyplus.tv.entity.YueDanInfo2;
@@ -134,6 +136,11 @@ public class StatisticsUtils implements JieMianConstant{
 	public static String getSearchURL(String url, String page_num , String page_size , String keyword ) {
 		
 		return url + "?page_num=" + page_num + "&page_size=" + page_size + "&keyword=" + keyword;
+	}
+	
+	public static String getUserFavURL(String url, String page_num , String page_size ,String vod_type , String userId ) {
+		
+		return url + "?page_num=" + page_num + "&page_size=" + page_size  +"&vod_type="+ vod_type+  "&userId=" + userId;
 	}
 	
 	public static final String YEAR = "&year=";
@@ -302,7 +309,7 @@ public class StatisticsUtils implements JieMianConstant{
 		
 		if(json == null || json.equals("")) {
 			
-			return null;
+			return new ArrayList<MovieItemData>();
 		}
 		ObjectMapper mapper = new ObjectMapper();
 		
@@ -335,7 +342,7 @@ public class StatisticsUtils implements JieMianConstant{
 		
 		if(json == null || json.equals("")) {
 			
-			return null;
+			return new ArrayList<MovieItemData>();
 		}
 		ObjectMapper mapper = new ObjectMapper();
 		
@@ -368,7 +375,7 @@ public class StatisticsUtils implements JieMianConstant{
 		
 		if(json == null || json.equals("")) {
 			
-			return null;
+			return new ArrayList<MovieItemData>();
 		}
 		ObjectMapper mapper = new ObjectMapper();
 		
@@ -402,7 +409,7 @@ public class StatisticsUtils implements JieMianConstant{
 		
 		if(json == null || json.equals("")) {
 			
-			return null;
+			return new ArrayList<MovieItemData>();
 		}
 		ObjectMapper mapper = new ObjectMapper();
 		
@@ -437,7 +444,7 @@ public class StatisticsUtils implements JieMianConstant{
 		
 		if(json == null || json.equals("")) {
 			
-			return null;
+			return new ArrayList<MovieItemData>();
 		}
 		ObjectMapper mapper = new ObjectMapper();
 		
@@ -470,7 +477,7 @@ public class StatisticsUtils implements JieMianConstant{
 		
 		if(json == null || json.equals("")) {
 			
-			return null;
+			return new ArrayList<MovieItemData>();
 		}
 		ObjectMapper mapper = new ObjectMapper();
 		
@@ -494,6 +501,34 @@ public class StatisticsUtils implements JieMianConstant{
 			movieItemData.setMovieCurEpisode(result.items[i].cur_episode);
 			movieItemData.setMovieMaxEpisode(result.items[i].max_episode);
 			movieItemData.setMovieProType(result.items[i].prod_type);
+			list.add(movieItemData);
+		}
+		
+		return list;
+	}
+	
+	public static List<MovieItemData> returnUserFavoritiesJson(String json) throws JsonParseException, JsonMappingException, IOException {
+		
+		if(json == null || json.equals("")) {
+			
+			return new ArrayList<MovieItemData>();
+		}
+		ObjectMapper mapper = new ObjectMapper();
+		
+		ReturnUserFavorities result  = mapper.readValue(json.toString(), ReturnUserFavorities.class);
+		List<MovieItemData> list = new ArrayList<MovieItemData>();
+		for(int i=0; i<result.favorities.length; i++){
+			MovieItemData movieItemData = new MovieItemData();
+			movieItemData.setMovieID(result.favorities[i].content_id);
+			movieItemData.setMovieName(result.favorities[i].content_name);
+			movieItemData.setMovieProType(result.favorities[i].content_type);
+			String bigPicUrl = result.favorities[i].big_content_pic_url;
+			if(bigPicUrl == null || bigPicUrl.equals("")) {
+				
+				bigPicUrl = result.favorities[i].content_pic_url;
+			}
+			movieItemData.setMoviePicUrl(bigPicUrl);
+			movieItemData.setMovieScore(result.favorities[i].score);
 			list.add(movieItemData);
 		}
 		

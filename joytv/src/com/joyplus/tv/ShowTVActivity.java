@@ -19,6 +19,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -639,9 +640,12 @@ public class ShowTVActivity extends AbstractShowActivity{
 		List<MovieItemData> list = dianShijuAdapter.getMovieList();
 		if (list != null && !list.isEmpty()) {
 			
-			aq = new AQuery(firstFloatView);
-			aq.id(R.id.iv_item_layout_haibao).image(list.get(0).getMoviePicUrl(), 
-					true, true,0, R.drawable.post_active);
+			
+			FrameLayout inFrameLayout = (FrameLayout) firstFloatView.findViewById(R.id.inclue_movie_show_item);
+			ImageView haibaoIv = (ImageView) inFrameLayout.findViewById(R.id.iv_item_layout_haibao);
+			aq.id(haibaoIv).image(
+					list.get(0).getMoviePicUrl(), true, true, 0,
+					R.drawable.post_active);
 			movieName.setText(list.get(0).getMovieName());
 			movieScore.setText(list.get(0).getMovieScore());
 			
