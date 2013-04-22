@@ -28,8 +28,8 @@
 
             <ImageView
                 android:id="@+id/imageViewBarCode"
-                android:layout_width="132dp"
-                android:layout_height="188dp"
+                android:layout_width="170dp"
+                android:layout_height="241dp"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
                 android:scaleType="fitXY" />
@@ -116,7 +116,7 @@
                 android:layout_alignParentTop="true"
                 android:text="西游降魔篇"
                 android:textColor="@color/menu_bg_select_ok"
-                android:textSize="20sp" />
+                android:textSize="25sp" />
 
             <TextView
                 android:id="@+id/textView2"
@@ -128,7 +128,7 @@
                 android:layout_toRightOf="@+id/textView1"
                 android:text="的影评"
                 android:textColor="@color/white"
-                android:textSize="16sp" />
+                android:textSize="20sp" />
 
             <ListView
                 android:id="@+id/listView1"
@@ -173,12 +173,14 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textColor="@color/white"
+                        android:lineSpacingExtra = "3dp"
                         android:textSize="16sp" />
 
                     <TextView
                         android:id="@+id/textViewItemDetail"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:lineSpacingExtra = "3dp"
                         android:textSize="16sp" />
                 </LinearLayout>
             </ScrollView>

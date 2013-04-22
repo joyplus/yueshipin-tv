@@ -229,7 +229,7 @@ public class FayeService extends Service implements FayeListener{
 				if(phoneID ==null){
 					return;
 				}
-				if(app.getUserData("isBand") != null&&"1".equals(app.getUserData("isBand"))&&phoneID.equals(json.get("user_id"))){
+				if(phoneID.equals(json.get("user_id"))){
 					CurrentPlayData playDate = new CurrentPlayData();
 					Intent intent = new Intent(this,VideoPlayerActivity.class);
 //					intent.putExtra("ID", json.getString("prod_id"));
@@ -259,7 +259,7 @@ public class FayeService extends Service implements FayeListener{
 				if(phoneID ==null){
 					return;
 				}
-				if(app.getUserData("isBand") != null&&"1".equals(app.getUserData("isBand"))&&phoneID.equals(json.get("user_id"))){
+				if(phoneID.equals(json.get("user_id"))){
 					Intent intent = new Intent(Constant.VIDEOPLAYERCMD);
 					intent.putExtra("cmd", 403);
 					intent.putExtra("content", "");
@@ -272,7 +272,7 @@ public class FayeService extends Service implements FayeListener{
 				if(phoneID ==null){
 					return;
 				}
-				if(app.getUserData("isBand") != null&&"1".equals(app.getUserData("isBand"))&&phoneID.equals(json.get("user_id"))){
+				if(phoneID.equals(json.get("user_id"))){
 					Intent intent = new Intent(Constant.VIDEOPLAYERCMD);
 					intent.putExtra("cmd", 405);
 					intent.putExtra("content", "");
@@ -285,7 +285,7 @@ public class FayeService extends Service implements FayeListener{
 				if(phoneID ==null){
 					return;
 				}
-				if(app.getUserData("isBand") != null&&"1".equals(app.getUserData("isBand"))&&phoneID.equals(json.get("user_id"))){
+				if(phoneID.equals(json.get("user_id"))){
 					Intent intent = new Intent(Constant.VIDEOPLAYERCMD);
 					intent.putExtra("cmd", 407);
 //					intent.putExtra("content", json.getString("prod_time"));
@@ -299,7 +299,7 @@ public class FayeService extends Service implements FayeListener{
 				if(phoneID ==null){
 					return;
 				}
-				if(app.getUserData("isBand") != null&&"1".equals(app.getUserData("isBand"))&&phoneID.equals(json.get("user_id"))){
+				if(phoneID.equals(json.get("user_id"))){
 					Intent intent = new Intent(Constant.VIDEOPLAYERCMD);
 					intent.putExtra("cmd", 409);
 					intent.putExtra("content", "");
