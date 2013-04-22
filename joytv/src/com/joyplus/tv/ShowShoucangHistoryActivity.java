@@ -2,13 +2,16 @@ package com.joyplus.tv;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.json.JSONObject;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -34,8 +37,11 @@ import com.androidquery.callback.AjaxStatus;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.joyplus.tv.Adapters.CurrentPlayData;
+import com.joyplus.tv.HistoryActivity.HistortyAdapter;
 import com.joyplus.tv.Service.Return.ReturnUserFavorities;
 import com.joyplus.tv.Service.Return.ReturnUserPlayHistories;
+import com.joyplus.tv.Video.VideoPlayerActivity;
 import com.joyplus.tv.entity.HotItemInfo;
 import com.joyplus.tv.ui.NavigateView;
 import com.joyplus.tv.ui.NavigateView.OnResultListener;
@@ -48,6 +54,7 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 	private Button btn_fenlei_dongman;
 	private Button btn_fenlei_zongyi;
 	private Button selectedButton;
+	private Button delBtn;
 	ObjectMapper mapper = new ObjectMapper();
 	private List<HotItemInfo> allHistoryList = new ArrayList<HotItemInfo>();
 	private List<HotItemInfo> movieHistoryList = new ArrayList<HotItemInfo>();
@@ -58,6 +65,7 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 	private View  selectedView;
 	
 	private ListView listView;
+	private int index=0;
 	
 	
 	private App app;
@@ -75,6 +83,8 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 		btn_fenlei_tv = (Button) findViewById(R.id.fenlei_tv);
 		btn_fenlei_dongman = (Button) findViewById(R.id.fenlei_dongman);
 		btn_fenlei_zongyi = (Button) findViewById(R.id.fenlei_zongyi);
+		delBtn = (Button) findViewById(R.id.delete_btn);
+		delBtn.setOnClickListener(this);
 		btn_fenlei_all.setOnClickListener(this);
 		btn_fenlei_movie.setOnClickListener(this);
 		btn_fenlei_tv.setOnClickListener(this);
@@ -94,19 +104,99 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 		listView.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+			public void onItemClick(AdapterView<?> arg0, View arg1, final int arg2,
 					long arg3) {
 				// TODO Auto-generated method stub
+				if(arg2>=((HistortyAdapter)listView.getAdapter()).data.size()){
+					return;
+				}
 				Toast.makeText(ShowShoucangHistoryActivity.this, "seleced index = " + arg2, 100).show();
-				
-				Dialog dialog = new AlertDialog.Builder(ShowShoucangHistoryActivity.this).create();
+				final Dialog dialog = new AlertDialog.Builder(ShowShoucangHistoryActivity.this).create();
 				dialog.show();
 				LayoutInflater inflater = LayoutInflater.from(ShowShoucangHistoryActivity.this);
-				View view = inflater.inflate(R.layout.layout_history_dialog, null);
-				TextView name = (TextView) view.findViewById(R.id.dialog_title);
-				name.setText(allHistoryList.get(arg2).prod_name);
+				View view = inflater.inflate(R.layout.layout_favourite_dialog, null);
+				TextView nameText = (TextView) view.findViewById(R.id.dialog_title);
+//				Button playButton = (Button) view.findViewById(R.id.history_play);
+//				playButton.setOnClickListener(new OnClickListener() {
+//					
+//					@Override
+//					public void onClick(View v) {
+//						// TODO Auto-generated method stub
+//						dialog.dismiss();
+//						CurrentPlayData playDate = new CurrentPlayData();
+//						Intent intent = new Intent(ShowShoucangHistoryActivity.this,VideoPlayerActivity.class);
+//						playDate.prod_id = ((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_id;
+//						playDate.prod_type = Integer.valueOf(((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_type);
+//						playDate.prod_name = ((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_name;
+//						playDate.prod_url = ((HistortyAdapter)listView.getAdapter()).data.get(arg2).video_url;
+////						playDate.prod_src = "";
+//						if(!"".equals(((HistortyAdapter)listView.getAdapter()).data.get(arg2).playback_time)){
+//							playDate.prod_time = Long.valueOf(((HistortyAdapter)listView.getAdapter()).data.get(arg2).playback_time);
+//						}
+////						playDate.prod_qua = Integer.valueOf(info.definition);
+//						app.setCurrentPlayData(playDate);
+//						startActivity(intent);
+//					}
+//				});
+				Button viewDetailButton = (Button) view.findViewById(R.id.history_view);
+				viewDetailButton.setOnClickListener(new OnClickListener() {
+					
+					@Override
+					public void onClick(View v) {
+						// TODO Auto-generated method stub
+						dialog.dismiss();
+						int  prod_type = Integer.valueOf(((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_type);
+						Intent intent = null;
+						switch (prod_type) {
+						case 1:
+							intent = new Intent(ShowShoucangHistoryActivity.this,ShowXiangqingMovie.class);
+							break;
+						case 2:
+							intent = new Intent(ShowShoucangHistoryActivity.this,ShowXiangqingTv.class);
+							break;
+						case 3:
+							intent = new Intent(ShowShoucangHistoryActivity.this,ShowXiangqingZongYi.class);
+							break;
+						case 131:
+							intent = new Intent(ShowShoucangHistoryActivity.this,ShowXiangqingDongman.class);
+							break;
+						}
+						if(intent == null){ 
+							return; 
+						}else{
+							intent.putExtra("ID", ((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_id);
+							startActivity(intent);
+						}
+					}
+				});
+				Button delButton = (Button) view.findViewById(R.id.history_del);
+				delButton.setOnClickListener(new OnClickListener() {
+					
+					@Override
+					public void onClick(View v) {
+						// TODO Auto-generated method stub
+						deleteShoucang(true, ((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_id);
+						((HistortyAdapter)listView.getAdapter()).data.remove(arg2);
+						((BaseAdapter)listView.getAdapter()).notifyDataSetChanged();
+						dialog.dismiss();
+					}
+				});
+				nameText.setText(((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_name);
 				dialog.setContentView(view);
 			}
+				
+				
+				
+//				Toast.makeText(ShowShoucangHistoryActivity.this, "seleced index = " + arg2, 100).show();
+//				
+//				Dialog dialog = new AlertDialog.Builder(ShowShoucangHistoryActivity.this).create();
+//				dialog.show();
+//				LayoutInflater inflater = LayoutInflater.from(ShowShoucangHistoryActivity.this);
+//				View view = inflater.inflate(R.layout.layout_history_dialog, null);
+//				TextView name = (TextView) view.findViewById(R.id.dialog_title);
+//				name.setText(allHistoryList.get(arg2).prod_name);
+//				dialog.setContentView(view);
+//			}
 		});
 		listView.setSelected(true);
 		listView.setSelection(0);
@@ -182,23 +272,24 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 				holder.title.setText(data.get(position).prod_name);
 				holder.directors.setText(data.get(position).directors);
 				holder.stars.setText(data.get(position).stars);
-				int prod_type = Integer.valueOf(data.get(position).prod_type);
+				holder.content.setVisibility(View.GONE);
+//				int prod_type = Integer.valueOf(data.get(position).prod_type);
 //				String playBack_time = formatDuration(Integer.valueOf(data.get(position).playback_time));
-				String playBack_time = data.get(position).playback_time;
-				switch (prod_type) {
-				case 1:
-					holder.content.setText("上次观看到：" + playBack_time);
-					break;
-				case 2:
-					holder.content.setText("上次观看到：第" + data.get(position).cur_episode+"集"+playBack_time);
-					break;
-				case 3:
-					holder.content.setText("上次观看到：第" + data.get(position).cur_episode+"期"+playBack_time);
-					break;
-				case 131:
-					holder.content.setText("上次观看到：第" + data.get(position).cur_episode+"集"+playBack_time);
-					break;
-				}
+//				String playBack_time = data.get(position).playback_time;
+//				switch (prod_type) {
+//				case 1:
+//					holder.content.setText("上次观看到：" + playBack_time);
+//					break;
+//				case 2:
+//					holder.content.setText("上次观看到：第" + data.get(position).cur_episode+"集"+playBack_time);
+//					break;
+//				case 3:
+//					holder.content.setText("上次观看到：第" + data.get(position).cur_episode+"期"+playBack_time);
+//					break;
+//				case 131:
+//					holder.content.setText("上次观看到：第" + data.get(position).cur_episode+"集"+playBack_time);
+//					break;
+//				}
 				aq.id(holder.img).image(data.get(position).prod_pic_url);
 			}else{
 				holder.img.setImageResource(R.drawable.post_normal);
@@ -215,19 +306,6 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 		
 	}
 	
-	private String formatDuration(int duration) {
-		duration = duration / 1000;
-		int h = duration / 3600;
-		int m = (duration - h * 3600) / 60;
-		int s = duration - (h * 3600 + m * 60);
-		String durationValue;
-		if (h == 0) {
-			durationValue = String.format("%1$02d:%2$02d", m, s);
-		} else {
-			durationValue = String.format("%1$d:%2$02d:%3$02d", h, m, s);
-		}
-		return durationValue;
-	}
 
 	@Override
 	public void onClick(View v) {
@@ -245,6 +323,7 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 			selectedButton = btn_fenlei_all;
 			selectedButton.setPadding(0, 0, 5, 0);
 			getHistoryData(0);
+			index = 0;
 			break;
 		case R.id.fenlei_movie:
 			selectedButton.setTextColor(getResources().getColorStateList(R.color.text_color_selector));
@@ -254,6 +333,7 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 			selectedButton = btn_fenlei_movie;
 			selectedButton.setPadding(0, 0, 5, 0);
 			getHistoryData(1);
+			index = 1;
 			break;
 		case R.id.fenlei_tv:
 			selectedButton.setTextColor(getResources().getColorStateList(R.color.text_color_selector));
@@ -263,6 +343,7 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 			selectedButton = btn_fenlei_tv;
 			selectedButton.setPadding(0, 0, 5, 0);
 			getHistoryData(2);
+			index = 2;
 			break;
 		case R.id.fenlei_dongman:
 			selectedButton.setTextColor(getResources().getColorStateList(R.color.text_color_selector));
@@ -272,6 +353,7 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 			selectedButton = btn_fenlei_dongman;
 			selectedButton.setPadding(0, 0, 5, 0);
 			getHistoryData(131);
+			index = 131;
 			break;
 		case R.id.fenlei_zongyi:
 			selectedButton.setTextColor(getResources().getColorStateList(R.color.text_color_selector));
@@ -281,6 +363,12 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 			selectedButton = btn_fenlei_zongyi;
 			selectedButton.setPadding(0, 0, 5, 0);
 			getHistoryData(3);
+			index = 3;
+			break;
+		case R.id.delete_btn:
+			deleteShoucang(false, "");
+			((HistortyAdapter)listView.getAdapter()).data.clear();
+			((HistortyAdapter)listView.getAdapter()).notifyDataSetChanged();
 			break;
 		default:
 			break;
@@ -358,7 +446,7 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 					getResources().getString(R.string.networknotwork));
 			return;
 		}
-		Log.d(TAG, "history data = " + json.toString());
+		Log.d(TAG, "favourate data = " + json.toString());
 		try {
 			ReturnUserFavorities result  = mapper.readValue(json.toString(), ReturnUserFavorities.class);
 			List<HotItemInfo> list = new ArrayList<HotItemInfo>();
@@ -414,6 +502,59 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 		}
 		
 	}
+	
+	private void deleteShoucang(boolean isSingle,String id){
+		String url = "";
+		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
+		cb.SetHeader(app.getHeaders());
+		if(isSingle){
+			url = Constant.BASE_URL + "program/unfavority" ;
+			Map<String, Object> params = new HashMap<String, Object>();
+			params.put("prod_id", id);
+			cb.params(params).url(url).type(JSONObject.class)
+			.weakHandler(this, "deleteResult");
+		}else{
+			if(index == 0){
+				url = Constant.BASE_URL + "user/clearFavorities";
+				Map<String, Object> params = new HashMap<String, Object>();
+				cb.params(params).url(url).type(JSONObject.class)
+				.weakHandler(this, "deleteResult");
+			}else{
+				url = Constant.BASE_URL + "user/clearFavorities";
+				Map<String, Object> params = new HashMap<String, Object>();
+				params.put("vod_type", index);
+				cb.params(params).url(url).type(JSONObject.class)
+				.weakHandler(this, "deleteResult");
+			}
+			
+		}
+		aq.ajax(cb);
+//		
+//		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
+//		Log.d("del", url);
+//		cb.url(url).type(JSONObject.class).weakHandler(this, "deleteResult");
+//		cb.SetHeader(app.getHeaders());
+//		aq.ajax(cb);
+	}
+	
+	public void deleteResult(String url, JSONObject json, AjaxStatus status){
+		if (status.getCode() == AjaxStatus.NETWORK_ERROR)  {
+//			aq.id(R.id.ProgressText).invisible();
+			app.MyToast(aq.getContext(),
+					getResources().getString(R.string.networknotwork));
+			return;
+		}
+		Log.d(TAG, json.toString());
+	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		aq.id(R.id.iv_head_user_icon).image(app.getUserInfo().getUserAvatarUrl(),false,true,0,R.drawable.avatar);
+		aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
+	}
+	
 	class ViewHolder{
 		TextView title;
 		TextView stars;

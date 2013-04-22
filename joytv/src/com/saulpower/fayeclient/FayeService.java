@@ -217,7 +217,6 @@ public class FayeService extends Service implements FayeListener{
 					return ;//tv 端收到解除绑定 但是自己的状态为未绑定时不处理
 				}else if(phoneID.equals(app.getUserData("phoneID"))){
 					app.SaveUserData("isBand", "0");
-					app.SaveUserData("phoneID", "-1"); 
 					//notify to UI 
 					Log.d(TAG, "send broadCast");
 					Intent unbandIntent = new Intent(ACTION_RECIVEACTION_UNBAND);

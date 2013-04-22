@@ -22,16 +22,7 @@
 		    android:orientation="horizontal">
 		    <Button android:layout_width="0dp"
 		        android:layout_height="wrap_content"
-		        android:layout_weight="2"
-		        android:textColor="@color/white"
-		        android:textSize="18sp"
-		        android:id="@+id/history_play"
-		        android:background="@drawable/yingping_button_selector"
-		        android:text="继续播放"/>
-		    <Button android:layout_width="0dp"
-		        android:layout_height="wrap_content"
 		        android:layout_weight="1"
-		        android:layout_marginLeft="10dp"
 		        android:textColor="@color/white"
 		        android:textSize="18sp"
 		        android:id="@+id/history_view"

@@ -42,7 +42,6 @@
 				    android:gravity="center_vertical|right"
 				    android:id="@+id/notice_text"
 				    android:textSize="20sp"
-				    android:text="1/888"
 				    android:textColor="@color/common_title_selected"/>
             </LinearLayout>
         </LinearLayout>

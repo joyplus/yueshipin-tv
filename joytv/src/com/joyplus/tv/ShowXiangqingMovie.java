@@ -827,6 +827,10 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 		public void run() {
 			// TODO Auto-generated method stub
 			List<URLS_INDEX> playUrls = new ArrayList<URLS_INDEX>();
+			if(movieData.movie.episodes[0].down_urls==null){
+				handler.sendEmptyMessage(0);	
+				return ;
+			}
 			for(int i=0; i<movieData.movie.episodes[0].down_urls.length; i++){
 					for(int j =0;j<movieData.movie.episodes[0].down_urls[i].urls.length; j++){
 							URLS_INDEX url_index = new URLS_INDEX();

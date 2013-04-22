@@ -136,7 +136,7 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 						new Thread(new CheckPlayUrl()).start();
 					}else{
 						removeDialog(DIALOG_WAITING);
-						gallery1.requestFocus();
+						gallery1.requestFocus(); 
 					}
 				}
 				break;
@@ -184,18 +184,28 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 			R.drawable.search_active,
 		};
 	
+//	private int [] resouces_my_nomal = {
+//			R.drawable.follow_normal,
+//			R.drawable.recent_normal,
+//			R.drawable.down_normal,
+//			R.drawable.system_normal
+//		};
 	private int [] resouces_my_nomal = {
 			R.drawable.follow_normal,
 			R.drawable.recent_normal,
-			R.drawable.down_normal,
 			R.drawable.system_normal
-		};
+	};
+//	private int [] resouces_my_active = {
+//			R.drawable.follow_active,
+//			R.drawable.recent_active,
+//			R.drawable.down_active,
+//			R.drawable.system_active,
+//		};
 	private int [] resouces_my_active = {
 			R.drawable.follow_active,
 			R.drawable.recent_active,
-			R.drawable.down_active,
 			R.drawable.system_active,
-		};
+	};
 	
 	private CustomGallery gallery1;
 	private float density;
@@ -548,7 +558,7 @@ public boolean checkLogin() {
 
 private void checkBand(){
 	
-	if(app.getUserData("isBand") == null||"0".equals(app.getUserData("isBand"))){
+	if(app.getUserData("phoneID")==null){
 		handler.sendEmptyMessage(MESSAGE_UPDATEUSER); 
 	}else{
 		String url = Constant.FAYESERVERURL_CHECKBAND + "?user_id=" + app.getUserData("phoneID") + "&tv_channel=" + (Constant.FAYECHANNEL_TV_BASE+StatisticsUtils.MD5(macAddress)).replace(Constant.FAYECHANNEL_TV_HEAD, "");
@@ -657,6 +667,7 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 						hotView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
 						contentLayout.startAnimation(alpha_appear);
 						contentLayout.addView(hotView);
+						hotView.setVisibility(View.VISIBLE);
 					}
 				}),300);
 			}
@@ -758,6 +769,7 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
 //		Toast.makeText(this, "key code = " + keyCode, 100).show();
+		Log.d(TAG, "code = " + keyCode);
 		if(initStep>3){
 			return true;
 		}
@@ -919,8 +931,9 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 					startActivity(intent);
 					break;
 				case 3:
-//					intent = new Intent(this,ShowXiangqingDongman.class);
-//					intent.putExtra("ID", info.prod_id);
+					intent = new Intent(this,ShowXiangqingZongYi.class);
+					intent.putExtra("ID", info.prod_id);
+					startActivity(intent);
 					break;
 				case 131:
 					intent = new Intent(this,ShowXiangqingDongman.class);
@@ -978,13 +991,8 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 				startActivity(new Intent(this,HistoryActivity.class));
 				break;
 			case 2:
+				//设置
 //				startActivity(new Intent(this,ShowDongManActivity.class));
-				break;
-			case 3:
-//				startActivity(new Intent(this,ShowZongYiActivity.class));
-				break;
-			case 4:
-//				startActivity(new Intent(this,ShowSearchActivity.class));
 				break;
 			}
 			break;
