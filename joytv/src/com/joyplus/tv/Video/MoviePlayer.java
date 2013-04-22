@@ -20,8 +20,16 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.Comparator;
+
+import org.apache.http.Header;
+import org.apache.http.HttpResponse;
+import org.apache.http.StatusLine;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 
 import android.R.integer;
 import android.R.string;
@@ -35,6 +43,7 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.TrafficStats;
 import android.net.Uri;
+import android.net.http.AndroidHttpClient;
 import android.net.http.SslCertificate;
 import android.os.Bundle;
 import android.os.Handler;
@@ -53,6 +62,8 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 
 import com.androidquery.AQuery;
 import com.joyplus.tv.App;
+import com.joyplus.tv.BuildConfig;
+import com.joyplus.tv.Constant;
 import com.joyplus.tv.R;
 import com.joyplus.tv.StatisticsUtils;
 import com.joyplus.tv.Adapters.CurrentPlayData;
@@ -985,8 +996,6 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		CurrentPlayData mCurrentPlayData = app.getCurrentPlayData();
 		ReturnProgramView m_ReturnProgramView = app.get_ReturnProgramView();
 		if (mCurrentPlayData != null && m_ReturnProgramView != null) {
-			String[] video_index = { "letv",
-				"fengxing","qiyi","youku","sinahd","sohu","56","qq","pptv","m1905"};
 			int index = mCurrentPlayData.CurrentIndex+1;
 			mCurrentPlayData.CurrentIndex +=1;
 			app.setCurrentPlayData(mCurrentPlayData);
@@ -1002,12 +1011,12 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 //					videoSourceSort(m_ReturnProgramView.tv.episodes[index].down_urls);
 					for (int i = 0; i < m_ReturnProgramView.tv.episodes[index].down_urls.length; i++) {
 
-						for (int j = 0; j < video_index.length; j++) {
+						for (int j = 0; j < Constant.video_index.length; j++) {
 							if (PROD_SOURCE == null
 									&& m_ReturnProgramView.tv.episodes[index].down_urls[i].source
 											.trim()
 											.equalsIgnoreCase(
-													video_index[j])) {
+													Constant.video_index[j])) {
 
 								String name = m_ReturnProgramView.tv.name;
 								title = "第" + m_ReturnProgramView.tv.episodes[index].name + "集";
@@ -1029,13 +1038,13 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 				if (m_ReturnProgramView.show.episodes[index].down_urls != null) {
 //					videoSourceSort(m_ReturnProgramView.show.episodes[index].down_urls);
 					for (int i = 0; i < m_ReturnProgramView.show.episodes[index].down_urls.length; i++) {
-						for (int j = 0; j < video_index.length; j++) {
+						for (int j = 0; j < Constant.video_index.length; j++) {
 
 							if (PROD_SOURCE == null
 									&& m_ReturnProgramView.show.episodes[index].down_urls[i].source
 											.trim()
 											.equalsIgnoreCase(
-													video_index[j])) {
+													Constant.video_index[j])) {
 
 								String name = m_ReturnProgramView.show.name;
 								title = m_ReturnProgramView.show.episodes[index].name;
@@ -1063,26 +1072,64 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 				setVideoURI(Uri.parse(PROD_SOURCE), 0);
 		}
 	}
-	private boolean CheckUrl(String urlLink) {
+	private boolean CheckUrl(String srcUrl) {
 
 		// url本身不正常 直接返回
-		if (urlLink == null || urlLink.length() <= 0) {
+		if (srcUrl == null || srcUrl.length() <= 0) {
 
 			return false;
 		} else {
 
-			if (!URLUtil.isValidUrl(urlLink)) {
+			if (!URLUtil.isValidUrl(srcUrl)) {
 
 				return false;
 			}
 		}
+		// 模拟火狐ios发用请求 使用userAgent
+		AndroidHttpClient mAndroidHttpClient = AndroidHttpClient
+				.newInstance(Constant.USER_AGENT_IOS);
 
-		return true;
+		HttpParams httpParams = mAndroidHttpClient.getParams();
+		// 连接时间最长5秒，可以更改
+		HttpConnectionParams.setConnectionTimeout(httpParams, 2000);
+
+		try {
+			URL url = new URL(srcUrl);
+			HttpGet mHttpGet = new HttpGet(url.toURI());
+			HttpResponse response = mAndroidHttpClient.execute(mHttpGet);
+
+			// 限定连接时间
+
+			StatusLine statusLine = response.getStatusLine();
+			int status = statusLine.getStatusCode();
+
+			Header headertop = response.getFirstHeader("Content-Type");// 拿到重新定位后的header
+			String type = headertop.getValue().toLowerCase();// 从header重新取出信息
+			Header header_length = response.getFirstHeader("Content-Length");
+			String lengthStr = header_length.getValue();
+			Log.i(TAG, "HTTP STATUS : " + status);
+			
+			mAndroidHttpClient.close();
+			
+			if(status != 404){
+				return true;
+			}else{
+				return false;
+			}
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			if (BuildConfig.DEBUG)
+				Log.i(TAG, "NOT OK" + e);
+			// 如果地址真的不存在，那就往里面加NULL字符串
+			mAndroidHttpClient.close();
+			e.printStackTrace();
+			return false;
+		}
 	}
 
 	private String GetSource(ReturnProgramView m_ReturnProgramView,int CurrentCategory,int proi_index, int sourceIndex) {
 		String PROD_SOURCE = null;
-		String[] quality_index = {"hd2","mp4", "flv","3gp"};
 		switch (CurrentCategory) {
 		case 1:
 			break;
@@ -1093,10 +1140,10 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 						&& CurrentURLS.url != null
 						&& CheckUrl(
 								CurrentURLS.url.trim())) {
-					for (int i = 0; i < quality_index.length; i++) {
+					for (int i = 0; i < Constant.quality_index.length; i++) {
 						if (PROD_SOURCE == null
 								&& CurrentURLS.type.trim().equalsIgnoreCase(
-										quality_index[i])) {
+										Constant.quality_index[i])) {
 							PROD_SOURCE = CurrentURLS.url.trim();
 							break;
 						}
@@ -1113,10 +1160,10 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 						&& CurrentURLS.url != null
 						&& CheckUrl(
 								CurrentURLS.url.trim())) {
-					for (int i = 0; i < quality_index.length; i++) {
+					for (int i = 0; i < Constant.quality_index.length; i++) {
 						if (PROD_SOURCE == null
 								&& CurrentURLS.type.trim().equalsIgnoreCase(
-										quality_index[i])) {
+										Constant.quality_index[i])) {
 							PROD_SOURCE = CurrentURLS.url.trim();
 							break;
 						}

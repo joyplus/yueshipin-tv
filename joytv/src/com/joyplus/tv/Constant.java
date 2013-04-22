@@ -71,8 +71,8 @@ IOS: ijoyplusios001bj
 	/*
 	 *  "type": flv,3gp：标清 (普清就是标清) ,"mp4", mp4:高清，hd2：超清
 	 */
-	public static final String[] quality_index = { "flv","mp4",
-		"hd2","3gp"};
+	public static final String[] quality_index ={"hd2","mp4", "flv","3gp"}; //播放器用
+	
 	public static final String[] player_quality_index = { "mp4",
 		"hd2","3gp","flv"};
 }
