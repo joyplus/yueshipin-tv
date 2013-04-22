@@ -24,9 +24,9 @@
         android:ellipsize="end"
         android:singleLine="true"
         android:text="9f9f9f"
-        android:lineSpacingExtra = "3dp"
+        android:lineSpacingExtra = "5dp"
         android:textColor="@color/white"
-        android:textSize="18sp" />
+        android:textSize="20sp" />
 
     <TextView
         android:id="@+id/TextView02"
@@ -37,8 +37,8 @@
         android:ellipsize="end"
         android:maxLines="4"
         android:text="9f9f9f"
-        android:lineSpacingExtra = "3dp"
+        android:lineSpacingExtra = "5dp"
         android:textColor="@color/text_normal"
-        android:textSize="18sp" />
+        android:textSize="20sp" />
 
 </RelativeLayout>
