@@ -40,8 +40,7 @@ import com.joyplus.tv.utils.JieMianConstant;
 import com.joyplus.tv.utils.MyKeyEventKey;
 import com.umeng.common.net.s;
 
-public class ShowSearchActivity extends Activity implements
-		View.OnKeyListener, MyKeyEventKey, JieMianConstant,BangDanKey, View.OnClickListener {
+public class ShowSearchActivity extends AbstractShowActivity {
 
 	private String TAG = "ShowSearchActivity";
 	private AQuery aq;
@@ -64,6 +63,8 @@ public class ShowSearchActivity extends Activity implements
 
 	private List<MovieItemData> movieList = new ArrayList<MovieItemData>();
 	private SearchAdapter searchAdapter = null;
+	
+	private int beforepostion = 0;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -73,36 +74,57 @@ public class ShowSearchActivity extends Activity implements
 
 		aq = new AQuery(this);
 		app = (App) getApplication();
-
-		initView();
-		initState();
 		
-		StatisticsUtils.clearList(movieList);
+		initActivity();
+		
 		searchAdapter = new SearchAdapter(this);
+	}
+	
+	@Override
+	public boolean onKey(View v, int keyCode, KeyEvent event) {
+		// TODO Auto-generated method stub
+		int action = event.getAction();
+		if (action == KeyEvent.ACTION_UP) {
 
-//		dinashijuGv.setAdapter(movieAdapter);
+		}
+		return false;
 	}
 
-	private void initView() {
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+		Log.i("Yangzhg", "onClick");
+	}
+	
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		if (aq != null)
+			aq.dismiss();
+		
+		clearLists();
+		super.onDestroy();
+	}
 
+	@Override
+	public void onFocusChange(View v, boolean hasFocus) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void initView() {
+		// TODO Auto-generated method stub
+		
 		searchEt = (EditText) findViewById(R.id.et_search);
 		dinashijuGv = (MyMovieGridView) findViewById(R.id.gv_movie_show);
 
 		firstFloatView = findViewById(R.id.inclue_movie_show_item);
-
-		addListener();
-
 	}
 
-	private void initState() {
-
-//		searchEt.setFocusable(false);// 搜索焦点消失
-
-	}
-
-	private int beforepostion = 0;
-
-	private void addListener() {
+	@Override
+	protected void initViewListener() {
+		// TODO Auto-generated method stub
 		
 		searchEt.setOnClickListener(new View.OnClickListener() {
 			
@@ -118,7 +140,6 @@ public class ShowSearchActivity extends Activity implements
 					dinashijuGv.setAdapter(searchAdapter);
 					String url = StatisticsUtils.getSearchURL(SEARCH_URL, 1 + "", 30 + "",searchStr);
 					getFilterData(url);
-//					searchEt.
 				}
 			}
 		});
@@ -344,9 +365,30 @@ public class ShowSearchActivity extends Activity implements
 			}
 		});
 	}
-	
-	private void initFirstFloatView() {
 
+	@Override
+	protected void initViewState() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void clearLists() {
+		// TODO Auto-generated method stub
+		
+		StatisticsUtils.clearList(movieList);
+	}
+
+	@Override
+	protected void initLists() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void initFirstFloatView() {
+		// TODO Auto-generated method stub
+		
 		firstFloatView.setX(0);
 		firstFloatView.setY(0);
 		firstFloatView.setLayoutParams(new FrameLayout.LayoutParams(popWidth,
@@ -417,10 +459,11 @@ public class ShowSearchActivity extends Activity implements
 			ItemStateUtils.floatViewInAnimaiton(getApplicationContext(),
 					firstFloatView);
 		}
-		
 	}
-	
-	private void notifyAdapter(List<MovieItemData> list) {
+
+	@Override
+	protected void notifyAdapter(List<MovieItemData> list) {
+		// TODO Auto-generated method stub
 		
 		int height=searchAdapter.getHeight()
 				,width = searchAdapter.getWidth();
@@ -444,40 +487,40 @@ public class ShowSearchActivity extends Activity implements
 	}
 
 	@Override
-	public boolean onKey(View v, int keyCode, KeyEvent event) {
+	protected void filterVideoSource(String[] choice) {
 		// TODO Auto-generated method stub
-		int action = event.getAction();
-		if (action == KeyEvent.ACTION_UP) {
-
-		}
-		return false;
+		
 	}
 
 	@Override
-	public void onClick(View v) {
+	protected void getQuan10Data(String url) {
 		// TODO Auto-generated method stub
-		Log.i("Yangzhg", "onClick");
-	}
-	
-	@Override
-	protected void onDestroy() {
-		// TODO Auto-generated method stub
-		if (aq != null)
-			aq.dismiss();
 		
-		StatisticsUtils.clearList(movieList);
-		super.onDestroy();
 	}
-	
-	
-	
-	private void getFilterData(String url) {
-		
-		getServiceData(url, "initFiler");
-	}
-	
-	private void getServiceData(String url, String interfaceName) {
 
+	@Override
+	protected void getQuanbuData(String url) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void getUnQuanbuData(String url) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void getFilterData(String url) {
+		// TODO Auto-generated method stub
+		
+		getServiceData(url, "initFilerServiceData");
+	}
+
+	@Override
+	protected void getServiceData(String url, String interfaceName) {
+		// TODO Auto-generated method stub
+		
 		firstFloatView.setVisibility(View.INVISIBLE);
 		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
 		// cb.url(url).type(JSONObject.class).weakHandler(this, "initData");
@@ -486,8 +529,32 @@ public class ShowSearchActivity extends Activity implements
 		cb.SetHeader(app.getHeaders());
 		aq.ajax(cb);
 	}
-	
-	public void initFiler(String url, JSONObject json, AjaxStatus status) {
+
+	@Override
+	public void initQuan10ServiceData(String url, JSONObject json,
+			AjaxStatus status) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void initQuanbuServiceData(String url, JSONObject json,
+			AjaxStatus status) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void initUnQuanbuServiceData(String url, JSONObject json,
+			AjaxStatus status) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void initFilerServiceData(String url, JSONObject json,
+			AjaxStatus status) {
+		// TODO Auto-generated method stub
 		
 		if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
 

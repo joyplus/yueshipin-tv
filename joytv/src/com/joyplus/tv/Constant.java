@@ -66,6 +66,8 @@ IOS: ijoyplusios001bj
 	public static final String FAYECHANNEL_MOBILE_BASE = "/screencast/CHANNEL_MOBILE_";
 	public static final String CHANNELHEADER = "joy";
 	
+	public static final String VIDEOPLAYERCMD = "com.joyplus.tv.videoservicecommand";
+	
 	public static final String[] video_dont_support_extensions = { ".m3u",
 			".m3u8" };
 	public static final String[] video_index = { "wangpan","le_tv_fee","letv",
@@ -73,8 +75,8 @@ IOS: ijoyplusios001bj
 	/*
 	 *  "type": flv,3gp：标清 (普清就是标清) ,"mp4", mp4:高清，hd2：超清
 	 */
-	public static final String[] quality_index = { "flv","mp4",
-		"hd2","3gp"};
+	public static final String[] quality_index ={"hd2","mp4", "flv","3gp"}; //播放器用
+	
 	public static final String[] player_quality_index = { "mp4",
 		"hd2","3gp","flv"};
 }

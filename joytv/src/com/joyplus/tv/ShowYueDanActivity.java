@@ -42,9 +42,7 @@ import com.joyplus.tv.utils.ItemStateUtils;
 import com.joyplus.tv.utils.JieMianConstant;
 import com.joyplus.tv.utils.MyKeyEventKey;
 
-public class ShowYueDanActivity extends Activity implements View.OnKeyListener,
-MyKeyEventKey, BangDanKey, JieMianConstant, View.OnClickListener,
-View.OnFocusChangeListener {
+public class ShowYueDanActivity extends AbstractShowActivity {
 	
 	public static final int DIANYING_YUEDAN = 1;
 	public static final int DIANSHIJU_YUEDAN = 2;
@@ -84,6 +82,8 @@ View.OnFocusChangeListener {
 	private int currentItemPostion;
 	
 	private YueDanAdapter yueDanAdapter;
+	
+	private int beforepostion = 0;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -109,12 +109,7 @@ View.OnFocusChangeListener {
 		
 		currentItemPostion = defalutYuedan;
 		
-		initView();
-		initState();
-		
-
-		clearList();
-		initLists();
+		initActivity();
 		
 		yueDanAdapter = new YueDanAdapter(this);
 		dinashijuGv.setAdapter(yueDanAdapter);
@@ -135,20 +130,109 @@ View.OnFocusChangeListener {
 		dinashijuGv.setSelection(0);
 	}
 	
-	private void clearList() {
+	@Override
+	public void onFocusChange(View v, boolean hasFocus) {
+		// TODO Auto-generated method stub
 
-		StatisticsUtils.clearList(dianyingYueDanList);
-		StatisticsUtils.clearList(dianshijuYueDanList);
+		if (hasFocus) {
+
+			ItemStateUtils.viewToFocusState(getApplicationContext(), v);
+		} else {
+
+			ItemStateUtils.viewToOutFocusState(getApplicationContext(), v,
+					activeView);
+		}
+
+	}
+
+	@Override
+	public boolean onKey(View v, int keyCode, KeyEvent event) {
+		// TODO Auto-generated method stub
+		int action = event.getAction();
+		return false;
 	}
 	
-	private void initLists() {
-		lists = new List[2];
-		lists[0] = dianyingYueDanList;
-		lists[1] = dianshijuYueDanList;
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		if (aq != null)
+			aq.dismiss();
+		
+		clearLists();
+		super.onDestroy();
 	}
 
-	private void initView() {
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+		 Log.i("Yangzhg", "onClick");
 
+			if(activeView == null) {
+				
+				if(defalutYuedan == DIANYING_YUEDAN) {
+					activeView = dianyingyuedanBtn;
+				} else {
+					
+					activeView = dianshijuyuedanBtn;
+				}
+				
+			}
+			
+			if(activeView.getId() == v.getId()) {
+				
+				return;
+			}
+			
+			switch (v.getId()) {
+			case R.id.bt_dianyingyuedan:
+				currentItemPostion = 0;
+				String url1 = StatisticsUtils.getTopURL(TOP_URL, 1+"", 50 + "", 1+ "");
+				app.MyToast(aq.getContext(),"ll_daluju");
+				if(dianyingYueDanList != null && !dianyingYueDanList.isEmpty()) {
+					
+					notifyAdapter(dianyingYueDanList);
+				} else {
+					
+					getUnQuanbuData(url1);
+				}
+				break;
+			case R.id.bt_dianshijuyuedan:
+				currentItemPostion = 1;
+				String url2 = StatisticsUtils.getTopURL(TOP_URL, 1+"", 50 + "", 2+ "");
+				app.MyToast(aq.getContext(),"ll_gangju");
+				if(dianshijuYueDanList != null && !dianshijuYueDanList.isEmpty()) {
+					
+					notifyAdapter(dianshijuYueDanList);
+				} else {
+					
+					getUnQuanbuData(url2);
+				}
+				break;
+			case R.id.bt_zuijinguankan:
+				startActivity(new Intent(this, HistoryActivity.class));
+				break;
+			case R.id.bt_zhuijushoucang:
+				startActivity(new Intent(this, ShowShoucangHistoryActivity.class));
+				break;
+			default:
+				break;
+			}
+		 
+			View tempView = ItemStateUtils.viewToActive(getApplicationContext(), v,
+					activeView);
+
+			if (tempView != null) {
+
+				activeView = tempView;
+			}
+		
+		beforeGvView = null;
+	}
+
+	@Override
+	protected void initView() {
+		// TODO Auto-generated method stub
+		
 		searchEt = (EditText) findViewById(R.id.et_search);
 		dianyingyuedanBtn = (Button) findViewById(R.id.bt_dianyingyuedan);
 		dianshijuyuedanBtn = (Button) findViewById(R.id.bt_dianshijuyuedan);
@@ -160,34 +244,12 @@ View.OnFocusChangeListener {
 		firstFloatView = findViewById(R.id.inclue_movie_show_item);
 		
 		dinashijuGv.setNextFocusLeftId(R.id.bt_dianyingyuedan);
-
-		addListener();
-
 	}
-	
-	private void initState() {
 
-		if(defalutYuedan == DIANYING_YUEDAN) {
-			
-			activeView = dianyingyuedanBtn;
-			ItemStateUtils.buttonToActiveState(getApplicationContext(), dianyingyuedanBtn);
-		}else {
-			
-			activeView = dianshijuyuedanBtn;
-			ItemStateUtils.buttonToActiveState(getApplicationContext(), dianshijuyuedanBtn);
-		}
+	@Override
+	protected void initViewListener() {
+		// TODO Auto-generated method stub
 		
-		ItemStateUtils.setItemPadding(zuijinguankanBtn);
-		ItemStateUtils.setItemPadding(zhuijushoucangBtn);
-		ItemStateUtils.setItemPadding(dianyingyuedanBtn);
-		ItemStateUtils.setItemPadding(dianshijuyuedanBtn);
-
-	}
-
-	private int beforepostion = 0;
-
-	private void addListener() {
-
 		zuijinguankanBtn.setOnKeyListener(this);
 		zhuijushoucangBtn.setOnKeyListener(this);
 		dianyingyuedanBtn.setOnKeyListener(this);
@@ -418,8 +480,48 @@ View.OnFocusChangeListener {
 			}
 		});
 	}
-	
-	private void  initFirstFloatView() {
+
+	@Override
+	protected void initViewState() {
+		// TODO Auto-generated method stub
+		
+		if(defalutYuedan == DIANYING_YUEDAN) {
+			
+			activeView = dianyingyuedanBtn;
+			ItemStateUtils.buttonToActiveState(getApplicationContext(), dianyingyuedanBtn);
+		}else {
+			
+			activeView = dianshijuyuedanBtn;
+			ItemStateUtils.buttonToActiveState(getApplicationContext(), dianshijuyuedanBtn);
+		}
+		
+		ItemStateUtils.setItemPadding(zuijinguankanBtn);
+		ItemStateUtils.setItemPadding(zhuijushoucangBtn);
+		ItemStateUtils.setItemPadding(dianyingyuedanBtn);
+		ItemStateUtils.setItemPadding(dianshijuyuedanBtn);
+	}
+
+	@Override
+	protected void clearLists() {
+		// TODO Auto-generated method stub
+		
+		StatisticsUtils.clearList(dianyingYueDanList);
+		StatisticsUtils.clearList(dianshijuYueDanList);
+		StatisticsUtils.clearList(filterList);
+	}
+
+	@Override
+	protected void initLists() {
+		// TODO Auto-generated method stub
+		
+		lists = new List[2];
+		lists[0] = dianyingYueDanList;
+		lists[1] = dianshijuYueDanList;
+	}
+
+	@Override
+	protected void initFirstFloatView() {
+		// TODO Auto-generated method stub
 		
 		firstFloatView.setX(0);
 		firstFloatView.setY(0);
@@ -442,8 +544,10 @@ View.OnFocusChangeListener {
 		ItemStateUtils.floatViewInAnimaiton(getApplicationContext(),
 				firstFloatView);
 	}
-	
-	private void notifyAdapter(List<MovieItemData> list) {
+
+	@Override
+	protected void notifyAdapter(List<MovieItemData> list) {
+		// TODO Auto-generated method stub
 		
 		int height=yueDanAdapter.getHeight()
 				,width = yueDanAdapter.getWidth();
@@ -465,125 +569,51 @@ View.OnFocusChangeListener {
 		isSelectedItem = false;
 		dinashijuGv.requestFocus();
 	}
-	
+
 	@Override
-	public void onFocusChange(View v, boolean hasFocus) {
+	protected void filterVideoSource(String[] choice) {
 		// TODO Auto-generated method stub
-
-		if (hasFocus) {
-
-			ItemStateUtils.viewToFocusState(getApplicationContext(), v);
-		} else {
-
-			ItemStateUtils.viewToOutFocusState(getApplicationContext(), v,
-					activeView);
-		}
-
+		
 	}
 
 	@Override
-	public boolean onKey(View v, int keyCode, KeyEvent event) {
+	protected void getQuan10Data(String url) {
 		// TODO Auto-generated method stub
-		int action = event.getAction();
-		return false;
-	}
-	
-	@Override
-	protected void onDestroy() {
-		// TODO Auto-generated method stub
-		if (aq != null)
-			aq.dismiss();
 		
-		clearAllList();
-		super.onDestroy();
-	}
-	
-	private void clearAllList() {
-		
-		clearList();
-		StatisticsUtils.clearList(filterList);
-	}
-
-	@Override
-	public void onClick(View v) {
-		// TODO Auto-generated method stub
-		 Log.i("Yangzhg", "onClick");
-
-			if(activeView == null) {
-				
-				if(defalutYuedan == DIANYING_YUEDAN) {
-					activeView = dianyingyuedanBtn;
-				} else {
-					
-					activeView = dianshijuyuedanBtn;
-				}
-				
-			}
-			
-			if(activeView.getId() == v.getId()) {
-				
-				return;
-			}
-			
-			switch (v.getId()) {
-			case R.id.bt_dianyingyuedan:
-				currentItemPostion = 0;
-				String url1 = StatisticsUtils.getTopURL(TOP_URL, 1+"", 50 + "", 1+ "");
-				app.MyToast(aq.getContext(),"ll_daluju");
-				if(dianyingYueDanList != null && !dianyingYueDanList.isEmpty()) {
-					
-					notifyAdapter(dianyingYueDanList);
-				} else {
-					
-					getUnQuanbuData(url1);
-				}
-				break;
-			case R.id.bt_dianshijuyuedan:
-				currentItemPostion = 1;
-				String url2 = StatisticsUtils.getTopURL(TOP_URL, 1+"", 50 + "", 2+ "");
-				app.MyToast(aq.getContext(),"ll_gangju");
-				if(dianshijuYueDanList != null && !dianshijuYueDanList.isEmpty()) {
-					
-					notifyAdapter(dianshijuYueDanList);
-				} else {
-					
-					getUnQuanbuData(url2);
-				}
-				break;
-			case R.id.bt_zuijinguankan:
-				startActivity(new Intent(this, HistoryActivity.class));
-				break;
-			case R.id.bt_zhuijushoucang:
-				startActivity(new Intent(this, ShowShoucangHistoryActivity.class));
-				break;
-			default:
-				break;
-			}
-		 
-			View tempView = ItemStateUtils.viewToActive(getApplicationContext(), v,
-					activeView);
-
-			if (tempView != null) {
-
-				activeView = tempView;
-			}
-		
-		beforeGvView = null;
-	}
-	
-	private void getUnQuanbuData(String url) {
-		
-		getServiceData(url, "initUnQuanbu");
-	}
-	
-	private void getFilterData(String url) {
 		currentItemPostion = -1;
 		
-		getServiceData(url, "initFiler");
+		getServiceData(url, "initQuan10ServiceData");
 	}
-	
-	private void getServiceData(String url, String interfaceName) {
 
+	@Override
+	protected void getQuanbuData(String url) {
+		// TODO Auto-generated method stub
+		
+		currentItemPostion = -1;
+		
+		getServiceData(url, "initQuanbuServiceData");
+	}
+
+	@Override
+	protected void getUnQuanbuData(String url) {
+		// TODO Auto-generated method stub
+		
+		getServiceData(url, "initUnQuanbuServiceData");
+	}
+
+	@Override
+	protected void getFilterData(String url) {
+		// TODO Auto-generated method stub
+		
+		currentItemPostion = -1;
+		
+		getServiceData(url, "initFilerServiceData");
+	}
+
+	@Override
+	protected void getServiceData(String url, String interfaceName) {
+		// TODO Auto-generated method stub
+		
 		firstFloatView.setVisibility(View.INVISIBLE);
 		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
 		// cb.url(url).type(JSONObject.class).weakHandler(this, "initData");
@@ -592,9 +622,25 @@ View.OnFocusChangeListener {
 		cb.SetHeader(app.getHeaders());
 		aq.ajax(cb);
 	}
-	
-	public void initUnQuanbu(String url, JSONObject json, AjaxStatus status) {
 
+	@Override
+	public void initQuan10ServiceData(String url, JSONObject json,
+			AjaxStatus status) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void initQuanbuServiceData(String url, JSONObject json,
+			AjaxStatus status) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void initUnQuanbuServiceData(String url, JSONObject json,
+			AjaxStatus status) {
+		// TODO Auto-generated method stub
+		
 		if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
 
 			app.MyToast(aq.getContext(),
@@ -624,8 +670,11 @@ View.OnFocusChangeListener {
 			e.printStackTrace();
 		}
 	}
-	
-	public void initFiler(String url, JSONObject json, AjaxStatus status) {
+
+	@Override
+	public void initFilerServiceData(String url, JSONObject json,
+			AjaxStatus status) {
+		// TODO Auto-generated method stub
 		
 		if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
 

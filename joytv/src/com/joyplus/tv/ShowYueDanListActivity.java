@@ -48,9 +48,7 @@ import com.joyplus.tv.utils.ItemStateUtils;
 import com.joyplus.tv.utils.JieMianConstant;
 import com.joyplus.tv.utils.MyKeyEventKey;
 
-public class ShowYueDanListActivity extends Activity implements View.OnKeyListener,
-MyKeyEventKey, BangDanKey, JieMianConstant, View.OnClickListener,
-View.OnFocusChangeListener {
+public class ShowYueDanListActivity extends AbstractShowActivity{
 
 	private String TAG = "ShowYueDanListActivity";
 	private AQuery aq;
@@ -81,6 +79,8 @@ View.OnFocusChangeListener {
 	private List<MovieItemData> filterList = new ArrayList<MovieItemData>();
 	
 	private SearchAdapter yueAdapter;
+	
+	private int beforepostion = 0;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -101,9 +101,7 @@ View.OnFocusChangeListener {
 				&& !id.equals("")) {
 			initView();
 			
-			initState();
-			
-			StatisticsUtils.clearList(yuedanList);
+			initActivity();
 			
 			yueAdapter = new SearchAdapter(this);
 
@@ -120,15 +118,76 @@ View.OnFocusChangeListener {
 		}
 
 	}
-	
-	private void clearAllList() {
-		
-		StatisticsUtils.clearList(yuedanList);
-		StatisticsUtils.clearList(filterList);
+
+	@Override
+	public void onFocusChange(View v, boolean hasFocus) {
+		// TODO Auto-generated method stub
+
+		if (hasFocus) {
+
+			ItemStateUtils.viewToFocusState(getApplicationContext(), v);
+		} else {
+
+			ItemStateUtils.viewToOutFocusState(getApplicationContext(), v,
+					activeView);
+		}
+
 	}
 
-	private void initView() {
+	@Override
+	public boolean onKey(View v, int keyCode, KeyEvent event) {
+		// TODO Auto-generated method stub
+		int action = event.getAction();
+		return false;
+	}
 
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		if (aq != null)
+			aq.dismiss();
+		
+		clearLists();
+		super.onDestroy();
+	}
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+		Log.i("Yangzhg", "onClick");
+
+		if (activeView.getId() == v.getId()) {
+
+			return;
+		}
+		
+		switch (v.getId()) {
+		case R.id.bt_zuijinguankan:
+			startActivity(new Intent(this, HistoryActivity.class));
+			break;
+		case R.id.bt_zhuijushoucang:
+			startActivity(new Intent(this, ShowShoucangHistoryActivity.class));
+			break;
+
+		default:
+			break;
+		}
+
+		View tempView = ItemStateUtils.viewToActive(getApplicationContext(), v,
+				activeView);
+
+		if (tempView != null) {
+
+			activeView = tempView;
+		}
+
+		beforeGvView = null;
+		v.setOnKeyListener(this);
+	}
+
+	@Override
+	protected void initView() {
+		// TODO Auto-generated method stub
+		
 		searchEt = (EditText) findViewById(R.id.et_search);
 		dinashijuGv = (MyMovieGridView) findViewById(R.id.gv_movie_show);
 
@@ -141,22 +200,12 @@ View.OnFocusChangeListener {
 		dinashijuGv.setNextFocusLeftId(R.id.bt_zuijinguankan);
 		
 		activeView = zuijinguankanBtn;
-
-		addListener();
-
 	}
 
-	private void initState() {
+	@Override
+	protected void initViewListener() {
+		// TODO Auto-generated method stub
 		
-		ItemStateUtils.setItemPadding(zuijinguankanBtn);
-		ItemStateUtils.setItemPadding(zhuijushoucangBtn);
-
-	}
-
-	private int beforepostion = 0;
-
-	private void addListener() {
-
 		zuijinguankanBtn.setOnKeyListener(this);
 		zhuijushoucangBtn.setOnKeyListener(this);
 
@@ -403,9 +452,33 @@ View.OnFocusChangeListener {
 			}
 		});
 	}
-	
-	private void initFirstFloatView() {
 
+	@Override
+	protected void initViewState() {
+		// TODO Auto-generated method stub
+		
+		ItemStateUtils.setItemPadding(zuijinguankanBtn);
+		ItemStateUtils.setItemPadding(zhuijushoucangBtn);
+	}
+
+	@Override
+	protected void clearLists() {
+		// TODO Auto-generated method stub
+		
+		StatisticsUtils.clearList(yuedanList);
+		StatisticsUtils.clearList(filterList);
+	}
+
+	@Override
+	protected void initLists() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void initFirstFloatView() {
+		// TODO Auto-generated method stub
+		
 		firstFloatView.setX(0);
 		firstFloatView.setY(0);
 		firstFloatView.setLayoutParams(new FrameLayout.LayoutParams(popWidth,
@@ -458,8 +531,10 @@ View.OnFocusChangeListener {
 		ItemStateUtils.floatViewInAnimaiton(getApplicationContext(),
 				firstFloatView);
 	}
-	
-	private void notifyAdapter(List<MovieItemData> list) {
+
+	@Override
+	protected void notifyAdapter(List<MovieItemData> list) {
+		// TODO Auto-generated method stub
 		
 		int height=yueAdapter.getHeight()
 				,width = yueAdapter.getWidth();
@@ -483,82 +558,44 @@ View.OnFocusChangeListener {
 	}
 
 	@Override
-	public void onFocusChange(View v, boolean hasFocus) {
+	protected void filterVideoSource(String[] choice) {
 		// TODO Auto-generated method stub
-
-		if (hasFocus) {
-
-			ItemStateUtils.viewToFocusState(getApplicationContext(), v);
-		} else {
-
-			ItemStateUtils.viewToOutFocusState(getApplicationContext(), v,
-					activeView);
-		}
-
+		
 	}
 
 	@Override
-	public boolean onKey(View v, int keyCode, KeyEvent event) {
+	protected void getQuan10Data(String url) {
 		// TODO Auto-generated method stub
-		int action = event.getAction();
-		return false;
+		
+		getServiceData(url, "initQuan10ServiceData");
 	}
 
 	@Override
-	protected void onDestroy() {
+	protected void getQuanbuData(String url) {
 		// TODO Auto-generated method stub
-		if (aq != null)
-			aq.dismiss();
 		
-		clearAllList();
-		super.onDestroy();
+		getServiceData(url, "initQuanbuServiceData");
 	}
+
 	@Override
-	public void onClick(View v) {
+	protected void getUnQuanbuData(String url) {
 		// TODO Auto-generated method stub
-		Log.i("Yangzhg", "onClick");
-
-		if (activeView.getId() == v.getId()) {
-
-			return;
-		}
 		
-		switch (v.getId()) {
-		case R.id.bt_zuijinguankan:
-			startActivity(new Intent(this, HistoryActivity.class));
-			break;
-		case R.id.bt_zhuijushoucang:
-			startActivity(new Intent(this, ShowShoucangHistoryActivity.class));
-			break;
-
-		default:
-			break;
-		}
-
-		View tempView = ItemStateUtils.viewToActive(getApplicationContext(), v,
-				activeView);
-
-		if (tempView != null) {
-
-			activeView = tempView;
-		}
-
-		beforeGvView = null;
-		v.setOnKeyListener(this);
+		getServiceData(url, "initUnQuanbuServiceData");
 	}
-	
-	private void getUnQuanbuData(String url) {
+
+	@Override
+	protected void getFilterData(String url) {
+		// TODO Auto-generated method stub
 		
-		getServiceData(url, "initUnQuanbu");
-	}
-	
-	private void getFilterData(String url) {
 		
-		getServiceData(url, "initFiler");
+		getServiceData(url, "initFilerServiceData");
 	}
-	
-	private void getServiceData(String url, String interfaceName) {
 
+	@Override
+	protected void getServiceData(String url, String interfaceName) {
+		// TODO Auto-generated method stub
+		
 		firstFloatView.setVisibility(View.INVISIBLE);
 		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
 		// cb.url(url).type(JSONObject.class).weakHandler(this, "initData");
@@ -567,9 +604,26 @@ View.OnFocusChangeListener {
 		cb.SetHeader(app.getHeaders());
 		aq.ajax(cb);
 	}
-	
-	public void initUnQuanbu(String url, JSONObject json, AjaxStatus status) {
 
+	@Override
+	public void initQuan10ServiceData(String url, JSONObject json,
+			AjaxStatus status) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void initQuanbuServiceData(String url, JSONObject json,
+			AjaxStatus status) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void initUnQuanbuServiceData(String url, JSONObject json,
+			AjaxStatus status) {
+		// TODO Auto-generated method stub
+		
 		if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
 
 			app.MyToast(aq.getContext(),
@@ -593,8 +647,11 @@ View.OnFocusChangeListener {
 			e.printStackTrace();
 		}
 	}
-	
-	public void initFiler(String url, JSONObject json, AjaxStatus status) {
+
+	@Override
+	public void initFilerServiceData(String url, JSONObject json,
+			AjaxStatus status) {
+		// TODO Auto-generated method stub
 		
 		if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
 
