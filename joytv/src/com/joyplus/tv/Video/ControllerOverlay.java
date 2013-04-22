@@ -75,7 +75,7 @@ public interface ControllerOverlay {
 
 	void ShowTimes();
 
-	void reViewControlView();
+	void ControlViewGone();
 
 	void resetTime();
 

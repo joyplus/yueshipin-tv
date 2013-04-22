@@ -214,7 +214,36 @@ public class MovieControllerOverlay extends FrameLayout implements
 				.loadAnimation(context, R.anim.player_out);
 		hideAnimation.setAnimationListener(this);
 
-		reViewControlView();
+		mCurrentPlayData = app.getCurrentPlayData();
+		playPauseReplayView.setBackgroundResource(R.drawable.player_btn_pause);
+		if (mCurrentPlayData != null) {
+			if (mCurrentPlayData.prod_time != 0L) {
+				TextView mViewTime = (TextView) rootView
+						.findViewById(R.id.textView7);
+				;
+				mViewTime.setText(StatisticsUtils
+						.formatDuration(mCurrentPlayData.prod_time));
+			}
+			if (mCurrentPlayData.prod_src != null) {
+				TextView mViewSrc = (TextView) rootView
+						.findViewById(R.id.textView9);
+				;
+				mViewSrc.setText(mCurrentPlayData.prod_src);
+			}
+			ImageView mImageSrc = (ImageView) rootView
+					.findViewById(R.id.imageView1);
+			if (mCurrentPlayData.prod_qua == 0)
+				mImageSrc.setImageResource(R.drawable.player_720p);
+			else
+				mImageSrc.setImageResource(R.drawable.player_1080p);
+
+			if (mCurrentPlayData.prod_time == 0) {
+				rootView.findViewById(R.id.textView6).setVisibility(View.GONE);
+				rootView.findViewById(R.id.textView7).setVisibility(View.GONE);
+			}
+			ControlViewGone();
+
+		}
 
 		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
 				LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
@@ -263,41 +292,12 @@ public class MovieControllerOverlay extends FrameLayout implements
 		}
 	}
 
-	public void reViewControlView() {
-		mCurrentPlayData = app.getCurrentPlayData();
-		playPauseReplayView.setBackgroundResource(R.drawable.player_btn_pause);
-		if (mCurrentPlayData != null) {
-			if (mCurrentPlayData.prod_time != 0L) {
-				TextView mViewTime = (TextView) rootView
-						.findViewById(R.id.textView7);
-				;
-				mViewTime.setText(StatisticsUtils
-						.formatDuration(mCurrentPlayData.prod_time));
-			}
-			if (mCurrentPlayData.prod_src != null) {
-				TextView mViewSrc = (TextView) rootView
-						.findViewById(R.id.textView9);
-				;
-				mViewSrc.setText(mCurrentPlayData.prod_src);
-			}
-			ImageView mImageSrc = (ImageView) rootView
-					.findViewById(R.id.imageView1);
-			if (mCurrentPlayData.prod_qua == 0)
-				mImageSrc.setImageResource(R.drawable.player_720p);
-			else
-				mImageSrc.setImageResource(R.drawable.player_1080p);
+	public void ControlViewGone() {
 
-			if (mCurrentPlayData.prod_time == 0) {
-				rootView.findViewById(R.id.textView6).setVisibility(View.GONE);
-				rootView.findViewById(R.id.textView7).setVisibility(View.GONE);
-			}
 			rootView.findViewById(R.id.imageControl_t).setVisibility(View.GONE);
 			rootView.findViewById(R.id.imageControl_b).setVisibility(View.GONE);
 			rootView.findViewById(R.id.imageControl_l).setVisibility(View.GONE);
 			rootView.findViewById(R.id.imageControl_r).setVisibility(View.GONE);
-
-		}
-
 	}
 
 	public void focusLayoutControl(int index) {
@@ -534,31 +534,12 @@ public class MovieControllerOverlay extends FrameLayout implements
 	public void onAnimationEnd(Animation animation) {
 		if (mShowVolume)
 			hideVolume();
+		else if(mLayoutBottomTime2.getVisibility() == View.VISIBLE){
+			mLayoutControl.setVisibility(View.GONE);
+			mLayoutVolume.setVisibility(View.GONE);
+		}
 		else
 			hide();
-	}
-
-	public void onClick(View view) {
-		if (listener != null) {
-			if (view == mLayoutControl) {
-				if (state == State.ENDED) {
-					if (canReplay) {
-						// playPauseReplayView.setBackgroundResource(R.drawable.player_s_ic_vidcontrol_reload);
-						listener.onReplay();
-					}
-				} else if (state == State.PAUSED || state == State.PLAYING) {
-					// if(state == State.PAUSED){
-					// playPauseReplayView.setBackgroundResource(R.drawable.player_s_ic_vidcontrol_play);
-					// }else if(state == State.PLAYING){
-					// playPauseReplayView.setBackgroundResource(R.drawable.player_s_ic_vidcontrol_pause);
-					// }
-					// else
-					// playPauseReplayView.setBackgroundResource(R.drawable.player_s_ic_vidcontrol_reload);
-					listener.onPlayPause();
-
-				}
-			}
-		}
 	}
 
 	@Override

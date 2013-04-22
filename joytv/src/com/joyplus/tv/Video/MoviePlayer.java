@@ -94,6 +94,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 	private int JUMP_TIME_TIMES = 0;// 检查是否处在快进模式中
 	private int CURRENT_KEY = 0;
 	private int prod_type = 0;
+	private int currentKeyEvent = 0;
 
 	private int seekBarWidthOffset = 24;
 
@@ -208,14 +209,14 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		// When the user touches the screen or uses some hard key, the framework
 		// will change system ui visibility from invisible to visible. We show
 		// the media control at this point.
-		mVideoView
-				.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
-					public void onSystemUiVisibilityChange(int visibility) {
-						if ((visibility & View.SYSTEM_UI_FLAG_HIDE_NAVIGATION) == 0) {
-							mController.show();
-						}
-					}
-				});
+//		mVideoView
+//				.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
+//					public void onSystemUiVisibilityChange(int visibility) {
+//						if ((visibility & View.SYSTEM_UI_FLAG_HIDE_NAVIGATION) == 0) {
+//							mController.show();
+//						}
+//					}
+//				});
 
 		Intent i = new Intent(SERVICECMD);
 		i.putExtra(CMDNAME, CMDPAUSE);
@@ -246,7 +247,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 	}
 
 	public void setVideoURI(Uri mUri, int Time) {
-		mController.reViewControlView();
+		mController.ControlViewGone();
 		mVideoView.setVideoURI(mUri);
 		if (Time > 0)
 			mVideoView.seekTo(Time);
@@ -584,6 +585,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 				} else {
 					playVideo();
 				}
+				
 			}
 
 			return true;
@@ -612,6 +614,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 			// just consuming the events.
 			return true;
 		case KeyEvent.KEYCODE_BACK:
+			currentKeyEvent = KeyEvent.KEYCODE_BACK;
 			 if (JUMP_TIME_TIMES != 0) {// 快进模式
 				mDragging = false;
 				JUMP_TIME = 0;
@@ -621,7 +624,6 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 				mController.HidingTimes();
 				return true;
 			}else if (prod_type != 1 ) {
-				mController.returnShowView();
 				if (mVideoView.isPlaying()) {
 					pauseVideo();
 					mController.focusLayoutControl(0);
@@ -629,13 +631,16 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 				} else {
 					playVideo();
 				}
-					return true;
+				mController.returnShowView();
+				return true;
 			}
 
 		}
 		return false;
 	}
-
+	public int getCurrentKeyEvent(){
+		return currentKeyEvent;
+	}
 	private void OnMediaRewind() {
 		if (JUMP_TIME_TIMES > 1)
 			JUMP_TIME_TIMES = 1;

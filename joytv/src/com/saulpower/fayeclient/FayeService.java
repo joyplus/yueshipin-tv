@@ -223,6 +223,7 @@ public class FayeService extends Service implements FayeListener{
 					sendBroadcast(unbandIntent);
 				}
 				break;
+			case 411:
 			case 41://投影视频
 				phoneID = app.getUserData("phoneID");
 				if(phoneID ==null){

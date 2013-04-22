@@ -235,7 +235,9 @@ public class VideoPlayerActivity extends Activity {
 	}
 
 	public void OnClickPause(View v) {
-		if (mPlayer.isPause())
+		if(prod_type != 1  && mPlayer.getCurrentKeyEvent() == KeyEvent.KEYCODE_BACK)
+			finish();
+		else if (mPlayer.isPause())
 			mPlayer.playVideo();
 		else
 			mPlayer.pauseVideo();
