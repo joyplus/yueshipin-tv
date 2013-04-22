@@ -994,7 +994,7 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 				break;
 			case 2:
 				//设置
-//				startActivity(new Intent(this,ShowDongManActivity.class));
+				startActivity(new Intent(this,SettingActivity.class));
 				break;
 			}
 			break;
