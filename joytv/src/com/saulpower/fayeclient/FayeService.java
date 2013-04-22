@@ -224,7 +224,11 @@ public class FayeService extends Service implements FayeListener{
 				}
 				break;
 			case 41://投影视频
-				if(app.getUserData("isBand") != null||"1".equals(app.getUserData("isBand"))){
+				phoneID = app.getUserData("phoneID");
+				if(phoneID ==null){
+					return;
+				}
+				if(app.getUserData("isBand") != null&&"1".equals(app.getUserData("isBand"))&&phoneID.equals(json.get("user_id"))){
 					CurrentPlayData playDate = new CurrentPlayData();
 					Intent intent = new Intent(this,VideoPlayerActivity.class);
 //					intent.putExtra("ID", json.getString("prod_id"));
@@ -238,7 +242,55 @@ public class FayeService extends Service implements FayeListener{
 					playDate.prod_qua = Integer.valueOf(json.getString("prod_qua"));
 					app.setCurrentPlayData(playDate);
 					startActivity(intent);
+					
+					
+					JSONObject responseObj = new JSONObject();
+					responseObj.put("push_type", "42");
+					responseObj.put("user_id", phoneID);
+					responseObj.put("tv_channel", channel.replace(Constant.FAYECHANNEL_TV_HEAD, ""));
+					responseObj.put("prod_id", playDate.prod_id);
+					responseObj.put("prod_url", playDate.prod_url);
+					myClient.sendMessage(responseObj);
 				}
+			case 403://视频推送后，手机发送播放指令消息
+				phoneID = app.getUserData("phoneID");
+				if(phoneID ==null){
+					return;
+				}
+				if(app.getUserData("isBand") != null&&"1".equals(app.getUserData("isBand"))&&phoneID.equals(json.get("user_id"))){
+					Intent intent = new Intent(Constant.VIDEOPLAYERCMD);
+					intent.putExtra("cmd", "403");
+					intent.putExtra("content", "");
+					intent.putExtra("prod_url", json.getString("prod_url"));
+					sendBroadcast(intent);
+				}
+				break;
+			case 405://视频推送后，手机发送暂停指令消息
+				phoneID = app.getUserData("phoneID");
+				if(phoneID ==null){
+					return;
+				}
+				if(app.getUserData("isBand") != null&&"1".equals(app.getUserData("isBand"))&&phoneID.equals(json.get("user_id"))){
+					Intent intent = new Intent(Constant.VIDEOPLAYERCMD);
+					intent.putExtra("cmd", "405");
+					intent.putExtra("content", "");
+					intent.putExtra("prod_url", json.getString("prod_url"));
+					sendBroadcast(intent);
+				}
+				break;
+			case 407://视频推送后，手机发送快进、快退指令消息
+				phoneID = app.getUserData("phoneID");
+				if(phoneID ==null){
+					return;
+				}
+				if(app.getUserData("isBand") != null&&"1".equals(app.getUserData("isBand"))&&phoneID.equals(json.get("user_id"))){
+					Intent intent = new Intent(Constant.VIDEOPLAYERCMD);
+					intent.putExtra("cmd", "407");
+					intent.putExtra("content", json.getString("prod_time"));
+					intent.putExtra("prod_url", json.getString("prod_url"));
+					sendBroadcast(intent);
+				}
+				break;
 			default:
 				break;
 			}
