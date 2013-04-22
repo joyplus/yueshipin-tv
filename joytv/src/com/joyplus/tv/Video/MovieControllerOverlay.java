@@ -145,7 +145,8 @@ public class MovieControllerOverlay extends FrameLayout implements
 
 		loadingView = rootView.findViewById(R.id.LayoutPreload);
 		mTextViewRate = (TextView) rootView.findViewById(R.id.textView4);
-		mTextViewPreparedPercent = (TextView) rootView.findViewById(R.id.textView5);
+		mTextViewPreparedPercent = (TextView) rootView
+				.findViewById(R.id.textView5);
 
 		mLayoutControl = rootView.findViewById(R.id.LayoutControl);
 		mLayoutControl.setOnTouchListener(this);
@@ -213,8 +214,16 @@ public class MovieControllerOverlay extends FrameLayout implements
 				.loadAnimation(context, R.anim.player_out);
 		hideAnimation.setAnimationListener(this);
 
+		reViewControlView();
+
+		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+				LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+		setLayoutParams(params);
+		hide();
+	}
+
+	public void reViewControlView() {
 		mCurrentPlayData = app.getCurrentPlayData();
-		ReturnProgramView m_ReturnProgramView = app.get_ReturnProgramView();
 		if (mCurrentPlayData != null) {
 			if (mCurrentPlayData.prod_time != 0L) {
 				TextView mViewTime = (TextView) rootView
@@ -229,55 +238,67 @@ public class MovieControllerOverlay extends FrameLayout implements
 				;
 				mViewSrc.setText(mCurrentPlayData.prod_src);
 			}
-			ImageView mImageSrc = (ImageView) rootView.findViewById(R.id.imageView1);
+			ImageView mImageSrc = (ImageView) rootView
+					.findViewById(R.id.imageView1);
 			if (mCurrentPlayData.prod_qua == 0)
 				mImageSrc.setImageResource(R.drawable.player_720p);
-			else 
+			else
 				mImageSrc.setImageResource(R.drawable.player_1080p);
-			
-			if(mCurrentPlayData.prod_time == 0){
+
+			if (mCurrentPlayData.prod_time == 0) {
 				rootView.findViewById(R.id.textView6).setVisibility(View.GONE);
 				rootView.findViewById(R.id.textView7).setVisibility(View.GONE);
 			}
-			if(mCurrentPlayData.prod_type ==2 && mCurrentPlayData.prod_type ==3){
-				if(mCurrentPlayData.CurrentIndex >0)
-					rootView.findViewById(R.id.imageControl_l).setEnabled(true);
-				else 
-					rootView.findViewById(R.id.imageControl_l).setEnabled(false);
-
-				switch (mCurrentPlayData.prod_type) {
-				case 2:
-					if(mCurrentPlayData.CurrentIndex < m_ReturnProgramView.tv.episodes.length)
-						rootView.findViewById(R.id.imageControl_r).setEnabled(true);
-					else
-						rootView.findViewById(R.id.imageControl_r).setEnabled(false);
-					break;
-				case 3:
-					if(mCurrentPlayData.CurrentIndex < m_ReturnProgramView.show.episodes.length)
-						rootView.findViewById(R.id.imageControl_r).setEnabled(true);
-					else
-						rootView.findViewById(R.id.imageControl_r).setEnabled(false);
-					break;
+			if (mCurrentPlayData.prod_type == 2
+					|| mCurrentPlayData.prod_type == 3) {
+				rootView.findViewById(R.id.imageControl_t).setVisibility(
+						View.VISIBLE);
+				rootView.findViewById(R.id.imageControl_b).setVisibility(
+						View.VISIBLE);
+				rootView.findViewById(R.id.imageControl_l).setVisibility(
+						View.VISIBLE);
+				rootView.findViewById(R.id.imageControl_r).setVisibility(
+						View.VISIBLE);
+				if (mCurrentPlayData.CurrentIndex > 0)
+					rootView.findViewById(R.id.imageControl_r).setEnabled(true);
+				else
+					rootView.findViewById(R.id.imageControl_r)
+							.setEnabled(false);
+				
+				ReturnProgramView m_ReturnProgramView = app.get_ReturnProgramView();
+				if (m_ReturnProgramView != null) {
+					switch (mCurrentPlayData.prod_type) {
+					case 2:
+						if (mCurrentPlayData.CurrentIndex < m_ReturnProgramView.tv.episodes.length)
+							rootView.findViewById(R.id.imageControl_l)
+									.setEnabled(true);
+						else
+							rootView.findViewById(R.id.imageControl_l)
+									.setEnabled(false);
+						break;
+					case 3:
+						if (mCurrentPlayData.CurrentIndex < m_ReturnProgramView.show.episodes.length)
+							rootView.findViewById(R.id.imageControl_l)
+									.setEnabled(true);
+						else
+							rootView.findViewById(R.id.imageControl_l)
+									.setEnabled(false);
+						break;
+					}
 				}
+			} else if (mCurrentPlayData.prod_type == 1) {
+				rootView.findViewById(R.id.imageControl_t).setVisibility(
+						View.GONE);
+				rootView.findViewById(R.id.imageControl_b).setVisibility(
+						View.GONE);
+				rootView.findViewById(R.id.imageControl_l).setVisibility(
+						View.GONE);
+				rootView.findViewById(R.id.imageControl_r).setVisibility(
+						View.GONE);
 			}
-			else{
-				rootView.findViewById(R.id.imageControl_t).setVisibility(View.INVISIBLE);
-				rootView.findViewById(R.id.imageControl_b).setVisibility(View.INVISIBLE);
-				rootView.findViewById(R.id.imageControl_l).setVisibility(View.INVISIBLE);
-				rootView.findViewById(R.id.imageControl_r).setVisibility(View.INVISIBLE);
-			}
-			
-			// prod_id= mCurrentPlayData.prod_id;
-			// prod_name = mCurrentPlayData.prod_name;
-			// prod_url = mCurrentPlayData.prod_url;
-			// prod_src = mCurrentPlayData.prod_src;
-			// prod_qua = mCurrentPlayData.prod_qua;
+
 		}
 
-		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-				LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-		setLayoutParams(params);
-		hide();
 	}
 
 	public void focusLayoutControl(int index) {
@@ -512,7 +533,7 @@ public class MovieControllerOverlay extends FrameLayout implements
 	}
 
 	public void onAnimationEnd(Animation animation) {
-		if(mShowVolume)
+		if (mShowVolume)
 			hideVolume();
 		else
 			hide();
@@ -709,13 +730,14 @@ public class MovieControllerOverlay extends FrameLayout implements
 			timeTakenMillis = System.currentTimeMillis() - beginTimeMillis;
 			beginTimeMillis = System.currentTimeMillis();
 			// check how long there is until we reach the desired refresh rate
-			m_bitrate = ((rxBytes - rxByteslast) * 8 * 1000 / timeTakenMillis)/8000;
+			m_bitrate = ((rxBytes - rxByteslast) * 8 * 1000 / timeTakenMillis) / 8000;
 			rxByteslast = rxBytes;
-			
-			mTextViewRate.setText("（"+Long.toString(m_bitrate) + "kb/s");
+
+			mTextViewRate.setText("（" + Long.toString(m_bitrate) + "kb/s");
 			mPreparedPercent = mPreparedPercent + m_bitrate;
-			if(mPreparedPercent >=100 && mPreparedPercent/100 <=100)
-				mTextViewPreparedPercent.setText("）,已完成"+Long.toString(mPreparedPercent/100) + "%");
+			if (mPreparedPercent >= 100 && mPreparedPercent / 100 <= 100)
+				mTextViewPreparedPercent.setText("）,已完成"
+						+ Long.toString(mPreparedPercent / 100) + "%");
 
 			// Fun_downloadrate();
 			handler.postDelayed(mRunnable, 500);
@@ -740,7 +762,7 @@ public class MovieControllerOverlay extends FrameLayout implements
 
 	public void showVolume(int index) {
 		// TODO Auto-generated method stub
-		if(mLayoutControl.getVisibility() == View.VISIBLE){
+		if (mLayoutControl.getVisibility() == View.VISIBLE) {
 			mLayoutControl.setAnimation(null);
 			mLayoutControl.setVisibility(View.GONE);
 		}

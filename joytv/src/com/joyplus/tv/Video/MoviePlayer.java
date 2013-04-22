@@ -136,6 +136,8 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 	private int mVideoWidth = 0;
 	private int mVideoHeight = 0;
 	private int mPreparedPercent = 0;
+	
+	private String PROD_SOURCE = null;
 
 	// private final Runnable mPlayingChecker = new Runnable() {
 	// public void run() {
@@ -242,12 +244,14 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 	}
 
 	public void setVideoURI(Uri mUri, int Time) {
-		mUri = mUri;
+		mController.reViewControlView();
 		mVideoView.setVideoURI(mUri);
 		if (Time > 0)
 			mVideoView.seekTo(Time);
-		mVideoView.start();
-		mHasPaused = false;
+//		mVideoView.start();
+//		mHasPaused = false;
+		startVideo();
+
 	}
 
 	public void setAudioManager(AudioManager mAudioManager) {
@@ -354,6 +358,9 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 
 	public int getCurrentPositon() {
 		return mVideoView.getCurrentPosition();
+	}
+	public String getCurrentUrl() {
+		return PROD_SOURCE;
 	}
 
 	public int getDuration() {
@@ -602,16 +609,22 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 			// just consuming the events.
 			return true;
 		case KeyEvent.KEYCODE_BACK:
-			if (mHasPaused) {
-				playVideo();
-				return true;
-			} else if (JUMP_TIME_TIMES != 0) {// 快进模式
+			 if (JUMP_TIME_TIMES != 0) {// 快进模式
 				mDragging = false;
 				JUMP_TIME = 0;
 				JUMP_TIME_TIMES = 0;
 				mHandler.removeCallbacks(mMediaFastForwardRunnable);
 				mController.hideTimerBar();
 				mController.HidingTimes();
+				return true;
+			}else if (prod_type != 1 ) {
+				if (mVideoView.isPlaying()) {
+					pauseVideo();
+					mController.focusLayoutControl(0);
+					CURRENT_KEY = 0;
+				} else {
+					playVideo();
+				}
 				return true;
 			}
 
@@ -919,7 +932,6 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 			mCurrentPlayData.CurrentIndex -=1;
 			app.setCurrentPlayData(mCurrentPlayData);
 			
-			String PROD_SOURCE = null;
 			String title = null;
 
 			switch (mCurrentPlayData.prod_type) {
@@ -1000,7 +1012,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 			mCurrentPlayData.CurrentIndex +=1;
 			app.setCurrentPlayData(mCurrentPlayData);
 			
-			String PROD_SOURCE = null;
+			
 			String title = null;
 
 			switch (mCurrentPlayData.prod_type) {
@@ -1085,51 +1097,51 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 				return false;
 			}
 		}
-		// 模拟火狐ios发用请求 使用userAgent
-		AndroidHttpClient mAndroidHttpClient = AndroidHttpClient
-				.newInstance(Constant.USER_AGENT_IOS);
-
-		HttpParams httpParams = mAndroidHttpClient.getParams();
-		// 连接时间最长5秒，可以更改
-		HttpConnectionParams.setConnectionTimeout(httpParams, 2000);
-
-		try {
-			URL url = new URL(srcUrl);
-			HttpGet mHttpGet = new HttpGet(url.toURI());
-			HttpResponse response = mAndroidHttpClient.execute(mHttpGet);
-
-			// 限定连接时间
-
-			StatusLine statusLine = response.getStatusLine();
-			int status = statusLine.getStatusCode();
-
-			Header headertop = response.getFirstHeader("Content-Type");// 拿到重新定位后的header
-			String type = headertop.getValue().toLowerCase();// 从header重新取出信息
-			Header header_length = response.getFirstHeader("Content-Length");
-			String lengthStr = header_length.getValue();
-			Log.i(TAG, "HTTP STATUS : " + status);
-			
-			mAndroidHttpClient.close();
-			
-			if(status != 404){
-				return true;
-			}else{
-				return false;
-			}
-
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			if (BuildConfig.DEBUG)
-				Log.i(TAG, "NOT OK" + e);
-			// 如果地址真的不存在，那就往里面加NULL字符串
-			mAndroidHttpClient.close();
-			e.printStackTrace();
-			return false;
-		}
+		return true;
+//		// 模拟火狐ios发用请求 使用userAgent
+//		AndroidHttpClient mAndroidHttpClient = AndroidHttpClient
+//				.newInstance(Constant.USER_AGENT_IOS);
+//
+//		HttpParams httpParams = mAndroidHttpClient.getParams();
+//		// 连接时间最长5秒，可以更改
+//		HttpConnectionParams.setConnectionTimeout(httpParams, 2000);
+//
+//		try {
+//			URL url = new URL(srcUrl);
+//			HttpGet mHttpGet = new HttpGet(url.toURI());
+//			HttpResponse response = mAndroidHttpClient.execute(mHttpGet);
+//
+//			// 限定连接时间
+//
+//			StatusLine statusLine = response.getStatusLine();
+//			int status = statusLine.getStatusCode();
+//
+//			Header headertop = response.getFirstHeader("Content-Type");// 拿到重新定位后的header
+//			String type = headertop.getValue().toLowerCase();// 从header重新取出信息
+//			Header header_length = response.getFirstHeader("Content-Length");
+//			String lengthStr = header_length.getValue();
+//			Log.i(TAG, "HTTP STATUS : " + status);
+//			
+//			mAndroidHttpClient.close();
+//			
+//			if(status != 404){
+//				return true;
+//			}else{
+//				return false;
+//			}
+//
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			if (BuildConfig.DEBUG)
+//				Log.i(TAG, "NOT OK" + e);
+//			// 如果地址真的不存在，那就往里面加NULL字符串
+//			mAndroidHttpClient.close();
+//			e.printStackTrace();
+//			return false;
+//		}
 	}
 
 	private String GetSource(ReturnProgramView m_ReturnProgramView,int CurrentCategory,int proi_index, int sourceIndex) {
-		String PROD_SOURCE = null;
 		switch (CurrentCategory) {
 		case 1:
 			break;

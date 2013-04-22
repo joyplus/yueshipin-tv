@@ -132,6 +132,7 @@ public class VideoPlayerActivity extends Activity {
 		}
 		if (prod_url == null)
 			finish();
+		Uri mUri = Uri.parse(prod_url);
 		// prod_url
 		// ="http://g3.letv.cn/vod/v2/MjUvNDgvOTEvbGV0di11dHMvMjM0OTQzOC1BVkMtOTU4ODczLUFBQy0xMjc3MjQtNjA4MDk2MC04MjkxMTA0MzYtNjI1NjNmMTQxNDMxNGFkODY3ZGRjMGNhMTFkNjIxNjgtMTM2NDkxMjMxOTkxMC5tcDQ=?b=1090&mmsid=2341519&tm=1365557814&platid=1&splatid=2&key=75e40c4fc8927605afe8456dc0f9b207&m3u8=ios,2341519?_r0.3129199950490147&test=m3u8";
 		//
@@ -139,7 +140,7 @@ public class VideoPlayerActivity extends Activity {
 		mFinishOnCompletion = intent.getBooleanExtra(
 				MediaStore.EXTRA_FINISH_ON_COMPLETION, true);
 		mPlayer = new MoviePlayer(rootView, this, mTime, prod_type,
-				Uri.parse(prod_url), savedInstanceState, !mFinishOnCompletion) {
+				mUri, savedInstanceState, !mFinishOnCompletion) {
 			@Override
 			public void onCompletion() {
 				if (mFinishOnCompletion) {
@@ -174,6 +175,9 @@ public class VideoPlayerActivity extends Activity {
 			if (action.equals(Constant.VIDEOPLAYERCMD)) {
 				int mCMD = intent.getIntExtra("cmd", 0);
 				String mContent = intent.getStringExtra("content");
+				String mProd_url = intent.getStringExtra("prod_url");
+				if(!mProd_url.equalsIgnoreCase(mPlayer.getCurrentUrl()))
+					return;
 				/*
 				 * “403”：视频推送后，手机发送播放指令。
 “405”：视频推送后，手机发送暂停指令。
