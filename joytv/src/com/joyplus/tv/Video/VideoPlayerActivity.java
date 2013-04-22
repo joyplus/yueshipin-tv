@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
@@ -65,14 +66,12 @@ import com.joyplus.tv.R;
 import com.joyplus.tv.Adapters.CurrentPlayData;
 import com.joyplus.tv.Service.Return.ReturnProgramView;
 import com.umeng.analytics.MobclickAgent;
-import com.wind.s1mobile.common.S1Constant;
-import com.wind.s1mobile.common.Utils;
 
 /**
  * This activity plays a video from a specified URI.
  */
 public class VideoPlayerActivity extends Activity {
-	@SuppressWarnings("unused")
+	@SuppressWarnings("unused")         
 	private static final String TAG = "MovieActivity";
 
 	private MoviePlayer mPlayer;
@@ -191,10 +190,14 @@ public class VideoPlayerActivity extends Activity {
 						mPlayer.pauseVideo();
 					break;
 				case 407:
-
-					break;
 				case 409:
-
+					if(Integer.parseInt(mContent) <= mPlayer.getDuration()){
+						if(mPlayer.getDuration() - Integer.parseInt(mContent) >10000 && 
+								mCurrentPlayData.prod_type != 1)// 下一集
+							mPlayer.OnContinueVideoPlay();
+						else
+							mPlayer.onSeekMove(Integer.parseInt(mContent));
+					}
 					break;
 				}
 
@@ -238,7 +241,8 @@ public class VideoPlayerActivity extends Activity {
 	}
 
 	public void OnClickContinue(View v) {
-
+		if (mPlayer.isPause())
+			mPlayer.playVideo();
 	}
 
 	public void OnClickNext(View v) {
@@ -248,9 +252,40 @@ public class VideoPlayerActivity extends Activity {
 	}
 
 	public void OnClickFav(View v) {
+			String url = Constant.BASE_URL + "program/favority";
+
+			Map<String, Object> params = new HashMap<String, Object>();
+			params.put("prod_id", prod_id);
+
+			AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
+			cb.SetHeader(app.getHeaders());
+
+			cb.params(params).url(url).type(JSONObject.class)
+					.weakHandler(this, "CallServiceFavorityResult");
+			aq.ajax(cb);
+	}
+	public void CallServiceFavorityResult(String url, JSONObject json,
+			AjaxStatus status) {
+
+		if (json != null) {
+			try {
+				// woof is "00000",now "20024",by yyc
+				if (json.getString("res_code").trim().equalsIgnoreCase("00000")) {
+					app.MyToast(this, "收藏成功!");
+				} else
+					app.MyToast(this, "已收藏!");
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} else {
+			// ajax error, show error code
+			if (status.getCode() == AjaxStatus.NETWORK_ERROR)
+				app.MyToast(aq.getContext(),
+						getResources().getString(R.string.networknotwork));
+		}
 
 	}
-
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
@@ -307,13 +342,13 @@ public class VideoPlayerActivity extends Activity {
 			 * 获取当前播放时间和总时间,将播放时间和总时间放在服务器上
 			 */
 			SaveToServer(mPlayer.getCurrentPositon() / 1000,
-					mPlayer.getDuration());
+					mPlayer.getDuration()/1000);
 
 		}
 		super.onPause();
 	}
 
-	public void SaveToServer(long playback_time, long duration) {
+	public void SaveToServer(int playback_time, int duration) {
 		String url = Constant.BASE_URL + "program/play";
 
 		Map<String, Object> params = new HashMap<String, Object>();
