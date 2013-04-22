@@ -64,6 +64,8 @@ IOS: ijoyplusios001bj
 	public static final String FAYECHANNEL_MOBILE_BASE = "/screencast/CHANNEL_MOBILE_";
 	public static final String CHANNELHEADER = "joy";
 	
+	public static final String VIDEOPLAYERCMD = "com.joyplus.tv.videoservicecommand";
+	
 	public static final String[] video_dont_support_extensions = { ".m3u",
 			".m3u8" };
 	public static final String[] video_index = { "wangpan","le_tv_fee","letv",
