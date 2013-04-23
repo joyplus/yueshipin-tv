@@ -188,6 +188,7 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 		yingpingBt = (Button) findViewById(R.id.bt_xiangqing_yingping);
 		
 		tuijianGv = (GridView) findViewById(R.id.gv_xiangqing_tuijian);
+		tuijianGv.setNextFocusRightId(R.id.gv_xiangqing_tuijian);
 		
 		bofangLL.requestFocus();
 
