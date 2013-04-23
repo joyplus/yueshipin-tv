@@ -242,6 +242,7 @@ public class FayeService extends Service implements FayeListener{
 					playDate.prod_time = Math.round(Float.valueOf(json.getString("prod_time"))*1000);
 					playDate.prod_qua = Integer.valueOf(json.getString("prod_qua"));
 					app.setCurrentPlayData(playDate);
+					app.set_ReturnProgramView(null);
 					startActivity(intent);
 					
 					

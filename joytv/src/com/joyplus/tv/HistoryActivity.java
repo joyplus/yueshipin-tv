@@ -126,6 +126,7 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 						}
 //						playDate.prod_qua = Integer.valueOf(info.definition);
 						app.setCurrentPlayData(playDate);
+						app.set_ReturnProgramView(null);
 						startActivity(intent);
 					}
 				});

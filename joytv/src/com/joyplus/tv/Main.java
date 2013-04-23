@@ -972,6 +972,7 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 					}
 //					playDate.prod_qua = Integer.valueOf(info.definition);
 					app.setCurrentPlayData(playDate);
+					app.set_ReturnProgramView(null);
 					startActivity(intent);
 					break;
 				case 2:

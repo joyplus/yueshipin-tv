@@ -271,6 +271,7 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 //			playDate.prod_src = "";
 //			playDate.prod_qua = Integer.valueOf(info.definition);
 			app.setCurrentPlayData(playDate);
+			app.set_ReturnProgramView(null);
 			startActivity(intent);
 			break;
 		case R.id.gv_xiangqing_tuijian:
@@ -451,6 +452,7 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 //				playDate.prod_src = "";
 //				playDate.prod_qua = Integer.valueOf(info.definition);
 				app.setCurrentPlayData(playDate);
+				app.set_ReturnProgramView(null);
 				startActivity(intent);
 				switch (id) {
 				case R.id.ll_gaoqing_chaoqing:

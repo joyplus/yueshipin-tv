@@ -673,11 +673,16 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 		Intent intent = new Intent(this,VideoPlayerActivity.class);
 		playDate.prod_id = prod_id;
 		playDate.prod_type = 131;
-		playDate.prod_name = date.tv.name;
+		playDate.prod_name = date.tv.name+" 第" + (index+1) +"集";;
 //		playDate.prod_url = date.tv.episodes[0].down_urls[0].urls[0].url;
 //		playDate.prod_src = date.tv.episodes[0].down_urls[0].source;
-		playDate.prod_url = getBofangList(index).get(0).url;
-		playDate.prod_src = getBofangList(index).get(0).source_from;
+		List<URLS_INDEX> urls = getBofangList(index);
+		if(urls == null||urls.size()==0){
+			Toast.makeText(this, "没有可以播放的地址", Toast.LENGTH_SHORT).show();
+			return;
+		}
+		playDate.prod_url = urls.get(0).url;
+		playDate.prod_src = urls.get(0).source_from;
 //		if(Constant.player_quality_index[0].equals(date.tv.episodes[0].down_urls[0].urls[0].type)){
 //			//mp4
 //		}else if(Constant.player_quality_index[1].equals(date.tv.episodes[0].down_urls[0].urls[0].type)){
@@ -696,7 +701,9 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 		List<URLS_INDEX> list = new ArrayList<URLS_INDEX>();
 		
 		DOWN_URLS[] urls = date.tv.episodes[index].down_urls;
-		
+		if(urls == null){
+			return null;
+		}
 		for(int i=0;i<urls.length; i++){
 			for(int j=0; j<urls[i].urls.length; j++){
 				URLS_INDEX url_index = new URLS_INDEX();

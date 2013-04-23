@@ -14,6 +14,7 @@
 		    android:layout_height="wrap_content"
 		    android:textColor="@color/white"
 		    android:gravity="center"
+		    android:singleLine="true"
 		    android:id="@+id/dialog_title"
 		    android:textSize="20sp"/>
 		<LinearLayout android:layout_width="fill_parent"
