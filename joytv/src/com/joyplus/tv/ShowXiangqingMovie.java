@@ -154,6 +154,7 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 			finish();
 		}
 		initView();
+		getIsShoucangData();
 		getMovieDateFromService();
 		getRecommendMovieFormService();
 	}
@@ -918,5 +919,37 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 				}
 				handler.sendEmptyMessage(0);	
 			}
+	}
+	
+	private void getIsShoucangData(){
+		String url = Constant.BASE_URL + "program/is_favority";
+//	+"?prod_id=" + prod_id;
+		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("prod_id" , prod_id);
+		cb.params(params).url(url).type(JSONObject.class).weakHandler(this, "initIsShoucangData");
+		cb.SetHeader(app.getHeaders());
+		aq.ajax(cb);
+	}
+	
+	public void initIsShoucangData(String url, JSONObject json, AjaxStatus status){
+		
+		if (status.getCode() == AjaxStatus.NETWORK_ERROR||json == null) {
+			app.MyToast(aq.getContext(),
+					getResources().getString(R.string.networknotwork));
+			return;
+		}
+		
+		Log.d(TAG, "data = " + json.toString());
+		
+		String flag = json.toString();
+		
+		if(!flag.equals("")) {
+			
+			if(flag.contains("true")) {
+				
+				xiaiBt.setEnabled(false);
+			}
+		}
 	}
 }

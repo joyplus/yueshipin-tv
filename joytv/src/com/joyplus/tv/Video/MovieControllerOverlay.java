@@ -267,8 +267,9 @@ public class MovieControllerOverlay extends FrameLayout implements
 				rootView.findViewById(R.id.imageControl_r).setEnabled(true);
 			else
 				rootView.findViewById(R.id.imageControl_r).setEnabled(false);
-
+			
 			ReturnProgramView m_ReturnProgramView = app.get_ReturnProgramView();
+			
 			if (m_ReturnProgramView != null) {
 				switch (mCurrentPlayData.prod_type) {
 				case 2:
@@ -288,6 +289,10 @@ public class MovieControllerOverlay extends FrameLayout implements
 								false);
 					break;
 				}
+			}else{
+				rootView.findViewById(R.id.imageControl_l).setEnabled(
+						false);
+				rootView.findViewById(R.id.imageControl_r).setEnabled(false);
 			}
 		}
 	}

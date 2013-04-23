@@ -9,8 +9,6 @@ import org.json.JSONObject;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.text.Editable;
 import android.util.Log;
 import android.view.Gravity;
@@ -77,6 +75,7 @@ public class ShowTVActivity extends AbstractShowActivity{
 	private View beforeGvView = null;
 	
 	private List<MovieItemData>[] lists = new List[10];
+	private boolean[] isNextPagePossibles = new boolean[10];
 	
 	private DianShijuAdapter dianShijuAdapter =  null;
 	
@@ -490,6 +489,19 @@ public class ShowTVActivity extends AbstractShowActivity{
 
 				beforeGvView = view;
 				beforepostion = position;
+				
+				//缓存
+				int size = dianShijuAdapter.getMovieList().size();
+				if(size-1-firstAndLastVisible[1] < StatisticsUtils.CACHE_NUM) {
+					
+					if(isNextPagePossibles[currentListIndex]) {
+						
+						int pageIndex = dianShijuAdapter.getPageIndex();
+						pageIndex ++;
+						dianShijuAdapter.setPageIndex(pageIndex);
+						cachePlay(currentListIndex, pageIndex);
+					}
+				}
 
 			}
 
@@ -606,6 +618,7 @@ public class ShowTVActivity extends AbstractShowActivity{
 		for(int i= 0;i<lists.length;i++) {
 			
 			lists[i] = new ArrayList<MovieItemData>();
+			isNextPagePossibles[i] = false;//认为所有的不能够翻页
 		}
 	}
 
@@ -672,6 +685,18 @@ public class ShowTVActivity extends AbstractShowActivity{
 		
 		dianShijuAdapter.setCurrentListIndex(currentListIndex);
 		dianShijuAdapter.setList(list);
+		
+		if(list != null && !list.isEmpty() && currentListIndex != QUANBUFENLEI) {//判断其能否向获取更多数据
+			
+			if(list.size() == StatisticsUtils.FIRST_NUM) {
+				
+				isNextPagePossibles[currentListIndex] = true;
+			} else if(list.size() < StatisticsUtils.FIRST_NUM) {
+				
+				isNextPagePossibles[currentListIndex] = false;
+			}
+		}
+		
 		lists[currentListIndex] = list;
 		
 		dinashijuGv.setSelection(0);
@@ -826,8 +851,12 @@ public class ShowTVActivity extends AbstractShowActivity{
 							temp10List.add(movieItemData);
 						}
 					}
+					
+					if(tempList.size() == StatisticsUtils.CACHE_NUM) {
+						
+						isNextPagePossibles[currentListIndex] = true;
+					}
 					notifyAdapter(temp10List);
-					initFirstFloatView();
 				}
 			
 			
@@ -904,7 +933,8 @@ public class ShowTVActivity extends AbstractShowActivity{
 		
 		switch (index) {
 		case QUANBUFENLEI:
-			getFilterData(StatisticsUtils.getTV_QuanAllCacheURL(pageNum));
+//			getFilterData(StatisticsUtils.getTV_QuanAllCacheURL(pageNum));
+			getMoreFilterData(StatisticsUtils.getTV_QuanAllCacheURL(pageNum));
 			break;
 		case QUAN_TEN:
 			
@@ -916,27 +946,110 @@ public class ShowTVActivity extends AbstractShowActivity{
 			
 			break;
 		case DALUJU:
-			getUnQuanbuData(StatisticsUtils.getTV_DalujuCacheURL(pageNum));
+			getMoreBangDanData(StatisticsUtils.getTV_DalujuCacheURL(pageNum));
 			break;
 		case GANGJU:
-			getUnQuanbuData(StatisticsUtils.getTV_GangjuCacheURL(pageNum));
+			getMoreBangDanData(StatisticsUtils.getTV_GangjuCacheURL(pageNum));
 			break;
 		case TAIJU:
-			getUnQuanbuData(StatisticsUtils.getTV_TaijuCacheURL(pageNum));
+			getMoreBangDanData(StatisticsUtils.getTV_TaijuCacheURL(pageNum));
 			break;
 		case HANJU:
-			getUnQuanbuData(StatisticsUtils.getTV_HanjuCacheURL(pageNum));
+			getMoreBangDanData(StatisticsUtils.getTV_HanjuCacheURL(pageNum));
 			break;
 		case MEIJU:
-			getUnQuanbuData(StatisticsUtils.getTV_MeijuCacheURL(pageNum));
+			getMoreBangDanData(StatisticsUtils.getTV_MeijuCacheURL(pageNum));
 			break;
 		case RIJU:
-			getUnQuanbuData(StatisticsUtils.getTV_RijuCacheURL(pageNum));
+			getMoreBangDanData(StatisticsUtils.getTV_RijuCacheURL(pageNum));
 			break;
 
 		default:
 			break;
 		}
+	}
+	
+	protected void getMoreBangDanData(String url) {
+		
+		getServiceData(url, "initMoreBangDanServiceData");
+	}
+	
+	public void initMoreBangDanServiceData(String url, JSONObject json,
+			AjaxStatus status) {
+		// TODO Auto-generated method stub
+		
+		if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
+
+			app.MyToast(aq.getContext(),
+					getResources().getString(R.string.networknotwork));
+			return;
+		}
+		
+		try {
+			Log.d(TAG, json.toString());
+			
+			refreshAdpter(StatisticsUtils.returnTVBangDanList_TVJson(json.toString()));
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	protected void getMoreFilterData(String url) {
+		// TODO Auto-generated method stub
+		
+		getServiceData(url, "initMoreFilerServiceData");
+	}
+	
+	public void initMoreFilerServiceData(String url, JSONObject json,
+			AjaxStatus status) {
+		// TODO Auto-generated method stub
+		
+		if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
+
+			app.MyToast(aq.getContext(),
+					getResources().getString(R.string.networknotwork));
+			return;
+		}
+		
+		try {
+			Log.d(TAG, json.toString());
+			
+			refreshAdpter(StatisticsUtils.returnFilterMovieSearch_TVJson(json.toString()));
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	protected void refreshAdpter(List<MovieItemData> list) {
+		
+		List<MovieItemData> srcList = dianShijuAdapter.getMovieList();
+		
+		if(list != null && !list.isEmpty()) {
+			
+			for(MovieItemData movieItemData:list) {
+				
+				srcList.add(movieItemData);
+			}
+		}
+		
+		dianShijuAdapter.setList(srcList);
+		lists[currentListIndex] = srcList;
+		
+		dianShijuAdapter.notifyDataSetChanged();
 	}
 
 }

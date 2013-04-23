@@ -27,7 +27,7 @@ public class DianShijuAdapter extends BaseAdapter implements JieMianConstant{
 	private Context context;
 	
 	private int currentListIndex;//用来记录lists数组的引用
-	private int pageIndex;//用来记录翻页数
+	private int pageIndex = 0;//用来记录翻页数
 	
 
 	public DianShijuAdapter(Context context) {

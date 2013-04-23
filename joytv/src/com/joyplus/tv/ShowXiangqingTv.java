@@ -13,7 +13,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.style.URLSpan;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -39,7 +38,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joyplus.tv.Adapters.CurrentPlayData;
 import com.joyplus.tv.Service.Return.ReturnProgramView;
 import com.joyplus.tv.Service.Return.ReturnProgramView.DOWN_URLS;
-import com.joyplus.tv.Service.Return.ReturnProgramView.EPISODES;
 import com.joyplus.tv.Video.VideoPlayerActivity;
 import com.joyplus.tv.utils.DefinationComparatorIndex;
 import com.joyplus.tv.utils.MyKeyEventKey;
@@ -96,6 +94,7 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 		aq = new AQuery(this);
 		app = (App) getApplication();
 		initView();
+		getIsShoucangData();
 		getServiceDate();
 	}
 
@@ -501,6 +500,37 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 		}
 	}
 	
+	private void getIsShoucangData(){
+		String url = Constant.BASE_URL + "program/is_favority";
+//	+"?prod_id=" + prod_id;
+		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("prod_id" , prod_id);
+		cb.params(params).url(url).type(JSONObject.class).weakHandler(this, "initIsShoucangData");
+		cb.SetHeader(app.getHeaders());
+		aq.ajax(cb);
+	}
+	
+	public void initIsShoucangData(String url, JSONObject json, AjaxStatus status){
+		
+		if (status.getCode() == AjaxStatus.NETWORK_ERROR||json == null) {
+			app.MyToast(aq.getContext(),
+					getResources().getString(R.string.networknotwork));
+			return;
+		}
+		
+		Log.d(TAG, "data = " + json.toString());
+		
+		String flag = json.toString();
+		
+		if(!flag.equals("")) {
+			
+			if(flag.contains("true")) {
+				
+				xiaiBt.setEnabled(false);
+			}
+		}
+	}
 	
 	private void getServiceDate(){
 		String url = Constant.BASE_URL + "program/view" +"?prod_id=" + prod_id;
