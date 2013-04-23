@@ -56,6 +56,7 @@ import android.webkit.URLUtil;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.VideoView;
 import android.widget.MediaController.MediaPlayerControl;
 import android.widget.SeekBar.OnSeekBarChangeListener;
@@ -64,6 +65,7 @@ import com.androidquery.AQuery;
 import com.joyplus.tv.App;
 import com.joyplus.tv.BuildConfig;
 import com.joyplus.tv.Constant;
+import com.joyplus.tv.HistoryActivity;
 import com.joyplus.tv.R;
 import com.joyplus.tv.StatisticsUtils;
 import com.joyplus.tv.Adapters.CurrentPlayData;
@@ -249,6 +251,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 	public void setVideoURI(Uri mUri, int Time) {
 		mController.ControlViewGone();
 		mVideoView.setVideoURI(mUri);
+		PROD_SOURCE = mUri.toString();
 		if (Time > 0)
 			mVideoView.seekTo(Time);
 		// mVideoView.start();
@@ -475,11 +478,12 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 
 	// Below are key events passed from MovieActivity.
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-
+		
 		// Some headsets will fire off 7-10 events on a single click
-		if (event.getRepeatCount() > 0) {
+		if (event.getRepeatCount() > 0) { 
 			return isMediaKey(keyCode);
 		}
+		Toast.makeText(mContext, Integer.toString(keyCode),100).show();
 		if (JUMP_TIME_TIMES != 0 && !isFastForwardKey(keyCode)) // 快进模式才能按的键
 			return true;
 
