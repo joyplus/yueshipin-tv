@@ -651,6 +651,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		else
 			JUMP_TIME_TIMES--;
 
+		mController.hide();
 		mDragging = true;
 		if (!mShowing) {
 			mController.showTimerBar();
@@ -681,6 +682,9 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 			JUMP_TIME_TIMES = 1;
 		else
 			JUMP_TIME_TIMES++;
+		
+		mController.hide();
+		
 		mDragging = true;
 		if (!mShowing) {
 			mController.showTimerBar();
