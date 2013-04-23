@@ -90,9 +90,11 @@ public class MainHotItemAdapter extends BaseAdapter {
 			switch (type) {
 			case 1:
 				if("".equals(hot_list.get(position).duration)){
-					holder.content.setText("时长未知");
+					holder.content.setText("");
+//					holder.content.setText("时长未知");
 				}else{
-					holder.content.setText("时长："+hot_list.get(position).duration);
+//					holder.content.setText("时长："+hot_list.get(position).duration);
+					holder.content.setText("时长:"+hot_list.get(position).duration.replace("：00", "分钟"));
 				}
 				break;
 			case 2:

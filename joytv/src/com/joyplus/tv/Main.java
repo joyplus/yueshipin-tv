@@ -89,11 +89,11 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 	
 	private static final int DIALOG_WAITING = 0;
 	
-	private static final int MESSAGE_STEP1_SUCESS = 100; //热播列表加载完成
-	private static final int MESSAGE_STEP2_SUCESS = MESSAGE_STEP1_SUCESS + 1; //悦单加载完成
+	private static final int MESSAGE_STEP1_SUCESS = 100;
+	private static final int MESSAGE_STEP2_SUCESS = MESSAGE_STEP1_SUCESS + 1;
 	
-	private static final int MESSAGE_START_TIMEOUT = MESSAGE_STEP2_SUCESS + 1;//stating画面超时
-	private static final int MESSAGE_UPDATEUSER = MESSAGE_START_TIMEOUT + 1;//userid确认或者更改
+	private static final int MESSAGE_START_TIMEOUT = MESSAGE_STEP2_SUCESS + 1;
+	private static final int MESSAGE_UPDATEUSER = MESSAGE_START_TIMEOUT + 1;
 	
 	
 	private static final int MESSAGE_UPDATEUSER_HISTORY_SUCEESS = MESSAGE_UPDATEUSER + 1;
@@ -671,6 +671,16 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 		switch (titleGroup.getSelectedTitleIndex()) {
 		case 1:
 			if(arg2<hot_list.size()&&arg2>=0){
+				if(arg2>1){
+					aq.id(R.id.icon_arrow_left).visible();
+				}else{
+					aq.id(R.id.icon_arrow_left).invisible();
+				}
+				if(hot_list.size()-arg2>5){
+					aq.id(R.id.icon_arrow_right).visible();
+				}else{
+					aq.id(R.id.icon_arrow_right).invisible();
+				}
 				ImageView img = (ImageView) gallery1.findViewWithTag(hot_list.get(arg2).prod_pic_url);
 				if(img != null){
 					if(img.getDrawable()!=null){
@@ -705,6 +715,16 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 			break;
 		case 2:
 			if(arg2<yuedan_list.size()&&arg2>=0){
+				if(arg2>1){
+					aq.id(R.id.icon_arrow_left).visible();
+				}else{
+					aq.id(R.id.icon_arrow_left).invisible();
+				}
+				if(yuedan_list.size()-arg2>5){
+					aq.id(R.id.icon_arrow_right).visible();
+				}else{
+					aq.id(R.id.icon_arrow_right).invisible();
+				}
 				if("0".equals(yuedan_list.get(arg2).prod_type)){
 					if("-1".equals(yuedan_list.get(arg2).id)){
 						highlightImageView.setImageResource(R.drawable.more_movie_active);
@@ -776,12 +796,32 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 			break;
 		case 3:
 			if(positon1<resouces_lib_active.length){
+				if(arg2>1){
+					aq.id(R.id.icon_arrow_left).visible();
+				}else{
+					aq.id(R.id.icon_arrow_left).invisible();
+				}
+				if(resouces_lib_active.length-arg2>5){
+					aq.id(R.id.icon_arrow_right).visible();
+				}else{
+					aq.id(R.id.icon_arrow_right).invisible();
+				}
 				highlightImageView.setImageResource(resouces_lib_active[positon1]);
 				noticeView.setText(positon1+1 + "/" + resouces_lib_active.length);
 			}
 			break;
 		case 4:
 			if(positon1<resouces_my_active.length){
+				if(arg2>1){
+					aq.id(R.id.icon_arrow_left).visible();
+				}else{
+					aq.id(R.id.icon_arrow_left).invisible();
+				}
+				if(resouces_my_active.length-arg2>5){
+					aq.id(R.id.icon_arrow_right).visible();
+				}else{
+					aq.id(R.id.icon_arrow_right).invisible();
+				}
 				highlightImageView.setImageResource(resouces_my_active[positon1]);
 				noticeView.setText(positon1+1 + "/" + resouces_my_active.length);
 			}
