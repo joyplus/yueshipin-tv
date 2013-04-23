@@ -139,8 +139,7 @@
 		        android:layout_height="fill_parent"
 		        android:scaleType="fitXY"
 		        android:background="@drawable/post_active"
-		        android:id="@+id/highlight_img"
-		        android:src="@drawable/test"/>
+		        android:id="@+id/highlight_img"/>
 		    <ImageView android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
 		        android:layout_gravity="center"
