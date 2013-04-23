@@ -294,8 +294,8 @@
                 android:layout_weight="1"
                 android:orientation="horizontal"
                 android:paddingBottom="@dimen/edit_vertical_margin"
-                android:paddingTop="@dimen/edit_vertical_margin" 
-                android:visibility="gone">
+                android:paddingTop="@dimen/edit_vertical_margin"
+                android:visibility="gone" >
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -328,14 +328,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/layout_zero"
                 android:layout_weight="15"
-                android:orientation="vertical" >
+                android:orientation="vertical" 
+                android:id="@+id/ll_dongman_shoucang_5_gridview">
 
                 <LinearLayout
+                    android:id="@+id/ll_shoucang_5_qita_title"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/layout_zero"
                     android:layout_weight="1.85"
                     android:orientation="vertical"
-                    android:id="@+id/ll_shoucang_5_qita_title"
                     android:visibility="gone" >
 
                     <include
@@ -343,7 +344,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/layout_zero"
                         android:layout_weight="10"
-                        layout="@layout/shoucang_item_layout"/>
+                        layout="@layout/shoucang_item_layout" />
 
                     <LinearLayout
                         android:id="@+id/ll_qitadianshiju"
@@ -386,14 +387,14 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" >
 
-                        <com.joyplus.tv.ui.MyMovieGridView
-                            android:id="@+id/gv_movie_show"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:gravity="center"
-                            android:listSelector="@android:color/transparent"
-                            android:numColumns="5" >
-                        </com.joyplus.tv.ui.MyMovieGridView>
+                            <com.joyplus.tv.ui.MyMovieGridView
+                                android:id="@+id/gv_movie_show"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:gravity="center"
+                                android:listSelector="@android:color/transparent"
+                                android:numColumns="5" >
+                            </com.joyplus.tv.ui.MyMovieGridView>
 
                         <include
                             android:id="@+id/inclue_movie_show_item"

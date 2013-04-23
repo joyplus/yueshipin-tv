@@ -22,8 +22,8 @@ public abstract class AbstractShowActivity extends Activity implements
 		initView();
 		initViewListener();
 		initViewState();
-		clearLists();
 		initLists();
+		clearLists();
 	}
 
 	protected abstract void initView();// 初始化界面基本组件
@@ -63,5 +63,17 @@ public abstract class AbstractShowActivity extends Activity implements
 
 	public abstract void initFilerServiceData(String url, JSONObject json,
 			AjaxStatus status);// 非全部分类的影片,过滤的除外服务
+	
+	protected abstract void refreshAdpter(List<MovieItemData> list);
+	
+	public abstract void initMoreFilerServiceData(String url, JSONObject json,
+			AjaxStatus status);
+	
+	protected abstract void getMoreFilterData(String url);
+	
+	public abstract void initMoreBangDanServiceData(String url, JSONObject json,
+			AjaxStatus status);
+	
+	protected abstract void getMoreBangDanData(String url);
 
 }

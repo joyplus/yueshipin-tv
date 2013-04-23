@@ -182,6 +182,19 @@ public class ItemStateUtils implements JieMianConstant{
 		v.startAnimation(inScaleAnimation);
 	}
 	
+	public static void setGridViewNormalPadding(View v) {
+		
+		v.setPadding(GRIDVIEW_ITEM_PADDING_LEFT,
+				GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING_LEFT,
+				GRIDVIEW_ITEM_PADDING);
+	}
+	
+	public static void setGridViewActivePadding(View v) {
+		
+		v.setPadding(GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING,
+				GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING);
+	}
+	
 	public static void setItemPadding(View view) {
 		
 		view.setPadding(0, 0, WENZI_PADDING_RIGHT, 0);

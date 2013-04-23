@@ -86,6 +86,8 @@ public class ShowMovieActivity extends AbstractShowActivity {
 	private MovieAdapter movieAdapter = null;
 	
 	private int currentItemPostion = -1;
+	
+	private int numCount = -1;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -959,6 +961,38 @@ public class ShowMovieActivity extends AbstractShowActivity {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	protected void refreshAdpter(List<MovieItemData> list) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void initMoreFilerServiceData(String url, JSONObject json,
+			AjaxStatus status) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void getMoreFilterData(String url) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void initMoreBangDanServiceData(String url, JSONObject json,
+			AjaxStatus status) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void getMoreBangDanData(String url) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

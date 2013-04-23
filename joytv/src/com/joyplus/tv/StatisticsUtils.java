@@ -15,8 +15,10 @@ import android.content.Context;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.util.Log;
+import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
+import android.view.animation.TranslateAnimation;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
@@ -26,13 +28,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joyplus.tv.Service.Return.ReturnTVBangDanList;
 import com.joyplus.tv.Service.Return.ReturnTops;
 import com.joyplus.tv.Service.Return.ReturnUserFavorities;
-import com.joyplus.tv.entity.HotItemInfo;
 import com.joyplus.tv.entity.MovieItemData;
 import com.joyplus.tv.entity.ReturnFilterMovieSearch;
-import com.joyplus.tv.entity.YueDanInfo2;
+import com.joyplus.tv.utils.BangDanKey;
 import com.joyplus.tv.utils.JieMianConstant;
 
-public class StatisticsUtils implements JieMianConstant{
+public class StatisticsUtils implements JieMianConstant,BangDanKey{
 
 	private static final String TAG = "StatisticsUtils";
 
@@ -143,6 +144,105 @@ public class StatisticsUtils implements JieMianConstant{
 		return url + "?page_num=" + page_num + "&page_size=" + page_size  +"&vod_type="+ vod_type+  "&userId=" + userId;
 	}
 	
+	public static final int CACHE_NUM = 10;
+	public static final int FIRST_NUM = 30;
+	
+	//TV 全部分类 10
+	public static String getTV_Quan10URL() {
+		
+		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL,TV_DIANSHIJU, 1 + "", CACHE_NUM + "");
+	}
+	
+	//TV 全部分类 
+	public static String getTV_QuanAllFirstURL() {
+		
+		return StatisticsUtils.getFilterURL(FILTER_URL, 1+"", (FIRST_NUM- 10)+"", TV_TYPE);
+	}
+	
+	//TV 全部分类
+	public static String getTV_QuanAllCacheURL(int pageNum) {
+		
+		return StatisticsUtils.getFilterURL(FILTER_URL, (pageNum + 1)+"", CACHE_NUM+"", TV_TYPE);
+	}
+	
+	//TV 大陆剧 
+	public static String getTV_DalujuFirstURL() {
+		
+		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL,REBO_DALU_DIANSHI, 1 + "", FIRST_NUM + "");
+	}
+	
+	//TV 大陆剧 
+	public static String getTV_DalujuCacheURL(int pageNum) {
+		
+		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL,REBO_QINZI_DONGMAN, (pageNum + 1) + "", CACHE_NUM + "");
+	}
+	
+	
+	//港剧
+	public static String getTV_GangjuFirstURL() {
+		
+		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL,REBO_GANGJU_DIANSHI, 1 + "", CACHE_NUM + "");
+	}
+	
+	
+	//港剧
+	public static String getTV_GangjuCacheURL(int pageNum) {
+		
+		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL,REBO_GANGJU_DIANSHI, (pageNum + 1) + "", CACHE_NUM + "");
+	}
+	
+	
+	public static String getTV_TaijuFirstURL() {
+		
+		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL,REBO_TAIJU_DIANSHI, 1 + "", CACHE_NUM + "");
+	}
+	
+	
+	public static String getTV_TaijuCacheURL(int pageNum) {
+		
+		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL,REBO_TAIJU_DIANSHI, (pageNum + 1) + "", CACHE_NUM + "");
+	}
+	
+	public static String getTV_HanjuFirstURL() {
+		
+		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL,REBO_HANJU_DIANSHI, 1 + "", CACHE_NUM + "");
+	}
+	
+	
+	public static String getTV_HanjuCacheURL(int pageNum) {
+		
+		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL,REBO_HANJU_DIANSHI, (pageNum + 1) + "", CACHE_NUM + "");
+	}
+	
+	public static String getTV_MeijuFirstURL() {
+		
+		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL,REBO_OUMEI_DIANSHI, 1 + "", CACHE_NUM + "");
+	}
+	
+	
+	public static String getTV_MeijuCacheURL(int pageNum) {
+		
+		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL,REBO_OUMEI_DIANSHI, (pageNum + 1) + "", CACHE_NUM + "");
+	}
+	
+	public static String getTV_RijuFirstURL() {
+		
+		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL,REBO_RIJU_DIANSHI, 1 + "", CACHE_NUM + "");
+	}
+	
+	
+	public static String getTV_RijuCacheURL(int pageNum) {
+		
+		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL,REBO_RIJU_DIANSHI, (pageNum + 1) + "", CACHE_NUM + "");
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 	public static final String YEAR = "&year=";
 	public static final String AREA = "&area=";
 	public static final String SUB_TYPE = "&sub_type=";
@@ -224,6 +324,16 @@ public class StatisticsUtils implements JieMianConstant{
 		inScaleAnimation.setFillAfter(false);
 		
 		return inScaleAnimation;
+	}
+	
+	public static TranslateAnimation getTranslateAnimation(View v) {
+		
+		
+		TranslateAnimation translateAnimation = new TranslateAnimation(v.getX(), v.getX(), v.getY(), v.getY() - 200);
+		translateAnimation.setDuration(150);
+		translateAnimation.setFillAfter(false);
+		
+		return translateAnimation;
 	}
 	
 	public static String getMacAdd(Context c){
