@@ -483,7 +483,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		if (event.getRepeatCount() > 0) { 
 			return isMediaKey(keyCode);
 		}
-		Toast.makeText(mContext, Integer.toString(keyCode),100).show();
+//		Toast.makeText(mContext, Integer.toString(keyCode),100).show();
 		if (JUMP_TIME_TIMES != 0 && !isFastForwardKey(keyCode)) // 快进模式才能按的键
 			return true;
 
@@ -654,6 +654,9 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 				mController.HidingTimes();
 				return true;
 			}else if (prod_type != 1 ) {
+				//没有加载完就返回，bug
+				if(totalTime <= 0)
+					return false;
 				if (mVideoView.isPlaying()) {
 					pauseVideo();
 					mController.focusLayoutControl(0);
