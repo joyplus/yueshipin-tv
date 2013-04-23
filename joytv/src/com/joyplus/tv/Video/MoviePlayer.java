@@ -567,7 +567,8 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		case KeyEvent.KEYCODE_ENTER:
 			if (JUMP_TIME_TIMES != 0) {// 快进模式
 				mDragging = false;
-				mVideoView.seekTo(JUMP_TIME);
+				if(JUMP_TIME != totalTime)
+					mVideoView.seekTo(JUMP_TIME);
 				JUMP_TIME = 0;
 				JUMP_TIME_TIMES = 0;
 				mHandler.removeCallbacks(mMediaFastForwardRunnable);
@@ -738,13 +739,13 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 
 			if (JUMP_TIME_TIMES < 0) { // 快退模式
 				if (JUMP_TIME - mTimes[Math.abs(JUMP_TIME_TIMES) - 1] < 0)
-					return;
+					JUMP_TIME= 0;
 				else
 					JUMP_TIME = JUMP_TIME
 							- mTimes[Math.abs(JUMP_TIME_TIMES) - 1];
 			} else if (JUMP_TIME_TIMES > 0) {
 				if ((JUMP_TIME + mTimes[JUMP_TIME_TIMES - 1]) >= totalTime)
-					return;
+					JUMP_TIME = totalTime;
 				else
 					JUMP_TIME = JUMP_TIME + mTimes[JUMP_TIME_TIMES - 1];
 			}
