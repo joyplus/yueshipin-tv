@@ -571,4 +571,36 @@ public class ShowSearchActivity extends AbstractShowActivity {
 		}
 	}
 
+	@Override
+	protected void refreshAdpter(List<MovieItemData> list) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void initMoreFilerServiceData(String url, JSONObject json,
+			AjaxStatus status) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void getMoreFilterData(String url) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void initMoreBangDanServiceData(String url, JSONObject json,
+			AjaxStatus status) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void getMoreBangDanData(String url) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
