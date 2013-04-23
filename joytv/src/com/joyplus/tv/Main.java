@@ -55,6 +55,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.zxing.WriterException;
+import com.joyplus.R;
 import com.joyplus.tv.Adapters.CurrentPlayData;
 import com.joyplus.tv.Adapters.MainHotItemAdapter;
 import com.joyplus.tv.Adapters.MainLibAdapter;
@@ -76,6 +77,7 @@ import com.joyplus.tv.utils.SouceComparatorIndex1;
 import com.joyplus.tv.utils.URLS_INDEX;
 import com.saulpower.fayeclient.FayeService;
 import com.umeng.analytics.MobclickAgent;
+import com.umeng.update.UmengUpdateAgent;
 
 
 public class Main extends Activity implements OnItemSelectedListener, OnItemClickListener{
@@ -498,8 +500,22 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 //		int height = dm.heightPixels;//屏幕高度
 //		
 //		Toast.makeText(this, "Width:" + width + " Height:" + height, Toast.LENGTH_LONG).show();
+		//友盟自动升级
+		UmengUpdateAgent.setUpdateOnlyWifi(false);
+		UmengUpdateAgent.setOnDownloadListener(null);
+		UmengUpdateAgent.update(this);
     }
-    
+	@Override
+	public void onResume() {
+		super.onResume();
+		MobclickAgent.onResume(this);
+	}
+
+	@Override
+	public void onPause() {
+		super.onPause();
+		MobclickAgent.onPause(this);
+	}
 	@Override
 	protected void onDestroy() {
 		if (aq != null)
