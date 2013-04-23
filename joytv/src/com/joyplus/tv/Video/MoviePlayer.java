@@ -360,7 +360,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 	}
 
 	public int getCurrentPositon() {
-		return mVideoView.getCurrentPosition();
+		return mVideoPosition;
 	}
 
 	public String getCurrentUrl() {
@@ -368,7 +368,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 	}
 
 	public int getDuration() {
-		return mVideoView.getDuration();
+		return totalTime;
 	}
 
 	public void setTime(int totalTime) {
