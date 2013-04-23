@@ -66,7 +66,7 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 	
 	private ListView listView;
 	private int index=0;
-	
+	private boolean isFirstTime = true;
 	
 	private App app;
 	private AQuery aq;
@@ -492,6 +492,12 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 			}
 			listView.setSelection(0);
 			listView.requestFocus();
+			if(isFirstTime){
+				listView.requestFocus();
+				isFirstTime = false;
+			}else{
+				selectedButton.requestFocus();
+			}
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

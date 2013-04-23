@@ -14,12 +14,10 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -27,9 +25,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.PopupWindow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
@@ -41,8 +37,6 @@ import com.joyplus.tv.Adapters.CurrentPlayData;
 import com.joyplus.tv.Service.Return.ReturnUserPlayHistories;
 import com.joyplus.tv.Video.VideoPlayerActivity;
 import com.joyplus.tv.entity.HotItemInfo;
-import com.joyplus.tv.ui.NavigateView;
-import com.joyplus.tv.ui.NavigateView.OnResultListener;
 
 public class HistoryActivity extends Activity implements OnClickListener, OnItemSelectedListener {
 	private static final String TAG = "HistoryActivity";
@@ -53,6 +47,7 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 	private Button btn_fenlei_zongyi;
 	private Button selectedButton;
 	private Button delBtn;
+	private boolean isFirstTime = true;
 	private int index = 0;
 	ObjectMapper mapper = new ObjectMapper();
 	private List<HotItemInfo> allHistoryList = new ArrayList<HotItemInfo>();
@@ -107,7 +102,6 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 					finish();
 					return;
 				}
-				Toast.makeText(HistoryActivity.this, "seleced index = " + arg2, 100).show();
 				final Dialog dialog = new AlertDialog.Builder(HistoryActivity.this).create();
 				dialog.show();
 				LayoutInflater inflater = LayoutInflater.from(HistoryActivity.this);
@@ -181,313 +175,6 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 				nameText.setText(((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_name);
 				dialog.setContentView(view);
 			}
-//				switch (index) {
-//				case 0://all
-//					if(arg2<allHistoryList.size()){
-//						final Dialog dialog = new AlertDialog.Builder(HistoryActivity.this).create();
-//						dialog.show();
-//						LayoutInflater inflater = LayoutInflater.from(HistoryActivity.this);
-//						View view = inflater.inflate(R.layout.layout_history_dialog, null);
-//						TextView nameText = (TextView) view.findViewById(R.id.dialog_title);
-//						Button playButton = (Button) view.findViewById(R.id.history_play);
-//						playButton.setOnClickListener(new OnClickListener() {
-//							
-//							@Override
-//							public void onClick(View v) {
-//								// TODO Auto-generated method stub
-//								dialog.dismiss();
-//								CurrentPlayData playDate = new CurrentPlayData();
-//								Intent intent = new Intent(HistoryActivity.this,VideoPlayerActivity.class);
-//								playDate.prod_id = allHistoryList.get(arg2).prod_id;
-//								playDate.prod_type = Integer.valueOf(allHistoryList.get(arg2).prod_type);
-//								playDate.prod_name = allHistoryList.get(arg2).prod_name;
-//								playDate.prod_url = allHistoryList.get(arg2).video_url;
-////								playDate.prod_src = "";
-//								if(!"".equals(allHistoryList.get(arg2).playback_time)){
-//									playDate.prod_time = Long.valueOf(allHistoryList.get(arg2).playback_time);
-//								}
-////								playDate.prod_qua = Integer.valueOf(info.definition);
-//								app.setCurrentPlayData(playDate);
-//								startActivity(intent);
-//							}
-//						});
-//						Button viewDetailButton = (Button) view.findViewById(R.id.history_view);
-//						viewDetailButton.setOnClickListener(new OnClickListener() {
-//							
-//							@Override
-//							public void onClick(View v) {
-//								// TODO Auto-generated method stub
-//								dialog.dismiss();
-//								int  prod_type = Integer.valueOf(allHistoryList.get(arg2).prod_type);
-//								Intent intent = null;
-//								switch (prod_type) {
-//								case 1:
-//									intent = new Intent(HistoryActivity.this,ShowXiangqingMovie.class);
-//									break;
-//								case 2:
-//									intent = new Intent(HistoryActivity.this,ShowXiangqingTv.class);
-//									break;
-//								case 3:
-//									intent = new Intent(HistoryActivity.this,ShowXiangqingZongYi.class);
-//									break;
-//								case 131:
-//									intent = new Intent(HistoryActivity.this,ShowXiangqingDongman.class);
-//									break;
-//								}
-//								if(intent == null){ 
-//									return; 
-//								}else{
-//									intent.putExtra("ID", allHistoryList.get(arg2).prod_id);
-//									startActivity(intent);
-//								}
-//							}
-//						});
-//						Button delButton = (Button) view.findViewById(R.id.history_del);
-//						delButton.setOnClickListener(new OnClickListener() {
-//							
-//							@Override
-//							public void onClick(View v) {
-//								// TODO Auto-generated method stub
-//								deleteHistory(true, allHistoryList.get(arg2).id);
-//								allHistoryList.remove(arg2);
-//								((BaseAdapter)listView.getAdapter()).notifyDataSetChanged();
-//								dialog.dismiss();
-//							}
-//						});
-//						nameText.setText(allHistoryList.get(arg2).prod_name);
-//						dialog.setContentView(view);
-//					}
-//					break;
-//				case 1://movie
-//					if(arg2<movieHistoryList.size()){
-//						final Dialog dialog = new AlertDialog.Builder(HistoryActivity.this).create();
-//						dialog.show();
-//						LayoutInflater inflater = LayoutInflater.from(HistoryActivity.this);
-//						View view = inflater.inflate(R.layout.layout_history_dialog, null);
-//						TextView nameText = (TextView) view.findViewById(R.id.dialog_title);
-//						Button playButton = (Button) view.findViewById(R.id.history_play);
-//						playButton.setOnClickListener(new OnClickListener() {
-//							
-//							@Override
-//							public void onClick(View v) {
-//								// TODO Auto-generated method stub
-//								dialog.dismiss();
-//								CurrentPlayData playDate = new CurrentPlayData();
-//								Intent intent = new Intent(HistoryActivity.this,VideoPlayerActivity.class);
-//								playDate.prod_id = movieHistoryList.get(arg2).prod_id;
-//								playDate.prod_type = Integer.valueOf(movieHistoryList.get(arg2).prod_type);
-//								playDate.prod_name = movieHistoryList.get(arg2).prod_name;
-//								playDate.prod_url = movieHistoryList.get(arg2).video_url;
-////									playDate.prod_src = "";
-//								if(!"".equals(movieHistoryList.get(arg2).playback_time)){
-//									playDate.prod_time = Long.valueOf(movieHistoryList.get(arg2).playback_time);
-//								}
-////									playDate.prod_qua = Integer.valueOf(info.definition);
-//								app.setCurrentPlayData(playDate);
-//								startActivity(intent);
-//							}
-//						});
-//						Button viewDetailButton = (Button) view.findViewById(R.id.history_view);
-//						viewDetailButton.setOnClickListener(new OnClickListener() {
-//							
-//							@Override
-//							public void onClick(View v) {
-//								// TODO Auto-generated method stub
-//								dialog.dismiss();
-//								Intent intent = new Intent(HistoryActivity.this,ShowXiangqingMovie.class);
-//								intent.putExtra("ID", movieHistoryList.get(arg2).prod_id);
-//								startActivity(intent);
-//							}
-//						});
-//						Button delButton = (Button) view.findViewById(R.id.history_del);
-//						delButton.setOnClickListener(new OnClickListener() {
-//							
-//							@Override
-//							public void onClick(View v) {
-//								// TODO Auto-generated method stub
-//								deleteHistory(true, movieHistoryList.get(arg2).id);
-//								movieHistoryList.remove(arg2);
-//								((BaseAdapter)listView.getAdapter()).notifyDataSetChanged();
-//								dialog.dismiss();
-//							}
-//						});
-//						nameText.setText(movieHistoryList.get(arg2).prod_name);
-//						dialog.setContentView(view);
-//					}
-//					break;
-//				case 2://tv
-//					if(arg2<tvHistoryList.size()){
-//						final Dialog dialog = new AlertDialog.Builder(HistoryActivity.this).create();
-//						dialog.show();
-//						LayoutInflater inflater = LayoutInflater.from(HistoryActivity.this);
-//						View view = inflater.inflate(R.layout.layout_history_dialog, null);
-//						TextView nameText = (TextView) view.findViewById(R.id.dialog_title);
-//						Button playButton = (Button) view.findViewById(R.id.history_play);
-//						playButton.setOnClickListener(new OnClickListener() {
-//							
-//							@Override
-//							public void onClick(View v) {
-//								// TODO Auto-generated method stub
-//								dialog.dismiss();
-//								CurrentPlayData playDate = new CurrentPlayData();
-//								Intent intent = new Intent(HistoryActivity.this,VideoPlayerActivity.class);
-//								playDate.prod_id = tvHistoryList.get(arg2).prod_id;
-//								playDate.prod_type = Integer.valueOf(tvHistoryList.get(arg2).prod_type);
-//								playDate.prod_name = tvHistoryList.get(arg2).prod_name;
-//								playDate.prod_url = tvHistoryList.get(arg2).video_url;
-////									playDate.prod_src = "";
-//								if(!"".equals(tvHistoryList.get(arg2).playback_time)){
-//									playDate.prod_time = Long.valueOf(tvHistoryList.get(arg2).playback_time);
-//								}
-////									playDate.prod_qua = Integer.valueOf(info.definition);
-//								app.setCurrentPlayData(playDate);
-//								startActivity(intent);
-//							}
-//						});
-//						Button viewDetailButton = (Button) view.findViewById(R.id.history_view);
-//						viewDetailButton.setOnClickListener(new OnClickListener() {
-//							
-//							@Override
-//							public void onClick(View v) {
-//								// TODO Auto-generated method stub
-//								dialog.dismiss();
-//								Intent intent = new Intent(HistoryActivity.this,ShowXiangqingTv.class);
-//								intent.putExtra("ID", tvHistoryList.get(arg2).prod_id);
-//								startActivity(intent);
-//							}
-//						});
-//						Button delButton = (Button) view.findViewById(R.id.history_del);
-//						delButton.setOnClickListener(new OnClickListener() {
-//							
-//							@Override
-//							public void onClick(View v) {
-//								// TODO Auto-generated method stub
-//								deleteHistory(true, tvHistoryList.get(arg2).id);
-//								tvHistoryList.remove(arg2);
-//								((BaseAdapter)listView.getAdapter()).notifyDataSetChanged();
-//								dialog.dismiss();
-//							}
-//						});
-//						nameText.setText(tvHistoryList.get(arg2).prod_name);
-//						dialog.setContentView(view);
-//					}
-//					break;
-//				case 131://dongman
-//					if(arg2<dongmanHistoryList.size()){
-//						final Dialog dialog = new AlertDialog.Builder(HistoryActivity.this).create();
-//						dialog.show();
-//						LayoutInflater inflater = LayoutInflater.from(HistoryActivity.this);
-//						View view = inflater.inflate(R.layout.layout_history_dialog, null);
-//						TextView nameText = (TextView) view.findViewById(R.id.dialog_title);
-//						Button playButton = (Button) view.findViewById(R.id.history_play);
-//						playButton.setOnClickListener(new OnClickListener() {
-//							
-//							@Override
-//							public void onClick(View v) {
-//								// TODO Auto-generated method stub
-//								dialog.dismiss();
-//								CurrentPlayData playDate = new CurrentPlayData();
-//								Intent intent = new Intent(HistoryActivity.this,VideoPlayerActivity.class);
-//								playDate.prod_id = dongmanHistoryList.get(arg2).prod_id;
-//								playDate.prod_type = Integer.valueOf(dongmanHistoryList.get(arg2).prod_type);
-//								playDate.prod_name = dongmanHistoryList.get(arg2).prod_name;
-//								playDate.prod_url = dongmanHistoryList.get(arg2).video_url;
-////										playDate.prod_src = "";
-//								if(!"".equals(dongmanHistoryList.get(arg2).playback_time)){
-//									playDate.prod_time = Long.valueOf(dongmanHistoryList.get(arg2).playback_time);
-//								}
-////										playDate.prod_qua = Integer.valueOf(info.definition);
-//								app.setCurrentPlayData(playDate);
-//								startActivity(intent);
-//							}
-//						});
-//						Button viewDetailButton = (Button) view.findViewById(R.id.history_view);
-//						viewDetailButton.setOnClickListener(new OnClickListener() {
-//							
-//							@Override
-//							public void onClick(View v) {
-//								// TODO Auto-generated method stub
-//								dialog.dismiss();
-//								Intent intent = new Intent(HistoryActivity.this,ShowXiangqingDongman.class);
-//								intent.putExtra("ID", dongmanHistoryList.get(arg2).prod_id);
-//								startActivity(intent);
-//							}
-//						});
-//						Button delButton = (Button) view.findViewById(R.id.history_del);
-//						delButton.setOnClickListener(new OnClickListener() {
-//							
-//							@Override
-//							public void onClick(View v) {
-//								// TODO Auto-generated method stub
-//								deleteHistory(true, dongmanHistoryList.get(arg2).id);
-//								dongmanHistoryList.remove(arg2);
-//								((BaseAdapter)listView.getAdapter()).notifyDataSetChanged();
-//								dialog.dismiss();
-//							}
-//						});
-//						nameText.setText(dongmanHistoryList.get(arg2).prod_name);
-//						dialog.setContentView(view);
-//					}
-//					break;
-//				case 4://zhongyi
-//					if(arg2<zongyiHistoryList.size()){
-//						final Dialog dialog = new AlertDialog.Builder(HistoryActivity.this).create();
-//						dialog.show();
-//						LayoutInflater inflater = LayoutInflater.from(HistoryActivity.this);
-//						View view = inflater.inflate(R.layout.layout_history_dialog, null);
-//						TextView nameText = (TextView) view.findViewById(R.id.dialog_title);
-//						Button playButton = (Button) view.findViewById(R.id.history_play);
-//						playButton.setOnClickListener(new OnClickListener() {
-//							
-//							@Override
-//							public void onClick(View v) {
-//								// TODO Auto-generated method stub
-//								dialog.dismiss();
-//								CurrentPlayData playDate = new CurrentPlayData();
-//								Intent intent = new Intent(HistoryActivity.this,VideoPlayerActivity.class);
-//								playDate.prod_id = zongyiHistoryList.get(arg2).prod_id;
-//								playDate.prod_type = Integer.valueOf(zongyiHistoryList.get(arg2).prod_type);
-//								playDate.prod_name = zongyiHistoryList.get(arg2).prod_name;
-//								playDate.prod_url = zongyiHistoryList.get(arg2).video_url;
-////											playDate.prod_src = "";
-//								if(!"".equals(zongyiHistoryList.get(arg2).playback_time)){
-//									playDate.prod_time = Long.valueOf(zongyiHistoryList.get(arg2).playback_time);
-//								}
-////											playDate.prod_qua = Integer.valueOf(info.definition);
-//								app.setCurrentPlayData(playDate);
-//								startActivity(intent);
-//							}
-//						});
-//						Button viewDetailButton = (Button) view.findViewById(R.id.history_view);
-//						viewDetailButton.setOnClickListener(new OnClickListener() {
-//							
-//							@Override
-//							public void onClick(View v) {
-//								// TODO Auto-generated method stub
-//								dialog.dismiss();
-//								Intent intent = new Intent(HistoryActivity.this,ShowXiangqingZongYi.class);
-//								intent.putExtra("ID", zongyiHistoryList.get(arg2).prod_id);
-//								startActivity(intent);
-//							}
-//						});
-//						Button delButton = (Button) view.findViewById(R.id.history_del);
-//						delButton.setOnClickListener(new OnClickListener() {
-//							
-//							@Override
-//							public void onClick(View v) {
-//								// TODO Auto-generated method stub
-//								deleteHistory(true, zongyiHistoryList.get(arg2).id);
-//								zongyiHistoryList.remove(arg2);
-//								((BaseAdapter)listView.getAdapter()).notifyDataSetChanged();
-//								dialog.dismiss();
-//							}
-//						});
-//						nameText.setText(zongyiHistoryList.get(arg2).prod_name);
-//						dialog.setContentView(view);
-//					}
-//					break;
-//				}
-//			}
 		});
 		listView.setSelected(true);
 		listView.setSelection(0);
@@ -596,20 +283,6 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 		
 	}
 	
-//	private String formatDuration(int duration) {
-////		duration = duration;
-//		int h = duration / 3600;
-//		int m = (duration - h * 3600) / 60;
-//		int s = duration - (h * 3600 + m * 60);
-//		String durationValue;
-//		if (h == 0) {
-//			durationValue = String.format("%1$02d:%2$02d", m, s);
-//		} else {
-//			durationValue = String.format("%1$d:%2$02d:%3$02d", h, m, s);
-//		}
-//		return durationValue;
-//	}
-
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
@@ -802,6 +475,13 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 			}
 			listView.setSelection(0);
 			listView.requestFocus();
+			if(isFirstTime){
+				listView.requestFocus();
+				isFirstTime = false;
+			}else{
+				selectedButton.requestFocus();
+			}
+			
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
