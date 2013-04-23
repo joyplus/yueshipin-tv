@@ -316,7 +316,8 @@
                         android:gravity="center"
                         android:text="@string/xiangqing_yingping"
                         android:textColor="@color/text_foucs"
-                        android:textSize="17sp" />
+                        android:textSize="17sp" 
+                        android:visibility="invisible"/>
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>

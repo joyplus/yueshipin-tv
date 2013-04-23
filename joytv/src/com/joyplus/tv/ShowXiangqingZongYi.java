@@ -50,7 +50,7 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 	private static final String TAG = "ShowXiangqingZongYi";
 	private LinearLayout bofangLL;
 
-	private Button dingBt,xiaiBt, yingpingBt;
+	private Button dingBt,xiaiBt;
 	private Button bofangBt,gaoqingBt;
 
 	private View beforeView;
@@ -170,7 +170,7 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 		gaoqingBt = (Button) findViewById(R.id.bt_xiangqing_gaoqing);
 
 
-		yingpingBt = (Button) findViewById(R.id.bt_xiangqing_yingping);
+//		yingpingBt = (Button) findViewById(R.id.bt_xiangqing_yingping);
 		
 		layout = (LinearLayout) findViewById(R.id.layout);
 		table  = (TableLayout) findViewById(R.id.table);
@@ -194,7 +194,7 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 		dingBt.setOnClickListener(this);
 		xiaiBt.setOnClickListener(this);
 		bofangLL.setOnClickListener(this);
-		yingpingBt.setOnClickListener(this);
+//		yingpingBt.setOnClickListener(this);
 	}
 
 	@Override
@@ -234,26 +234,26 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 //			startActivity(intent);
 			play(0);
 			break;
-		case R.id.bt_xiangqing_yingping:
-			Intent yingpingIntent = new Intent(this, DetailComment.class);
-//			yingpingIntent.putExtra("ID", prod_id);
-			int yingpingSize = date.comments.length;
-			
-			if(yingpingSize >0) {
-				
-				Bundle bundle = new Bundle();
-				bundle.putString("prod_id", prod_id);
-				bundle.putString("prod_name", date.tv.name);
-				bundle.putString("prod_dou", date.tv.score);
-				bundle.putString("prod_url", date.tv.poster);
-				yingpingIntent.putExtras(bundle);
-				startActivity(yingpingIntent);
-			} else {
-				
-				Toast.makeText(this, getString(R.string.xiangqing_yingping_no),
-						Toast.LENGTH_SHORT).show();
-			}
-			break;
+//		case R.id.bt_xiangqing_yingping:
+//			Intent yingpingIntent = new Intent(this, DetailComment.class);
+////			yingpingIntent.putExtra("ID", prod_id);
+//			int yingpingSize = date.comments.length;
+//			
+//			if(yingpingSize >0) {
+//				
+//				Bundle bundle = new Bundle();
+//				bundle.putString("prod_id", prod_id);
+//				bundle.putString("prod_name", date.tv.name);
+//				bundle.putString("prod_dou", date.tv.score);
+//				bundle.putString("prod_url", date.tv.poster);
+//				yingpingIntent.putExtras(bundle);
+//				startActivity(yingpingIntent);
+//			} else {
+//				
+//				Toast.makeText(this, getString(R.string.xiangqing_yingping_no),
+//						Toast.LENGTH_SHORT).show();
+//			}
+//			break;
 		default:
 			
 			if(v.getId()>=10000){
