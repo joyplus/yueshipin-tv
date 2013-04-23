@@ -196,7 +196,7 @@ public class VideoPlayerActivity extends Activity {
 				case 407:
 				
 					if(Integer.parseInt(mContent) <= mPlayer.getDuration()){
-						if(mPlayer.getDuration() - Integer.parseInt(mContent) >10000 && 
+						if(mPlayer.getDuration() - Integer.parseInt(mContent) <10000 && 
 								mCurrentPlayData.prod_type != 1)// 下一集
 							mPlayer.OnContinueVideoPlay();
 						else

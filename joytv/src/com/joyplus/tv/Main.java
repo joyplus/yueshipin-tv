@@ -136,6 +136,7 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 						new Thread(new CheckPlayUrl()).start();
 					}else{
 						removeDialog(DIALOG_WAITING);
+						contentLayout.setVisibility(View.VISIBLE);
 						gallery1.requestFocus(); 
 					}
 				}
