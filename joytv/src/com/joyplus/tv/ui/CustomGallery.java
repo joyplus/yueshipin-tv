@@ -117,13 +117,15 @@ public class CustomGallery extends HorizontalScrollView {
 	
 	public void setSelection(int index){
 		this.selectedIndex = index-1; 
+		layout.setVisibility(View.INVISIBLE);
 		if(layout.getChildAt(0)!=null){
 			handler.postDelayed(new Runnable() {
 				
 				@Override
 				public void run() {
 					// TODO Auto-generated method stub
-					layout.scrollTo(layout.getChildAt(0).getWidth()*(selectedIndex+1),0);    
+					layout.scrollTo(layout.getChildAt(0).getWidth()*(selectedIndex+1),0);  
+					layout.setVisibility(View.VISIBLE);
 				}
 			}, 100);
 //			currentLeft = layout.getChildAt(0).getWidth()*(selectedIndex+1);

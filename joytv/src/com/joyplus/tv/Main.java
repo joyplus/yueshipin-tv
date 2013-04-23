@@ -85,6 +85,7 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 	private AQuery aq;
 	
 	private int initStep = 0;
+	private long exitTime = 0;
 	
 	private static final int DIALOG_WAITING = 0;
 	
@@ -290,7 +291,6 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 			@Override
 			public void OnViewChange(int index) {
 				// TODO Auto-generated method stub 
-				gallery1.startAnimation(alpha_appear);
 				handler.removeCallbacks(null, null);
 				switch (index) {
 				case 1:
@@ -377,7 +377,7 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 					}else{
 						yuedan_list.clear();
 						yuedan_contentViews.clear();
-						gallery1.setAdapter(null);
+						gallery1.setAdapter(null); 
 						contentLayout.removeAllViews();
 						itemFram.setVisibility(View.INVISIBLE);
 						getMovieYueDanServiceData();
@@ -418,8 +418,16 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 					noticeView.setText(gallery1.getSelectedItemPosition() +1+ "/" + resouces_my_active.length);
 					break;
 				}
+				if(gallery1.getAnimation()!=null&&!gallery1.getAnimation().hasEnded()){
+					
+				}else{
+					gallery1.startAnimation(alpha_appear);
+				}
+				
+//		        gallery1.startAnimation(alpha_appear);
 			}
 		});
+
         itemFram = (FrameLayout) findViewById(R.id.itemFram);
 //        clock = (ClockTextView) findViewById(R.id.clock);
         highlightImageView = (ImageView) findViewById(R.id.highlight_img);
@@ -684,7 +692,11 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 						contentLayout.removeAllViews();
 						View hotView = hot_contentViews.get(arg2);
 						hotView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
-						contentLayout.startAnimation(alpha_appear);
+						if(contentLayout.getAnimation()!=null&&!contentLayout.getAnimation().hasEnded()){
+						
+						}else{
+							contentLayout.startAnimation(alpha_appear);
+						}
 						contentLayout.addView(hotView);
 						hotView.setVisibility(View.VISIBLE);
 					}
@@ -711,7 +723,11 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 							if(arg2<yuedan_contentViews.size()){
 								View yeuDanView = yuedan_contentViews.get(arg2);
 								yeuDanView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
-								contentLayout.startAnimation(alpha_appear);
+								if(contentLayout.getAnimation()!=null&&!contentLayout.getAnimation().hasEnded()){
+									
+								}else{
+									contentLayout.startAnimation(alpha_appear);
+								}
 								contentLayout.addView(yeuDanView);
 							}
 						}
@@ -745,7 +761,11 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 							if(arg2<yuedan_contentViews.size()){
 								View yeuDanView = yuedan_contentViews.get(arg2);
 								yeuDanView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
-								contentLayout.startAnimation(alpha_appear);
+								if(contentLayout.getAnimation()!=null&&!contentLayout.getAnimation().hasEnded()){
+									
+								}else{
+									contentLayout.startAnimation(alpha_appear);
+								}
 								contentLayout.addView(yeuDanView);
 							}
 						}
@@ -898,6 +918,16 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 //		}
 //			
 			return true;
+		case KeyEvent.KEYCODE_BACK:
+			if((System.currentTimeMillis()-exitTime) > 2000){ 
+                Toast.makeText(this, "再按一次退出程序", Toast.LENGTH_SHORT).show(); 
+                exitTime = System.currentTimeMillis(); 
+            } else{ 
+	            finish(); 
+	            android.os.Process.killProcess(android.os.Process.myPid());
+	            System.exit(0); 
+	            } 
+	        return true; 
 		}
 		return false;
 	}
@@ -1026,6 +1056,7 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// TODO Auto-generated method stub
+		Log.d(TAG, "result code =" + resultCode);
 		if(resultCode==RESULT_OK){
 			titleGroup.setSelectedTitleIndex(1);
 		}

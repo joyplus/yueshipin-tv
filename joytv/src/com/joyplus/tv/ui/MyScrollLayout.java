@@ -2,6 +2,7 @@ package com.joyplus.tv.ui;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Scroller;
@@ -245,12 +246,8 @@ public class MyScrollLayout extends ViewGroup {
 	}
 	
 	public void setSelectedTitleIndex(int index){
-		snapToTitle(2-mCurTitle);
+		snapToTitle(2-index);
 	}
-	
-//	public void setSelectedIndex(int index){
-//		snapToTitle(getChildCount() - index -1);
-//	}
 	
 	public interface OnViewChangeListener {
 		public void OnViewChange(int index);
