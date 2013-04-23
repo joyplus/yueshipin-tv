@@ -9,16 +9,15 @@
         android:id="@+id/surface_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:configChanges="orientation"
-        android:layout_centerInParent="true" />
+        android:layout_centerInParent="true"
+        android:configChanges="orientation" />
 
     <RelativeLayout
         android:id="@+id/LayoutPreload"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:background="@drawable/player_bg"
-      
-       >
+        android:visibility="gone" >
 
         <RelativeLayout
             android:layout_width="fill_parent"
@@ -64,7 +63,6 @@
                     android:layout_height="wrap_content"
                     android:text="）,已完成0%"
                     android:textAppearance="?android:attr/textAppearanceMedium" />
-
             </LinearLayout>
 
             <LinearLayout
@@ -202,8 +200,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:visibility="gone" >
+        android:layout_centerVertical="true" >
 
         <ImageButton
             android:id="@+id/imageControl_c"
@@ -212,10 +209,6 @@
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:background="@drawable/player_btn_pause"
-            android:nextFocusDown="@+id/imageControl_b"
-            android:nextFocusLeft="@+id/imageControl_l"
-            android:nextFocusRight="@+id/imageControl_r"
-            android:nextFocusUp="@+id/imageControl_t"
             android:onClick="OnClickPause" />
 
         <ImageButton
@@ -245,7 +238,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="84dp"
+            android:layout_marginLeft="80dp"
             android:layout_toRightOf="@+id/imageControl_r"
             android:background="@drawable/player_btn_next"
             android:nextFocusDown="@+id/imageControl_b"
@@ -259,7 +252,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/imageControl_t"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="86dp"
+            android:layout_marginTop="80dp"
             android:background="@drawable/player_btn_fav"
             android:nextFocusDown="@+id/imageControl_b"
             android:nextFocusLeft="@+id/imageControl_l"
