@@ -988,12 +988,14 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 				playDate.prod_type = Integer.valueOf(info.prod_type);
 				playDate.prod_name = info.prod_name;
 				playDate.prod_url = info.video_url;
+				Log.d(TAG, "url" + playDate.prod_url);
 //				playDate.prod_src = "";
 				if(!"".equals(info.playback_time)){
 					playDate.prod_time = Long.valueOf(info.playback_time);
 				}
 //				playDate.prod_qua = Integer.valueOf(info.definition);
 				app.setCurrentPlayData(playDate);
+				app.set_ReturnProgramView(null);
 				startActivity(intent);
 			}else if(info.type == 1){
 				int prod_type = Integer.valueOf(info.prod_type);
@@ -1351,6 +1353,7 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 			item.prod_summary = result.histories[0].prod_summary;
 			item.duration = result.histories[0].duration;
 			item.playback_time = result.histories[0].playback_time;
+			item.video_url = result.histories[0].video_url;
 			
 			View hotView = LayoutInflater.from(Main.this).inflate(R.layout.layout_hot, null);
 			TextView hot_name_tv = (TextView) hotView.findViewById(R.id.hot_content_name);

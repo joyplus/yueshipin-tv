@@ -30,13 +30,11 @@ public class NavigateView extends RelativeLayout implements OnItemSelectedListen
 	private LinearLayout layout;
 	private MyGallery1 gallery1,gallery2,gallery3;
 	private LinearLayout lineLayout1;
-	private LinearLayout lineLayout2;
-	private LinearLayout lineLayout3;
 	private LinearLayout highlightLayout;
 	private String[] array_diqu;
 	private String[] array_leibie;
 	private String[] array_niandai;
-	private TextView diqu,leibie,niandai;
+	private TextView diqu,leibie,niandai,all;
 	private TextView selectedTextView1;
 	private TextView selectedTextView2;
 	private TextView selectedTextView3;
@@ -188,13 +186,14 @@ public class NavigateView extends RelativeLayout implements OnItemSelectedListen
 		layout = (LinearLayout) rootView.findViewById(R.id.navigate_layout);
 		
 		lineLayout1 = (LinearLayout) rootView.findViewById(R.id.line_1);
-		lineLayout2 = (LinearLayout) rootView.findViewById(R.id.line_2);
-		lineLayout3 = (LinearLayout) rootView.findViewById(R.id.line_3);
+//		lineLayout2 = (LinearLayout) rootView.findViewById(R.id.line_2);
+//		lineLayout3 = (LinearLayout) rootView.findViewById(R.id.line_3);
 		highlightLayout = (LinearLayout) rootView.findViewById(R.id.highlight_backgroud);
 		
 		diqu = (TextView) rootView.findViewById(R.id.diqu);
 		leibie = (TextView) rootView.findViewById(R.id.leibie);
 		niandai = (TextView) rootView.findViewById(R.id.niandai);
+		all = (TextView) rootView.findViewById(R.id.all);
 		
 		this.array_diqu = array_diqu;
 		this.array_leibie = array_leibie;
@@ -260,16 +259,19 @@ public class NavigateView extends RelativeLayout implements OnItemSelectedListen
 //		highlightLayout.requestLayout();	
 	}
 	
-	private int[] getLocationOnScreen(View v){
-		int [] location = new int[2];
-		v.getLocationOnScreen(location);
-		return location;
-	}
+//	private int[] getLocationOnScreen(View v){
+//		int [] location = new int[2];
+//		v.getLocationOnScreen(location);
+//		return location;
+//	}
 
 	@Override
 	public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2,
 			long arg3) {
 		// TODO Auto-generated method stub
+		if(gallery1.getSelectedItemPosition()!=0||gallery2.getSelectedItemPosition()!=0||gallery3.getSelectedItemPosition()!=0){
+			all.setVisibility(View.GONE);
+		}
 		switch (arg0.getId()) {
 		case R.id.gallery1:
 			
@@ -386,6 +388,9 @@ public class NavigateView extends RelativeLayout implements OnItemSelectedListen
 				niandai.setText(array_niandai[arg2]);
 			}
 			break;
+		}
+		if(gallery1.getSelectedItemPosition()==0&&gallery2.getSelectedItemPosition()==0&&gallery3.getSelectedItemPosition()==0){
+			all.setVisibility(View.VISIBLE);
 		}
 	}
 	

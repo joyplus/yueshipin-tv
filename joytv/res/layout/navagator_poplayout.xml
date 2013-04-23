@@ -4,7 +4,7 @@
     android:layout_height="match_parent" 
     android:background="@drawable/bg_gallery_fram">
    <RelativeLayout android:layout_width="fill_parent"
-       android:layout_height="140dp"
+       android:layout_height="180dp"
        android:paddingLeft="20dp"
        android:paddingRight="20dp"
        android:background="#7a1a1a1a"
@@ -31,12 +31,6 @@
 	        android:layout_alignTop="@id/highlight_backgroud"
 	        android:background="@color/common_title_selected">
 	    </LinearLayout>
-<!-- 	    <Button android:layout_width="75dp" -->
-<!-- 	        android:layout_height="40dp" -->
-<!-- 	        android:layout_alignLeft="@id/row_highlight_backgroun" -->
-<!-- 	        android:layout_above="@id/highlight_backgroud" -->
-<!-- 	        android:background="@color/common_title_selected" -->
-<!-- 	        android:text="重置"/> -->
    <LinearLayout  android:layout_width="match_parent"
 	    android:layout_height="120dp"
 	    android:paddingLeft="20dp"
@@ -127,6 +121,15 @@
 		   android:src="@drawable/arrow_right"/>
    </LinearLayout>
    </LinearLayout>
+   <Button
+       android:layout_width="75dp"
+       android:layout_height="40dp"
+       android:layout_above="@+id/row_highlight_backgroun"
+       android:layout_alignLeft="@+id/row_highlight_backgroun"
+       android:background="@drawable/bg_button_reset_selector"
+       android:textSize="20sp"
+       android:text="重置" />
+
    </RelativeLayout>
    
    <LinearLayout android:layout_width="fill_parent"
@@ -136,6 +139,13 @@
     android:gravity="right|center_vertical"
     android:paddingRight="5dp"
     android:orientation="horizontal">
+   	<TextView android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/all"
+        android:text="全部分类"
+        android:visibility="gone"
+        android:textSize="20sp"
+        android:textColor="@color/common_title_selected"/>
     <TextView android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/diqu"

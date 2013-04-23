@@ -728,11 +728,11 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 		cb.SetHeader(app.getHeaders());
 
 		cb.params(params).url(url).type(JSONObject.class)
-				.weakHandler(this, "shoucangResult");
+				.weakHandler(this, "favoritResult");
 		aq.ajax(cb);
 	}
 	
-	public void shoucangResult(String url, JSONObject json, AjaxStatus status){
+	public void favoritResult(String url, JSONObject json, AjaxStatus status){
 		Log.d(TAG, json.toString());
 	}
 	
@@ -877,9 +877,9 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 								url_index.defination = 1;
 							}else if(movieData.movie.episodes[0].down_urls[i].urls[j].type.trim().equalsIgnoreCase(Constant.player_quality_index[0])){
 								url_index.defination = 2;
-							}else if(movieData.movie.episodes[0].down_urls[i].urls[j].type.trim().equalsIgnoreCase(Constant.player_quality_index[3])){
+							}else if(movieData.movie.episodes[0].down_urls[i].urls[j].type.trim().equalsIgnoreCase(Constant.player_quality_index[2])){
 								url_index.defination = 3;
-							}else if(movieData.movie.episodes[0].down_urls[i].urls[j].type.trim().equalsIgnoreCase(Constant.player_quality_index[4])){
+							}else if(movieData.movie.episodes[0].down_urls[i].urls[j].type.trim().equalsIgnoreCase(Constant.player_quality_index[3])){
 								url_index.defination = 4;
 							} 
 							playUrls.add(url_index);
