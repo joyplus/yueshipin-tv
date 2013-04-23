@@ -692,7 +692,7 @@ public class ShowMovieActivity extends AbstractShowActivity {
 
 				TextView movieDuration = (TextView) firstFloatView
 						.findViewById(R.id.tv_item_layout_other_info);
-				movieDuration.setText(duration);
+				movieDuration.setText(StatisticsUtils.formatMovieDuration(duration));
 			}
 		}
 

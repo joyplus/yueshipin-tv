@@ -409,7 +409,7 @@ public class ShowSearchActivity extends AbstractShowActivity {
 						
 						TextView movieDuration = (TextView) firstFloatView
 								.findViewById(R.id.tv_item_layout_other_info);
-						movieDuration.setText(duration);
+						movieDuration.setText(StatisticsUtils.formatMovieDuration(duration));
 					}
 				} else if(proType.equals("2") || proType.equals("131")){
 					movieScore.setText(movieList.get(0).getMovieScore());

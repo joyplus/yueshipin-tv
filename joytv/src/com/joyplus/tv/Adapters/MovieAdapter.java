@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.androidquery.AQuery;
 import com.joyplus.tv.R;
+import com.joyplus.tv.StatisticsUtils;
 import com.joyplus.tv.entity.GridViewItemHodler;
 import com.joyplus.tv.entity.MovieItemData;
 import com.joyplus.tv.utils.JieMianConstant;
@@ -114,8 +115,7 @@ public class MovieAdapter extends BaseAdapter implements JieMianConstant{
 		String duration = movieList.get(position).getMovieDuration();
 		if (duration != null && !duration.equals("")) {
 
-			viewItemHodler.otherInfo.setText(movieList.get(position)
-					.getMovieDuration());
+			viewItemHodler.otherInfo.setText(StatisticsUtils.formatMovieDuration(duration));
 		}
 
 		aq.id(viewItemHodler.haibaoIv).image(

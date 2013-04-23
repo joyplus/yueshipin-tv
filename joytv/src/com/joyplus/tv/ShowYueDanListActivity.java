@@ -489,7 +489,7 @@ public class ShowYueDanListActivity extends AbstractShowActivity{
 					
 					TextView movieDuration = (TextView) firstFloatView
 							.findViewById(R.id.tv_item_layout_other_info);
-					movieDuration.setText(duration);
+					movieDuration.setText(StatisticsUtils.formatMovieDuration(duration));
 				}
 			} else if(list.get(0).getMovieProType().equals("2")){
 				

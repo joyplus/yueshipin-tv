@@ -631,6 +631,22 @@ public class StatisticsUtils implements JieMianConstant,BangDanKey{
 		return durationValue;
 	}
 	
+	public static String formatMovieDuration(String duration) {
+		
+		int index = duration.indexOf("：");
+		Log.i(TAG, "Duration:" + duration);
+		
+		if(index == -1) {
+			
+			return duration + "分钟";
+		} else {
+			String str = duration.substring(0, index);
+			Log.i(TAG, "Duration:" + str);
+			return str + "分钟";
+		}
+
+	}
+	
 	public  static void clearList(List list) {
 
 		if (list != null && !list.isEmpty()) {
@@ -877,4 +893,5 @@ public class StatisticsUtils implements JieMianConstant,BangDanKey{
 		
 		return list;
 	}
+	
 }
