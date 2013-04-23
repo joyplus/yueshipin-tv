@@ -5,6 +5,7 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -19,11 +20,16 @@ import com.joyplus.tv.entity.MovieItemData;
 import com.joyplus.tv.utils.JieMianConstant;
 
 public class DianShijuAdapter extends BaseAdapter implements JieMianConstant{
+	public static final String TAG = "DianShijuAdapter";
 	private int popWidth,popHeight;
 	private List<MovieItemData> movieList = new ArrayList<MovieItemData>();
 
 	private Context context;
 	
+	private int currentListIndex;//用来记录lists数组的引用
+	private int pageIndex;//用来记录翻页数
+	
+
 	public DianShijuAdapter(Context context) {
 		
 		this.context = context;
@@ -62,6 +68,7 @@ public class DianShijuAdapter extends BaseAdapter implements JieMianConstant{
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		// TODO Auto-generated method stub
+		Log.i(TAG, "Position: " + position);
 		GridViewItemHodler viewItemHodler = null;
 
 		int width = parent.getWidth() / 5;
@@ -141,6 +148,22 @@ public class DianShijuAdapter extends BaseAdapter implements JieMianConstant{
 	
 	public List<MovieItemData> getMovieList() {
 		return movieList;
+	}
+	
+	public int getPageIndex() {
+		return pageIndex;
+	}
+
+	public void setPageIndex(int pageIndex) {
+		this.pageIndex = pageIndex;
+	}
+	
+	public int getCurrentListIndex() {
+		return currentListIndex;
+	}
+
+	public void setCurrentListIndex(int currentListIndex) {
+		this.currentListIndex = currentListIndex;
 	}
 
 }

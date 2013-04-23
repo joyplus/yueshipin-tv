@@ -22,8 +22,8 @@ public abstract class AbstractShowActivity extends Activity implements
 		initView();
 		initViewListener();
 		initViewState();
-		clearLists();
 		initLists();
+		clearLists();
 	}
 
 	protected abstract void initView();// 初始化界面基本组件

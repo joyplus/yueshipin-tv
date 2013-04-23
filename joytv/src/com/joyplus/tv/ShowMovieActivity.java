@@ -86,6 +86,8 @@ public class ShowMovieActivity extends AbstractShowActivity {
 	private MovieAdapter movieAdapter = null;
 	
 	private int currentItemPostion = -1;
+	
+	private int numCount = -1;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

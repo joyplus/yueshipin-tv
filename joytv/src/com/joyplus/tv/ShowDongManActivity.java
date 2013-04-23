@@ -90,6 +90,8 @@ public class ShowDongManActivity extends AbstractShowAddShouCangActivity{
 	
 	private int currentItemPostion = -1;
 	private int beforepostion = 0;
+	
+	private boolean isshoucangGone = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -109,10 +111,13 @@ public class ShowDongManActivity extends AbstractShowAddShouCangActivity{
 				TV_DONGMAN, 1 + "", 50 + "");
 		getQuan10Data(url2);
 		
+		/**
+		 * 因技术问题，不能解决
+		 */
 //		String favUrl = Constant.BASE_URL + "user/favorities" +"?page_num=1&page_size=10&userid="+app.getUserInfo().getUserId();
 //		String favUrl = Constant.BASE_URL + "user/favorities" +"?page_num=1&page_size=10&userid=152151";
-		String favUrl = StatisticsUtils.getUserFavURL(FAV_URL, 1 + "", 10 + "","", app.getUserInfo().getUserId());
-		getShoucangData(favUrl);
+//		String favUrl = StatisticsUtils.getUserFavURL(FAV_URL, 1 + "", 10 + "","", app.getUserInfo().getUserId());
+//		getShoucangData(favUrl);
 
 		dongmanGv.setSelected(true);
 		dongmanGv.requestFocus();
@@ -571,6 +576,7 @@ public class ShowDongManActivity extends AbstractShowAddShouCangActivity{
 				}
 			}
 		});
+		
 
 		searchEt.setOnClickListener(new View.OnClickListener() {
 
@@ -1030,22 +1036,10 @@ public class ShowDongManActivity extends AbstractShowAddShouCangActivity{
 					lls[i].setVisibility(View.VISIBLE);
 					if(i == 4) {
 						
-						LinearLayout nameAndInfoLL = (LinearLayout) lls[i].findViewById(R.id.ll_item_name_otherinfo);
-						nameAndInfoLL.setVisibility(View.INVISIBLE);
-						ImageView iv = (ImageView)lls[i] 
-								.findViewById(R.id.item_layout_dianying_reflact);
-						ImageView haiBaoIv = (ImageView)lls[i] 
-								.findViewById(R.id.iv_item_active_layout_haibao);
-						iv.setVisibility(View.GONE);
-						haiBaoIv.setBackgroundResource(R.drawable.more_movie);
+						initMoreLinearLayoutItem(lls[i], i);
 					} else {
 						
-						TextView movieName = (TextView) lls[i]
-								.findViewById(R.id.tv_item_layout_name);
-						TextView movieScore = (TextView) lls[i]
-								.findViewById(R.id.tv_item_layout_score);
-						movieName.setText(shoucangList.get(i).getMovieName());
-						movieScore.setText(shoucangList.get(i).getMovieScore());
+						initLinearlayoutItem(lls[i], i);
 					}
 					
 				}
@@ -1055,24 +1049,71 @@ public class ShowDongManActivity extends AbstractShowAddShouCangActivity{
 				for (int i = 0; i < lls.length; i++) {
 					
 					lls[i] = (LinearLayout) findViewById(SHOUCANG_ID_5_ITEMS_LL[i]);
-					lls[i].setVisibility(View.VISIBLE);
-					RelativeLayout include = (RelativeLayout) lls[i].findViewById(SHOUCANG_ID_5_ITEMS_INCLUDE[i]);
-					TextView movieName = (TextView) lls[i]
-							.findViewById(R.id.tv_item_layout_name);
-					TextView movieScore = (TextView) lls[i]
-							.findViewById(R.id.tv_item_layout_score);
-					movieName.setText(shoucangList.get(i).getMovieName());
-					movieScore.setText(shoucangList.get(i).getMovieScore());
-					String picUrl = shoucangList.get(i).getMoviePicUrl();
-					ImageView haiboIv = (ImageView) include.findViewById(R.id.iv_item_layout_haibao);
-					aq.id(haiboIv).image(shoucangList.get(i).getMoviePicUrl(), 
-							true, true,0, R.drawable.post_normal);
+					initLinearlayoutItem(lls[i], i);
 					
 				}
 			}
 		}
 		
 
+	}
+	
+	private void initMoreLinearLayoutItem(LinearLayout ll ,int index) {
+		
+		LinearLayout nameAndInfoLL = (LinearLayout) ll.findViewById(R.id.ll_item_name_otherinfo);
+		nameAndInfoLL.setVisibility(View.INVISIBLE);
+		ImageView haiBaoIv = (ImageView)ll 
+				.findViewById(R.id.iv_item_active_layout_haibao);
+		haiBaoIv.setBackgroundResource(R.drawable.more_movie);
+		ItemStateUtils.setGridViewNormalPadding(ll);
+		
+		ll.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+			
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				// TODO Auto-generated method stub
+				
+				if(hasFocus) {
+					
+					ItemStateUtils.viewInAnimation(getApplicationContext(), v);
+				}else {
+					
+					ItemStateUtils.viewOutAnimation(getApplicationContext(), v);
+				}
+			}
+		});
+	}
+	
+	private void initLinearlayoutItem(LinearLayout ll,int index) {
+		
+		ll.setVisibility(View.VISIBLE);
+		RelativeLayout include = (RelativeLayout) ll.findViewById(SHOUCANG_ID_5_ITEMS_INCLUDE[index]);
+		TextView movieName = (TextView) ll
+				.findViewById(R.id.tv_item_layout_name);
+		TextView movieScore = (TextView) ll
+				.findViewById(R.id.tv_item_layout_score);
+		movieName.setText(shoucangList.get(index).getMovieName());
+		movieScore.setText(shoucangList.get(index).getMovieScore());
+		ImageView haiboIv = (ImageView) include.findViewById(R.id.iv_item_layout_haibao);
+		aq.id(haiboIv).image(shoucangList.get(index).getMoviePicUrl(), 
+				true, true,0, R.drawable.post_normal);
+		ItemStateUtils.setGridViewNormalPadding(ll);
+		
+		ll.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+			
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				// TODO Auto-generated method stub
+				
+				if(hasFocus) {
+					
+					ItemStateUtils.viewInAnimation(getApplicationContext(), v);
+				}else {
+					
+					ItemStateUtils.viewOutAnimation(getApplicationContext(), v);
+				}
+			}
+		});
 	}
 
 }

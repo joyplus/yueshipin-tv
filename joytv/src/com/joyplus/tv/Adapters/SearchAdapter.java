@@ -28,6 +28,7 @@ public class SearchAdapter extends BaseAdapter implements JieMianConstant{
 	public SearchAdapter(Context context,AQuery aq) {
 		
 		this.context = context;
+		this.aq = aq;
 	}
 
 	@Override
