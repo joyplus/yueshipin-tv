@@ -590,19 +590,44 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 
 			return true;
 		case KeyEvent.KEYCODE_MEDIA_PAUSE:
-			if (mController.isHidden()) {
-				mController.show();
-			}
-			if (mVideoView.isPlaying()) {
-				pauseVideo();
+			if (JUMP_TIME_TIMES != 0) {// 快进模式
+				mDragging = false;
+				mVideoView.seekTo(JUMP_TIME);
+				JUMP_TIME = 0;
+				JUMP_TIME_TIMES = 0;
+				mHandler.removeCallbacks(mMediaFastForwardRunnable);
+				mController.hideTimerBar();
+				mController.HidingTimes();
+			}else {
+				if (mController.isHidden()) {
+					mController.hideVolume();
+					mController.show();
+				}
+				if (mVideoView.isPlaying()) {
+					pauseVideo();
+					mController.focusLayoutControl(0);
+					CURRENT_KEY = 0;
+				} 
 			}
 			return true;
 		case KeyEvent.KEYCODE_MEDIA_PLAY:
-			if (mController.isHidden()) {
-				mController.show();
-			}
-			if (!mVideoView.isPlaying()) {
-				playVideo();
+			if (JUMP_TIME_TIMES != 0) {// 快进模式
+				mDragging = false;
+				mVideoView.seekTo(JUMP_TIME);
+				JUMP_TIME = 0;
+				JUMP_TIME_TIMES = 0;
+				mHandler.removeCallbacks(mMediaFastForwardRunnable);
+				mController.hideTimerBar();
+				mController.HidingTimes();
+			} else {
+				if (mController.isHidden()) {
+					mController.hideVolume();
+					mController.show();
+				}
+				if (!mVideoView.isPlaying()){
+					playVideo();
+				}
+				
 			}
 			return true;
 		case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
