@@ -51,7 +51,6 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="right|center_vertical"
-                android:text="2/123"
                 android:textColor="@color/time_color"
                 android:textSize="@dimen/jishu_text_size" />
         </LinearLayout>

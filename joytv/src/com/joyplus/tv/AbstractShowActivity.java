@@ -75,5 +75,7 @@ public abstract class AbstractShowActivity extends Activity implements
 			AjaxStatus status);
 	
 	protected abstract void getMoreBangDanData(String url);
+	
+	protected abstract void cachePlay(int index, int pageNum);
 
 }

@@ -25,14 +25,12 @@ public class DianShijuAdapter extends BaseAdapter implements JieMianConstant{
 	private List<MovieItemData> movieList = new ArrayList<MovieItemData>();
 
 	private Context context;
-	
-	private int currentListIndex;//用来记录lists数组的引用
-	private int pageIndex = 0;//用来记录翻页数
-	
+	private AQuery aq;
 
-	public DianShijuAdapter(Context context) {
+	public DianShijuAdapter(Context context,AQuery aq) {
 		
 		this.context = context;
+		this.aq = aq;
 	}
 
 	@Override
@@ -85,7 +83,7 @@ public class DianShijuAdapter extends BaseAdapter implements JieMianConstant{
 			viewItemHodler.otherInfo = (TextView) convertView
 					.findViewById(R.id.tv_item_layout_other_info);
 			viewItemHodler.haibaoIv = (ImageView) convertView
-					.findViewById(R.id.iv_item_active_layout_haibao);
+					.findViewById(R.id.iv_item_layout_haibao);
 			convertView.setTag(viewItemHodler);
 
 		} else {
@@ -128,8 +126,7 @@ public class DianShijuAdapter extends BaseAdapter implements JieMianConstant{
 						movieList.get(position).getMovieCurEpisode());
 		}
 
-		AQuery aq = new AQuery(convertView);
-		aq.id(R.id.iv_item_layout_haibao).image(movieList.get(position).getMoviePicUrl(), 
+		aq.id(viewItemHodler.haibaoIv).image(movieList.get(position).getMoviePicUrl(), 
 				true, true,0, R.drawable.post_normal);
 		return convertView;
 	}
@@ -148,22 +145,6 @@ public class DianShijuAdapter extends BaseAdapter implements JieMianConstant{
 	
 	public List<MovieItemData> getMovieList() {
 		return movieList;
-	}
-	
-	public int getPageIndex() {
-		return pageIndex;
-	}
-
-	public void setPageIndex(int pageIndex) {
-		this.pageIndex = pageIndex;
-	}
-	
-	public int getCurrentListIndex() {
-		return currentListIndex;
-	}
-
-	public void setCurrentListIndex(int currentListIndex) {
-		this.currentListIndex = currentListIndex;
 	}
 
 }

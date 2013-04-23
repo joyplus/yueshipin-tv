@@ -68,9 +68,11 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 	
 	private ZongyiAdapter zongyiAdapter = null;
 
-	private List<MovieItemData> recommendList = new ArrayList<MovieItemData>();
-	private List<MovieItemData> quanbufenleiList = new ArrayList<MovieItemData>();
-	private List<MovieItemData> filterList = new ArrayList<MovieItemData>();
+	private List<MovieItemData>[] lists = new List[4];
+	private boolean[] isNextPagePossibles = new boolean[4];
+	private int[] pageNums = new int[4];
+	
+	private int currentListIndex;
 	
 	private int beforepostion = 0;
 
@@ -88,9 +90,7 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 		zongyiAdapter = new ZongyiAdapter(this,aq);
 		dinashijuGv.setAdapter(zongyiAdapter);
 		
-		String url = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
-				REBO_ZONGYI, 1 + "", 50 + "");
-		getQuan10Data(url);
+		getFilterData(StatisticsUtils.getZongyi_QuanAllFirstURL());
 		dinashijuGv.setSelected(true);
 		dinashijuGv.requestFocus();
 		dinashijuGv.setSelection(0);
@@ -114,7 +114,6 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 	@Override
 	public boolean onKey(View v, int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
-		int action = event.getAction();
 		return false;
 	}
 
@@ -380,6 +379,17 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 
 				beforeGvView = view;
 				beforepostion = position;
+				
+				//缓存
+				int size = zongyiAdapter.getMovieList().size();
+				if(size-1-firstAndLastVisible[1] < StatisticsUtils.CACHE_NUM) {
+					
+					if(isNextPagePossibles[currentListIndex]) {
+						
+						pageNums[currentListIndex]++;
+						cachePlay(currentListIndex, pageNums[currentListIndex]);
+					}
+				}
 
 			}
 
@@ -477,15 +487,22 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 	protected void clearLists() {
 		// TODO Auto-generated method stub
 		
-		StatisticsUtils.clearList(quanbufenleiList);
-		StatisticsUtils.clearList(recommendList);
-		StatisticsUtils.clearList(filterList);
+		for(int i= 0;i<lists.length;i++) {
+			
+			StatisticsUtils.clearList(lists[i]);
+		}
 	}
 
 	@Override
 	protected void initLists() {
 		// TODO Auto-generated method stub
 		
+		for(int i= 0;i<lists.length;i++) {
+			
+			lists[i] = new ArrayList<MovieItemData>();
+			isNextPagePossibles[i] = false;//认为所有的不能够翻页
+			pageNums[i]=0;
+		}
 	}
 
 	@Override
@@ -532,6 +549,19 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 		
 		zongyiAdapter.setList(list);
 		
+		if(list != null && !list.isEmpty()) {//判断其能否向获取更多数据
+			
+			if(list.size() == StatisticsUtils.FIRST_NUM) {
+				
+				isNextPagePossibles[currentListIndex] = true;
+			} else if(list.size() < StatisticsUtils.FIRST_NUM) {
+				
+				isNextPagePossibles[currentListIndex] = false;
+			}
+		}
+		
+		lists[currentListIndex] = list;
+		
 		dinashijuGv.setSelection(0);
 		zongyiAdapter.notifyDataSetChanged();
 		beforeGvView = null;
@@ -555,9 +585,9 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 
 		if (tempStr.equals(quanbufenlei)) {
 
-			if(quanbufenleiList != null && !quanbufenleiList.isEmpty()) {
+			if(lists[QUAN_FILTER] != null && !lists[QUAN_FILTER].isEmpty()) {
 				
-				notifyAdapter(quanbufenleiList);
+				notifyAdapter(lists[QUAN_FILTER]);
 			} else {
 				
 				String url2 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL,
@@ -624,28 +654,6 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 			AjaxStatus status) {
 		// TODO Auto-generated method stub
 		
-		if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
-
-			app.MyToast(aq.getContext(),
-					getResources().getString(R.string.networknotwork));
-			return;
-		}
-		try {
-			Log.d(TAG, json.toString());
-			recommendList = StatisticsUtils.returnTVBangDanListJson(json.toString());
-			String urlNormal = StatisticsUtils.getFilterURL(FILTER_URL, 1 + "",
-					10 + "", ZONGYI_TYPE);
-			getQuanbuData(urlNormal);
-		} catch (JsonParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 
 	@Override
@@ -653,49 +661,6 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 			AjaxStatus status) {
 		// TODO Auto-generated method stub
 		
-		if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
-
-			app.MyToast(aq.getContext(),
-					getResources().getString(R.string.networknotwork));
-			return;
-		}
-		try {
-			Log.d(TAG, json.toString());
-			quanbufenleiList = StatisticsUtils.returnFilterMovieSearch_TVJson(json.toString());
-
-				if(recommendList != null && !recommendList.isEmpty()) {
-					
-					for (MovieItemData movieItemData : recommendList) {
-
-						boolean isSame = false;
-						for (int i = 0; i < quanbufenleiList.size(); i++) {
-
-							String proId = movieItemData.getMovieID();
-							if (proId.equals(quanbufenleiList.get(i).getMovieID())) {
-
-								isSame = true;
-								break;// 符合条件跳出本次循环
-
-							}
-						}
-						if (!isSame) {
-
-							quanbufenleiList.add(movieItemData);
-						}
-					}
-				}
-			
-			notifyAdapter(quanbufenleiList);
-		} catch (JsonParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 
 	@Override
@@ -719,10 +684,7 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 		
 		try {
 			Log.d(TAG, json.toString());
-			StatisticsUtils.clearList(filterList);
-			filterList = StatisticsUtils.returnFilterMovieSearchJson(json.toString());
-			
-			notifyAdapter(filterList);
+			notifyAdapter(StatisticsUtils.returnFilterMovieSearch_TVJson(json.toString()));
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -739,6 +701,28 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 	protected void refreshAdpter(List<MovieItemData> list) {
 		// TODO Auto-generated method stub
 		
+		List<MovieItemData> srcList = zongyiAdapter.getMovieList();
+		
+		if(list != null && !list.isEmpty()) {
+			
+			for(MovieItemData movieItemData:list) {
+				
+				srcList.add(movieItemData);
+			}
+		}
+		
+		if(list.size() == StatisticsUtils.CACHE_NUM) {
+			
+			isNextPagePossibles[currentListIndex] = true;
+		}else {
+			
+			isNextPagePossibles[currentListIndex] = false;
+		}
+		
+		zongyiAdapter.setList(srcList);
+		lists[currentListIndex] = srcList;
+		
+		zongyiAdapter.notifyDataSetChanged();
 	}
 
 	@Override
@@ -746,12 +730,33 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 			AjaxStatus status) {
 		// TODO Auto-generated method stub
 		
+		if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
+
+			app.MyToast(aq.getContext(),
+					getResources().getString(R.string.networknotwork));
+			return;
+		}
+		
+		try {
+			Log.d(TAG, json.toString());
+			
+			refreshAdpter(StatisticsUtils.returnFilterMovieSearch_TVJson(json.toString()));
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	protected void getMoreFilterData(String url) {
 		// TODO Auto-generated method stub
-		
+		getServiceData(url, "initMoreFilerServiceData");
 	}
 
 	@Override
@@ -765,6 +770,30 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 	protected void getMoreBangDanData(String url) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	protected void cachePlay(int index, int pageNum) {
+		// TODO Auto-generated method stub
+		
+		switch (index) {
+		case QUANBUFENLEI:
+//			getFilterData(StatisticsUtils.getTV_QuanAllCacheURL(pageNum));
+			getMoreFilterData(StatisticsUtils.getZongyi_QuanAllCacheURL(pageNum));
+			break;
+		case QUAN_TEN:
+			
+			break;
+		case QUAN_FILTER:
+			
+			break;
+		case SEARCH:
+			
+			break;
+
+		default:
+			break;
+		}
 	}
 
 }

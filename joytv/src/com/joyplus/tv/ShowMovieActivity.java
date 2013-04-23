@@ -40,7 +40,17 @@ import com.joyplus.tv.utils.ItemStateUtils;
 
 public class ShowMovieActivity extends AbstractShowActivity {
 
-	private String TAG = "ShowMovieActivity";
+	public static final String TAG = "ShowMovieActivity";
+	
+	private static final int DONGZUOPIAN = 4;
+	private static final int KEHUANPIAN = 5;
+	private static final int LUNLIPIAN = 6;
+	private static final int XIJUPIAN = 7;
+	private static final int AIQINGPIAN = 8;
+	private static final int XUANYIPIAN = 9;
+	private static final int KONGBUPIAN = 10;
+	private static final int DONGHUAPIAN = 11;
+	
 	private AQuery aq;
 	private App app;
 
@@ -63,31 +73,18 @@ public class ShowMovieActivity extends AbstractShowActivity {
 	private int[] beforeFirstAndLastVible = { 0, 9 };
 
 	private View beforeGvView = null;
-
-	private List<MovieItemData> recommendList = new ArrayList<MovieItemData>();
-
-	private List<MovieItemData> quanbufenleiList = new ArrayList<MovieItemData>();
-	private List<MovieItemData> dongzuoList = new ArrayList<MovieItemData>();
-	private List<MovieItemData> kehuanList = new ArrayList<MovieItemData>();
-	private List<MovieItemData> lunliList = new ArrayList<MovieItemData>();
-	private List<MovieItemData> xijuList = new ArrayList<MovieItemData>();
-	private List<MovieItemData> aiqingList = new ArrayList<MovieItemData>();
-	private List<MovieItemData> xuanyiList = new ArrayList<MovieItemData>();
-	private List<MovieItemData> kongbuList = new ArrayList<MovieItemData>();
-	private List<MovieItemData> donghuaList = new ArrayList<MovieItemData>();
-	private List<MovieItemData> filterList = new ArrayList<MovieItemData>();
 	
-	private List<MovieItemData>[] lists = null;
+	private List<MovieItemData>[] lists = new List[10];
+	private boolean[] isNextPagePossibles = new boolean[10];
+	private int[] pageNums = new int[10];
+	
+	private int currentListIndex;
 
 	private PopupWindow popupWindow;
 
 	private int beforepostion = 0;
 	
 	private MovieAdapter movieAdapter = null;
-	
-	private int currentItemPostion = -1;
-	
-	private int numCount = -1;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -103,9 +100,9 @@ public class ShowMovieActivity extends AbstractShowActivity {
 		movieAdapter = new MovieAdapter(this,aq);
 		movieGv.setAdapter(movieAdapter);
 
-		String url2 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL,
-				TV_DIANYING, 1 + "", 50 + "");
-		getQuan10Data(url2);
+//		String url2 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL,
+//				TV_DIANYING, 1 + "", StatisticsUtils.CACHE_NUM + "");
+		getQuan10Data(StatisticsUtils.getMovie_Quan10URL());
 
 		movieGv.setSelected(true);
 		movieGv.requestFocus();
@@ -130,7 +127,6 @@ public class ShowMovieActivity extends AbstractShowActivity {
 	@Override
 	public boolean onKey(View v, int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
-		int action = event.getAction();
 		return false;
 	}
 
@@ -208,104 +204,96 @@ public class ShowMovieActivity extends AbstractShowActivity {
 
 		switch (v.getId()) {
 		case R.id.ll_dongzuopian:
-			currentItemPostion = 0;
-			String url1 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL,
-					REBO_DONGZUO_MOVIE, 1 + "", 50 + "");
+			currentListIndex = DONGZUOPIAN;
+			String url1 = StatisticsUtils.getMovie_DongzuoFirstURL();
 			app.MyToast(aq.getContext(), "DONGZUO");
-			if(dongzuoList != null && !dongzuoList.isEmpty()) {
+			if(lists[currentListIndex] != null && !lists[currentListIndex].isEmpty()) {
 				
-				notifyAdapter(dongzuoList);
+				notifyAdapter(lists[currentListIndex]);
 			} else {
 				
 				getUnQuanbuData(url1);
 			}
 			break;
 		case R.id.ll_kehuanpian:
-			currentItemPostion = 1;
-			String url2 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL,
-					REBO_KEHUAN_MOVIE, 1 + "", 50 + "");
+			currentListIndex = KEHUANPIAN;
+			String url2 = StatisticsUtils.getMovie_KehuanFirstURL();
 			app.MyToast(aq.getContext(), "ll_kehuanpian");
-			if(kehuanList != null && !kehuanList.isEmpty()) {
+			if(lists[currentListIndex] != null && !lists[currentListIndex].isEmpty()) {
 				
-				notifyAdapter(kehuanList);
+				notifyAdapter(lists[currentListIndex]);
 			} else {
 				
 				getUnQuanbuData(url2);
 			}
 			break;
 		case R.id.ll_lunlipian:
-			currentItemPostion = 2;
-			String url3 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL,
-					REBO_LUNLI_MOVIE, 1 + "", 50 + "");
+			currentListIndex = LUNLIPIAN;
+			String url3 = StatisticsUtils.getMovie_LunliFirstURL();
 			app.MyToast(aq.getContext(), "ll_lunlipian");
-			if(lunliList != null && !lunliList.isEmpty()) {
+			if(lists[currentListIndex] != null && !lists[currentListIndex].isEmpty()) {
 				
-				notifyAdapter(lunliList);
+				notifyAdapter(lists[currentListIndex]);
 			} else {
 				
 				getUnQuanbuData(url3);
 			}
 			break;
 		case R.id.ll_xijupian:
-			currentItemPostion = 3;
-			String url4 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL,
-					REBO_XIJU_MOVIE, 1 + "", 50 + "");
+			currentListIndex = XIJUPIAN;
+			String url4 = StatisticsUtils.getMovie_DongzuoFirstURL();
 			app.MyToast(aq.getContext(), "ll_xijupian");
-			if(xijuList != null && !xijuList.isEmpty()) {
+			if(lists[currentListIndex] != null && !lists[currentListIndex].isEmpty()) {
 				
-				notifyAdapter(lunliList);
+				notifyAdapter(lists[currentListIndex]);
 			} else {
 				
 				getUnQuanbuData(url4);
 			}
 			break;
 		case R.id.ll_aiqingpian:
-			currentItemPostion = 4;
-			String url5 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL,
-					REBO_AIQING_MOVIE, 1 + "", 50 + "");
+			currentListIndex = AIQINGPIAN;
+			String url5 = StatisticsUtils.getMovie_AiqingFirstURL();
 			app.MyToast(aq.getContext(), "ll_aiqingpian");
-			if(aiqingList != null && !aiqingList.isEmpty()) {
+			if(lists[currentListIndex] != null && !lists[currentListIndex].isEmpty()) {
 				
-				notifyAdapter(aiqingList);
+				notifyAdapter(lists[currentListIndex]);
 			} else {
 				
 				getUnQuanbuData(url5);
 			}
 			break;
 		case R.id.ll_xuanyipian:
-			currentItemPostion = 5;
-			String url6 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL,
-					REBO_KEHUAN_MOVIE, 1 + "", 50 + "");
+			currentListIndex = XUANYIPIAN;
+			String url6 = StatisticsUtils.getMovie_XuanyiFirstURL();
 			app.MyToast(aq.getContext(), "ll_xuanyipian");
-			if(xuanyiList != null && !xuanyiList.isEmpty()) {
+			if(lists[currentListIndex] != null && !lists[currentListIndex].isEmpty()) {
 				
-				notifyAdapter(xuanyiList);
+				notifyAdapter(lists[currentListIndex]);
 			} else {
 				
 				getUnQuanbuData(url6);
 			}
 			break;
 		case R.id.ll_kongbupian:
-			currentItemPostion = 6;
-			String url7 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL,
-					REBO_KONGBU_MOVIE, 1 + "", 50 + "");
+			currentListIndex = KONGBUPIAN;
+			String url7 = StatisticsUtils.getMovie_KongbuFirstURL();
 			app.MyToast(aq.getContext(), "ll_kongbupian");
-			if(kongbuList != null && !kongbuList.isEmpty()) {
+			if(lists[currentListIndex] != null && !lists[currentListIndex].isEmpty()) {
 				
-				notifyAdapter(kongbuList);
+				notifyAdapter(lists[currentListIndex]);
 			} else {
 				
 				getUnQuanbuData(url7);
 			}
 			break;
 		case R.id.ll_donghuapian:
-			currentItemPostion = 7;
-			String url8 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL,
-					REBO_DONGHUA_MOVIE, 1 + "", 50 + "");
+			currentListIndex = DONGHUAPIAN;
+			String url8 = StatisticsUtils.getMovie_DonghuaFirstURL();
 			app.MyToast(aq.getContext(), "ll_donghuapian");
-			if(donghuaList != null && !donghuaList.isEmpty()) {
+			if(lists[currentListIndex] != null && !lists[currentListIndex].isEmpty()) {
 				
-				notifyAdapter(kongbuList);
+				notifyAdapter(lists[currentListIndex]);
 			} else {
 				
 				getUnQuanbuData(url8);
@@ -538,6 +526,17 @@ public class ShowMovieActivity extends AbstractShowActivity {
 
 				beforeGvView = view;
 				beforepostion = position;
+				
+				//缓存
+				int size = movieAdapter.getMovieList().size();
+				if(size-1-firstAndLastVisible[1] < StatisticsUtils.CACHE_NUM) {
+					
+					if(isNextPagePossibles[currentListIndex]) {
+						
+						pageNums[currentListIndex] ++;
+						cachePlay(currentListIndex, pageNums[currentListIndex]);
+					}
+				}
 
 			}
 
@@ -643,32 +642,22 @@ public class ShowMovieActivity extends AbstractShowActivity {
 	protected void clearLists() {
 		// TODO Auto-generated method stub
 		
-		StatisticsUtils.clearList(quanbufenleiList);
-		StatisticsUtils.clearList(dongzuoList);
-		StatisticsUtils.clearList(kehuanList);
-		StatisticsUtils.clearList(lunliList);
-		StatisticsUtils.clearList(xijuList);
-		StatisticsUtils.clearList(aiqingList);
-		StatisticsUtils.clearList(xuanyiList);
-		StatisticsUtils.clearList(kongbuList);
-		StatisticsUtils.clearList(donghuaList);
-		StatisticsUtils.clearList(recommendList);
-		StatisticsUtils.clearList(filterList);
+		for(int i= 0;i<lists.length;i++) {
+			
+			StatisticsUtils.clearList(lists[i]);
+		}
 	}
 
 	@Override
 	protected void initLists() {
 		// TODO Auto-generated method stub
 		
-		lists = new List[8];
-		lists[0] = dongzuoList;
-		lists[1] = kehuanList;
-		lists[2] = lunliList;
-		lists[3] = xijuList;
-		lists[4] = aiqingList;
-		lists[5] = xuanyiList;
-		lists[6] = kongbuList;
-		lists[7] = donghuaList;
+		for(int i= 0;i<lists.length;i++) {
+			
+			lists[i] = new ArrayList<MovieItemData>();
+			isNextPagePossibles[i] = false;//认为所有的不能够翻页
+			pageNums[i]=0;
+		}
 	}
 
 	@Override
@@ -726,10 +715,22 @@ public class ShowMovieActivity extends AbstractShowActivity {
 		
 		movieAdapter.setList(list);
 		
+		if(list != null && !list.isEmpty() && currentListIndex != QUANBUFENLEI) {//判断其能否向获取更多数据
+			
+			if(list.size() == StatisticsUtils.FIRST_NUM) {
+				
+				isNextPagePossibles[currentListIndex] = true;
+			} else if(list.size() < StatisticsUtils.FIRST_NUM) {
+				
+				isNextPagePossibles[currentListIndex] = false;
+			}
+		}
+		
+		lists[currentListIndex] = list;
+		
 		movieGv.setSelection(0);
 		movieAdapter.notifyDataSetChanged();
 		beforeGvView = null;
-		initFirstFloatView();
 		movieGv.setFocusable(true);
 		movieGv.setSelected(true);
 		isSelectedItem = false;
@@ -749,9 +750,9 @@ public class ShowMovieActivity extends AbstractShowActivity {
 
 		if (tempStr.equals(quanbufenlei)) {
 
-			if(quanbufenleiList != null && !quanbufenleiList.isEmpty()) {
+			if(lists[QUAN_FILTER] != null && !lists[QUAN_FILTER].isEmpty()) {
 				
-				notifyAdapter(quanbufenleiList);
+				notifyAdapter(lists[QUAN_FILTER]);
 			} else {
 				
 				String url2 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL,
@@ -776,16 +777,12 @@ public class ShowMovieActivity extends AbstractShowActivity {
 	protected void getQuan10Data(String url) {
 		// TODO Auto-generated method stub
 		
-		currentItemPostion = -1;
-		
 		getServiceData(url, "initQuan10ServiceData");
 	}
 
 	@Override
 	protected void getQuanbuData(String url) {
 		// TODO Auto-generated method stub
-		
-		currentItemPostion = -1;
 		
 		getServiceData(url, "initQuanbuServiceData");
 	}
@@ -801,8 +798,6 @@ public class ShowMovieActivity extends AbstractShowActivity {
 	protected void getFilterData(String url) {
 		// TODO Auto-generated method stub
 		
-		currentItemPostion = -1;
-		
 		getServiceData(url, "initFilerServiceData");
 	}
 
@@ -812,7 +807,6 @@ public class ShowMovieActivity extends AbstractShowActivity {
 		
 		firstFloatView.setVisibility(View.INVISIBLE);
 		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
-		// cb.url(url).type(JSONObject.class).weakHandler(this, "initData");
 		cb.url(url).type(JSONObject.class).weakHandler(this, interfaceName);
 
 		cb.SetHeader(app.getHeaders());
@@ -832,9 +826,10 @@ public class ShowMovieActivity extends AbstractShowActivity {
 		}
 		try {
 			Log.d(TAG, json.toString());
-			recommendList = StatisticsUtils.returnTVBangDanListJson(json.toString());
+			lists[QUAN_TEN] = StatisticsUtils.returnTVBangDanListJson(json.toString());
 			String urlNormal = StatisticsUtils.getFilterURL(FILTER_URL, 1 + "",
 					10 + "", MOVIE_TYPE);
+			currentListIndex = QUANBUFENLEI;
 			getQuanbuData(urlNormal);
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
@@ -861,31 +856,38 @@ public class ShowMovieActivity extends AbstractShowActivity {
 		}
 		try {
 			Log.d(TAG, json.toString());
-			quanbufenleiList = StatisticsUtils.returnFilterMovieSearchJson(json.toString());
+			if(lists[QUAN_TEN] != null && !lists[QUAN_TEN].isEmpty()) {
+				
+				List<MovieItemData> temp10List = new ArrayList<MovieItemData>(lists[QUAN_TEN]);
+				List<MovieItemData> tempList = new ArrayList<MovieItemData>();
+				tempList = StatisticsUtils.returnFilterMovieSearch_TVJson(json.toString());
+				
+				for (MovieItemData movieItemData : tempList) {
 
-				if(recommendList != null && !recommendList.isEmpty()) {
-					
-					for (MovieItemData movieItemData : recommendList) {
+					boolean isSame = false;
+					String proId = movieItemData.getMovieID();
+					for (int i = 0; i < temp10List.size(); i++) {
 
-						boolean isSame = false;
-						for (int i = 0; i < quanbufenleiList.size(); i++) {
+						if (proId.equals(temp10List.get(i).getMovieID())) {
 
-							String proId = movieItemData.getMovieID();
-							if (proId.equals(quanbufenleiList.get(i).getMovieID())) {
+							isSame = true;
+							break;// 符合条件跳出本次循环
 
-								isSame = true;
-								break;// 符合条件跳出本次循环
-
-							}
-						}
-						if (!isSame) {
-
-							quanbufenleiList.add(movieItemData);
 						}
 					}
+					if (!isSame) {
+
+						temp10List.add(movieItemData);
+					}
 				}
-			
-			notifyAdapter(quanbufenleiList);
+				
+				if(tempList.size() == StatisticsUtils.CACHE_NUM) {
+					
+					isNextPagePossibles[currentListIndex] = true;
+				}
+				notifyAdapter(temp10List);
+				initFirstFloatView();
+			}
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -911,16 +913,7 @@ public class ShowMovieActivity extends AbstractShowActivity {
 		}
 		try {
 			Log.d(TAG, json.toString());
-			if(currentItemPostion != -1) {
-				
-				if(currentItemPostion >= 0 && currentItemPostion < lists.length) {
-					
-					lists[currentItemPostion] = StatisticsUtils.returnTVBangDanListJson(json.toString());
-					
-					notifyAdapter(lists[currentItemPostion]);
-				}
-
-			}
+			notifyAdapter(StatisticsUtils.returnTVBangDanList_TVJson(json.toString()));
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -947,10 +940,7 @@ public class ShowMovieActivity extends AbstractShowActivity {
 		
 		try {
 			Log.d(TAG, json.toString());
-			StatisticsUtils.clearList(filterList);
-			filterList = StatisticsUtils.returnFilterMovieSearchJson(json.toString());
-			
-			notifyAdapter(filterList);
+			notifyAdapter(StatisticsUtils.returnFilterMovieSearch_TVJson(json.toString()));
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -967,6 +957,28 @@ public class ShowMovieActivity extends AbstractShowActivity {
 	protected void refreshAdpter(List<MovieItemData> list) {
 		// TODO Auto-generated method stub
 		
+		List<MovieItemData> srcList = movieAdapter.getMovieList();
+		
+		if(list != null && !list.isEmpty()) {
+			
+			for(MovieItemData movieItemData:list) {
+				
+				srcList.add(movieItemData);
+			}
+		}
+		
+		if(list.size() == StatisticsUtils.CACHE_NUM) {
+			
+			isNextPagePossibles[currentListIndex] = true;
+		}else {
+			
+			isNextPagePossibles[currentListIndex] = false;
+		}
+		
+		movieAdapter.setList(srcList);
+		lists[currentListIndex] = srcList;
+		
+		movieAdapter.notifyDataSetChanged();
 	}
 
 	@Override
@@ -974,12 +986,34 @@ public class ShowMovieActivity extends AbstractShowActivity {
 			AjaxStatus status) {
 		// TODO Auto-generated method stub
 		
+		if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
+
+			app.MyToast(aq.getContext(),
+					getResources().getString(R.string.networknotwork));
+			return;
+		}
+		
+		try {
+			Log.d(TAG, json.toString());
+			
+			refreshAdpter(StatisticsUtils.returnFilterMovieSearch_TVJson(json.toString()));
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	protected void getMoreFilterData(String url) {
 		// TODO Auto-generated method stub
 		
+		getServiceData(url, "initMoreFilerServiceData");
 	}
 
 	@Override
@@ -987,12 +1021,83 @@ public class ShowMovieActivity extends AbstractShowActivity {
 			AjaxStatus status) {
 		// TODO Auto-generated method stub
 		
+		if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
+
+			app.MyToast(aq.getContext(),
+					getResources().getString(R.string.networknotwork));
+			return;
+		}
+		
+		try {
+			Log.d(TAG, json.toString());
+			
+			refreshAdpter(StatisticsUtils.returnTVBangDanList_TVJson(json.toString()));
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 
 	@Override
 	protected void getMoreBangDanData(String url) {
 		// TODO Auto-generated method stub
 		
+		getServiceData(url, "initMoreBangDanServiceData");
+	}
+
+	@Override
+	protected void cachePlay(int index, int pageNum) {
+		// TODO Auto-generated method stub
+		
+		switch (index) {
+		case QUANBUFENLEI:
+//			getFilterData(StatisticsUtils.getTV_QuanAllCacheURL(pageNum));
+			getMoreFilterData(StatisticsUtils.getMovie_QuanAllCacheURL(pageNum));
+			break;
+		case QUAN_TEN:
+			
+			break;
+		case QUAN_FILTER:
+			
+			break;
+		case SEARCH:
+			
+			break;
+		case DONGZUOPIAN:
+			getMoreBangDanData(StatisticsUtils.getMovie_DongzuoCacheURL(pageNum));
+			break;
+		case KEHUANPIAN:
+			getMoreBangDanData(StatisticsUtils.getMovie_KehuanCacheURL(pageNum));
+			break;
+		case LUNLIPIAN:
+			getMoreBangDanData(StatisticsUtils.getMovie_LunliCacheURL(pageNum));
+			break;
+		case XIJUPIAN:
+			getMoreBangDanData(StatisticsUtils.getMovie_XijuCacheURL(pageNum));
+			break;
+		case AIQINGPIAN:
+			getMoreBangDanData(StatisticsUtils.getMovie_AiqingCacheURL(pageNum));
+			break;
+		case XUANYIPIAN:
+			getMoreBangDanData(StatisticsUtils.getMovie_XuanyiCacheURL(pageNum));
+			break;
+		case KONGBUPIAN:
+			getMoreBangDanData(StatisticsUtils.getMovie_KongbuCacheURL(pageNum));
+			break;
+		case DONGHUAPIAN:
+			getMoreBangDanData(StatisticsUtils.getMovie_DonghuaCacheURL(pageNum));
+			break;
+
+		default:
+			break;
+		}
 	}
 
 }

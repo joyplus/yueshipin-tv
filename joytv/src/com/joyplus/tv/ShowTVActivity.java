@@ -76,12 +76,14 @@ public class ShowTVActivity extends AbstractShowActivity{
 	
 	private List<MovieItemData>[] lists = new List[10];
 	private boolean[] isNextPagePossibles = new boolean[10];
+	private int[] pageNums = new int[10];
+	
+	private int currentListIndex;
 	
 	private DianShijuAdapter dianShijuAdapter =  null;
 	
 	private int beforepostion = 0;
 	
-	private int currentListIndex;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -94,7 +96,7 @@ public class ShowTVActivity extends AbstractShowActivity{
 		
 		initActivity();
 
-		dianShijuAdapter = new DianShijuAdapter(this);
+		dianShijuAdapter = new DianShijuAdapter(this,aq);
 		dinashijuGv.setAdapter(dianShijuAdapter);
 
 		String url = StatisticsUtils.getTV_Quan10URL();
@@ -496,10 +498,8 @@ public class ShowTVActivity extends AbstractShowActivity{
 					
 					if(isNextPagePossibles[currentListIndex]) {
 						
-						int pageIndex = dianShijuAdapter.getPageIndex();
-						pageIndex ++;
-						dianShijuAdapter.setPageIndex(pageIndex);
-						cachePlay(currentListIndex, pageIndex);
+						pageNums[currentListIndex] ++;
+						cachePlay(currentListIndex, pageNums[currentListIndex]);
 					}
 				}
 
@@ -619,6 +619,7 @@ public class ShowTVActivity extends AbstractShowActivity{
 			
 			lists[i] = new ArrayList<MovieItemData>();
 			isNextPagePossibles[i] = false;//认为所有的不能够翻页
+			pageNums[i]=0;
 		}
 	}
 
@@ -683,7 +684,6 @@ public class ShowTVActivity extends AbstractShowActivity{
 			popHeight = height;
 		}
 		
-		dianShijuAdapter.setCurrentListIndex(currentListIndex);
 		dianShijuAdapter.setList(list);
 		
 		if(list != null && !list.isEmpty() && currentListIndex != QUANBUFENLEI) {//判断其能否向获取更多数据
@@ -857,6 +857,7 @@ public class ShowTVActivity extends AbstractShowActivity{
 						isNextPagePossibles[currentListIndex] = true;
 					}
 					notifyAdapter(temp10List);
+					initFirstFloatView();
 				}
 			
 			
@@ -929,7 +930,7 @@ public class ShowTVActivity extends AbstractShowActivity{
 	}
 	
 	
-	private void cachePlay(int index, int pageNum) {
+	protected void cachePlay(int index, int pageNum) {
 		
 		switch (index) {
 		case QUANBUFENLEI:
@@ -1044,12 +1045,21 @@ public class ShowTVActivity extends AbstractShowActivity{
 				
 				srcList.add(movieItemData);
 			}
+			
+			if(list.size() == StatisticsUtils.CACHE_NUM) {
+				
+				isNextPagePossibles[currentListIndex] = true;
+			}else {
+				
+				isNextPagePossibles[currentListIndex] = false;
+			}
+			
+			dianShijuAdapter.setList(srcList);
+			lists[currentListIndex] = srcList;
+			
+			dianShijuAdapter.notifyDataSetChanged();
 		}
 		
-		dianShijuAdapter.setList(srcList);
-		lists[currentListIndex] = srcList;
-		
-		dianShijuAdapter.notifyDataSetChanged();
 	}
 
 }

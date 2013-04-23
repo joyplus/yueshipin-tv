@@ -181,7 +181,7 @@ public class StatisticsUtils implements JieMianConstant,BangDanKey{
 	//港剧
 	public static String getTV_GangjuFirstURL() {
 		
-		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL,REBO_GANGJU_DIANSHI, 1 + "", CACHE_NUM + "");
+		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL,REBO_GANGJU_DIANSHI, 1 + "", FIRST_NUM + "");
 	}
 	
 	
@@ -194,7 +194,7 @@ public class StatisticsUtils implements JieMianConstant,BangDanKey{
 	
 	public static String getTV_TaijuFirstURL() {
 		
-		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL,REBO_TAIJU_DIANSHI, 1 + "", CACHE_NUM + "");
+		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL,REBO_TAIJU_DIANSHI, 1 + "", FIRST_NUM + "");
 	}
 	
 	
@@ -205,7 +205,7 @@ public class StatisticsUtils implements JieMianConstant,BangDanKey{
 	
 	public static String getTV_HanjuFirstURL() {
 		
-		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL,REBO_HANJU_DIANSHI, 1 + "", CACHE_NUM + "");
+		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL,REBO_HANJU_DIANSHI, 1 + "", FIRST_NUM + "");
 	}
 	
 	
@@ -216,7 +216,7 @@ public class StatisticsUtils implements JieMianConstant,BangDanKey{
 	
 	public static String getTV_MeijuFirstURL() {
 		
-		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL,REBO_OUMEI_DIANSHI, 1 + "", CACHE_NUM + "");
+		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL,REBO_OUMEI_DIANSHI, 1 + "", FIRST_NUM + "");
 	}
 	
 	
@@ -227,7 +227,7 @@ public class StatisticsUtils implements JieMianConstant,BangDanKey{
 	
 	public static String getTV_RijuFirstURL() {
 		
-		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL,REBO_RIJU_DIANSHI, 1 + "", CACHE_NUM + "");
+		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL,REBO_RIJU_DIANSHI, 1 + "", FIRST_NUM + "");
 	}
 	
 	
@@ -236,10 +236,234 @@ public class StatisticsUtils implements JieMianConstant,BangDanKey{
 		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL,REBO_RIJU_DIANSHI, (pageNum + 1) + "", CACHE_NUM + "");
 	}
 	
+	//Movie
+
+	public static String getMovie_Quan10URL() {
+		
+		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL,TV_DIANYING, 1 + "", CACHE_NUM + "");
+	}
+	
+
+	public static String getMovie_QuanAllFirstURL() {
+		
+		return StatisticsUtils.getFilterURL(FILTER_URL, 1+"", (FIRST_NUM- 10)+"", MOVIE_TYPE);
+	}
+	
+
+	public static String getMovie_QuanAllCacheURL(int pageNum) {
+		
+		return StatisticsUtils.getFilterURL(FILTER_URL, (pageNum + 1)+"", CACHE_NUM+"", MOVIE_TYPE);
+	}
 	
 	
+	public static String getMovie_DongzuoFirstURL() {
+		
+		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL,REBO_DONGZUO_MOVIE, 1 + "", FIRST_NUM + "");
+	}
+	
+
+	public static String getMovie_DongzuoCacheURL(int pageNum) {
+		
+		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL,REBO_DONGZUO_MOVIE, (pageNum + 1) + "", CACHE_NUM + "");
+	}
 	
 	
+
+	public static String getMovie_KehuanFirstURL() {
+		
+		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL,REBO_KEHUAN_MOVIE, 1 + "", FIRST_NUM + "");
+	}
+	
+	
+
+	public static String getMovie_KehuanCacheURL(int pageNum) {
+		
+		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL,REBO_KEHUAN_MOVIE, (pageNum + 1) + "", CACHE_NUM + "");
+	}
+	
+	
+	public static String getMovie_LunliFirstURL() {
+		
+		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL,REBO_LUNLI_MOVIE, 1 + "", FIRST_NUM + "");
+	}
+	
+	
+	public static String getMovie_LunliCacheURL(int pageNum) {
+		
+		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL,REBO_LUNLI_MOVIE, (pageNum + 1) + "", CACHE_NUM + "");
+	}
+	
+	public static String getMovie_XijuFirstURL() {
+		
+		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL,REBO_XIJU_MOVIE, 1 + "", FIRST_NUM + "");
+	}
+	
+	
+	public static String getMovie_XijuCacheURL(int pageNum) {
+		
+		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL,REBO_XIJU_MOVIE, (pageNum + 1) + "", CACHE_NUM + "");
+	}
+	
+	public static String getMovie_AiqingFirstURL() {
+		
+		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL,REBO_AIQING_MOVIE, 1 + "", FIRST_NUM + "");
+	}
+	
+	
+	public static String getMovie_AiqingCacheURL(int pageNum) {
+		
+		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL,REBO_AIQING_MOVIE, (pageNum + 1) + "", CACHE_NUM + "");
+	}
+	
+	public static String getMovie_XuanyiFirstURL() {
+		
+		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL,REBO_XUANYI_MOVIE, 1 + "", FIRST_NUM + "");
+	}
+	
+	
+	public static String getMovie_XuanyiCacheURL(int pageNum) {
+		
+		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL,REBO_XUANYI_MOVIE, (pageNum + 1) + "", CACHE_NUM + "");
+	}
+	
+	public static String getMovie_KongbuFirstURL() {
+		
+		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL,REBO_KONGBU_MOVIE, 1 + "", FIRST_NUM + "");
+	}
+	
+	
+	public static String getMovie_KongbuCacheURL(int pageNum) {
+		
+		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL,REBO_KONGBU_MOVIE, (pageNum + 1) + "", CACHE_NUM + "");
+	}
+	
+	public static String getMovie_DonghuaFirstURL() {
+		
+		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL,REBO_DONGHUA_MOVIE, 1 + "", FIRST_NUM + "");
+	}
+	
+	
+	public static String getMovie_DonghuaCacheURL(int pageNum) {
+		
+		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL,REBO_DONGHUA_MOVIE, (pageNum + 1) + "", CACHE_NUM + "");
+	}
+	
+	//动漫
+	public static String getDongman_Quan10URL() {
+		
+		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL,TV_DONGMAN, 1 + "", CACHE_NUM + "");
+	}
+	
+	public static String getDongman_QuanAllFirstURL() {
+		
+		return StatisticsUtils.getFilterURL(FILTER_URL, 1+"", (FIRST_NUM- 10)+"", DONGMAN_TYPE);
+	}
+	
+	public static String getDongman_QuanAllCacheURL(int pageNum) {
+		
+		return StatisticsUtils.getFilterURL(FILTER_URL, (pageNum + 1)+"", CACHE_NUM+"", DONGMAN_TYPE);
+	}
+	
+	public static String getDongman_QinziFirstURL() {
+		
+		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL,REBO_QINZI_DONGMAN, 1 + "", FIRST_NUM + "");
+	}
+	
+	public static String getDongman_QinziCacheURL(int pageNum) {
+		
+		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL,REBO_QINZI_DONGMAN, (pageNum + 1) + "", CACHE_NUM + "");
+	}
+	
+	
+	public static String getDongman_RexueFirstURL() {
+		
+		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL,REBO_REXUE_DONGMAN, 1 + "", FIRST_NUM + "");
+	}
+	
+	
+	public static String getDongman_RexueCacheURL(int pageNum) {
+		
+		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL,REBO_REXUE_DONGMAN, (pageNum + 1) + "", CACHE_NUM + "");
+	}
+	
+	
+	public static String getDongman_HougongFirstURL() {
+		
+		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL,REBO_HOUGONG_DONGMAN, 1 + "", FIRST_NUM + "");
+	}
+	
+	
+	public static String getDongman_HougongCacheURL(int pageNum) {
+		
+		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL,REBO_HOUGONG_DONGMAN, (pageNum + 1) + "", CACHE_NUM + "");
+	}
+	
+	public static String getDongman_TuiliFirstURL() {
+		
+		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL,REBO_TUILI_DONGMAN, 1 + "", FIRST_NUM + "");
+	}
+	
+	
+	public static String getDongman_TuiliCacheURL(int pageNum) {
+		
+		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL,REBO_TUILI_DONGMAN, (pageNum + 1) + "", CACHE_NUM + "");
+	}
+	
+	public static String getDongman_JizhanFirstURL() {
+		
+		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL,REBO_JIZHAN_DONGMAN, 1 + "", FIRST_NUM + "");
+	}
+	
+	
+	public static String getDongman_JizhanCacheURL(int pageNum) {
+		
+		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL,REBO_JIZHAN_DONGMAN, (pageNum + 1) + "", CACHE_NUM + "");
+	}
+	
+	public static String getDongman_GaoxiaoFirstURL() {
+		
+		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL,REBO_GAOXIAO_DONGMAN, 1 + "", CACHE_NUM + "");
+	}
+	
+	
+	public static String getDongman_GaoxiaoCacheURL(int pageNum) {
+		
+		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL,REBO_GAOXIAO_DONGMAN, (pageNum + 1) + "", CACHE_NUM + "");
+	}
+	
+	//悦单
+	
+	public static String getYueDan_DianyingFirstURL() {
+		
+		return StatisticsUtils.getTopURL(TOP_URL, 1 + "", FIRST_NUM + "",MOVIE_TYPE + "");
+	}
+	
+	
+	public static String getYueDan_DianyingCacheURL(int pageNum) {
+		
+		return StatisticsUtils.getTopURL(TOP_URL, (pageNum + 1) + "", CACHE_NUM + "",MOVIE_TYPE + "");
+	}
+	
+	public static String getYueDan_DianshiFirstURL() {
+		
+		return StatisticsUtils.getTopURL(TOP_URL, 1 + "", FIRST_NUM + "",TV_TYPE + "");
+	}
+	
+	
+	public static String getYueDan_DianshiCacheURL(int pageNum) {
+		
+		return StatisticsUtils.getTopURL(TOP_URL, (pageNum + 1) + "", CACHE_NUM + "",TV_TYPE + "");
+	}
+	
+	public static String getZongyi_QuanAllFirstURL() {
+		
+		return StatisticsUtils.getFilterURL(FILTER_URL, 1+"", (FIRST_NUM)+"", ZONGYI_TYPE);
+	}
+	
+	public static String getZongyi_QuanAllCacheURL(int pageNum) {
+		
+		return StatisticsUtils.getFilterURL(FILTER_URL, (pageNum + 1)+"", CACHE_NUM+"", ZONGYI_TYPE);
+	}
 	
 	
 	
@@ -415,6 +639,8 @@ public class StatisticsUtils implements JieMianConstant,BangDanKey{
 		}
 	}
 	
+	public static final String EMPTY ="EMPTY";
+	
 	public static List<MovieItemData> returnFilterMovieSearchJson(String json) throws JsonParseException, JsonMappingException, IOException {
 		
 		if(json == null || json.equals("")) {
@@ -433,7 +659,8 @@ public class StatisticsUtils implements JieMianConstant,BangDanKey{
 			MovieItemData movieItemData = new MovieItemData();
 			movieItemData.setMovieName(result.results[i].prod_name);
 			String bigPicUrl = result.results[i].big_prod_pic_url;
-			if (bigPicUrl == null || bigPicUrl.equals("")) {
+			if (bigPicUrl == null || bigPicUrl.equals("") 
+					|| bigPicUrl.equals(EMPTY)) {
 
 				bigPicUrl = result.results[i].prod_pic_url;
 			}
@@ -466,7 +693,8 @@ public class StatisticsUtils implements JieMianConstant,BangDanKey{
 			MovieItemData movieItemData = new MovieItemData();
 			movieItemData.setMovieName(result.items[i].prod_name);
 			String bigPicUrl = result.items[i].big_prod_pic_url;
-			if (bigPicUrl == null || bigPicUrl.equals("")) {
+			if (bigPicUrl == null || bigPicUrl.equals("")
+					||bigPicUrl.equals(EMPTY)) {
 
 				bigPicUrl = result.items[i].prod_pic_url;
 			}
@@ -499,7 +727,8 @@ public class StatisticsUtils implements JieMianConstant,BangDanKey{
 			MovieItemData movieItemData = new MovieItemData();
 			movieItemData.setMovieName(result.items[i].prod_name);
 			String bigPicUrl = result.items[i].big_prod_pic_url;
-			if(bigPicUrl == null || bigPicUrl.equals("")) {
+			if(bigPicUrl == null || bigPicUrl.equals("")
+					||bigPicUrl.equals(EMPTY)) {
 				
 				bigPicUrl = result.items[i].prod_pic_url;
 			}
@@ -533,7 +762,8 @@ public class StatisticsUtils implements JieMianConstant,BangDanKey{
 			MovieItemData movieItemData = new MovieItemData();
 			movieItemData.setMovieName(result.results[i].prod_name);
 			String bigPicUrl = result.results[i].big_prod_pic_url;
-			if(bigPicUrl == null || bigPicUrl.equals("")) {
+			if(bigPicUrl == null || bigPicUrl.equals("")
+					||bigPicUrl.equals(EMPTY)) {
 				
 				bigPicUrl = result.results[i].prod_pic_url;
 			}
@@ -569,7 +799,8 @@ public class StatisticsUtils implements JieMianConstant,BangDanKey{
 			movieItemData.setMovieID(result.tops[i].id);
 			movieItemData.setMovieProType(result.tops[i].prod_type);
 			String bigPicUrl = result.tops[i].big_pic_url;
-			if(bigPicUrl == null || bigPicUrl.equals("")) {
+			if(bigPicUrl == null || bigPicUrl.equals("")
+					||bigPicUrl.equals(EMPTY)) {
 				
 				bigPicUrl = result.tops[i].pic_url;
 			}
@@ -601,7 +832,8 @@ public class StatisticsUtils implements JieMianConstant,BangDanKey{
 			MovieItemData movieItemData = new MovieItemData();
 			movieItemData.setMovieName(result.items[i].prod_name);
 			String bigPicUrl = result.items[i].big_prod_pic_url;
-			if(bigPicUrl == null || bigPicUrl.equals("")) {
+			if(bigPicUrl == null || bigPicUrl.equals("")
+					||bigPicUrl.equals(EMPTY)) {
 				
 				bigPicUrl = result.items[i].prod_pic_url;
 			}
@@ -633,7 +865,8 @@ public class StatisticsUtils implements JieMianConstant,BangDanKey{
 			movieItemData.setMovieName(result.favorities[i].content_name);
 			movieItemData.setMovieProType(result.favorities[i].content_type);
 			String bigPicUrl = result.favorities[i].big_content_pic_url;
-			if(bigPicUrl == null || bigPicUrl.equals("")) {
+			if(bigPicUrl == null || bigPicUrl.equals("")
+					||bigPicUrl.equals(EMPTY)) {
 				
 				bigPicUrl = result.favorities[i].content_pic_url;
 			}

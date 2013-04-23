@@ -695,4 +695,10 @@ public class ShowYueDanListActivity extends AbstractShowActivity{
 		
 	}
 
+	@Override
+	protected void cachePlay(int index, int pageNum) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

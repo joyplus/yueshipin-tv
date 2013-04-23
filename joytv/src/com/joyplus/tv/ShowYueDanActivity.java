@@ -35,8 +35,11 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 
 	public static final int DIANYING_YUEDAN = 1;
 	public static final int DIANSHIJU_YUEDAN = 2;
+	
+	private static final int DIANYING = 4;
+	private static final int DIANSHI = 5;
 
-	private String TAG = "ShowYueDanActivity";
+	public static final String TAG = "ShowYueDanActivity";
 	private AQuery aq;
 	private App app;
 
@@ -60,15 +63,13 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 
 	private View beforeGvView = null;
 
-	private List<MovieItemData> dianyingYueDanList = new ArrayList<MovieItemData>();
-	private List<MovieItemData> dianshijuYueDanList = new ArrayList<MovieItemData>();
-	private List<MovieItemData> filterList = new ArrayList<MovieItemData>();
-
-	private List<MovieItemData>[] lists = null;
+	private List<MovieItemData>[] lists = new List[6];
+	private boolean[] isNextPagePossibles = new boolean[6];
+	private int[] pageNums = new int[6];
+	
+	private int currentListIndex;
 
 	private int defalutYuedan = 0;
-
-	private int currentItemPostion;
 
 	private YueDanAdapter yueDanAdapter;
 
@@ -96,8 +97,6 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 			}
 		}
 
-		currentItemPostion = defalutYuedan;
-
 		initActivity();
 
 		yueDanAdapter = new YueDanAdapter(this,aq);
@@ -105,14 +104,12 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 
 		if (defalutYuedan == DIANYING_YUEDAN) {
 
-			String url = StatisticsUtils.getTopURL(TOP_URL, 1 + "", 50 + "",
-					1 + "");
+			String url = StatisticsUtils.getYueDan_DianyingFirstURL();
 			Log.i(TAG, "URL--->" + url);
 			getUnQuanbuData(url);// 进入电影界面时，全部分类电影显示获取焦点，并且显示数据
 		} else if (defalutYuedan == DIANSHIJU_YUEDAN) {
 
-			String url = StatisticsUtils.getTopURL(TOP_URL, 1 + "", 50 + "",
-					2 + "");
+			String url = StatisticsUtils.getYueDan_DianshiFirstURL();
 			getUnQuanbuData(url);// 进入电影界面时，全部分类电影显示获取焦点，并且显示数据
 		}
 
@@ -139,7 +136,6 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 	@Override
 	public boolean onKey(View v, int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
-		int action = event.getAction();
 		return false;
 	}
 
@@ -176,28 +172,26 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 
 		switch (v.getId()) {
 		case R.id.bt_dianyingyuedan:
-			currentItemPostion = 0;
-			String url1 = StatisticsUtils.getTopURL(TOP_URL, 1 + "", 50 + "",
-					1 + "");
+			currentListIndex = DIANYING;
+			String url1 = StatisticsUtils.getYueDan_DianyingFirstURL();
 			app.MyToast(aq.getContext(), "ll_daluju");
-			if (dianyingYueDanList != null && !dianyingYueDanList.isEmpty()) {
-
-				notifyAdapter(dianyingYueDanList);
+			if(lists[currentListIndex] != null && !lists[currentListIndex].isEmpty()) {
+				
+				notifyAdapter(lists[currentListIndex]);
 			} else {
-
+				
 				getUnQuanbuData(url1);
 			}
 			break;
 		case R.id.bt_dianshijuyuedan:
-			currentItemPostion = 1;
-			String url2 = StatisticsUtils.getTopURL(TOP_URL, 1 + "", 50 + "",
-					2 + "");
+			currentListIndex = DIANSHI;
+			String url2 = StatisticsUtils.getYueDan_DianshiFirstURL();
 			app.MyToast(aq.getContext(), "ll_gangju");
-			if (dianshijuYueDanList != null && !dianshijuYueDanList.isEmpty()) {
-
-				notifyAdapter(dianshijuYueDanList);
+			if(lists[currentListIndex] != null && !lists[currentListIndex].isEmpty()) {
+				
+				notifyAdapter(lists[currentListIndex]);
 			} else {
-
+				
 				getUnQuanbuData(url2);
 			}
 			break;
@@ -405,6 +399,17 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 
 						beforeGvView = view;
 						beforepostion = position;
+						
+						//缓存
+						int size = yueDanAdapter.getMovieList().size();
+						if(size-1-firstAndLastVisible[1] < StatisticsUtils.CACHE_NUM) {
+							
+							if(isNextPagePossibles[currentListIndex]) {
+								
+								pageNums[currentListIndex] ++;
+								cachePlay(currentListIndex, pageNums[currentListIndex]);
+							}
+						}
 
 					}
 
@@ -511,18 +516,22 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 	protected void clearLists() {
 		// TODO Auto-generated method stub
 
-		StatisticsUtils.clearList(dianyingYueDanList);
-		StatisticsUtils.clearList(dianshijuYueDanList);
-		StatisticsUtils.clearList(filterList);
+		for(int i= 0;i<lists.length;i++) {
+			
+			StatisticsUtils.clearList(lists[i]);
+		}
 	}
 
 	@Override
 	protected void initLists() {
 		// TODO Auto-generated method stub
 
-		lists = new List[2];
-		lists[0] = dianyingYueDanList;
-		lists[1] = dianshijuYueDanList;
+		for(int i= 0;i<lists.length;i++) {
+			
+			lists[i] = new ArrayList<MovieItemData>();
+			isNextPagePossibles[i] = false;//认为所有的不能够翻页
+			pageNums[i]=0;
+		}
 	}
 
 	@Override
@@ -572,6 +581,19 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 		}
 
 		yueDanAdapter.setList(list);
+		
+		if(list != null && !list.isEmpty() && currentListIndex != QUANBUFENLEI) {//判断其能否向获取更多数据
+			
+			if(list.size() == StatisticsUtils.FIRST_NUM) {
+				
+				isNextPagePossibles[currentListIndex] = true;
+			} else if(list.size() < StatisticsUtils.FIRST_NUM) {
+				
+				isNextPagePossibles[currentListIndex] = false;
+			}
+		}
+		
+		lists[currentListIndex] = list;
 
 		dinashijuGv.setSelection(0);
 		yueDanAdapter.notifyDataSetChanged();
@@ -593,16 +615,12 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 	protected void getQuan10Data(String url) {
 		// TODO Auto-generated method stub
 
-		currentItemPostion = -1;
-
 		getServiceData(url, "initQuan10ServiceData");
 	}
 
 	@Override
 	protected void getQuanbuData(String url) {
 		// TODO Auto-generated method stub
-
-		currentItemPostion = -1;
 
 		getServiceData(url, "initQuanbuServiceData");
 	}
@@ -618,8 +636,6 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 	protected void getFilterData(String url) {
 		// TODO Auto-generated method stub
 
-		currentItemPostion = -1;
-
 		getServiceData(url, "initFilerServiceData");
 	}
 
@@ -629,7 +645,6 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 
 		firstFloatView.setVisibility(View.INVISIBLE);
 		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
-		// cb.url(url).type(JSONObject.class).weakHandler(this, "initData");
 		cb.url(url).type(JSONObject.class).weakHandler(this, interfaceName);
 
 		cb.SetHeader(app.getHeaders());
@@ -662,18 +677,7 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 		}
 		try {
 			Log.d(TAG, json.toString());
-			if (currentItemPostion != -1) {
-
-				if (currentItemPostion >= 0
-						&& currentItemPostion < lists.length) {
-
-					lists[currentItemPostion] = StatisticsUtils
-							.returnTopsJson(json.toString());
-
-					notifyAdapter(lists[currentItemPostion]);
-				}
-
-			}
+			notifyAdapter(StatisticsUtils.returnTopsJson(json.toString()));
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -700,11 +704,7 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 
 		try {
 			Log.d(TAG, json.toString());
-			StatisticsUtils.clearList(filterList);
-			filterList = StatisticsUtils.returnFilterMovieSearchJson(json
-					.toString());
-
-			notifyAdapter(filterList);
+			notifyAdapter(StatisticsUtils.returnFilterMovieSearch_TVJson(json.toString()));
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -721,19 +721,61 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 	protected void refreshAdpter(List<MovieItemData> list) {
 		// TODO Auto-generated method stub
 		
+		List<MovieItemData> srcList = yueDanAdapter.getMovieList();
+		
+		if(list != null && !list.isEmpty()) {
+			
+			for(MovieItemData movieItemData:list) {
+				
+				srcList.add(movieItemData);
+			}
+			
+			if(list.size() == StatisticsUtils.CACHE_NUM) {
+				
+				isNextPagePossibles[currentListIndex] = true;
+			}else {
+				
+				isNextPagePossibles[currentListIndex] = false;
+			}
+			
+			yueDanAdapter.setList(srcList);
+			lists[currentListIndex] = srcList;
+			
+			yueDanAdapter.notifyDataSetChanged();
+		}
+		
 	}
 
 	@Override
 	public void initMoreFilerServiceData(String url, JSONObject json,
 			AjaxStatus status) {
 		// TODO Auto-generated method stub
-		
+		if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
+
+			app.MyToast(aq.getContext(),
+					getResources().getString(R.string.networknotwork));
+			return;
+		}
+
+		try {
+			Log.d(TAG, json.toString());
+			refreshAdpter(StatisticsUtils.returnFilterMovieSearch_TVJson(json.toString()));
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	protected void getMoreFilterData(String url) {
 		// TODO Auto-generated method stub
-		
+		getServiceData(url, "initMoreFilerServiceData");
 	}
 
 	@Override
@@ -746,7 +788,35 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 	@Override
 	protected void getMoreBangDanData(String url) {
 		// TODO Auto-generated method stub
+	}
+
+	@Override
+	protected void cachePlay(int index, int pageNum) {
+		// TODO Auto-generated method stub
 		
+		switch (index) {
+		case QUANBUFENLEI:
+
+			break;
+		case QUAN_TEN:
+			
+			break;
+		case QUAN_FILTER:
+			
+			break;
+		case SEARCH:
+			
+			break;
+		case DIANYING:
+			getMoreFilterData(StatisticsUtils.getYueDan_DianyingCacheURL(pageNum));
+			break;
+		case DIANSHI:
+			getMoreFilterData(StatisticsUtils.getYueDan_DianshiCacheURL(pageNum));
+			break;
+
+		default:
+			break;
+		}
 	}
 
 }
