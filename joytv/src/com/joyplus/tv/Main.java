@@ -138,6 +138,7 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 						removeDialog(DIALOG_WAITING);
 						contentLayout.setVisibility(View.VISIBLE);
 						gallery1.requestFocus(); 
+						new Thread(new CheckPlayUrl()).start();
 					}
 				}
 				break;
@@ -988,10 +989,14 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 		case 4:
 			switch (index) {
 			case 0:
-				startActivity(new Intent(this,ShowShoucangHistoryActivity.class));
+				Intent scIntent = new Intent(this,ShowShoucangHistoryActivity.class);
+				startActivityForResult(scIntent, 100);
+//				startActivity(new Intent(this,ShowShoucangHistoryActivity.class));
 				break;
 			case 1:
-				startActivity(new Intent(this,HistoryActivity.class));
+				Intent lsIntent = new Intent(this,HistoryActivity.class);
+				startActivityForResult(lsIntent, 100);
+//				startActivity(new Intent(this,HistoryActivity.class));
 				break;
 			case 2:
 				//设置
@@ -1003,6 +1008,15 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 			break; 
 		}
 	}
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// TODO Auto-generated method stub
+		if(resultCode==RESULT_OK){
+			titleGroup.setSelectedTitleIndex(1);
+		}
+		super.onActivityResult(requestCode, resultCode, data);
+	}
+	
 	
 	
 	public void getHotServiceData() { 

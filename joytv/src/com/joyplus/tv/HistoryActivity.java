@@ -103,6 +103,8 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 					long arg3) {
 				// TODO Auto-generated method stub
 				if(arg2>=((HistortyAdapter)listView.getAdapter()).data.size()){
+					setResult(Activity.RESULT_OK);
+					finish();
 					return;
 				}
 				Toast.makeText(HistoryActivity.this, "seleced index = " + arg2, 100).show();

@@ -244,6 +244,10 @@ public class MyScrollLayout extends ViewGroup {
 		return 2-mCurTitle;
 	}
 	
+	public void setSelectedTitleIndex(int index){
+		snapToTitle(2-mCurTitle);
+	}
+	
 //	public void setSelectedIndex(int index){
 //		snapToTitle(getChildCount() - index -1);
 //	}
