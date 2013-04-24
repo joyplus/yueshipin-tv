@@ -778,7 +778,12 @@ public class MovieControllerOverlay extends FrameLayout implements
 		mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, index, 0);
 		int mAngle = index * 360 / mMaxVolume;
 		// 变更进度条
-		mArcView.SetAngle(mAngle);
+		if(index == 0)
+			mArcView.setBackgroundResource(R.drawable.player_volume_mute);
+		else{
+			mArcView.setBackgroundResource(R.drawable.player_volume);
+			mArcView.SetAngle(mAngle);
+		}
 
 	}
 
