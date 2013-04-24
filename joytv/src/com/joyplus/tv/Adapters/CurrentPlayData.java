@@ -7,6 +7,7 @@ public class CurrentPlayData {
 	public String prod_src;//来源
 	public long prod_time;//开始播放时间
 	public int prod_qua;//清晰度
+	public boolean prod_favority;//是否收藏
 	
 	public int prod_type;//视频类别 1：电影，2：电视剧，3：综艺，131动漫
 	public int CurrentIndex = 0;//电视剧和综艺用，index序号

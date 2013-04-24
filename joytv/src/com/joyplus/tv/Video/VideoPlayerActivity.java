@@ -24,28 +24,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.ServiceConnection;
-import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
-import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.media.AudioManager;
-import android.net.TrafficStats;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.IBinder;
 import android.provider.MediaStore;
-import android.provider.MediaStore.Video.VideoColumns;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -61,7 +48,6 @@ import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
 import com.joyplus.tv.App;
 import com.joyplus.tv.Constant;
-import com.joyplus.tv.Main;
 import com.joyplus.tv.R;
 import com.joyplus.tv.Adapters.CurrentPlayData;
 import com.joyplus.tv.Service.Return.ReturnProgramView;
@@ -261,6 +247,7 @@ public class VideoPlayerActivity extends Activity {
 	}
 
 	public void OnClickFav(View v) {
+		if(!mCurrentPlayData.prod_favority){
 			String url = Constant.BASE_URL + "program/favority";
 
 			Map<String, Object> params = new HashMap<String, Object>();
@@ -272,6 +259,20 @@ public class VideoPlayerActivity extends Activity {
 			cb.params(params).url(url).type(JSONObject.class)
 					.weakHandler(this, "CallServiceFavorityResult");
 			aq.ajax(cb);
+		}else{//取消收藏
+			String url = Constant.BASE_URL + "program/unfavority";
+
+			Map<String, Object> params = new HashMap<String, Object>();
+			params.put("prod_id", prod_id);
+
+			AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
+			cb.SetHeader(app.getHeaders());
+
+			cb.params(params).url(url).type(JSONObject.class)
+					.weakHandler(this, "UnfavorityResult");
+
+			aq.ajax(cb);
+		}
 	}
 	public void CallServiceFavorityResult(String url, JSONObject json,
 			AjaxStatus status) {
@@ -295,6 +296,28 @@ public class VideoPlayerActivity extends Activity {
 						getResources().getString(R.string.networknotwork));
 		}
 
+	}
+	public void UnfavorityResult(String url, JSONObject json, AjaxStatus status) {
+		if (json != null) {
+			try {
+				if (json.getString("res_code").trim().equalsIgnoreCase("00000")) {
+					finish();
+					app.MyToast(this, "取消收藏成功!");
+					// GetServiceData(1);
+				} else
+					app.MyToast(this, "取消收藏失败!");
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		} else {
+
+			// ajax error, show error code
+			if (status.getCode() == AjaxStatus.NETWORK_ERROR)
+				app.MyToast(this,
+						getResources().getString(R.string.networknotwork));
+		}
 	}
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

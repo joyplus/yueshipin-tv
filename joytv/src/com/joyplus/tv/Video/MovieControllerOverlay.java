@@ -255,18 +255,18 @@ public class MovieControllerOverlay extends FrameLayout implements
 		mCurrentPlayData = app.getCurrentPlayData();
 		if (mCurrentPlayData.prod_type == 2 || mCurrentPlayData.prod_type == 3) {
 			playPauseReplayView.setBackgroundResource(R.drawable.player_btn_finish);
-			rootView.findViewById(R.id.imageControl_t).setVisibility(
-					View.VISIBLE);
-			rootView.findViewById(R.id.imageControl_b).setVisibility(
-					View.VISIBLE);
-			rootView.findViewById(R.id.imageControl_l).setVisibility(
-					View.VISIBLE);
-			rootView.findViewById(R.id.imageControl_r).setVisibility(
-					View.VISIBLE);
+			if(mCurrentPlayData.prod_favority)
+				playFavView.setBackgroundResource(R.drawable.player_btn_unfav);
+			
+			playContinueView.setVisibility(View.VISIBLE);
+			playFavView.setVisibility(View.VISIBLE);
+			playPreView.setVisibility(View.VISIBLE);
+			playNextView.setVisibility(View.VISIBLE);
+			
 			if (mCurrentPlayData.CurrentIndex > 0)
-				rootView.findViewById(R.id.imageControl_r).setEnabled(true);
+				playPreView.setEnabled(true);
 			else
-				rootView.findViewById(R.id.imageControl_r).setEnabled(false);
+				playPreView.setEnabled(false);
 			
 			ReturnProgramView m_ReturnProgramView = app.get_ReturnProgramView();
 			
@@ -274,35 +274,36 @@ public class MovieControllerOverlay extends FrameLayout implements
 				switch (mCurrentPlayData.prod_type) {
 				case 2:
 					if (mCurrentPlayData.CurrentIndex < m_ReturnProgramView.tv.episodes.length)
-						rootView.findViewById(R.id.imageControl_l).setEnabled(
+						playNextView.setEnabled(
 								true);
 					else
-						rootView.findViewById(R.id.imageControl_l).setEnabled(
+						playNextView.setEnabled(
 								false);
 					break;
 				case 3:
 					if (mCurrentPlayData.CurrentIndex < m_ReturnProgramView.show.episodes.length)
-						rootView.findViewById(R.id.imageControl_l).setEnabled(
+						playNextView.setEnabled(
 								true);
 					else
-						rootView.findViewById(R.id.imageControl_l).setEnabled(
+						playNextView.setEnabled(
 								false);
 					break;
 				}
 			}else{
-				rootView.findViewById(R.id.imageControl_l).setEnabled(
+				playPreView.setEnabled(
 						false);
-				rootView.findViewById(R.id.imageControl_r).setEnabled(false);
+				playNextView.setEnabled(false);
 			}
 		}
 	}
 
 	public void ControlViewGone() {
 
-			rootView.findViewById(R.id.imageControl_t).setVisibility(View.GONE);
-			rootView.findViewById(R.id.imageControl_b).setVisibility(View.GONE);
-			rootView.findViewById(R.id.imageControl_l).setVisibility(View.GONE);
-			rootView.findViewById(R.id.imageControl_r).setVisibility(View.GONE);
+		playContinueView.setVisibility(View.GONE);
+		playFavView.setVisibility(View.GONE);
+		playPreView.setVisibility(View.GONE);
+		playNextView.setVisibility(View.GONE);
+	
 	}
 
 	public void focusLayoutControl(int index) {
