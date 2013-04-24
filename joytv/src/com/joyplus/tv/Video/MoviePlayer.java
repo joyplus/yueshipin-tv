@@ -250,6 +250,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 	}
 
 	public void setVideoURI(Uri mUri, int Time) {
+		totalTime = 0;
 		mController.ControlViewGone();
 		mVideoView.setVideoURI(mUri);
 		PROD_SOURCE = mUri.toString();
@@ -479,7 +480,8 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 
 	// Below are key events passed from MovieActivity.
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-
+		if(totalTime <=0)
+			return true;
 		// Some headsets will fire off 7-10 events on a single click
 		if (event.getRepeatCount() > 0) {
 			return isMediaKey(keyCode);
