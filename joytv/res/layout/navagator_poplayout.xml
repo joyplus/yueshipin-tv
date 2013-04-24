@@ -27,6 +27,7 @@
 	       android:background="@drawable/menubg"></LinearLayout>  
 	    <LinearLayout android:layout_width="75dp"
 	        android:layout_height="40dp"
+	        android:id="@+id/highlightRect"
 	        android:layout_alignLeft="@id/row_highlight_backgroun"
 	        android:layout_alignTop="@id/highlight_backgroud"
 	        android:background="@color/common_title_selected">
@@ -128,6 +129,7 @@
        android:layout_alignLeft="@+id/row_highlight_backgroun"
        android:background="@drawable/bg_button_reset_selector"
        android:textSize="20sp"
+       android:id="@+id/resetButton"
        android:text="重置" />
 
    </RelativeLayout>
