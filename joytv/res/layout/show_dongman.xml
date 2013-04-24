@@ -5,13 +5,11 @@
     android:layout_height="match_parent"
     android:background="@color/movie_bg"
     android:orientation="vertical"
-    android:paddingLeft="35dp"
-    android:paddingTop="15dp" >
+    android:paddingLeft="35dp" >
 
     <include
         android:layout_width="match_parent"
-        android:layout_height="@dimen/layout_zero"
-        android:layout_weight="1"
+        android:layout_height="65dp"
         layout="@layout/show_head" />
 
     <LinearLayout
@@ -301,7 +299,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@drawable/menubg"
-                    android:paddingRight="50dp" >
+                    android:paddingRight="30dp" >
 
                     <TextView
                         android:id="@+id/tv_shoucanggengxin_name"

@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:paddingRight="35dp" >
+    android:paddingTop="25dp"
+    android:paddingRight="30dp" >
 
     <LinearLayout
         android:layout_width="@dimen/layout_zero"
@@ -21,10 +22,9 @@
             <ImageView
                 android:id="@+id/iv_head_user_icon"
                 style="@style/style_1"
-                android:layout_width="@dimen/layout_zero"
-                android:layout_height="match_parent"
-                android:layout_weight="3"
-                android:src="@drawable/avatar" />
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:background="@drawable/avatar_defult" />
 
             <TextView
                 android:id="@+id/tv_head_user_name"

@@ -4,8 +4,7 @@
     android:layout_height="match_parent"
     android:background="@color/movie_bg"
     android:orientation="vertical"
-    android:paddingLeft="35dp"
-    android:paddingTop="15dp"
+    android:paddingLeft="30dp"
     android:id="@+id/ll_show_movie_top" >
 
     <include
@@ -35,7 +34,7 @@
             android:layout_weight="5.61"
             android:background="@drawable/menubg"
             android:orientation="horizontal"
-            android:paddingRight="35dp" >
+            android:paddingRight="30dp" >
 
             <TextView
                 android:layout_width="@dimen/layout_zero"
