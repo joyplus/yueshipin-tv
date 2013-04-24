@@ -146,6 +146,9 @@ public class CustomGallery extends HorizontalScrollView {
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
 //		if(layout.is`)
+		if(layout.getChildCount()<2){
+			return true;
+		}
 		if(leftAnim!=null&&leftAnim.hasStarted()&&!leftAnim.hasEnded()){
 			return true;
 		}

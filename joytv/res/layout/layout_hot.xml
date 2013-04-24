@@ -75,6 +75,7 @@
 	        android:layout_height="25dp"
 	        android:textSize="20sp"
 	        android:textColor="@color/hot_content_notice"
+	        android:id="@+id/title_directors"
 	        android:text="导演:"
 	        />
          <TextView android:layout_width="wrap_content"
@@ -89,6 +90,7 @@
 	        android:layout_marginLeft="48dp"
 	        android:textSize="20sp"
 	        android:textColor="@color/hot_content_notice"
+	        android:id="@+id/title_stars"
 	        android:text="主演:"
 	        />
           <TextView android:layout_width="wrap_content"

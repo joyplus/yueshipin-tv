@@ -30,7 +30,6 @@
 		        android:textSize="18sp"
 		        android:textColor="@color/hot_content_notice"
 		        android:id="@+id/directors_notice"
-		        android:text="导演:"
 		        />
 	         <TextView android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
@@ -46,7 +45,6 @@
 		        android:textSize="18sp"
 		        android:textColor="@color/hot_content_notice"
 		        android:id="@+id/stars_notice"
-		        android:text="主演:"
 		        />
 	          <TextView android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"

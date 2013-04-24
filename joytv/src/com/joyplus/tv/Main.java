@@ -849,7 +849,7 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 		// TODO Auto-generated method stub
 //		Toast.makeText(this, "key code = " + keyCode, 100).show();
 		Log.d(TAG, "code = " + keyCode);
-		if(initStep>3){
+		if(initStep<3){
 			return true;
 		}
 		switch (keyCode) {
@@ -1389,10 +1389,21 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 			TextView hot_starts_tv = (TextView) hotView.findViewById(R.id.hot_content_stars);
 			TextView hot_introduce_tv = (TextView) hotView.findViewById(R.id.hot_content_introduce);
 			
+			if("3".equals(item.prod_type.trim())){
+				TextView hot_title_director = (TextView) hotView.findViewById(R.id.title_directors);
+				TextView hot_title_stars = (TextView) hotView.findViewById(R.id.title_stars);
+				hot_title_director.setText(R.string.xiangqing_zongyi_zhuchi);
+				hot_title_stars.setText(R.string.xiangqing_zongyi_shoubo);
+				hot_starts_tv.setText(item.directors);
+				hot_directors_tv.setText(item.stars);
+			
+			}else{
+				hot_directors_tv.setText(item.directors);
+				hot_starts_tv.setText(item.stars);
+			}
+			
 			hot_name_tv.setText(item.prod_name);
 			hot_score_tv.setText(item.score);
-			hot_directors_tv.setText(item.directors);
-			hot_starts_tv.setText(item.stars);
 			hot_introduce_tv.setText(item.prod_summary);
 			hot_list.add(0,item);
 			hot_contentViews.add(0,hotView);
@@ -1484,10 +1495,22 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 				TextView hot_starts_tv = (TextView) hotView.findViewById(R.id.hot_content_stars);
 				TextView hot_introduce_tv = (TextView) hotView.findViewById(R.id.hot_content_introduce);
 				
+				if("3".equals(item.prod_type.trim())){
+					TextView hot_title_director = (TextView) hotView.findViewById(R.id.title_directors);
+					TextView hot_title_stars = (TextView) hotView.findViewById(R.id.title_stars);
+					hot_title_director.setText(R.string.xiangqing_zongyi_zhuchi);
+					hot_title_stars.setText(R.string.xiangqing_zongyi_shoubo);
+					hot_starts_tv.setText(item.directors);
+					hot_directors_tv.setText(item.stars);
+				
+				}else{
+					hot_directors_tv.setText(item.directors);
+					hot_starts_tv.setText(item.stars);
+				}
+				
+				
 				hot_name_tv.setText(item.prod_name);
 				hot_score_tv.setText(item.score);
-				hot_directors_tv.setText(item.directors);
-				hot_starts_tv.setText(item.stars);
 				hot_introduce_tv.setText(item.prod_summary);
 				hot_contentViews.add(hotView);
 			}

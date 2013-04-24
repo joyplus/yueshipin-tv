@@ -280,9 +280,18 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 				holder = (ViewHolder) convertView.getTag();
 			}
 			if(data.size()>0){
+				if("3".equals(data.get(position).prod_type)){
+					holder.directors_notice.setText(R.string.xiangqing_zongyi_zhuchi);
+					holder.stars_notice.setText(R.string.xiangqing_zongyi_shoubo);
+					holder.directors.setText(data.get(position).stars);
+					holder.stars.setText(data.get(position).directors);
+				}else{
+					holder.directors.setText(data.get(position).directors);
+					holder.stars.setText(data.get(position).stars);
+					holder.directors_notice.setText(R.string.xiangqing_daoyan_name);
+					holder.stars_notice.setText(R.string.xiangqing_zhuyan_name);
+				}
 				holder.title.setText(data.get(position).prod_name);
-				holder.directors.setText(data.get(position).directors);
-				holder.stars.setText(data.get(position).stars);
 				holder.content.setVisibility(View.GONE);
 //				int prod_type = Integer.valueOf(data.get(position).prod_type);
 //				String playBack_time = formatDuration(Integer.valueOf(data.get(position).playback_time));
