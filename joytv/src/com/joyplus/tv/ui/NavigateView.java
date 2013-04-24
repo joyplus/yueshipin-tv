@@ -1,6 +1,5 @@
 package com.joyplus.tv.ui;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -18,6 +17,7 @@ import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -31,6 +31,8 @@ public class NavigateView extends RelativeLayout implements OnItemSelectedListen
 	private MyGallery1 gallery1,gallery2,gallery3;
 	private LinearLayout lineLayout1;
 	private LinearLayout highlightLayout;
+	private LinearLayout highlightRect;
+	private RelativeLayout relativeLayout;
 	private String[] array_diqu;
 	private String[] array_leibie;
 	private String[] array_niandai;
@@ -38,7 +40,7 @@ public class NavigateView extends RelativeLayout implements OnItemSelectedListen
 	private TextView selectedTextView1;
 	private TextView selectedTextView2;
 	private TextView selectedTextView3;
-	
+	private Button resetButton;
 	private int selected_gallery1_last = 0;
 	private int selected_gallery2_last = 0;
 	private int selected_gallery3_last = 0;
@@ -100,7 +102,12 @@ public class NavigateView extends RelativeLayout implements OnItemSelectedListen
 		switch (selectedIndex) {
 		case 1:
 			if(isUp){
-				
+				if(resetButton.isEnabled()){
+					resetButton.requestFocus();
+					highlightRect.setVisibility(View.INVISIBLE);
+					selectedTextView1.setTextColor(getContext().getResources().getColor(R.color.common_title_selected));
+					highlightLayout.setBackgroundDrawable(null);
+				}
 			}else{
 				gallery2.requestFocus();
 				selectedIndex = 2;
@@ -177,7 +184,7 @@ public class NavigateView extends RelativeLayout implements OnItemSelectedListen
 		// TODO Auto-generated constructor stub
 	}
 	
-	public void Init(String[] array_diqu,String[] array_leibie, String[] array_niandai, int x, int y, int width, int height, OnResultListener listener){
+	public void Init(final String[] array_diqu,final String[] array_leibie, final String[] array_niandai, int x, int y, int width, int height, OnResultListener listener){
 		
 		rootView = LayoutInflater.from(getContext()).inflate(R.layout.navagator_poplayout, null);
 		gallery1 = (MyGallery1) rootView.findViewById(R.id.gallery1);
@@ -189,12 +196,76 @@ public class NavigateView extends RelativeLayout implements OnItemSelectedListen
 //		lineLayout2 = (LinearLayout) rootView.findViewById(R.id.line_2);
 //		lineLayout3 = (LinearLayout) rootView.findViewById(R.id.line_3);
 		highlightLayout = (LinearLayout) rootView.findViewById(R.id.highlight_backgroud);
-		
+		highlightRect = (LinearLayout) rootView.findViewById(R.id.highlightRect);
 		diqu = (TextView) rootView.findViewById(R.id.diqu);
 		leibie = (TextView) rootView.findViewById(R.id.leibie);
 		niandai = (TextView) rootView.findViewById(R.id.niandai);
 		all = (TextView) rootView.findViewById(R.id.all);
-		
+		resetButton = (Button) rootView.findViewById(R.id.resetButton);
+		relativeLayout = (RelativeLayout) rootView.findViewById(R.id.relative_layout);
+		resetButton.setOnKeyListener(new OnKeyListener() {
+			
+			@Override
+			public boolean onKey(View v, int keyCode, KeyEvent event) {
+				// TODO Auto-generated method stub
+				switch (keyCode) {
+				case KeyEvent.KEYCODE_DPAD_DOWN:
+					gallery1.requestFocus();
+					selectedTextView1.setTextColor(Color.WHITE);
+					highlightLayout.setBackgroundResource(R.drawable.menubg);
+					highlightRect.setVisibility(View.VISIBLE);
+					break;
+				case KeyEvent.KEYCODE_DPAD_CENTER:
+				case KeyEvent.KEYCODE_ENTER:
+					if(event.getAction() == KeyEvent.ACTION_UP){
+						gallery1.setSelection(0);
+						gallery2.setSelection(0);
+						gallery3.setSelection(0);
+						gallery1.setVisibility(View.INVISIBLE);
+						gallery2.setVisibility(View.INVISIBLE);
+						gallery3.setVisibility(View.INVISIBLE);
+						gallery1.onFling(null, null, -1, 0);
+						gallery2.onFling(null, null, -1, 0);
+						gallery3.onFling(null, null, -1, 0);
+						handler.postDelayed(new Runnable() {
+							
+							@Override
+							public void run() {
+								// TODO Auto-generated method stub
+								gallery1.setVisibility(View.VISIBLE);
+								gallery2.setVisibility(View.VISIBLE);
+								gallery3.setVisibility(View.VISIBLE);
+							}
+						}, 200);
+//						selectedTextView1.setTextColor(Color.WHITE);
+						gallery1.requestFocus();
+						highlightLayout.setBackgroundResource(R.drawable.menubg);
+						highlightRect.setVisibility(View.VISIBLE);
+						resetButton.setEnabled(false);
+						resetButton.setVisibility(View.GONE);
+						LayoutParams parm = (LayoutParams) relativeLayout.getLayoutParams();
+						parm.height = 140;
+						relativeLayout.requestLayout();
+					}
+					break;
+				case KeyEvent.KEYCODE_BACK:
+				if(resultListener != null){
+					String[] result = new String[3];
+					result[0] = array_diqu[gallery1.getSelectedItemPosition()];
+					result[1] = array_leibie[gallery2.getSelectedItemPosition()];
+					result[2] = array_niandai[gallery3.getSelectedItemPosition()];
+					selected_gallery1_last = gallery1.getSelectedItemPosition();
+					selected_gallery2_last = gallery2.getSelectedItemPosition();
+					selected_gallery3_last = gallery3.getSelectedItemPosition();
+					resultListener.onResult(NavigateView.this, true, result);
+				}
+				break;
+				default:
+					break;
+				}
+				return true;
+			}
+		});
 		this.array_diqu = array_diqu;
 		this.array_leibie = array_leibie;
 		this.array_niandai = array_niandai;
@@ -271,6 +342,11 @@ public class NavigateView extends RelativeLayout implements OnItemSelectedListen
 		// TODO Auto-generated method stub
 		if(gallery1.getSelectedItemPosition()!=0||gallery2.getSelectedItemPosition()!=0||gallery3.getSelectedItemPosition()!=0){
 			all.setVisibility(View.GONE);
+			resetButton.setEnabled(true);
+			resetButton.setVisibility(View.VISIBLE);
+			LayoutParams parm = (LayoutParams) relativeLayout.getLayoutParams();
+			parm.height = 180;
+			relativeLayout.requestLayout();
 		}
 		switch (arg0.getId()) {
 		case R.id.gallery1:
@@ -391,6 +467,11 @@ public class NavigateView extends RelativeLayout implements OnItemSelectedListen
 		}
 		if(gallery1.getSelectedItemPosition()==0&&gallery2.getSelectedItemPosition()==0&&gallery3.getSelectedItemPosition()==0){
 			all.setVisibility(View.VISIBLE);
+			resetButton.setEnabled(false);
+			resetButton.setVisibility(View.GONE);
+			LayoutParams parm = (LayoutParams) relativeLayout.getLayoutParams();
+			parm.height = 140;
+			relativeLayout.requestLayout();
 		}
 	}
 	

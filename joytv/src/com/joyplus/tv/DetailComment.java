@@ -457,7 +457,8 @@ public class DetailComment extends Activity implements
 	private void updateScore(String score){
 		aq.id(R.id.textView_score).text(score);
 		float f = Float.valueOf(score);
-		int i = Math.round(f);
+//		int i = Math.round(f);
+		int i = (int) Math.ceil(f);
 //		int i = (f%1>=0.5)?(int)(f/1):(int)(f/1+1);
 		switch (i) {
 		case 0:

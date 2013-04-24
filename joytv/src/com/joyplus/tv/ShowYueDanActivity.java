@@ -148,6 +148,14 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 		clearLists();
 		super.onDestroy();
 	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		aq.id(R.id.iv_head_user_icon).image(app.getUserInfo().getUserAvatarUrl(),false,true,0,R.drawable.avatar);
+		aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
+	}
 
 	@Override
 	public void onClick(View v) {
@@ -817,6 +825,12 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 		default:
 			break;
 		}
+	}
+
+	@Override
+	protected void filterPopWindowShow() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

@@ -61,9 +61,6 @@ public class ShowDongManActivity extends AbstractShowAddShouCangActivity{
 
 	private LinearLayout topLinearLayout;
 
-//	private LinearLayout shouchangTitleLL,includeDongman5LL,qitaDongmanLLTitle;
-//	private LinearLayout shoucang_5_qitaTitleLL;
-
 	private View firstFloatView;
 
 	private View activeView;
@@ -79,12 +76,8 @@ public class ShowDongManActivity extends AbstractShowAddShouCangActivity{
 	private View beforeGvView = null;
 	
 	private DianShijuAdapter dongmanAdapter = null;
-
-	private boolean isShoucangDataExist = true;// 判断收藏数据是否存在
 	
 	private int beforepostion = 0;
-	
-	private boolean isshoucangGone = false;
 	
 	private List<MovieItemData>[] lists = new List[10];
 	private boolean[] isNextPagePossibles = new boolean[10];
@@ -106,8 +99,6 @@ public class ShowDongManActivity extends AbstractShowAddShouCangActivity{
 		dongmanAdapter = new DianShijuAdapter(this,aq);
 		dongmanGv.setAdapter(dongmanAdapter);
 
-//		String url2 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL,
-//				TV_DONGMAN, 1 + "", 50 + "");
 		getQuan10Data(StatisticsUtils.getDongman_Quan10URL());
 		
 		/**
@@ -152,6 +143,14 @@ public class ShowDongManActivity extends AbstractShowAddShouCangActivity{
 		clearLists();
 		super.onDestroy();
 	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		aq.id(R.id.iv_head_user_icon).image(app.getUserInfo().getUserAvatarUrl(),false,true,0,R.drawable.avatar);
+		aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
+	}
 
 	private PopupWindow popupWindow;
 
@@ -165,53 +164,10 @@ public class ShowDongManActivity extends AbstractShowAddShouCangActivity{
 			activeView = mFenLeiBtn;
 		}
 
-		if (v.getId() == R.id.bt_quanbufenlei) {
+		if (v.getId() == R.id.bt_quanbufenlei
+				&& activeView.getId() == R.id.bt_quanbufenlei) {
 
-			if (popupWindow == null) {
-				NavigateView view = new NavigateView(this);
-				int[] location = new int[2];
-				mFenLeiBtn.getLocationOnScreen(location);
-				view.Init(
-						getResources().getStringArray(
-								R.array.diqu_dongman_fenlei),
-						getResources().getStringArray(
-								R.array.leixing_dongman_fenlei),
-						getResources().getStringArray(
-								R.array.shijian_dianying_fenlei), location[0],
-						location[1], mFenLeiBtn.getWidth(), mFenLeiBtn
-								.getHeight(), new OnResultListener() {
-
-							@Override
-							public void onResult(View v, boolean isBack,
-									String[] choice) {
-								// TODO Auto-generated method stub
-								if (isBack) {
-									popupWindow.dismiss();
-								} else {
-									if (popupWindow.isShowing()) {
-										popupWindow.dismiss();
-										Toast.makeText(
-												ShowDongManActivity.this,
-												"selected is " + choice[0]
-														+ "," + choice[1] + ","
-														+ choice[2],
-												Toast.LENGTH_LONG).show();
-										filterVideoSource(choice);
-
-									}
-								}
-							}
-						});
-				view.setLayoutParams(new LayoutParams(0, 0));
-				// popupWindow = new PopupWindow(view,
-				// getWindowManager().getDefaultDisplay().getWidth(),
-				// getWindowManager().getDefaultDisplay().getHeight(), true);
-				int width = topLinearLayout.getWidth();
-				int height = topLinearLayout.getHeight();
-				popupWindow = new PopupWindow(view, width, height, true);
-			}
-			popupWindow.showAtLocation(mFenLeiBtn.getRootView(), Gravity.LEFT
-					| Gravity.BOTTOM, 0, 0);
+			filterPopWindowShow();
 		}
 
 		if (activeView.getId() == v.getId()) {
@@ -292,12 +248,15 @@ public class ShowDongManActivity extends AbstractShowAddShouCangActivity{
 				getUnQuanbuData(url6);
 			}
 			break;
-//		case R.id.bt_quanbufenlei:
-//			String url7 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL,
-//					TV_DONGMAN, 1 + "", 50 + "");
-//			app.MyToast(aq.getContext(), "bt_quanbufenlei");
-//			getInitDataServiceData(url7, false);
-//			break;
+		case R.id.bt_quanbufenlei:
+			currentListIndex = QUANBUFENLEI;
+			app.MyToast(aq.getContext(), "bt_quanbufenlei");
+			if (lists[currentListIndex] != null
+					&& !lists[currentListIndex].isEmpty()) {
+
+				notifyAdapter(lists[currentListIndex]);
+			}
+			break;
 		case R.id.bt_zuijinguankan:
 			startActivity(new Intent(this, HistoryActivity.class));
 			break;
@@ -340,10 +299,6 @@ public class ShowDongManActivity extends AbstractShowAddShouCangActivity{
 		firstFloatView = findViewById(R.id.inclue_movie_show_item);
 
 		topLinearLayout = (LinearLayout) findViewById(R.id.ll_show_movie_top);
-//		shouchangTitleLL = (LinearLayout) findViewById(R.id.ll_shoucanggengxin);
-//		includeDongman5LL = (LinearLayout) findViewById(R.id.inclue_shoucang_dongman);
-//		qitaDongmanLLTitle = (LinearLayout) findViewById(R.id.ll_qinzidongman);
-//		shoucang_5_qitaTitleLL = (LinearLayout) findViewById(R.id.ll_shoucang_5_qita_title);
 
 		dongmanGv.setNextFocusLeftId(R.id.bt_quanbufenlei);
 	}
@@ -947,7 +902,7 @@ public class ShowDongManActivity extends AbstractShowAddShouCangActivity{
 		try {
 			Log.d(TAG, json.toString());
 			lists[QUAN_TEN]  = StatisticsUtils.returnTVBangDanList_TVJson(json.toString());
-			String urlNormal = StatisticsUtils.getFilterURL(FILTER_URL, 1+"", 10+"", DONGMAN_TYPE);
+			String urlNormal = StatisticsUtils.getDongman_QuanAllFirstURL();
 			currentListIndex = QUANBUFENLEI;
 			getQuanbuData(urlNormal);	
 		} catch (JsonParseException e) {
@@ -1256,6 +1211,57 @@ public class ShowDongManActivity extends AbstractShowAddShouCangActivity{
 			AjaxStatus status) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	protected void filterPopWindowShow() {
+		// TODO Auto-generated method stub
+		
+		if (popupWindow == null) {
+			NavigateView view = new NavigateView(this);
+			int[] location = new int[2];
+			mFenLeiBtn.getLocationOnScreen(location);
+			view.Init(
+					getResources().getStringArray(
+							R.array.diqu_dongman_fenlei),
+					getResources().getStringArray(
+							R.array.leixing_dongman_fenlei),
+					getResources().getStringArray(
+							R.array.shijian_dianying_fenlei), location[0],
+					location[1], mFenLeiBtn.getWidth(), mFenLeiBtn
+							.getHeight(), new OnResultListener() {
+
+						@Override
+						public void onResult(View v, boolean isBack,
+								String[] choice) {
+							// TODO Auto-generated method stub
+							if (isBack) {
+								popupWindow.dismiss();
+							} else {
+								if (popupWindow.isShowing()) {
+									popupWindow.dismiss();
+									Toast.makeText(
+											ShowDongManActivity.this,
+											"selected is " + choice[0]
+													+ "," + choice[1] + ","
+													+ choice[2],
+											Toast.LENGTH_LONG).show();
+									filterVideoSource(choice);
+
+								}
+							}
+						}
+					});
+			view.setLayoutParams(new LayoutParams(0, 0));
+			// popupWindow = new PopupWindow(view,
+			// getWindowManager().getDefaultDisplay().getWidth(),
+			// getWindowManager().getDefaultDisplay().getHeight(), true);
+			int width = topLinearLayout.getWidth();
+			int height = topLinearLayout.getHeight();
+			popupWindow = new PopupWindow(view, width, height, true);
+		}
+		popupWindow.showAtLocation(mFenLeiBtn.getRootView(), Gravity.LEFT
+				| Gravity.BOTTOM, 0, 0);
 	}
 
 }
