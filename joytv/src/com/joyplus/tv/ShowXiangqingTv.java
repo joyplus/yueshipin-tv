@@ -702,6 +702,14 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 		super.onDestroy();
 	}
 	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		aq.id(R.id.iv_head_user_icon).image(app.getUserInfo().getUserAvatarUrl(),false,true,0,R.drawable.avatar);
+		aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
+	}
+	
 	private void play(int index){
 		CurrentPlayData playDate = new CurrentPlayData();
 		Intent intent = new Intent(this,VideoPlayerActivity.class);

@@ -822,6 +822,14 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 		super.onDestroy();
 	}
 	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		aq.id(R.id.iv_head_user_icon).image(app.getUserInfo().getUserAvatarUrl(),false,true,0,R.drawable.avatar);
+		aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
+	}
+	
 	class ViewHolder{
 		TextView firstTitle;
 		TextView secondTitle;
