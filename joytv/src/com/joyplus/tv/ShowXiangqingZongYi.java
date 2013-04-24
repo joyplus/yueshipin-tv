@@ -497,7 +497,7 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 //				}
 				btn.setOnClickListener(this);
 				btn.setOnKeyListener(this);
-				btn.setBackgroundResource(R.drawable.xiangqing_button_selector);
+				btn.setBackgroundResource(R.drawable.bg_button_tv_selector);
 				if(j*5+i+1>count){
 					btn.setVisibility(View.INVISIBLE);
 				}
