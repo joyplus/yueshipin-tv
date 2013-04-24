@@ -10,7 +10,10 @@ import java.util.Map;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.DialogInterface.OnCancelListener;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -43,6 +46,7 @@ import com.joyplus.tv.Adapters.CurrentPlayData;
 import com.joyplus.tv.Service.Return.ReturnProgramRelatedVideos;
 import com.joyplus.tv.Service.Return.ReturnProgramView;
 import com.joyplus.tv.Video.VideoPlayerActivity;
+import com.joyplus.tv.ui.WaitingDialog;
 import com.joyplus.tv.utils.DefinationComparatorIndex;
 import com.joyplus.tv.utils.MyKeyEventKey;
 import com.joyplus.tv.utils.SouceComparatorIndex1;
@@ -52,6 +56,7 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 		View.OnKeyListener, MyKeyEventKey {
 
 	private static final String TAG = "ShowXiangqingMovie";
+	private static final int DIALOG_WAITING = 0;
 	private LinearLayout bofangLL;
 
 	private Button dingBt,xiaiBt, yingpingBt;
@@ -154,6 +159,7 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 			finish();
 		}
 		initView();
+		showDialog(DIALOG_WAITING);
 		getIsShoucangData();
 		getMovieDateFromService();
 		getRecommendMovieFormService();
@@ -567,6 +573,7 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 			movieData  = mapper.readValue(json.toString(), ReturnProgramView.class);
 			new Thread(new CheckPlayUrl()).start();
 			if(movieData!=null){
+				removeDialog(DIALOG_WAITING);
 				updateView();
 			}
 		} catch (JsonParseException e) {
@@ -634,7 +641,8 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 	private void updateScore(String score){
 		aq.id(R.id.textView_score).text(movieData.movie.score);
 		float f = Float.valueOf(score);
-		int i = Math.round(f);
+//		int i = Math.round(f);
+		int i = (int) Math.ceil(f);
 //		int i = (f%1>=0.5)?(int)(f/1):(int)(f/1+1);
 		switch (i) {
 		case 0:
@@ -966,6 +974,28 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 				
 				xiaiBt.setEnabled(false);
 			}
+		}
+	}
+	
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		// TODO Auto-generated method stub
+		switch (id) {
+		case DIALOG_WAITING:
+			WaitingDialog dlg = new WaitingDialog(this);
+			dlg.show();
+			dlg.setOnCancelListener(new OnCancelListener() {
+				
+				@Override
+				public void onCancel(DialogInterface dialog) {
+					// TODO Auto-generated method stub
+					finish();
+				}
+			});
+			dlg.setDialogWindowStyle();
+			return dlg;
+		default:
+			return super.onCreateDialog(id);
 		}
 	}
 }

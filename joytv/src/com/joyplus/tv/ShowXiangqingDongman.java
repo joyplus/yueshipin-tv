@@ -10,7 +10,10 @@ import java.util.Map;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.DialogInterface.OnCancelListener;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -39,6 +42,7 @@ import com.joyplus.tv.Adapters.CurrentPlayData;
 import com.joyplus.tv.Service.Return.ReturnProgramView;
 import com.joyplus.tv.Service.Return.ReturnProgramView.DOWN_URLS;
 import com.joyplus.tv.Video.VideoPlayerActivity;
+import com.joyplus.tv.ui.WaitingDialog;
 import com.joyplus.tv.utils.DefinationComparatorIndex;
 import com.joyplus.tv.utils.MyKeyEventKey;
 import com.joyplus.tv.utils.SouceComparatorIndex1;
@@ -48,6 +52,7 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 		View.OnKeyListener, MyKeyEventKey {
 
 	private static final String TAG = "ShowXiangqingDongman";
+	private static final int DIALOG_WAITING = 0;
 	private LinearLayout bofangLL;
 
 	private Button dingBt,xiaiBt, yingpingBt;
@@ -94,6 +99,7 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 		aq = new AQuery(this);
 		app = (App) getApplication();
 		initView();
+		showDialog(DIALOG_WAITING);
 		getIsShoucangData();
 		getServiceDate();
 	}
@@ -549,6 +555,7 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 				isOver = false;
 				num = Integer.valueOf(date.tv.cur_episode);
 			}
+			removeDialog(DIALOG_WAITING);
 			updateView();
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
@@ -592,7 +599,8 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 	private void updateScore(String score){
 		aq.id(R.id.textView_score).text(date.tv.score);
 		float f = Float.valueOf(score);
-		int i = Math.round(f);
+//		int i = Math.round(f);
+		int i = (int) Math.ceil(f);
 //		int i = (f%1>=0.5)?(int)(f/1):(int)(f/1+1);
 		switch (i) {
 		case 0:
@@ -813,6 +821,28 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 				
 				xiaiBt.setEnabled(false);
 			}
+		}
+	}
+	
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		// TODO Auto-generated method stub
+		switch (id) {
+		case DIALOG_WAITING:
+			WaitingDialog dlg = new WaitingDialog(this);
+			dlg.show();
+			dlg.setOnCancelListener(new OnCancelListener() {
+				
+				@Override
+				public void onCancel(DialogInterface dialog) {
+					// TODO Auto-generated method stub
+					finish();
+				}
+			});
+			dlg.setDialogWindowStyle();
+			return dlg;
+		default:
+			return super.onCreateDialog(id);
 		}
 	}
 }
