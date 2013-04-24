@@ -212,8 +212,9 @@ public class WebSocketClient {
                 public void run() {
 
                     try {
-
-                        mSocket.close();
+                    	if(mSocket!=null){
+                    		mSocket.close();
+                    	}
                         mSocket = null;
 
                         Log.i(TAG, "socket closed");

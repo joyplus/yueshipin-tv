@@ -318,7 +318,11 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 			selectedButton = btn_fenlei_all;
 			selectedButton.setPadding(0, 0, 5, 0);
 			index = 0;
-			getHistoryData(0);
+			if(allHistoryList.size()==0){
+				getHistoryData(0);
+			}else{
+				listView.setAdapter(new HistortyAdapter(allHistoryList));
+			}
 			break;
 		case R.id.fenlei_movie:
 			selectedButton.setTextColor(getResources().getColorStateList(R.color.text_color_selector));
@@ -328,7 +332,11 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 			selectedButton = btn_fenlei_movie;
 			selectedButton.setPadding(0, 0, 5, 0);
 			index = 1;
-			getHistoryData(1);
+			if(movieHistoryList.size()==0){
+				getHistoryData(1);
+			}else{
+				listView.setAdapter(new HistortyAdapter(movieHistoryList));
+			}
 			break;
 		case R.id.fenlei_tv:
 			selectedButton.setTextColor(getResources().getColorStateList(R.color.text_color_selector));
@@ -338,7 +346,11 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 			selectedButton = btn_fenlei_tv;
 			selectedButton.setPadding(0, 0, 5, 0);
 			index = 2;
-			getHistoryData(2);
+			if(tvHistoryList.size()==0){
+				getHistoryData(2);
+			}else{
+				listView.setAdapter(new HistortyAdapter(tvHistoryList));
+			}
 			break;
 		case R.id.fenlei_dongman:
 			selectedButton.setTextColor(getResources().getColorStateList(R.color.text_color_selector));
@@ -348,7 +360,11 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 			selectedButton = btn_fenlei_dongman;
 			selectedButton.setPadding(0, 0, 5, 0);
 			index = 131;
-			getHistoryData(131);
+			if(dongmanHistoryList.size()==0){
+				getHistoryData(131);
+			}else{
+				listView.setAdapter(new HistortyAdapter(dongmanHistoryList));
+			}
 			break;
 		case R.id.fenlei_zongyi:
 			selectedButton.setTextColor(getResources().getColorStateList(R.color.text_color_selector));
@@ -358,7 +374,11 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 			selectedButton = btn_fenlei_zongyi;
 			selectedButton.setPadding(0, 0, 5, 0);
 			index = 3;
-			getHistoryData(3);
+			if(zongyiHistoryList.size()==0){
+				getHistoryData(3);
+			}else{
+				listView.setAdapter(new HistortyAdapter(zongyiHistoryList));
+			}
 			break;
 		case R.id.delete_btn:
 			deleteHistory(false, "");

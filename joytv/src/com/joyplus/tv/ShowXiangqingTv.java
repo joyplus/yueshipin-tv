@@ -57,6 +57,8 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 
 	private Button dingBt,xiaiBt, yingpingBt;
 	private Button bofangBt,gaoqingBt;
+	private Button seletedTitleButton;
+	private Button seletedIndexButton;
 
 	private View beforeView;
 
@@ -109,7 +111,9 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 		// TODO Auto-generated method stub
 		
 		totle_pagecount = (num%COUNT ==0)? num/COUNT:num/COUNT+1;
-		
+		if(totle_pagecount<2){
+			return;
+		}
 		for(int i=0; i<totle_pagecount; i++){
 			Button b = new Button(this);
 //			b.setWidth(table.getWidth()/5);
@@ -129,7 +133,13 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 				}
 				
 			}
+			if(i==0){
+				seletedTitleButton = b;
+				seletedTitleButton.setEnabled(false);
+			}
 			b.setBackgroundResource(R.drawable.xiangqing_button_selector);
+//			b.setCompoundDrawablesWithIntrinsicBounds(getResources()
+//					.getDrawable(R.drawable.bg_right_play_icon_selector), null, null, null);
 			b.setId((i+1)*10000);
 			b.setOnClickListener(this);
 			layout.addView(b);
@@ -272,8 +282,19 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 				}else{
 					initTableView(num-COUNT*(selectedIndex-1));
 				}
+				seletedIndexButton.setEnabled(true);
+				seletedIndexButton = (Button) v;
+				seletedIndexButton.setEnabled(false);
 			}else{
 				Toast.makeText(this, "click btn = " + v.getId(), 100).show();
+				if(seletedIndexButton == null){
+					seletedIndexButton = (Button) v;
+					seletedIndexButton.setEnabled(false);
+				}else{
+					seletedIndexButton.setEnabled(true);
+					seletedIndexButton = (Button) v;
+					seletedIndexButton.setEnabled(false);
+				}
 				play(v.getId()-1);
 //				scrollView.smoothScrollBy(20, 0);
 			}
@@ -490,7 +511,8 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 				}
 				btn.setOnClickListener(this);
 				btn.setOnKeyListener(this);
-				btn.setBackgroundResource(R.drawable.xiangqing_button_selector);
+				btn.setBackgroundResource(R.drawable.bg_button_tv_selector);
+//				btn.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_play, 0);
 				if(j*5+i+1>count){
 					btn.setVisibility(View.INVISIBLE);
 				}

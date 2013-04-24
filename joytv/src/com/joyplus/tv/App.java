@@ -279,10 +279,10 @@ public class App extends Application {
 			StatusLine statusLine = response.getStatusLine();
 			int status = statusLine.getStatusCode();
 
-			Header headertop = response.getFirstHeader("Content-Type");// 拿到重新定位后的header
-			String type = headertop.getValue().toLowerCase();// 从header重新取出信息
-			Header header_length = response.getFirstHeader("Content-Length");
-			String lengthStr = header_length.getValue();
+//			Header headertop = response.getFirstHeader("Content-Type");// 拿到重新定位后的header
+//			String type = headertop.getValue().toLowerCase();// 从header重新取出信息
+//			Header header_length = response.getFirstHeader("Content-Length");
+//			String lengthStr = header_length.getValue();
 			Log.i(TAG, "HTTP STATUS : " + status);
 			
 			mAndroidHttpClient.close();

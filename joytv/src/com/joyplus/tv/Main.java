@@ -491,7 +491,7 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
         registerReceiver(receiver, filter);
 	
 		headers.put("app_key", Constant.APPKEY);
-		headers.put("client","android");
+		headers.put("client","tv");
 		app.setHeaders(headers);
 
 		if(!Constant.TestEnv)
