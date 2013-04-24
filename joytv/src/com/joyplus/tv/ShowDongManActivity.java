@@ -67,7 +67,7 @@ public class ShowDongManActivity extends AbstractShowAddShouCangActivity {
 
 	private LinearLayout topLinearLayout;
 
-	private View firstFloatView;
+//	private View firstFloatView;
 
 	private View activeView;
 
@@ -120,10 +120,7 @@ public class ShowDongManActivity extends AbstractShowAddShouCangActivity {
 		// String favUrl = StatisticsUtils.getUserFavURL(FAV_URL, 1 + "", 10 +
 		// "","", app.getUserInfo().getUserId());
 		// getShoucangData(favUrl);
-
-		dongmanGv.setSelected(true);
-		dongmanGv.requestFocus();
-		dongmanGv.setSelection(0);
+		
 	}
 
 	@Override
@@ -341,7 +338,7 @@ public class ShowDongManActivity extends AbstractShowAddShouCangActivity {
 		zuijinguankanBtn = (Button) findViewById(R.id.bt_zuijinguankan);
 		zhuijushoucangBtn = (Button) findViewById(R.id.bt_zhuijushoucang);
 
-		firstFloatView = findViewById(R.id.inclue_movie_show_item);
+//		firstFloatView = findViewById(R.id.inclue_movie_show_item);
 
 		topLinearLayout = (LinearLayout) findViewById(R.id.ll_show_movie_top);
 
@@ -522,8 +519,8 @@ public class ShowDongManActivity extends AbstractShowAddShouCangActivity {
 									getApplicationContext(), beforeGvView);
 						} else {
 
-							ItemStateUtils
-									.floatViewOutAnimaiton(firstFloatView);
+//							ItemStateUtils
+//									.floatViewOutAnimaiton(firstFloatView);
 						}
 
 						ItemStateUtils.viewInAnimation(getApplicationContext(),
@@ -592,7 +589,7 @@ public class ShowDongManActivity extends AbstractShowAddShouCangActivity {
 					} else {
 
 						// firstFloatView.setVisibility(View.GONE);
-						ItemStateUtils.floatViewOutAnimaiton(firstFloatView);
+//						ItemStateUtils.floatViewOutAnimaiton(firstFloatView);
 					}
 				} else {
 
@@ -604,7 +601,7 @@ public class ShowDongManActivity extends AbstractShowAddShouCangActivity {
 								beforeGvView);
 
 					} else {
-						initFirstFloatView();
+//						initFirstFloatView();
 					}
 				}
 			}
@@ -700,53 +697,53 @@ public class ShowDongManActivity extends AbstractShowAddShouCangActivity {
 	protected void initFirstFloatView() {
 		// TODO Auto-generated method stub
 
-		firstFloatView.setX(0);
-		firstFloatView.setY(0);
-		firstFloatView.setLayoutParams(new FrameLayout.LayoutParams(popWidth,
-				popHeight));
-		firstFloatView.setVisibility(View.VISIBLE);
-
-		TextView movieName = (TextView) firstFloatView
-				.findViewById(R.id.tv_item_layout_name);
-		TextView movieScore = (TextView) firstFloatView
-				.findViewById(R.id.tv_item_layout_score);
-
-		List<MovieItemData> list = searchAdapter.getMovieList();
-		if (list != null && !list.isEmpty()) {
-
-			FrameLayout inFrameLayout = (FrameLayout) firstFloatView
-					.findViewById(R.id.inclue_movie_show_item);
-			ImageView haibaoIv = (ImageView) inFrameLayout
-					.findViewById(R.id.iv_item_layout_haibao);
-			aq.id(haibaoIv).image(list.get(0).getMoviePicUrl(), true, true, 0,
-					R.drawable.post_active);
-			movieName.setText(list.get(0).getMovieName());
-			movieScore.setText(list.get(0).getMovieScore());
-			firstFloatView.setPadding(GRIDVIEW_ITEM_PADDING,
-					GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING,
-					GRIDVIEW_ITEM_PADDING);
-
-			String curEpisode = list.get(0).getMovieCurEpisode();
-			String maxEpisode = list.get(0).getMovieMaxEpisode();
-
-			if (curEpisode == null || curEpisode.equals("0")
-					|| curEpisode.compareTo(maxEpisode) >= 0) {
-
-				TextView movieUpdate = (TextView) firstFloatView
-						.findViewById(R.id.tv_item_layout_other_info);
-				movieUpdate.setText(list.get(0).getMovieMaxEpisode()
-						+ getString(R.string.dianshiju_jiquan));
-			} else if (maxEpisode.compareTo(curEpisode) > 0) {
-
-				TextView movieUpdate = (TextView) firstFloatView
-						.findViewById(R.id.tv_item_layout_other_info);
-				movieUpdate.setText(getString(R.string.zongyi_gengxinzhi)
-						+ list.get(0).getMovieCurEpisode());
-			}
-		}
-
-		ItemStateUtils.floatViewInAnimaiton(getApplicationContext(),
-				firstFloatView);
+//		firstFloatView.setX(0);
+//		firstFloatView.setY(0);
+//		firstFloatView.setLayoutParams(new FrameLayout.LayoutParams(popWidth,
+//				popHeight));
+//		firstFloatView.setVisibility(View.VISIBLE);
+//
+//		TextView movieName = (TextView) firstFloatView
+//				.findViewById(R.id.tv_item_layout_name);
+//		TextView movieScore = (TextView) firstFloatView
+//				.findViewById(R.id.tv_item_layout_score);
+//
+//		List<MovieItemData> list = searchAdapter.getMovieList();
+//		if (list != null && !list.isEmpty()) {
+//
+//			FrameLayout inFrameLayout = (FrameLayout) firstFloatView
+//					.findViewById(R.id.inclue_movie_show_item);
+//			ImageView haibaoIv = (ImageView) inFrameLayout
+//					.findViewById(R.id.iv_item_layout_haibao);
+//			aq.id(haibaoIv).image(list.get(0).getMoviePicUrl(), true, true, 0,
+//					R.drawable.post_active);
+//			movieName.setText(list.get(0).getMovieName());
+//			movieScore.setText(list.get(0).getMovieScore());
+//			firstFloatView.setPadding(GRIDVIEW_ITEM_PADDING,
+//					GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING,
+//					GRIDVIEW_ITEM_PADDING);
+//
+//			String curEpisode = list.get(0).getMovieCurEpisode();
+//			String maxEpisode = list.get(0).getMovieMaxEpisode();
+//
+//			if (curEpisode == null || curEpisode.equals("0")
+//					|| curEpisode.compareTo(maxEpisode) >= 0) {
+//
+//				TextView movieUpdate = (TextView) firstFloatView
+//						.findViewById(R.id.tv_item_layout_other_info);
+//				movieUpdate.setText(list.get(0).getMovieMaxEpisode()
+//						+ getString(R.string.dianshiju_jiquan));
+//			} else if (maxEpisode.compareTo(curEpisode) > 0) {
+//
+//				TextView movieUpdate = (TextView) firstFloatView
+//						.findViewById(R.id.tv_item_layout_other_info);
+//				movieUpdate.setText(getString(R.string.zongyi_gengxinzhi)
+//						+ list.get(0).getMovieCurEpisode());
+//			}
+//		}
+//
+//		ItemStateUtils.floatViewInAnimaiton(getApplicationContext(),
+//				firstFloatView);
 	}
 
 	@Override
@@ -774,14 +771,12 @@ public class ShowDongManActivity extends AbstractShowAddShouCangActivity {
 				isNextPagePossibles[currentListIndex] = false;
 			}
 		}
-
 		lists[currentListIndex] = list;
 
 		dongmanGv.setSelection(0);
 		searchAdapter.notifyDataSetChanged();
 		beforeGvView = null;
 		dongmanGv.setFocusable(true);
-		dongmanGv.setSelected(true);
 		isSelectedItem = false;
 		removeDialog(DIALOG_WAITING);
 		dongmanGv.requestFocus();
@@ -852,7 +847,7 @@ public class ShowDongManActivity extends AbstractShowAddShouCangActivity {
 	protected void getServiceData(String url, String interfaceName) {
 		// TODO Auto-generated method stub
 
-		firstFloatView.setVisibility(View.INVISIBLE);
+//		firstFloatView.setVisibility(View.INVISIBLE);
 		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
 		cb.url(url).type(JSONObject.class).weakHandler(this, interfaceName);
 
@@ -906,7 +901,7 @@ public class ShowDongManActivity extends AbstractShowAddShouCangActivity {
 					isNextPagePossibles[currentListIndex] = true;
 				}
 				notifyAdapter(temp10List);
-				initFirstFloatView();
+//				initFirstFloatView();
 			}
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
