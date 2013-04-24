@@ -58,16 +58,9 @@
     <string name="lixianshipin_name">离线视频</string>
     <string name="zongyi_name">综艺</string>
     <string name="qitazongyi_name">其他综艺</string>
-    <string name="xiangqing_dianying_title_name">西游降魔</string>
-    <string name="xiangqing_daoyan_name">导演:</string>
-    <string name="xiangqing_daoyan_names_name">周星驰/郭子健</string>
-    <string name="xiangqing_zhuyan_name">主演:</string>
-    <string name="xiangqing_zhuyan_names_name">文章/舒淇/黄渤/罗志祥</string>
-    <string name="xiangqing_juqingjianjie_name">剧情简介:</string>
-    <string name="xiangqing_juqingjianjie_content">&#160;&#160;&#160;&#160;这是一个妖魔横行的世界，百姓苦不堪言。年轻的驱魔人陈玄奘以“舍小我，成大我”的大无畏精神，历尽艰难险阻，依次收服水妖、猪妖以及妖王之王孙悟空为徒，并用“爱”将他们感化，而玄奘自己也终于领悟到了“大爱”的真意。为救天下苍生于水火，为赎还自己的罪恶，师徒四人义无反顾的踏上了“下地狱”般的西行取经之路......</string>
-    <string name="xiangqing_juqingjianjie_content_1">这是一个妖魔横行的世界,百姓苦不堪言。年轻的驱魔人陈玄奘以"舍小我,成大我"的大无畏精神,历尽艰难险阻</string>
-    <string name="xiangqing_juqingjianjie_content_2">依次收服水妖、猪妖以及妖王之王孙悟空为徒，并用"爱"将他们感化,而玄奘自己也终于领悟到了"大爱"的真意。</string>
-    <string name="xiangqing_juqingjianjie_content_3">为救天下苍生于水火,为赎还自己的罪恶,师徒四人义无反顾的踏上了"下地狱"般的西行取经之路......</string>
+    <string name="xiangqing_daoyan_name">导演:&#160;</string>
+    <string name="xiangqing_zhuyan_name">主演:&#160;</string>
+    <string name="xiangqing_juqingjianjie_name">剧情简介:&#160;</string>
     <string name="time_yuezai_name">约在</string>
     <string name="time_kanwan_name">看完</string>
     <string name="time_time_name">15:08</string>
@@ -84,9 +77,9 @@
     <string name="zongyi_gengxinzhi">更新至</string>
     <string name="dianshiju_jiquan">集全</string>
     <string name="quanbu_name">全部</string>
-    <string name="xiangqing_zongyi_zhuchi">主持/嘉宾：</string>
-    <string name="xiangqing_zongyi_shoubo">首播：</string>
-    <string name="xiangqing_zongyi_jianjie">简介：</string>
+    <string name="xiangqing_zongyi_zhuchi">主持/嘉宾:&#160;</string>
+    <string name="xiangqing_zongyi_shoubo">电视台:&#160;</string>
+    <string name="xiangqing_zongyi_jianjie">简介:&#160;</string>
     <string name="xiangqing_yingping_no">没有影评</string>
     <string name="movie_fenzhong">分钟</string>
     

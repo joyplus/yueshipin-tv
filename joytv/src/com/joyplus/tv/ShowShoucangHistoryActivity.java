@@ -167,6 +167,15 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 							return; 
 						}else{
 							intent.putExtra("ID", ((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_id);
+							intent.putExtra("prod_name", ((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_name);
+							intent.putExtra("prod_url", ((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_pic_url);
+							intent.putExtra("directors", ((HistortyAdapter)listView.getAdapter()).data.get(arg2).directors);
+							intent.putExtra("stars", ((HistortyAdapter)listView.getAdapter()).data.get(arg2).stars);
+							intent.putExtra("summary", ((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_summary);
+							intent.putExtra("support_num", ((HistortyAdapter)listView.getAdapter()).data.get(arg2).support_num);
+							intent.putExtra("favority_num", ((HistortyAdapter)listView.getAdapter()).data.get(arg2).favority_num);
+							intent.putExtra("definition", ((HistortyAdapter)listView.getAdapter()).data.get(arg2).definition);
+							intent.putExtra("score", ((HistortyAdapter)listView.getAdapter()).data.get(arg2).score);
 							startActivity(intent);
 						}
 					}

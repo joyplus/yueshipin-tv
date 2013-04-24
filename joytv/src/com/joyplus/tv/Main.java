@@ -1020,16 +1020,43 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 				case 2:
 					intent = new Intent(this,ShowXiangqingTv.class);
 					intent.putExtra("ID", info.prod_id);
+					intent.putExtra("prod_name", info.prod_name);
+					intent.putExtra("prod_url", info.prod_pic_url);
+					intent.putExtra("directors", info.directors);
+					intent.putExtra("stars", info.stars);
+					intent.putExtra("summary", info.prod_summary);
+					intent.putExtra("support_num", info.support_num);
+					intent.putExtra("favority_num", info.favority_num);
+					intent.putExtra("definition", info.definition);
+					intent.putExtra("score", info.score);
 					startActivity(intent);
 					break;
 				case 3:
 					intent = new Intent(this,ShowXiangqingZongYi.class);
 					intent.putExtra("ID", info.prod_id);
+					intent.putExtra("prod_name", info.prod_name);
+					intent.putExtra("prod_url", info.prod_pic_url);
+					intent.putExtra("directors", info.directors);
+					intent.putExtra("stars", info.stars);
+					intent.putExtra("summary", info.prod_summary);
+					intent.putExtra("support_num", info.support_num);
+					intent.putExtra("favority_num", info.favority_num);
+					intent.putExtra("definition", info.definition);
+					intent.putExtra("score", info.score);
 					startActivity(intent);
 					break;
 				case 131:
 					intent = new Intent(this,ShowXiangqingDongman.class);
 					intent.putExtra("ID", info.prod_id);
+					intent.putExtra("prod_name", info.prod_name);
+					intent.putExtra("prod_url", info.prod_pic_url);
+					intent.putExtra("directors", info.directors);
+					intent.putExtra("stars", info.stars);
+					intent.putExtra("summary", info.prod_summary);
+					intent.putExtra("support_num", info.support_num);
+					intent.putExtra("favority_num", info.favority_num);
+					intent.putExtra("definition", info.definition);
+					intent.putExtra("score", info.score);
 					startActivity(intent);
 					break;
 				}

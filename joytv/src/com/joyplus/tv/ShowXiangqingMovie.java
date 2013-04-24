@@ -158,6 +158,7 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 			Log.e(TAG, "pram error prod_id is error value");
 			finish();
 		}
+		showDefultDate();
 		initView();
 		showDialog(DIALOG_WAITING);
 		getIsShoucangData();
@@ -639,7 +640,7 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 	}
 	
 	private void updateScore(String score){
-		aq.id(R.id.textView_score).text(movieData.movie.score);
+		aq.id(R.id.textView_score).text(score);
 		float f = Float.valueOf(score);
 //		int i = Math.round(f);
 		int i = (int) Math.ceil(f);
@@ -996,6 +997,39 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 			return dlg;
 		default:
 			return super.onCreateDialog(id);
+		}
+	}
+	
+	private void showDefultDate(){
+		Intent intent = getIntent();
+		if(intent!=null){
+			aq.id(R.id.image).image(intent.getStringExtra("prod_url"), false, true,0, R.drawable.post_normal);
+			aq.id(R.id.text_name).text(intent.getStringExtra("prod_name"));
+			aq.id(R.id.text_directors).text(intent.getStringExtra("directors"));
+			aq.id(R.id.text_starts).text(intent.getStringExtra("stars"));
+			aq.id(R.id.text_introduce).text(intent.getStringExtra("summary"));
+			aq.id(R.id.bt_xiangqingding).text(intent.getStringExtra("support_num"));
+			aq.id(R.id.bt_xiangqing_xiai).text(intent.getStringExtra("favority_num"));
+			if(intent.getStringExtra("definition")!=null&&!"".equals(intent.getStringExtra("definition"))){
+				int definition = Integer.valueOf(intent.getStringExtra("definition"));
+				switch (definition) {
+				case 6:
+					aq.id(R.id.img_definition).image(R.drawable.icon_ts);
+					break;
+				case 7:
+					aq.id(R.id.img_definition).image(R.drawable.icon_hd);
+					break;
+				case 8:
+					aq.id(R.id.img_definition).image(R.drawable.icon_bd);
+					break;
+				default:
+					aq.id(R.id.img_definition).gone();
+					break;
+				}
+			}
+			if(intent.getStringExtra("score")!=null&&!"".equals(intent.getStringExtra("score"))){
+				updateScore(intent.getStringExtra("score"));
+			}
 		}
 	}
 }
