@@ -6,8 +6,11 @@ import java.util.List;
 
 import org.json.JSONObject;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.DialogInterface.OnCancelListener;
 import android.os.Bundle;
 import android.text.Editable;
 import android.util.Log;
@@ -31,10 +34,11 @@ import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.joyplus.tv.Adapters.MovieAdapter;
+import com.joyplus.tv.Adapters.SearchAdapter;
 import com.joyplus.tv.entity.MovieItemData;
 import com.joyplus.tv.ui.MyMovieGridView;
 import com.joyplus.tv.ui.NavigateView;
+import com.joyplus.tv.ui.WaitingDialog;
 import com.joyplus.tv.ui.NavigateView.OnResultListener;
 import com.joyplus.tv.utils.ItemStateUtils;
 
@@ -50,6 +54,8 @@ public class ShowMovieActivity extends AbstractShowActivity {
 	private static final int XUANYIPIAN = 9;
 	private static final int KONGBUPIAN = 10;
 	private static final int DONGHUAPIAN = 11;
+	
+	private static final int DIALOG_WAITING = 0;
 
 	private AQuery aq;
 	private App app;
@@ -74,9 +80,9 @@ public class ShowMovieActivity extends AbstractShowActivity {
 
 	private View beforeGvView = null;
 
-	private List<MovieItemData>[] lists = new List[10];
-	private boolean[] isNextPagePossibles = new boolean[10];
-	private int[] pageNums = new int[10];
+	private List<MovieItemData>[] lists = new List[12];
+	private boolean[] isNextPagePossibles = new boolean[12];
+	private int[] pageNums = new int[12];
 
 	private int currentListIndex;
 
@@ -84,7 +90,10 @@ public class ShowMovieActivity extends AbstractShowActivity {
 
 	private int beforepostion = 0;
 
-	private MovieAdapter movieAdapter = null;
+	private SearchAdapter searchAdapter = null;
+	
+	private String search;
+	private String filterSource;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -97,8 +106,8 @@ public class ShowMovieActivity extends AbstractShowActivity {
 
 		initActivity();// 初始化界面
 
-		movieAdapter = new MovieAdapter(this, aq);
-		movieGv.setAdapter(movieAdapter);
+		searchAdapter = new SearchAdapter(this, aq);
+		movieGv.setAdapter(searchAdapter);
 
 		// String url2 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL,
 		// TV_DIANYING, 1 + "", StatisticsUtils.CACHE_NUM + "");
@@ -149,6 +158,28 @@ public class ShowMovieActivity extends AbstractShowActivity {
 				R.drawable.avatar);
 		aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
 	}
+	
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		// TODO Auto-generated method stub
+		switch (id) {
+		case DIALOG_WAITING:
+			WaitingDialog dlg = new WaitingDialog(this);
+			dlg.show();
+			dlg.setOnCancelListener(new OnCancelListener() {
+				
+				@Override
+				public void onCancel(DialogInterface dialog) {
+					// TODO Auto-generated method stub
+					finish();
+				}
+			});
+			dlg.setDialogWindowStyle();
+			return dlg;
+		default:
+			return super.onCreateDialog(id);
+		}
+	}
 
 	@Override
 	public void onClick(View v) {
@@ -182,6 +213,7 @@ public class ShowMovieActivity extends AbstractShowActivity {
 				notifyAdapter(lists[currentListIndex]);
 			} else {
 
+				showDialog(DIALOG_WAITING);
 				getUnQuanbuData(url1);
 			}
 			break;
@@ -195,6 +227,7 @@ public class ShowMovieActivity extends AbstractShowActivity {
 				notifyAdapter(lists[currentListIndex]);
 			} else {
 
+				showDialog(DIALOG_WAITING);
 				getUnQuanbuData(url2);
 			}
 			break;
@@ -208,6 +241,7 @@ public class ShowMovieActivity extends AbstractShowActivity {
 				notifyAdapter(lists[currentListIndex]);
 			} else {
 
+				showDialog(DIALOG_WAITING);
 				getUnQuanbuData(url3);
 			}
 			break;
@@ -221,6 +255,7 @@ public class ShowMovieActivity extends AbstractShowActivity {
 				notifyAdapter(lists[currentListIndex]);
 			} else {
 
+				showDialog(DIALOG_WAITING);
 				getUnQuanbuData(url4);
 			}
 			break;
@@ -234,6 +269,7 @@ public class ShowMovieActivity extends AbstractShowActivity {
 				notifyAdapter(lists[currentListIndex]);
 			} else {
 
+				showDialog(DIALOG_WAITING);
 				getUnQuanbuData(url5);
 			}
 			break;
@@ -247,6 +283,7 @@ public class ShowMovieActivity extends AbstractShowActivity {
 				notifyAdapter(lists[currentListIndex]);
 			} else {
 
+				showDialog(DIALOG_WAITING);
 				getUnQuanbuData(url6);
 			}
 			break;
@@ -260,6 +297,7 @@ public class ShowMovieActivity extends AbstractShowActivity {
 				notifyAdapter(lists[currentListIndex]);
 			} else {
 
+				showDialog(DIALOG_WAITING);
 				getUnQuanbuData(url7);
 			}
 			break;
@@ -273,6 +311,7 @@ public class ShowMovieActivity extends AbstractShowActivity {
 				notifyAdapter(lists[currentListIndex]);
 			} else {
 
+				showDialog(DIALOG_WAITING);
 				getUnQuanbuData(url8);
 			}
 			break;
@@ -418,13 +457,40 @@ public class ShowMovieActivity extends AbstractShowActivity {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				// TODO Auto-generated method stub
-				List<MovieItemData> list = movieAdapter.getMovieList();
-				if (list != null && !list.isEmpty()) {
-
-					Intent intent = new Intent(ShowMovieActivity.this,
-							ShowXiangqingMovie.class);
-					intent.putExtra("ID", list.get(position).getMovieID());
-					startActivity(intent);
+				List<MovieItemData> list = searchAdapter.getMovieList();
+				if(list != null && !list.isEmpty()) {
+					String pro_type = list.get(position).getMovieProType();
+					Log.i(TAG, "pro_type:" + pro_type);
+					if(pro_type != null && !pro_type.equals("")) {
+						
+						if(pro_type.equals("2")) {
+							Log.i(TAG, "pro_type:" + pro_type + "   --->2");
+							Intent intent = new Intent(ShowMovieActivity.this,
+									ShowXiangqingTv.class);
+							intent.putExtra("ID", list.get(position).getMovieID());
+							startActivity(intent);
+//							startActivity();
+						} else if(pro_type.equals("1")) {
+							Log.i(TAG, "pro_type:" + pro_type + "   --->1");
+							Intent intent = new Intent(ShowMovieActivity.this,
+									ShowXiangqingMovie.class);
+							intent.putExtra("ID", list.get(position).getMovieID());
+							startActivity(intent);
+//							startActivity();
+						} else if(pro_type.equals("131")) {
+							
+							Intent intent = new Intent(ShowMovieActivity.this,
+									ShowXiangqingDongman.class);
+							intent.putExtra("ID", list.get(position).getMovieID());
+							startActivity(intent);
+						} else if(pro_type.equals("3")) {
+							
+							Intent intent = new Intent(ShowMovieActivity.this,
+									ShowXiangqingZongYi.class);
+							intent.putExtra("ID", list.get(position).getMovieID());
+							startActivity(intent);
+						}
+					}
 				}
 			}
 		});
@@ -508,7 +574,7 @@ public class ShowMovieActivity extends AbstractShowActivity {
 				beforepostion = position;
 
 				// 缓存
-				int size = movieAdapter.getMovieList().size();
+				int size = searchAdapter.getMovieList().size();
 				if (size - 1 - firstAndLastVisible[1] < StatisticsUtils.CACHE_NUM) {
 
 					if (isNextPagePossibles[currentListIndex]) {
@@ -569,11 +635,18 @@ public class ShowMovieActivity extends AbstractShowActivity {
 
 				Editable editable = searchEt.getText();
 				String searchStr = editable.toString();
+				searchEt.setText("");
+				movieGv.setNextFocusForwardId(searchEt.getId());//
+				showDialog(DIALOG_WAITING);
+				ItemStateUtils.viewToNormal(getApplicationContext(), activeView);
+				activeView = searchEt;
 
 				if (searchStr != null && !searchStr.equals("")) {
 
-					String url = StatisticsUtils.getSearchURL(SEARCH_URL,
-							1 + "", 30 + "", searchStr);
+					search = searchStr;
+					StatisticsUtils.clearList(lists[SEARCH]);
+					currentListIndex = SEARCH;
+					String url = StatisticsUtils.getSearch_FirstURL(searchStr);
 					getFilterData(url);
 				}
 			}
@@ -655,7 +728,7 @@ public class ShowMovieActivity extends AbstractShowActivity {
 		TextView movieScore = (TextView) firstFloatView
 				.findViewById(R.id.tv_item_layout_score);
 
-		List<MovieItemData> list = movieAdapter.getMovieList();
+		List<MovieItemData> list = searchAdapter.getMovieList();
 		if (list != null && !list.isEmpty()) {
 
 			FrameLayout inFrameLayout = (FrameLayout) firstFloatView
@@ -686,7 +759,7 @@ public class ShowMovieActivity extends AbstractShowActivity {
 	protected void notifyAdapter(List<MovieItemData> list) {
 		// TODO Auto-generated method stub
 
-		int height = movieAdapter.getHeight(), width = movieAdapter.getWidth();
+		int height = searchAdapter.getHeight(), width = searchAdapter.getWidth();
 
 		if (height != 0 && width != 0) {
 
@@ -694,7 +767,7 @@ public class ShowMovieActivity extends AbstractShowActivity {
 			popHeight = height;
 		}
 
-		movieAdapter.setList(list);
+		searchAdapter.setList(list);
 
 		if (list != null && !list.isEmpty() && currentListIndex != QUANBUFENLEI) {// 判断其能否向获取更多数据
 
@@ -710,11 +783,12 @@ public class ShowMovieActivity extends AbstractShowActivity {
 		lists[currentListIndex] = list;
 
 		movieGv.setSelection(0);
-		movieAdapter.notifyDataSetChanged();
+		searchAdapter.notifyDataSetChanged();
 		beforeGvView = null;
 		movieGv.setFocusable(true);
 		movieGv.setSelected(true);
 		isSelectedItem = false;
+		removeDialog(DIALOG_WAITING);
 		movieGv.requestFocus();
 	}
 
@@ -730,21 +804,20 @@ public class ShowMovieActivity extends AbstractShowActivity {
 
 		if (tempStr.equals(quanbufenlei)) {
 
-			if (lists[QUAN_FILTER] != null && !lists[QUAN_FILTER].isEmpty()) {
+			currentListIndex = QUANBUFENLEI;
+			if (lists[QUANBUFENLEI] != null && !lists[QUANBUFENLEI].isEmpty()) {
 
-				notifyAdapter(lists[QUAN_FILTER]);
-			} else {
-
-				String url2 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL,
-						TV_DIANYING, 1 + "", 50 + "");
-				getQuan10Data(url2);
+				notifyAdapter(lists[QUANBUFENLEI]);
 			}
 
 			return;
 		}
-		String url = StatisticsUtils.getFilterURL(FILTER_URL, 1 + "", 50 + "",
-				MOVIE_TYPE)
-				+ StatisticsUtils.getFileterURL3Param(choice, quanbu);
+		
+		showDialog(DIALOG_WAITING);
+		StatisticsUtils.clearList(lists[QUAN_FILTER]);
+		currentListIndex = QUAN_FILTER;
+		filterSource = StatisticsUtils.getFileterURL3Param(choice, quanbu);
+		String url = StatisticsUtils.getFilter_DongmanFirstURL(filterSource);
 		Log.i(TAG, "POP--->URL:" + url);
 		getFilterData(url);
 	}
@@ -753,6 +826,7 @@ public class ShowMovieActivity extends AbstractShowActivity {
 	protected void getQuan10Data(String url) {
 		// TODO Auto-generated method stub
 
+		showDialog(DIALOG_WAITING);
 		getServiceData(url, "initQuan10ServiceData");
 	}
 
@@ -802,7 +876,7 @@ public class ShowMovieActivity extends AbstractShowActivity {
 		}
 		try {
 			Log.d(TAG, json.toString());
-			lists[QUAN_TEN] = StatisticsUtils.returnTVBangDanListJson(json
+			lists[QUAN_TEN] = StatisticsUtils.returnTVBangDanList_YueDanListJson(json
 					.toString());
 			String urlNormal = StatisticsUtils.getMovie_QuanAllFirstURL();
 			currentListIndex = QUANBUFENLEI;
@@ -891,7 +965,7 @@ public class ShowMovieActivity extends AbstractShowActivity {
 		}
 		try {
 			Log.d(TAG, json.toString());
-			notifyAdapter(StatisticsUtils.returnTVBangDanList_TVJson(json
+			notifyAdapter(StatisticsUtils.returnTVBangDanList_YueDanListJson(json
 					.toString()));
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
@@ -937,7 +1011,7 @@ public class ShowMovieActivity extends AbstractShowActivity {
 	protected void refreshAdpter(List<MovieItemData> list) {
 		// TODO Auto-generated method stub
 
-		List<MovieItemData> srcList = movieAdapter.getMovieList();
+		List<MovieItemData> srcList = searchAdapter.getMovieList();
 
 		if (list != null && !list.isEmpty()) {
 
@@ -955,10 +1029,10 @@ public class ShowMovieActivity extends AbstractShowActivity {
 			isNextPagePossibles[currentListIndex] = false;
 		}
 
-		movieAdapter.setList(srcList);
+		searchAdapter.setList(srcList);
 		lists[currentListIndex] = srcList;
 
-		movieAdapter.notifyDataSetChanged();
+		searchAdapter.notifyDataSetChanged();
 	}
 
 	@Override
@@ -1012,7 +1086,7 @@ public class ShowMovieActivity extends AbstractShowActivity {
 		try {
 			Log.d(TAG, json.toString());
 
-			refreshAdpter(StatisticsUtils.returnTVBangDanList_TVJson(json
+			refreshAdpter(StatisticsUtils.returnTVBangDanList_YueDanListJson(json
 					.toString()));
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
@@ -1048,9 +1122,11 @@ public class ShowMovieActivity extends AbstractShowActivity {
 			break;
 		case QUAN_FILTER:
 
+			getMoreFilterData(StatisticsUtils.getFilter_DongmanCacheURL(pageNum, filterSource));
 			break;
 		case SEARCH:
 
+			getMoreFilterData(StatisticsUtils.getSearch_CacheURL(pageNum, search));
 			break;
 		case DONGZUOPIAN:
 			getMoreBangDanData(StatisticsUtils

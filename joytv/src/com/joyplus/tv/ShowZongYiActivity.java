@@ -6,8 +6,11 @@ import java.util.List;
 
 import org.json.JSONObject;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.DialogInterface.OnCancelListener;
 import android.os.Bundle;
 import android.text.Editable;
 import android.util.Log;
@@ -31,16 +34,20 @@ import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.joyplus.tv.Adapters.ZongyiAdapter;
+import com.joyplus.tv.Adapters.SearchAdapter;
 import com.joyplus.tv.entity.MovieItemData;
 import com.joyplus.tv.ui.MyMovieGridView;
 import com.joyplus.tv.ui.NavigateView;
+import com.joyplus.tv.ui.WaitingDialog;
 import com.joyplus.tv.ui.NavigateView.OnResultListener;
 import com.joyplus.tv.utils.ItemStateUtils;
 
 public class ShowZongYiActivity extends AbstractShowActivity {
 
-	private String TAG = "ShowZongYiActivity";
+	public static final String TAG = "ShowZongYiActivity";
+	
+	private static final int DIALOG_WAITING = 0;
+	
 	private AQuery aq;
 	private App app;
 
@@ -66,7 +73,7 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 
 	private View beforeGvView = null;
 	
-	private ZongyiAdapter zongyiAdapter = null;
+	private SearchAdapter searchAdapter = null;
 
 	private List<MovieItemData>[] lists = new List[4];
 	private boolean[] isNextPagePossibles = new boolean[4];
@@ -87,9 +94,10 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 		
 		initActivity();
 
-		zongyiAdapter = new ZongyiAdapter(this,aq);
-		dinashijuGv.setAdapter(zongyiAdapter);
+		searchAdapter = new SearchAdapter(this,aq);
+		dinashijuGv.setAdapter(searchAdapter);
 		
+		showDialog(DIALOG_WAITING);
 		getFilterData(StatisticsUtils.getZongyi_QuanAllFirstURL());
 		dinashijuGv.setSelected(true);
 		dinashijuGv.requestFocus();
@@ -133,6 +141,28 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 		super.onResume();
 		aq.id(R.id.iv_head_user_icon).image(app.getUserInfo().getUserAvatarUrl(),false,true,0,R.drawable.avatar);
 		aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
+	}
+	
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		// TODO Auto-generated method stub
+		switch (id) {
+		case DIALOG_WAITING:
+			WaitingDialog dlg = new WaitingDialog(this);
+			dlg.show();
+			dlg.setOnCancelListener(new OnCancelListener() {
+				
+				@Override
+				public void onCancel(DialogInterface dialog) {
+					// TODO Auto-generated method stub
+					finish();
+				}
+			});
+			dlg.setDialogWindowStyle();
+			return dlg;
+		default:
+			return super.onCreateDialog(id);
+		}
 	}
 	
 	private PopupWindow popupWindow;
@@ -268,13 +298,40 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				// TODO Auto-generated method stub
-				List<MovieItemData> list = zongyiAdapter.getMovieList();
+				List<MovieItemData> list = searchAdapter.getMovieList();
 				if(list != null && !list.isEmpty()) {
-					
-					Intent intent = new Intent(ShowZongYiActivity.this,
-							ShowXiangqingZongYi.class);
-					intent.putExtra("ID", list.get(position).getMovieID());
-					startActivity(intent);
+					String pro_type = list.get(position).getMovieProType();
+					Log.i(TAG, "pro_type:" + pro_type);
+					if(pro_type != null && !pro_type.equals("")) {
+						
+						if(pro_type.equals("2")) {
+							Log.i(TAG, "pro_type:" + pro_type + "   --->2");
+							Intent intent = new Intent(ShowZongYiActivity.this,
+									ShowXiangqingTv.class);
+							intent.putExtra("ID", list.get(position).getMovieID());
+							startActivity(intent);
+//							startActivity();
+						} else if(pro_type.equals("1")) {
+							Log.i(TAG, "pro_type:" + pro_type + "   --->1");
+							Intent intent = new Intent(ShowZongYiActivity.this,
+									ShowXiangqingMovie.class);
+							intent.putExtra("ID", list.get(position).getMovieID());
+							startActivity(intent);
+//							startActivity();
+						} else if(pro_type.equals("131")) {
+							
+							Intent intent = new Intent(ShowZongYiActivity.this,
+									ShowXiangqingDongman.class);
+							intent.putExtra("ID", list.get(position).getMovieID());
+							startActivity(intent);
+						} else if(pro_type.equals("3")) {
+							
+							Intent intent = new Intent(ShowZongYiActivity.this,
+									ShowXiangqingZongYi.class);
+							intent.putExtra("ID", list.get(position).getMovieID());
+							startActivity(intent);
+						}
+					}
 				}
 
 			}
@@ -359,7 +416,7 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 				beforepostion = position;
 				
 				//缓存
-				int size = zongyiAdapter.getMovieList().size();
+				int size = searchAdapter.getMovieList().size();
 				if(size-1-firstAndLastVisible[1] < StatisticsUtils.CACHE_NUM) {
 					
 					if(isNextPagePossibles[currentListIndex]) {
@@ -495,13 +552,13 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 		TextView movieName = (TextView) firstFloatView.findViewById(R.id.tv_item_layout_name);
 		TextView otherInfo = (TextView) firstFloatView.findViewById(R.id.tv_item_active_layout_other_info);
 		
-		List<MovieItemData> list = zongyiAdapter.getMovieList();
+		List<MovieItemData> list = searchAdapter.getMovieList();
 		if (list != null && !list.isEmpty()) {
 			
 			FrameLayout inFrameLayout = (FrameLayout) firstFloatView.findViewById(R.id.inclue_movie_show_item);
 			ImageView haibaoIv = (ImageView) inFrameLayout.findViewById(R.id.iv_item_layout_haibao);
 			aq.id(haibaoIv).image(
-					list.get(0).getMoviePicUrl(), true, true, 0,
+					list.get(0).getMoviePicUrl(), true, false, 0,
 					R.drawable.post_active);
 			movieName.setText(list.get(0).getMovieName());
 			otherInfo.setText(getString(R.string.zongyi_gengxinzhi) + 
@@ -516,8 +573,8 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 	protected void notifyAdapter(List<MovieItemData> list) {
 		// TODO Auto-generated method stub
 		
-		int height=zongyiAdapter.getHeight()
-				,width = zongyiAdapter.getWidth();
+		int height=searchAdapter.getHeight()
+				,width = searchAdapter.getWidth();
 		
 		if(height !=0 && width !=0) {
 			
@@ -525,7 +582,7 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 			popHeight = height;
 		}
 		
-		zongyiAdapter.setList(list);
+		searchAdapter.setList(list);
 		
 		if(list != null && !list.isEmpty()) {//判断其能否向获取更多数据
 			
@@ -541,12 +598,15 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 		lists[currentListIndex] = list;
 		
 		dinashijuGv.setSelection(0);
-		zongyiAdapter.notifyDataSetChanged();
+		searchAdapter.notifyDataSetChanged();
 		beforeGvView = null;
+		Log.i(TAG, "KEXUE what???????");
 		initFirstFloatView();
 		dinashijuGv.setFocusable(true);
 		dinashijuGv.setSelected(true);
 		isSelectedItem = false;
+		Log.i(TAG, "KEXUE what???????");
+		removeDialog(DIALOG_WAITING);
 		dinashijuGv.requestFocus();
 	}
 
@@ -563,14 +623,10 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 
 		if (tempStr.equals(quanbufenlei)) {
 
-			if(lists[QUAN_FILTER] != null && !lists[QUAN_FILTER].isEmpty()) {
-				
-				notifyAdapter(lists[QUAN_FILTER]);
-			} else {
-				
-				String url2 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL,
-						REBO_ZONGYI, 1 + "", 50 + "");
-				getQuan10Data(url2);
+			currentListIndex = QUANBUFENLEI;
+			if (lists[QUANBUFENLEI] != null && !lists[QUANBUFENLEI].isEmpty()) {
+
+				notifyAdapter(lists[QUANBUFENLEI]);
 			}
 
 			return;
@@ -610,7 +666,7 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 	@Override
 	protected void getFilterData(String url) {
 		// TODO Auto-generated method stub
-		
+		Log.i(TAG, "getFilterData--->KEXUE what???????");
 		getServiceData(url, "initFilerServiceData");
 	}
 
@@ -679,7 +735,7 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 	protected void refreshAdpter(List<MovieItemData> list) {
 		// TODO Auto-generated method stub
 		
-		List<MovieItemData> srcList = zongyiAdapter.getMovieList();
+		List<MovieItemData> srcList = searchAdapter.getMovieList();
 		
 		if(list != null && !list.isEmpty()) {
 			
@@ -697,10 +753,10 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 			isNextPagePossibles[currentListIndex] = false;
 		}
 		
-		zongyiAdapter.setList(srcList);
+		searchAdapter.setList(srcList);
 		lists[currentListIndex] = srcList;
 		
-		zongyiAdapter.notifyDataSetChanged();
+		searchAdapter.notifyDataSetChanged();
 	}
 
 	@Override

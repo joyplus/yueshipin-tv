@@ -61,8 +61,7 @@ public class ItemStateUtils implements JieMianConstant{
 	
 	public static void buttonToFocusState(Context context,Button button) {
 		
-		button.setTextColor(context.getResources().getColor(
-				R.color.text_foucs));
+		button.setTextColor(context.getResources().getColorStateList(R.color.text_color_selector));
 		button.setBackgroundResource(R.drawable.text_drawable_selector);
 	}
 	
@@ -132,6 +131,17 @@ public class ItemStateUtils implements JieMianConstant{
 		return null;
 	}
 	
+	public static void viewToNormal(Context context, View v) {
+		
+		if (v instanceof LinearLayout) {
+			LinearLayout linearLayout = (LinearLayout) v;
+				ItemStateUtils.linearLayoutToPTState(context, linearLayout);
+		} else if (v instanceof Button) {
+			Button button = (Button) v;
+				ItemStateUtils.buttonToPTState(context, button);
+		}
+	}
+	
 	public static void viewOutAnimation(Context context,View v) {
 		
 		ScaleAnimation outScaleAnimation = StatisticsUtils
@@ -177,9 +187,9 @@ public class ItemStateUtils implements JieMianConstant{
 				GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING);
 		v.setBackgroundColor(context.getResources().getColor(
 				R.color.text_active));
-		ScaleAnimation inScaleAnimation = StatisticsUtils.getInScaleAnimation();
-
-		v.startAnimation(inScaleAnimation);
+//		ScaleAnimation inScaleAnimation = StatisticsUtils.getInScaleAnimation();
+//
+//		v.startAnimation(inScaleAnimation);
 	}
 	
 	public static void setGridViewNormalPadding(View v) {

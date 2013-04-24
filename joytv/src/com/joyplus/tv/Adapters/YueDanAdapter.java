@@ -5,6 +5,7 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -20,6 +21,7 @@ import com.joyplus.tv.entity.YueDanInfo2;
 import com.joyplus.tv.utils.JieMianConstant;
 
 public class YueDanAdapter extends BaseAdapter implements JieMianConstant{
+	public static final String TAG = "YueDanAdapter";
 	private int popWidth,popHeight;
 	private List<MovieItemData> movieList = new ArrayList<MovieItemData>();
 
@@ -107,8 +109,62 @@ public class YueDanAdapter extends BaseAdapter implements JieMianConstant{
 			return convertView;
 		}
 
+		Log.i(TAG, "postion:" + position + " " + movieList.get(position).getMovieName());
 		viewItemHodler.nameTv.setText(movieList.get(position).getMovieName());
-		viewItemHodler.otherInfo.setText(movieList.get(position).getNum() + context.getString(R.string.yingpianshu));
+		
+		
+		String num = movieList.get(position).getNum();
+		if(num != null && !num.equals("") ) {
+			
+			viewItemHodler.otherInfo.setText(movieList.get(position).getNum() + context.getString(R.string.yingpianshu));
+		} else {
+			
+			
+			String proType = movieList.get(position).getMovieProType();
+			
+			if(proType != null && !proType.equals("")) {
+				
+				if(proType.equals("1")) {
+					
+					viewItemHodler.scoreTv.setText(movieList.get(position).getMovieScore());
+					String duration = movieList.get(position).getMovieDuration();
+					if(duration != null && !duration.equals("")) {
+						
+						viewItemHodler.otherInfo.setText(duration);
+					}
+				} else if(proType.equals("2") || proType.equals("131")){
+					
+					viewItemHodler.scoreTv.setText(movieList.get(position).getMovieScore());
+					String curEpisode = movieList.get(position).getMovieCurEpisode();
+					String maxEpisode = movieList.get(position).getMovieMaxEpisode();
+					
+					if(maxEpisode != null && !maxEpisode.equals("")) {
+						
+						if(curEpisode == null || curEpisode.equals("0") || 
+								curEpisode.compareTo(maxEpisode) >= 0) {
+							
+							viewItemHodler.otherInfo.setText(
+									maxEpisode + context.getString(R.string.dianshiju_jiquan));
+							} else if(maxEpisode.compareTo(curEpisode) > 0) {
+
+								viewItemHodler.otherInfo.setText(context.getString(R.string.zongyi_gengxinzhi) + 
+										curEpisode);
+						}
+					}
+
+				} else if(proType.equals("3")) {
+					
+					String curEpisode = movieList.get(position).getMovieCurEpisode();
+					if(curEpisode != null && !curEpisode.equals("")) {
+						
+						viewItemHodler.otherInfo.setText(context.getString(R.string.zongyi_gengxinzhi) + 
+								movieList.get(position).getMovieCurEpisode());
+					}
+				}
+			}
+		}
+		
+
 
 		aq.id(viewItemHodler.haibaoIv).image(movieList.get(position).getMoviePicUrl(), 
 				true, true,0, R.drawable.post_normal);

@@ -144,7 +144,7 @@ public class StatisticsUtils implements JieMianConstant,BangDanKey{
 		return url + "?page_num=" + page_num + "&page_size=" + page_size  +"&vod_type="+ vod_type+  "&userId=" + userId;
 	}
 	
-	public static final int CACHE_NUM = 10;
+	public static final int CACHE_NUM = 20;
 	public static final int FIRST_NUM = 30;
 	
 	//TV 全部分类 10
@@ -465,6 +465,39 @@ public class StatisticsUtils implements JieMianConstant,BangDanKey{
 		return StatisticsUtils.getFilterURL(FILTER_URL, (pageNum + 1)+"", CACHE_NUM+"", ZONGYI_TYPE);
 	}
 	
+	//search
+	
+	public static String getSearch_FirstURL(String search) {
+		
+		return StatisticsUtils.getSearchURL(SEARCH_URL,1 + "", FIRST_NUM + "", search);
+	}
+	
+	public static String getSearch_CacheURL(int pageNum,String search) {
+		
+		return StatisticsUtils.getSearchURL(SEARCH_URL,(pageNum + 1) + "", CACHE_NUM + "", search);
+	}
+	
+	//动漫filter
+	public static String getFilter_DongmanFirstURL(String filterSource) {
+		
+		return StatisticsUtils.getFilterURL(FILTER_URL, 1 + "", FIRST_NUM + "",DONGMAN_TYPE) + filterSource;
+	}
+	
+	public static String getFilter_DongmanCacheURL(int pageNum,String filterSource) {
+		
+		return StatisticsUtils.getFilterURL(FILTER_URL, (pageNum + 1) + "", CACHE_NUM + "",DONGMAN_TYPE) + filterSource;
+	}
+	
+	//电影filter
+	public static String getFilter_DianyingFirstURL(String filterSource) {
+		
+		return StatisticsUtils.getFilterURL(FILTER_URL, 1 + "", FIRST_NUM + "",MOVIE_TYPE) + filterSource;
+	}
+	
+	public static String getFilter_DianyingCacheURL(int pageNum,String filterSource) {
+		
+		return StatisticsUtils.getFilterURL(FILTER_URL, (pageNum + 1) + "", CACHE_NUM + "",MOVIE_TYPE) + filterSource;
+	}
 	
 	
 	public static final String YEAR = "&year=";
@@ -656,109 +689,6 @@ public class StatisticsUtils implements JieMianConstant,BangDanKey{
 	
 	public static final String EMPTY ="EMPTY";
 	
-	public static List<MovieItemData> returnFilterMovieSearchJson(String json) throws JsonParseException, JsonMappingException, IOException {
-		
-		if(json == null || json.equals("")) {
-			
-			return new ArrayList<MovieItemData>();
-		}
-		ObjectMapper mapper = new ObjectMapper();
-		
-		ReturnFilterMovieSearch result = mapper.readValue(json.toString(),
-				ReturnFilterMovieSearch.class);
-		
-		List<MovieItemData> list = new ArrayList<MovieItemData>();
-		
-		for (int i = 0; i < result.results.length; i++) {
-
-			MovieItemData movieItemData = new MovieItemData();
-			movieItemData.setMovieName(result.results[i].prod_name);
-			String bigPicUrl = result.results[i].big_prod_pic_url;
-			if (bigPicUrl == null || bigPicUrl.equals("") 
-					|| bigPicUrl.equals(EMPTY)) {
-
-				bigPicUrl = result.results[i].prod_pic_url;
-			}
-			movieItemData.setMoviePicUrl(bigPicUrl);
-			movieItemData.setMovieScore(result.results[i].score);
-			movieItemData.setMovieID(result.results[i].prod_id);
-			movieItemData.setMovieDuration(result.results[i].duration);
-			list.add(movieItemData);
-		}
-		
-		return list;
-		
-	}
-	
-	public static List<MovieItemData> returnTVBangDanListJson(String json) throws JsonParseException, JsonMappingException, IOException {
-		
-		if(json == null || json.equals("")) {
-			
-			return new ArrayList<MovieItemData>();
-		}
-		ObjectMapper mapper = new ObjectMapper();
-		
-		ReturnTVBangDanList result = mapper.readValue(json,
-				ReturnTVBangDanList.class);
-		
-		List<MovieItemData> list = new ArrayList<MovieItemData>();
-		
-		for (int i = 0; i < result.items.length; i++) {
-
-			MovieItemData movieItemData = new MovieItemData();
-			movieItemData.setMovieName(result.items[i].prod_name);
-			String bigPicUrl = result.items[i].big_prod_pic_url;
-			if (bigPicUrl == null || bigPicUrl.equals("")
-					||bigPicUrl.equals(EMPTY)) {
-
-				bigPicUrl = result.items[i].prod_pic_url;
-			}
-			movieItemData.setMoviePicUrl(bigPicUrl);
-			movieItemData.setMovieScore(result.items[i].score);
-			movieItemData.setMovieID(result.items[i].prod_id);
-			movieItemData.setMovieDuration(result.items[i].duration);
-			list.add(movieItemData);
-		}
-		
-		return list;
-		
-	}
-	
-	public static List<MovieItemData> returnTVBangDanList_TVJson(String json) throws JsonParseException, JsonMappingException, IOException {
-		
-		if(json == null || json.equals("")) {
-			
-			return new ArrayList<MovieItemData>();
-		}
-		ObjectMapper mapper = new ObjectMapper();
-		
-		ReturnTVBangDanList result = mapper.readValue(json,
-				ReturnTVBangDanList.class);
-		
-		List<MovieItemData> list = new ArrayList<MovieItemData>();
-		
-		for (int i = 0; i < result.items.length; i++) {
-
-			MovieItemData movieItemData = new MovieItemData();
-			movieItemData.setMovieName(result.items[i].prod_name);
-			String bigPicUrl = result.items[i].big_prod_pic_url;
-			if(bigPicUrl == null || bigPicUrl.equals("")
-					||bigPicUrl.equals(EMPTY)) {
-				
-				bigPicUrl = result.items[i].prod_pic_url;
-			}
-			movieItemData.setMoviePicUrl(bigPicUrl);
-			movieItemData.setMovieScore(result.items[i].score);
-			movieItemData.setMovieID(result.items[i].prod_id);
-			movieItemData.setMovieCurEpisode(result.items[i].cur_episode);
-			movieItemData.setMovieMaxEpisode(result.items[i].max_episode);
-			list.add(movieItemData);
-		}
-		
-		return list;
-		
-	}
-	
 	public static List<MovieItemData> returnFilterMovieSearch_TVJson(String json) throws JsonParseException, JsonMappingException, IOException {
 		
 		if(json == null || json.equals("")) {
@@ -788,6 +718,7 @@ public class StatisticsUtils implements JieMianConstant,BangDanKey{
 			movieItemData.setMovieDuration(result.results[i].duration);
 			movieItemData.setMovieCurEpisode(result.results[i].cur_episode);
 			movieItemData.setMovieMaxEpisode(result.results[i].max_episode);
+			movieItemData.setMovieProType(result.results[i].prod_type);
 			list.add(movieItemData);
 		}
 		
@@ -821,6 +752,7 @@ public class StatisticsUtils implements JieMianConstant,BangDanKey{
 			}
 			movieItemData.setMoviePicUrl(bigPicUrl);
 			movieItemData.setNum(result.tops[i].num);
+			movieItemData.setMovieProType(result.tops[i].prod_type);
 //			yuedanInfo.content = result.tops[i].content;
 			list.add(movieItemData);
 			

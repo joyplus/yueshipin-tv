@@ -61,7 +61,7 @@ public class ShowYueDanListActivity extends AbstractShowActivity{
 	private List<MovieItemData> yuedanList = new ArrayList<MovieItemData>();
 	private List<MovieItemData> filterList = new ArrayList<MovieItemData>();
 	
-	private SearchAdapter yueAdapter;
+	private SearchAdapter searchAdapter;
 	
 	private int beforepostion = 0;
 
@@ -86,10 +86,10 @@ public class ShowYueDanListActivity extends AbstractShowActivity{
 			
 			initActivity();
 			
-			yueAdapter = new SearchAdapter(this,aq);
+			searchAdapter = new SearchAdapter(this,aq);
 
 			yuedanListTv.setText(name);
-			dinashijuGv.setAdapter(yueAdapter);
+			dinashijuGv.setAdapter(searchAdapter);
 			getUnQuanbuData(StatisticsUtils.getTopItemURL(TOP_ITEM_URL, id, 1 + "", 50 + ""));
 			dinashijuGv.setSelected(true);
 			dinashijuGv.requestFocus();
@@ -252,7 +252,7 @@ public class ShowYueDanListActivity extends AbstractShowActivity{
 							int position, long id) {
 						// TODO Auto-generated method stub
 
-						List<MovieItemData> list = yueAdapter.getMovieList();
+						List<MovieItemData> list = searchAdapter.getMovieList();
 						if(list != null && !list.isEmpty()) {
 							String pro_type = list.get(position).getMovieProType();
 							Log.i(TAG, "pro_type:" + pro_type);
@@ -264,6 +264,7 @@ public class ShowYueDanListActivity extends AbstractShowActivity{
 											ShowXiangqingTv.class);
 									intent.putExtra("ID", list.get(position).getMovieID());
 									startActivity(intent);
+//									startActivity();
 								} else if(pro_type.equals("1")) {
 									Log.i(TAG, "pro_type:" + pro_type + "   --->1");
 									Intent intent = new Intent(ShowYueDanListActivity.this,
@@ -271,14 +272,19 @@ public class ShowYueDanListActivity extends AbstractShowActivity{
 									intent.putExtra("ID", list.get(position).getMovieID());
 									startActivity(intent);
 //									startActivity();
-								} 
-//								else if(pro_type.equals("131")) {
-//									
-//									intent.putExtra("ID", movieList.get(position).getProd_id());
-//									startActivity(intent);
-//									startActivity(new Intent(ShowYueDanListActivity.this,
-//											ShowXiangqingDongman.class));
-//								}
+								} else if(pro_type.equals("131")) {
+									
+									Intent intent = new Intent(ShowYueDanListActivity.this,
+											ShowXiangqingDongman.class);
+									intent.putExtra("ID", list.get(position).getMovieID());
+									startActivity(intent);
+								} else if(pro_type.equals("3")) {
+									
+									Intent intent = new Intent(ShowYueDanListActivity.this,
+											ShowXiangqingZongYi.class);
+									intent.putExtra("ID", list.get(position).getMovieID());
+									startActivity(intent);
+								}
 							}
 						}
 
@@ -480,7 +486,7 @@ public class ShowYueDanListActivity extends AbstractShowActivity{
 		TextView movieName = (TextView) firstFloatView.findViewById(R.id.tv_item_layout_name);
 		TextView movieScore = (TextView) firstFloatView.findViewById(R.id.tv_item_layout_score);
 		
-		List<MovieItemData> list = yueAdapter.getMovieList();
+		List<MovieItemData> list = searchAdapter.getMovieList();
 		if (list != null && !list.isEmpty()) {
 			
 			FrameLayout inFrameLayout = (FrameLayout) firstFloatView.findViewById(R.id.inclue_movie_show_item);
@@ -530,8 +536,8 @@ public class ShowYueDanListActivity extends AbstractShowActivity{
 	protected void notifyAdapter(List<MovieItemData> list) {
 		// TODO Auto-generated method stub
 		
-		int height=yueAdapter.getHeight()
-				,width = yueAdapter.getWidth();
+		int height=searchAdapter.getHeight()
+				,width = searchAdapter.getWidth();
 		
 		if(height !=0 && width !=0) {
 			
@@ -539,10 +545,10 @@ public class ShowYueDanListActivity extends AbstractShowActivity{
 			popHeight = height;
 		}
 		
-		yueAdapter.setList(list);
+		searchAdapter.setList(list);
 		
 		dinashijuGv.setSelection(0);
-		yueAdapter.notifyDataSetChanged();
+		searchAdapter.notifyDataSetChanged();
 		beforeGvView = null;
 		initFirstFloatView();
 		dinashijuGv.setFocusable(true);
@@ -657,7 +663,7 @@ public class ShowYueDanListActivity extends AbstractShowActivity{
 		try {
 			Log.d(TAG, json.toString());
 			StatisticsUtils.clearList(filterList);
-			filterList = StatisticsUtils.returnFilterMovieSearchJson(json.toString());
+			filterList = StatisticsUtils.returnFilterMovieSearch_TVJson(json.toString());
 			
 			notifyAdapter(filterList);
 		} catch (JsonParseException e) {

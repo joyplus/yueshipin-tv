@@ -6,8 +6,11 @@ import java.util.List;
 
 import org.json.JSONObject;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.DialogInterface.OnCancelListener;
 import android.os.Bundle;
 import android.text.Editable;
 import android.util.Log;
@@ -29,6 +32,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.joyplus.tv.Adapters.YueDanAdapter;
 import com.joyplus.tv.entity.MovieItemData;
 import com.joyplus.tv.ui.MyMovieGridView;
+import com.joyplus.tv.ui.WaitingDialog;
 import com.joyplus.tv.utils.ItemStateUtils;
 
 public class ShowYueDanActivity extends AbstractShowActivity {
@@ -40,6 +44,8 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 	private static final int DIANSHI = 5;
 
 	public static final String TAG = "ShowYueDanActivity";
+	private static final int DIALOG_WAITING = 0;
+	
 	private AQuery aq;
 	private App app;
 
@@ -71,9 +77,12 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 
 	private int defalutYuedan = 0;
 
-	private YueDanAdapter yueDanAdapter;
+	private YueDanAdapter searchAdapter;
 
 	private int beforepostion = 0;
+	
+	private String search;
+	private String filterSource;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -99,8 +108,8 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 
 		initActivity();
 
-		yueDanAdapter = new YueDanAdapter(this,aq);
-		dinashijuGv.setAdapter(yueDanAdapter);
+		searchAdapter = new YueDanAdapter(this,aq);
+		dinashijuGv.setAdapter(searchAdapter);
 
 		if (defalutYuedan == DIANYING_YUEDAN) {
 
@@ -156,6 +165,28 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 		aq.id(R.id.iv_head_user_icon).image(app.getUserInfo().getUserAvatarUrl(),false,true,0,R.drawable.avatar);
 		aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
 	}
+	
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		// TODO Auto-generated method stub
+		switch (id) {
+		case DIALOG_WAITING:
+			WaitingDialog dlg = new WaitingDialog(this);
+			dlg.show();
+			dlg.setOnCancelListener(new OnCancelListener() {
+				
+				@Override
+				public void onCancel(DialogInterface dialog) {
+					// TODO Auto-generated method stub
+					finish();
+				}
+			});
+			dlg.setDialogWindowStyle();
+			return dlg;
+		default:
+			return super.onCreateDialog(id);
+		}
+	}
 
 	@Override
 	public void onClick(View v) {
@@ -187,7 +218,7 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 				
 				notifyAdapter(lists[currentListIndex]);
 			} else {
-				
+				showDialog(DIALOG_WAITING);
 				getUnQuanbuData(url1);
 			}
 			break;
@@ -199,7 +230,7 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 				
 				notifyAdapter(lists[currentListIndex]);
 			} else {
-				
+				showDialog(DIALOG_WAITING);
 				getUnQuanbuData(url2);
 			}
 			break;
@@ -304,18 +335,40 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 					public void onItemClick(AdapterView<?> parent, View view,
 							int position, long id) {
 						// TODO Auto-generated method stub
-						List<MovieItemData> list = yueDanAdapter.getMovieList();
-						if (list != null && !list.isEmpty()) {
-
-							Intent intent = new Intent(ShowYueDanActivity.this,
-									ShowYueDanListActivity.class);
-							Bundle bundle = new Bundle();
-							bundle.putString("ID", list.get(position)
-									.getMovieID());
-							bundle.putString("NAME", list.get(position)
-									.getMovieName());
-							intent.putExtras(bundle);
-							startActivity(intent);
+						List<MovieItemData> list = searchAdapter.getMovieList();
+						if(list != null && !list.isEmpty()) {
+							String pro_type = list.get(position).getMovieProType();
+							Log.i(TAG, "pro_type:" + pro_type);
+							if(pro_type != null && !pro_type.equals("")) {
+								
+								if(pro_type.equals("2")) {
+									Log.i(TAG, "pro_type:" + pro_type + "   --->2");
+									Intent intent = new Intent(ShowYueDanActivity.this,
+											ShowXiangqingTv.class);
+									intent.putExtra("ID", list.get(position).getMovieID());
+									startActivity(intent);
+//									startActivity();
+								} else if(pro_type.equals("1")) {
+									Log.i(TAG, "pro_type:" + pro_type + "   --->1");
+									Intent intent = new Intent(ShowYueDanActivity.this,
+											ShowXiangqingMovie.class);
+									intent.putExtra("ID", list.get(position).getMovieID());
+									startActivity(intent);
+//									startActivity();
+								} else if(pro_type.equals("131")) {
+									
+									Intent intent = new Intent(ShowYueDanActivity.this,
+											ShowXiangqingDongman.class);
+									intent.putExtra("ID", list.get(position).getMovieID());
+									startActivity(intent);
+								} else if(pro_type.equals("3")) {
+									
+									Intent intent = new Intent(ShowYueDanActivity.this,
+											ShowXiangqingZongYi.class);
+									intent.putExtra("ID", list.get(position).getMovieID());
+									startActivity(intent);
+								}
+							}
 						}
 
 					}
@@ -409,7 +462,7 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 						beforepostion = position;
 						
 						//缓存
-						int size = yueDanAdapter.getMovieList().size();
+						int size = searchAdapter.getMovieList().size();
 						if(size-1-firstAndLastVisible[1] < StatisticsUtils.CACHE_NUM) {
 							
 							if(isNextPagePossibles[currentListIndex]) {
@@ -470,11 +523,18 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 
 				Editable editable = searchEt.getText();
 				String searchStr = editable.toString();
+				searchEt.setText("");
+				dinashijuGv.setNextFocusForwardId(searchEt.getId());//
+				showDialog(DIALOG_WAITING);
+				ItemStateUtils.viewToNormal(getApplicationContext(), activeView);
+				activeView = searchEt;
 
 				if (searchStr != null && !searchStr.equals("")) {
 
-					String url = StatisticsUtils.getSearchURL(SEARCH_URL,
-							1 + "", 30 + "", searchStr);
+					search = searchStr;
+					StatisticsUtils.clearList(lists[SEARCH]);
+					currentListIndex = SEARCH;
+					String url = StatisticsUtils.getSearch_FirstURL(searchStr);
 					getFilterData(url);
 				}
 			}
@@ -557,7 +617,7 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 		TextView movieScore = (TextView) firstFloatView
 				.findViewById(R.id.tv_item_layout_other_info);
 
-		List<MovieItemData> list = yueDanAdapter.getMovieList();
+		List<MovieItemData> list = searchAdapter.getMovieList();
 		if (list != null && !list.isEmpty()) {
 
 			FrameLayout inFrameLayout = (FrameLayout) firstFloatView
@@ -579,7 +639,7 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 	protected void notifyAdapter(List<MovieItemData> list) {
 		// TODO Auto-generated method stub
 
-		int height = yueDanAdapter.getHeight(), width = yueDanAdapter
+		int height = searchAdapter.getHeight(), width = searchAdapter
 				.getWidth();
 
 		if (height != 0 && width != 0) {
@@ -588,7 +648,7 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 			popHeight = height;
 		}
 
-		yueDanAdapter.setList(list);
+		searchAdapter.setList(list);
 		
 		if(list != null && !list.isEmpty() && currentListIndex != QUANBUFENLEI) {//判断其能否向获取更多数据
 			
@@ -604,12 +664,13 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 		lists[currentListIndex] = list;
 
 		dinashijuGv.setSelection(0);
-		yueDanAdapter.notifyDataSetChanged();
+		searchAdapter.notifyDataSetChanged();
 		beforeGvView = null;
 		initFirstFloatView();
 		dinashijuGv.setFocusable(true);
 		dinashijuGv.setSelected(true);
 		isSelectedItem = false;
+		removeDialog(DIALOG_WAITING);
 		dinashijuGv.requestFocus();
 	}
 
@@ -729,7 +790,7 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 	protected void refreshAdpter(List<MovieItemData> list) {
 		// TODO Auto-generated method stub
 		
-		List<MovieItemData> srcList = yueDanAdapter.getMovieList();
+		List<MovieItemData> srcList = searchAdapter.getMovieList();
 		
 		if(list != null && !list.isEmpty()) {
 			
@@ -746,10 +807,10 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 				isNextPagePossibles[currentListIndex] = false;
 			}
 			
-			yueDanAdapter.setList(srcList);
+			searchAdapter.setList(srcList);
 			lists[currentListIndex] = srcList;
 			
-			yueDanAdapter.notifyDataSetChanged();
+			searchAdapter.notifyDataSetChanged();
 		}
 		
 	}
@@ -785,6 +846,38 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 		// TODO Auto-generated method stub
 		getServiceData(url, "initMoreFilerServiceData");
 	}
+	
+
+	protected void getMoreTopData(String url) {
+		// TODO Auto-generated method stub
+		getServiceData(url, "initMoreTopServiceData");
+	}
+	
+
+	public void initMoreTopServiceData(String url, JSONObject json,
+			AjaxStatus status) {
+		// TODO Auto-generated method stub
+		if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
+
+			app.MyToast(aq.getContext(),
+					getResources().getString(R.string.networknotwork));
+			return;
+		}
+
+		try {
+			Log.d(TAG, json.toString());
+			refreshAdpter(StatisticsUtils.returnTopsJson(json.toString()));
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 	@Override
 	public void initMoreBangDanServiceData(String url, JSONObject json,
@@ -813,13 +906,13 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 			
 			break;
 		case SEARCH:
-			
+			getMoreFilterData(StatisticsUtils.getSearch_CacheURL(pageNum, search));
 			break;
 		case DIANYING:
-			getMoreFilterData(StatisticsUtils.getYueDan_DianyingCacheURL(pageNum));
+			getMoreTopData(StatisticsUtils.getYueDan_DianyingCacheURL(pageNum));
 			break;
 		case DIANSHI:
-			getMoreFilterData(StatisticsUtils.getYueDan_DianshiCacheURL(pageNum));
+			getMoreTopData(StatisticsUtils.getYueDan_DianshiCacheURL(pageNum));
 			break;
 
 		default:
