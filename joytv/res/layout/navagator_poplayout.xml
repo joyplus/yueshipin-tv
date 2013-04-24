@@ -15,7 +15,7 @@
            android:layout_marginLeft="250dp"
            android:layout_alignParentBottom="true"
            android:id="@+id/row_highlight_backgroun"
-           android:background="#262d38">
+           android:background="@color/btn_reset">
            
        </LinearLayout>
        <LinearLayout android:layout_width="fill_parent"
@@ -129,6 +129,7 @@
        android:layout_alignLeft="@+id/row_highlight_backgroun"
        android:background="@drawable/bg_button_reset_selector"
        android:textSize="20sp"
+       android:textColor="@color/reset_btn_text_color_selector"
        android:id="@+id/resetButton"
        android:text="重置" />
 

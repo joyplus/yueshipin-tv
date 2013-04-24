@@ -49,7 +49,10 @@
     <color name="hot_content_notice">#f0f0f0</color>
     <color name="hot_content_content">#a3a5a6</color>
     <color name="btn_reset">#262d38</color>
-
+	<color name="btn_reset_text_unenable">#999999</color>
+	<color name="btn_reset_text_nomal">#00aeff</color>
+	<color name="btn_reset_text_fouces">#ffffff</color>
+	<color name="btn_reset_text_pressed">#ffffff</color>
     <!-- Yu -->
     <!-- Yu -->
 

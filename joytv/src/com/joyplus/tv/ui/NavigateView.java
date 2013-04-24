@@ -1,6 +1,5 @@
 package com.joyplus.tv.ui;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -102,10 +101,12 @@ public class NavigateView extends RelativeLayout implements OnItemSelectedListen
 		switch (selectedIndex) {
 		case 1:
 			if(isUp){
-				resetButton.requestFocus();
-				highlightRect.setVisibility(View.INVISIBLE);
-				selectedTextView1.setTextColor(getContext().getResources().getColor(R.color.common_title_selected));
-				highlightLayout.setBackgroundDrawable(null);
+				if(resetButton.isEnabled()){
+					resetButton.requestFocus();
+					highlightRect.setVisibility(View.INVISIBLE);
+					selectedTextView1.setTextColor(getContext().getResources().getColor(R.color.common_title_selected));
+					highlightLayout.setBackgroundDrawable(null);
+				}
 			}else{
 				gallery2.requestFocus();
 				selectedIndex = 2;
@@ -214,28 +215,31 @@ public class NavigateView extends RelativeLayout implements OnItemSelectedListen
 					break;
 				case KeyEvent.KEYCODE_DPAD_CENTER:
 				case KeyEvent.KEYCODE_ENTER:
-					gallery1.setSelection(0);
-					gallery2.setSelection(0);
-					gallery3.setSelection(0);
-					gallery1.setVisibility(View.INVISIBLE);
-					gallery2.setVisibility(View.INVISIBLE);
-					gallery3.setVisibility(View.INVISIBLE);
-					gallery1.onFling(null, null, -1, 0);
-					gallery2.onFling(null, null, -1, 0);
-					gallery3.onFling(null, null, -1, 0);
-					handler.postDelayed(new Runnable() {
-						
-						@Override
-						public void run() {
-							// TODO Auto-generated method stub
-							gallery1.setVisibility(View.VISIBLE);
-							gallery2.setVisibility(View.VISIBLE);
-							gallery3.setVisibility(View.VISIBLE);
-						}
-					}, 200);
-//					selectedTextView1.setTextColor(Color.WHITE);
-					highlightLayout.setBackgroundResource(R.drawable.menubg);
-					highlightRect.setVisibility(View.VISIBLE);
+					if(event.getAction() == KeyEvent.ACTION_UP){
+						gallery1.setSelection(0);
+						gallery2.setSelection(0);
+						gallery3.setSelection(0);
+						gallery1.setVisibility(View.INVISIBLE);
+						gallery2.setVisibility(View.INVISIBLE);
+						gallery3.setVisibility(View.INVISIBLE);
+						gallery1.onFling(null, null, -1, 0);
+						gallery2.onFling(null, null, -1, 0);
+						gallery3.onFling(null, null, -1, 0);
+						handler.postDelayed(new Runnable() {
+							
+							@Override
+							public void run() {
+								// TODO Auto-generated method stub
+								gallery1.setVisibility(View.VISIBLE);
+								gallery2.setVisibility(View.VISIBLE);
+								gallery3.setVisibility(View.VISIBLE);
+							}
+						}, 200);
+//						selectedTextView1.setTextColor(Color.WHITE);
+						gallery1.requestFocus();
+						highlightLayout.setBackgroundResource(R.drawable.menubg);
+						highlightRect.setVisibility(View.VISIBLE);
+					}
 					break;
 				default:
 					break;
@@ -319,6 +323,7 @@ public class NavigateView extends RelativeLayout implements OnItemSelectedListen
 		// TODO Auto-generated method stub
 		if(gallery1.getSelectedItemPosition()!=0||gallery2.getSelectedItemPosition()!=0||gallery3.getSelectedItemPosition()!=0){
 			all.setVisibility(View.GONE);
+			resetButton.setEnabled(true);
 		}
 		switch (arg0.getId()) {
 		case R.id.gallery1:
@@ -439,6 +444,7 @@ public class NavigateView extends RelativeLayout implements OnItemSelectedListen
 		}
 		if(gallery1.getSelectedItemPosition()==0&&gallery2.getSelectedItemPosition()==0&&gallery3.getSelectedItemPosition()==0){
 			all.setVisibility(View.VISIBLE);
+			resetButton.setEnabled(false);
 		}
 	}
 	
