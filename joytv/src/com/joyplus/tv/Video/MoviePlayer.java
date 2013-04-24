@@ -211,14 +211,15 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		// When the user touches the screen or uses some hard key, the framework
 		// will change system ui visibility from invisible to visible. We show
 		// the media control at this point.
-//		mVideoView
-//				.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
-//					public void onSystemUiVisibilityChange(int visibility) {
-//						if ((visibility & View.SYSTEM_UI_FLAG_HIDE_NAVIGATION) == 0) {
-//							mController.show();
-//						}
-//					}
-//				});
+		// mVideoView
+		// .setOnSystemUiVisibilityChangeListener(new
+		// View.OnSystemUiVisibilityChangeListener() {
+		// public void onSystemUiVisibilityChange(int visibility) {
+		// if ((visibility & View.SYSTEM_UI_FLAG_HIDE_NAVIGATION) == 0) {
+		// mController.show();
+		// }
+		// }
+		// });
 
 		Intent i = new Intent(SERVICECMD);
 		i.putExtra(CMDNAME, CMDPAUSE);
@@ -478,12 +479,12 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 
 	// Below are key events passed from MovieActivity.
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		
+
 		// Some headsets will fire off 7-10 events on a single click
-		if (event.getRepeatCount() > 0) { 
+		if (event.getRepeatCount() > 0) {
 			return isMediaKey(keyCode);
 		}
-//		Toast.makeText(mContext, Integer.toString(keyCode),100).show();
+		// Toast.makeText(mContext, Integer.toString(keyCode),100).show();
 		if (JUMP_TIME_TIMES != 0 && !isFastForwardKey(keyCode)) // 快进模式才能按的键
 			return true;
 
@@ -571,7 +572,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		case KeyEvent.KEYCODE_ENTER:
 			if (JUMP_TIME_TIMES != 0) {// 快进模式
 				mDragging = false;
-				if(JUMP_TIME != totalTime)
+				if (JUMP_TIME != totalTime)
 					mVideoView.seekTo(JUMP_TIME);
 				JUMP_TIME = 0;
 				JUMP_TIME_TIMES = 0;
@@ -590,7 +591,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 				} else {
 					playVideo();
 				}
-				
+
 			}
 
 			return true;
@@ -603,7 +604,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 				mHandler.removeCallbacks(mMediaFastForwardRunnable);
 				mController.hideTimerBar();
 				mController.HidingTimes();
-			}else {
+			} else {
 				if (mController.isHidden()) {
 					mController.hideVolume();
 					mController.show();
@@ -612,7 +613,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 					pauseVideo();
 					mController.focusLayoutControl(0);
 					CURRENT_KEY = 0;
-				} 
+				}
 			}
 			return true;
 		case KeyEvent.KEYCODE_MEDIA_PLAY:
@@ -629,10 +630,10 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 					mController.hideVolume();
 					mController.show();
 				}
-				if (!mVideoView.isPlaying()){
+				if (!mVideoView.isPlaying()) {
 					playVideo();
 				}
-				
+
 			}
 			return true;
 		case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
@@ -645,7 +646,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 			return true;
 		case KeyEvent.KEYCODE_BACK:
 			currentKeyEvent = KeyEvent.KEYCODE_BACK;
-			 if (JUMP_TIME_TIMES != 0) {// 快进模式
+			if (JUMP_TIME_TIMES != 0) {// 快进模式
 				mDragging = false;
 				JUMP_TIME = 0;
 				JUMP_TIME_TIMES = 0;
@@ -653,9 +654,9 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 				mController.hideTimerBar();
 				mController.HidingTimes();
 				return true;
-			}else if (prod_type != 1 ) {
-				//没有加载完就返回，bug
-				if(totalTime <= 0)
+			} else if (prod_type != 1) {
+				// 没有加载完就返回，bug
+				if (totalTime <= 0)
 					return false;
 				if (mVideoView.isPlaying()) {
 					pauseVideo();
@@ -671,9 +672,11 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		}
 		return false;
 	}
-	public int getCurrentKeyEvent(){
+
+	public int getCurrentKeyEvent() {
 		return currentKeyEvent;
 	}
+
 	private void OnMediaRewind() {
 		if (JUMP_TIME_TIMES > 1)
 			JUMP_TIME_TIMES = 1;
@@ -715,9 +718,9 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 			JUMP_TIME_TIMES = 1;
 		else
 			JUMP_TIME_TIMES++;
-		
+
 		mController.hide();
-		
+
 		mDragging = true;
 		if (!mShowing) {
 			mController.showTimerBar();
@@ -740,21 +743,21 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 	}
 
 	private final Runnable mMediaFastForwardRunnable = new Runnable() {
-		int[] mTimes = { 10000, 30000, 3 * 60000 };
+		int[] mTimes = { 1000, 333, 55 };
 
 		public void run() {
 
 			if (JUMP_TIME_TIMES < 0) { // 快退模式
-				if (JUMP_TIME - mTimes[Math.abs(JUMP_TIME_TIMES) - 1] < 0)
-					JUMP_TIME= 0;
+				if (JUMP_TIME - 10000 < 0)
+					JUMP_TIME = 0;
 				else
 					JUMP_TIME = JUMP_TIME
-							- mTimes[Math.abs(JUMP_TIME_TIMES) - 1];
-			} else if (JUMP_TIME_TIMES > 0) {
-				if ((JUMP_TIME + mTimes[JUMP_TIME_TIMES - 1]) >= totalTime)
+							- 10000;
+			} else if (JUMP_TIME_TIMES > 0) {// 快进模式
+				if (JUMP_TIME + 10000 >= totalTime)
 					JUMP_TIME = totalTime;
 				else
-					JUMP_TIME = JUMP_TIME + mTimes[JUMP_TIME_TIMES - 1];
+					JUMP_TIME = JUMP_TIME + 10000;
 			}
 			RelativeLayout.LayoutParams parms = new RelativeLayout.LayoutParams(
 					RelativeLayout.LayoutParams.WRAP_CONTENT,
@@ -779,7 +782,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 			sb.setProgress(JUMP_TIME);
 
 			// Fun_downloadrate();
-			mHandler.postDelayed(mMediaFastForwardRunnable, 1000);
+			mHandler.postDelayed(mMediaFastForwardRunnable, mTimes[JUMP_TIME_TIMES-1]);
 		}
 	};
 
