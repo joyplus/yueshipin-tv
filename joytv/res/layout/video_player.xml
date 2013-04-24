@@ -151,7 +151,7 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
             android:layout_marginBottom="18dp"
-            android:layout_marginRight="20dp"
+            android:layout_marginRight="40dp"
             android:text="01:00"
             android:textColor="@color/white"
             android:textSize="20sp" />
@@ -300,10 +300,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="10dp"
                 android:text="00:00"
                 android:textColor="@color/white"
-                android:textSize="20sp" />
+                android:textSize="22sp" />
         </RelativeLayout>
 
         <RelativeLayout

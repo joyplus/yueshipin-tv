@@ -280,6 +280,7 @@ public class VideoPlayerActivity extends Activity {
 			try {
 				// woof is "00000",now "20024",by yyc
 				if (json.getString("res_code").trim().equalsIgnoreCase("00000")) {
+					finish();
 					app.MyToast(this, "收藏成功!");
 				} else
 					app.MyToast(this, "已收藏!");
