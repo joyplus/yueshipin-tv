@@ -601,13 +601,13 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 		searchAdapter.notifyDataSetChanged();
 		beforeGvView = null;
 		Log.i(TAG, "KEXUE what???????");
-		initFirstFloatView();
 		dinashijuGv.setFocusable(true);
 		dinashijuGv.setSelected(true);
 		isSelectedItem = false;
 		Log.i(TAG, "KEXUE what???????");
 		removeDialog(DIALOG_WAITING);
 		dinashijuGv.requestFocus();
+		initFirstFloatView();
 	}
 
 	@Override
