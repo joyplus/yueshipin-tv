@@ -719,6 +719,13 @@ public class StatisticsUtils implements JieMianConstant,BangDanKey{
 			movieItemData.setMovieCurEpisode(result.results[i].cur_episode);
 			movieItemData.setMovieMaxEpisode(result.results[i].max_episode);
 			movieItemData.setMovieProType(result.results[i].prod_type);
+			
+			movieItemData.setStars(result.results[i].star);
+			movieItemData.setDirectors(result.results[i].director);
+			movieItemData.setSummary(result.results[i].prod_sumary);
+			movieItemData.setSupport_num(result.results[i].support_num);
+			movieItemData.setFavority_num(result.results[i].favority_num);
+			movieItemData.setDefinition(result.results[i].definition);
 			list.add(movieItemData);
 		}
 		
@@ -790,6 +797,12 @@ public class StatisticsUtils implements JieMianConstant,BangDanKey{
 			movieItemData.setMovieCurEpisode(result.items[i].cur_episode);
 			movieItemData.setMovieMaxEpisode(result.items[i].max_episode);
 			movieItemData.setMovieProType(result.items[i].prod_type);
+			
+			movieItemData.setStars(result.items[i].stars);
+			movieItemData.setDirectors(result.items[i].directors);
+			movieItemData.setSupport_num(result.items[i].support_num);
+			movieItemData.setFavority_num(result.items[i].favority_num);
+			
 			list.add(movieItemData);
 		}
 		

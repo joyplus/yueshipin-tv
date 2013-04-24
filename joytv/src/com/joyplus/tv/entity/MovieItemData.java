@@ -17,6 +17,60 @@ public class MovieItemData {
 	private String movieDuration;
 	private String movieProType;
 	private String num;
+	public String getStars() {
+		return stars;
+	}
+
+	public void setStars(String stars) {
+		this.stars = stars;
+	}
+
+	public String getDirectors() {
+		return directors;
+	}
+
+	public void setDirectors(String directors) {
+		this.directors = directors;
+	}
+
+	public String getSummary() {
+		return summary;
+	}
+
+	public void setSummary(String summary) {
+		this.summary = summary;
+	}
+
+	public String getSupport_num() {
+		return support_num;
+	}
+
+	public void setSupport_num(String support_num) {
+		this.support_num = support_num;
+	}
+
+	public String getFavority_num() {
+		return favority_num;
+	}
+
+	public void setFavority_num(String favority_num) {
+		this.favority_num = favority_num;
+	}
+
+	public String getDefinition() {
+		return definition;
+	}
+
+	public void setDefinition(String definition) {
+		this.definition = definition;
+	}
+
+	private String stars;
+	private String directors;
+	private String summary;
+	private String support_num;
+	private String favority_num;
+	private String definition;
 
 	public String getNum() {
 		return num;

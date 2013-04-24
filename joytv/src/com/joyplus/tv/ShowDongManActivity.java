@@ -433,34 +433,38 @@ public class ShowDongManActivity extends AbstractShowAddShouCangActivity {
 					String pro_type = list.get(position).getMovieProType();
 					Log.i(TAG, "pro_type:" + pro_type);
 					if(pro_type != null && !pro_type.equals("")) {
-						
+						Intent intent = new Intent();
 						if(pro_type.equals("2")) {
 							Log.i(TAG, "pro_type:" + pro_type + "   --->2");
-							Intent intent = new Intent(ShowDongManActivity.this,
-									ShowXiangqingTv.class);
+							intent.setClass(ShowDongManActivity.this, ShowXiangqingDongman.class);
 							intent.putExtra("ID", list.get(position).getMovieID());
-							startActivity(intent);
-//							startActivity();
 						} else if(pro_type.equals("1")) {
 							Log.i(TAG, "pro_type:" + pro_type + "   --->1");
-							Intent intent = new Intent(ShowDongManActivity.this,
+							intent.setClass(ShowDongManActivity.this,
 									ShowXiangqingMovie.class);
-							intent.putExtra("ID", list.get(position).getMovieID());
-							startActivity(intent);
-//							startActivity();
 						} else if(pro_type.equals("131")) {
 							
-							Intent intent = new Intent(ShowDongManActivity.this,
+							intent.setClass(ShowDongManActivity.this,
 									ShowXiangqingDongman.class);
-							intent.putExtra("ID", list.get(position).getMovieID());
-							startActivity(intent);
 						} else if(pro_type.equals("3")) {
 							
-							Intent intent = new Intent(ShowDongManActivity.this,
+							intent.setClass(ShowDongManActivity.this,
 									ShowXiangqingZongYi.class);
-							intent.putExtra("ID", list.get(position).getMovieID());
-							startActivity(intent);
 						}
+						
+						intent.putExtra("ID", list.get(position).getMovieID());
+						
+						intent.putExtra("prod_url", list.get(position).getMoviePicUrl());
+						intent.putExtra("prod_name", list.get(position).getMovieName());
+						intent.putExtra("stars", list.get(position).getStars());
+						intent.putExtra("directors", list.get(position).getDirectors());
+						intent.putExtra("summary", list.get(position).getSummary());
+						intent.putExtra("support_num", list.get(position).getSupport_num());
+						intent.putExtra("favority_num", list.get(position).getFavority_num());
+						intent.putExtra("definition", list.get(position).getDefinition());
+						intent.putExtra("score", list.get(position).getMovieScore());
+						startActivity(intent);
+						
 					}
 				}
 			}

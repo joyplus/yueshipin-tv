@@ -99,9 +99,9 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 		
 		showDialog(DIALOG_WAITING);
 		getFilterData(StatisticsUtils.getZongyi_QuanAllFirstURL());
-		dinashijuGv.setSelected(true);
-		dinashijuGv.requestFocus();
-		dinashijuGv.setSelection(0);
+//		dinashijuGv.setSelected(true);
+//		dinashijuGv.requestFocus();
+//		dinashijuGv.setSelection(0);
 	}
 	
 	@Override
@@ -303,34 +303,38 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 					String pro_type = list.get(position).getMovieProType();
 					Log.i(TAG, "pro_type:" + pro_type);
 					if(pro_type != null && !pro_type.equals("")) {
-						
+						Intent intent = new Intent();
 						if(pro_type.equals("2")) {
 							Log.i(TAG, "pro_type:" + pro_type + "   --->2");
-							Intent intent = new Intent(ShowZongYiActivity.this,
-									ShowXiangqingTv.class);
+							intent.setClass(ShowZongYiActivity.this, ShowXiangqingDongman.class);
 							intent.putExtra("ID", list.get(position).getMovieID());
-							startActivity(intent);
-//							startActivity();
 						} else if(pro_type.equals("1")) {
 							Log.i(TAG, "pro_type:" + pro_type + "   --->1");
-							Intent intent = new Intent(ShowZongYiActivity.this,
+							intent.setClass(ShowZongYiActivity.this,
 									ShowXiangqingMovie.class);
-							intent.putExtra("ID", list.get(position).getMovieID());
-							startActivity(intent);
-//							startActivity();
 						} else if(pro_type.equals("131")) {
 							
-							Intent intent = new Intent(ShowZongYiActivity.this,
+							intent.setClass(ShowZongYiActivity.this,
 									ShowXiangqingDongman.class);
-							intent.putExtra("ID", list.get(position).getMovieID());
-							startActivity(intent);
 						} else if(pro_type.equals("3")) {
 							
-							Intent intent = new Intent(ShowZongYiActivity.this,
+							intent.setClass(ShowZongYiActivity.this,
 									ShowXiangqingZongYi.class);
-							intent.putExtra("ID", list.get(position).getMovieID());
-							startActivity(intent);
 						}
+						
+						intent.putExtra("ID", list.get(position).getMovieID());
+						
+						intent.putExtra("prod_url", list.get(position).getMoviePicUrl());
+						intent.putExtra("prod_name", list.get(position).getMovieName());
+						intent.putExtra("stars", list.get(position).getStars());
+						intent.putExtra("directors", list.get(position).getDirectors());
+						intent.putExtra("summary", list.get(position).getSummary());
+						intent.putExtra("support_num", list.get(position).getSupport_num());
+						intent.putExtra("favority_num", list.get(position).getFavority_num());
+						intent.putExtra("definition", list.get(position).getDefinition());
+						intent.putExtra("score", list.get(position).getMovieScore());
+						startActivity(intent);
+						
 					}
 				}
 
@@ -600,14 +604,11 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 		dinashijuGv.setSelection(0);
 		searchAdapter.notifyDataSetChanged();
 		beforeGvView = null;
-		Log.i(TAG, "KEXUE what???????");
 		dinashijuGv.setFocusable(true);
 		dinashijuGv.setSelected(true);
 		isSelectedItem = false;
-		Log.i(TAG, "KEXUE what???????");
 		removeDialog(DIALOG_WAITING);
 		dinashijuGv.requestFocus();
-		initFirstFloatView();
 	}
 
 	@Override
