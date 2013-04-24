@@ -710,4 +710,10 @@ public class ShowYueDanListActivity extends AbstractShowActivity{
 		
 	}
 
+	@Override
+	protected void filterPopWindowShow() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

@@ -147,44 +147,10 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 				activeView = mFenLeiBtn;
 			}
 			
-			if(v.getId() == R.id.bt_quanbufenlei) {
-				
-				if(popupWindow ==null){
-					NavigateView view = new NavigateView(this);
-					int [] location = new int[2];
-					mFenLeiBtn.getLocationOnScreen(location);
-					view.Init(getResources().getStringArray(R.array.diqu_zongyi_fenlei),
-							getResources().getStringArray(R.array.leixing_zongyi_fenlei), 
-							getResources().getStringArray(R.array.shijian_dianying_fenlei), 
-							location[0], 
-							location[1],
-							mFenLeiBtn.getWidth(), 
-							mFenLeiBtn.getHeight(),
-							new OnResultListener() {
-								
-								@Override
-								public void onResult(View v, boolean isBack, String[] choice) {
-									// TODO Auto-generated method stub
-									if(isBack){
-										popupWindow.dismiss();
-									}else{
-										if(popupWindow.isShowing()){
-											popupWindow.dismiss();
-											Toast.makeText(ShowZongYiActivity.this, "selected is " + choice[0] + ","+choice[1]+","+choice[2], Toast.LENGTH_LONG).show();
-											filterVideoSource(choice);
-											
-										}
-									}
-								}
-							});
-					view.setLayoutParams(new LayoutParams(0,0));
-//					popupWindow = new PopupWindow(view, getWindowManager().getDefaultDisplay().getWidth(),
-//					getWindowManager().getDefaultDisplay().getHeight(), true);
-					int width = topLinearLayout.getWidth();
-					int height = topLinearLayout.getHeight();
-					popupWindow = new PopupWindow(view,width,height, true);
-				}
-				popupWindow.showAtLocation(mFenLeiBtn.getRootView(), Gravity.LEFT | Gravity.BOTTOM, 0, 0);
+			if (v.getId() == R.id.bt_quanbufenlei
+					&& activeView.getId() == R.id.bt_quanbufenlei) {
+
+				filterPopWindowShow();
 			}
 			
 			if(activeView.getId() == v.getId()) {
@@ -193,12 +159,15 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 			}
 			
 			switch (v.getId()) {
-//			case R.id.bt_quanbufenlei:
-//				String url7 = StatisticsUtils.getTopItemURL(TOP_ITEM_URL, 
-//						REBO_ZONGYI, 1 + "", 50 + "");
-//				app.MyToast(aq.getContext(),"bt_quanbufenlei");
-//				getServiceData(url7);
-//				break;
+			case R.id.bt_quanbufenlei:
+				currentListIndex = QUANBUFENLEI;
+				app.MyToast(aq.getContext(), "bt_quanbufenlei");
+				if (lists[currentListIndex] != null
+						&& !lists[currentListIndex].isEmpty()) {
+
+					notifyAdapter(lists[currentListIndex]);
+				}
+				break;
 			case R.id.bt_zuijinguankan:
 				startActivity(new Intent(this, HistoryActivity.class));
 				break;
@@ -803,6 +772,48 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 		default:
 			break;
 		}
+	}
+
+	@Override
+	protected void filterPopWindowShow() {
+		// TODO Auto-generated method stub
+		
+		if(popupWindow ==null){
+			NavigateView view = new NavigateView(this);
+			int [] location = new int[2];
+			mFenLeiBtn.getLocationOnScreen(location);
+			view.Init(getResources().getStringArray(R.array.diqu_zongyi_fenlei),
+					getResources().getStringArray(R.array.leixing_zongyi_fenlei), 
+					getResources().getStringArray(R.array.shijian_dianying_fenlei), 
+					location[0], 
+					location[1],
+					mFenLeiBtn.getWidth(), 
+					mFenLeiBtn.getHeight(),
+					new OnResultListener() {
+						
+						@Override
+						public void onResult(View v, boolean isBack, String[] choice) {
+							// TODO Auto-generated method stub
+							if(isBack){
+								popupWindow.dismiss();
+							}else{
+								if(popupWindow.isShowing()){
+									popupWindow.dismiss();
+									Toast.makeText(ShowZongYiActivity.this, "selected is " + choice[0] + ","+choice[1]+","+choice[2], Toast.LENGTH_LONG).show();
+									filterVideoSource(choice);
+									
+								}
+							}
+						}
+					});
+			view.setLayoutParams(new LayoutParams(0,0));
+//			popupWindow = new PopupWindow(view, getWindowManager().getDefaultDisplay().getWidth(),
+//			getWindowManager().getDefaultDisplay().getHeight(), true);
+			int width = topLinearLayout.getWidth();
+			int height = topLinearLayout.getHeight();
+			popupWindow = new PopupWindow(view,width,height, true);
+		}
+		popupWindow.showAtLocation(mFenLeiBtn.getRootView(), Gravity.LEFT | Gravity.BOTTOM, 0, 0);
 	}
 
 }

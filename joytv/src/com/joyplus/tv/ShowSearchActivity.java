@@ -617,4 +617,10 @@ public class ShowSearchActivity extends AbstractShowActivity {
 		
 	}
 
+	@Override
+	protected void filterPopWindowShow() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
