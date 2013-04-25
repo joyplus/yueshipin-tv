@@ -507,6 +507,7 @@ public class ShowMovieActivity extends AbstractShowActivity {
 		searchAdapter.notifyDataSetChanged();
 		beforeGvView = null;
 		removeDialog(DIALOG_WAITING);
+		playGv.clearFocus();
 		playGv.requestFocus();
 
 	}

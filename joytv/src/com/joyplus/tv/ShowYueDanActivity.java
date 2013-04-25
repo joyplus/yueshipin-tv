@@ -516,9 +516,9 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 		}
 		lists[currentListIndex] = list;
 
+//		playGv.setAdapter(searchAdapter);
 		playGv.setSelection(0);
 		searchAdapter.notifyDataSetChanged();
-		beforeGvView = null;
 		removeDialog(DIALOG_WAITING);
 		playGv.requestFocus();
 
@@ -903,7 +903,6 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 			activeView = tempView;
 		}
 
-		beforeGvView = null;
 	}
 
 }

@@ -1,6 +1,7 @@
 package com.joyplus.tv.utils;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.ScaleAnimation;
 import android.widget.Button;
@@ -12,6 +13,8 @@ import com.joyplus.tv.R;
 import com.joyplus.tv.StatisticsUtils;
 
 public class ItemStateUtils implements JieMianConstant{
+	
+	private static final String TAG = "ItemStateUtils";
 	
 	public static void linearLayoutToPTState(Context context,LinearLayout linearLayout) {
 
@@ -144,6 +147,7 @@ public class ItemStateUtils implements JieMianConstant{
 	
 	public static void viewOutAnimation(Context context,View v) {
 		
+		Log.i(TAG, "viewOutAnimation");
 		ScaleAnimation outScaleAnimation = StatisticsUtils
 				.getOutScaleAnimation();
 		ImageView iv = (ImageView) v
@@ -159,17 +163,17 @@ public class ItemStateUtils implements JieMianConstant{
 	
 	public static void viewInAnimation(Context context,View v) {
 		
+		Log.i(TAG, "viewInAnimation");
 		ScaleAnimation inScaleAnimation = StatisticsUtils
 				.getInScaleAnimation();
-		ImageView iv = (ImageView) v
-				.findViewById(R.id.item_layout_dianying_reflact);
-		iv.setVisibility(View.GONE);
 		v.setPadding(GRIDVIEW_ITEM_PADDING,
 				GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING,
 				GRIDVIEW_ITEM_PADDING);
+		ImageView iv = (ImageView) v
+				.findViewById(R.id.item_layout_dianying_reflact);
+		iv.setVisibility(View.GONE);
 		v.setBackgroundColor(context.getResources()
 				.getColor(R.color.text_active));
-
 		v.startAnimation(inScaleAnimation);
 	}
 	

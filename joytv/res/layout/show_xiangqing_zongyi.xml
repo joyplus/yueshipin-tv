@@ -176,7 +176,9 @@
                         android:gravity="right|center_vertical"
                         android:text="8888"
                         android:textColor="@color/ding_selector"
-                        android:textSize="17sp" />
+                        android:textSize="17sp" 
+                        android:paddingRight="8dp"
+                        android:paddingLeft="8dp"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -199,7 +201,9 @@
                         android:gravity="right|center_vertical"
                         android:text="8888"
                         android:textColor="@color/ding_selector"
-                        android:textSize="17sp" />
+                        android:textSize="17sp"
+                        android:paddingRight="8dp"
+                        android:paddingLeft="8dp" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -237,7 +241,8 @@
                             android:gravity="left|center_vertical"
                             android:text="@string/xiangqing_bofang"
                             android:textColor="@color/text_foucs"
-                            android:textSize="17sp" />
+                            android:textSize="17sp"
+                            android:paddingLeft="3dp" />
 
                         <Button
                             android:id="@+id/bt_xiangqing_gaoqing"
