@@ -21,6 +21,8 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.androidquery.AQuery;
@@ -43,32 +45,23 @@ public class ShowSearchActivity extends AbstractShowActivity {
 	private App app;
 
 	private EditText searchEt;
-	private MyMovieGridView dinashijuGv;
-
-	private View firstFloatView;
-
-	private boolean isSelectedItem = true;// GridView中参数是否真正初始化
-
-	private int popWidth, popHeight;
-
+	private MyMovieGridView playGv;
+	private LinearLayout topLinearLayout;
+	private View activeView;
+	private int popWidth = 0, popHeight = 0;
 	private boolean isGridViewUp = false;
-
 	private int[] beforeFirstAndLastVible = { 0, 9 };
-
 	private View beforeGvView = null;
-
+	private SearchAdapter searchAdapter = null;
+	private int beforepostion = 0;
+	private int currentListIndex;
+	private String search;
+	private String filterSource;
+	private PopupWindow popupWindow;
+	
 	private List<MovieItemData>[] lists = new List[4];
 	private boolean[] isNextPagePossibles = new boolean[4];
 	private int[] pageNums = new int[4];
-
-	private int currentListIndex;
-	
-	private SearchAdapter searchAdapter = null;
-	
-	private int beforepostion = 0;
-	
-	private String search;
-	private String filterSource;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -92,12 +85,6 @@ public class ShowSearchActivity extends AbstractShowActivity {
 
 		}
 		return false;
-	}
-
-	@Override
-	public void onClick(View v) {
-		// TODO Auto-generated method stub
-		Log.i("Yangzhg", "onClick");
 	}
 	
 	@Override
@@ -147,61 +134,10 @@ public class ShowSearchActivity extends AbstractShowActivity {
 	}
 
 	@Override
-	protected void initView() {
-		// TODO Auto-generated method stub
-		
-		searchEt = (EditText) findViewById(R.id.et_search);
-		dinashijuGv = (MyMovieGridView) findViewById(R.id.gv_movie_show);
-
-		firstFloatView = findViewById(R.id.inclue_movie_show_item);
-	}
-
-	@Override
 	protected void initViewListener() {
 		// TODO Auto-generated method stub
-		
-		searchEt.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				
-				Editable editable = searchEt.getText();
-				String searchStr = editable.toString();
-				searchEt.setText("");
-				dinashijuGv.setNextFocusForwardId(searchEt.getId());//
-				showDialog(DIALOG_WAITING);
 
-				if (searchStr != null && !searchStr.equals("")) {
-
-					dinashijuGv.setAdapter(searchAdapter);
-					search = searchStr;
-					StatisticsUtils.clearList(lists[SEARCH]);
-					currentListIndex = SEARCH;
-					String url = StatisticsUtils.getSearch_FirstURL(searchStr);
-					getFilterData(url);
-				}
-			}
-		});
-		
-		searchEt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-			
-			@Override
-			public void onFocusChange(View v, boolean hasFocus) {
-				// TODO Auto-generated method stub
-				if(hasFocus==true){
-					((InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE))
-					    .showSoftInput(searchEt, InputMethodManager.SHOW_FORCED);
-
-					}else{ //ie searchBoxEditText doesn't have focus
-					((InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE))
-					    .hideSoftInputFromWindow(searchEt.getWindowToken(), 0);
-
-					}
-			}
-		});
-
-		dinashijuGv.setOnKeyListener(new View.OnKeyListener() {
+		playGv.setOnKeyListener(new View.OnKeyListener() {
 
 			@Override
 			public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -221,175 +157,167 @@ public class ShowSearchActivity extends AbstractShowActivity {
 					if (keyCode == KEY_RIGHT) {
 
 					}
-					if (!isSelectedItem) {
-
-						if (keyCode == KEY_RIGHT) {
-							isSelectedItem = true;
-							dinashijuGv.setSelection(1);
-						} else if (keyCode == KEY_DOWN) {
-							isSelectedItem = true;
-							dinashijuGv.setSelection(5);
-
-						}
-					}
 
 				}
 				return false;
 			}
 		});
 
-		dinashijuGv
-				.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+		playGv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
-					@Override
-					public void onItemClick(AdapterView<?> parent, View view,
-							int position, long id) {
-						// TODO Auto-generated method stub
-						List<MovieItemData> list = searchAdapter.getMovieList();
-						if(list != null && !list.isEmpty()) {
-							String pro_type = list.get(position).getMovieProType();
-							Log.i(TAG, "pro_type:" + pro_type);
-							if(pro_type != null && !pro_type.equals("")) {
-								Intent intent = new Intent();
-								if(pro_type.equals("2")) {
-									Log.i(TAG, "pro_type:" + pro_type + "   --->2");
-									intent.setClass(ShowSearchActivity.this, ShowXiangqingDongman.class);
-									intent.putExtra("ID", list.get(position).getMovieID());
-								} else if(pro_type.equals("1")) {
-									Log.i(TAG, "pro_type:" + pro_type + "   --->1");
-									intent.setClass(ShowSearchActivity.this,
-											ShowXiangqingMovie.class);
-								} else if(pro_type.equals("131")) {
-									
-									intent.setClass(ShowSearchActivity.this,
-											ShowXiangqingDongman.class);
-								} else if(pro_type.equals("3")) {
-									
-									intent.setClass(ShowSearchActivity.this,
-											ShowXiangqingZongYi.class);
-								}
-								
-								intent.putExtra("ID", list.get(position).getMovieID());
-								
-								intent.putExtra("prod_url", list.get(position).getMoviePicUrl());
-								intent.putExtra("prod_name", list.get(position).getMovieName());
-								intent.putExtra("stars", list.get(position).getStars());
-								intent.putExtra("directors", list.get(position).getDirectors());
-								intent.putExtra("summary", list.get(position).getSummary());
-								intent.putExtra("support_num", list.get(position).getSupport_num());
-								intent.putExtra("favority_num", list.get(position).getFavority_num());
-								intent.putExtra("definition", list.get(position).getDefinition());
-								intent.putExtra("score", list.get(position).getMovieScore());
-								startActivity(intent);
-								
-							}
-						}
-					}
-				});
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				// TODO Auto-generated method stub
+				List<MovieItemData> list = searchAdapter.getMovieList();
+				if (list != null && !list.isEmpty()) {
+					String pro_type = list.get(position).getMovieProType();
+					Log.i(TAG, "pro_type:" + pro_type);
+					if (pro_type != null && !pro_type.equals("")) {
+						Intent intent = new Intent();
+						if (pro_type.equals("2")) {
+							Log.i(TAG, "pro_type:" + pro_type + "   --->2");
+							intent.setClass(ShowSearchActivity.this,
+									ShowXiangqingTv.class);
+							intent.putExtra("ID", list.get(position)
+									.getMovieID());
+						} else if (pro_type.equals("1")) {
+							Log.i(TAG, "pro_type:" + pro_type + "   --->1");
+							intent.setClass(ShowSearchActivity.this,
+									ShowXiangqingMovie.class);
+						} else if (pro_type.equals("131")) {
 
-		dinashijuGv
-				.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+							intent.setClass(ShowSearchActivity.this,
+									ShowXiangqingDongman.class);
+						} else if (pro_type.equals("3")) {
 
-					@Override
-					public void onItemSelected(AdapterView<?> parent,
-							final View view, int position, long id) {
-						// TODO Auto-generated method stub
-						// if (BuildConfig.DEBUG)
-						Log.i(TAG, "Positon:" + position + " View:" + view
-								+ " beforGvView:" + beforeGvView);
-
-						if (view == null) {
-
-							isSelectedItem = false;
-							return;
+							intent.setClass(ShowSearchActivity.this,
+									ShowXiangqingZongYi.class);
 						}
 
-						final float y = view.getY();
+						intent.putExtra("ID", list.get(position).getMovieID());
 
-						boolean isSmoonthScroll = false;
-
-						boolean isSameContent = position >= beforeFirstAndLastVible[0]
-								&& position <= beforeFirstAndLastVible[1];
-						if (position >= 5 && !isSameContent) {
-
-							if (beforepostion >= beforeFirstAndLastVible[0]
-									&& beforepostion <= beforeFirstAndLastVible[0] + 4) {
-
-								if (isGridViewUp) {
-
-									dinashijuGv
-											.smoothScrollBy(-popHeight, 1000);
-									isSmoonthScroll = true;
-								}
-							} else {
-
-								if (!isGridViewUp) {
-
-									dinashijuGv.smoothScrollBy(popHeight,
-											1000 * 2);
-									isSmoonthScroll = true;
-
-								}
-							}
-
-						}
-
-						if (beforeGvView != null) {
-
-							ItemStateUtils.viewOutAnimation(getApplicationContext(),
-									beforeGvView);
-						} else {
-
-							ItemStateUtils.floatViewOutAnimaiton(firstFloatView);
-						}
-
-						ItemStateUtils.viewInAnimation(getApplicationContext(), view);
-
-						int[] firstAndLastVisible = new int[2];
-						firstAndLastVisible[0] = dinashijuGv.getFirstVisiblePosition();
-						firstAndLastVisible[1] = dinashijuGv.getLastVisiblePosition();
-
-						if (y == 0 || y - popHeight == 0) {// 顶部没有渐影
-
-							beforeFirstAndLastVible = ItemStateUtils
-									.reCaculateFirstAndLastVisbile(
-											beforeFirstAndLastVible,
-											firstAndLastVisible, isSmoonthScroll, false);
-
-						} else {// 顶部有渐影
-
-							beforeFirstAndLastVible = ItemStateUtils
-									.reCaculateFirstAndLastVisbile(
-											beforeFirstAndLastVible,
-											firstAndLastVisible, isSmoonthScroll, true);
-
-						}
-
-						beforeGvView = view;
-						beforepostion = position;
-						
-						// 缓存
-						int size = searchAdapter.getMovieList().size();
-						if (size - 1 - firstAndLastVisible[1] < StatisticsUtils.CACHE_NUM) {
-
-							if (isNextPagePossibles[currentListIndex]) {
-
-								pageNums[currentListIndex]++;
-								cachePlay(currentListIndex, pageNums[currentListIndex]);
-							}
-						}
+						intent.putExtra("prod_url", list.get(position)
+								.getMoviePicUrl());
+						intent.putExtra("prod_name", list.get(position)
+								.getMovieName());
+						intent.putExtra("stars", list.get(position).getStars());
+						intent.putExtra("directors", list.get(position)
+								.getDirectors());
+						intent.putExtra("summary", list.get(position)
+								.getSummary());
+						intent.putExtra("support_num", list.get(position)
+								.getSupport_num());
+						intent.putExtra("favority_num", list.get(position)
+								.getFavority_num());
+						intent.putExtra("definition", list.get(position)
+								.getDefinition());
+						intent.putExtra("score", list.get(position)
+								.getMovieScore());
+						startActivity(intent);
 
 					}
+				}
+			}
+		});
 
-					@Override
-					public void onNothingSelected(AdapterView<?> parent) {
-						// TODO Auto-generated method stub
+		playGv.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
-						isSelectedItem = false;
+			@Override
+			public void onItemSelected(AdapterView<?> parent, final View view,
+					int position, long id) {
+				// TODO Auto-generated method stub
+				// if (BuildConfig.DEBUG)
+				Log.i(TAG, "Positon:" + position + " View:" + view
+						+ " beforGvView:" + beforeGvView);
+
+				if (view == null) {
+
+					return;
+				}
+
+				final float y = view.getY();
+
+				boolean isSmoonthScroll = false;
+
+				boolean isSameContent = position >= beforeFirstAndLastVible[0]
+						&& position <= beforeFirstAndLastVible[1];
+				if (position >= 5 && !isSameContent) {
+
+					if (beforepostion >= beforeFirstAndLastVible[0]
+							&& beforepostion <= beforeFirstAndLastVible[0] + 4) {
+
+						if (isGridViewUp) {
+
+							playGv.smoothScrollBy(-popHeight, 1000);
+							isSmoonthScroll = true;
+						}
+					} else {
+
+						if (!isGridViewUp) {
+
+							playGv.smoothScrollBy(popHeight, 1000 * 2);
+							isSmoonthScroll = true;
+
+						}
 					}
-				});
 
-		dinashijuGv.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+				}
+
+				if (beforeGvView != null) {
+
+					ItemStateUtils.viewOutAnimation(getApplicationContext(),
+							beforeGvView);
+				} else {
+
+				}
+
+				ItemStateUtils.viewInAnimation(getApplicationContext(), view);
+
+				int[] firstAndLastVisible = new int[2];
+				firstAndLastVisible[0] = playGv.getFirstVisiblePosition();
+				firstAndLastVisible[1] = playGv.getLastVisiblePosition();
+
+				if (y == 0 || y - popHeight == 0) {// 顶部没有渐影
+
+					beforeFirstAndLastVible = ItemStateUtils
+							.reCaculateFirstAndLastVisbile(
+									beforeFirstAndLastVible,
+									firstAndLastVisible, isSmoonthScroll, false);
+
+				} else {// 顶部有渐影
+
+					beforeFirstAndLastVible = ItemStateUtils
+							.reCaculateFirstAndLastVisbile(
+									beforeFirstAndLastVible,
+									firstAndLastVisible, isSmoonthScroll, true);
+
+				}
+
+				beforeGvView = view;
+				beforepostion = position;
+
+				// 缓存
+				int size = searchAdapter.getMovieList().size();
+				if (size - 1 - firstAndLastVisible[1] < StatisticsUtils.CACHE_NUM) {
+
+					if (isNextPagePossibles[currentListIndex]) {
+
+						pageNums[currentListIndex]++;
+						cachePlay(currentListIndex, pageNums[currentListIndex]);
+					}
+				}
+
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parent) {
+				// TODO Auto-generated method stub
+
+			}
+		});
+
+		playGv.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 
 			@Override
 			public void onFocusChange(View v, boolean hasFocus) {
@@ -401,36 +329,71 @@ public class ShowSearchActivity extends AbstractShowActivity {
 
 						ItemStateUtils.viewOutAnimation(
 								getApplicationContext(), beforeGvView);
-					} else {
-
-						// firstFloatView.setVisibility(View.GONE);
-						ItemStateUtils.floatViewOutAnimaiton(firstFloatView);
 					}
 				} else {
+
+					playGv.setNextFocusLeftId(activeView.getId());
 
 					if (beforeGvView != null) {
 
 						ItemStateUtils.viewInAnimation(getApplicationContext(),
 								beforeGvView);
 
-					} else {
-						initFirstFloatView();
 					}
+				}
+			}
+		});
+
+		searchEt.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+
+				Editable editable = searchEt.getText();
+				String searchStr = editable.toString();
+				searchEt.setText("");
+				playGv.setNextFocusForwardId(searchEt.getId());//
+				showDialog(DIALOG_WAITING);
+				ItemStateUtils
+						.viewToNormal(getApplicationContext(), activeView);
+				activeView = searchEt;
+
+				if (searchStr != null && !searchStr.equals("")) {
+
+					search = searchStr;
+					StatisticsUtils.clearList(lists[SEARCH]);
+					currentListIndex = SEARCH;
+					playGv.setAdapter(searchAdapter);
+					String url = StatisticsUtils.getSearch_FirstURL(searchStr);
+					getFilterData(url);
+				}
+
+			}
+		});
+
+		searchEt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				// TODO Auto-generated method stub
+				if (hasFocus == true) {
+					((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
+							.showSoftInput(v, InputMethodManager.SHOW_FORCED);
+
+				} else { // ie searchBoxEditText doesn't have focus
+					((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
+							.hideSoftInputFromWindow(v.getWindowToken(), 0);
+
 				}
 			}
 		});
 	}
 
 	@Override
-	protected void initViewState() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	protected void clearLists() {
 		// TODO Auto-generated method stub
-		
+
 		for (int i = 0; i < lists.length; i++) {
 
 			StatisticsUtils.clearList(lists[i]);
@@ -440,6 +403,7 @@ public class ShowSearchActivity extends AbstractShowActivity {
 	@Override
 	protected void initLists() {
 		// TODO Auto-generated method stub
+
 		for (int i = 0; i < lists.length; i++) {
 
 			lists[i] = new ArrayList<MovieItemData>();
@@ -449,96 +413,20 @@ public class ShowSearchActivity extends AbstractShowActivity {
 	}
 
 	@Override
-	protected void initFirstFloatView() {
-		// TODO Auto-generated method stub
-		
-		firstFloatView.setX(0);
-		firstFloatView.setY(0);
-		firstFloatView.setLayoutParams(new FrameLayout.LayoutParams(popWidth,
-				popHeight));
-		firstFloatView.setVisibility(View.VISIBLE);
-
-		TextView movieName = (TextView) firstFloatView.findViewById(R.id.tv_item_layout_name);
-		TextView movieScore = (TextView) firstFloatView.findViewById(R.id.tv_item_layout_score);
-		
-		List<MovieItemData> list = searchAdapter.getMovieList();
-		if (list != null && !list.isEmpty()) {
-
-			FrameLayout inFrameLayout = (FrameLayout) firstFloatView.findViewById(R.id.inclue_movie_show_item);
-			ImageView haibaoIv = (ImageView) inFrameLayout.findViewById(R.id.iv_item_layout_haibao);
-			aq.id(haibaoIv).image(list.get(0).getMoviePicUrl(), 
-					true, true,0, R.drawable.post_active);
-			movieName.setText(list.get(0).getMovieName());
-			
-			String proType = list.get(0).getMovieProType();
-			
-			if(proType != null && !proType.equals("")) {
-				
-				if(proType.equals("1")) {
-					
-					movieScore.setText(list.get(0).getMovieScore());
-					String duration = list.get(0).getMovieDuration();
-					if(duration != null && !duration.equals("")) {
-						
-						TextView movieDuration = (TextView) firstFloatView
-								.findViewById(R.id.tv_item_layout_other_info);
-						movieDuration.setText(StatisticsUtils.formatMovieDuration(duration));
-					}
-				} else if(proType.equals("2") || proType.equals("131")){
-					movieScore.setText(list.get(0).getMovieScore());
-					String curEpisode = list.get(0).getMovieCurEpisode();
-					String maxEpisode = list.get(0).getMovieMaxEpisode();
-					
-					if(maxEpisode != null && !maxEpisode.equals("")) {
-						
-						if(curEpisode == null || curEpisode.equals("0") || 
-								curEpisode.compareTo(maxEpisode) >= 0) {
-							
-							TextView movieUpdate = (TextView) firstFloatView
-									.findViewById(R.id.tv_item_layout_other_info);
-							movieUpdate.setText(
-									maxEpisode + getString(R.string.dianshiju_jiquan));
-							} else if(maxEpisode.compareTo(curEpisode) > 0) {
-								
-								TextView movieUpdate = (TextView) firstFloatView
-										.findViewById(R.id.tv_item_layout_other_info);
-								movieUpdate.setText(getString(R.string.zongyi_gengxinzhi) + 
-										curEpisode);
-						}
-					}
-
-				} else if(proType.equals("3")) {
-					
-					String curEpisode = list.get(0).getMovieCurEpisode();
-					if(curEpisode != null && !curEpisode.equals("")) {
-						
-						TextView movieUpdate = (TextView) firstFloatView
-								.findViewById(R.id.tv_item_layout_other_info);
-						movieUpdate.setText(getString(R.string.zongyi_gengxinzhi) + 
-								list.get(0).getMovieCurEpisode());
-					}
-				}
-			}
-			ItemStateUtils.floatViewInAnimaiton(getApplicationContext(),
-					firstFloatView);
-		}
-	}
-
-	@Override
 	protected void notifyAdapter(List<MovieItemData> list) {
 		// TODO Auto-generated method stub
-		
-		int height=searchAdapter.getHeight()
-				,width = searchAdapter.getWidth();
-		
-		if(height !=0 && width !=0) {
-			
+
+		int height = searchAdapter.getHeight(), width = searchAdapter
+				.getWidth();
+
+		if (height != 0 && width != 0) {
+
 			popWidth = width;
 			popHeight = height;
 		}
-		
+
 		searchAdapter.setList(list);
-		
+
 		if (list != null && !list.isEmpty() && currentListIndex != QUANBUFENLEI) {// 判断其能否向获取更多数据
 
 			if (list.size() == StatisticsUtils.FIRST_NUM) {
@@ -549,58 +437,55 @@ public class ShowSearchActivity extends AbstractShowActivity {
 				isNextPagePossibles[currentListIndex] = false;
 			}
 		}
-
 		lists[currentListIndex] = list;
-		
-		dinashijuGv.setSelection(0);
+
+		playGv.setSelection(0);
 		searchAdapter.notifyDataSetChanged();
 		beforeGvView = null;
-		initFirstFloatView();
-		dinashijuGv.setFocusable(true);
-		dinashijuGv.setSelected(true);
-		isSelectedItem = false;
 		removeDialog(DIALOG_WAITING);
-		dinashijuGv.requestFocus();
+		playGv.requestFocus();
+
 	}
 
 	@Override
 	protected void filterVideoSource(String[] choice) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	protected void getQuan10Data(String url) {
 		// TODO Auto-generated method stub
-		
+
+		showDialog(DIALOG_WAITING);
+		getServiceData(url, "initQuan10ServiceData");
 	}
 
 	@Override
 	protected void getQuanbuData(String url) {
 		// TODO Auto-generated method stub
-		
+
+		getServiceData(url, "initQuanbuServiceData");
 	}
 
 	@Override
 	protected void getUnQuanbuData(String url) {
 		// TODO Auto-generated method stub
-		
+
+		getServiceData(url, "initUnQuanbuServiceData");
 	}
 
 	@Override
 	protected void getFilterData(String url) {
 		// TODO Auto-generated method stub
-		
+
 		getServiceData(url, "initFilerServiceData");
 	}
 
 	@Override
 	protected void getServiceData(String url, String interfaceName) {
 		// TODO Auto-generated method stub
-		
-		firstFloatView.setVisibility(View.INVISIBLE);
+
 		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
-		// cb.url(url).type(JSONObject.class).weakHandler(this, "initData");
 		cb.url(url).type(JSONObject.class).weakHandler(this, interfaceName);
 
 		cb.SetHeader(app.getHeaders());
@@ -608,58 +493,8 @@ public class ShowSearchActivity extends AbstractShowActivity {
 	}
 
 	@Override
-	public void initQuan10ServiceData(String url, JSONObject json,
-			AjaxStatus status) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void initQuanbuServiceData(String url, JSONObject json,
-			AjaxStatus status) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void initUnQuanbuServiceData(String url, JSONObject json,
-			AjaxStatus status) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void initFilerServiceData(String url, JSONObject json,
-			AjaxStatus status) {
-		// TODO Auto-generated method stub
-		
-		if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
-
-			app.MyToast(aq.getContext(),
-					getResources().getString(R.string.networknotwork));
-			return;
-		}
-		
-		try {
-			Log.d(TAG, json.toString());
-			notifyAdapter(StatisticsUtils.returnFilterMovieSearch_TVJson(json
-					.toString()));
-		} catch (JsonParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	@Override
 	protected void refreshAdpter(List<MovieItemData> list) {
 		// TODO Auto-generated method stub
-		
 
 		List<MovieItemData> srcList = searchAdapter.getMovieList();
 
@@ -685,6 +520,25 @@ public class ShowSearchActivity extends AbstractShowActivity {
 		searchAdapter.notifyDataSetChanged();
 	}
 
+
+	@Override
+	protected void getMoreFilterData(String url) {
+		// TODO Auto-generated method stub
+		getServiceData(url, "initMoreFilerServiceData");
+	}
+
+	@Override
+	protected void getMoreBangDanData(String url) {
+		// TODO Auto-generated method stub
+		getServiceData(url, "initMoreBangDanServiceData");
+	}
+
+	@Override
+	protected void filterPopWindowShow() {
+		// TODO Auto-generated method stub
+		
+	}
+	
 	@Override
 	public void initMoreFilerServiceData(String url, JSONObject json,
 			AjaxStatus status) {
@@ -713,27 +567,14 @@ public class ShowSearchActivity extends AbstractShowActivity {
 			e.printStackTrace();
 		}
 	}
-
-	@Override
-	protected void getMoreFilterData(String url) {
-		// TODO Auto-generated method stub
-		
-		getServiceData(url, "initMoreFilerServiceData");
-	}
-
+	
 	@Override
 	public void initMoreBangDanServiceData(String url, JSONObject json,
 			AjaxStatus status) {
 		// TODO Auto-generated method stub
 		
 	}
-
-	@Override
-	protected void getMoreBangDanData(String url) {
-		// TODO Auto-generated method stub
-		
-	}
-
+	
 	@Override
 	protected void cachePlay(int index, int pageNum) {
 		// TODO Auto-generated method stub
@@ -755,11 +596,74 @@ public class ShowSearchActivity extends AbstractShowActivity {
 			break;
 		}
 	}
-
+	
 	@Override
-	protected void filterPopWindowShow() {
+	public void initQuanbuServiceData(String url, JSONObject json,
+			AjaxStatus status) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	@Override
+	public void initUnQuanbuServiceData(String url, JSONObject json,
+			AjaxStatus status) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	public void initFilerServiceData(String url, JSONObject json,
+			AjaxStatus status) {
+		// TODO Auto-generated method stub
+		
+		if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
+
+			app.MyToast(aq.getContext(),
+					getResources().getString(R.string.networknotwork));
+			return;
+		}
+		
+		try {
+			Log.d(TAG, json.toString());
+			notifyAdapter(StatisticsUtils.returnFilterMovieSearch_TVJson(json
+					.toString()));
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	@Override
+	public void initQuan10ServiceData(String url, JSONObject json,
+			AjaxStatus status) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	protected void initViewState() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	protected void initView() {
+		// TODO Auto-generated method stub
+		
+		searchEt = (EditText) findViewById(R.id.et_search);
+		playGv = (MyMovieGridView) findViewById(R.id.gv_movie_show);
+
+	}
+	
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
 	}
 
 }

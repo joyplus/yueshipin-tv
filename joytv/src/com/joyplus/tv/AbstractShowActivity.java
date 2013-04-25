@@ -36,8 +36,6 @@ public abstract class AbstractShowActivity extends Activity implements
 
 	protected abstract void initLists();// 初始化Lists数组
 
-	protected abstract void initFirstFloatView();// 初始化辅助组件
-
 	protected abstract void notifyAdapter(List<MovieItemData> list);// 刷新adapter中数据，并初始化基本状态
 
 	protected abstract void filterVideoSource(String[] choice);// 通过选择条件，获取相应视频资源

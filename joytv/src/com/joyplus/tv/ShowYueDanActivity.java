@@ -22,6 +22,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.androidquery.AQuery;
@@ -29,6 +31,7 @@ import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.joyplus.tv.Adapters.SearchAdapter;
 import com.joyplus.tv.Adapters.YueDanAdapter;
 import com.joyplus.tv.entity.MovieItemData;
 import com.joyplus.tv.ui.MyMovieGridView;
@@ -39,50 +42,37 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 
 	public static final int DIANYING_YUEDAN = 1;
 	public static final int DIANSHIJU_YUEDAN = 2;
-	
+
 	private static final int DIANYING = 4;
 	private static final int DIANSHI = 5;
 
 	public static final String TAG = "ShowYueDanActivity";
 	private static final int DIALOG_WAITING = 0;
-	
+
 	private AQuery aq;
 	private App app;
 
 	private EditText searchEt;
-	private MyMovieGridView dinashijuGv;
+	private MyMovieGridView playGv;
+	private LinearLayout topLinearLayout;
+	private View activeView;
+	private int popWidth = 0, popHeight = 0;
+	private boolean isGridViewUp = false;
+	private int[] beforeFirstAndLastVible = { 0, 9 };
+	private View beforeGvView = null;
+	private YueDanAdapter searchAdapter = null;
+	private int beforepostion = 0;
+	private int currentListIndex;
+	private String search;
+	private String filterSource;
+	private PopupWindow popupWindow;
 
 	private Button zuijinguankanBtn, zhuijushoucangBtn, dianyingyuedanBtn,
 			dianshijuyuedanBtn;
-
-	private View firstFloatView;
-
-	private View activeView;
-
-	private boolean isSelectedItem = true;// GridView中参数是否真正初始化
-
-	private int popWidth, popHeight;
-
-	private boolean isGridViewUp = false;
-
-	private int[] beforeFirstAndLastVible = { 0, 9 };
-
-	private View beforeGvView = null;
-
 	private List<MovieItemData>[] lists = new List[6];
 	private boolean[] isNextPagePossibles = new boolean[6];
 	private int[] pageNums = new int[6];
-	
-	private int currentListIndex;
-
 	private int defalutYuedan = 0;
-
-	private YueDanAdapter searchAdapter;
-
-	private int beforepostion = 0;
-	
-	private String search;
-	private String filterSource;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -108,8 +98,8 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 
 		initActivity();
 
-		searchAdapter = new YueDanAdapter(this,aq);
-		dinashijuGv.setAdapter(searchAdapter);
+		searchAdapter = new YueDanAdapter(this, aq);
+		playGv.setAdapter(searchAdapter);
 
 		if (defalutYuedan == DIANYING_YUEDAN) {
 
@@ -121,10 +111,7 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 			String url = StatisticsUtils.getYueDan_DianshiFirstURL();
 			getUnQuanbuData(url);// 进入电影界面时，全部分类电影显示获取焦点，并且显示数据
 		}
-
-		dinashijuGv.setSelected(true);
-		dinashijuGv.requestFocus();
-		dinashijuGv.setSelection(0);
+		
 	}
 
 	@Override
@@ -157,15 +144,17 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 		clearLists();
 		super.onDestroy();
 	}
-	
+
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		aq.id(R.id.iv_head_user_icon).image(app.getUserInfo().getUserAvatarUrl(),false,true,0,R.drawable.avatar_defult);
+		aq.id(R.id.iv_head_user_icon).image(
+				app.getUserInfo().getUserAvatarUrl(), false, true, 0,
+				R.drawable.avatar_defult);
 		aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
 	}
-	
+
 	@Override
 	protected Dialog onCreateDialog(int id) {
 		// TODO Auto-generated method stub
@@ -174,7 +163,7 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 			WaitingDialog dlg = new WaitingDialog(this);
 			dlg.show();
 			dlg.setOnCancelListener(new OnCancelListener() {
-				
+
 				@Override
 				public void onCancel(DialogInterface dialog) {
 					// TODO Auto-generated method stub
@@ -186,90 +175,6 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 		default:
 			return super.onCreateDialog(id);
 		}
-	}
-
-	@Override
-	public void onClick(View v) {
-		// TODO Auto-generated method stub
-		Log.i("Yangzhg", "onClick");
-
-		if (activeView == null) {
-
-			if (defalutYuedan == DIANYING_YUEDAN) {
-				activeView = dianyingyuedanBtn;
-			} else {
-
-				activeView = dianshijuyuedanBtn;
-			}
-
-		}
-
-		if (activeView.getId() == v.getId()) {
-
-			return;
-		}
-
-		switch (v.getId()) {
-		case R.id.bt_dianyingyuedan:
-			currentListIndex = DIANYING;
-			String url1 = StatisticsUtils.getYueDan_DianyingFirstURL();
-			app.MyToast(aq.getContext(), "ll_daluju");
-			if(lists[currentListIndex] != null && !lists[currentListIndex].isEmpty()) {
-				
-				notifyAdapter(lists[currentListIndex]);
-			} else {
-				showDialog(DIALOG_WAITING);
-				getUnQuanbuData(url1);
-			}
-			break;
-		case R.id.bt_dianshijuyuedan:
-			currentListIndex = DIANSHI;
-			String url2 = StatisticsUtils.getYueDan_DianshiFirstURL();
-			app.MyToast(aq.getContext(), "ll_gangju");
-			if(lists[currentListIndex] != null && !lists[currentListIndex].isEmpty()) {
-				
-				notifyAdapter(lists[currentListIndex]);
-			} else {
-				showDialog(DIALOG_WAITING);
-				getUnQuanbuData(url2);
-			}
-			break;
-		case R.id.bt_zuijinguankan:
-			startActivity(new Intent(this, HistoryActivity.class));
-			break;
-		case R.id.bt_zhuijushoucang:
-			startActivity(new Intent(this, ShowShoucangHistoryActivity.class));
-			break;
-		default:
-			break;
-		}
-
-		View tempView = ItemStateUtils.viewToActive(getApplicationContext(), v,
-				activeView);
-
-		if (tempView != null) {
-
-			activeView = tempView;
-		}
-
-		beforeGvView = null;
-	}
-
-	@Override
-	protected void initView() {
-		// TODO Auto-generated method stub
-
-		searchEt = (EditText) findViewById(R.id.et_search);
-		dianyingyuedanBtn = (Button) findViewById(R.id.bt_dianyingyuedan);
-		dianshijuyuedanBtn = (Button) findViewById(R.id.bt_dianshijuyuedan);
-		dinashijuGv = (MyMovieGridView) findViewById(R.id.gv_movie_show);
-
-		zuijinguankanBtn = (Button) findViewById(R.id.bt_zuijinguankan);
-		zhuijushoucangBtn = (Button) findViewById(R.id.bt_zhuijushoucang);
-
-		firstFloatView = findViewById(R.id.inclue_movie_show_item);
-
-		dinashijuGv.setNextFocusLeftId(R.id.bt_dianyingyuedan);
 	}
 
 	@Override
@@ -291,7 +196,7 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 		dianyingyuedanBtn.setOnFocusChangeListener(this);
 		dianshijuyuedanBtn.setOnFocusChangeListener(this);
 
-		dinashijuGv.setOnKeyListener(new View.OnKeyListener() {
+		playGv.setOnKeyListener(new View.OnKeyListener() {
 
 			@Override
 			public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -311,182 +216,167 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 					if (keyCode == KEY_RIGHT) {
 
 					}
-					if (!isSelectedItem) {
-
-						if (keyCode == KEY_RIGHT) {
-							isSelectedItem = true;
-							dinashijuGv.setSelection(1);
-						} else if (keyCode == KEY_DOWN) {
-							isSelectedItem = true;
-							dinashijuGv.setSelection(5);
-
-						}
-					}
 
 				}
 				return false;
 			}
 		});
 
-		dinashijuGv
-				.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+		playGv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
-					@Override
-					public void onItemClick(AdapterView<?> parent, View view,
-							int position, long id) {
-						// TODO Auto-generated method stub
-						List<MovieItemData> list = searchAdapter.getMovieList();
-						if(list != null && !list.isEmpty()) {
-							String pro_type = list.get(position).getMovieProType();
-							Log.i(TAG, "pro_type:" + pro_type);
-							if(pro_type != null && !pro_type.equals("")) {
-								Intent intent = new Intent();
-								if(pro_type.equals("2")) {
-									Log.i(TAG, "pro_type:" + pro_type + "   --->2");
-									intent.setClass(ShowYueDanActivity.this, ShowXiangqingDongman.class);
-									intent.putExtra("ID", list.get(position).getMovieID());
-								} else if(pro_type.equals("1")) {
-									Log.i(TAG, "pro_type:" + pro_type + "   --->1");
-									intent.setClass(ShowYueDanActivity.this,
-											ShowXiangqingMovie.class);
-								} else if(pro_type.equals("131")) {
-									
-									intent.setClass(ShowYueDanActivity.this,
-											ShowXiangqingDongman.class);
-								} else if(pro_type.equals("3")) {
-									
-									intent.setClass(ShowYueDanActivity.this,
-											ShowXiangqingZongYi.class);
-								}
-								
-								intent.putExtra("ID", list.get(position).getMovieID());
-								
-								intent.putExtra("prod_url", list.get(position).getMoviePicUrl());
-								intent.putExtra("prod_name", list.get(position).getMovieName());
-								intent.putExtra("stars", list.get(position).getStars());
-								intent.putExtra("directors", list.get(position).getDirectors());
-								intent.putExtra("summary", list.get(position).getSummary());
-								intent.putExtra("support_num", list.get(position).getSupport_num());
-								intent.putExtra("favority_num", list.get(position).getFavority_num());
-								intent.putExtra("definition", list.get(position).getDefinition());
-								intent.putExtra("score", list.get(position).getMovieScore());
-								startActivity(intent);
-								
-							}
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				// TODO Auto-generated method stub
+				List<MovieItemData> list = searchAdapter.getMovieList();
+				if (list != null && !list.isEmpty()) {
+					String pro_type = list.get(position).getMovieProType();
+					Log.i(TAG, "pro_type:" + pro_type);
+					if (pro_type != null && !pro_type.equals("")) {
+						Intent intent = new Intent();
+						if (pro_type.equals("2")) {
+							Log.i(TAG, "pro_type:" + pro_type + "   --->2");
+							intent.setClass(ShowYueDanActivity.this,
+									ShowXiangqingTv.class);
+							intent.putExtra("ID", list.get(position)
+									.getMovieID());
+						} else if (pro_type.equals("1")) {
+							Log.i(TAG, "pro_type:" + pro_type + "   --->1");
+							intent.setClass(ShowYueDanActivity.this,
+									ShowXiangqingMovie.class);
+						} else if (pro_type.equals("131")) {
+
+							intent.setClass(ShowYueDanActivity.this,
+									ShowXiangqingDongman.class);
+						} else if (pro_type.equals("3")) {
+
+							intent.setClass(ShowYueDanActivity.this,
+									ShowXiangqingZongYi.class);
 						}
+
+						intent.putExtra("ID", list.get(position).getMovieID());
+
+						intent.putExtra("prod_url", list.get(position)
+								.getMoviePicUrl());
+						intent.putExtra("prod_name", list.get(position)
+								.getMovieName());
+						intent.putExtra("stars", list.get(position).getStars());
+						intent.putExtra("directors", list.get(position)
+								.getDirectors());
+						intent.putExtra("summary", list.get(position)
+								.getSummary());
+						intent.putExtra("support_num", list.get(position)
+								.getSupport_num());
+						intent.putExtra("favority_num", list.get(position)
+								.getFavority_num());
+						intent.putExtra("definition", list.get(position)
+								.getDefinition());
+						intent.putExtra("score", list.get(position)
+								.getMovieScore());
+						startActivity(intent);
 
 					}
-				});
+				}
+			}
+		});
 
-		dinashijuGv
-				.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+		playGv.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
-					@Override
-					public void onItemSelected(AdapterView<?> parent,
-							final View view, int position, long id) {
-						// TODO Auto-generated method stub
-						// if (BuildConfig.DEBUG)
-						Log.i(TAG, "Positon:" + position + " View:" + view
-								+ " beforGvView:" + beforeGvView);
+			@Override
+			public void onItemSelected(AdapterView<?> parent, final View view,
+					int position, long id) {
+				// TODO Auto-generated method stub
+				// if (BuildConfig.DEBUG)
+				Log.i(TAG, "Positon:" + position + " View:" + view
+						+ " beforGvView:" + beforeGvView);
 
-						if (view == null) {
+				if (view == null) {
 
-							isSelectedItem = false;
-							return;
+					return;
+				}
+
+				final float y = view.getY();
+
+				boolean isSmoonthScroll = false;
+
+				boolean isSameContent = position >= beforeFirstAndLastVible[0]
+						&& position <= beforeFirstAndLastVible[1];
+				if (position >= 5 && !isSameContent) {
+
+					if (beforepostion >= beforeFirstAndLastVible[0]
+							&& beforepostion <= beforeFirstAndLastVible[0] + 4) {
+
+						if (isGridViewUp) {
+
+							playGv.smoothScrollBy(-popHeight, 1000);
+							isSmoonthScroll = true;
 						}
+					} else {
 
-						final float y = view.getY();
+						if (!isGridViewUp) {
 
-						boolean isSmoonthScroll = false;
-
-						boolean isSameContent = position >= beforeFirstAndLastVible[0]
-								&& position <= beforeFirstAndLastVible[1];
-						if (position >= 5 && !isSameContent) {
-
-							if (beforepostion >= beforeFirstAndLastVible[0]
-									&& beforepostion <= beforeFirstAndLastVible[0] + 4) {
-
-								if (isGridViewUp) {
-
-									dinashijuGv
-											.smoothScrollBy(-popHeight, 1000);
-									isSmoonthScroll = true;
-								}
-							} else {
-
-								if (!isGridViewUp) {
-
-									dinashijuGv.smoothScrollBy(popHeight,
-											1000 * 2);
-									isSmoonthScroll = true;
-
-								}
-							}
+							playGv.smoothScrollBy(popHeight, 1000 * 2);
+							isSmoonthScroll = true;
 
 						}
-
-						if (beforeGvView != null) {
-
-							ItemStateUtils.viewOutAnimation(
-									getApplicationContext(), beforeGvView);
-						} else {
-
-							ItemStateUtils
-									.floatViewOutAnimaiton(firstFloatView);
-						}
-
-						ItemStateUtils.viewInAnimation(getApplicationContext(),
-								view);
-
-						int[] firstAndLastVisible = new int[2];
-						firstAndLastVisible[0] = dinashijuGv
-								.getFirstVisiblePosition();
-						firstAndLastVisible[1] = dinashijuGv
-								.getLastVisiblePosition();
-
-						if (y == 0 || y - popHeight == 0) {// 顶部没有渐影
-
-							beforeFirstAndLastVible = ItemStateUtils
-									.reCaculateFirstAndLastVisbile(
-											beforeFirstAndLastVible,
-											firstAndLastVisible,
-											isSmoonthScroll, false);
-
-						} else {// 顶部有渐影
-
-							beforeFirstAndLastVible = ItemStateUtils
-									.reCaculateFirstAndLastVisbile(
-											beforeFirstAndLastVible,
-											firstAndLastVisible,
-											isSmoonthScroll, true);
-
-						}
-
-						beforeGvView = view;
-						beforepostion = position;
-						
-						//缓存
-						int size = searchAdapter.getMovieList().size();
-						if(size-1-firstAndLastVisible[1] < StatisticsUtils.CACHE_NUM) {
-							
-							if(isNextPagePossibles[currentListIndex]) {
-								
-								pageNums[currentListIndex] ++;
-								cachePlay(currentListIndex, pageNums[currentListIndex]);
-							}
-						}
-
 					}
 
-					@Override
-					public void onNothingSelected(AdapterView<?> parent) {
-						// TODO Auto-generated method stub
+				}
 
-						isSelectedItem = false;
+				if (beforeGvView != null) {
+
+					ItemStateUtils.viewOutAnimation(getApplicationContext(),
+							beforeGvView);
+				} else {
+
+				}
+
+				ItemStateUtils.viewInAnimation(getApplicationContext(), view);
+
+				int[] firstAndLastVisible = new int[2];
+				firstAndLastVisible[0] = playGv.getFirstVisiblePosition();
+				firstAndLastVisible[1] = playGv.getLastVisiblePosition();
+
+				if (y == 0 || y - popHeight == 0) {// 顶部没有渐影
+
+					beforeFirstAndLastVible = ItemStateUtils
+							.reCaculateFirstAndLastVisbile(
+									beforeFirstAndLastVible,
+									firstAndLastVisible, isSmoonthScroll, false);
+
+				} else {// 顶部有渐影
+
+					beforeFirstAndLastVible = ItemStateUtils
+							.reCaculateFirstAndLastVisbile(
+									beforeFirstAndLastVible,
+									firstAndLastVisible, isSmoonthScroll, true);
+
+				}
+
+				beforeGvView = view;
+				beforepostion = position;
+
+				// 缓存
+				int size = searchAdapter.getMovieList().size();
+				if (size - 1 - firstAndLastVisible[1] < StatisticsUtils.CACHE_NUM) {
+
+					if (isNextPagePossibles[currentListIndex]) {
+
+						pageNums[currentListIndex]++;
+						cachePlay(currentListIndex, pageNums[currentListIndex]);
 					}
-				});
+				}
 
-		dinashijuGv.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parent) {
+				// TODO Auto-generated method stub
+
+			}
+		});
+
+		playGv.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 
 			@Override
 			public void onFocusChange(View v, boolean hasFocus) {
@@ -498,22 +388,16 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 
 						ItemStateUtils.viewOutAnimation(
 								getApplicationContext(), beforeGvView);
-					} else {
-
-						// firstFloatView.setVisibility(View.GONE);
-						ItemStateUtils.floatViewOutAnimaiton(firstFloatView);
 					}
 				} else {
 
-					dinashijuGv.setNextFocusLeftId(activeView.getId());
+					playGv.setNextFocusLeftId(activeView.getId());
 
 					if (beforeGvView != null) {
 
 						ItemStateUtils.viewInAnimation(getApplicationContext(),
 								beforeGvView);
 
-					} else {
-						initFirstFloatView();
 					}
 				}
 			}
@@ -528,9 +412,10 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 				Editable editable = searchEt.getText();
 				String searchStr = editable.toString();
 				searchEt.setText("");
-				dinashijuGv.setNextFocusForwardId(searchEt.getId());//
+				playGv.setNextFocusForwardId(searchEt.getId());//
 				showDialog(DIALOG_WAITING);
-				ItemStateUtils.viewToNormal(getApplicationContext(), activeView);
+				ItemStateUtils
+						.viewToNormal(getApplicationContext(), activeView);
 				activeView = searchEt;
 
 				if (searchStr != null && !searchStr.equals("")) {
@@ -541,6 +426,7 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 					String url = StatisticsUtils.getSearch_FirstURL(searchStr);
 					getFilterData(url);
 				}
+
 			}
 		});
 
@@ -563,33 +449,11 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 	}
 
 	@Override
-	protected void initViewState() {
-		// TODO Auto-generated method stub
-
-		if (defalutYuedan == DIANYING_YUEDAN) {
-
-			activeView = dianyingyuedanBtn;
-			ItemStateUtils.buttonToActiveState(getApplicationContext(),
-					dianyingyuedanBtn);
-		} else {
-
-			activeView = dianshijuyuedanBtn;
-			ItemStateUtils.buttonToActiveState(getApplicationContext(),
-					dianshijuyuedanBtn);
-		}
-
-		ItemStateUtils.setItemPadding(zuijinguankanBtn);
-		ItemStateUtils.setItemPadding(zhuijushoucangBtn);
-		ItemStateUtils.setItemPadding(dianyingyuedanBtn);
-		ItemStateUtils.setItemPadding(dianshijuyuedanBtn);
-	}
-
-	@Override
 	protected void clearLists() {
 		// TODO Auto-generated method stub
 
-		for(int i= 0;i<lists.length;i++) {
-			
+		for (int i = 0; i < lists.length; i++) {
+
 			StatisticsUtils.clearList(lists[i]);
 		}
 	}
@@ -598,45 +462,12 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 	protected void initLists() {
 		// TODO Auto-generated method stub
 
-		for(int i= 0;i<lists.length;i++) {
-			
+		for (int i = 0; i < lists.length; i++) {
+
 			lists[i] = new ArrayList<MovieItemData>();
-			isNextPagePossibles[i] = false;//认为所有的不能够翻页
-			pageNums[i]=0;
+			isNextPagePossibles[i] = false;// 认为所有的不能够翻页
+			pageNums[i] = 0;
 		}
-	}
-
-	@Override
-	protected void initFirstFloatView() {
-		// TODO Auto-generated method stub
-
-		firstFloatView.setX(0);
-		firstFloatView.setY(0);
-		firstFloatView.setLayoutParams(new FrameLayout.LayoutParams(popWidth,
-				popHeight));
-		firstFloatView.setVisibility(View.VISIBLE);
-
-		TextView movieName = (TextView) firstFloatView
-				.findViewById(R.id.tv_item_layout_name);
-		TextView movieScore = (TextView) firstFloatView
-				.findViewById(R.id.tv_item_layout_other_info);
-
-		List<MovieItemData> list = searchAdapter.getMovieList();
-		if (list != null && !list.isEmpty()) {
-
-			FrameLayout inFrameLayout = (FrameLayout) firstFloatView
-					.findViewById(R.id.inclue_movie_show_item);
-			ImageView haibaoIv = (ImageView) inFrameLayout
-					.findViewById(R.id.iv_item_layout_haibao);
-			aq.id(haibaoIv).image(list.get(0).getMoviePicUrl(), true, true, 0,
-					R.drawable.post_active);
-			movieName.setText(list.get(0).getMovieName());
-			movieScore.setText(list.get(0).getMovieName()
-					+ getString(R.string.yingpianshu));
-		}
-
-		ItemStateUtils.floatViewInAnimaiton(getApplicationContext(),
-				firstFloatView);
 	}
 
 	@Override
@@ -653,41 +484,61 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 		}
 
 		searchAdapter.setList(list);
-		
-		if(list != null && !list.isEmpty() && currentListIndex != QUANBUFENLEI) {//判断其能否向获取更多数据
-			
-			if(list.size() == StatisticsUtils.FIRST_NUM) {
-				
+
+		if (list != null && !list.isEmpty() && currentListIndex != QUANBUFENLEI) {// 判断其能否向获取更多数据
+
+			if (list.size() == StatisticsUtils.FIRST_NUM) {
+
 				isNextPagePossibles[currentListIndex] = true;
-			} else if(list.size() < StatisticsUtils.FIRST_NUM) {
-				
+			} else if (list.size() < StatisticsUtils.FIRST_NUM) {
+
 				isNextPagePossibles[currentListIndex] = false;
 			}
 		}
-		
 		lists[currentListIndex] = list;
 
-		dinashijuGv.setSelection(0);
+		playGv.setSelection(0);
 		searchAdapter.notifyDataSetChanged();
 		beforeGvView = null;
-		initFirstFloatView();
-		dinashijuGv.setFocusable(true);
-		dinashijuGv.setSelected(true);
-		isSelectedItem = false;
 		removeDialog(DIALOG_WAITING);
-		dinashijuGv.requestFocus();
+		playGv.requestFocus();
+
 	}
 
 	@Override
 	protected void filterVideoSource(String[] choice) {
 		// TODO Auto-generated method stub
 
+		String quanbu = getString(R.string.quanbu_name);
+		String quanbufenlei = getString(R.string.quanbufenlei_name);
+		String tempStr = StatisticsUtils.getQuanBuFenLeiName(choice,
+				quanbufenlei, quanbu);
+
+		if (tempStr.equals(quanbufenlei)) {
+
+			currentListIndex = QUANBUFENLEI;
+			if (lists[QUANBUFENLEI] != null && !lists[QUANBUFENLEI].isEmpty()) {
+
+				notifyAdapter(lists[QUANBUFENLEI]);
+			}
+
+			return;
+		}
+
+		showDialog(DIALOG_WAITING);
+		StatisticsUtils.clearList(lists[QUAN_FILTER]);
+		currentListIndex = QUAN_FILTER;
+		filterSource = StatisticsUtils.getFileterURL3Param(choice, quanbu);
+		String url = StatisticsUtils.getFilter_DongmanFirstURL(filterSource);
+		Log.i(TAG, "POP--->URL:" + url);
+		getFilterData(url);
 	}
 
 	@Override
 	protected void getQuan10Data(String url) {
 		// TODO Auto-generated method stub
 
+		showDialog(DIALOG_WAITING);
 		getServiceData(url, "initQuan10ServiceData");
 	}
 
@@ -716,7 +567,6 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 	protected void getServiceData(String url, String interfaceName) {
 		// TODO Auto-generated method stub
 
-		firstFloatView.setVisibility(View.INVISIBLE);
 		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
 		cb.url(url).type(JSONObject.class).weakHandler(this, interfaceName);
 
@@ -725,10 +575,143 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 	}
 
 	@Override
-	public void initQuan10ServiceData(String url, JSONObject json,
+	protected void refreshAdpter(List<MovieItemData> list) {
+		// TODO Auto-generated method stub
+
+		List<MovieItemData> srcList = searchAdapter.getMovieList();
+
+		if (list != null && !list.isEmpty()) {
+
+			for (MovieItemData movieItemData : list) {
+
+				srcList.add(movieItemData);
+			}
+		}
+
+		if (list.size() == StatisticsUtils.CACHE_NUM) {
+
+			isNextPagePossibles[currentListIndex] = true;
+		} else {
+
+			isNextPagePossibles[currentListIndex] = false;
+		}
+
+		searchAdapter.setList(srcList);
+		lists[currentListIndex] = srcList;
+
+		searchAdapter.notifyDataSetChanged();
+	}
+
+	@Override
+	protected void getMoreFilterData(String url) {
+		// TODO Auto-generated method stub
+		getServiceData(url, "initMoreFilerServiceData");
+	}
+
+	@Override
+	protected void getMoreBangDanData(String url) {
+		// TODO Auto-generated method stub
+		getServiceData(url, "initMoreBangDanServiceData");
+	}
+
+	@Override
+	protected void filterPopWindowShow() {
+		// TODO Auto-generated method stub
+
+	}
+
+	protected void getMoreTopData(String url) {
+		// TODO Auto-generated method stub
+		getServiceData(url, "initMoreTopServiceData");
+	}
+
+	@Override
+	public void initMoreFilerServiceData(String url, JSONObject json,
+			AjaxStatus status) {
+		// TODO Auto-generated method stub
+		if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
+
+			app.MyToast(aq.getContext(),
+					getResources().getString(R.string.networknotwork));
+			return;
+		}
+
+		try {
+			Log.d(TAG, json.toString());
+			refreshAdpter(StatisticsUtils.returnFilterMovieSearch_TVJson(json
+					.toString()));
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public void initMoreTopServiceData(String url, JSONObject json,
+			AjaxStatus status) {
+		// TODO Auto-generated method stub
+		if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
+
+			app.MyToast(aq.getContext(),
+					getResources().getString(R.string.networknotwork));
+			return;
+		}
+
+		try {
+			Log.d(TAG, json.toString());
+			refreshAdpter(StatisticsUtils.returnTopsJson(json.toString()));
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void initMoreBangDanServiceData(String url, JSONObject json,
 			AjaxStatus status) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	protected void cachePlay(int index, int pageNum) {
+		// TODO Auto-generated method stub
+
+		switch (index) {
+		case QUANBUFENLEI:
+
+			break;
+		case QUAN_TEN:
+
+			break;
+		case QUAN_FILTER:
+
+			break;
+		case SEARCH:
+			getMoreFilterData(StatisticsUtils.getSearch_CacheURL(pageNum,
+					search));
+			break;
+		case DIANYING:
+			getMoreTopData(StatisticsUtils.getYueDan_DianyingCacheURL(pageNum));
+			break;
+		case DIANSHI:
+			getMoreTopData(StatisticsUtils.getYueDan_DianshiCacheURL(pageNum));
+			break;
+
+		default:
+			break;
+		}
 	}
 
 	@Override
@@ -777,7 +760,8 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 
 		try {
 			Log.d(TAG, json.toString());
-			notifyAdapter(StatisticsUtils.returnFilterMovieSearch_TVJson(json.toString()));
+			notifyAdapter(StatisticsUtils.returnFilterMovieSearch_TVJson(json
+					.toString()));
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -791,143 +775,116 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 	}
 
 	@Override
-	protected void refreshAdpter(List<MovieItemData> list) {
+	public void initQuan10ServiceData(String url, JSONObject json,
+			AjaxStatus status) {
 		// TODO Auto-generated method stub
-		
-		List<MovieItemData> srcList = searchAdapter.getMovieList();
-		
-		if(list != null && !list.isEmpty()) {
-			
-			for(MovieItemData movieItemData:list) {
-				
-				srcList.add(movieItemData);
-			}
-			
-			if(list.size() == StatisticsUtils.CACHE_NUM) {
-				
-				isNextPagePossibles[currentListIndex] = true;
-			}else {
-				
-				isNextPagePossibles[currentListIndex] = false;
-			}
-			
-			searchAdapter.setList(srcList);
-			lists[currentListIndex] = srcList;
-			
-			searchAdapter.notifyDataSetChanged();
-		}
-		
+
 	}
 
 	@Override
-	public void initMoreFilerServiceData(String url, JSONObject json,
-			AjaxStatus status) {
+	protected void initViewState() {
 		// TODO Auto-generated method stub
-		if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
 
-			app.MyToast(aq.getContext(),
-					getResources().getString(R.string.networknotwork));
+		if (defalutYuedan == DIANYING_YUEDAN) {
+
+			activeView = dianyingyuedanBtn;
+			ItemStateUtils.buttonToActiveState(getApplicationContext(),
+					dianyingyuedanBtn);
+		} else {
+
+			activeView = dianshijuyuedanBtn;
+			ItemStateUtils.buttonToActiveState(getApplicationContext(),
+					dianshijuyuedanBtn);
+		}
+
+		ItemStateUtils.setItemPadding(zuijinguankanBtn);
+		ItemStateUtils.setItemPadding(zhuijushoucangBtn);
+		ItemStateUtils.setItemPadding(dianyingyuedanBtn);
+		ItemStateUtils.setItemPadding(dianshijuyuedanBtn);
+	}
+
+	@Override
+	protected void initView() {
+		// TODO Auto-generated method stub
+
+		searchEt = (EditText) findViewById(R.id.et_search);
+		dianyingyuedanBtn = (Button) findViewById(R.id.bt_dianyingyuedan);
+		dianshijuyuedanBtn = (Button) findViewById(R.id.bt_dianshijuyuedan);
+		playGv = (MyMovieGridView) findViewById(R.id.gv_movie_show);
+
+		zuijinguankanBtn = (Button) findViewById(R.id.bt_zuijinguankan);
+		zhuijushoucangBtn = (Button) findViewById(R.id.bt_zhuijushoucang);
+
+		playGv.setNextFocusLeftId(R.id.bt_dianyingyuedan);
+	}
+
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+		Log.i("Yangzhg", "onClick");
+
+		if (activeView == null) {
+
+			if (defalutYuedan == DIANYING_YUEDAN) {
+				activeView = dianyingyuedanBtn;
+			} else {
+
+				activeView = dianshijuyuedanBtn;
+			}
+
+		}
+
+		if (activeView.getId() == v.getId()) {
+
 			return;
 		}
 
-		try {
-			Log.d(TAG, json.toString());
-			refreshAdpter(StatisticsUtils.returnFilterMovieSearch_TVJson(json.toString()));
-		} catch (JsonParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+		switch (v.getId()) {
+		case R.id.bt_dianyingyuedan:
+			currentListIndex = DIANYING;
+			String url1 = StatisticsUtils.getYueDan_DianyingFirstURL();
+			app.MyToast(aq.getContext(), "ll_daluju");
+			if (lists[currentListIndex] != null
+					&& !lists[currentListIndex].isEmpty()) {
 
-	@Override
-	protected void getMoreFilterData(String url) {
-		// TODO Auto-generated method stub
-		getServiceData(url, "initMoreFilerServiceData");
-	}
-	
-
-	protected void getMoreTopData(String url) {
-		// TODO Auto-generated method stub
-		getServiceData(url, "initMoreTopServiceData");
-	}
-	
-
-	public void initMoreTopServiceData(String url, JSONObject json,
-			AjaxStatus status) {
-		// TODO Auto-generated method stub
-		if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
-
-			app.MyToast(aq.getContext(),
-					getResources().getString(R.string.networknotwork));
-			return;
-		}
-
-		try {
-			Log.d(TAG, json.toString());
-			refreshAdpter(StatisticsUtils.returnTopsJson(json.toString()));
-		} catch (JsonParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	@Override
-	public void initMoreBangDanServiceData(String url, JSONObject json,
-			AjaxStatus status) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void getMoreBangDanData(String url) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	protected void cachePlay(int index, int pageNum) {
-		// TODO Auto-generated method stub
-		
-		switch (index) {
-		case QUANBUFENLEI:
-
+				notifyAdapter(lists[currentListIndex]);
+			} else {
+				showDialog(DIALOG_WAITING);
+				getUnQuanbuData(url1);
+			}
 			break;
-		case QUAN_TEN:
-			
-			break;
-		case QUAN_FILTER:
-			
-			break;
-		case SEARCH:
-			getMoreFilterData(StatisticsUtils.getSearch_CacheURL(pageNum, search));
-			break;
-		case DIANYING:
-			getMoreTopData(StatisticsUtils.getYueDan_DianyingCacheURL(pageNum));
-			break;
-		case DIANSHI:
-			getMoreTopData(StatisticsUtils.getYueDan_DianshiCacheURL(pageNum));
-			break;
+		case R.id.bt_dianshijuyuedan:
+			currentListIndex = DIANSHI;
+			String url2 = StatisticsUtils.getYueDan_DianshiFirstURL();
+			app.MyToast(aq.getContext(), "ll_gangju");
+			if (lists[currentListIndex] != null
+					&& !lists[currentListIndex].isEmpty()) {
 
+				notifyAdapter(lists[currentListIndex]);
+			} else {
+				showDialog(DIALOG_WAITING);
+				getUnQuanbuData(url2);
+			}
+			break;
+		case R.id.bt_zuijinguankan:
+			startActivity(new Intent(this, HistoryActivity.class));
+			break;
+		case R.id.bt_zhuijushoucang:
+			startActivity(new Intent(this, ShowShoucangHistoryActivity.class));
+			break;
 		default:
 			break;
 		}
-	}
 
-	@Override
-	protected void filterPopWindowShow() {
-		// TODO Auto-generated method stub
-		
+		View tempView = ItemStateUtils.viewToActive(getApplicationContext(), v,
+				activeView);
+
+		if (tempView != null) {
+
+			activeView = tempView;
+		}
+
+		beforeGvView = null;
 	}
 
 }
