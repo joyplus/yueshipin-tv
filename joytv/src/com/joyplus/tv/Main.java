@@ -1136,14 +1136,14 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 	
 	
 	public void getHotServiceData() { 
-//		String url = Constant.BASE_URL + "tv_net_top" +"?page_num=1&page_size=1000";
-		String url = "http://api.joyplus.tv/joyplus-service/index.php/tv_net_top?page_num=1&page_size=1000&app_key=ijoyplus_android_0001";
+		String url = Constant.BASE_URL + "tv_net_top" +"?page_num=1&page_size=1000";
+//		String url = "http://api.joyplus.tv/joyplus-service/index.php/tv_net_top?page_num=1&page_size=1000&app_key=ijoyplus_android_0001";
 
 //		String url = Constant.BASE_URL;
 		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>(); 
 		cb.url(url).type(JSONObject.class).weakHandler(this, "initHotData");
 
-//		cb.SetHeader(app.getHeaders());
+		cb.SetHeader(app.getHeaders());
 		aq.ajax(cb);
 	}
 	

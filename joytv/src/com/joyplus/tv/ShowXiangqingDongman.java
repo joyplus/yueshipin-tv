@@ -54,10 +54,13 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 	private static final String TAG = "ShowXiangqingDongman";
 	private static final int DIALOG_WAITING = 0;
 	private LinearLayout bofangLL;
-
+	private String pic_url;
 	private Button dingBt,xiaiBt, yingpingBt;
 	private Button bofangBt,gaoqingBt;
 
+	private Button seletedTitleButton;
+	private Button seletedIndexButton;
+	private int seletedButtonIndex=0;
 	private View beforeView;
 
 	private PopupWindow popupWindow;
@@ -109,7 +112,13 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 		// TODO Auto-generated method stub
 		
 		totle_pagecount = (num%COUNT ==0)? num/COUNT:num/COUNT+1;
-		
+		if(totle_pagecount<2){
+			selectedIndex = 1;
+			initTableView(num);
+			aq.id(R.id.arrow_left).invisible();
+			aq.id(R.id.arrow_right).invisible();
+			return;
+		}
 		for(int i=0; i<totle_pagecount; i++){
 			Button b = new Button(this);
 //			b.setWidth(table.getWidth()/5);
@@ -129,7 +138,14 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 				}
 				
 			}
-			b.setBackgroundResource(R.drawable.xiangqing_button_selector);
+			if(i==0){
+				seletedTitleButton = b;
+				seletedTitleButton.setEnabled(false);
+			}
+			b.setBackgroundResource(R.drawable.bg_button_tv_title_selector);
+			b.setTextColor(getResources().getColorStateList(R.color.tv_title_btn_text_color_selector));
+//			b.setCompoundDrawablesWithIntrinsicBounds(getResources()
+//					.getDrawable(R.drawable.bg_right_play_icon_selector), null, null, null);
 			b.setId((i+1)*10000);
 			b.setOnClickListener(this);
 			layout.addView(b);
@@ -255,7 +271,17 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 //			intent.putExtra("prod_url", str2);
 //			intent.putExtra("title", str1);
 //			startActivity(intent);
-			play(0);
+			if(seletedButtonIndex==0){
+				seletedButtonIndex = 1;
+				Button b = (Button) table.findViewById(1);
+				seletedIndexButton = b;
+				b.setBackgroundResource(R.drawable.bg_button_tv_selector_1);
+				b.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector_1));
+				b.setPadding(8, 0, 0, 0);
+				play(0);
+			}else{
+				play(seletedButtonIndex-1);
+			}
 			break;
 		case R.id.bt_xiangqing_yingping:
 			Intent yingpingIntent = new Intent(this, DetailComment.class);
@@ -286,8 +312,29 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 				}else{
 					initTableView(num-COUNT*(selectedIndex-1));
 				}
+				seletedTitleButton.setEnabled(true);
+				seletedTitleButton = (Button) v;
+				seletedTitleButton.setEnabled(false);
 			}else{
 				Toast.makeText(this, "click btn = " + v.getId(), 100).show();
+				if(seletedIndexButton == null){
+					seletedIndexButton = (Button) v;
+					seletedIndexButton.setBackgroundResource(R.drawable.bg_button_tv_selector_1);
+					seletedIndexButton.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector_1));
+//					seletedIndexButton.setEnabled(false);
+					seletedIndexButton.setPadding(8, 0, 0, 0);
+				}else{
+//					seletedIndexButton.setEnabled(true);
+					seletedIndexButton.setBackgroundResource(R.drawable.bg_button_tv_selector);
+					seletedIndexButton.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector));
+					seletedIndexButton.setPadding(8, 0, 0, 0);
+					seletedIndexButton = (Button) v;
+					seletedIndexButton.setBackgroundResource(R.drawable.bg_button_tv_selector_1);
+					seletedIndexButton.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector_1));
+//					seletedIndexButton.setEnabled(false);
+					seletedIndexButton.setPadding(8, 0, 0, 0);
+				}
+				seletedButtonIndex = v.getId();
 				play(v.getId()-1);
 //				scrollView.smoothScrollBy(20, 0);
 			}
@@ -504,7 +551,19 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 				}
 				btn.setOnClickListener(this);
 				btn.setOnKeyListener(this);
-				btn.setBackgroundResource(R.drawable.xiangqing_button_selector);
+				if(seletedButtonIndex==btn.getId()){
+//					btn.setEnabled(false);
+					seletedIndexButton = btn;
+					btn.setBackgroundResource(R.drawable.bg_button_tv_selector_1);
+					btn.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector_1));
+				}else{
+					btn.setBackgroundResource(R.drawable.bg_button_tv_selector);
+					btn.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector)) ;
+				}
+				btn.setPadding(8, 0, 0, 0);
+//				btn.setBackgroundResource(R.drawable.bg_button_tv_selector);
+//				btn.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector)) ;
+//				btn.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_play, 0);
 				if(j*5+i+1>count){
 					btn.setVisibility(View.INVISIBLE);
 				}
@@ -545,8 +604,10 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 				Log.e(TAG, "tv date error---->date == null");
 				return;
 			}
-			if("".equals(date.tv.cur_episode)||"0".equals(date.tv.cur_episode)
-					||date.tv.cur_episode.equals(date.tv.max_episode)){
+			if("".equals(date.tv.max_episode)||"0".equals(date.tv.max_episode)){
+				num = date.tv.episodes.length;
+				isOver = true;
+			}else if(date.tv.cur_episode.equals(date.tv.max_episode)){
 				isOver = true;
 				num = Integer.valueOf(date.tv.max_episode);
 			}else if(Integer.valueOf(date.tv.cur_episode)>Integer.valueOf(date.tv.max_episode)){
@@ -556,6 +617,13 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 				isOver = false;
 				num = Integer.valueOf(date.tv.cur_episode);
 			}
+			String bigPicUrl = date.tv.ipad_poster;
+			if(bigPicUrl == null || bigPicUrl.equals("")
+					||bigPicUrl.equals(StatisticsUtils.EMPTY)) {
+				
+				bigPicUrl = date.tv.poster;
+			}
+			pic_url = bigPicUrl;
 			removeDialog(DIALOG_WAITING);
 			updateView();
 		} catch (JsonParseException e) {
@@ -572,7 +640,7 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 	
 	private void updateView(){
 		initButton();
-		aq.id(R.id.image).image(date.tv.poster, false, true,0, R.drawable.post_normal);
+		aq.id(R.id.image).image(pic_url, false, true,0, R.drawable.post_normal);
 		aq.id(R.id.text_name).text(date.tv.name);
 		aq.id(R.id.text_directors).text(date.tv.directors);
 		aq.id(R.id.text_starts).text(date.tv.stars);

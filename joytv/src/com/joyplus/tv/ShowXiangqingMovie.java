@@ -58,7 +58,7 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 	private static final String TAG = "ShowXiangqingMovie";
 	private static final int DIALOG_WAITING = 0;
 	private LinearLayout bofangLL;
-
+	private String pic_url;
 	private Button dingBt,xiaiBt, yingpingBt;
 	private Button bofangBt,gaoqingBt;
 
@@ -139,7 +139,7 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 					}
 				}
 			}
-			
+			removeDialog(DIALOG_WAITING);
 		}
 		
 	};
@@ -574,7 +574,13 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 			movieData  = mapper.readValue(json.toString(), ReturnProgramView.class);
 			new Thread(new CheckPlayUrl()).start();
 			if(movieData!=null){
-				removeDialog(DIALOG_WAITING);
+				String bigPicUrl = movieData.movie.ipad_poster;
+				if(bigPicUrl == null || bigPicUrl.equals("")
+						||bigPicUrl.equals(StatisticsUtils.EMPTY)) {
+					
+					bigPicUrl = movieData.movie.poster;
+				}
+				pic_url = bigPicUrl;
 				updateView();
 			}
 		} catch (JsonParseException e) {
@@ -590,7 +596,7 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 	}
 	
 	private void updateView(){
-		aq.id(R.id.image).image(movieData.movie.poster, false, true,0, R.drawable.post_normal);
+		aq.id(R.id.image).image(pic_url, false, true,0, R.drawable.post_normal);
 		aq.id(R.id.text_name).text(movieData.movie.name);
 		aq.id(R.id.text_directors).text(movieData.movie.directors);
 		aq.id(R.id.text_starts).text(movieData.movie.stars);

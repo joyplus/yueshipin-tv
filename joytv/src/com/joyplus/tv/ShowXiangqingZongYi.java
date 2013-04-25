@@ -54,10 +54,13 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 	private static final String TAG = "ShowXiangqingZongYi";
 	private static final int DIALOG_WAITING = 0;
 	private LinearLayout bofangLL;
-
+	private String pic_url;
 	private Button dingBt,xiaiBt;
 	private Button bofangBt,gaoqingBt;
 
+	private Button seletedTitleButton;
+	private Button seletedIndexButton;
+	private int seletedButtonIndex=0;
 	private View beforeView;
 
 	private PopupWindow popupWindow;
@@ -109,13 +112,18 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 		// TODO Auto-generated method stub
 		
 		totle_pagecount = (num%COUNT ==0)? num/COUNT:num/COUNT+1;
-		
+		if(totle_pagecount<2){
+			selectedIndex = 1;
+			initTableView(num);
+			aq.id(R.id.arrow_left).invisible();
+			aq.id(R.id.arrow_right).invisible();
+			return;
+		}
 		for(int i=0; i<totle_pagecount; i++){
 			Button b = new Button(this);
 //			b.setWidth(table.getWidth()/5);
 //			b.setHeight(layout.getHeight());
 			b.setLayoutParams(new LayoutParams((table.getWidth()-80)/5,35));
-			isOver = false;
 			if(isOver){
 				if((i+1)*COUNT>num){
 					b.setText((i*COUNT+1) +"-"+num);
@@ -130,8 +138,15 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 				}
 				
 			}
-			b.setBackgroundResource(R.drawable.xiangqing_button_selector);
-			b.setId((i+1)*10001);
+			if(i==0){
+				seletedTitleButton = b;
+				seletedTitleButton.setEnabled(false);
+			}
+			b.setBackgroundResource(R.drawable.bg_button_tv_title_selector);
+			b.setTextColor(getResources().getColorStateList(R.color.tv_title_btn_text_color_selector));
+//			b.setCompoundDrawablesWithIntrinsicBounds(getResources()
+//					.getDrawable(R.drawable.bg_right_play_icon_selector), null, null, null);
+			b.setId((i+1)*10000);
 			b.setOnClickListener(this);
 			layout.addView(b);
 			if(i!=totle_pagecount-1){
@@ -239,7 +254,16 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 //			intent.putExtra("prod_url", str2);
 //			intent.putExtra("title", str1);
 //			startActivity(intent);
-			play(0);
+			if(seletedButtonIndex==0){
+				seletedButtonIndex = 1;
+				Button b = (Button) table.findViewById(1);
+				seletedIndexButton = b;
+				b.setBackgroundResource(R.drawable.bg_button_tv_selector_1);
+				b.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector_1));
+				play(0);
+			}else{
+				play(seletedButtonIndex-1);
+			}
 			break;
 //		case R.id.bt_xiangqing_yingping:
 //			Intent yingpingIntent = new Intent(this, DetailComment.class);
@@ -270,8 +294,26 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 				}else{
 					initTableView(num-COUNT*(selectedIndex-1));
 				}
+				seletedTitleButton.setEnabled(true);
+				seletedTitleButton = (Button) v;
+				seletedTitleButton.setEnabled(false);
 			}else{
 				Toast.makeText(this, "click btn = " + v.getId(), 100).show();
+				if(seletedIndexButton == null){
+					seletedIndexButton = (Button) v;
+					seletedIndexButton.setBackgroundResource(R.drawable.bg_button_tv_selector_1);
+					seletedIndexButton.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector_1));
+//					seletedIndexButton.setEnabled(false);
+				}else{
+//					seletedIndexButton.setEnabled(true);
+					seletedIndexButton.setBackgroundResource(R.drawable.bg_button_tv_selector);
+					seletedIndexButton.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector));
+					seletedIndexButton = (Button) v;
+					seletedIndexButton.setBackgroundResource(R.drawable.bg_button_tv_selector_1);
+					seletedIndexButton.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector_1));
+//					seletedIndexButton.setEnabled(false);
+				}
+				seletedButtonIndex = v.getId();
 				play(v.getId()-1);
 //				scrollView.smoothScrollBy(20, 0);
 			}
@@ -495,9 +537,19 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 ////					btn.setText(date.show.episodes[(num-((j*5+i)+ (selectedIndex-1)*COUNT)] + "");
 //					btn.setId(num-((j*5+i)+ (selectedIndex-1)*COUNT));
 //				}
+				btn.setSingleLine(true);
+				btn.setGravity(Gravity.LEFT|Gravity.CENTER_VERTICAL);
 				btn.setOnClickListener(this);
 				btn.setOnKeyListener(this);
-				btn.setBackgroundResource(R.drawable.bg_button_tv_selector);
+				if(seletedButtonIndex==btn.getId()){
+//					btn.setEnabled(false);
+					seletedIndexButton = btn;
+					btn.setBackgroundResource(R.drawable.bg_button_tv_selector_1);
+					btn.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector_1));
+				}else{
+					btn.setBackgroundResource(R.drawable.bg_button_tv_selector);
+					btn.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector)) ;
+				}
 				if(j*5+i+1>count){
 					btn.setVisibility(View.INVISIBLE);
 				}
@@ -549,7 +601,13 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 //				isOver = false;
 //				num = Integer.valueOf(date.tv.cur_episode);
 //			}
-			
+			String bigPicUrl = date.show.ipad_poster;
+			if(bigPicUrl == null || bigPicUrl.equals("")
+					||bigPicUrl.equals(StatisticsUtils.EMPTY)) {
+				
+				bigPicUrl = date.show.poster;
+			}
+			pic_url = bigPicUrl;
 			removeDialog(DIALOG_WAITING);
 			if(date.show.episodes.length <= 0) {
 				
@@ -572,6 +630,7 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 	
 	private void updateView(){
 		initButton();
+		aq.id(R.id.image).image(pic_url, false, true,0, R.drawable.post_normal);
 		aq.id(R.id.image).image(date.show.poster, false, true,0, R.drawable.post_normal);
 		aq.id(R.id.text_name).text(date.show.name);
 		aq.id(R.id.text_directors).text(date.show.stars);
