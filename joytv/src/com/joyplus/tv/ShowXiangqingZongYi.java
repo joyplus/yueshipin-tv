@@ -16,6 +16,7 @@ import android.content.Intent;
 import android.content.DialogInterface.OnCancelListener;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextUtils.TruncateAt;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -517,7 +518,7 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 			TableRow row = new TableRow(this);
 //			row.setId(6-flag);
 			for(int i =0; i<5 ; i++){
-				Button btn = new Button(this);
+				TextView btn = new Button(this);
 				btn.setWidth((table.getWidth()-80)/5);
 				btn.setTextSize(18);
 				btn.setHeight(25);
@@ -539,11 +540,13 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 //				}
 				btn.setSingleLine(true);
 				btn.setGravity(Gravity.LEFT|Gravity.CENTER_VERTICAL);
+				btn.setEllipsize(TruncateAt.MARQUEE);
+				btn.setMarqueeRepeatLimit(-1);
 				btn.setOnClickListener(this);
 				btn.setOnKeyListener(this);
 				if(seletedButtonIndex==btn.getId()){
 //					btn.setEnabled(false);
-					seletedIndexButton = btn;
+					seletedIndexButton = (Button) btn;
 					btn.setBackgroundResource(R.drawable.bg_button_tv_selector_1);
 					btn.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector_1));
 				}else{
