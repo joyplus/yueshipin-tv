@@ -59,6 +59,8 @@ public class ShowSearchActivity extends AbstractShowActivity {
 	private String filterSource;
 	private PopupWindow popupWindow;
 	
+	private int activeRecordIndex = -1;
+	
 	private List<MovieItemData>[] lists = new List[4];
 	private boolean[] isNextPagePossibles = new boolean[4];
 	private int[] pageNums = new int[4];
@@ -163,64 +165,6 @@ public class ShowSearchActivity extends AbstractShowActivity {
 			}
 		});
 
-		playGv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
-				// TODO Auto-generated method stub
-				List<MovieItemData> list = searchAdapter.getMovieList();
-				if (list != null && !list.isEmpty()) {
-					String pro_type = list.get(position).getMovieProType();
-					Log.i(TAG, "pro_type:" + pro_type);
-					if (pro_type != null && !pro_type.equals("")) {
-						Intent intent = new Intent();
-						if (pro_type.equals("2")) {
-							Log.i(TAG, "pro_type:" + pro_type + "   --->2");
-							intent.setClass(ShowSearchActivity.this,
-									ShowXiangqingTv.class);
-							intent.putExtra("ID", list.get(position)
-									.getMovieID());
-						} else if (pro_type.equals("1")) {
-							Log.i(TAG, "pro_type:" + pro_type + "   --->1");
-							intent.setClass(ShowSearchActivity.this,
-									ShowXiangqingMovie.class);
-						} else if (pro_type.equals("131")) {
-
-							intent.setClass(ShowSearchActivity.this,
-									ShowXiangqingDongman.class);
-						} else if (pro_type.equals("3")) {
-
-							intent.setClass(ShowSearchActivity.this,
-									ShowXiangqingZongYi.class);
-						}
-
-						intent.putExtra("ID", list.get(position).getMovieID());
-
-						intent.putExtra("prod_url", list.get(position)
-								.getMoviePicUrl());
-						intent.putExtra("prod_name", list.get(position)
-								.getMovieName());
-						intent.putExtra("stars", list.get(position).getStars());
-						intent.putExtra("directors", list.get(position)
-								.getDirectors());
-						intent.putExtra("summary", list.get(position)
-								.getSummary());
-						intent.putExtra("support_num", list.get(position)
-								.getSupport_num());
-						intent.putExtra("favority_num", list.get(position)
-								.getFavority_num());
-						intent.putExtra("definition", list.get(position)
-								.getDefinition());
-						intent.putExtra("score", list.get(position)
-								.getMovieScore());
-						startActivity(intent);
-
-					}
-				}
-			}
-		});
-
 		playGv.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
 			@Override
@@ -264,15 +208,18 @@ public class ShowSearchActivity extends AbstractShowActivity {
 
 				}
 
-				if (beforeGvView != null) {
+				if (beforeGvView != null && beforeGvView != view) {
 
 					ItemStateUtils.viewOutAnimation(getApplicationContext(),
 							beforeGvView);
-				} else {
-
+				} 
+				
+				if(position != activeRecordIndex) {
+					
+					ItemStateUtils.viewInAnimation(getApplicationContext(), view);
+					activeRecordIndex = position;
 				}
-
-				ItemStateUtils.viewInAnimation(getApplicationContext(), view);
+				
 
 				int[] firstAndLastVisible = new int[2];
 				firstAndLastVisible[0] = playGv.getFirstVisiblePosition();
@@ -304,6 +251,7 @@ public class ShowSearchActivity extends AbstractShowActivity {
 					if (isNextPagePossibles[currentListIndex]) {
 
 						pageNums[currentListIndex]++;
+						playGv.setOnFocusChangeListener(null);
 						cachePlay(currentListIndex, pageNums[currentListIndex]);
 					}
 				}
@@ -317,39 +265,13 @@ public class ShowSearchActivity extends AbstractShowActivity {
 			}
 		});
 
-		playGv.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-
-			@Override
-			public void onFocusChange(View v, boolean hasFocus) {
-				// TODO Auto-generated method stub
-
-				if (!hasFocus) {// 如果gridview没有获取焦点，把item中高亮取消
-
-					if (beforeGvView != null) {
-
-						ItemStateUtils.viewOutAnimation(
-								getApplicationContext(), beforeGvView);
-					}
-				} else {
-
-					playGv.setNextFocusLeftId(activeView.getId());
-
-					if (beforeGvView != null) {
-
-						ItemStateUtils.viewInAnimation(getApplicationContext(),
-								beforeGvView);
-
-					}
-				}
-			}
-		});
-
 		searchEt.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 
+				playGv.setAdapter(searchAdapter);
 				Editable editable = searchEt.getText();
 				String searchStr = editable.toString();
 				searchEt.setText("");
@@ -358,13 +280,13 @@ public class ShowSearchActivity extends AbstractShowActivity {
 				ItemStateUtils
 						.viewToNormal(getApplicationContext(), activeView);
 				activeView = searchEt;
+				resetGvActive();
 
 				if (searchStr != null && !searchStr.equals("")) {
 
 					search = searchStr;
 					StatisticsUtils.clearList(lists[SEARCH]);
 					currentListIndex = SEARCH;
-					playGv.setAdapter(searchAdapter);
 					String url = StatisticsUtils.getSearch_FirstURL(searchStr);
 					getFilterData(url);
 				}
@@ -389,6 +311,23 @@ public class ShowSearchActivity extends AbstractShowActivity {
 			}
 		});
 	}
+	
+	private View.OnFocusChangeListener gvOnFocusChangeListener = new View.OnFocusChangeListener() {
+		
+		@Override
+		public void onFocusChange(View v, boolean hasFocus) {
+			// TODO Auto-generated method stub
+			
+			if (!hasFocus) {// 如果gridview没有获取焦点，把item中高亮取消
+
+				if (beforeGvView != null) {
+
+					ItemStateUtils.viewOutAnimation(
+							getApplicationContext(), beforeGvView);
+				}
+			}
+		}
+	};
 
 	@Override
 	protected void clearLists() {
@@ -439,11 +378,12 @@ public class ShowSearchActivity extends AbstractShowActivity {
 		}
 		lists[currentListIndex] = list;
 
+		beforeGvView = null;
 		playGv.setSelection(0);
 		searchAdapter.notifyDataSetChanged();
-		beforeGvView = null;
 		removeDialog(DIALOG_WAITING);
 		playGv.requestFocus();
+		playGv.setOnFocusChangeListener(gvOnFocusChangeListener);
 
 	}
 
@@ -664,6 +604,15 @@ public class ShowSearchActivity extends AbstractShowActivity {
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
+	}
+
+	@Override
+	protected void resetGvActive() {
+		// TODO Auto-generated method stub
+		
+		playGv.setOnFocusChangeListener(null);
+		playGv.setSelection(-1);
+		activeRecordIndex = -1;
 	}
 
 }

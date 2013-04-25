@@ -66,6 +66,8 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 	private String filterSource;
 	private PopupWindow popupWindow;
 	
+	private int activeRecordIndex = -1;
+	
 	private List<MovieItemData>[] lists = new List[4];
 	private boolean[] isNextPagePossibles = new boolean[4];
 	private int[] pageNums = new int[4];
@@ -294,15 +296,18 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 
 				}
 
-				if (beforeGvView != null) {
+				if (beforeGvView != null && beforeGvView != view) {
 
 					ItemStateUtils.viewOutAnimation(getApplicationContext(),
 							beforeGvView);
-				} else {
-
+				} 
+				
+				if(position != activeRecordIndex) {
+					
+					ItemStateUtils.viewInAnimation(getApplicationContext(), view);
+					activeRecordIndex = position;
 				}
-
-				ItemStateUtils.viewInAnimation(getApplicationContext(), view);
+				
 
 				int[] firstAndLastVisible = new int[2];
 				firstAndLastVisible[0] = playGv.getFirstVisiblePosition();
@@ -334,6 +339,7 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 					if (isNextPagePossibles[currentListIndex]) {
 
 						pageNums[currentListIndex]++;
+						playGv.setOnFocusChangeListener(null);
 						cachePlay(currentListIndex, pageNums[currentListIndex]);
 					}
 				}
@@ -344,33 +350,6 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 			public void onNothingSelected(AdapterView<?> parent) {
 				// TODO Auto-generated method stub
 
-			}
-		});
-
-		playGv.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-
-			@Override
-			public void onFocusChange(View v, boolean hasFocus) {
-				// TODO Auto-generated method stub
-
-				if (!hasFocus) {// 如果gridview没有获取焦点，把item中高亮取消
-
-					if (beforeGvView != null) {
-
-						ItemStateUtils.viewOutAnimation(
-								getApplicationContext(), beforeGvView);
-					}
-				} else {
-
-					playGv.setNextFocusLeftId(activeView.getId());
-
-					if (beforeGvView != null) {
-
-						ItemStateUtils.viewInAnimation(getApplicationContext(),
-								beforeGvView);
-
-					}
-				}
 			}
 		});
 
@@ -388,6 +367,7 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 				ItemStateUtils
 						.viewToNormal(getApplicationContext(), activeView);
 				activeView = searchEt;
+				resetGvActive();
 
 				if (searchStr != null && !searchStr.equals("")) {
 
@@ -418,6 +398,23 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 			}
 		});
 	}
+	
+	private View.OnFocusChangeListener gvOnFocusChangeListener = new View.OnFocusChangeListener() {
+		
+		@Override
+		public void onFocusChange(View v, boolean hasFocus) {
+			// TODO Auto-generated method stub
+			
+			if (!hasFocus) {// 如果gridview没有获取焦点，把item中高亮取消
+
+				if (beforeGvView != null) {
+
+					ItemStateUtils.viewOutAnimation(
+							getApplicationContext(), beforeGvView);
+				}
+			}
+		}
+	};
 
 	@Override
 	protected void clearLists() {
@@ -468,11 +465,12 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 		}
 		lists[currentListIndex] = list;
 
+		beforeGvView = null;
 		playGv.setSelection(0);
 		searchAdapter.notifyDataSetChanged();
-		beforeGvView = null;
 		removeDialog(DIALOG_WAITING);
 		playGv.requestFocus();
+		playGv.setOnFocusChangeListener(gvOnFocusChangeListener);
 
 	}
 
@@ -572,6 +570,7 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 		lists[currentListIndex] = srcList;
 
 		searchAdapter.notifyDataSetChanged();
+		playGv.setOnFocusChangeListener(gvOnFocusChangeListener);
 	}
 
 
@@ -791,6 +790,7 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 			switch (v.getId()) {
 			case R.id.bt_quanbufenlei:
 				currentListIndex = QUANBUFENLEI;
+				resetGvActive();
 				app.MyToast(aq.getContext(), "bt_quanbufenlei");
 				if (lists[currentListIndex] != null
 						&& !lists[currentListIndex].isEmpty()) {
@@ -818,7 +818,16 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 			}
 
 		
-		beforeGvView = null;
+			playGv.setNextFocusLeftId(v.getId());
+	}
+
+	@Override
+	protected void resetGvActive() {
+		// TODO Auto-generated method stub
+		
+		playGv.setOnFocusChangeListener(null);
+		playGv.setSelection(-1);
+		activeRecordIndex = -1;
 	}
 
 }

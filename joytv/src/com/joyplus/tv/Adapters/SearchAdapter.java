@@ -14,14 +14,25 @@ import android.widget.TextView;
 
 import com.androidquery.AQuery;
 import com.joyplus.tv.R;
+import com.joyplus.tv.StatisticsUtils;
 import com.joyplus.tv.entity.GridViewItemHodler;
 import com.joyplus.tv.entity.MovieItemData;
 import com.joyplus.tv.utils.JieMianConstant;
 
 public class SearchAdapter extends BaseAdapter implements JieMianConstant{
-	private int popWidth,popHeight;
+
 	private List<MovieItemData> movieList = new ArrayList<MovieItemData>();
 
+	private int popWidth,popHeight;
+
+	public int getWidth() {
+		return popWidth;
+	}
+
+	public int getHeight() {
+		return popHeight;
+	}
+	
 	private Context context;
 	private AQuery aq;
 	
@@ -82,24 +93,21 @@ public class SearchAdapter extends BaseAdapter implements JieMianConstant{
 			viewItemHodler.haibaoIv = (ImageView) convertView
 					.findViewById(R.id.iv_item_layout_haibao);
 			convertView.setTag(viewItemHodler);
+			
+			convertView.setPadding(GRIDVIEW_ITEM_PADDING_LEFT,
+					GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING_LEFT,
+					GRIDVIEW_ITEM_PADDING);
+
 
 		} else {
 
 			viewItemHodler = (GridViewItemHodler) convertView.getTag();
 		}
-
+		
 		AbsListView.LayoutParams params = new AbsListView.LayoutParams(
 				width, height);
 		convertView.setLayoutParams(params);
-		convertView.setPadding(GRIDVIEW_ITEM_PADDING_LEFT,
-				GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING_LEFT,
-				GRIDVIEW_ITEM_PADDING);
 
-		if (width != 0) {
-
-			popWidth = width;
-			popHeight = height;
-		}
 
 		if (movieList.size() <= 0) {
 
@@ -118,7 +126,7 @@ public class SearchAdapter extends BaseAdapter implements JieMianConstant{
 				String duration = movieList.get(position).getMovieDuration();
 				if(duration != null && !duration.equals("")) {
 					
-					viewItemHodler.otherInfo.setText(duration);
+					viewItemHodler.otherInfo.setText(StatisticsUtils.formatMovieDuration(duration));
 				}
 			} else if(proType.equals("2") || proType.equals("131")){
 				
@@ -127,16 +135,26 @@ public class SearchAdapter extends BaseAdapter implements JieMianConstant{
 				String maxEpisode = movieList.get(position).getMovieMaxEpisode();
 				
 				if(maxEpisode != null && !maxEpisode.equals("")) {
-					
-					if(curEpisode == null || curEpisode.equals("0") || 
-							curEpisode.compareTo(maxEpisode) >= 0) {
+
+					if(curEpisode == null || curEpisode.equals("0")) {
 						
 						viewItemHodler.otherInfo.setText(
 								maxEpisode + context.getString(R.string.dianshiju_jiquan));
-						} else if(maxEpisode.compareTo(curEpisode) > 0) {
+						} else{
 
-							viewItemHodler.otherInfo.setText(context.getString(R.string.zongyi_gengxinzhi) + 
-									curEpisode);
+							int max = Integer.valueOf(maxEpisode);
+							int min = Integer.valueOf(curEpisode);
+							
+							if(min >= max) {
+								
+								viewItemHodler.otherInfo.setText(
+										maxEpisode + context.getString(R.string.dianshiju_jiquan));
+							} else {
+								
+								viewItemHodler.otherInfo.setText(context.getString(R.string.zongyi_gengxinzhi) + 
+										curEpisode);
+							}
+
 					}
 				}
 
@@ -154,14 +172,6 @@ public class SearchAdapter extends BaseAdapter implements JieMianConstant{
 		aq.id(viewItemHodler.haibaoIv).image(movieList.get(position).getMoviePicUrl(), 
 				true, true,0, R.drawable.post_normal);
 		return convertView;
-	}
-	
-	public int getHeight() {
-		return popHeight;
-	}
-
-	public int getWidth() {
-		return popWidth;
 	}
 
 	public void setList(List<MovieItemData> list) {

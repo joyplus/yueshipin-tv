@@ -71,6 +71,8 @@ public class ShowMovieActivity extends AbstractShowActivity {
 	private String search;
 	private String filterSource;
 	private PopupWindow popupWindow;
+	
+	private int activeRecordIndex = -1;
 
 	private LinearLayout dongzuoLL, kehuanLL, lunliLL, xijuLL, aiqingLL,
 			xuanyiLL, kongbuLL, donghuaLL;
@@ -329,15 +331,18 @@ public class ShowMovieActivity extends AbstractShowActivity {
 
 				}
 
-				if (beforeGvView != null) {
+				if (beforeGvView != null && beforeGvView != view) {
 
 					ItemStateUtils.viewOutAnimation(getApplicationContext(),
 							beforeGvView);
-				} else {
-
+				} 
+				
+				if(position != activeRecordIndex) {
+					
+					ItemStateUtils.viewInAnimation(getApplicationContext(), view);
+					activeRecordIndex = position;
 				}
-
-				ItemStateUtils.viewInAnimation(getApplicationContext(), view);
+				
 
 				int[] firstAndLastVisible = new int[2];
 				firstAndLastVisible[0] = playGv.getFirstVisiblePosition();
@@ -369,6 +374,7 @@ public class ShowMovieActivity extends AbstractShowActivity {
 					if (isNextPagePossibles[currentListIndex]) {
 
 						pageNums[currentListIndex]++;
+						playGv.setOnFocusChangeListener(null);
 						cachePlay(currentListIndex, pageNums[currentListIndex]);
 					}
 				}
@@ -379,33 +385,6 @@ public class ShowMovieActivity extends AbstractShowActivity {
 			public void onNothingSelected(AdapterView<?> parent) {
 				// TODO Auto-generated method stub
 
-			}
-		});
-
-		playGv.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-
-			@Override
-			public void onFocusChange(View v, boolean hasFocus) {
-				// TODO Auto-generated method stub
-
-				if (!hasFocus) {// 如果gridview没有获取焦点，把item中高亮取消
-
-					if (beforeGvView != null) {
-
-						ItemStateUtils.viewOutAnimation(
-								getApplicationContext(), beforeGvView);
-					}
-				} else {
-
-					playGv.setNextFocusLeftId(activeView.getId());
-
-					if (beforeGvView != null) {
-
-						ItemStateUtils.viewInAnimation(getApplicationContext(),
-								beforeGvView);
-
-					}
-				}
 			}
 		});
 
@@ -423,6 +402,7 @@ public class ShowMovieActivity extends AbstractShowActivity {
 				ItemStateUtils
 						.viewToNormal(getApplicationContext(), activeView);
 				activeView = searchEt;
+				resetGvActive();
 
 				if (searchStr != null && !searchStr.equals("")) {
 
@@ -453,6 +433,23 @@ public class ShowMovieActivity extends AbstractShowActivity {
 			}
 		});
 	}
+	
+	private View.OnFocusChangeListener gvOnFocusChangeListener = new View.OnFocusChangeListener() {
+		
+		@Override
+		public void onFocusChange(View v, boolean hasFocus) {
+			// TODO Auto-generated method stub
+			
+			if (!hasFocus) {// 如果gridview没有获取焦点，把item中高亮取消
+
+				if (beforeGvView != null) {
+
+					ItemStateUtils.viewOutAnimation(
+							getApplicationContext(), beforeGvView);
+				}
+			}
+		}
+	};
 
 	@Override
 	protected void clearLists() {
@@ -503,12 +500,12 @@ public class ShowMovieActivity extends AbstractShowActivity {
 		}
 		lists[currentListIndex] = list;
 
+		beforeGvView = null;
 		playGv.setSelection(0);
 		searchAdapter.notifyDataSetChanged();
-		beforeGvView = null;
 		removeDialog(DIALOG_WAITING);
-		playGv.clearFocus();
 		playGv.requestFocus();
+		playGv.setOnFocusChangeListener(gvOnFocusChangeListener);
 
 	}
 
@@ -608,6 +605,7 @@ public class ShowMovieActivity extends AbstractShowActivity {
 		lists[currentListIndex] = srcList;
 
 		searchAdapter.notifyDataSetChanged();
+		playGv.setOnFocusChangeListener(gvOnFocusChangeListener);
 	}
 
 
@@ -998,6 +996,7 @@ public class ShowMovieActivity extends AbstractShowActivity {
 		switch (v.getId()) {
 		case R.id.ll_dongzuopian:
 			currentListIndex = DONGZUOPIAN;
+			resetGvActive();
 			String url1 = StatisticsUtils.getMovie_DongzuoFirstURL();
 			app.MyToast(aq.getContext(), "DONGZUO");
 			if (lists[currentListIndex] != null
@@ -1012,6 +1011,7 @@ public class ShowMovieActivity extends AbstractShowActivity {
 			break;
 		case R.id.ll_kehuanpian:
 			currentListIndex = KEHUANPIAN;
+			resetGvActive();
 			String url2 = StatisticsUtils.getMovie_KehuanFirstURL();
 			app.MyToast(aq.getContext(), "ll_kehuanpian");
 			if (lists[currentListIndex] != null
@@ -1026,6 +1026,7 @@ public class ShowMovieActivity extends AbstractShowActivity {
 			break;
 		case R.id.ll_lunlipian:
 			currentListIndex = LUNLIPIAN;
+			resetGvActive();
 			String url3 = StatisticsUtils.getMovie_LunliFirstURL();
 			app.MyToast(aq.getContext(), "ll_lunlipian");
 			if (lists[currentListIndex] != null
@@ -1040,6 +1041,7 @@ public class ShowMovieActivity extends AbstractShowActivity {
 			break;
 		case R.id.ll_xijupian:
 			currentListIndex = XIJUPIAN;
+			resetGvActive();
 			String url4 = StatisticsUtils.getMovie_DongzuoFirstURL();
 			app.MyToast(aq.getContext(), "ll_xijupian");
 			if (lists[currentListIndex] != null
@@ -1054,6 +1056,7 @@ public class ShowMovieActivity extends AbstractShowActivity {
 			break;
 		case R.id.ll_aiqingpian:
 			currentListIndex = AIQINGPIAN;
+			resetGvActive();
 			String url5 = StatisticsUtils.getMovie_AiqingFirstURL();
 			app.MyToast(aq.getContext(), "ll_aiqingpian");
 			if (lists[currentListIndex] != null
@@ -1068,6 +1071,7 @@ public class ShowMovieActivity extends AbstractShowActivity {
 			break;
 		case R.id.ll_xuanyipian:
 			currentListIndex = XUANYIPIAN;
+			resetGvActive();
 			String url6 = StatisticsUtils.getMovie_XuanyiFirstURL();
 			app.MyToast(aq.getContext(), "ll_xuanyipian");
 			if (lists[currentListIndex] != null
@@ -1082,6 +1086,7 @@ public class ShowMovieActivity extends AbstractShowActivity {
 			break;
 		case R.id.ll_kongbupian:
 			currentListIndex = KONGBUPIAN;
+			resetGvActive();
 			String url7 = StatisticsUtils.getMovie_KongbuFirstURL();
 			app.MyToast(aq.getContext(), "ll_kongbupian");
 			if (lists[currentListIndex] != null
@@ -1096,6 +1101,7 @@ public class ShowMovieActivity extends AbstractShowActivity {
 			break;
 		case R.id.ll_donghuapian:
 			currentListIndex = DONGHUAPIAN;
+			resetGvActive();
 			String url8 = StatisticsUtils.getMovie_DonghuaFirstURL();
 			app.MyToast(aq.getContext(), "ll_donghuapian");
 			if (lists[currentListIndex] != null
@@ -1110,6 +1116,7 @@ public class ShowMovieActivity extends AbstractShowActivity {
 			break;
 		case R.id.bt_quanbufenlei:
 			currentListIndex = QUANBUFENLEI;
+			resetGvActive();
 			app.MyToast(aq.getContext(), "bt_quanbufenlei");
 			if (lists[currentListIndex] != null
 					&& !lists[currentListIndex].isEmpty()) {
@@ -1135,7 +1142,16 @@ public class ShowMovieActivity extends AbstractShowActivity {
 			activeView = tempView;
 		}
 
-		beforeGvView = null;
+		playGv.setNextFocusLeftId(v.getId());
+	}
+
+	@Override
+	protected void resetGvActive() {
+		// TODO Auto-generated method stub
+		
+		playGv.setOnFocusChangeListener(null);
+		playGv.setSelection(-1);
+		activeRecordIndex = -1;
 	}
 
 

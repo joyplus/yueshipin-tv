@@ -69,6 +69,8 @@ public class ShowDongManActivity extends AbstractShowActivity {
 	private String search;
 	private String filterSource;
 	private PopupWindow popupWindow;
+	
+	private int activeRecordIndex = -1;
 
 	private LinearLayout qinziLL, rexueLL, hougongLL, tuiliLL, jizhanLL,
 			gaoxiaoLL;
@@ -333,15 +335,18 @@ public class ShowDongManActivity extends AbstractShowActivity {
 
 				}
 
-				if (beforeGvView != null) {
+				if (beforeGvView != null && beforeGvView != view) {
 
 					ItemStateUtils.viewOutAnimation(getApplicationContext(),
 							beforeGvView);
-				} else {
-
+				} 
+				
+				if(position != activeRecordIndex) {
+					
+					ItemStateUtils.viewInAnimation(getApplicationContext(), view);
+					activeRecordIndex = position;
 				}
-
-				ItemStateUtils.viewInAnimation(getApplicationContext(), view);
+				
 
 				int[] firstAndLastVisible = new int[2];
 				firstAndLastVisible[0] = playGv.getFirstVisiblePosition();
@@ -373,6 +378,7 @@ public class ShowDongManActivity extends AbstractShowActivity {
 					if (isNextPagePossibles[currentListIndex]) {
 
 						pageNums[currentListIndex]++;
+						playGv.setOnFocusChangeListener(null);
 						cachePlay(currentListIndex, pageNums[currentListIndex]);
 					}
 				}
@@ -383,33 +389,6 @@ public class ShowDongManActivity extends AbstractShowActivity {
 			public void onNothingSelected(AdapterView<?> parent) {
 				// TODO Auto-generated method stub
 
-			}
-		});
-
-		playGv.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-
-			@Override
-			public void onFocusChange(View v, boolean hasFocus) {
-				// TODO Auto-generated method stub
-
-				if (!hasFocus) {// 如果gridview没有获取焦点，把item中高亮取消
-
-					if (beforeGvView != null) {
-
-						ItemStateUtils.viewOutAnimation(
-								getApplicationContext(), beforeGvView);
-					}
-				} else {
-
-					playGv.setNextFocusLeftId(activeView.getId());
-
-					if (beforeGvView != null) {
-
-						ItemStateUtils.viewInAnimation(getApplicationContext(),
-								beforeGvView);
-
-					}
-				}
 			}
 		});
 
@@ -427,6 +406,7 @@ public class ShowDongManActivity extends AbstractShowActivity {
 				ItemStateUtils
 						.viewToNormal(getApplicationContext(), activeView);
 				activeView = searchEt;
+				resetGvActive();
 
 				if (searchStr != null && !searchStr.equals("")) {
 
@@ -457,6 +437,23 @@ public class ShowDongManActivity extends AbstractShowActivity {
 			}
 		});
 	}
+	
+	private View.OnFocusChangeListener gvOnFocusChangeListener = new View.OnFocusChangeListener() {
+		
+		@Override
+		public void onFocusChange(View v, boolean hasFocus) {
+			// TODO Auto-generated method stub
+			
+			if (!hasFocus) {// 如果gridview没有获取焦点，把item中高亮取消
+
+				if (beforeGvView != null) {
+
+					ItemStateUtils.viewOutAnimation(
+							getApplicationContext(), beforeGvView);
+				}
+			}
+		}
+	};
 
 	@Override
 	protected void clearLists() {
@@ -507,11 +504,12 @@ public class ShowDongManActivity extends AbstractShowActivity {
 		}
 		lists[currentListIndex] = list;
 
+		beforeGvView = null;
 		playGv.setSelection(0);
 		searchAdapter.notifyDataSetChanged();
-		beforeGvView = null;
 		removeDialog(DIALOG_WAITING);
 		playGv.requestFocus();
+		playGv.setOnFocusChangeListener(gvOnFocusChangeListener);
 
 	}
 
@@ -611,7 +609,9 @@ public class ShowDongManActivity extends AbstractShowActivity {
 		lists[currentListIndex] = srcList;
 
 		searchAdapter.notifyDataSetChanged();
+		playGv.setOnFocusChangeListener(gvOnFocusChangeListener);
 	}
+
 
 
 	@Override
@@ -992,6 +992,7 @@ public class ShowDongManActivity extends AbstractShowActivity {
 		switch (v.getId()) {
 		case R.id.ll_qinzidongman:
 			currentListIndex = QINZI;
+			resetGvActive();
 			String url1 = StatisticsUtils.getDongman_QinziFirstURL();
 			app.MyToast(aq.getContext(), "qinzi");
 			if (lists[currentListIndex] != null
@@ -1006,6 +1007,7 @@ public class ShowDongManActivity extends AbstractShowActivity {
 			break;
 		case R.id.ll_rexuedongman:
 			currentListIndex = REXUE;
+			resetGvActive();
 			String url2 = StatisticsUtils.getDongman_RexueFirstURL();
 			app.MyToast(aq.getContext(), "ll_rexuedongman");
 			if (lists[currentListIndex] != null
@@ -1020,6 +1022,7 @@ public class ShowDongManActivity extends AbstractShowActivity {
 			break;
 		case R.id.ll_hougongdongman:
 			currentListIndex = HOUGONG;
+			resetGvActive();
 			String url3 = StatisticsUtils.getDongman_HougongFirstURL();
 			app.MyToast(aq.getContext(), "ll_hougongdongman");
 			if (lists[currentListIndex] != null
@@ -1034,6 +1037,7 @@ public class ShowDongManActivity extends AbstractShowActivity {
 			break;
 		case R.id.ll_tuilidongman:
 			currentListIndex = TUILI;
+			resetGvActive();
 			String url4 = StatisticsUtils.getDongman_TuiliFirstURL();
 			app.MyToast(aq.getContext(), "ll_tuilidongman");
 			if (lists[currentListIndex] != null
@@ -1048,6 +1052,7 @@ public class ShowDongManActivity extends AbstractShowActivity {
 			break;
 		case R.id.ll_jizhandongman:
 			currentListIndex = JIZHAN;
+			resetGvActive();
 			String url5 = StatisticsUtils.getDongman_JizhanFirstURL();
 			app.MyToast(aq.getContext(), "ll_jizhandongman");
 			if (lists[currentListIndex] != null
@@ -1062,6 +1067,7 @@ public class ShowDongManActivity extends AbstractShowActivity {
 			break;
 		case R.id.ll_gaoxiaodongman:
 			currentListIndex = GAOXIAO;
+			resetGvActive();
 			String url6 = StatisticsUtils.getDongman_GaoxiaoFirstURL();
 			app.MyToast(aq.getContext(), "ll_gaoxiaodongman");
 			if (lists[currentListIndex] != null
@@ -1076,6 +1082,7 @@ public class ShowDongManActivity extends AbstractShowActivity {
 			break;
 		case R.id.bt_quanbufenlei:
 			currentListIndex = QUANBUFENLEI;
+			resetGvActive();
 			app.MyToast(aq.getContext(), "bt_quanbufenlei");
 			if (lists[currentListIndex] != null
 					&& !lists[currentListIndex].isEmpty()) {
@@ -1101,9 +1108,15 @@ public class ShowDongManActivity extends AbstractShowActivity {
 			activeView = tempView;
 		}
 
-		playGv.setNextFocusLeftId(activeView.getId());
+		playGv.setNextFocusLeftId(v.getId());
+	}
 
-		beforeGvView = null;
+	@Override
+	protected void resetGvActive() {
+		// TODO Auto-generated method stub
+		playGv.setOnFocusChangeListener(null);
+		playGv.setSelection(-1);
+		activeRecordIndex = -1;
 	}
 
 }

@@ -155,9 +155,14 @@ public class ItemStateUtils implements JieMianConstant{
 		iv.setVisibility(View.VISIBLE);
 		v.setBackgroundColor(context.getResources()
 				.getColor(android.R.color.transparent));
-		v.setPadding(GRIDVIEW_ITEM_PADDING_LEFT,
-				GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING_LEFT,
-				GRIDVIEW_ITEM_PADDING);
+		int left = v.getPaddingLeft();
+		if(left != GRIDVIEW_ITEM_PADDING_LEFT) {
+			
+			v.setPadding(GRIDVIEW_ITEM_PADDING_LEFT,
+					GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING_LEFT,
+					GRIDVIEW_ITEM_PADDING);
+		}
+
 		v.startAnimation(outScaleAnimation);
 	}
 	
@@ -166,14 +171,19 @@ public class ItemStateUtils implements JieMianConstant{
 		Log.i(TAG, "viewInAnimation");
 		ScaleAnimation inScaleAnimation = StatisticsUtils
 				.getInScaleAnimation();
-		v.setPadding(GRIDVIEW_ITEM_PADDING,
-				GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING,
-				GRIDVIEW_ITEM_PADDING);
 		ImageView iv = (ImageView) v
 				.findViewById(R.id.item_layout_dianying_reflact);
 		iv.setVisibility(View.GONE);
 		v.setBackgroundColor(context.getResources()
 				.getColor(R.color.text_active));
+		int left = v.getPaddingLeft();
+		if(left != GRIDVIEW_ITEM_PADDING) {
+			
+			v.setPadding(GRIDVIEW_ITEM_PADDING,
+					GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING,
+					GRIDVIEW_ITEM_PADDING);
+		}
+
 		v.startAnimation(inScaleAnimation);
 	}
 	

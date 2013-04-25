@@ -77,5 +77,7 @@ public abstract class AbstractShowActivity extends Activity implements
 	protected abstract void cachePlay(int index, int pageNum);
 	
 	protected abstract void filterPopWindowShow();
+	
+	protected abstract void resetGvActive();
 
 }
