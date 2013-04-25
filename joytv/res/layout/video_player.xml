@@ -154,7 +154,7 @@
             android:layout_marginRight="40dp"
             android:text="--:--"
             android:textColor="@color/white"
-            android:textSize="20sp" />
+            android:textSize="22sp" />
     </RelativeLayout>
 
     <RelativeLayout
