@@ -113,7 +113,7 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 					getHotServiceData();
 				}
 				Log.d(TAG, "MESSAGE_UPDATEUSER --- >Initstep = " + initStep);
-				aq.id(R.id.iv_head_user_icon).image(app.getUserInfo().getUserAvatarUrl(),false,true,0,R.drawable.avatar);
+				aq.id(R.id.iv_head_user_icon).image(app.getUserInfo().getUserAvatarUrl(),false,true,0,R.drawable.avatar_defult);
 				aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
 				getHistoryServiceData();
 				break;

@@ -3,32 +3,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/movie_bg"
-    android:orientation="vertical"
-    android:paddingTop="15dp" >
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/layout_zero"
-        android:layout_weight="1"
-        android:paddingLeft="50dp" >
+    android:orientation="vertical" >
 
         <include
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="65dp"
+            android:layout_marginLeft="22dp"
             layout="@layout/show_head" />
-    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/layout_zero"
-        android:layout_weight="0.55"
+        android:layout_height="10dp"
         android:paddingLeft="50dp" >
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/layout_zero"
-        android:layout_weight="15.38"
+        android:layout_height="fill_parent"
         android:orientation="vertical" >
 
         <LinearLayout
@@ -361,65 +352,9 @@
                 android:id="@+id/ll_xiangqing_gv_parent"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="15dp"
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"
                 android:layout_below="@id/rl_xiangqing_hotline" >
-
-                <!--
-                     <ImageView
-                    android:layout_width="@dimen/layout_zero"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@drawable/text_drawable_selector"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:src="@drawable/movie_pic" />
-
-                <ImageView
-                    android:layout_width="@dimen/layout_zero"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@drawable/text_drawable_selector"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:src="@drawable/movie_pic" />
-
-                <ImageView
-                    android:layout_width="@dimen/layout_zero"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@drawable/text_drawable_selector"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:src="@drawable/movie_pic" />
-
-                <ImageView
-                    android:layout_width="@dimen/layout_zero"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@drawable/text_drawable_selector"
-                    android:src="@drawable/movie_pic" />
-
-                <ImageView
-                    android:layout_width="@dimen/layout_zero"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@drawable/text_drawable_selector"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:src="@drawable/movie_pic" />
-
-                <ImageView
-                    android:layout_width="@dimen/layout_zero"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@drawable/text_drawable_selector"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:src="@drawable/movie_pic" />
-                -->
-                
 
                 <GridView
                     android:id="@+id/gv_xiangqing_tuijian"

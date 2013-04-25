@@ -1,16 +1,20 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="#08111a"
     android:paddingTop="15dp">
-
-    <include
+	    <include
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginLeft="20dp"
+        android:layout_height="65dp"
+        android:layout_marginLeft="30dp"
         layout="@layout/show_head" />
+	    <LinearLayout android:layout_width="fill_parent"
+	        android:orientation="vertical"
+	        android:layout_height="fill_parent">
+	<TextView android:layout_width="fill_parent"
+	    android:layout_height="65dp"/>
     <LinearLayout android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:orientation="vertical">
@@ -33,7 +37,7 @@
 				    android:gravity="center_vertical|left"
 				    android:id="@+id/title_text"
 				    android:textSize="30sp"
-				    android:text="追剧收藏"
+				    android:text="最近观看"
 				    android:textColor="@color/common_title_selected"
 				    />
                 <TextView android:layout_width="fill_parent"
@@ -42,6 +46,7 @@
 				    android:gravity="center_vertical|right"
 				    android:id="@+id/notice_text"
 				    android:textSize="20sp"
+				    android:text="1/888"
 				    android:textColor="@color/common_title_selected"/>
             </LinearLayout>
         </LinearLayout>
@@ -134,345 +139,5 @@
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
-
-<!--     <LinearLayout -->
-<!--         android:layout_width="match_parent" -->
-<!--         android:layout_height="@dimen/layout_zero" -->
-<!--         android:layout_weight="0.4" -->
-<!--         android:orientation="horizontal" > -->
-
-<!--         <LinearLayout -->
-<!--             android:layout_width="@dimen/layout_zero" -->
-<!--             android:layout_height="match_parent" -->
-<!--             android:layout_marginRight="@dimen/empty_margin_right" -->
-<!--             android:layout_weight="1" > -->
-<!--         </LinearLayout> -->
-
-<!--         <LinearLayout -->
-<!--             android:layout_width="@dimen/layout_zero" -->
-<!--             android:layout_height="match_parent" -->
-<!--             android:layout_weight="6" -->
-<!--             android:background="@drawable/menubg" -->
-<!--             android:orientation="horizontal" -->
-<!--             android:paddingRight="50dp" > -->
-
-<!--             <TextView -->
-<!--                 android:layout_width="@dimen/layout_zero" -->
-<!--                 android:layout_height="match_parent" -->
-<!--                 android:layout_marginLeft="@dimen/theme_name_margin" -->
-<!--                 android:layout_weight="1" -->
-<!--                 android:gravity="center_vertical" -->
-<!--                 android:text="@string/history_title" -->
-<!--                 android:textColor="@color/text_orange" -->
-<!--                 android:textSize="@dimen/theme_name_text_size" /> -->
-
-<!--             <TextView -->
-<!--                 android:layout_width="@dimen/layout_zero" -->
-<!--                 android:layout_height="match_parent" -->
-<!--                 android:layout_weight="1" -->
-<!--                 android:gravity="right|center_vertical" -->
-<!--                 android:text="2/123" -->
-<!--                 android:textColor="@color/time_color" -->
-<!--                 android:textSize="@dimen/jishu_text_size" /> -->
-<!--         </LinearLayout> -->
-<!--     </LinearLayout> -->
-
-<!--     <LinearLayout -->
-<!--         android:layout_width="match_parent" -->
-<!--         android:layout_height="@dimen/layout_zero" -->
-<!--         android:layout_weight="6" -->
-<!--         android:orientation="horizontal" > -->
-
-<!--         <LinearLayout -->
-<!--             android:layout_width="@dimen/layout_zero" -->
-<!--             android:layout_height="match_parent" -->
-<!--             android:layout_marginRight="@dimen/empty_margin_right" -->
-<!--             android:layout_weight="1" -->
-<!--             android:orientation="vertical" > -->
-
-<!--             <LinearLayout -->
-<!--                 android:layout_width="match_parent" -->
-<!--                 android:layout_height="@dimen/layout_zero" -->
-<!--                 android:layout_weight="1.2" > -->
-
-<!--                 <EditText -->
-<!--                     android:id="@+id/et_search" -->
-<!--                     android:layout_width="match_parent" -->
-<!--                     android:layout_height="wrap_content" -->
-<!--                     android:layout_gravity="center_vertical" -->
-<!--                     android:layout_marginBottom="@dimen/edit_vertical_margin" -->
-<!--                     android:layout_marginTop="@dimen/edit_vertical_margin" -->
-<!--                     android:background="@drawable/search_selector" -->
-<!--                     android:focusableInTouchMode="false" -->
-<!--                     android:hint="搜索" -->
-<!--                     android:paddingRight="@dimen/menu_horizontal_padding" -->
-<!--                     android:textSize="15sp" > -->
-<!--                 </EditText> -->
-<!--             </LinearLayout> -->
-
-<!--             <LinearLayout -->
-<!--                 android:layout_width="match_parent" -->
-<!--                 android:layout_height="@dimen/layout_zero" -->
-<!--                 android:layout_weight="15" -->
-<!--                 android:orientation="vertical" > -->
-
-<!--                 <Button -->
-<!--                     android:id="@+id/bt_quanbufenlei" -->
-<!--                     style="@style/style_4" -->
-<!--                     android:layout_width="match_parent" -->
-<!--                     android:layout_height="@dimen/layout_zero" -->
-<!--                     android:layout_weight="1" -->
-<!--                     android:background="@drawable/text_drawable_selector" -->
-<!--                     android:gravity="right|center_vertical" -->
-<!--                     android:text="@string/quanbufenlei_name" -->
-<!--                     android:textColor="@color/text_color_selector" /> -->
-
-<!--                 <LinearLayout -->
-<!--                     android:id="@+id/ll_dongzuopian" -->
-<!--                     style="@style/style_6" -->
-<!--                     android:layout_width="match_parent" -->
-<!--                     android:layout_height="@dimen/layout_zero" -->
-<!--                     android:layout_weight="1" > -->
-
-<!--                     <Button -->
-<!--                         android:id="@+id/bt_choice_movie" -->
-<!--                         style="@style/style_5" -->
-<!--                         android:layout_width="wrap_content" -->
-<!--                         android:layout_height="match_parent" -->
-<!--                         android:text="@string/dianying_name" /> -->
-<!--                 </LinearLayout> -->
-
-<!--                 <LinearLayout -->
-<!--                     android:id="@+id/ll_lunlipian" -->
-<!--                     style="@style/style_6" -->
-<!--                     android:layout_width="match_parent" -->
-<!--                     android:layout_height="@dimen/layout_zero" -->
-<!--                     android:layout_weight="1" > -->
-
-<!--                     <Button -->
-<!--                         android:id="@+id/bt_choice_tv" -->
-<!--                         style="@style/style_5" -->
-<!--                         android:layout_width="wrap_content" -->
-<!--                         android:layout_height="match_parent" -->
-<!--                         android:text="@string/tv_play_name" /> -->
-<!--                 </LinearLayout> -->
-
-<!--                 <LinearLayout -->
-<!--                     android:id="@+id/ll_xijupian" -->
-<!--                     style="@style/style_6" -->
-<!--                     android:layout_width="match_parent" -->
-<!--                     android:layout_height="@dimen/layout_zero" -->
-<!--                     android:layout_weight="1" > -->
-
-<!--                     <Button -->
-<!--                         android:id="@+id/bt_xijupian" -->
-<!--                         style="@style/style_5" -->
-<!--                         android:layout_width="wrap_content" -->
-<!--                         android:layout_height="match_parent" -->
-<!--                         android:text="@string/xijupian_name" /> -->
-<!--                 </LinearLayout> -->
-
-<!--                 <LinearLayout -->
-<!--                     android:id="@+id/ll_aiqingpian" -->
-<!--                     style="@style/style_6" -->
-<!--                     android:layout_width="match_parent" -->
-<!--                     android:layout_height="@dimen/layout_zero" -->
-<!--                     android:layout_weight="1" > -->
-
-<!--                     <Button -->
-<!--                         android:id="@+id/bt_aiqingpian" -->
-<!--                         style="@style/style_5" -->
-<!--                         android:layout_width="wrap_content" -->
-<!--                         android:layout_height="match_parent" -->
-<!--                         android:text="@string/aiqingpian_name" /> -->
-<!--                 </LinearLayout> -->
-
-<!--                 <LinearLayout -->
-<!--                     android:id="@+id/ll_xuanyipian" -->
-<!--                     style="@style/style_6" -->
-<!--                     android:layout_width="match_parent" -->
-<!--                     android:layout_height="@dimen/layout_zero" -->
-<!--                     android:layout_weight="1" > -->
-
-<!--                     <Button -->
-<!--                         android:id="@+id/bt_xuanyipian" -->
-<!--                         style="@style/style_5" -->
-<!--                         android:layout_width="wrap_content" -->
-<!--                         android:layout_height="match_parent" -->
-<!--                         android:text="@string/xuanyipian_name" /> -->
-<!--                 </LinearLayout> -->
-
-<!--                 <LinearLayout -->
-<!--                     android:id="@+id/ll_kongbupian" -->
-<!--                     style="@style/style_6" -->
-<!--                     android:layout_width="match_parent" -->
-<!--                     android:layout_height="@dimen/layout_zero" -->
-<!--                     android:layout_weight="1" > -->
-
-<!--                     <Button -->
-<!--                         android:id="@+id/bt_kongbupian" -->
-<!--                         style="@style/style_5" -->
-<!--                         android:layout_width="wrap_content" -->
-<!--                         android:layout_height="match_parent" -->
-<!--                         android:text="@string/kongbupian_name" /> -->
-<!--                 </LinearLayout> -->
-
-<!--                 <TextView -->
-<!--                     style="@style/style_4" -->
-<!--                     android:layout_width="wrap_content" -->
-<!--                     android:layout_height="@dimen/layout_zero" -->
-<!--                     android:layout_weight="3" /> -->
-
-<!--                 <Button -->
-<!--                     android:id="@+id/bt_zuijinguankan" -->
-<!--                     style="@style/style_4" -->
-<!--                     android:layout_width="match_parent" -->
-<!--                     android:layout_height="@dimen/layout_zero" -->
-<!--                     android:layout_weight="1" -->
-<!--                     android:background="@drawable/text_drawable_selector" -->
-<!--                     android:gravity="right|center_vertical" -->
-<!--                     android:text="@string/zuijinguankan_name" -->
-<!--                     android:textColor="@color/text_color_selector" /> -->
-
-<!--                 <Button -->
-<!--                     android:id="@+id/bt_zhuijushoucang" -->
-<!--                     style="@style/style_4" -->
-<!--                     android:layout_width="match_parent" -->
-<!--                     android:layout_height="@dimen/layout_zero" -->
-<!--                     android:layout_weight="1" -->
-<!--                     android:background="@drawable/text_drawable_selector" -->
-<!--                     android:gravity="right|center_vertical" -->
-<!--                     android:text="@string/zhuijushoucang_name" -->
-<!--                     android:textColor="@color/text_color_selector" /> -->
-
-<!--                 <Button -->
-<!--                     android:id="@+id/bt_lixianshipin" -->
-<!--                     style="@style/style_4" -->
-<!--                     android:layout_width="match_parent" -->
-<!--                     android:layout_height="@dimen/layout_zero" -->
-<!--                     android:layout_weight="1" -->
-<!--                     android:background="@drawable/text_drawable_selector" -->
-<!--                     android:gravity="right|center_vertical" -->
-<!--                     android:text="@string/lixianshipin_name" -->
-<!--                     android:textColor="@color/text_color_selector" /> -->
-
-<!--                 <TextView -->
-<!--                     style="@style/style_4" -->
-<!--                     android:layout_width="wrap_content" -->
-<!--                     android:layout_height="@dimen/layout_zero" -->
-<!--                     android:layout_weight="2" -->
-<!--                     android:gravity="right|center_vertical" /> -->
-<!--             </LinearLayout> -->
-<!--         </LinearLayout> -->
-
-<!--         <LinearLayout -->
-<!--             android:layout_width="@dimen/layout_zero" -->
-<!--             android:layout_height="match_parent" -->
-<!--             android:layout_weight="6" -->
-<!--             android:orientation="vertical" > -->
-
-<!--             <LinearLayout -->
-<!--                 android:layout_width="match_parent" -->
-<!--                 android:layout_height="@dimen/layout_zero" -->
-<!--                 android:layout_marginBottom="@dimen/edit_vertical_margin" -->
-<!--                 android:layout_marginTop="@dimen/edit_vertical_margin" -->
-<!--                 android:layout_weight="0.8" -->
-<!--                 android:background="@drawable/menubg" -->
-<!--                 android:orientation="horizontal" -->
-<!--                 android:paddingRight="50dp" -->
-<!--                 android:visibility="gone" > -->
-
-<!--                 <TextView -->
-<!--                     android:layout_width="@dimen/layout_zero" -->
-<!--                     android:layout_height="match_parent" -->
-<!--                     android:layout_marginLeft="@dimen/theme_name_margin" -->
-<!--                     android:layout_weight="1" -->
-<!--                     android:gravity="center_vertical" -->
-<!--                     android:text="@string/shoucang_update_name" -->
-<!--                     android:textColor="@color/text_pt" -->
-<!--                     android:textSize="@dimen/menu_up_text_size" /> -->
-
-<!--                 <TextView -->
-<!--                     android:layout_width="@dimen/layout_zero" -->
-<!--                     android:layout_height="match_parent" -->
-<!--                     android:layout_weight="1" -->
-<!--                     android:gravity="right|center_vertical" -->
-<!--                     android:text="1/1" -->
-<!--                     android:textColor="@color/time_color" -->
-<!--                     android:textSize="@dimen/jishu_text_size" /> -->
-<!--             </LinearLayout> -->
-
-<!--             <LinearLayout -->
-<!--                 android:layout_width="match_parent" -->
-<!--                 android:layout_height="@dimen/layout_zero" -->
-<!--                 android:layout_weight="15" -->
-<!--                 android:orientation="vertical" > -->
-
-<!--                 <LinearLayout -->
-<!--                     android:id="@+id/ll_movie_show" -->
-<!--                     android:layout_width="match_parent" -->
-<!--                     android:layout_height="@dimen/layout_zero" -->
-<!--                     android:layout_weight="17" -->
-<!--                     android:orientation="horizontal" -->
-<!--                     android:paddingRight="50dp" > -->
-
-<!--                     <com.joyplus.tv.ui.MyGridView -->
-<!--                         android:id="@+id/gv_movie_show" -->
-<!--                         android:layout_width="match_parent" -->
-<!--                         android:layout_height="match_parent" -->
-<!--                         android:numColumns="5" -->
-<!--                         android:descendantFocusability="beforeDescendants"> -->
-<!--                     </com.joyplus.tv.ui.MyGridView> -->
-<!--                 </LinearLayout> -->
-
-<!--                 <LinearLayout -->
-<!--                     android:layout_width="match_parent" -->
-<!--                     android:layout_height="@dimen/layout_zero" -->
-<!--                     android:layout_marginBottom="@dimen/edit_vertical_margin" -->
-<!--                     android:layout_marginTop="@dimen/edit_vertical_margin" -->
-<!--                     android:layout_weight="1.6" -->
-<!--                     android:background="@color/menu_bg" -->
-<!--                     android:orientation="horizontal" -->
-<!--                     android:paddingRight="50dp" -->
-<!--                     android:visibility="gone" > -->
-
-<!--                     <TextView -->
-<!--                         android:layout_width="@dimen/layout_zero" -->
-<!--                         android:layout_height="match_parent" -->
-<!--                         android:layout_marginLeft="@dimen/theme_name_margin" -->
-<!--                         android:layout_weight="1" -->
-<!--                         android:gravity="center_vertical" -->
-<!--                         android:text="@string/qitadianshiju_play_name" -->
-<!--                         android:textColor="@color/text_pt" -->
-<!--                         android:textSize="@dimen/menu_up_text_size" /> -->
-
-<!--                     <TextView -->
-<!--                         android:layout_width="@dimen/layout_zero" -->
-<!--                         android:layout_height="match_parent" -->
-<!--                         android:layout_weight="1" -->
-<!--                         android:gravity="right|center_vertical" -->
-<!--                         android:text="1/1" -->
-<!--                         android:textColor="@color/time_color" -->
-<!--                         android:textSize="@dimen/jishu_text_size" /> -->
-<!--                 </LinearLayout> -->
-
-<!--                 <LinearLayout -->
-<!--                     android:layout_width="match_parent" -->
-<!--                     android:layout_height="@dimen/layout_zero" -->
-<!--                     android:layout_weight="13" -->
-<!--                     android:orientation="horizontal" -->
-<!--                     android:paddingRight="50dp" -->
-<!--                     android:visibility="gone" > -->
-
-<!--                     <com.joyplus.tv.ui.MyGridView -->
-<!--                         android:layout_width="match_parent" -->
-<!--                         android:layout_height="match_parent" -->
-<!--                         android:listSelector="@android:color/transparent" -->
-<!--                         android:numColumns="5" > -->
-<!--                     </com.joyplus.tv.ui.MyGridView> -->
-<!--                 </LinearLayout> -->
-<!--             </LinearLayout> -->
-<!--         </LinearLayout> -->
-<!--     </LinearLayout> -->
-
 </LinearLayout>
+</RelativeLayout>

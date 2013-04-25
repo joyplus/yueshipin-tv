@@ -3,31 +3,24 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/movie_bg"
-    android:orientation="vertical"
-    android:paddingTop="15dp" >
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/layout_zero"
-        android:layout_weight="1"
-        android:paddingLeft="50dp" >
+    android:orientation="vertical">
 
         <include
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="65dp"
+            android:layout_marginLeft="25dp"
             layout="@layout/show_head" />
-    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/layout_zero"
-        android:layout_weight="6"
+        android:layout_height="fill_parent"
+        android:layout_marginTop="10dp"
         android:orientation="horizontal" >
 
         <RelativeLayout
             android:layout_width="@dimen/layout_zero"
             android:layout_height="wrap_content"
-             android:paddingLeft="25dp"
+             android:paddingLeft="28dp"
                 android:paddingRight="8dp"
             android:layout_weight="1" >
 

@@ -3,32 +3,24 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/movie_bg"
-    android:orientation="vertical"
-    android:paddingTop="15dp" >
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/layout_zero"
-        android:layout_weight="1"
-        android:paddingLeft="50dp" >
-
+    android:orientation="vertical">
         <include
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="65dp"
+            android:layout_marginLeft="30dp"
             layout="@layout/show_head" />
-    </LinearLayout>
-
+	<LinearLayout android:layout_width="fill_parent"
+	    android:layout_height="fill_parent"
+	    android:orientation="vertical">
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/layout_zero"
-        android:layout_weight="0.55"
+        android:layout_height="10dp"
         android:paddingLeft="50dp" >
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/layout_zero"
-        android:layout_weight="15.38"
+        android:layout_height="fill_parent"
         android:orientation="vertical" >
 
         <LinearLayout
@@ -41,7 +33,7 @@
             <LinearLayout
                 android:layout_width="@dimen/layout_zero"
                 android:layout_height="match_parent"
-                android:paddingLeft="25dp"
+                android:paddingLeft="33dp"
                 android:paddingRight="8dp"
                 android:layout_weight="1" >
 
@@ -52,8 +44,8 @@
                 android:layout_width="@dimen/layout_zero"
                 android:layout_height="match_parent"
                 android:layout_weight="5"
-                android:paddingLeft="15dp"
-                android:paddingRight="20dp"
+                android:paddingLeft="25dp"
+                android:paddingRight="30dp"
                 android:orientation="vertical" >
 
                 <LinearLayout
@@ -165,7 +157,7 @@
                 android:layout_width="@dimen/layout_zero"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:paddingLeft="25dp"
+                android:paddingLeft="33dp"
             	android:paddingRight="8dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal" >
@@ -215,8 +207,8 @@
                 android:layout_width="@dimen/layout_zero"
                 android:layout_height="match_parent"
                 android:layout_weight="5"
-                android:paddingLeft="15dp"
-                android:paddingRight="20dp"
+                android:paddingLeft="25dp"
+                android:paddingRight="30dp"
                 android:gravity="center_vertical" >
 
                 <LinearLayout
@@ -356,6 +348,8 @@
 			    <LinearLayout android:layout_width="0dp"
 			        android:layout_height="fill_parent"
 			        android:orientation="horizontal"
+			        android:paddingLeft="10dp"
+			        android:paddingRight="15dp"
 			        android:layout_weight="5">
                     <ImageView android:layout_width="15dp"
                         android:paddingTop="5dp"
@@ -389,483 +383,7 @@
                         android:src="@drawable/arrow_right"/>
 			    </LinearLayout>
 			</LinearLayout>
-            <!-- <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_below="@id/rl_xiangqing_hotline"
-                android:orientation="vertical"
-                android:paddingLeft="50dp" >
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/layout_zero"
-                    android:layout_weight="1" >
-
-                    <LinearLayout
-                        android:id="@+id/ll_right_out_xiangqing"
-                        android:layout_width="50dp"
-                        android:layout_height="match_parent"
-                        android:layout_alignParentRight="true"
-                        android:gravity="left|center_vertical" >
-
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/arrow_right" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/ll_firsttab_tv_xiangqing"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_toLeftOf="@id/ll_right_out_xiangqing" >
-
-                        <LinearLayout
-                            android:layout_width="@dimen/layout_zero"
-                            android:layout_height="match_parent"
-                            android:layout_weight="5.34" >
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="@dimen/layout_zero"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:gravity="right|center_vertical" >
-
-                            <ImageView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:src="@drawable/arrow_left" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="@dimen/layout_zero"
-                            android:layout_height="match_parent"
-                            android:layout_weight="30.24" >
-
-                            <TableRow
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:gravity="center_vertical" >
-
-                                <Button
-                                    android:layout_width="@dimen/layout_zero"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="4.0"
-                                    android:background="@drawable/xiangqing_button_selector"
-                                    android:gravity="center"
-                                    android:text="1-20" />
-
-                                <Button
-                                    android:layout_width="@dimen/layout_zero"
-                                    android:layout_height="match_parent"
-                                    android:layout_weight="1"
-                                    android:background="@android:color/transparent"
-                                    android:visibility="invisible" />
-
-                                <Button
-                                    android:layout_width="@dimen/layout_zero"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="4.0"
-                                    android:background="@drawable/xiangqing_button_selector"
-                                    android:gravity="center"
-                                    android:text="21-40" />
-
-                                <Button
-                                    android:layout_width="@dimen/layout_zero"
-                                    android:layout_height="match_parent"
-                                    android:layout_weight="1"
-                                    android:background="@android:color/transparent"
-                                    android:visibility="invisible" />
-
-                                <Button
-                                    android:layout_width="@dimen/layout_zero"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="4.0"
-                                    android:background="@drawable/xiangqing_button_selector"
-                                    android:gravity="center"
-                                    android:text="41-60" />
-
-                                <Button
-                                    android:layout_width="@dimen/layout_zero"
-                                    android:layout_height="match_parent"
-                                    android:layout_weight="1"
-                                    android:background="@android:color/transparent"
-                                    android:visibility="invisible" />
-
-                                <Button
-                                    android:layout_width="@dimen/layout_zero"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="4.0"
-                                    android:background="@drawable/xiangqing_button_selector"
-                                    android:gravity="center"
-                                    android:text="61-80" />
-
-                                <Button
-                                    android:layout_width="@dimen/layout_zero"
-                                    android:layout_height="match_parent"
-                                    android:layout_weight="1"
-                                    android:background="@android:color/transparent"
-                                    android:visibility="invisible" />
-
-                                <Button
-                                    android:layout_width="@dimen/layout_zero"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="4.0"
-                                    android:background="@drawable/xiangqing_button_selector"
-                                    android:gravity="center"
-                                    android:text="81-100" />
-                            </TableRow>
-                        </LinearLayout>
-                    </LinearLayout>
-                </RelativeLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/layout_zero"
-                    android:layout_weight="0.2"
-                    android:paddingRight="50dp" >
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/layout_zero"
-                    android:layout_weight="4"
-                    android:paddingRight="50dp" >
-
-                    <LinearLayout
-                        android:layout_width="@dimen/layout_zero"
-                        android:layout_height="match_parent"
-                        android:layout_weight="5.34" >
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="@dimen/layout_zero"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="right|center_vertical" >
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="@dimen/layout_zero"
-                        android:layout_height="match_parent"
-                        android:layout_weight="30.24" >
-
-                        <TableLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent" >
-
-                            <TableRow
-                                android:id="@+id/tableRow1"
-                                android:layout_width="match_parent"
-                                android:layout_height="@dimen/layout_zero"
-                                android:layout_weight="1" >
-
-                                <Button
-                                    android:layout_width="@dimen/layout_zero"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="4.0"
-                                    android:background="@drawable/xiangqing_button_selector"
-                                    android:gravity="center"
-                                    android:text="1-20" />
-
-                                <Button
-                                    android:layout_width="@dimen/layout_zero"
-                                    android:layout_height="match_parent"
-                                    android:layout_weight="1"
-                                    android:background="@android:color/transparent"
-                                    android:visibility="invisible" />
-
-                                <Button
-                                    android:layout_width="@dimen/layout_zero"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="4.0"
-                                    android:background="@drawable/xiangqing_button_selector"
-                                    android:gravity="center"
-                                    android:text="21-40" />
-
-                                <Button
-                                    android:layout_width="@dimen/layout_zero"
-                                    android:layout_height="match_parent"
-                                    android:layout_weight="1"
-                                    android:background="@android:color/transparent"
-                                    android:visibility="invisible" />
-
-                                <Button
-                                    android:layout_width="@dimen/layout_zero"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="4.0"
-                                    android:background="@drawable/xiangqing_button_selector"
-                                    android:gravity="center"
-                                    android:text="41-60" />
-
-                                <Button
-                                    android:layout_width="@dimen/layout_zero"
-                                    android:layout_height="match_parent"
-                                    android:layout_weight="1"
-                                    android:background="@android:color/transparent"
-                                    android:visibility="invisible" />
-
-                                <Button
-                                    android:layout_width="@dimen/layout_zero"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="4.0"
-                                    android:background="@drawable/xiangqing_button_selector"
-                                    android:gravity="center"
-                                    android:text="61-80" />
-
-                                <Button
-                                    android:layout_width="@dimen/layout_zero"
-                                    android:layout_height="match_parent"
-                                    android:layout_weight="1"
-                                    android:background="@android:color/transparent"
-                                    android:visibility="invisible" />
-
-                                <Button
-                                    android:layout_width="@dimen/layout_zero"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="4.0"
-                                    android:background="@drawable/xiangqing_button_selector"
-                                    android:gravity="center"
-                                    android:text="81-100" />
-                            </TableRow>
-
-                            <TableRow
-                                android:id="@+id/tableRow2"
-                                android:layout_width="match_parent"
-                                android:layout_height="@dimen/layout_zero"
-                                android:layout_weight="1" >
-
-                                <Button
-                                    android:layout_width="@dimen/layout_zero"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="4.0"
-                                    android:background="@drawable/xiangqing_button_selector"
-                                    android:gravity="center"
-                                    android:text="1-20" />
-
-                                <Button
-                                    android:layout_width="@dimen/layout_zero"
-                                    android:layout_height="match_parent"
-                                    android:layout_weight="1"
-                                    android:background="@android:color/transparent"
-                                    android:visibility="invisible" />
-
-                                <Button
-                                    android:layout_width="@dimen/layout_zero"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="4.0"
-                                    android:background="@drawable/xiangqing_button_selector"
-                                    android:gravity="center"
-                                    android:text="21-40" />
-
-                                <Button
-                                    android:layout_width="@dimen/layout_zero"
-                                    android:layout_height="match_parent"
-                                    android:layout_weight="1"
-                                    android:background="@android:color/transparent"
-                                    android:visibility="invisible" />
-
-                                <Button
-                                    android:layout_width="@dimen/layout_zero"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="4.0"
-                                    android:background="@drawable/xiangqing_button_selector"
-                                    android:gravity="center"
-                                    android:text="41-60" />
-
-                                <Button
-                                    android:layout_width="@dimen/layout_zero"
-                                    android:layout_height="match_parent"
-                                    android:layout_weight="1"
-                                    android:background="@android:color/transparent"
-                                    android:visibility="invisible" />
-
-                                <Button
-                                    android:layout_width="@dimen/layout_zero"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="4.0"
-                                    android:background="@drawable/xiangqing_button_selector"
-                                    android:gravity="center"
-                                    android:text="61-80" />
-
-                                <Button
-                                    android:layout_width="@dimen/layout_zero"
-                                    android:layout_height="match_parent"
-                                    android:layout_weight="1"
-                                    android:background="@android:color/transparent"
-                                    android:visibility="invisible" />
-
-                                <Button
-                                    android:layout_width="@dimen/layout_zero"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="4.0"
-                                    android:background="@drawable/xiangqing_button_selector"
-                                    android:gravity="center"
-                                    android:text="81-100" />
-                            </TableRow>
-
-                            <TableRow
-                                android:id="@+id/tableRow3"
-                                android:layout_width="match_parent"
-                                android:layout_height="@dimen/layout_zero"
-                                android:layout_weight="1" >
-
-                                <Button
-                                    android:layout_width="@dimen/layout_zero"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="4.0"
-                                    android:background="@drawable/xiangqing_button_selector"
-                                    android:gravity="center"
-                                    android:text="1-20" />
-
-                                <Button
-                                    android:layout_width="@dimen/layout_zero"
-                                    android:layout_height="match_parent"
-                                    android:layout_weight="1"
-                                    android:background="@android:color/transparent"
-                                    android:visibility="invisible" />
-
-                                <Button
-                                    android:layout_width="@dimen/layout_zero"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="4.0"
-                                    android:background="@drawable/xiangqing_button_selector"
-                                    android:gravity="center"
-                                    android:text="21-40" />
-
-                                <Button
-                                    android:layout_width="@dimen/layout_zero"
-                                    android:layout_height="match_parent"
-                                    android:layout_weight="1"
-                                    android:background="@android:color/transparent"
-                                    android:visibility="invisible" />
-
-                                <Button
-                                    android:layout_width="@dimen/layout_zero"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="4.0"
-                                    android:background="@drawable/xiangqing_button_selector"
-                                    android:gravity="center"
-                                    android:text="41-60" />
-
-                                <Button
-                                    android:layout_width="@dimen/layout_zero"
-                                    android:layout_height="match_parent"
-                                    android:layout_weight="1"
-                                    android:background="@android:color/transparent"
-                                    android:visibility="invisible" />
-
-                                <Button
-                                    android:layout_width="@dimen/layout_zero"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="4.0"
-                                    android:background="@drawable/xiangqing_button_selector"
-                                    android:gravity="center"
-                                    android:text="61-80" />
-
-                                <Button
-                                    android:layout_width="@dimen/layout_zero"
-                                    android:layout_height="match_parent"
-                                    android:layout_weight="1"
-                                    android:background="@android:color/transparent"
-                                    android:visibility="invisible" />
-
-                                <Button
-                                    android:layout_width="@dimen/layout_zero"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="4.0"
-                                    android:background="@drawable/xiangqing_button_selector"
-                                    android:gravity="center"
-                                    android:text="81-100" />
-                            </TableRow>
-
-                            <TableRow
-                                android:id="@+id/tableRow4"
-                                android:layout_width="match_parent"
-                                android:layout_height="@dimen/layout_zero"
-                                android:layout_weight="1" >
-
-                                <Button
-                                    android:layout_width="@dimen/layout_zero"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="4.0"
-                                    android:background="@drawable/xiangqing_button_selector"
-                                    android:gravity="center"
-                                    android:text="1-20" />
-
-                                <Button
-                                    android:layout_width="@dimen/layout_zero"
-                                    android:layout_height="match_parent"
-                                    android:layout_weight="1"
-                                    android:background="@android:color/transparent"
-                                    android:visibility="invisible" />
-
-                                <Button
-                                    android:layout_width="@dimen/layout_zero"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="4.0"
-                                    android:background="@drawable/xiangqing_button_selector"
-                                    android:gravity="center"
-                                    android:text="21-40" />
-
-                                <Button
-                                    android:layout_width="@dimen/layout_zero"
-                                    android:layout_height="match_parent"
-                                    android:layout_weight="1"
-                                    android:background="@android:color/transparent"
-                                    android:visibility="invisible" />
-
-                                <Button
-                                    android:layout_width="@dimen/layout_zero"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="4.0"
-                                    android:background="@drawable/xiangqing_button_selector"
-                                    android:gravity="center"
-                                    android:text="41-60" />
-
-                                <Button
-                                    android:layout_width="@dimen/layout_zero"
-                                    android:layout_height="match_parent"
-                                    android:layout_weight="1"
-                                    android:background="@android:color/transparent"
-                                    android:visibility="invisible" />
-
-                                <Button
-                                    android:layout_width="@dimen/layout_zero"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="4.0"
-                                    android:background="@drawable/xiangqing_button_selector"
-                                    android:gravity="center"
-                                    android:text="61-80" />
-
-                                <Button
-                                    android:layout_width="@dimen/layout_zero"
-                                    android:layout_height="match_parent"
-                                    android:layout_weight="1"
-                                    android:background="@android:color/transparent"
-                                    android:visibility="invisible" />
-
-                                <Button
-                                    android:layout_width="@dimen/layout_zero"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="4.0"
-                                    android:background="@drawable/xiangqing_button_selector"
-                                    android:gravity="center"
-                                    android:text="81-100" />
-                            </TableRow>
-                        </TableLayout>
-                    </LinearLayout>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/layout_zero"
-                    android:layout_weight="0.2"
-                    android:paddingRight="50dp" >
-                </LinearLayout>
-            </LinearLayout> -->
         </RelativeLayout>
     </LinearLayout>
-
+</LinearLayout>
 </LinearLayout>

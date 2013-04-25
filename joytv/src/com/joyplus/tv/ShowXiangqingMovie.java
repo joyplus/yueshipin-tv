@@ -797,7 +797,7 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 			
 			int width = parent.getWidth();
 			convertView.setLayoutParams(new GridView.LayoutParams((int)((width-150)/6),
-						(int)((width-100)*2/9)));
+						(int)((width-100)*2/9)+20));
 			return convertView;
 		}
 		
@@ -835,7 +835,7 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		aq.id(R.id.iv_head_user_icon).image(app.getUserInfo().getUserAvatarUrl(),false,true,0,R.drawable.avatar);
+		aq.id(R.id.iv_head_user_icon).image(app.getUserInfo().getUserAvatarUrl(),false,true,0,R.drawable.avatar_defult);
 		aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
 	}
 	

@@ -155,7 +155,7 @@ public class ShowMovieActivity extends AbstractShowActivity {
 		super.onResume();
 		aq.id(R.id.iv_head_user_icon).image(
 				app.getUserInfo().getUserAvatarUrl(), false, true, 0,
-				R.drawable.avatar);
+				R.drawable.avatar_defult);
 		aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
 	}
 	
