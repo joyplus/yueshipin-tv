@@ -87,7 +87,8 @@ public class MainYueDanItemAdapter extends BaseAdapter {
 			holder.image.setTag(yuedan_list.get(position).pic_url);
 			aq.id(holder.image).image(yuedan_list.get(position).pic_url,true,true,0,R.drawable.post_normal);
 			holder.secondTitle.setText(yuedan_list.get(position).name);
-			holder.content.setText(yuedan_list.get(position).content);
+			holder.content.setText(yuedan_list.get(position).num+"部影片");
+//			holder.content.setText(yuedan_list.get(position).content);
 			holder.definition.setImageResource(R.drawable.icon_movie);
 			break;//电视剧
 		case 2:
@@ -96,7 +97,8 @@ public class MainYueDanItemAdapter extends BaseAdapter {
 			holder.image.setTag(yuedan_list.get(position).pic_url);
 			aq.id(holder.image).image(yuedan_list.get(position).pic_url,true,true,0,R.drawable.post_normal);
 			holder.secondTitle.setText(yuedan_list.get(position).name);
-			holder.content.setText(yuedan_list.get(position).content);
+			holder.content.setText(yuedan_list.get(position).num+"部影片");
+//			holder.content.setText(yuedan_list.get(position).content);
 			holder.definition.setImageResource(R.drawable.icon_episode);
 			break;
 		default:

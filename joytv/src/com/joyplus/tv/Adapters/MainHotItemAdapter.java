@@ -80,7 +80,7 @@ public class MainHotItemAdapter extends BaseAdapter {
 		if(hot_list.get(position).type == 0){
 			holder.firstTitle.setVisibility(View.VISIBLE);
 			if(hot_list.get(position).playback_time!=null&&!"".equals(hot_list.get(position).playback_time)){
-				holder.content.setText(StatisticsUtils.formatDuration1(Long.valueOf(hot_list.get(position).playback_time)));
+				holder.content.setText("观看到:" +StatisticsUtils.formatDuration1(Long.valueOf(hot_list.get(position).playback_time)));
 			}else{
 				holder.content.setText("");
 			}
