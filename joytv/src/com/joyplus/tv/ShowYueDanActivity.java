@@ -105,13 +105,14 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 
 			String url = StatisticsUtils.getYueDan_DianyingFirstURL();
 			Log.i(TAG, "URL--->" + url);
+			showDialog(DIALOG_WAITING);
 			getUnQuanbuData(url);// 进入电影界面时，全部分类电影显示获取焦点，并且显示数据
 		} else if (defalutYuedan == DIANSHIJU_YUEDAN) {
-
+			showDialog(DIALOG_WAITING);
 			String url = StatisticsUtils.getYueDan_DianshiFirstURL();
 			getUnQuanbuData(url);// 进入电影界面时，全部分类电影显示获取焦点，并且显示数据
 		}
-		
+
 	}
 
 	@Override
@@ -230,51 +231,69 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 				// TODO Auto-generated method stub
 				List<MovieItemData> list = searchAdapter.getMovieList();
 				if (list != null && !list.isEmpty()) {
-					String pro_type = list.get(position).getMovieProType();
-					Log.i(TAG, "pro_type:" + pro_type);
-					if (pro_type != null && !pro_type.equals("")) {
-						Intent intent = new Intent();
-						if (pro_type.equals("2")) {
-							Log.i(TAG, "pro_type:" + pro_type + "   --->2");
-							intent.setClass(ShowYueDanActivity.this,
-									ShowXiangqingTv.class);
+
+					String num = list.get(position).getNum();
+					if (num != null && !num.equals("")) {
+
+						Intent intent = new Intent(ShowYueDanActivity.this,
+								ShowYueDanListActivity.class);
+						Bundle bundle = new Bundle();
+						
+						bundle.putString("NAME",list.get(position).getMovieName());
+						bundle.putString("ID",list.get(position).getMovieID());
+						intent.putExtras(bundle);
+						
+						startActivity(intent);
+					} else {
+
+						String pro_type = list.get(position).getMovieProType();
+						Log.i(TAG, "pro_type:" + pro_type);
+						if (pro_type != null && !pro_type.equals("")) {
+							Intent intent = new Intent();
+							if (pro_type.equals("2")) {
+								Log.i(TAG, "pro_type:" + pro_type + "   --->2");
+								intent.setClass(ShowYueDanActivity.this,
+										ShowXiangqingTv.class);
+								intent.putExtra("ID", list.get(position)
+										.getMovieID());
+							} else if (pro_type.equals("1")) {
+								Log.i(TAG, "pro_type:" + pro_type + "   --->1");
+								intent.setClass(ShowYueDanActivity.this,
+										ShowXiangqingMovie.class);
+							} else if (pro_type.equals("131")) {
+
+								intent.setClass(ShowYueDanActivity.this,
+										ShowXiangqingDongman.class);
+							} else if (pro_type.equals("3")) {
+
+								intent.setClass(ShowYueDanActivity.this,
+										ShowXiangqingZongYi.class);
+							}
+
 							intent.putExtra("ID", list.get(position)
 									.getMovieID());
-						} else if (pro_type.equals("1")) {
-							Log.i(TAG, "pro_type:" + pro_type + "   --->1");
-							intent.setClass(ShowYueDanActivity.this,
-									ShowXiangqingMovie.class);
-						} else if (pro_type.equals("131")) {
 
-							intent.setClass(ShowYueDanActivity.this,
-									ShowXiangqingDongman.class);
-						} else if (pro_type.equals("3")) {
+							intent.putExtra("prod_url", list.get(position)
+									.getMoviePicUrl());
+							intent.putExtra("prod_name", list.get(position)
+									.getMovieName());
+							intent.putExtra("stars", list.get(position)
+									.getStars());
+							intent.putExtra("directors", list.get(position)
+									.getDirectors());
+							intent.putExtra("summary", list.get(position)
+									.getSummary());
+							intent.putExtra("support_num", list.get(position)
+									.getSupport_num());
+							intent.putExtra("favority_num", list.get(position)
+									.getFavority_num());
+							intent.putExtra("definition", list.get(position)
+									.getDefinition());
+							intent.putExtra("score", list.get(position)
+									.getMovieScore());
+							startActivity(intent);
 
-							intent.setClass(ShowYueDanActivity.this,
-									ShowXiangqingZongYi.class);
 						}
-
-						intent.putExtra("ID", list.get(position).getMovieID());
-
-						intent.putExtra("prod_url", list.get(position)
-								.getMoviePicUrl());
-						intent.putExtra("prod_name", list.get(position)
-								.getMovieName());
-						intent.putExtra("stars", list.get(position).getStars());
-						intent.putExtra("directors", list.get(position)
-								.getDirectors());
-						intent.putExtra("summary", list.get(position)
-								.getSummary());
-						intent.putExtra("support_num", list.get(position)
-								.getSupport_num());
-						intent.putExtra("favority_num", list.get(position)
-								.getFavority_num());
-						intent.putExtra("definition", list.get(position)
-								.getDefinition());
-						intent.putExtra("score", list.get(position)
-								.getMovieScore());
-						startActivity(intent);
-
 					}
 				}
 			}
