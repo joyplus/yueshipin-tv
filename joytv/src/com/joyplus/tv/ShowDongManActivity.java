@@ -59,7 +59,7 @@ public class ShowDongManActivity extends AbstractShowAddShouCangActivity {
 	private App app;
 
 	private EditText searchEt;
-	private MyMovieGridView dongmanGv;
+	private MyMovieGridView playGv;
 	private LinearLayout qinziLL, rexueLL, hougongLL, tuiliLL, jizhanLL,
 			gaoxiaoLL;
 
@@ -71,7 +71,7 @@ public class ShowDongManActivity extends AbstractShowAddShouCangActivity {
 
 	private View activeView;
 
-	private boolean isSelectedItem = true;// GridView中参数是否真正初始化
+//	private boolean isSelectedItem = true;// GridView中参数是否真正初始化
 
 	private int popWidth = 0, popHeight = 0;
 
@@ -93,6 +93,9 @@ public class ShowDongManActivity extends AbstractShowAddShouCangActivity {
 	
 	private String search;
 	private String filterSource;
+	
+
+	private PopupWindow popupWindow;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -106,7 +109,7 @@ public class ShowDongManActivity extends AbstractShowAddShouCangActivity {
 		initActivity();
 
 		searchAdapter = new SearchAdapter(this, aq);
-		dongmanGv.setAdapter(searchAdapter);
+		playGv.setAdapter(searchAdapter);
 
 		getQuan10Data(StatisticsUtils.getDongman_Quan10URL());
 
@@ -185,7 +188,6 @@ public class ShowDongManActivity extends AbstractShowAddShouCangActivity {
 		}
 	}
 
-	private PopupWindow popupWindow;
 
 	@Override
 	public void onClick(View v) {
@@ -315,7 +317,7 @@ public class ShowDongManActivity extends AbstractShowAddShouCangActivity {
 			activeView = tempView;
 		}
 		
-		dongmanGv.setNextFocusLeftId(activeView.getId());
+		playGv.setNextFocusLeftId(activeView.getId());
 
 		beforeGvView = null;
 	}
@@ -326,7 +328,7 @@ public class ShowDongManActivity extends AbstractShowAddShouCangActivity {
 
 		searchEt = (EditText) findViewById(R.id.et_search);
 		mFenLeiBtn = (Button) findViewById(R.id.bt_quanbufenlei);
-		dongmanGv = (MyMovieGridView) findViewById(R.id.gv_movie_show);
+		playGv = (MyMovieGridView) findViewById(R.id.gv_movie_show);
 
 		qinziLL = (LinearLayout) findViewById(R.id.ll_qinzidongman);
 		rexueLL = (LinearLayout) findViewById(R.id.ll_rexuedongman);
@@ -342,7 +344,7 @@ public class ShowDongManActivity extends AbstractShowAddShouCangActivity {
 
 		topLinearLayout = (LinearLayout) findViewById(R.id.ll_show_movie_top);
 
-		dongmanGv.setNextFocusLeftId(R.id.bt_quanbufenlei);
+		playGv.setNextFocusLeftId(R.id.bt_quanbufenlei);
 	}
 
 	@Override
@@ -382,7 +384,7 @@ public class ShowDongManActivity extends AbstractShowAddShouCangActivity {
 		zhuijushoucangBtn.setOnFocusChangeListener(this);
 		mFenLeiBtn.setOnFocusChangeListener(this);
 
-		dongmanGv.setOnKeyListener(new View.OnKeyListener() {
+		playGv.setOnKeyListener(new View.OnKeyListener() {
 
 			@Override
 			public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -402,24 +404,24 @@ public class ShowDongManActivity extends AbstractShowAddShouCangActivity {
 					if (keyCode == KEY_RIGHT) {
 
 					}
-					if (!isSelectedItem) {
-
-						if (keyCode == KEY_RIGHT) {
-							isSelectedItem = true;
-							dongmanGv.setSelection(1);
-						} else if (keyCode == KEY_DOWN) {
-							isSelectedItem = true;
-							dongmanGv.setSelection(5);
-
-						}
-					}
+//					if (!isSelectedItem) {
+//
+//						if (keyCode == KEY_RIGHT) {
+//							isSelectedItem = true;
+//							playGv.setSelection(1);
+//						} else if (keyCode == KEY_DOWN) {
+//							isSelectedItem = true;
+//							playGv.setSelection(5);
+//
+//						}
+//					}
 
 				}
 				return false;
 			}
 		});
 
-		dongmanGv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+		playGv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
@@ -467,7 +469,7 @@ public class ShowDongManActivity extends AbstractShowAddShouCangActivity {
 			}
 		});
 
-		dongmanGv
+		playGv
 				.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
 					@Override
@@ -480,7 +482,7 @@ public class ShowDongManActivity extends AbstractShowAddShouCangActivity {
 
 						if (view == null) {
 
-							isSelectedItem = false;
+//							isSelectedItem = false;
 							return;
 						}
 
@@ -497,14 +499,14 @@ public class ShowDongManActivity extends AbstractShowAddShouCangActivity {
 
 								if (isGridViewUp) {
 
-									dongmanGv.smoothScrollBy(-popHeight, 1000);
+									playGv.smoothScrollBy(-popHeight, 1000);
 									isSmoonthScroll = true;
 								}
 							} else {
 
 								if (!isGridViewUp) {
 
-									dongmanGv.smoothScrollBy(popHeight,
+									playGv.smoothScrollBy(popHeight,
 											1000 * 2);
 									isSmoonthScroll = true;
 
@@ -527,9 +529,9 @@ public class ShowDongManActivity extends AbstractShowAddShouCangActivity {
 								view);
 
 						int[] firstAndLastVisible = new int[2];
-						firstAndLastVisible[0] = dongmanGv
+						firstAndLastVisible[0] = playGv
 								.getFirstVisiblePosition();
-						firstAndLastVisible[1] = dongmanGv
+						firstAndLastVisible[1] = playGv
 								.getLastVisiblePosition();
 
 						if (y == 0 || y - popHeight == 0) {// 顶部没有渐影
@@ -570,11 +572,11 @@ public class ShowDongManActivity extends AbstractShowAddShouCangActivity {
 					public void onNothingSelected(AdapterView<?> parent) {
 						// TODO Auto-generated method stub
 
-						isSelectedItem = false;
+//						isSelectedItem = false;
 					}
 				});
 
-		dongmanGv.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+		playGv.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 
 			@Override
 			public void onFocusChange(View v, boolean hasFocus) {
@@ -593,7 +595,7 @@ public class ShowDongManActivity extends AbstractShowAddShouCangActivity {
 					}
 				} else {
 
-					dongmanGv.setNextFocusLeftId(activeView.getId());
+					playGv.setNextFocusLeftId(activeView.getId());
 
 					if (beforeGvView != null) {
 
@@ -617,7 +619,7 @@ public class ShowDongManActivity extends AbstractShowAddShouCangActivity {
 				Editable editable = searchEt.getText();
 				String searchStr = editable.toString();
 				searchEt.setText("");
-				dongmanGv.setNextFocusForwardId(searchEt.getId());//
+				playGv.setNextFocusForwardId(searchEt.getId());//
 				showDialog(DIALOG_WAITING);
 				ItemStateUtils.viewToNormal(getApplicationContext(), activeView);
 				activeView = searchEt;
@@ -773,13 +775,13 @@ public class ShowDongManActivity extends AbstractShowAddShouCangActivity {
 		}
 		lists[currentListIndex] = list;
 
-		dongmanGv.setSelection(0);
+		playGv.setSelection(0);
 		searchAdapter.notifyDataSetChanged();
 		beforeGvView = null;
-		dongmanGv.setFocusable(true);
-		isSelectedItem = false;
+		playGv.setFocusable(true);
+//		isSelectedItem = false;
 		removeDialog(DIALOG_WAITING);
-		dongmanGv.requestFocus();
+		playGv.requestFocus();
 		
 
 	}
