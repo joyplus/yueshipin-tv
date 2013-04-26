@@ -78,6 +78,9 @@ public class SettingActivity extends Activity implements OnClickListener {
 	}
 	
 	private void updateUser(){
+		if(app.getUserInfo() == null){
+			return;
+		}
 		aq.id(R.id.iv_head_user_icon).image(
 				app.getUserInfo().getUserAvatarUrl(), false, true, 0,
 				R.drawable.avatar_defult);

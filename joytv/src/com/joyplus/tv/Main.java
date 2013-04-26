@@ -388,6 +388,7 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 					
 					break;
 				case 3:
+					sendBroadcast(new Intent(FayeService.ACTION_M_DISAPPEAR));
 					itemFram.setVisibility(View.VISIBLE);
 					contentLayout.removeAllViews();
 					kuView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
@@ -404,6 +405,7 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 					noticeView.setText(gallery1.getSelectedItemPosition()+1 + "/" + resouces_lib_active.length);
 					break;
 				case 4:
+					sendBroadcast(new Intent(FayeService.ACTION_M_APPEAR));
 					itemFram.setVisibility(View.VISIBLE);
 					contentLayout.removeAllViews();
 					myView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
@@ -525,12 +527,18 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 					R.drawable.avatar_defult);
 			aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
 		}
+		if(titleGroup.getSelectedTitleIndex() == 4){
+			sendBroadcast(new Intent(FayeService.ACTION_M_APPEAR));
+		}
 	}
 
 	@Override
 	public void onPause() {
 		super.onPause();
 		MobclickAgent.onPause(this);
+		if(titleGroup.getSelectedTitleIndex() == 4){
+			sendBroadcast(new Intent(FayeService.ACTION_M_DISAPPEAR));
+		}
 	}
 	@Override
 	protected void onDestroy() {
