@@ -26,6 +26,8 @@ public class FayeService extends Service implements FayeListener{
 	private static final String TAG = "FayeService";
 	
 	public static final String ACTION_SEND_UNBAND = "chennel_send_unBand_message";
+	public static final String ACTION_M_APPEAR = "erweima_appear";
+	public static final String ACTION_M_DISAPPEAR = "erweima_disappear";
 	public static final String ACTION_RECIVEACTION_BAND = "chennel_receive_message_band";
 	public static final String ACTION_RECIVEACTION_UNBAND = "chennel_receive_message_unband";
 	
@@ -65,6 +67,16 @@ public class FayeService extends Service implements FayeListener{
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+	        	}else if(ACTION_M_APPEAR.equals(intent.getAction())){
+	        		//二维码出现啦
+	        		if(app.getUserData("isBand")!=null&&"1".equals(app.getUserData("isBand"))){
+	        			myClient.connectToServer(null);
+	        		}
+	        	}else if(ACTION_M_DISAPPEAR.equals(intent.getAction())){
+	        		//二维码消失啦
+	        		if(app.getUserData("isBand")!=null&&"1".equals(app.getUserData("isBand"))){
+	        			myClient.connectToServer(null);
+	        		}
 	        	}
 	                
 	        }
@@ -110,14 +122,18 @@ public class FayeService extends Service implements FayeListener{
 	public void connectedToServer() {
 		// TODO Auto-generated method stub
 		Log.d(TAG, "server connected----->");
-		
+		if(app.getUserData("isBand")==null||"0".equals(app.getUserData("isBand"))){
+			myClient.disconnectFromServer();
+		}
 	}
 
 	@Override
 	public void disconnectedFromServer() {
 		// TODO Auto-generated method stub
 		Log.w(TAG, "server disconnected!----->"); 
-		myClient.connectToServer(null);
+		if(app.getUserData("isBand")!=null&&"1".equals(app.getUserData("isBand"))){
+			myClient.connectToServer(null);
+		}
 	}
 
 	@Override

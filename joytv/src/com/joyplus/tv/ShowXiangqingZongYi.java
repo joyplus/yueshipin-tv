@@ -260,8 +260,11 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 				seletedButtonIndex = 1;
 				Button b = (Button) table.findViewById(1);
 				seletedIndexButton = b;
-				b.setBackgroundResource(R.drawable.bg_button_tv_selector_1);
-				b.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector_1));
+				if(b!=null){
+					b.setBackgroundResource(R.drawable.bg_button_tv_selector_1);
+					b.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector_1));
+					b.setPadding(8, 0, 0, 0);
+				}
 				play(0);
 			}else{
 				play(seletedButtonIndex-1);
@@ -764,6 +767,9 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 	}
 	
 	private void play(int index){
+		if(num<=index){
+			return;
+		}
 		CurrentPlayData playDate = new CurrentPlayData();
 		Intent intent = new Intent(this,VideoPlayerActivity.class);
 		playDate.prod_id = prod_id;
