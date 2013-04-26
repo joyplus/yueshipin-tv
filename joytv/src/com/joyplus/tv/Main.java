@@ -225,7 +225,7 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 //	private View yeuDanView;
 	private View kuView;
 	private View myView;
-	
+	private TextView lastBandTimeView;
 //	private TextView hot_name_tv;
 //	private TextView hot_score_tv;
 //	private TextView hot_directors_tv;
@@ -254,6 +254,7 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 			String action = intent.getAction();
 			if(FayeService.ACTION_RECIVEACTION_BAND.equals(action)){
 				//band
+				updateLastTimeView();
 				updateUser(app.getUserData("phoneID"));
 			}else if(FayeService.ACTION_RECIVEACTION_UNBAND.equals(action)){
 				//unband by mobile
@@ -283,6 +284,7 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
         
         kuView = LayoutInflater.from(Main.this).inflate(R.layout.layout_lib, null);
         myView = LayoutInflater.from(Main.this).inflate(R.layout.layout_my, null);
+        lastBandTimeView = (TextView) myView.findViewById(R.id.lastBandTime);
         ImageView erweimaImage = (ImageView) myView.findViewById(R.id.img_erweima);
         
         erweimaImage.setImageBitmap(CreateBarCode());
@@ -407,6 +409,7 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 					myView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
 					contentLayout.startAnimation(alpha_appear);
 					contentLayout.addView(myView);
+					updateLastTimeView();
 					gallery1.setAdapter(new MainLibAdapter(Main.this, resouces_my_nomal));
 					if(indexCaces.get(index) == null){
 						gallery1.setSelection(0);
@@ -516,6 +519,12 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 	public void onResume() {
 		super.onResume();
 		MobclickAgent.onResume(this);
+		if(app.getUserInfo()!=null){
+			aq.id(R.id.iv_head_user_icon).image(
+					app.getUserInfo().getUserAvatarUrl(), false, true, 0,
+					R.drawable.avatar_defult);
+			aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
+		}
 	}
 
 	@Override
@@ -1727,6 +1736,13 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 		}
 	}
 	
+	private void updateLastTimeView(){
+		if(app.getUserData("lastTime")==null||"".equals(app.getUserData("lastTime"))){
+			lastBandTimeView.setText("您还没有同步过哟~");
+		}else{
+			lastBandTimeView.setText("上次同步于:\t" + StatisticsUtils.getLastBandNotice(app.getUserData("lastTime")));
+		}
+	}
 	
 	
 //	class PLAY_URLS_INDEX{

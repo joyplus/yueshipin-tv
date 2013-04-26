@@ -7,7 +7,7 @@
 	    android:layout_height="wrap_content"
 	    android:textColor="@color/hot_content_notice"
 	    android:textSize="20sp"
-	    android:text="上次同步于："/>
+	    android:id="@+id/lastBandTime"/>
 	<FrameLayout android:layout_width="wrap_content"
 	    android:layout_marginTop="7dp"
 	    android:layout_height="wrap_content">

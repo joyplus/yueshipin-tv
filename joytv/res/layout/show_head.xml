@@ -33,6 +33,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="3dp"
+                android:paddingLeft="5dp"
                 android:layout_weight="5"
                 android:text="用户名称"
                 android:textColor="@color/user_name"

@@ -3,7 +3,9 @@ package com.joyplus.tv;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.security.MessageDigest;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -836,6 +838,33 @@ public class StatisticsUtils implements JieMianConstant,BangDanKey{
 		}
 		
 		return list;
+	}
+	
+	
+	public static String getLastBandNotice(String lastTime){
+//		long last = Long.valueOf(lastTime);
+//		long time = System.currentTimeMillis()-last;
+//		if(time/(24*60*60*1000)>0){
+//			int day = (int) (time/(24*60*60*1000));
+//			return day+"天前";
+//		}else if(time/(60*60*1000)>0){
+//			int hour = (int) (time/(60*60*1000));
+//			return hour+"小时前";
+//		}else if(time/(60*1000)>0){
+//			int minute = (int) (time/(60*1000));
+//			return minute+"分钟前";
+//		}else if(time/1000>0){
+//			int second = (int) (time/1000);
+//			return second+"秒前";
+//		}else{
+//			return "1秒前";
+//		}
+		String re_StrTime = null; 
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日\tHH时mm分"); 
+		// 例如：cc_time=1291778220 
+		long lcc_time = Long.valueOf(lastTime); 
+		re_StrTime = sdf.format(new Date(lcc_time)); 
+		return re_StrTime; 
 	}
 	
 }
