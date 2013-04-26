@@ -583,7 +583,7 @@ public boolean checkLogin() {
 
 private void checkBand(){
 	
-	if(app.getUserData("phoneID")==null){
+	if(app.getUserData("phoneID")==null||app.getUserData("isBand") == null||"0".equals(app.getUserData("isBand"))){
 		handler.sendEmptyMessage(MESSAGE_UPDATEUSER); 
 	}else{
 		String url = Constant.FAYESERVERURL_CHECKBAND + "?user_id=" + app.getUserData("phoneID") + "&tv_channel=" + (Constant.FAYECHANNEL_TV_BASE+StatisticsUtils.MD5(macAddress)).replace(Constant.FAYECHANNEL_TV_HEAD, "");
@@ -598,8 +598,8 @@ private void checkBand(){
 
 public void CheckBandResult(String url, JSONObject json, AjaxStatus status){
 
-	Log.d(TAG, json.toString());
 	if (json != null) {
+		Log.d(TAG, json.toString());
 		try {
 			String result = json.getString("status");
 			if("1".equals(result)){
@@ -614,6 +614,8 @@ public void CheckBandResult(String url, JSONObject json, AjaxStatus status){
 			e1.printStackTrace();
 		}
 		
+	}else{
+		handler.sendEmptyMessage(MESSAGE_UPDATEUSER); 
 	}
 }
 
@@ -1367,7 +1369,14 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 			item.prod_id = result.histories[0].prod_id;
 			item.prod_name = result.histories[0].prod_name;
 			item.prod_type = result.histories[0].prod_type;
-			item.prod_pic_url = result.histories[0].big_prod_pic_url;
+//			item.prod_pic_url = result.histories[0].big_prod_pic_url;
+			String bigPicUrl = result.histories[0].big_prod_pic_url;
+			if(bigPicUrl == null || bigPicUrl.equals("")
+					||bigPicUrl.equals(StatisticsUtils.EMPTY)) {
+				
+				bigPicUrl = result.histories[0].prod_pic_url;
+			}
+			item.prod_pic_url = bigPicUrl;
 			item.stars = result.histories[0].stars;
 			item.directors = result.histories[0].directors;
 			item.favority_num = result.histories[0].favority_num;

@@ -55,19 +55,17 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 	private Button btn_fenlei_zongyi;
 	private Button selectedButton;
 	private Button delBtn;
+	private int index = 0;
 	ObjectMapper mapper = new ObjectMapper();
-	private List<HotItemInfo> allHistoryList = new ArrayList<HotItemInfo>();
-	private List<HotItemInfo> movieHistoryList = new ArrayList<HotItemInfo>();
-	private List<HotItemInfo> tvHistoryList = new ArrayList<HotItemInfo>();
-	private List<HotItemInfo> dongmanHistoryList = new ArrayList<HotItemInfo>();
-	private List<HotItemInfo> zongyiHistoryList = new ArrayList<HotItemInfo>();
+	private List<HotItemInfo> allHistoryList;
+	private List<HotItemInfo> movieHistoryList;
+	private List<HotItemInfo> tvHistoryList;
+	private List<HotItemInfo> dongmanHistoryList;
+	private List<HotItemInfo> zongyiHistoryList;
 	
 	private View  selectedView;
 	
 	private ListView listView;
-	private int index=0;
-	private boolean isFirstTime = true;
-	
 	private App app;
 	private AQuery aq;
 	@Override
@@ -217,15 +215,15 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 			@Override
 			public void onFocusChange(View v, boolean hasFocus) {
 				// TODO Auto-generated method stub
-				if(!hasFocus){
-					if(selectedView!=null){
-						selectedView.setBackgroundResource(R.drawable.bg_teat_repeat);
-					}
-				}else{
-					if(selectedView!=null){
-						selectedView.setBackgroundResource(R.drawable.historty_listitem_drawable_selector);
-					}
-				}
+//				if(!hasFocus){
+//					if(selectedView!=null){
+//						selectedView.setBackgroundResource(R.drawable.bg_teat_repeat);
+//					}
+//				}else{
+//					if(selectedView!=null){
+//						selectedView.setBackgroundResource(R.drawable.historty_listitem_drawable_selector);
+//					}
+//				}
 			}
 		});
 		
@@ -342,8 +340,13 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 			btn_fenlei_all.setBackgroundResource(R.drawable.menubg);
 			selectedButton = btn_fenlei_all;
 			selectedButton.setPadding(0, 0, 5, 0);
-			getHistoryData(0);
 			index = 0;
+			if(allHistoryList==null){
+				listView.setAdapter(null);
+				getHistoryData(0);
+			}else{
+				listView.setAdapter(new HistortyAdapter(allHistoryList));
+			}
 			break;
 		case R.id.fenlei_movie:
 			selectedButton.setTextColor(getResources().getColorStateList(R.color.text_color_selector));
@@ -352,8 +355,13 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 			btn_fenlei_movie.setBackgroundResource(R.drawable.menubg);
 			selectedButton = btn_fenlei_movie;
 			selectedButton.setPadding(0, 0, 5, 0);
-			getHistoryData(1);
 			index = 1;
+			if(movieHistoryList==null){
+				listView.setAdapter(null);
+				getHistoryData(1);
+			}else{
+				listView.setAdapter(new HistortyAdapter(movieHistoryList));
+			}
 			break;
 		case R.id.fenlei_tv:
 			selectedButton.setTextColor(getResources().getColorStateList(R.color.text_color_selector));
@@ -362,8 +370,13 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 			btn_fenlei_tv.setBackgroundResource(R.drawable.menubg);
 			selectedButton = btn_fenlei_tv;
 			selectedButton.setPadding(0, 0, 5, 0);
-			getHistoryData(2);
 			index = 2;
+			if(tvHistoryList==null){
+				listView.setAdapter(null);
+				getHistoryData(2);
+			}else{
+				listView.setAdapter(new HistortyAdapter(tvHistoryList));
+			}
 			break;
 		case R.id.fenlei_dongman:
 			selectedButton.setTextColor(getResources().getColorStateList(R.color.text_color_selector));
@@ -372,8 +385,13 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 			btn_fenlei_dongman.setBackgroundResource(R.drawable.menubg);
 			selectedButton = btn_fenlei_dongman;
 			selectedButton.setPadding(0, 0, 5, 0);
-			getHistoryData(131);
 			index = 131;
+			if(dongmanHistoryList==null){
+				listView.setAdapter(null);
+				getHistoryData(131);
+			}else{
+				listView.setAdapter(new HistortyAdapter(dongmanHistoryList));
+			}
 			break;
 		case R.id.fenlei_zongyi:
 			selectedButton.setTextColor(getResources().getColorStateList(R.color.text_color_selector));
@@ -382,14 +400,59 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 			btn_fenlei_zongyi.setBackgroundResource(R.drawable.menubg);
 			selectedButton = btn_fenlei_zongyi;
 			selectedButton.setPadding(0, 0, 5, 0);
-			getHistoryData(3);
 			index = 3;
+			if(zongyiHistoryList==null){
+				listView.setAdapter(null);
+				getHistoryData(3);
+			}else{
+				listView.setAdapter(new HistortyAdapter(zongyiHistoryList));
+			}
 			break;
 		case R.id.delete_btn:
-			deleteShoucang(false, "");
-			((HistortyAdapter)listView.getAdapter()).data.clear();
-			((HistortyAdapter)listView.getAdapter()).notifyDataSetChanged();
-			break;
+			final Dialog dialog = new AlertDialog.Builder(ShowShoucangHistoryActivity.this).create();
+			dialog.show();
+			LayoutInflater inflater = LayoutInflater.from(ShowShoucangHistoryActivity.this);
+			View view = inflater.inflate(R.layout.layout_deleteall_confirm_dialog, null);
+			TextView nameText = (TextView) view.findViewById(R.id.dialog_title);
+			Button cancelButton = (Button) view.findViewById(R.id.history_cancel);
+			Button delButton = (Button) view.findViewById(R.id.history_del);
+			dialog.setContentView(view);
+			switch (index) {
+			case 0:
+				nameText.setText("是否清空所有记录？");
+				break;
+			case 1:
+				nameText.setText("是否清空所有电影？");
+				break;
+			case 2:
+				nameText.setText("是否清空所有电视剧？");
+				break;
+			case 3:
+				nameText.setText("是否清空所有综艺？");
+				break;
+			case 131:
+				nameText.setText("是否清空所有动漫？");
+				break;
+			}
+			cancelButton.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					dialog.dismiss();
+				}
+			});
+			delButton.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					dialog.dismiss();
+					deleteShoucang(false, "");
+					((HistortyAdapter)listView.getAdapter()).data.clear();
+					((HistortyAdapter)listView.getAdapter()).notifyDataSetChanged();
+				}
+			});
 		default:
 			break;
 		}
@@ -400,6 +463,9 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 			long arg3) {
 		// TODO Auto-generated method stub
 		selectedView = arg1;
+		if(((HistortyAdapter)listView.getAdapter()).data.size()-listView.getLastVisiblePosition()==3){
+			getHistoryData(index);
+		}
 	}
 
 	@Override
@@ -410,7 +476,13 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 	
 	
 	private void getHistoryData(int type){
-		String url = Constant.BASE_URL + "user/favorities" +"?page_num=1&page_size=10&userid="+app.getUserInfo().getUserId();
+		int index;
+		if(listView.getAdapter()==null || ((HistortyAdapter)listView.getAdapter()).data==null){
+			index = 1;
+		}else{
+			index = ((HistortyAdapter)listView.getAdapter()).data.size()/10 +1;
+		}
+		String url = Constant.BASE_URL + "user/favorities" +"?page_size=10&page_num=" + index;
 		if(type!=0){
 			url = url + "&vod_type=" + type;
 		}
@@ -476,7 +548,14 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 				item.prod_id = result.favorities[i].content_id;
 				item.prod_name = result.favorities[i].content_name;
 				item.prod_type = result.favorities[i].content_type;
-				item.prod_pic_url = result.favorities[i].big_content_pic_url;
+//				item.prod_pic_url = result.favorities[i].big_content_pic_url;
+				String bigPicUrl = result.favorities[i].big_content_pic_url;
+				if(bigPicUrl == null || bigPicUrl.equals("")
+						||bigPicUrl.equals(StatisticsUtils.EMPTY)) {
+					
+					bigPicUrl = result.favorities[i].content_pic_url;
+				}
+				item.prod_pic_url = bigPicUrl;
 				item.stars = result.favorities[i].stars;
 				item.directors = result.favorities[i].directors;
 				item.favority_num = result.favorities[i].favority_num;
@@ -488,34 +567,60 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 			}
 			switch (type) {
 			case 0:
-				allHistoryList = list;
-				listView.setAdapter(new HistortyAdapter(allHistoryList));
+				if(allHistoryList==null){
+					allHistoryList = list;
+					listView.setAdapter(new HistortyAdapter(allHistoryList));
+					listView.requestFocus();
+				}else{
+					allHistoryList.addAll(list);
+					((BaseAdapter)listView.getAdapter()).notifyDataSetChanged();
+				}
 				break;
 			case 1:
-				movieHistoryList = list;
-				listView.setAdapter(new HistortyAdapter(movieHistoryList));
+				if(movieHistoryList==null){
+					movieHistoryList = list;
+					listView.setAdapter(new HistortyAdapter(movieHistoryList));
+				}else{
+					movieHistoryList.addAll(list);
+					((BaseAdapter)listView.getAdapter()).notifyDataSetChanged();
+				}
 				break;
 			case 2:
-				tvHistoryList = list;
-				listView.setAdapter(new HistortyAdapter(tvHistoryList));
+				if(tvHistoryList==null){
+					tvHistoryList = list;
+					listView.setAdapter(new HistortyAdapter(tvHistoryList));
+				}else{
+					tvHistoryList.addAll(list);
+					((BaseAdapter)listView.getAdapter()).notifyDataSetChanged();
+				}
 				break;
 			case 3:
-				zongyiHistoryList = list;
-				listView.setAdapter(new HistortyAdapter(zongyiHistoryList));
+				if(zongyiHistoryList==null){
+					zongyiHistoryList = list;
+					listView.setAdapter(new HistortyAdapter(zongyiHistoryList));
+				}else{
+					zongyiHistoryList.addAll(list);
+					((BaseAdapter)listView.getAdapter()).notifyDataSetChanged();
+				}
 				break;
 			case 131:
-				dongmanHistoryList = list;
-				listView.setAdapter(new HistortyAdapter(dongmanHistoryList));
+				if(dongmanHistoryList==null){
+					dongmanHistoryList = list;
+					listView.setAdapter(new HistortyAdapter(dongmanHistoryList));
+				}else{
+					dongmanHistoryList.addAll(list);
+					((BaseAdapter)listView.getAdapter()).notifyDataSetChanged();
+				}
 				break;
 			}
-			listView.setSelection(0);
-			listView.requestFocus();
-			if(isFirstTime){
-				listView.requestFocus();
-				isFirstTime = false;
-			}else{
-				selectedButton.requestFocus();
-			}
+//			listView.setSelection(0);
+//			listView.requestFocus();
+//			if(isFirstTime){
+//				listView.requestFocus();
+//				isFirstTime = false;
+//			}else{
+//				selectedButton.requestFocus();
+//			}
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

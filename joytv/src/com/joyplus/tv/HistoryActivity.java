@@ -40,6 +40,7 @@ import com.joyplus.tv.entity.HotItemInfo;
 
 public class HistoryActivity extends Activity implements OnClickListener, OnItemSelectedListener {
 	private static final String TAG = "HistoryActivity";
+	private static final int CONFIRM_DIALOG = 0;
 	private Button btn_fenlei_all;
 	private Button btn_fenlei_movie;
 	private Button btn_fenlei_tv;
@@ -47,14 +48,13 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 	private Button btn_fenlei_zongyi;
 	private Button selectedButton;
 	private Button delBtn;
-	private boolean isFirstTime = true;
 	private int index = 0;
 	ObjectMapper mapper = new ObjectMapper();
-	private List<HotItemInfo> allHistoryList = new ArrayList<HotItemInfo>();
-	private List<HotItemInfo> movieHistoryList = new ArrayList<HotItemInfo>();
-	private List<HotItemInfo> tvHistoryList = new ArrayList<HotItemInfo>();
-	private List<HotItemInfo> dongmanHistoryList = new ArrayList<HotItemInfo>();
-	private List<HotItemInfo> zongyiHistoryList = new ArrayList<HotItemInfo>();
+	private List<HotItemInfo> allHistoryList;
+	private List<HotItemInfo> movieHistoryList;
+	private List<HotItemInfo> tvHistoryList;
+	private List<HotItemInfo> dongmanHistoryList;
+	private List<HotItemInfo> zongyiHistoryList;
 	
 	private View  selectedView;
 	private ListView listView;
@@ -194,15 +194,15 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 			@Override
 			public void onFocusChange(View v, boolean hasFocus) {
 				// TODO Auto-generated method stub
-				if(!hasFocus){
-					if(selectedView!=null){
-						selectedView.setBackgroundResource(R.drawable.bg_teat_repeat);
-					}
-				}else{
-					if(selectedView!=null){
-						selectedView.setBackgroundResource(R.drawable.historty_listitem_drawable_selector);
-					}
-				}
+//				if(!hasFocus){
+//					if(selectedView!=null){
+//						selectedView.setBackgroundResource(R.drawable.bg_teat_repeat);
+//					}
+//				}else{
+//					if(selectedView!=null){
+//						selectedView.setBackgroundResource(R.drawable.historty_listitem_drawable_selector);
+//					}
+//				}
 			}
 		});
 		
@@ -295,7 +295,6 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 				holder.stars_notice.setVisibility(View.GONE);
 				holder.directors_notice.setVisibility(View.GONE);
 			}
-			
 			convertView.setBackgroundResource(R.drawable.historty_listitem_drawable_selector);
 			return convertView;
 		}
@@ -305,9 +304,9 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
-		if(selectedButton.equals(v)){
-			return ;
-		}
+//		if(selectedButton.equals(v)){
+//			return ;
+//		}
 		
 		switch (v.getId()) { 
 		case R.id.fenlei_all:
@@ -318,7 +317,8 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 			selectedButton = btn_fenlei_all;
 			selectedButton.setPadding(0, 0, 5, 0);
 			index = 0;
-			if(allHistoryList.size()==0){
+			if(allHistoryList==null){
+				listView.setAdapter(null);
 				getHistoryData(0);
 			}else{
 				listView.setAdapter(new HistortyAdapter(allHistoryList));
@@ -332,7 +332,8 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 			selectedButton = btn_fenlei_movie;
 			selectedButton.setPadding(0, 0, 5, 0);
 			index = 1;
-			if(movieHistoryList.size()==0){
+			if(movieHistoryList==null){
+				listView.setAdapter(null);
 				getHistoryData(1);
 			}else{
 				listView.setAdapter(new HistortyAdapter(movieHistoryList));
@@ -346,7 +347,8 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 			selectedButton = btn_fenlei_tv;
 			selectedButton.setPadding(0, 0, 5, 0);
 			index = 2;
-			if(tvHistoryList.size()==0){
+			if(tvHistoryList==null){
+				listView.setAdapter(null);
 				getHistoryData(2);
 			}else{
 				listView.setAdapter(new HistortyAdapter(tvHistoryList));
@@ -360,7 +362,8 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 			selectedButton = btn_fenlei_dongman;
 			selectedButton.setPadding(0, 0, 5, 0);
 			index = 131;
-			if(dongmanHistoryList.size()==0){
+			if(dongmanHistoryList==null){
+				listView.setAdapter(null);
 				getHistoryData(131);
 			}else{
 				listView.setAdapter(new HistortyAdapter(dongmanHistoryList));
@@ -374,16 +377,58 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 			selectedButton = btn_fenlei_zongyi;
 			selectedButton.setPadding(0, 0, 5, 0);
 			index = 3;
-			if(zongyiHistoryList.size()==0){
+			if(zongyiHistoryList==null){
+				listView.setAdapter(null);
 				getHistoryData(3);
 			}else{
 				listView.setAdapter(new HistortyAdapter(zongyiHistoryList));
 			}
 			break;
 		case R.id.delete_btn:
-			deleteHistory(false, "");
-			((HistortyAdapter)listView.getAdapter()).data.clear();
-			((HistortyAdapter)listView.getAdapter()).notifyDataSetChanged();
+			final Dialog dialog = new AlertDialog.Builder(HistoryActivity.this).create();
+			dialog.show();
+			LayoutInflater inflater = LayoutInflater.from(HistoryActivity.this);
+			View view = inflater.inflate(R.layout.layout_deleteall_confirm_dialog, null);
+			TextView nameText = (TextView) view.findViewById(R.id.dialog_title);
+			Button cancelButton = (Button) view.findViewById(R.id.history_cancel);
+			Button delButton = (Button) view.findViewById(R.id.history_del);
+			dialog.setContentView(view);
+			switch (index) {
+			case 0:
+				nameText.setText("是否清空所有记录？");
+				break;
+			case 1:
+				nameText.setText("是否清空所有电影？");
+				break;
+			case 2:
+				nameText.setText("是否清空所有电视剧？");
+				break;
+			case 3:
+				nameText.setText("是否清空所有综艺？");
+				break;
+			case 131:
+				nameText.setText("是否清空所有动漫？");
+				break;
+			}
+			cancelButton.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					dialog.dismiss();
+				}
+			});
+			delButton.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					dialog.dismiss();
+					deleteHistory(false, "");
+					((HistortyAdapter)listView.getAdapter()).data.clear();
+					((HistortyAdapter)listView.getAdapter()).notifyDataSetChanged();
+				}
+			});
 			break;
 		default:
 			break;
@@ -395,6 +440,11 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 			long arg3) {
 		// TODO Auto-generated method stub
 		selectedView = arg1;
+//		if(data.size()-arg2==3&&data.size()>=5){
+//			Log.d(TAG, "data.size()"+data.size()+"---------------------"+position);
+		if(((HistortyAdapter)listView.getAdapter()).data.size()-listView.getLastVisiblePosition()==3){
+			getHistoryData(index);
+		}
 	}
 
 	@Override
@@ -405,13 +455,20 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 	
 	
 	private void getHistoryData(int type){
-		String url = Constant.BASE_URL + "user/playHistories" +"?page_num=1&page_size=10&userid=" + app.getUserInfo().getUserId();
+		int index;
+		if(listView.getAdapter()==null || ((HistortyAdapter)listView.getAdapter()).data==null){
+			index = 1;
+		}else{
+			index = ((HistortyAdapter)listView.getAdapter()).data.size()/10 +1;
+		}
+		String url = Constant.BASE_URL + "user/playHistories" +"?page_size=10&page_num=" + index;
 		if(type!=0){
 			url = url + "&vod_type=" + type;
 		}
 //		String url = Constant.BASE_URL + "user/playHistories" +"?page_num=1&page_size=10&userid=4742";
 
 //		String url = Constant.BASE_URL;
+		Log.d(TAG, url);
 		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
 		switch (type) {
 		case 0:
@@ -441,7 +498,7 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 		initHistoryData(url, json, status, 0);
 	}
 	public void initMovieHistoryData(String url, JSONObject json, AjaxStatus status){
-		initHistoryData(url, json, status, 1);
+		initHistoryData(url, json, status, 1); 
 	}
 	public void initTvHistoryData(String url, JSONObject json, AjaxStatus status){
 		initHistoryData(url, json, status, 2);
@@ -471,7 +528,13 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 				item.prod_id = result.histories[i].prod_id;
 				item.prod_name = result.histories[i].prod_name;
 				item.prod_type = result.histories[i].prod_type;
-				item.prod_pic_url = result.histories[i].prod_pic_url;
+				String bigPicUrl = result.histories[i].big_prod_pic_url;
+				if(bigPicUrl == null || bigPicUrl.equals("")
+						||bigPicUrl.equals(StatisticsUtils.EMPTY)) {
+					
+					bigPicUrl = result.histories[i].prod_pic_url;
+				}
+				item.prod_pic_url = bigPicUrl;
 				item.stars = result.histories[i].stars;
 				item.directors = result.histories[i].directors;
 				item.favority_num = result.histories[i].favority_num;
@@ -492,34 +555,60 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 			}
 			switch (type) {
 			case 0:
-				allHistoryList = list;
-				listView.setAdapter(new HistortyAdapter(allHistoryList));
+				if(allHistoryList==null){
+					allHistoryList = list;
+					listView.setAdapter(new HistortyAdapter(allHistoryList));
+					listView.requestFocus();
+				}else{
+					allHistoryList.addAll(list);
+					((BaseAdapter)listView.getAdapter()).notifyDataSetChanged();
+				}
 				break;
 			case 1:
-				movieHistoryList = list;
-				listView.setAdapter(new HistortyAdapter(movieHistoryList));
+				if(movieHistoryList==null){
+					movieHistoryList = list;
+					listView.setAdapter(new HistortyAdapter(movieHistoryList));
+				}else{
+					movieHistoryList.addAll(list);
+					((BaseAdapter)listView.getAdapter()).notifyDataSetChanged();
+				}
 				break;
 			case 2:
-				tvHistoryList = list;
-				listView.setAdapter(new HistortyAdapter(tvHistoryList));
+				if(tvHistoryList==null){
+					tvHistoryList = list;
+					listView.setAdapter(new HistortyAdapter(tvHistoryList));
+				}else{
+					tvHistoryList.addAll(list);
+					((BaseAdapter)listView.getAdapter()).notifyDataSetChanged();
+				}
 				break;
 			case 3:
-				zongyiHistoryList = list;
-				listView.setAdapter(new HistortyAdapter(zongyiHistoryList));  
+				if(zongyiHistoryList==null){
+					zongyiHistoryList = list;
+					listView.setAdapter(new HistortyAdapter(zongyiHistoryList));
+				}else{
+					zongyiHistoryList.addAll(list);
+					((BaseAdapter)listView.getAdapter()).notifyDataSetChanged();
+				}
 				break;
 			case 131:
-				dongmanHistoryList = list;
-				listView.setAdapter(new HistortyAdapter(dongmanHistoryList));
+				if(dongmanHistoryList==null){
+					dongmanHistoryList = list;
+					listView.setAdapter(new HistortyAdapter(dongmanHistoryList));
+				}else{
+					dongmanHistoryList.addAll(list);
+					((BaseAdapter)listView.getAdapter()).notifyDataSetChanged();
+				}
 				break;
 			}
-			listView.setSelection(0);
-			listView.requestFocus();
-			if(isFirstTime){
-				listView.requestFocus();
-				isFirstTime = false;
-			}else{
-				selectedButton.requestFocus();
-			}
+//			listView.setSelection(0);
+//			listView.requestFocus();
+//			if(isFirstTime){
+//				listView.requestFocus();
+//				isFirstTime = false;
+//			}else{
+//				selectedButton.requestFocus();
+//			}
 			
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
@@ -587,6 +676,7 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 		aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
 	}
 	
+	
 	class ViewHolder{
 		TextView title;
 		TextView stars;
@@ -596,27 +686,4 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 		TextView content;
 		ImageView img;
 	}
-//	class HistoryData{
-//		public String id;
-//		public String prod_id;
-//		public String prod_name;
-//		public String prod_type; //1，电影; 2，电视剧; 3，综艺; 4，动漫;
-//		public String prod_pic_url;
-//		public String stars;
-//		public String directors;
-//		public String favority_num;
-//		public String support_num;
-//		public String publish_date;
-//		public String score;
-//		public String area;
-//		public String cur_episode;
-//		public String max_episode;
-//		public String definition;
-//		public String prod_summary;
-//		public String duration;
-//		public String video_url;
-//		public String playback_time;
-//		public String prod_subname;
-//		public String play_type;
-//	}
 }

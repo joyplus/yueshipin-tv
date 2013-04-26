@@ -176,14 +176,16 @@ public class FayeService extends Service implements FayeListener{
 				}else{
 					
 					String lastPhoneId = app.getUserData("phoneID");
+					
 					app.SaveUserData("isBand", "1");
 					app.SaveUserData("phoneID", phoneID);
-					
-					JSONObject unBandObj = new JSONObject();
-					unBandObj.put("tv_channel", channel.replace(Constant.FAYECHANNEL_TV_HEAD, ""));
-					unBandObj.put("push_type","33");
-					unBandObj.put("user_id", lastPhoneId);
-					myClient.sendMessage(unBandObj);
+					if(!lastPhoneId.equals(phoneID)){
+						JSONObject unBandObj = new JSONObject();
+						unBandObj.put("tv_channel", channel.replace(Constant.FAYECHANNEL_TV_HEAD, ""));
+						unBandObj.put("push_type","33");
+						unBandObj.put("user_id", lastPhoneId);
+						myClient.sendMessage(unBandObj);
+					}
 					
 					JSONObject bandSuccessObj = new JSONObject();
 					bandSuccessObj.put("tv_channel", channel.replace(Constant.FAYECHANNEL_TV_HEAD, ""));
@@ -229,7 +231,7 @@ public class FayeService extends Service implements FayeListener{
 				if(phoneID ==null){
 					return;
 				}
-				if(phoneID.equals(json.get("user_id"))){
+				if(app.getUserData("isBand") != null&&"1".equals(app.getUserData("isBand"))&&phoneID.equals(json.get("user_id"))){
 					CurrentPlayData playDate = new CurrentPlayData();
 					Intent intent = new Intent(this,VideoPlayerActivity.class);
 //					intent.putExtra("ID", json.getString("prod_id"));
@@ -260,7 +262,7 @@ public class FayeService extends Service implements FayeListener{
 				if(phoneID ==null){
 					return;
 				}
-				if(phoneID.equals(json.get("user_id"))){
+				if(app.getUserData("isBand") != null&&"1".equals(app.getUserData("isBand"))&&phoneID.equals(json.get("user_id"))){
 					Intent intent = new Intent(Constant.VIDEOPLAYERCMD);
 					intent.putExtra("cmd", 403);
 					intent.putExtra("content", "");
@@ -273,7 +275,7 @@ public class FayeService extends Service implements FayeListener{
 				if(phoneID ==null){
 					return;
 				}
-				if(phoneID.equals(json.get("user_id"))){
+				if(app.getUserData("isBand") != null&&"1".equals(app.getUserData("isBand"))&&phoneID.equals(json.get("user_id"))){
 					Intent intent = new Intent(Constant.VIDEOPLAYERCMD);
 					intent.putExtra("cmd", 405);
 					intent.putExtra("content", "");
@@ -286,7 +288,7 @@ public class FayeService extends Service implements FayeListener{
 				if(phoneID ==null){
 					return;
 				}
-				if(phoneID.equals(json.get("user_id"))){
+				if(app.getUserData("isBand") != null&&"1".equals(app.getUserData("isBand"))&&phoneID.equals(json.get("user_id"))){
 					Intent intent = new Intent(Constant.VIDEOPLAYERCMD);
 					intent.putExtra("cmd", 407);
 //					intent.putExtra("content", json.getString("prod_time"));
@@ -300,7 +302,7 @@ public class FayeService extends Service implements FayeListener{
 				if(phoneID ==null){
 					return;
 				}
-				if(phoneID.equals(json.get("user_id"))){
+				if(app.getUserData("isBand") != null&&"1".equals(app.getUserData("isBand"))&&phoneID.equals(json.get("user_id"))){
 					Intent intent = new Intent(Constant.VIDEOPLAYERCMD);
 					intent.putExtra("cmd", 409);
 					intent.putExtra("content", "");
