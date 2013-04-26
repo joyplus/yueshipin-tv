@@ -5,6 +5,7 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -20,6 +21,7 @@ import com.joyplus.tv.entity.MovieItemData;
 import com.joyplus.tv.utils.JieMianConstant;
 
 public class SearchAdapter extends BaseAdapter implements JieMianConstant{
+	private static final String TAG = "SearchAdapter";
 
 	private List<MovieItemData> movieList = new ArrayList<MovieItemData>();
 
@@ -126,8 +128,9 @@ public class SearchAdapter extends BaseAdapter implements JieMianConstant{
 		
 		String definition = movieList.get(position).getDefinition();
 		
+		Log.i(TAG, "position:" + position + " definition:" + definition);
 		if(definition != null && !definition.equals("")) {
-			
+			viewItemHodler.definition.setVisibility(View.VISIBLE);
 			switch (Integer.valueOf(definition)) {
 			case 8:
 				viewItemHodler.definition.setImageResource(R.drawable.icon_bd);
