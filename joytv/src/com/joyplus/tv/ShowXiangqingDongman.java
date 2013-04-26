@@ -117,6 +117,7 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 			initTableView(num);
 			aq.id(R.id.arrow_left).invisible();
 			aq.id(R.id.arrow_right).invisible();
+			aq.id(R.id.scrollview).gone();
 			return;
 		}
 		for(int i=0; i<totle_pagecount; i++){
