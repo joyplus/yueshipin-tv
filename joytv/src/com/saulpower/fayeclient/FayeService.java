@@ -25,7 +25,7 @@ public class FayeService extends Service implements FayeListener{
 
 	private static final String TAG = "FayeService";
 	
-	public static final String SENDACTION = "chennel_send_message";
+	public static final String ACTION_SEND_UNBAND = "chennel_send_unBand_message";
 	public static final String ACTION_RECIVEACTION_BAND = "chennel_receive_message_band";
 	public static final String ACTION_RECIVEACTION_UNBAND = "chennel_receive_message_unband";
 	
@@ -48,15 +48,19 @@ public class FayeService extends Service implements FayeListener{
 		channel = Constant.FAYECHANNEL_TV_BASE + StatisticsUtils.MD5(macAdd);
 //		preferences = getSharedPreferences("userIdDate",0);
 		app = (App) getApplication();
-		IntentFilter filter = new IntentFilter(SENDACTION);
+		IntentFilter filter = new IntentFilter(ACTION_SEND_UNBAND);
 		receiver = new BroadcastReceiver(){
 			@Override
 	        public void onReceive(Context context, Intent intent) {
 	                // TODO Auto-generated method stub
-	        	if(SENDACTION.equals(intent.getAction())){
-	        		String date = intent.getStringExtra("date");
+	        	if(ACTION_SEND_UNBAND.equals(intent.getAction())){
+//	        		String date = intent.getStringExtra("date");
 	        		try {
-						myClient.sendMessage(new JSONObject(date));
+	        			JSONObject unBandObj = new JSONObject();
+						unBandObj.put("tv_channel", channel.replace(Constant.FAYECHANNEL_TV_HEAD, ""));
+						unBandObj.put("push_type","33");
+						unBandObj.put("user_id", app.getUserData("phoneID"));
+						myClient.sendMessage(unBandObj);
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -194,6 +198,7 @@ public class FayeService extends Service implements FayeListener{
 					bandSuccessObj.put("result", "success");
 					myClient.sendMessage(bandSuccessObj);
 				}
+				app.SaveUserData("lastTime", System.currentTimeMillis()+"");
 				Intent bandIntent = new Intent(ACTION_RECIVEACTION_BAND);
 				sendBroadcast(bandIntent);
 				break;

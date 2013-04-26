@@ -40,7 +40,6 @@ import com.joyplus.tv.entity.HotItemInfo;
 
 public class HistoryActivity extends Activity implements OnClickListener, OnItemSelectedListener {
 	private static final String TAG = "HistoryActivity";
-	private static final int CONFIRM_DIALOG = 0;
 	private Button btn_fenlei_all;
 	private Button btn_fenlei_movie;
 	private Button btn_fenlei_tv;
