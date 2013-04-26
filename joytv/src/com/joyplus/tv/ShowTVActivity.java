@@ -13,7 +13,6 @@ import android.content.Intent;
 import android.content.DialogInterface.OnCancelListener;
 import android.os.Bundle;
 import android.text.Editable;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -42,6 +41,7 @@ import com.joyplus.tv.ui.NavigateView;
 import com.joyplus.tv.ui.WaitingDialog;
 import com.joyplus.tv.ui.NavigateView.OnResultListener;
 import com.joyplus.tv.utils.ItemStateUtils;
+import com.joyplus.tv.utils.Log;
 
 public class ShowTVActivity extends AbstractShowActivity {
 

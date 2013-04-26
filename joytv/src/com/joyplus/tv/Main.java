@@ -27,7 +27,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Display;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -72,6 +71,7 @@ import com.joyplus.tv.ui.MyScrollLayout.OnViewChangeListener;
 import com.joyplus.tv.ui.UserInfo;
 import com.joyplus.tv.ui.WaitingDialog;
 import com.joyplus.tv.utils.DefinationComparatorIndex;
+import com.joyplus.tv.utils.Log;
 import com.joyplus.tv.utils.SouceComparatorIndex1;
 import com.joyplus.tv.utils.URLS_INDEX;
 import com.saulpower.fayeclient.FayeService;
@@ -81,6 +81,7 @@ import com.umeng.update.UmengUpdateAgent;
 
 public class Main extends Activity implements OnItemSelectedListener, OnItemClickListener{
 	private String TAG = "Main";
+	public static final String ACTION_USERUPDATE = "user_update";
 	private App app;
 	private AQuery aq;
 	
@@ -994,7 +995,7 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int index, long arg3) {
 		// TODO Auto-generated method stub
-		Toast.makeText(this, "item click index = " + titleGroup.getSelectedTitleIndex()+"[" + index + "]", 100).show();
+//		Toast.makeText(this, "item click index = " + titleGroup.getSelectedTitleIndex()+"[" + index + "]", 100).show();
 		switch (titleGroup.getSelectedTitleIndex()) {
 		case 1:
 			HotItemInfo info = hot_list.get(index);
@@ -1667,6 +1668,7 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 			currentUserInfo.setUserAvatarUrl(app.getUserData("userAvatarUrl"));
 			headers.put("user_id", currentUserInfo.getUserId());
 			app.setUser(currentUserInfo);
+			sendBroadcast(new Intent(ACTION_USERUPDATE));
 			handler.sendEmptyMessage(MESSAGE_UPDATEUSER);
 		}else{
 			String url = Constant.BASE_URL + "user/view?userid=" + userId;
@@ -1696,6 +1698,7 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 				currentUserInfo.setUserAvatarUrl(json.getString("pic_url"));
 				headers.put("user_id", currentUserInfo.getUserId());
 				app.setUser(currentUserInfo);
+				sendBroadcast(new Intent(ACTION_USERUPDATE));
 				handler.sendEmptyMessage(MESSAGE_UPDATEUSER);
 //				headers.put("user_id", currentUserInfo.get);
 			} catch (JSONException e1) {

@@ -27,7 +27,8 @@
 package com.saulpower.fayeclient;
 
 import android.os.Handler;
-import android.util.Log;
+
+import com.joyplus.tv.utils.Log;
 import com.saulpower.fayeclient.WebSocketClient.Listener;
 import org.json.JSONArray;
 import org.json.JSONException;

@@ -1,10 +1,11 @@
 package com.joyplus.tv.ui;
 
+import com.joyplus.tv.utils.Log;
+
 import android.content.Context;
 import android.content.Intent;
 import android.inputmethodservice.Keyboard.Key;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.KeyEvent;
 
 public class MyGallery1 extends android.widget.Gallery{

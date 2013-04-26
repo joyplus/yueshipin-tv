@@ -17,7 +17,6 @@ import android.content.DialogInterface.OnCancelListener;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -48,6 +47,7 @@ import com.joyplus.tv.Service.Return.ReturnProgramView;
 import com.joyplus.tv.Video.VideoPlayerActivity;
 import com.joyplus.tv.ui.WaitingDialog;
 import com.joyplus.tv.utils.DefinationComparatorIndex;
+import com.joyplus.tv.utils.Log;
 import com.joyplus.tv.utils.MyKeyEventKey;
 import com.joyplus.tv.utils.SouceComparatorIndex1;
 import com.joyplus.tv.utils.URLS_INDEX;
@@ -788,7 +788,12 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 //			aq = new AQuery(convertView);
 			holder.image.setTag(recommendMoviesData.items[position].prod_pic_url);
 //			holder.image.setImageResource(R.drawable.test1);
-			aq.id(holder.image).image(recommendMoviesData.items[position].big_prod_pic_url,true,true,0,R.drawable.post_normal);
+			String bigPicUrl = recommendMoviesData.items[position].big_prod_pic_url;
+			if(bigPicUrl == null || bigPicUrl.equals("")
+					||bigPicUrl.equals(StatisticsUtils.EMPTY)) {
+				bigPicUrl = recommendMoviesData.items[position].prod_pic_url;
+			}
+			aq.id(holder.image).image(bigPicUrl,true,true,0,R.drawable.post_normal);
 			holder.firstTitle.setVisibility(View.INVISIBLE);
 			holder.secondTitle.setText(recommendMoviesData.items[position].prod_name);
 //			holder.content.setText(recommendMoviesData.items[position].duration);

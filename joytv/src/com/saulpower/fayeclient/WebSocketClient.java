@@ -3,7 +3,6 @@ package com.saulpower.fayeclient;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.text.TextUtils;
-import android.util.Log;
 import org.apache.http.Header;
 import org.apache.http.HttpException;
 import org.apache.http.HttpStatus;
@@ -12,6 +11,8 @@ import org.apache.http.StatusLine;
 import org.apache.http.client.HttpResponseException;
 import org.apache.http.message.BasicLineParser;
 import org.apache.http.message.BasicNameValuePair;
+
+import com.joyplus.tv.utils.Log;
 
 import javax.net.SocketFactory;
 import javax.net.ssl.SSLContext;

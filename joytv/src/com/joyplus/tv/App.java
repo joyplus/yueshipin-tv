@@ -30,7 +30,6 @@ import android.net.NetworkInfo;
 import android.net.http.AndroidHttpClient;
 import android.os.AsyncTask;
 
-import android.util.Log;
 import android.view.Gravity;
 import android.webkit.URLUtil;
 import android.widget.Toast;
@@ -40,6 +39,7 @@ import com.androidquery.util.AQUtility;
 import com.joyplus.tv.Adapters.CurrentPlayData;
 import com.joyplus.tv.Service.Return.ReturnProgramView;
 import com.joyplus.tv.ui.UserInfo;
+import com.joyplus.tv.utils.Log;
 import com.parse.Parse;
 import com.parse.ParseFacebookUtils.Permissions.User;
 

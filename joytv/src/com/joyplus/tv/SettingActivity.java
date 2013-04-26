@@ -7,8 +7,12 @@ import com.umeng.analytics.MobclickAgent;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.text.BoringLayout;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.LinearLayout;
@@ -20,7 +24,17 @@ public class SettingActivity extends Activity implements OnClickListener {
 	private TextView aboutLayout,declarationLayout;
 	private App app;
 	private AQuery aq;
-	
+	private BroadcastReceiver receiver = new BroadcastReceiver(){
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			// TODO Auto-generated method stub
+			if(Main.ACTION_USERUPDATE.equals(intent.getAction())){
+				updateUser();
+			}
+		}
+		
+	};
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -35,8 +49,8 @@ public class SettingActivity extends Activity implements OnClickListener {
 		unbandLayout.setOnClickListener(this);
 		aboutLayout.setOnClickListener(this);
 		declarationLayout.setOnClickListener(this);
-		Intent service = new Intent(this,FayeService.class);  
-        startService(service);
+		IntentFilter filter = new IntentFilter(Main.ACTION_USERUPDATE);
+		registerReceiver(receiver, filter);
 	}
 	@Override
 	public void onClick(View v) {
@@ -94,5 +108,15 @@ public class SettingActivity extends Activity implements OnClickListener {
 		}else{
 			aq.id(R.id.user_notice).text("点击解除绑定");
 		}
+	}
+	
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		if(aq!=null){
+			aq.dismiss();
+		}
+		unregisterReceiver(receiver);
+		super.onDestroy();
 	}
 }

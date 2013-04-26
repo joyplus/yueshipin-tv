@@ -7,7 +7,6 @@ import android.content.IntentFilter;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.Handler;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +22,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.joyplus.tv.R;
+import com.joyplus.tv.utils.Log;
 
 public class NavigateView extends RelativeLayout implements OnItemSelectedListener {
 	private static final String TAG = "NavigateView";

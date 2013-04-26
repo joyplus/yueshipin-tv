@@ -12,13 +12,13 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Handler;
 import android.os.IBinder;
-import android.util.Log;
 
 import com.joyplus.tv.App;
 import com.joyplus.tv.Constant;
 import com.joyplus.tv.StatisticsUtils;
 import com.joyplus.tv.Adapters.CurrentPlayData;
 import com.joyplus.tv.Video.VideoPlayerActivity;
+import com.joyplus.tv.utils.Log;
 import com.saulpower.fayeclient.FayeClient.FayeListener;
 
 public class FayeService extends Service implements FayeListener{

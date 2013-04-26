@@ -5,7 +5,6 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -20,6 +19,7 @@ import com.joyplus.tv.entity.GridViewItemHodler;
 import com.joyplus.tv.entity.MovieItemData;
 import com.joyplus.tv.entity.YueDanInfo2;
 import com.joyplus.tv.utils.JieMianConstant;
+import com.joyplus.tv.utils.Log;
 
 public class YueDanAdapter extends BaseAdapter implements JieMianConstant{
 	public static final String TAG = "YueDanAdapter";
