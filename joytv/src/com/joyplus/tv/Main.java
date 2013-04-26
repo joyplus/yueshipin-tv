@@ -993,7 +993,7 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 				Log.d(TAG, "url" + playDate.prod_url);
 //				playDate.prod_src = "";
 				if(!"".equals(info.playback_time)){
-					playDate.prod_time = Long.valueOf(info.playback_time);
+					playDate.prod_time = Long.valueOf(info.playback_time)*1000;
 				}
 //				playDate.prod_qua = Integer.valueOf(info.definition);
 				app.setCurrentPlayData(playDate);

@@ -122,7 +122,7 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 						playDate.prod_url = ((HistortyAdapter)listView.getAdapter()).data.get(arg2).video_url;
 //						playDate.prod_src = "";
 						if(!"".equals(((HistortyAdapter)listView.getAdapter()).data.get(arg2).playback_time)){
-							playDate.prod_time = Long.valueOf(((HistortyAdapter)listView.getAdapter()).data.get(arg2).playback_time);
+							playDate.prod_time = Long.valueOf(((HistortyAdapter)listView.getAdapter()).data.get(arg2).playback_time)*1000;
 						}
 //						playDate.prod_qua = Integer.valueOf(info.definition);
 						app.setCurrentPlayData(playDate);
