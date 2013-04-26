@@ -219,6 +219,38 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 		xiaiBt.setOnClickListener(this);
 		bofangLL.setOnClickListener(this);
 		yingpingBt.setOnClickListener(this);
+		
+		xiaiBt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+			
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				// TODO Auto-generated method stub
+				
+				if(hasFocus) {
+					
+					
+				} else {
+					
+					
+				}
+			}
+		});
+		
+		dingBt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+			
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				// TODO Auto-generated method stub
+				
+				if(hasFocus) {
+					
+					
+				} else {
+					
+					
+				}
+			}
+		});
 	}
 	
 	@Override
@@ -251,14 +283,17 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 			dingBt.setTextColor(getResources().getColor(R.color.text_foucs));
 			break;
 		case R.id.bt_xiangqing_xiai:
-			if (isXiai) {
-				isXiai = false;
-			} else {
-				isXiai = true;
-			}
 			shoucang();
-			xiaiBt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_fav_active, 0, 0,0);
-			xiaiBt.setTextColor(getResources().getColor(R.color.text_foucs));
+			String shoucangNum = xiaiBt.getText().toString();
+			
+			if(shoucangNum != null && !shoucangNum.equals("")) {
+				
+				int nums = Integer.valueOf(shoucangNum) + 1;
+				xiaiBt.setText(nums + "");
+				xiaiBt.setEnabled(false);
+				xiaiBt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_fav_active, 0, 0,0);
+				xiaiBt.setTextColor(getResources().getColor(R.color.text_foucs));
+			}
 			break;
 		case R.id.ll_xiangqing_bofang_gaoqing:
 			// bofangLL.setN
@@ -643,8 +678,8 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 		if(date.comments.length <=0) {
 			
 			yingpingBt.setEnabled(false);
-			yingpingBt.setBackgroundResource(R.drawable.btn_unuse);
-			yingpingBt.setFocusable(false);
+			yingpingBt.setBackgroundResource(R.drawable.yingping_button_unuse_selector);
+//			yingpingBt.setFocusable(false);
 		}
 		
 		
@@ -903,8 +938,14 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 			
 			if(flag.contains("true")) {
 				
-				xiaiBt.setEnabled(false);
+				xiaiBt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_fav_active, 0, 0,0);
+			} else {
+				
+				isXiai = true;
 			}
+		} else {
+			
+			isXiai = true;
 		}
 	}
 	

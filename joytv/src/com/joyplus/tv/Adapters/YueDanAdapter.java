@@ -134,7 +134,7 @@ public class YueDanAdapter extends BaseAdapter implements JieMianConstant{
 			String definition = movieList.get(position).getDefinition();
 			
 			if(definition != null && !definition.equals("")) {
-				
+				viewItemHodler.definition.setVisibility(View.VISIBLE);
 				switch (Integer.valueOf(definition)) {
 				case 8:
 					viewItemHodler.definition.setImageResource(R.drawable.icon_bd);

@@ -233,14 +233,18 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 			dingBt.setTextColor(getResources().getColor(R.color.text_foucs));
 			break;
 		case R.id.bt_xiangqing_xiai:
-			if (isXiai) {
-				isXiai = false;
-			} else {
-				isXiai = true;
-			}
 			shoucang();
-			xiaiBt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_fav_active, 0, 0,0);
-			xiaiBt.setTextColor(getResources().getColor(R.color.text_foucs));
+			String shoucangNum = xiaiBt.getText().toString();
+			
+			if(shoucangNum != null && !shoucangNum.equals("")) {
+				
+				int nums = Integer.valueOf(shoucangNum) + 1;
+				xiaiBt.setText(nums + "");
+				xiaiBt.setEnabled(false);
+				xiaiBt.setFocusable(false);
+				xiaiBt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_fav_active, 0, 0,0);
+				xiaiBt.setTextColor(getResources().getColor(R.color.text_foucs));
+			}
 			break;
 		case R.id.ll_xiangqing_bofang_gaoqing:
 			// bofangLL.setN
@@ -597,6 +601,7 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 			if(flag.contains("true")) {
 				
 				xiaiBt.setEnabled(false);
+				xiaiBt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_fav_active, 0, 0,0);
 			}
 		}
 	}
@@ -659,6 +664,13 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 	}
 	
 	private void updateView(){
+		
+		if(date.comments.length <=0) {
+			
+			yingpingBt.setEnabled(false);
+			yingpingBt.setBackgroundResource(R.drawable.yingping_button_unuse_selector);
+		}
+		
 		initButton();
 		aq.id(R.id.image).image(pic_url, false, true,0, R.drawable.post_normal);
 		aq.id(R.id.text_name).text(date.tv.name);

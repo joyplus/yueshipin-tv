@@ -235,14 +235,18 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 			dingBt.setTextColor(getResources().getColor(R.color.text_foucs));
 			break;
 		case R.id.bt_xiangqing_xiai:
-			if (isXiai) {
-				isXiai = false;
-			} else {
-				isXiai = true;
-			}
 			shoucang();
-			xiaiBt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_fav_active, 0, 0,0);
-			xiaiBt.setTextColor(getResources().getColor(R.color.text_foucs));
+			String shoucangNum = xiaiBt.getText().toString();
+			
+			if(shoucangNum != null && !shoucangNum.equals("")) {
+				
+				int nums = Integer.valueOf(shoucangNum) + 1;
+				xiaiBt.setText(nums + "");
+				xiaiBt.setEnabled(false);
+				xiaiBt.setFocusable(false);
+				xiaiBt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_fav_active, 0, 0,0);
+				xiaiBt.setTextColor(getResources().getColor(R.color.text_foucs));
+			}
 			break;
 		case R.id.ll_xiangqing_bofang_gaoqing:
 			// bofangLL.setN
@@ -904,6 +908,7 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 			if(flag.contains("true")) {
 				
 				xiaiBt.setEnabled(false);
+				xiaiBt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_fav_active, 0, 0,0);
 			}
 		}
 	}
