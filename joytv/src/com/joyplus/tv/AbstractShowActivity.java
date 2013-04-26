@@ -79,5 +79,7 @@ public abstract class AbstractShowActivity extends Activity implements
 	protected abstract void filterPopWindowShow();
 	
 	protected abstract void resetGvActive();
+	
+	protected abstract void initFirstFloatView(int position,View view);
 
 }

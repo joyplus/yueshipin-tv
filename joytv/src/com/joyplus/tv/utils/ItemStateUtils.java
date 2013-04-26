@@ -3,6 +3,8 @@ package com.joyplus.tv.utils;
 import android.content.Context;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
 import android.view.animation.ScaleAnimation;
 import android.widget.Button;
 import android.widget.GridView;
@@ -187,23 +189,66 @@ public class ItemStateUtils implements JieMianConstant{
 		v.startAnimation(inScaleAnimation);
 	}
 	
-	public static void floatViewOutAnimaiton(View v) {
+	public static void floatViewOutAnimaiton(Context context,final View v) {
+		Log.i(TAG, "floatViewOutAnimaiton");
+		ScaleAnimation outScaleAnimation = StatisticsUtils
+				.getOutScaleAnimation();
+		ImageView iv = (ImageView) v
+				.findViewById(R.id.item_layout_dianying_reflact);
+		iv.setVisibility(View.VISIBLE);
+		v.setBackgroundColor(context.getResources()
+				.getColor(android.R.color.transparent));
+		int left = v.getPaddingLeft();
+		if(left != GRIDVIEW_ITEM_PADDING_LEFT) {
+			
+			v.setPadding(GRIDVIEW_ITEM_PADDING_LEFT,
+					GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING_LEFT,
+					GRIDVIEW_ITEM_PADDING);
+		}
 		
-//		ScaleAnimation outScaleAnimation = StatisticsUtils
-//				.getOutScaleAnimation();
-//		v.startAnimation(outScaleAnimation);
-		v.setVisibility(View.GONE);
+		outScaleAnimation.setAnimationListener(new Animation.AnimationListener() {
+			
+			@Override
+			public void onAnimationStart(Animation animation) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onAnimationRepeat(Animation animation) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onAnimationEnd(Animation animation) {
+				// TODO Auto-generated method stub
+				v.setVisibility(View.INVISIBLE);
+			}
+		});
+
+		v.startAnimation(outScaleAnimation);
+		
 	}
 	
 	public static void floatViewInAnimaiton(Context context,View v) {
-		
-		v.setPadding(GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING,
-				GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING);
-		v.setBackgroundColor(context.getResources().getColor(
-				R.color.text_active));
-//		ScaleAnimation inScaleAnimation = StatisticsUtils.getInScaleAnimation();
-//
-//		v.startAnimation(inScaleAnimation);
+		Log.i(TAG, "floatViewInAnimaiton");
+		ScaleAnimation inScaleAnimation = StatisticsUtils
+				.getInScaleAnimation();
+		ImageView iv = (ImageView) v
+				.findViewById(R.id.item_layout_dianying_reflact);
+		iv.setVisibility(View.GONE);
+		v.setBackgroundColor(context.getResources()
+				.getColor(R.color.text_active));
+		int left = v.getPaddingLeft();
+		if(left != GRIDVIEW_ITEM_PADDING) {
+			
+			v.setPadding(GRIDVIEW_ITEM_PADDING,
+					GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING,
+					GRIDVIEW_ITEM_PADDING);
+		}
+
+		v.startAnimation(inScaleAnimation);
 	}
 	
 	public static void setGridViewNormalPadding(View v) {

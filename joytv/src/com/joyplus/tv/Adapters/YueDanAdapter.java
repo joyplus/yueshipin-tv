@@ -94,6 +94,7 @@ public class YueDanAdapter extends BaseAdapter implements JieMianConstant{
 					.findViewById(R.id.tv_item_layout_other_info);
 			viewItemHodler.haibaoIv = (ImageView) convertView
 					.findViewById(R.id.iv_item_layout_haibao);
+			viewItemHodler.definition = (ImageView) convertView.findViewById(R.id.iv_item_layout_gaoqing_logo);
 			convertView.setTag(viewItemHodler);
 			
 			convertView.setPadding(GRIDVIEW_ITEM_PADDING_LEFT,
@@ -108,6 +109,12 @@ public class YueDanAdapter extends BaseAdapter implements JieMianConstant{
 		AbsListView.LayoutParams params = new AbsListView.LayoutParams(
 				width, height);
 		convertView.setLayoutParams(params);
+		
+		if(width != 0) {
+			
+			popHeight = height;
+			popWidth = width;
+		}
 
 		if (movieList.size() <= 0) {
 
@@ -124,7 +131,25 @@ public class YueDanAdapter extends BaseAdapter implements JieMianConstant{
 			viewItemHodler.otherInfo.setText(movieList.get(position).getNum() + context.getString(R.string.yingpianshu));
 		} else {
 			
+			String definition = movieList.get(position).getDefinition();
 			
+			if(definition != null && !definition.equals("")) {
+				
+				switch (Integer.valueOf(definition)) {
+				case 8:
+					viewItemHodler.definition.setImageResource(R.drawable.icon_bd);
+					break;
+				case 7:
+					viewItemHodler.definition.setImageResource(R.drawable.icon_hd);
+					break;
+				case 6:
+					viewItemHodler.definition.setImageResource(R.drawable.icon_ts);
+					break;
+				default:
+					viewItemHodler.definition.setVisibility(View.GONE);
+					break;
+				}
+			}
 			String proType = movieList.get(position).getMovieProType();
 			
 			if(proType != null && !proType.equals("")) {

@@ -22,8 +22,11 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 import android.widget.PopupWindow;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.androidquery.AQuery;
@@ -78,6 +81,9 @@ public class ShowDongManActivity extends AbstractShowActivity {
 	private List<MovieItemData>[] lists = new List[10];
 	private boolean[] isNextPagePossibles = new boolean[10];
 	private int[] pageNums = new int[10];
+	
+	private boolean isFirstActive = false;
+	private View firstFloatView;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +98,9 @@ public class ShowDongManActivity extends AbstractShowActivity {
 
 		searchAdapter = new SearchAdapter(this, aq);
 		playGv.setAdapter(searchAdapter);
+		
 
+		isFirstActive = true;
 		getQuan10Data(StatisticsUtils.getDongman_Quan10URL());
 
 		/**
@@ -320,26 +328,31 @@ public class ShowDongManActivity extends AbstractShowActivity {
 
 						if (isGridViewUp) {
 
-							playGv.smoothScrollBy(-popHeight, 1000);
+//							playGv.smoothScrollBy(-popHeight, 1000);
 							isSmoonthScroll = true;
 						}
 					} else {
 
 						if (!isGridViewUp) {
 
-							playGv.smoothScrollBy(popHeight, 1000 * 2);
+//							playGv.smoothScrollBy(popHeight, 1000 * 2);
 							isSmoonthScroll = true;
 
 						}
 					}
 
 				}
+				
+				if(firstFloatView.isShown()) {
+					
+					ItemStateUtils.floatViewOutAnimaiton(getApplicationContext(), firstFloatView);
+				}
 
-				if (beforeGvView != null && beforeGvView != view) {
+				if (beforeGvView != null && beforeGvView != view && activeRecordIndex != -1) {
 
 					ItemStateUtils.viewOutAnimation(getApplicationContext(),
 							beforeGvView);
-				} 
+				}
 				
 				if(position != activeRecordIndex) {
 					
@@ -413,7 +426,7 @@ public class ShowDongManActivity extends AbstractShowActivity {
 					search = searchStr;
 					StatisticsUtils.clearList(lists[SEARCH]);
 					currentListIndex = SEARCH;
-					String url = StatisticsUtils.getSearch_FirstURL(searchStr);
+					String url = StatisticsUtils.getSearch_FirstURL(searchStr)+ "&type=" + DONGMAN_TYPE;
 					getFilterData(url);
 				}
 
@@ -438,6 +451,7 @@ public class ShowDongManActivity extends AbstractShowActivity {
 		});
 	}
 	
+	
 	private View.OnFocusChangeListener gvOnFocusChangeListener = new View.OnFocusChangeListener() {
 		
 		@Override
@@ -445,11 +459,37 @@ public class ShowDongManActivity extends AbstractShowActivity {
 			// TODO Auto-generated method stub
 			
 			if (!hasFocus) {// 如果gridview没有获取焦点，把item中高亮取消
+				
+				if(firstFloatView.isShown()) {
+					
+					ItemStateUtils.floatViewOutAnimaiton(getApplicationContext(), firstFloatView);
+				}
 
 				if (beforeGvView != null) {
 
 					ItemStateUtils.viewOutAnimation(
 							getApplicationContext(), beforeGvView);
+					
+				}
+			} else {
+//				Log.i(TAG, "OnFocusChangeListener--->" + beforeGvView + " Height:" + popHeight
+//						+ " position:" + playGv.getSelectedItemPosition() + "viewY:" + beforeGvView.getY());
+				int beforePostion = playGv.getSelectedItemPosition();
+				if (beforeGvView != null) {
+
+//						ItemStateUtils.viewInAnimation(
+//								getApplicationContext(), beforeGvView);
+					if(beforeGvView.getY() < popHeight/2) {
+						initFirstFloatView(playGv.getSelectedItemPosition(), beforeGvView);
+					}
+					activeRecordIndex = -1;
+					beforeGvView = null;
+//					playGv.setSelection(beforePostion);
+
+				} else {
+					
+					initFirstFloatView(0, null);
+//					playGv.setSelection(playGv.getSelectedItemPosition());
 				}
 			}
 		}
@@ -491,6 +531,24 @@ public class ShowDongManActivity extends AbstractShowActivity {
 		}
 
 		searchAdapter.setList(list);
+		
+		if(list.size() <= 0) {
+			
+			playGv.setAdapter(null);
+		} else {
+			
+			ListAdapter adapter = playGv.getAdapter();
+			if(adapter == null) {
+				
+				playGv.setAdapter(searchAdapter);
+			} else {
+				
+				if(!isFirstActive) {
+					
+					playGv.setAdapter(searchAdapter);
+				}
+			}
+		}
 
 		if (list != null && !list.isEmpty() && currentListIndex != QUANBUFENLEI) {// 判断其能否向获取更多数据
 
@@ -504,11 +562,16 @@ public class ShowDongManActivity extends AbstractShowActivity {
 		}
 		lists[currentListIndex] = list;
 
-		beforeGvView = null;
-		playGv.setSelection(0);
+//		playGv.setSelection(0);
 		searchAdapter.notifyDataSetChanged();
 		removeDialog(DIALOG_WAITING);
-		playGv.requestFocus();
+		if(isFirstActive) {
+			
+			playGv.requestFocus();
+			isFirstActive = false;
+		}
+		beforeGvView = null;
+		activeRecordIndex = -1;
 		playGv.setOnFocusChangeListener(gvOnFocusChangeListener);
 
 	}
@@ -548,6 +611,7 @@ public class ShowDongManActivity extends AbstractShowActivity {
 		// TODO Auto-generated method stub
 
 		showDialog(DIALOG_WAITING);
+		isFirstActive = true;
 		getServiceData(url, "initQuan10ServiceData");
 	}
 
@@ -756,7 +820,7 @@ public class ShowDongManActivity extends AbstractShowActivity {
 		case SEARCH:
 
 			getMoreFilterData(StatisticsUtils.getSearch_CacheURL(pageNum,
-					search));
+					search) + "&type=" + DONGMAN_TYPE);
 			break;
 		case QINZI:
 			getMoreBangDanData(StatisticsUtils
@@ -970,6 +1034,7 @@ public class ShowDongManActivity extends AbstractShowActivity {
 		zhuijushoucangBtn = (Button) findViewById(R.id.bt_zhuijushoucang);
 
 		topLinearLayout = (LinearLayout) findViewById(R.id.ll_show_movie_top);
+		firstFloatView = findViewById(R.id.inclue_movie_show_item);
 
 		playGv.setNextFocusLeftId(R.id.bt_quanbufenlei);
 	}
@@ -1115,8 +1180,77 @@ public class ShowDongManActivity extends AbstractShowActivity {
 	protected void resetGvActive() {
 		// TODO Auto-generated method stub
 		playGv.setOnFocusChangeListener(null);
-		playGv.setSelection(-1);
+//		playGv.setSelection(-1);
 		activeRecordIndex = -1;
+	}
+	
+	protected void initFirstFloatView(int position,View view) {
+		
+		firstFloatView.setLayoutParams(new FrameLayout.LayoutParams(popWidth,
+				popHeight));
+		firstFloatView.setVisibility(View.VISIBLE);
+		
+		if(view != null) {
+			Log.i(TAG, "X:" + view.getX() + "Y: " + view.getY());
+			firstFloatView.setX(view.getX());
+			firstFloatView.setY(view.getY());
+		} else{
+	
+			firstFloatView.setX(0);
+			firstFloatView.setY(0);
+		}
+
+
+
+		TextView movieName = (TextView) firstFloatView
+				.findViewById(R.id.tv_item_layout_name);
+		TextView movieScore = (TextView) firstFloatView
+				.findViewById(R.id.tv_item_layout_score);
+
+		List<MovieItemData> list = searchAdapter.getMovieList();
+		if (list != null && !list.isEmpty()) {
+
+			aq = new AQuery(firstFloatView);
+			aq.id(R.id.iv_item_layout_haibao).image(
+					list.get(position).getMoviePicUrl(), true, true, 0,
+					R.drawable.post_active);
+
+			movieName.setText(list.get(position).getMovieName());
+			movieScore.setText(list.get(position).getMovieScore());
+			
+			String curEpisode = list.get(position).getMovieCurEpisode();
+			String maxEpisode = list.get(position).getMovieMaxEpisode();
+			TextView movieUpdate = (TextView) firstFloatView
+					.findViewById(R.id.tv_item_layout_other_info);
+			
+			if(maxEpisode != null && !maxEpisode.equals("")) {
+
+				if(curEpisode == null || curEpisode.equals("0")) {
+					
+					movieUpdate.setText(
+							maxEpisode + getString(R.string.dianshiju_jiquan));
+					} else{
+
+						int max = Integer.valueOf(maxEpisode);
+						int min = Integer.valueOf(curEpisode);
+						
+						if(min >= max) {
+							
+							movieUpdate.setText(
+									maxEpisode + getString(R.string.dianshiju_jiquan));
+						} else {
+							
+							movieUpdate.setText(getString(R.string.zongyi_gengxinzhi) + 
+									curEpisode);
+						}
+
+				}
+			}
+		}
+
+//		ItemStateUtils.floatViewInAnimaiton(getApplicationContext(),
+//				firstFloatView);
+		ItemStateUtils.floatViewInAnimaiton(getApplicationContext(), firstFloatView);
 	}
 
 }

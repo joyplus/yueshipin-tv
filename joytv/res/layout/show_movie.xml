@@ -301,7 +301,7 @@
                     android:id="@+id/inclue_movie_show_item"
                     android:layout_width="0dip"
                     android:layout_height="0dip"
-                    layout="@layout/show_item_layout_child_dianying" />
+                    layout="@layout/show_item_layout_dianying" />
             </FrameLayout>
         </LinearLayout>
     </LinearLayout>

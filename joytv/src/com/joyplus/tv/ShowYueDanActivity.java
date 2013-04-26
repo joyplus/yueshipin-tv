@@ -20,8 +20,11 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 import android.widget.PopupWindow;
+import android.widget.TextView;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
@@ -62,7 +65,7 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 	private String search;
 	private String filterSource;
 	private PopupWindow popupWindow;
-	
+
 	private int activeRecordIndex = -1;
 
 	private Button zuijinguankanBtn, zhuijushoucangBtn, dianyingyuedanBtn,
@@ -71,6 +74,9 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 	private boolean[] isNextPagePossibles = new boolean[6];
 	private int[] pageNums = new int[6];
 	private int defalutYuedan = 0;
+
+	private boolean isFirstActive = false;
+	private View firstFloatView;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +104,7 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 
 		searchAdapter = new YueDanAdapter(this, aq);
 		playGv.setAdapter(searchAdapter);
-
+		isFirstActive = true;
 		if (defalutYuedan == DIANYING_YUEDAN) {
 
 			String url = StatisticsUtils.getYueDan_DianyingFirstURL();
@@ -236,11 +242,12 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 						Intent intent = new Intent(ShowYueDanActivity.this,
 								ShowYueDanListActivity.class);
 						Bundle bundle = new Bundle();
-						
-						bundle.putString("NAME",list.get(position).getMovieName());
-						bundle.putString("ID",list.get(position).getMovieID());
+
+						bundle.putString("NAME", list.get(position)
+								.getMovieName());
+						bundle.putString("ID", list.get(position).getMovieID());
 						intent.putExtras(bundle);
-						
+
 						startActivity(intent);
 					} else {
 
@@ -325,14 +332,14 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 
 						if (isGridViewUp) {
 
-							playGv.smoothScrollBy(-popHeight, 1000);
+							// playGv.smoothScrollBy(-popHeight, 1000);
 							isSmoonthScroll = true;
 						}
 					} else {
 
 						if (!isGridViewUp) {
 
-							playGv.smoothScrollBy(popHeight, 1000 * 2);
+							// playGv.smoothScrollBy(popHeight, 1000 * 2);
 							isSmoonthScroll = true;
 
 						}
@@ -340,18 +347,25 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 
 				}
 
-				if (beforeGvView != null && beforeGvView != view) {
+				if (firstFloatView.isShown()) {
+
+					ItemStateUtils.floatViewOutAnimaiton(
+							getApplicationContext(), firstFloatView);
+				}
+
+				if (beforeGvView != null && beforeGvView != view
+						&& activeRecordIndex != -1) {
 
 					ItemStateUtils.viewOutAnimation(getApplicationContext(),
 							beforeGvView);
-				} 
-				
-				if(position != activeRecordIndex) {
-					
-					ItemStateUtils.viewInAnimation(getApplicationContext(), view);
+				}
+
+				if (position != activeRecordIndex) {
+
+					ItemStateUtils.viewInAnimation(getApplicationContext(),
+							view);
 					activeRecordIndex = position;
 				}
-				
 
 				int[] firstAndLastVisible = new int[2];
 				firstAndLastVisible[0] = playGv.getFirstVisiblePosition();
@@ -418,7 +432,9 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 					search = searchStr;
 					StatisticsUtils.clearList(lists[SEARCH]);
 					currentListIndex = SEARCH;
-					String url = StatisticsUtils.getSearch_FirstURL(searchStr);
+					
+					String url = StatisticsUtils.getSearch_FirstURL(searchStr)
+							+ "&type=" + TV_TYPE +","+MOVIE_TYPE;
 					getFilterData(url);
 				}
 
@@ -442,19 +458,49 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 			}
 		});
 	}
-	
+
 	private View.OnFocusChangeListener gvOnFocusChangeListener = new View.OnFocusChangeListener() {
-		
+
 		@Override
 		public void onFocusChange(View v, boolean hasFocus) {
 			// TODO Auto-generated method stub
-			
+
 			if (!hasFocus) {// 如果gridview没有获取焦点，把item中高亮取消
+
+				if (firstFloatView.isShown()) {
+
+					ItemStateUtils.floatViewOutAnimaiton(
+							getApplicationContext(), firstFloatView);
+				}
 
 				if (beforeGvView != null) {
 
-					ItemStateUtils.viewOutAnimation(
-							getApplicationContext(), beforeGvView);
+					ItemStateUtils.viewOutAnimation(getApplicationContext(),
+							beforeGvView);
+
+				}
+			} else {
+				// Log.i(TAG, "OnFocusChangeListener--->" + beforeGvView +
+				// " Height:" + popHeight
+				// + " position:" + playGv.getSelectedItemPosition() + "viewY:"
+				// + beforeGvView.getY());
+				int beforePostion = playGv.getSelectedItemPosition();
+				if (beforeGvView != null) {
+
+					// ItemStateUtils.viewInAnimation(
+					// getApplicationContext(), beforeGvView);
+					if (beforeGvView.getY() < popHeight / 2) {
+						initFirstFloatView(playGv.getSelectedItemPosition(),
+								beforeGvView);
+					}
+					activeRecordIndex = -1;
+					beforeGvView = null;
+					// playGv.setSelection(beforePostion);
+
+				} else {
+
+					initFirstFloatView(0, null);
+					// playGv.setSelection(playGv.getSelectedItemPosition());
 				}
 			}
 		}
@@ -497,6 +543,24 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 
 		searchAdapter.setList(list);
 
+		if (list.size() <= 0) {
+
+			playGv.setAdapter(null);
+		} else {
+
+			ListAdapter adapter = playGv.getAdapter();
+			if (adapter == null) {
+
+				playGv.setAdapter(searchAdapter);
+			} else {
+
+				if (!isFirstActive) {
+
+					playGv.setAdapter(searchAdapter);
+				}
+			}
+		}
+
 		if (list != null && !list.isEmpty() && currentListIndex != QUANBUFENLEI) {// 判断其能否向获取更多数据
 
 			if (list.size() == StatisticsUtils.FIRST_NUM) {
@@ -509,11 +573,16 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 		}
 		lists[currentListIndex] = list;
 
-		beforeGvView = null;
-		playGv.setSelection(0);
+		// playGv.setSelection(0);
 		searchAdapter.notifyDataSetChanged();
 		removeDialog(DIALOG_WAITING);
-		playGv.requestFocus();
+		if (isFirstActive) {
+
+			playGv.requestFocus();
+			isFirstActive = false;
+		}
+		beforeGvView = null;
+		activeRecordIndex = -1;
 		playGv.setOnFocusChangeListener(gvOnFocusChangeListener);
 
 	}
@@ -714,7 +783,7 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 			break;
 		case SEARCH:
 			getMoreFilterData(StatisticsUtils.getSearch_CacheURL(pageNum,
-					search));
+					search)+ "&type=" + TV_TYPE +","+MOVIE_TYPE);
 			break;
 		case DIANYING:
 			getMoreTopData(StatisticsUtils.getYueDan_DianyingCacheURL(pageNum));
@@ -828,6 +897,7 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 
 		zuijinguankanBtn = (Button) findViewById(R.id.bt_zuijinguankan);
 		zhuijushoucangBtn = (Button) findViewById(R.id.bt_zhuijushoucang);
+		firstFloatView = findViewById(R.id.inclue_movie_show_item);
 
 		playGv.setNextFocusLeftId(R.id.bt_dianyingyuedan);
 	}
@@ -900,16 +970,115 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 
 			activeView = tempView;
 		}
-		
+
 		playGv.setNextFocusLeftId(v.getId());
 
 	}
-	
+
+	@Override
 	protected void resetGvActive() {
-		
+		// TODO Auto-generated method stub
 		playGv.setOnFocusChangeListener(null);
-		playGv.setSelection(-1);
+		// playGv.setSelection(-1);
 		activeRecordIndex = -1;
+	}
+
+	protected void initFirstFloatView(int position, View view) {
+
+		firstFloatView.setLayoutParams(new FrameLayout.LayoutParams(popWidth,
+				popHeight));
+		firstFloatView.setVisibility(View.VISIBLE);
+
+		if (view != null) {
+			Log.i(TAG, "X:" + view.getX() + "Y: " + view.getY());
+			firstFloatView.setX(view.getX());
+			firstFloatView.setY(view.getY());
+		} else {
+
+			firstFloatView.setX(0);
+			firstFloatView.setY(0);
+		}
+
+		TextView movieName = (TextView) firstFloatView
+				.findViewById(R.id.tv_item_layout_name);
+		TextView movieScore = (TextView) firstFloatView
+				.findViewById(R.id.tv_item_layout_score);
+
+		List<MovieItemData> list = searchAdapter.getMovieList();
+		if (list != null && !list.isEmpty()) {
+
+			aq = new AQuery(firstFloatView);
+			aq.id(R.id.iv_item_layout_haibao).image(
+					list.get(position).getMoviePicUrl(), true, true, 0,
+					R.drawable.post_active);
+
+			movieName.setText(list.get(position).getMovieName());
+
+			String proType = list.get(position).getMovieProType();
+
+			TextView movieUpdate = (TextView) firstFloatView
+					.findViewById(R.id.tv_item_layout_other_info);
+
+			if (proType != null && !proType.equals("")) {
+
+				if (proType.equals("1")) {
+
+					movieScore.setText(list.get(position).getMovieScore());
+					String duration = list.get(position).getMovieDuration();
+					if (duration != null && !duration.equals("")) {
+
+						movieUpdate.setText(StatisticsUtils
+								.formatMovieDuration(duration));
+					}
+				} else if (proType.equals("2") || proType.equals("131")) {
+
+					movieScore.setText(list.get(position).getMovieScore());
+					String curEpisode = list.get(position).getMovieCurEpisode();
+					String maxEpisode = list.get(position).getMovieMaxEpisode();
+
+					if (maxEpisode != null && !maxEpisode.equals("")) {
+
+						if (curEpisode == null || curEpisode.equals("0")) {
+
+							movieUpdate.setText(maxEpisode
+									+ getString(R.string.dianshiju_jiquan));
+						} else {
+
+							int max = Integer.valueOf(maxEpisode);
+							int min = Integer.valueOf(curEpisode);
+
+							if (min >= max) {
+
+								movieUpdate.setText(maxEpisode
+										+ getString(R.string.dianshiju_jiquan));
+							} else {
+
+								movieUpdate
+										.setText(getString(R.string.zongyi_gengxinzhi)
+												+ curEpisode);
+							}
+
+						}
+					}
+
+				} else if (proType.equals("3")) {
+
+					String curEpisode = list.get(position).getMovieCurEpisode();
+					if (curEpisode != null && !curEpisode.equals("")) {
+
+						movieUpdate
+								.setText(getString(R.string.zongyi_gengxinzhi)
+										+ list.get(position)
+												.getMovieCurEpisode());
+					}
+				}
+			}
+
+			// ItemStateUtils.floatViewInAnimaiton(getApplicationContext(),
+			// firstFloatView);
+			ItemStateUtils.floatViewInAnimaiton(getApplicationContext(),
+					firstFloatView);
+		}
 	}
 
 }

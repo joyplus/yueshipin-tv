@@ -9,5 +9,7 @@ public class GridViewItemHodler {
 	public TextView scoreTv;
 	public TextView otherInfo;
 	public ImageView haibaoIv;
+	public ImageView definition;
+	public boolean isActive;
 
 }

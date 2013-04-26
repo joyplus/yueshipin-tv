@@ -298,11 +298,8 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 				bundle.putString("prod_url", pic_url);
 				yingpingIntent.putExtras(bundle);
 				startActivity(yingpingIntent);
-			} else {
-				
-				Toast.makeText(this, getString(R.string.xiangqing_yingping_no),
-						Toast.LENGTH_SHORT).show();
 			}
+
 			break;
 		default:
 			
@@ -640,6 +637,18 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 	}
 	
 	private void updateView(){
+		
+		if(date.comments.length <=0) {
+			
+			yingpingBt.setEnabled(false);
+			yingpingBt.setBackgroundResource(R.drawable.btn_unuse);
+			yingpingBt.setFocusable(false);
+		}
+		
+		
+		
+		
+		
 		initButton();
 		aq.id(R.id.image).image(pic_url, false, true,0, R.drawable.post_normal);
 		aq.id(R.id.text_name).text(date.tv.name);

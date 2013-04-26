@@ -774,4 +774,10 @@ public class ShowYueDanListActivity extends AbstractShowActivity{
 		activeRecordIndex = -1;
 	}
 
+	@Override
+	protected void initFirstFloatView(int position, View view) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
