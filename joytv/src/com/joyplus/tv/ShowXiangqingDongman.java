@@ -660,18 +660,34 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 				Log.e(TAG, "tv date error---->date == null");
 				return;
 			}
+//			if("".equals(date.tv.max_episode)||"0".equals(date.tv.max_episode)){
+//				num = date.tv.episodes.length;
+//				isOver = true;
+//			}else if(date.tv.cur_episode.equals(date.tv.max_episode)){
+//				isOver = true;
+//				num = Integer.valueOf(date.tv.max_episode);
+//			}else if(Integer.valueOf(date.tv.cur_episode)>Integer.valueOf(date.tv.max_episode)){
+//				isOver = true;
+//				num = Integer.valueOf(date.tv.max_episode);
+//			}else{
+//				isOver = false;
+//				num = Integer.valueOf(date.tv.cur_episode);
+//			}
 			if("".equals(date.tv.max_episode)||"0".equals(date.tv.max_episode)){
 				num = date.tv.episodes.length;
 				isOver = true;
 			}else if(date.tv.cur_episode.equals(date.tv.max_episode)){
 				isOver = true;
 				num = Integer.valueOf(date.tv.max_episode);
-			}else if(Integer.valueOf(date.tv.cur_episode)>Integer.valueOf(date.tv.max_episode)){
+			}else if("".equals(date.tv.cur_episode)||"0".equals(date.tv.cur_episode)){
+				isOver = true;
+				num = Integer.valueOf(date.tv.max_episode);
+			}else if(Integer.valueOf(date.tv.cur_episode)>=Integer.valueOf(date.tv.max_episode)){
 				isOver = true;
 				num = Integer.valueOf(date.tv.max_episode);
 			}else{
 				isOver = false;
-				num = Integer.valueOf(date.tv.cur_episode);
+				num = date.tv.episodes.length;
 			}
 			String bigPicUrl = date.tv.ipad_poster;
 			if(bigPicUrl == null || bigPicUrl.equals("")

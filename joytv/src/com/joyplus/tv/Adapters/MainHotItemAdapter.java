@@ -100,19 +100,23 @@ public class MainHotItemAdapter extends BaseAdapter {
 				break;
 			case 2:
 				if("".equals(hot_list.get(position).max_episode)){
-					holder.content.setText("更新到第" + hot_list.get(position).cur_episode+"集");
-				}else if(!hot_list.get(position).cur_episode.equals(hot_list.get(position).max_episode)){
+					holder.content.setText("");
+				}else{
 					if("".equals(hot_list.get(position).cur_episode)||"0".equals(hot_list.get(position).cur_episode)){
 						holder.content.setText(hot_list.get(position).max_episode + "集全");
 					}else{
-						holder.content.setText("更新到第" + hot_list.get(position).cur_episode+"集");
+						int curEpisode = Integer.valueOf(hot_list.get(position).cur_episode);
+						int maxEpisode = Integer.valueOf(hot_list.get(position).max_episode);
+						if(curEpisode>=maxEpisode){
+							holder.content.setText(hot_list.get(position).max_episode + "集全");
+						}else{
+							holder.content.setText("更新到第" + hot_list.get(position).cur_episode+"集");
+						}
 					}
-				}else {
-					holder.content.setText(hot_list.get(position).max_episode + "集全");
 				}
 				break;
 			case 3:
-				holder.content.setText("更新到" + hot_list.get(position).cur_episode+"期");
+				holder.content.setText(StatisticsUtils.formateZongyi(hot_list.get(position).cur_episode, c));
 				break;
 			case 131:
 				if("".equals(hot_list.get(position).max_episode)){
