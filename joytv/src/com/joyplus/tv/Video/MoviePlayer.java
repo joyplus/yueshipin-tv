@@ -47,6 +47,7 @@ import android.net.http.AndroidHttpClient;
 import android.net.http.SslCertificate;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -69,7 +70,6 @@ import com.joyplus.tv.R;
 import com.joyplus.tv.StatisticsUtils;
 import com.joyplus.tv.Adapters.CurrentPlayData;
 import com.joyplus.tv.Service.Return.ReturnProgramView;
-import com.joyplus.tv.utils.Log;
 
 public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		MediaPlayer.OnCompletionListener, MediaPlayer.OnPreparedListener,
@@ -117,6 +117,8 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 
 	// If the time bar is visible.
 	private boolean mShowing;
+	
+	private boolean mSeekComplete;
 
 	private SeekBar sb;
 	private TextView textView1;
@@ -171,6 +173,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 	public MoviePlayer(View rootView, Context movieActivity, int Time,
 			int prod_type, Uri videoUri, Bundle savedInstance, boolean canReplay) {
 		this.mContext = movieActivity;
+		mSeekComplete= false;
 		mVideoView = (VideoView) rootView.findViewById(R.id.surface_view);
 
 		mBookmarker = new Bookmarker(mContext);
@@ -350,15 +353,46 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		int position = mVideoView.getCurrentPosition();
 		int duration = mVideoView.getDuration();
 
-		if (mVideoView.isPlaying() && position > 1) {
-			// mHandler.removeCallbacks(mPreparedProgress);
-			mController.showPlayingAtFirstTime();
-			sb.setMax(duration);
-			sb.setOnSeekBarChangeListener(sbLis);
-			sb.setProgress(position);
-			this.currentTime = position;
-			setTime(duration);
-			mController.setTimes(position, duration);
+		if (mVideoView.isPlaying() && duration > 1) {
+			if(firstJumpTime == 0){
+				mController.showPlayingAtFirstTime();
+				sb.setMax(duration);
+				sb.setOnSeekBarChangeListener(sbLis);
+				sb.setProgress(position);
+				this.currentTime = position;
+				setTime(duration);
+				mController.setTimes(position, duration);
+				
+			}else if (firstJumpTime > 0 && mSeekComplete) {
+				firstJumpTime = 0;
+				mSeekComplete = false;
+				RelativeLayout.LayoutParams parms = new RelativeLayout.LayoutParams(
+						RelativeLayout.LayoutParams.WRAP_CONTENT,
+						RelativeLayout.LayoutParams.WRAP_CONTENT);
+				parms.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM,
+						RelativeLayout.TRUE);
+
+				double mLeft = (double) firstJumpTime / totalTime
+						* (sb.getMeasuredWidth() - seekBarWidthOffset) + 20;
+
+				if (firstJumpTime > 0)
+					parms.leftMargin = (int) mLeft;
+				else
+					parms.leftMargin = 20;
+				parms.bottomMargin = 20 + 10;
+				mLayoutBottomTime.setLayoutParams(parms);
+
+				textView1.setText(StatisticsUtils.formatDuration(firstJumpTime));
+				textView1.setVisibility(View.VISIBLE);
+				// mHandler.removeCallbacks(mPreparedProgress);
+				mController.showPlayingAtFirstTime();
+				sb.setMax(duration);
+				sb.setOnSeekBarChangeListener(sbLis);
+				sb.setProgress(firstJumpTime);
+				this.currentTime = position;
+				setTime(duration);
+				mController.setTimes(position, duration);
+			}
 		}
 
 		return position;
@@ -480,11 +514,16 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 
 	// Below are key events passed from MovieActivity.
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if(totalTime <=0)
-			return true;
+
 		// Some headsets will fire off 7-10 events on a single click
 		if (event.getRepeatCount() > 0) {
 			return isMediaKey(keyCode);
+		}
+		if(totalTime <=0 ){
+			if(keyCode == KeyEvent.KEYCODE_BACK)
+				return false;
+			else
+				return true;
 		}
 		// Toast.makeText(mContext, Integer.toString(keyCode),100).show();
 		if (JUMP_TIME_TIMES != 0 && !isFastForwardKey(keyCode)) // 快进模式才能按的键
@@ -657,9 +696,9 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 				mController.HidingTimes();
 				return true;
 			} else if (prod_type != 1) {
-				// 没有加载完就返回，bug
-				if (totalTime <= 0)
-					return false;
+				// 没有加载完就返回，bug,加到前面去了。
+//				if (totalTime <= 0)
+//					return false;
 				if (mVideoView.isPlaying()) {
 					pauseVideo();
 					mController.focusLayoutControl(0);
@@ -933,6 +972,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 	public void onSeekComplete(MediaPlayer mp) {
 		// TODO Auto-generated method stub
 		Log.d(TAG, "onSeekComplete");
+		mSeekComplete= true; 
 		// if(firstJumpTime > 0 ){
 		// mController.setPrepared(true);
 		// sb.setProgress(100);
