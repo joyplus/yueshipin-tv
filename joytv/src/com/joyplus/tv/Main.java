@@ -217,8 +217,12 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 	private int displayWith;
 	private MyScrollLayout titleGroup;
 	private FrameLayout itemFram;
-	private ImageView highlightImageView;
+	private ImageView highlightImageView_1;
+	private ImageView highlightImageView_2;
+	private ImageView highlightImageView_3;
+	private ImageView highlightImageView_4;
 	private ImageView playIcon;
+	private ImageView definitionIcon;
 	private LinearLayout contentLayout;
 	private TextView noticeView;
 	
@@ -297,6 +301,10 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 				handler.removeCallbacks(null, null);
 				switch (index) {
 				case 1:
+					highlightImageView_1.setVisibility(View.VISIBLE);
+					highlightImageView_2.setVisibility(View.GONE);
+					highlightImageView_3.setVisibility(View.GONE);
+					highlightImageView_4.setVisibility(View.GONE);
 					if(isHotLoadedFlag == 2){
 						itemFram.setVisibility(View.VISIBLE);
 						contentLayout.removeAllViews();
@@ -320,19 +328,34 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 						}
 						if(img != null){
 							if(img.getDrawable()!=null){
-								highlightImageView.setImageDrawable(img.getDrawable());
+								highlightImageView_1.setImageDrawable(img.getDrawable());
 							}else{
-								aq.id(highlightImageView).image(hot_list.get(gallery1.getSelectedItemPosition()).prod_pic_url,true,true);
+								aq.id(highlightImageView_1).image(hot_list.get(gallery1.getSelectedItemPosition()).prod_pic_url,true,true);
 							}
 						}else{
 							if(seletedindex>=0&&seletedindex<hot_list.size()-1){
-								aq.id(highlightImageView).image(hot_list.get(gallery1.getSelectedItemPosition()).prod_pic_url,true,true);
+								aq.id(highlightImageView_1).image(hot_list.get(gallery1.getSelectedItemPosition()).prod_pic_url,true,true);
 							}
+						}
+						switch (Integer.valueOf(hot_list.get(gallery1.getSelectedItemPosition()).definition)) {
+						case 8:
+							definitionIcon.setImageResource(R.drawable.icon_bd);
+							break;
+						case 7:
+							definitionIcon.setImageResource(R.drawable.icon_hd);
+							break;
+						case 6:
+							definitionIcon.setImageResource(R.drawable.icon_ts);
+							break;
+						default:
+							definitionIcon.setImageDrawable(null);
+							break;
 						}
 //						aq.id(highlightImageView).image(hot_list.get(gallery1.getSelectedItemPosition()).prod_pic_url);
 //						noticeView.setText(gallery1.getSelectedItemPosition()+1 + "/" + hot_list.size());
 						
 					}else{
+						definitionIcon.setImageDrawable(null);
 						itemFram.setVisibility(View.INVISIBLE);
 						hot_list.clear();
 						hot_contentViews.clear();
@@ -344,6 +367,10 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 					playIcon.setVisibility(View.VISIBLE);
 					break;
 				case 2:
+					highlightImageView_1.setVisibility(View.GONE);
+					highlightImageView_2.setVisibility(View.VISIBLE);
+					highlightImageView_3.setVisibility(View.GONE);
+					highlightImageView_4.setVisibility(View.GONE);
 					playIcon.setVisibility(View.INVISIBLE);
 					if(isYueDanLoadedFlag==2){
 						itemFram.setVisibility(View.VISIBLE);
@@ -360,20 +387,25 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 						}else{
 							gallery1.setSelection(indexCaces.get(index));
 						}
-						if(gallery1.getSelectedItemPosition()==6){
-							highlightImageView.setImageResource(R.drawable.more_movie_active);
-						}else if(gallery1.getSelectedItemPosition()==7){
-							highlightImageView.setImageResource(R.drawable.more_episode_active);
+						if(gallery1.getSelectedItemPosition()==yuedan_list.size()-2){
+							highlightImageView_2.setImageResource(R.drawable.more_movie_active);
+						}else if(gallery1.getSelectedItemPosition()==yuedan_list.size()-1){
+							highlightImageView_2.setImageResource(R.drawable.more_episode_active);
 						}else {
 							ImageView img2 = (ImageView) gallery1.findViewWithTag(yuedan_list.get(gallery1.getSelectedItemPosition()).pic_url);
 							if(img2 != null){
 								if(img2.getDrawable()!=null){
-									highlightImageView.setImageDrawable(img2.getDrawable());
+									highlightImageView_2.setImageDrawable(img2.getDrawable());
 								}else{
-									aq.id(highlightImageView).image(yuedan_list.get(gallery1.getSelectedItemPosition()).pic_url,true,true);
+									aq.id(highlightImageView_2).image(yuedan_list.get(gallery1.getSelectedItemPosition()).pic_url,true,true);
 								}
 							}else{
-								aq.id(highlightImageView).image(yuedan_list.get(gallery1.getSelectedItemPosition()).pic_url,true,true);
+								aq.id(highlightImageView_2).image(yuedan_list.get(gallery1.getSelectedItemPosition()).pic_url,true,true);
+							}
+							if("1".equals(yuedan_list.get(gallery1.getSelectedItemPosition()).prod_type)){
+								definitionIcon.setImageResource(R.drawable.icon_movie);
+							}else if("2".equals(yuedan_list.get(gallery1.getSelectedItemPosition()).prod_type)){
+								definitionIcon.setImageResource(R.drawable.icon_episode);
 							}
 						}
 						noticeView.setText(gallery1.getSelectedItemPosition()+1 + "/" + yuedan_list.size());
@@ -383,12 +415,16 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 						gallery1.setAdapter(null); 
 						contentLayout.removeAllViews();
 						itemFram.setVisibility(View.INVISIBLE);
+						definitionIcon.setImageDrawable(null);
 						getMovieYueDanServiceData();
 						getTVYueDanServiceData();
 					}
-					
 					break;
 				case 3:
+					highlightImageView_1.setVisibility(View.GONE);
+					highlightImageView_2.setVisibility(View.GONE);
+					highlightImageView_3.setVisibility(View.VISIBLE);
+					highlightImageView_4.setVisibility(View.GONE);
 					sendBroadcast(new Intent(FayeService.ACTION_M_DISAPPEAR));
 					itemFram.setVisibility(View.VISIBLE);
 					contentLayout.removeAllViews();
@@ -402,10 +438,16 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 						gallery1.setSelection(indexCaces.get(index));
 					}
 					playIcon.setVisibility(View.INVISIBLE);
-					highlightImageView.setImageResource(resouces_lib_active[gallery1.getSelectedItemPosition()]);
+					highlightImageView_3.setImageResource(resouces_lib_active[gallery1.getSelectedItemPosition()]);
 					noticeView.setText(gallery1.getSelectedItemPosition()+1 + "/" + resouces_lib_active.length);
+					definitionIcon.setImageDrawable(null);
+					definitionIcon.setImageDrawable(null);
 					break;
 				case 4:
+					highlightImageView_1.setVisibility(View.GONE);
+					highlightImageView_2.setVisibility(View.GONE);
+					highlightImageView_3.setVisibility(View.GONE);
+					highlightImageView_4.setVisibility(View.VISIBLE);
 					sendBroadcast(new Intent(FayeService.ACTION_M_APPEAR));
 					itemFram.setVisibility(View.VISIBLE);
 					contentLayout.removeAllViews();
@@ -420,8 +462,9 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 						gallery1.setSelection(indexCaces.get(index));
 					}
 					playIcon.setVisibility(View.INVISIBLE);
-					highlightImageView.setImageResource(resouces_my_active[gallery1.getSelectedItemPosition()]);
+					highlightImageView_4.setImageResource(resouces_my_active[gallery1.getSelectedItemPosition()]);
 					noticeView.setText(gallery1.getSelectedItemPosition() +1+ "/" + resouces_my_active.length);
+					definitionIcon.setImageDrawable(null);
 					break;
 				}
 				if(gallery1.getAnimation()!=null&&!gallery1.getAnimation().hasEnded()){
@@ -436,8 +479,15 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 
         itemFram = (FrameLayout) findViewById(R.id.itemFram);
 //        clock = (ClockTextView) findViewById(R.id.clock);
-        highlightImageView = (ImageView) findViewById(R.id.highlight_img);
+        highlightImageView_1 = (ImageView) findViewById(R.id.highlight_img_1);
+        highlightImageView_2 = (ImageView) findViewById(R.id.highlight_img_2);
+        highlightImageView_3 = (ImageView) findViewById(R.id.highlight_img_3);
+        highlightImageView_4 = (ImageView) findViewById(R.id.highlight_img_4);
+        highlightImageView_2.setVisibility(View.GONE);
+        highlightImageView_3.setVisibility(View.GONE);
+        highlightImageView_4.setVisibility(View.GONE);
         playIcon = (ImageView) findViewById(R.id.play_icon);
+        definitionIcon = (ImageView) findViewById(R.id.icon_defination);
 //        MarginLayoutParams mlp = (MarginLayoutParams) gallery1.getLayoutParams();
         DisplayMetrics metrics = new DisplayMetrics();
         density = metrics.density;
@@ -701,15 +751,30 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 				}else{
 					aq.id(R.id.icon_arrow_right).invisible();
 				}
+				switch (Integer.valueOf(hot_list.get(arg2).definition)) {
+				case 8:
+					definitionIcon.setImageResource(R.drawable.icon_bd);
+					break;
+				case 7:
+					definitionIcon.setImageResource(R.drawable.icon_hd);
+					break;
+				case 6:
+					definitionIcon.setImageResource(R.drawable.icon_ts);
+					break;
+				default:
+					definitionIcon.setImageDrawable(null);
+					break;
+				}
+				
 				ImageView img = (ImageView) gallery1.findViewWithTag(hot_list.get(arg2).prod_pic_url);
 				if(img != null){
 					if(img.getDrawable()!=null){
-						highlightImageView.setImageDrawable(img.getDrawable());
+						highlightImageView_1.setImageDrawable(img.getDrawable());
 					}else{
-						aq.id(highlightImageView).image(hot_list.get(arg2).prod_pic_url,true,true);
+						aq.id(highlightImageView_1).image(hot_list.get(arg2).prod_pic_url,true,true);
 					}
 				}else{
-					aq.id(highlightImageView).image(hot_list.get(arg2).prod_pic_url,true,true);
+					aq.id(highlightImageView_1).image(hot_list.get(arg2).prod_pic_url,true,true);
 				}
 				noticeView.setText(arg2+ 1 + "/" + hot_list.size());
 				handler.removeCallbacks(null, null); 
@@ -749,10 +814,11 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 					aq.id(R.id.icon_arrow_right).invisible();
 				}
 				if("0".equals(yuedan_list.get(arg2).prod_type)){
+					definitionIcon.setImageDrawable(null);
 					if("-1".equals(yuedan_list.get(arg2).id)){
-						highlightImageView.setImageResource(R.drawable.more_movie_active);
+						highlightImageView_2.setImageResource(R.drawable.more_movie_active);
 					}else if("-2".equals(yuedan_list.get(arg2).id)){
-						highlightImageView.setImageResource(R.drawable.more_episode_active);
+						highlightImageView_2.setImageResource(R.drawable.more_episode_active);
 					}
 					noticeView.setText(arg2+ 1 + "/" + yuedan_list.size());
 					handler.removeCallbacks(null, null);
@@ -779,19 +845,24 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 					}),300);
 				}else{
 					if(gallery1.getSelectedItemPosition()==yuedan_list.size()-2){
-						highlightImageView.setImageResource(R.drawable.more_movie_active);
+						highlightImageView_2.setImageResource(R.drawable.more_movie_active);
 					}else if(gallery1.getSelectedItemPosition()==yuedan_list.size()-1){
-						highlightImageView.setImageResource(R.drawable.more_episode_active);
+						highlightImageView_2.setImageResource(R.drawable.more_episode_active);
 					}else {
+						if("1".equals(yuedan_list.get(arg2).prod_type)){
+							definitionIcon.setImageResource(R.drawable.icon_movie);
+						}else if("2".equals(yuedan_list.get(arg2).prod_type)){
+							definitionIcon.setImageResource(R.drawable.icon_episode);
+						}
 						ImageView img2 = (ImageView) gallery1.findViewWithTag(yuedan_list.get(gallery1.getSelectedItemPosition()).pic_url);
 						if(img2 != null){
 							if(img2.getDrawable()!=null){
-								highlightImageView.setImageDrawable(img2.getDrawable());
+								highlightImageView_2.setImageDrawable(img2.getDrawable());
 							}else{
-								aq.id(highlightImageView).image(yuedan_list.get(gallery1.getSelectedItemPosition()).pic_url,true,true);
+								aq.id(highlightImageView_2).image(yuedan_list.get(gallery1.getSelectedItemPosition()).pic_url,true,true);
 							}
 						}else{
-							aq.id(highlightImageView).image(yuedan_list.get(gallery1.getSelectedItemPosition()).pic_url,true,true);
+							aq.id(highlightImageView_2).image(yuedan_list.get(gallery1.getSelectedItemPosition()).pic_url,true,true);
 						}
 					}
 					noticeView.setText(arg2+ 1 + "/" + yuedan_list.size());
@@ -833,7 +904,7 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 				}else{
 					aq.id(R.id.icon_arrow_right).invisible();
 				}
-				highlightImageView.setImageResource(resouces_lib_active[positon1]);
+				highlightImageView_3.setImageResource(resouces_lib_active[positon1]);
 				noticeView.setText(positon1+1 + "/" + resouces_lib_active.length);
 			}
 			break;
@@ -849,7 +920,7 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 				}else{
 					aq.id(R.id.icon_arrow_right).invisible();
 				}
-				highlightImageView.setImageResource(resouces_my_active[positon1]);
+				highlightImageView_4.setImageResource(resouces_my_active[positon1]);
 				noticeView.setText(positon1+1 + "/" + resouces_my_active.length);
 			}
 			break;

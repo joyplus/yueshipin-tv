@@ -76,13 +76,13 @@
             android:process=":DownloadingService" >
         </service>
 
-        <meta-data
-            android:name="UMENG_APPKEY"
-            android:value="50937e6c5270151fc8000003" >
-        </meta-data>
-        <meta-data
-            android:name="UMENG_CHANNEL"
-            android:value="a002001" />
+<!--         <meta-data -->
+<!--             android:name="UMENG_APPKEY" -->
+<!--             android:value="50937e6c5270151fc8000003" > -->
+<!--         </meta-data> -->
+<!--         <meta-data -->
+<!--             android:name="UMENG_CHANNEL" -->
+<!--             android:value="a002001" /> -->
 
         <activity
             android:name="ShowMovieActivity"
@@ -308,7 +308,7 @@
         </meta-data>
 	        <meta-data
             android:name="UMENG_CHANNEL"
-            android:value="j001" />
+            android:value="t004001" />
         <service android:name="com.parse.PushService" />
 
         <receiver android:name="com.parse.ParseBroadcastReceiver" >
