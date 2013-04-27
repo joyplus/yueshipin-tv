@@ -700,6 +700,7 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 			
 			yingpingBt.setEnabled(false);
 			yingpingBt.setBackgroundResource(R.drawable.yingping_button_unuse_selector);
+			yingpingBt.setTextColor(getResources().getColor(R.color.unuse_color));
 //			yingpingBt.setFocusable(false);
 		}
 		

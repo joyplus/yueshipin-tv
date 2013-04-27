@@ -649,6 +649,8 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 			
 			yingpingBt.setEnabled(false);
 			yingpingBt.setBackgroundResource(R.drawable.yingping_button_unuse_selector);
+			yingpingBt.setTextColor(getResources().getColor(R.color.unuse_color));
+//			yingpingBt.setFocusable(false);
 		}
 		
 		
