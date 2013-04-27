@@ -59,7 +59,7 @@ public class MovieControllerOverlay extends FrameLayout implements
 		ControllerOverlay, View.OnTouchListener, AnimationListener {
 
 	private enum State {
-		PLAYING, PAUSED, ENDED, ERROR, LOADING
+		PLAYING, PAUSED, ENDED, ERROR, LOADING, TVRETURN
 	}
 
 	private App app;
@@ -254,44 +254,41 @@ public class MovieControllerOverlay extends FrameLayout implements
 	public void returnShowView() {
 		mCurrentPlayData = app.getCurrentPlayData();
 		if (mCurrentPlayData.prod_type != 1) {
-			playPauseReplayView.setBackgroundResource(R.drawable.player_btn_finish);
-			if(mCurrentPlayData.prod_favority)
+			playPauseReplayView
+					.setBackgroundResource(R.drawable.player_btn_finish);
+			if (mCurrentPlayData.prod_favority)
 				playFavView.setBackgroundResource(R.drawable.player_btn_unfav);
-			
+
 			playContinueView.setVisibility(View.VISIBLE);
 			playFavView.setVisibility(View.VISIBLE);
 			playPreView.setVisibility(View.VISIBLE);
 			playNextView.setVisibility(View.VISIBLE);
-			
+
 			if (mCurrentPlayData.CurrentIndex > 0)
 				playPreView.setEnabled(true);
 			else
 				playPreView.setEnabled(false);
-			
+
 			ReturnProgramView m_ReturnProgramView = app.get_ReturnProgramView();
-			
+
 			if (m_ReturnProgramView != null) {
 				switch (mCurrentPlayData.prod_type) {
+				case 131:
 				case 2:
 					if (mCurrentPlayData.CurrentIndex < m_ReturnProgramView.tv.episodes.length)
-						playNextView.setEnabled(
-								true);
+						playNextView.setEnabled(true);
 					else
-						playNextView.setEnabled(
-								false);
+						playNextView.setEnabled(false);
 					break;
 				case 3:
 					if (mCurrentPlayData.CurrentIndex < m_ReturnProgramView.show.episodes.length)
-						playNextView.setEnabled(
-								true);
+						playNextView.setEnabled(true);
 					else
-						playNextView.setEnabled(
-								false);
+						playNextView.setEnabled(false);
 					break;
 				}
-			}else{
-				playPreView.setEnabled(
-						false);
+			} else {
+				playPreView.setEnabled(false);
 				playNextView.setEnabled(false);
 			}
 		}
@@ -303,7 +300,7 @@ public class MovieControllerOverlay extends FrameLayout implements
 		playFavView.setVisibility(View.GONE);
 		playPreView.setVisibility(View.GONE);
 		playNextView.setVisibility(View.GONE);
-	
+
 	}
 
 	public void focusLayoutControl(int index) {
@@ -375,7 +372,12 @@ public class MovieControllerOverlay extends FrameLayout implements
 	}
 
 	public void showPaused() {
-		state = State.PAUSED;
+		mCurrentPlayData = app.getCurrentPlayData();
+		if (mCurrentPlayData.prod_type != 1) {
+			state = State.TVRETURN;
+		} else {
+			state = State.PAUSED;
+		}
 		showMainView(mLayoutControl);
 	}
 
@@ -480,7 +482,7 @@ public class MovieControllerOverlay extends FrameLayout implements
 	private void maybeStartHiding() {
 		cancelHiding();
 		if (state == State.PLAYING) {
-			handler.postDelayed(startHidingRunnable, 2500);
+			handler.postDelayed(startHidingRunnable, 800);
 		}
 	}
 
@@ -654,15 +656,23 @@ public class MovieControllerOverlay extends FrameLayout implements
 		}
 		background.setVisibility(View.VISIBLE);
 		// timeBar.setVisibility(View.VISIBLE);
-		if (state == State.PAUSED) {
-			playPauseReplayView
-					.setBackgroundResource(R.drawable.player_btn_play_play);
-		} else if (state == State.PLAYING) {
-			playPauseReplayView
-					.setBackgroundResource(R.drawable.player_btn_pause);
-		} else
-			playPauseReplayView
-					.setBackgroundResource(R.drawable.player_btn_finish);
+		if (mCurrentPlayData.prod_type == 1) {
+			if (state == State.PAUSED) {
+				playPauseReplayView
+						.setBackgroundResource(R.drawable.player_btn_play_play);
+			} else if (state == State.PLAYING) {
+
+				playPauseReplayView
+						.setBackgroundResource(R.drawable.player_btn_pause);
+			} 
+			// else
+			// playPauseReplayView
+			// .setBackgroundResource(R.drawable.player_btn_finish);
+		}else {
+			if (state == State.TVRETURN) {
+				returnShowView();
+			}
+		}
 
 		if (state != State.LOADING && state != State.ERROR
 				&& !(state == State.ENDED && !canReplay)) {
@@ -778,11 +788,11 @@ public class MovieControllerOverlay extends FrameLayout implements
 		mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, index, 0);
 		int mAngle = index * 360 / mMaxVolume;
 		// 变更进度条
-		if(index == 0)
+		if (index == 0)
 			mArcView.setBackgroundResource(R.drawable.player_volume_mute);
-		else{
+		else {
 			mArcView.setBackgroundResource(R.drawable.player_volume);
-			
+
 		}
 		mArcView.SetAngle(mAngle);
 

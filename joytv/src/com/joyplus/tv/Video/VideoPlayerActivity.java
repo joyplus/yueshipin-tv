@@ -281,10 +281,11 @@ public class VideoPlayerActivity extends Activity {
 			try {
 				// woof is "00000",now "20024",by yyc
 				if (json.getString("res_code").trim().equalsIgnoreCase("00000")) {
-					finish();
 					app.MyToast(this, "收藏成功!");
 				} else
 					app.MyToast(this, "已收藏!");
+				setResult(101);
+				finish();
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -301,11 +302,12 @@ public class VideoPlayerActivity extends Activity {
 		if (json != null) {
 			try {
 				if (json.getString("res_code").trim().equalsIgnoreCase("00000")) {
-					finish();
 					app.MyToast(this, "取消收藏成功!");
 					// GetServiceData(1);
 				} else
 					app.MyToast(this, "取消收藏失败!");
+				setResult(102);
+				finish();
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
