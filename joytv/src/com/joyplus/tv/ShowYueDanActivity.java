@@ -930,7 +930,7 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 			currentListIndex = DIANYING;
 			resetGvActive();
 			String url1 = StatisticsUtils.getYueDan_DianyingFirstURL();
-			app.MyToast(aq.getContext(), "ll_daluju");
+//			app.MyToast(aq.getContext(), "ll_daluju");
 			if (lists[currentListIndex] != null
 					&& !lists[currentListIndex].isEmpty()) {
 
@@ -945,7 +945,7 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 
 			resetGvActive();
 			String url2 = StatisticsUtils.getYueDan_DianshiFirstURL();
-			app.MyToast(aq.getContext(), "ll_gangju");
+//			app.MyToast(aq.getContext(), "ll_gangju");
 			if (lists[currentListIndex] != null
 					&& !lists[currentListIndex].isEmpty()) {
 

@@ -304,10 +304,6 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 				bundle.putString("prod_url", pic_url);
 				yingpingIntent.putExtras(bundle);
 				startActivity(yingpingIntent);
-			} else {
-				
-				Toast.makeText(this, getString(R.string.xiangqing_yingping_no),
-						Toast.LENGTH_SHORT).show();
 			}
 			
 			break;

@@ -718,12 +718,12 @@ public class ShowDongManActivity extends AbstractShowActivity {
 							} else {
 								if (popupWindow.isShowing()) {
 									popupWindow.dismiss();
-									Toast.makeText(
-											ShowDongManActivity.this,
-											"selected is " + choice[0] + ","
-													+ choice[1] + ","
-													+ choice[2],
-											Toast.LENGTH_LONG).show();
+//									Toast.makeText(
+//											ShowDongManActivity.this,
+//											"selected is " + choice[0] + ","
+//													+ choice[1] + ","
+//													+ choice[2],
+//											Toast.LENGTH_LONG).show();
 									filterVideoSource(choice);
 
 								}
@@ -1061,7 +1061,7 @@ public class ShowDongManActivity extends AbstractShowActivity {
 			currentListIndex = QINZI;
 			resetGvActive();
 			String url1 = StatisticsUtils.getDongman_QinziFirstURL();
-			app.MyToast(aq.getContext(), "qinzi");
+//			app.MyToast(aq.getContext(), "qinzi");
 			if (lists[currentListIndex] != null
 					&& !lists[currentListIndex].isEmpty()) {
 
@@ -1076,7 +1076,7 @@ public class ShowDongManActivity extends AbstractShowActivity {
 			currentListIndex = REXUE;
 			resetGvActive();
 			String url2 = StatisticsUtils.getDongman_RexueFirstURL();
-			app.MyToast(aq.getContext(), "ll_rexuedongman");
+//			app.MyToast(aq.getContext(), "ll_rexuedongman");
 			if (lists[currentListIndex] != null
 					&& !lists[currentListIndex].isEmpty()) {
 
@@ -1091,7 +1091,7 @@ public class ShowDongManActivity extends AbstractShowActivity {
 			currentListIndex = HOUGONG;
 			resetGvActive();
 			String url3 = StatisticsUtils.getDongman_HougongFirstURL();
-			app.MyToast(aq.getContext(), "ll_hougongdongman");
+//			app.MyToast(aq.getContext(), "ll_hougongdongman");
 			if (lists[currentListIndex] != null
 					&& !lists[currentListIndex].isEmpty()) {
 
@@ -1106,7 +1106,7 @@ public class ShowDongManActivity extends AbstractShowActivity {
 			currentListIndex = TUILI;
 			resetGvActive();
 			String url4 = StatisticsUtils.getDongman_TuiliFirstURL();
-			app.MyToast(aq.getContext(), "ll_tuilidongman");
+//			app.MyToast(aq.getContext(), "ll_tuilidongman");
 			if (lists[currentListIndex] != null
 					&& !lists[currentListIndex].isEmpty()) {
 
@@ -1121,7 +1121,7 @@ public class ShowDongManActivity extends AbstractShowActivity {
 			currentListIndex = JIZHAN;
 			resetGvActive();
 			String url5 = StatisticsUtils.getDongman_JizhanFirstURL();
-			app.MyToast(aq.getContext(), "ll_jizhandongman");
+//			app.MyToast(aq.getContext(), "ll_jizhandongman");
 			if (lists[currentListIndex] != null
 					&& !lists[currentListIndex].isEmpty()) {
 
@@ -1136,7 +1136,7 @@ public class ShowDongManActivity extends AbstractShowActivity {
 			currentListIndex = GAOXIAO;
 			resetGvActive();
 			String url6 = StatisticsUtils.getDongman_GaoxiaoFirstURL();
-			app.MyToast(aq.getContext(), "ll_gaoxiaodongman");
+//			app.MyToast(aq.getContext(), "ll_gaoxiaodongman");
 			if (lists[currentListIndex] != null
 					&& !lists[currentListIndex].isEmpty()) {
 
@@ -1150,7 +1150,7 @@ public class ShowDongManActivity extends AbstractShowActivity {
 		case R.id.bt_quanbufenlei:
 			currentListIndex = QUANBUFENLEI;
 			resetGvActive();
-			app.MyToast(aq.getContext(), "bt_quanbufenlei");
+//			app.MyToast(aq.getContext(), "bt_quanbufenlei");
 			if (lists[currentListIndex] != null
 					&& !lists[currentListIndex].isEmpty()) {
 

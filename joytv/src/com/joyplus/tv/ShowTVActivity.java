@@ -704,12 +704,12 @@ public class ShowTVActivity extends AbstractShowActivity {
 							} else {
 								if (popupWindow.isShowing()) {
 									popupWindow.dismiss();
-									Toast.makeText(
-											ShowTVActivity.this,
-											"selected is " + choice[0] + ","
-													+ choice[1] + ","
-													+ choice[2],
-											Toast.LENGTH_LONG).show();
+//									Toast.makeText(
+//											ShowTVActivity.this,
+//											"selected is " + choice[0] + ","
+//													+ choice[1] + ","
+//													+ choice[2],
+//											Toast.LENGTH_LONG).show();
 									filterVideoSource(choice);
 
 								}
@@ -1037,7 +1037,7 @@ public class ShowTVActivity extends AbstractShowActivity {
 		switch (v.getId()) {
 		case R.id.ll_daluju:
 			String url1 = StatisticsUtils.getTV_DalujuFirstURL();
-			app.MyToast(aq.getContext(), "ll_daluju");
+//			app.MyToast(aq.getContext(), "ll_daluju");
 			currentListIndex = DALUJU;
 			resetGvActive();
 			if (lists[currentListIndex] != null
@@ -1052,7 +1052,7 @@ public class ShowTVActivity extends AbstractShowActivity {
 		case R.id.ll_gangju:
 			currentListIndex = GANGJU;
 			String url2 = StatisticsUtils.getTV_GangjuFirstURL();
-			app.MyToast(aq.getContext(), "ll_gangju");
+//			app.MyToast(aq.getContext(), "ll_gangju");
 			resetGvActive();
 			if (lists[currentListIndex] != null
 					&& !lists[currentListIndex].isEmpty()) {
@@ -1067,7 +1067,7 @@ public class ShowTVActivity extends AbstractShowActivity {
 			currentListIndex = TAIJU;
 			resetGvActive();
 			String url3 = StatisticsUtils.getTV_TaijuFirstURL();
-			app.MyToast(aq.getContext(), "ll_taiju");
+//			app.MyToast(aq.getContext(), "ll_taiju");
 			if (lists[currentListIndex] != null
 					&& !lists[currentListIndex].isEmpty()) {
 
@@ -1081,7 +1081,7 @@ public class ShowTVActivity extends AbstractShowActivity {
 			currentListIndex = HANJU;
 			resetGvActive();
 			String url4 = StatisticsUtils.getTV_HanjuFirstURL();
-			app.MyToast(aq.getContext(), "ll_hanju");
+//			app.MyToast(aq.getContext(), "ll_hanju");
 			if (lists[currentListIndex] != null
 					&& !lists[currentListIndex].isEmpty()) {
 
@@ -1095,7 +1095,7 @@ public class ShowTVActivity extends AbstractShowActivity {
 			currentListIndex = MEIJU;
 			resetGvActive();
 			String url5 = StatisticsUtils.getTV_MeijuFirstURL();
-			app.MyToast(aq.getContext(), "ll_meiju");
+//			app.MyToast(aq.getContext(), "ll_meiju");
 			if (lists[currentListIndex] != null
 					&& !lists[currentListIndex].isEmpty()) {
 
@@ -1109,7 +1109,7 @@ public class ShowTVActivity extends AbstractShowActivity {
 			currentListIndex = RIJU;
 			resetGvActive();
 			String url6 = StatisticsUtils.getTV_RijuFirstURL();
-			app.MyToast(aq.getContext(), "ll_riju");
+//			app.MyToast(aq.getContext(), "ll_riju");
 			if (lists[currentListIndex] != null
 					&& !lists[currentListIndex].isEmpty()) {
 
@@ -1122,7 +1122,7 @@ public class ShowTVActivity extends AbstractShowActivity {
 		case R.id.bt_quanbufenlei:
 			currentListIndex = QUANBUFENLEI;
 			resetGvActive();
-			app.MyToast(aq.getContext(), "bt_quanbufenlei");
+//			app.MyToast(aq.getContext(), "bt_quanbufenlei");
 			if (lists[currentListIndex] != null
 					&& !lists[currentListIndex].isEmpty()) {
 

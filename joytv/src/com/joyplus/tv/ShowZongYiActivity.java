@@ -615,7 +615,7 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 							}else{
 								if(popupWindow.isShowing()){
 									popupWindow.dismiss();
-									Toast.makeText(ShowZongYiActivity.this, "selected is " + choice[0] + ","+choice[1]+","+choice[2], Toast.LENGTH_LONG).show();
+//									Toast.makeText(ShowZongYiActivity.this, "selected is " + choice[0] + ","+choice[1]+","+choice[2], Toast.LENGTH_LONG).show();
 									filterVideoSource(choice);
 									
 								}
@@ -795,7 +795,7 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 			case R.id.bt_quanbufenlei:
 				currentListIndex = QUANBUFENLEI;
 				resetGvActive();
-				app.MyToast(aq.getContext(), "bt_quanbufenlei");
+//				app.MyToast(aq.getContext(), "bt_quanbufenlei");
 				if (lists[currentListIndex] != null
 						&& !lists[currentListIndex].isEmpty()) {
 

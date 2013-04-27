@@ -710,12 +710,12 @@ public class ShowMovieActivity extends AbstractShowActivity {
 							} else {
 								if (popupWindow.isShowing()) {
 									popupWindow.dismiss();
-									Toast.makeText(
-											ShowMovieActivity.this,
-											"selected is " + choice[0] + ","
-													+ choice[1] + ","
-													+ choice[2],
-											Toast.LENGTH_LONG).show();
+//									Toast.makeText(
+//											ShowMovieActivity.this,
+//											"selected is " + choice[0] + ","
+//													+ choice[1] + ","
+//													+ choice[2],
+//											Toast.LENGTH_LONG).show();
 
 									filterVideoSource(choice);
 								}
@@ -1063,7 +1063,7 @@ public class ShowMovieActivity extends AbstractShowActivity {
 			currentListIndex = DONGZUOPIAN;
 			resetGvActive();
 			String url1 = StatisticsUtils.getMovie_DongzuoFirstURL();
-			app.MyToast(aq.getContext(), "DONGZUO");
+//			app.MyToast(aq.getContext(), "DONGZUO");
 			if (lists[currentListIndex] != null
 					&& !lists[currentListIndex].isEmpty()) {
 
@@ -1078,7 +1078,7 @@ public class ShowMovieActivity extends AbstractShowActivity {
 			currentListIndex = KEHUANPIAN;
 			resetGvActive();
 			String url2 = StatisticsUtils.getMovie_KehuanFirstURL();
-			app.MyToast(aq.getContext(), "ll_kehuanpian");
+//			app.MyToast(aq.getContext(), "ll_kehuanpian");
 			if (lists[currentListIndex] != null
 					&& !lists[currentListIndex].isEmpty()) {
 
@@ -1093,7 +1093,7 @@ public class ShowMovieActivity extends AbstractShowActivity {
 			currentListIndex = LUNLIPIAN;
 			resetGvActive();
 			String url3 = StatisticsUtils.getMovie_LunliFirstURL();
-			app.MyToast(aq.getContext(), "ll_lunlipian");
+//			app.MyToast(aq.getContext(), "ll_lunlipian");
 			if (lists[currentListIndex] != null
 					&& !lists[currentListIndex].isEmpty()) {
 
@@ -1108,7 +1108,7 @@ public class ShowMovieActivity extends AbstractShowActivity {
 			currentListIndex = XIJUPIAN;
 			resetGvActive();
 			String url4 = StatisticsUtils.getMovie_XijuFirstURL();
-			app.MyToast(aq.getContext(), "ll_xijupian");
+//			app.MyToast(aq.getContext(), "ll_xijupian");
 			if (lists[currentListIndex] != null
 					&& !lists[currentListIndex].isEmpty()) {
 
@@ -1123,7 +1123,7 @@ public class ShowMovieActivity extends AbstractShowActivity {
 			currentListIndex = AIQINGPIAN;
 			resetGvActive();
 			String url5 = StatisticsUtils.getMovie_AiqingFirstURL();
-			app.MyToast(aq.getContext(), "ll_aiqingpian");
+//			app.MyToast(aq.getContext(), "ll_aiqingpian");
 			if (lists[currentListIndex] != null
 					&& !lists[currentListIndex].isEmpty()) {
 
@@ -1138,7 +1138,7 @@ public class ShowMovieActivity extends AbstractShowActivity {
 			currentListIndex = XUANYIPIAN;
 			resetGvActive();
 			String url6 = StatisticsUtils.getMovie_XuanyiFirstURL();
-			app.MyToast(aq.getContext(), "ll_xuanyipian");
+//			app.MyToast(aq.getContext(), "ll_xuanyipian");
 			if (lists[currentListIndex] != null
 					&& !lists[currentListIndex].isEmpty()) {
 
@@ -1153,7 +1153,7 @@ public class ShowMovieActivity extends AbstractShowActivity {
 			currentListIndex = KONGBUPIAN;
 			resetGvActive();
 			String url7 = StatisticsUtils.getMovie_KongbuFirstURL();
-			app.MyToast(aq.getContext(), "ll_kongbupian");
+//			app.MyToast(aq.getContext(), "ll_kongbupian");
 			if (lists[currentListIndex] != null
 					&& !lists[currentListIndex].isEmpty()) {
 
@@ -1168,7 +1168,7 @@ public class ShowMovieActivity extends AbstractShowActivity {
 			currentListIndex = DONGHUAPIAN;
 			resetGvActive();
 			String url8 = StatisticsUtils.getMovie_DonghuaFirstURL();
-			app.MyToast(aq.getContext(), "ll_donghuapian");
+//			app.MyToast(aq.getContext(), "ll_donghuapian");
 			if (lists[currentListIndex] != null
 					&& !lists[currentListIndex].isEmpty()) {
 
@@ -1182,7 +1182,7 @@ public class ShowMovieActivity extends AbstractShowActivity {
 		case R.id.bt_quanbufenlei:
 			currentListIndex = QUANBUFENLEI;
 			resetGvActive();
-			app.MyToast(aq.getContext(), "bt_quanbufenlei");
+//			app.MyToast(aq.getContext(), "bt_quanbufenlei");
 			if (lists[currentListIndex] != null
 					&& !lists[currentListIndex].isEmpty()) {
 
