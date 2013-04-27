@@ -58,7 +58,13 @@ public interface ControllerOverlay {
 	void showPlaying();
 
 	void showPaused();
+	
+	void showTVPlaying();
 
+	void showTVPaused();
+	
+	void showTVReturn();
+	
 	void showEnded();
 
 	void showLoading();
@@ -75,7 +81,7 @@ public interface ControllerOverlay {
 
 	void ShowTimes();
 
-	void ControlViewGone();
+	void TVControlViewGone(boolean now);
 
 	void resetTime();
 

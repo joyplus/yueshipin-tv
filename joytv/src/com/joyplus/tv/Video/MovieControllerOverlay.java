@@ -116,6 +116,8 @@ public class MovieControllerOverlay extends FrameLayout implements
 	private AudioManager mAudioManager;
 	private ArcView mArcView;
 	private CurrentPlayData mCurrentPlayData = null;
+	
+	private boolean RETURNMODE = false;//等一会消失
 
 	public MovieControllerOverlay(Context context, View rootView) {
 		super(context);
@@ -241,7 +243,7 @@ public class MovieControllerOverlay extends FrameLayout implements
 				rootView.findViewById(R.id.textView6).setVisibility(View.GONE);
 				rootView.findViewById(R.id.textView7).setVisibility(View.GONE);
 			}
-			ControlViewGone();
+			TVControlViewGone(true);
 
 		}
 
@@ -294,12 +296,16 @@ public class MovieControllerOverlay extends FrameLayout implements
 		}
 	}
 
-	public void ControlViewGone() {
-
-		playContinueView.setVisibility(View.GONE);
-		playFavView.setVisibility(View.GONE);
-		playPreView.setVisibility(View.GONE);
-		playNextView.setVisibility(View.GONE);
+	public void TVControlViewGone(boolean now) {
+		if (now) {
+			playContinueView.setVisibility(View.GONE);
+			playFavView.setVisibility(View.GONE);
+			playPreView.setVisibility(View.GONE);
+			playNextView.setVisibility(View.GONE);
+		}
+		else {
+			RETURNMODE = true;
+		}
 
 	}
 
@@ -368,22 +374,31 @@ public class MovieControllerOverlay extends FrameLayout implements
 
 	public void showPlaying() {
 		state = State.PLAYING;
-		showMainView(mLayoutControl);
+		showMainView(playPauseReplayView);
 	}
 
 	public void showPaused() {
-		mCurrentPlayData = app.getCurrentPlayData();
-		if (mCurrentPlayData.prod_type != 1) {
-			state = State.TVRETURN;
-		} else {
-			state = State.PAUSED;
-		}
+		state = State.PAUSED;
+		showMainView(playPauseReplayView);
+	}
+
+	public void showTVPlaying() {
+		state = State.PLAYING;
+		maybeStartHiding();
+	}
+
+	public void showTVPaused() {
+		state = State.PAUSED;
+		showMainView(mLayoutControl);
+	}
+	public void showTVReturn() {
+		state = State.TVRETURN;
 		showMainView(mLayoutControl);
 	}
 
 	public void showEnded() {
 		state = State.ENDED;
-		showMainView(mLayoutControl);
+		showMainView(playPauseReplayView);
 	}
 
 	public void showLoading() {
@@ -427,8 +442,13 @@ public class MovieControllerOverlay extends FrameLayout implements
 		mLayoutControl.setVisibility(View.GONE);
 		mLayoutVolume.setVisibility(View.GONE);
 		loadingView.setVisibility(View.GONE);
+		playPauseReplayView.setVisibility(View.GONE);
 
 		background.setVisibility(View.GONE);
+		if(RETURNMODE){
+			TVControlViewGone(true);
+			RETURNMODE = false;
+		}
 		// timeBar.setVisibility(View.INVISIBLE);
 		setVisibility(View.INVISIBLE);
 		setFocusable(true);
@@ -446,8 +466,16 @@ public class MovieControllerOverlay extends FrameLayout implements
 				: View.GONE);
 		loadingView.setVisibility(mainView == loadingView ? View.VISIBLE
 				: View.GONE);
-		mLayoutControl.setVisibility(mainView == mLayoutControl ? View.VISIBLE
+		if(state == State.TVRETURN){ //tv return
+			mLayoutControl.setVisibility(mainView == mLayoutControl ? View.VISIBLE
 				: View.GONE);
+		}else{
+			mLayoutControl.setVisibility(mainView == mLayoutControl ? View.VISIBLE
+					: View.GONE);
+			playPauseReplayView
+				.setVisibility(mainView == playPauseReplayView ? View.VISIBLE
+						: View.GONE);
+		}
 		show();
 
 	}
@@ -488,9 +516,10 @@ public class MovieControllerOverlay extends FrameLayout implements
 
 	private void startHiding() {
 		// startHideAnimation(timeBar);
+
 		startHideAnimation(mLayoutControl);
 	}
-	
+
 	private void startVolumeHiding() {
 		startHideAnimation(mLayoutVolume);
 	}
@@ -548,9 +577,9 @@ public class MovieControllerOverlay extends FrameLayout implements
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if (hidden) {
-			show();
-		}
+//		if (hidden) {
+//			show();
+//		}
 		return super.onKeyDown(keyCode, event);
 	}
 
@@ -656,30 +685,29 @@ public class MovieControllerOverlay extends FrameLayout implements
 		}
 		background.setVisibility(View.VISIBLE);
 		// timeBar.setVisibility(View.VISIBLE);
-		if (mCurrentPlayData.prod_type == 1) {
-			if (state == State.PAUSED) {
-				playPauseReplayView
-						.setBackgroundResource(R.drawable.player_btn_play_play);
-			} else if (state == State.PLAYING) {
-
-				playPauseReplayView
-						.setBackgroundResource(R.drawable.player_btn_pause);
-			} 
-			// else
-			// playPauseReplayView
-			// .setBackgroundResource(R.drawable.player_btn_finish);
-		}else {
-			if (state == State.TVRETURN) {
-				returnShowView();
-			}
+		if (state == State.TVRETURN) {
+			returnShowView();
+		} else if (state == State.PAUSED) {
+			
+			playPauseReplayView
+					.setBackgroundResource(R.drawable.player_btn_play_play);
+			playPauseReplayView.setVisibility(View.VISIBLE);
+		} else if (state == State.PLAYING) {
+			
+			playPauseReplayView
+					.setBackgroundResource(R.drawable.player_btn_pause);
+			playPauseReplayView.setVisibility(View.VISIBLE);
 		}
+		// else
+		// playPauseReplayView
+		// .setBackgroundResource(R.drawable.player_btn_finish);
 
-		if (state != State.LOADING && state != State.ERROR
-				&& !(state == State.ENDED && !canReplay)) {
-			mLayoutControl.setVisibility(View.VISIBLE);
-		} else {
-			mLayoutControl.setVisibility(View.GONE);
-		}
+//		if (state != State.LOADING && state != State.ERROR
+//				&& !(state == State.ENDED && !canReplay)) {
+//			mLayoutControl.setVisibility(View.VISIBLE);
+//		} else {
+//			mLayoutControl.setVisibility(View.GONE);
+//		}
 		// mLayoutControl
 		// .setImageResource(state == State.PAUSED ?
 		// R.drawable.player_s_ic_vidcontrol_play

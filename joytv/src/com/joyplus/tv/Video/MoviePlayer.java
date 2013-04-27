@@ -94,6 +94,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 
 	private int JUMP_TIME = 0;
 	private int JUMP_TIME_TIMES = 0;// 检查是否处在快进模式中
+	private boolean RETURNMODE = false;// 检查是否处在tv的返回模式中
 	private int CURRENT_KEY = 0;
 	private int prod_type = 0;
 	private int currentKeyEvent = 0;
@@ -254,7 +255,6 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 
 	public void setVideoURI(Uri mUri, int Time) {
 		totalTime = 0;
-		mController.ControlViewGone();
 		mVideoView.setVideoURI(mUri);
 		PROD_SOURCE = mUri.toString();
 		if (Time > 0)
@@ -451,6 +451,26 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		mController.showPaused();
 	}
 
+	public void playTVVideo() {
+		mHasPaused = false;
+		mVideoView.start();
+		mController.showTVPlaying();
+
+		// setProgress();
+	}
+
+	public void pauseTVVideo() {
+		mHasPaused = true;
+		mVideoView.pause();
+		mController.showTVPaused();
+	}
+	public void returnTVVideo() {
+		mHasPaused = true;
+		mVideoView.pause();
+		mController.showTVReturn();
+	}
+	
+	
 	// Below are notifications from VideoView
 	public boolean onError(MediaPlayer player, int arg1, int arg2) {
 		mHandler.removeCallbacksAndMessages(null);
@@ -525,6 +545,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 			else
 				return true;
 		}
+
 		// Toast.makeText(mContext, Integer.toString(keyCode),100).show();
 		if (JUMP_TIME_TIMES != 0 && !isFastForwardKey(keyCode)) // 快进模式才能按的键
 			return true;
@@ -629,13 +650,24 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 					mController.hideVolume();
 					mController.show();
 				}
-				if (mVideoView.isPlaying()) {
-					pauseVideo();
-					mController.focusLayoutControl(0);
-					CURRENT_KEY = 0;
-				} else {
-					playVideo();
+				if (prod_type == 1){
+					if (mVideoView.isPlaying()) {	
+						pauseVideo();	
+						mController.focusLayoutControl(0);
+						CURRENT_KEY = 0;
+					} else {
+						playVideo();
+					}
+				}else{
+					if (mVideoView.isPlaying()) {	
+						pauseTVVideo();	
+						mController.focusLayoutControl(0);
+						CURRENT_KEY = 0;
+					} else {
+						playTVVideo();
+					}
 				}
+				
 
 			}
 
@@ -703,11 +735,12 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 				// 没有加载完就返回，bug,加到前面去了。
 //				if (totalTime <= 0)
 //					return false;
-				if (mVideoView.isPlaying()) {
-					pauseVideo();
+				RETURNMODE = true;
+//				if (mVideoView.isPlaying()) {
+					returnTVVideo();
 					mController.focusLayoutControl(0);
 					CURRENT_KEY = 0;
-				} 
+//				} 
 //				else {
 //					playVideo();
 //				}
@@ -722,7 +755,15 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 	public int getCurrentKeyEvent() {
 		return currentKeyEvent;
 	}
-
+	public boolean getCurrentReturnMode(){
+		return RETURNMODE;
+	}
+	public void exitReturnMode(){
+		if(RETURNMODE){
+			RETURNMODE = false;
+			mController.TVControlViewGone(false);//一会消失
+		}
+	}
 	private void OnMediaRewind() {
 		if (JUMP_TIME_TIMES > 1)
 			JUMP_TIME_TIMES = 1;
@@ -1057,7 +1098,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 												m_ReturnProgramView.tv.id,
 												m_ReturnProgramView.tv.name,
 												m_ReturnProgramView.tv.episodes[index].name,
-												2);
+												mCurrentPlayData.prod_type);
 
 								break;
 							}
@@ -1152,7 +1193,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 												m_ReturnProgramView.tv.id,
 												m_ReturnProgramView.tv.name,
 												m_ReturnProgramView.tv.episodes[index].name,
-												2);
+												mCurrentPlayData.prod_type);
 
 								break;
 							}
