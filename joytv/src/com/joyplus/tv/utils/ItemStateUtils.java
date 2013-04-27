@@ -339,28 +339,28 @@ public class ItemStateUtils implements JieMianConstant{
 	}
 	
 	
-//	public static void dingButtonToFocusState(Button button, Context context) {
-//		
-//		button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_dig_active, 0, 0,0);
-//		button.setTextColor(context.getResources().getColorStateList(R.color.ding_selector));
-//	}
-//	
-//	public static void shoucangButtonToFocusState(Button button, Context context) {
-//		
-//		button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_fav_active, 0, 0,0);
-//		button.setTextColor(context.getResources().getColorStateList(R.color.ding_selector));
-//	}
-//	
-//	public static void dingButtonToNormalState(Button button, Context context) {
-//		
-//		button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_dig_active, 0, 0,0);
-//		button.setTextColor(context.getResources().getColorStateList(R.color.ding_selector));
-//	}
-//	
-//	public static void shoucangButtonToFocusState(Button button, Context context) {
-//		
-//		button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_fav_active, 0, 0,0);
-//		button.setTextColor(context.getResources().getColorStateList(R.color.ding_selector));
-//	}
+	public static void dingButtonToFocusState(Button button, Context context) {
+		
+		button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_dig_active, 0, 0,0);
+		button.setTextColor(context.getResources().getColorStateList(R.color.ding_selector));
+	}
+	
+	public static void shoucangButtonToFocusState(Button button, Context context) {
+		
+		button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_fav_active, 0, 0,0);
+		button.setTextColor(context.getResources().getColorStateList(R.color.ding_selector));
+	}
+	
+	public static void dingButtonToNormalState(Button button, Context context) {
+		
+		button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_dig_normal, 0, 0,0);
+		button.setTextColor(context.getResources().getColorStateList(R.color.ding_selector));
+	}
+	
+	public static void shoucangButtonToNormalState(Button button, Context context) {
+		
+		button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_dig_normal, 0, 0,0);
+		button.setTextColor(context.getResources().getColorStateList(R.color.ding_selector));
+	}
 
 }
