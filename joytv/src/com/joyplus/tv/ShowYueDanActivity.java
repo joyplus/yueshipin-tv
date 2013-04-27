@@ -147,6 +147,17 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 		}
 		return super.onKeyDown(keyCode, event);
 	}
+	
+	@Override
+	public boolean onKeyUp(int keyCode, KeyEvent event) {
+		// TODO Auto-generated method stub
+		
+		if(!isOnKeyActive) {
+			
+			return true;
+		}
+		return super.onKeyUp(keyCode, event);
+	}
 
 	@Override
 	public boolean onKey(View v, int keyCode, KeyEvent event) {
