@@ -230,7 +230,36 @@ public class MovieControllerOverlay extends FrameLayout implements
 				TextView mViewSrc = (TextView) rootView
 						.findViewById(R.id.textView9);
 				;
-				mViewSrc.setText(mCurrentPlayData.prod_src);
+				/*
+				 * "wangpan","le_tv_fee","letv",
+	"fengxing","qiyi","youku","sinahd","sohu","56","qq","pptv","m1905"
+				 */
+				String strSrc = mCurrentPlayData.prod_src;
+				if(mCurrentPlayData.prod_src.equalsIgnoreCase("wangpan"))
+					strSrc = "PPTV";
+				else if(mCurrentPlayData.prod_src.equalsIgnoreCase("le_tv_fee"))
+					strSrc = "乐视";
+				else if(mCurrentPlayData.prod_src.equalsIgnoreCase("letv"))
+					strSrc = "乐视";
+				else if(mCurrentPlayData.prod_src.equalsIgnoreCase("fengxing"))
+					strSrc = "风行";
+				else if(mCurrentPlayData.prod_src.equalsIgnoreCase("qiyi"))
+					strSrc = "爱奇艺";
+				else if(mCurrentPlayData.prod_src.equalsIgnoreCase("youku"))
+					strSrc = "优酷";
+				else if(mCurrentPlayData.prod_src.equalsIgnoreCase("sinahd"))
+					strSrc = "新浪视频";
+				else if(mCurrentPlayData.prod_src.equalsIgnoreCase("sohu"))
+					strSrc = "搜狐视频";
+//				else if(mCurrentPlayData.prod_src.equalsIgnoreCase("56"))
+//					strSrc = "网盘";
+				else if(mCurrentPlayData.prod_src.equalsIgnoreCase("qq"))
+					strSrc = "腾讯视频";
+				else if(mCurrentPlayData.prod_src.equalsIgnoreCase("pptv"))
+					strSrc = "PPTV";
+				else if(mCurrentPlayData.prod_src.equalsIgnoreCase("m1905"))
+					strSrc = "电影网";
+				mViewSrc.setText(strSrc);
 			}
 			ImageView mImageSrc = (ImageView) rootView
 					.findViewById(R.id.imageView1);
