@@ -187,8 +187,7 @@ public class YueDanAdapter extends BaseAdapter implements JieMianConstant{
 					String curEpisode = movieList.get(position).getMovieCurEpisode();
 					if(curEpisode != null && !curEpisode.equals("")) {
 						
-						viewItemHodler.otherInfo.setText(context.getString(R.string.zongyi_gengxinzhi) + 
-								movieList.get(position).getMovieCurEpisode());
+						viewItemHodler.otherInfo.setText(StatisticsUtils.formateZongyi(curEpisode, context));
 					}
 				}
 			}
