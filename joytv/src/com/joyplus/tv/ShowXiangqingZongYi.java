@@ -690,7 +690,7 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 	
 	private void updateView(){
 		
-		String strNum = date.tv.favority_num;
+		String strNum = date.show.favority_num;
 		
 		if(strNum != null && !strNum.equals("")){
 			

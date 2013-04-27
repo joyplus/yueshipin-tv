@@ -5,9 +5,9 @@ import android.os.Environment;
 public class Constant {
 
 	// 正式环境
-//	public static final String BASE_URL = "http://api.joyplus.tv/joyplus-service/index.php/";
-//	public static String DEFAULT_APPKEY = "ijoyplus_android_0001";
-//	public static String APPKEY = "ijoyplus_android_0001";
+	public static final String BASE_URL = "http://api.joyplus.tv/joyplus-service/index.php/";
+	public static String DEFAULT_APPKEY = "ijoyplus_android_0001";
+	public static String APPKEY = "ijoyplus_android_0001";
 
 	/*
 	 * test:
@@ -26,10 +26,10 @@ IOS: ijoyplusios001bj
 2：cms cms-test.yue001.com/manager/index.php
 
 	 */
-	public static boolean TestEnv = true;
-	public static final String BASE_URL = "http://apitest.yue001.com/joyplus-service/index.php/";
-	public static String DEFAULT_APPKEY = "ijoyplus_android_0001bj";
-	public static String APPKEY = "ijoyplus_android_0001bj";
+	public static boolean TestEnv = false;
+//	public static final String BASE_URL = "http://apitest.yue001.com/joyplus-service/index.php/";
+//	public static String DEFAULT_APPKEY = "ijoyplus_android_0001bj";
+//	public static String APPKEY = "ijoyplus_android_0001bj";
 
 	public static final String USER_AGENT_IOS = 
 			"Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_0 like Mac OS X; en-us) AppleWebKit/532.9 (KHTML, like Gecko) Version/4.0.5 Mobile/8A293 Safari/6531.22.7";
@@ -57,10 +57,10 @@ IOS: ijoyplusios001bj
 //	public static String Parse_ClientKey = "Y2lKxqco7mN3qBmZ05S8jxSP8nhN92hSN4OHDZR8";
 	
 	//faye 相关（二维码扫描）
-	public static final String FAYESERVERURL = "http://comettest.joyplus.tv:8000/bindtv";//测试
-//	public static final String FAYESERVERURL = "http://comet.joyplus.tv:8080/bindtv";
-	public static final String FAYESERVERURL_CHECKBAND = "http://comettest.joyplus.tv:8000/api/check_binding";//测试
-//	public static final String FAYESERVERURL_CHECKBAND = "http://comet.joyplus.tv:8080/api/check_binding";
+//	public static final String FAYESERVERURL = "http://comettest.joyplus.tv:8000/bindtv";//测试
+	public static final String FAYESERVERURL = "http://comet.joyplus.tv:8080/bindtv";
+//	public static final String FAYESERVERURL_CHECKBAND = "http://comettest.joyplus.tv:8000/api/check_binding";//测试
+	public static final String FAYESERVERURL_CHECKBAND = "http://comet.joyplus.tv:8080/api/check_binding";
 	public static final String FAYECHANNEL_TV_BASE = "/screencast/CHANNEL_TV_";
 	public static final String FAYECHANNEL_TV_HEAD = "/screencast/";
 	public static final String FAYECHANNEL_MOBILE_BASE = "/screencast/CHANNEL_MOBILE_";

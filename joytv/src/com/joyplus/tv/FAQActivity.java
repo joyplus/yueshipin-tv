@@ -26,7 +26,7 @@ public class FAQActivity extends Activity {
 		webView.getSettings().setEnableSmoothTransition(true);
 		webView.setBackgroundColor(Color.TRANSPARENT);
 //		webView.
-		webView.loadUrl("http://www.joyplus.tv/faq-tv");
+		webView.loadUrl("http://www.joyplus.tv/faq-tv?"+System.currentTimeMillis());
 //		webView.loadUrl("http://apitest.yue001.com/joyplus-service/index.php/tv_net_top?app_key=ijoyplus_android_0001bj&page_num=1&page_size=1000");
 	}
 	
