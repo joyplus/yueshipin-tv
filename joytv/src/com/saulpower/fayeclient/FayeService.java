@@ -12,13 +12,13 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Handler;
 import android.os.IBinder;
-import android.util.Log;
 
 import com.joyplus.tv.App;
 import com.joyplus.tv.Constant;
 import com.joyplus.tv.StatisticsUtils;
 import com.joyplus.tv.Adapters.CurrentPlayData;
 import com.joyplus.tv.Video.VideoPlayerActivity;
+import com.joyplus.tv.utils.Log;
 import com.saulpower.fayeclient.FayeClient.FayeListener;
 
 public class FayeService extends Service implements FayeListener{
@@ -26,17 +26,21 @@ public class FayeService extends Service implements FayeListener{
 	private static final String TAG = "FayeService";
 	
 	public static final String ACTION_SEND_UNBAND = "chennel_send_unBand_message";
+	public static final String ACTION_M_APPEAR = "erweima_appear";
+	public static final String ACTION_M_DISAPPEAR = "erweima_disappear";
 	public static final String ACTION_RECIVEACTION_BAND = "chennel_receive_message_band";
 	public static final String ACTION_RECIVEACTION_UNBAND = "chennel_receive_message_unband";
 	
 	private String serverUrl;
 	private String channel;
 //	private String phoneChannel;
-//	private SharedPreferences preferences;
+//	private SharedPreferences preferences; 
 	private FayeClient myClient;
 //	private FayeClient phoneClient;
 	private BroadcastReceiver receiver;
 	private Handler handler = new Handler();
+	private boolean isConnected = false;
+	private boolean isErweimaAppear = false;
 	private App app;
 
 	@Override
@@ -49,10 +53,13 @@ public class FayeService extends Service implements FayeListener{
 //		preferences = getSharedPreferences("userIdDate",0);
 		app = (App) getApplication();
 		IntentFilter filter = new IntentFilter(ACTION_SEND_UNBAND);
+		filter.addAction(ACTION_M_APPEAR);
+		filter.addAction(ACTION_M_DISAPPEAR);
 		receiver = new BroadcastReceiver(){
 			@Override
 	        public void onReceive(Context context, Intent intent) {
 	                // TODO Auto-generated method stub
+				Log.d(TAG, intent.getAction());
 	        	if(ACTION_SEND_UNBAND.equals(intent.getAction())){
 //	        		String date = intent.getStringExtra("date");
 	        		try {
@@ -61,10 +68,26 @@ public class FayeService extends Service implements FayeListener{
 						unBandObj.put("push_type","33");
 						unBandObj.put("user_id", app.getUserData("phoneID"));
 						myClient.sendMessage(unBandObj);
+						myClient.disconnectFromServer();
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+	        	}else if(ACTION_M_APPEAR.equals(intent.getAction())){
+	        		//二维码出现啦
+//	        		if(app.getUserData("isBand")!=null&&"1".equals(app.getUserData("isBand"))){
+//	        			Log.d(TAG, "band =  true connect------------"+app.getUserData("isBand"));
+	        		isErweimaAppear = true;	
+	        		myClient.connectToServer(null);
+//	        		}
+	        	}else if(ACTION_M_DISAPPEAR.equals(intent.getAction())){
+	        		//二维码消失啦
+	        		isErweimaAppear = false;
+	        		if(app.getUserData("isBand")!=null||"0".equals(app.getUserData("isBand"))){
+	        			if(isConnected){
+	        				myClient.disconnectFromServer();
+	        			}
+	        		}
 	        	}
 	                
 	        }
@@ -92,8 +115,10 @@ public class FayeService extends Service implements FayeListener{
 		URI url = URI.create(serverUrl);
 		myClient = new FayeClient(handler, url, channel);
 		myClient.setFayeListener(this);
-		myClient.connectToServer(null);
-		return super.onStartCommand(intent, flags, START_STICKY);
+		if(app.getUserData("isBand")!=null&&"1".equals(app.getUserData("isBand"))){
+			myClient.connectToServer(null);
+		}
+		return super.onStartCommand(intent, flags, START_STICKY); 
 	}
 
 
@@ -110,14 +135,20 @@ public class FayeService extends Service implements FayeListener{
 	public void connectedToServer() {
 		// TODO Auto-generated method stub
 		Log.d(TAG, "server connected----->");
-		
+		isConnected = true;
+//		if(app.getUserData("isBand")==null||"0".equals(app.getUserData("isBand"))){
+//			myClient.disconnectFromServer();
+//		}
 	}
 
 	@Override
 	public void disconnectedFromServer() {
 		// TODO Auto-generated method stub
-		Log.w(TAG, "server disconnected!----->"); 
-		myClient.connectToServer(null);
+		Log.w(TAG, "server disconnected!----->");
+		isConnected = false;
+		if((app.getUserData("isBand")!=null&&"1".equals(app.getUserData("isBand")))||isErweimaAppear){
+			myClient.connectToServer(null);
+		}
 	}
 
 	@Override
@@ -228,6 +259,9 @@ public class FayeService extends Service implements FayeListener{
 					Log.d(TAG, "send broadCast");
 					Intent unbandIntent = new Intent(ACTION_RECIVEACTION_UNBAND);
 					sendBroadcast(unbandIntent);
+					if(!isErweimaAppear){
+						myClient.disconnectFromServer();
+					}
 				}
 				break;
 			case 411:

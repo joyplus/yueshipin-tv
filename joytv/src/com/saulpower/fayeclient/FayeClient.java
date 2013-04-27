@@ -27,7 +27,8 @@
 package com.saulpower.fayeclient;
 
 import android.os.Handler;
-import android.util.Log;
+
+import com.joyplus.tv.utils.Log;
 import com.saulpower.fayeclient.WebSocketClient.Listener;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -64,7 +65,7 @@ public class FayeClient implements Listener {
     private static final String VALUE_CONN_TYPE         = "websocket";
 
     private static final long RECONNECT_WAIT            = 10000;
-    private static final int MAX_CONNECTION_ATTEMPTS    = 3;
+    private static final int MAX_CONNECTION_ATTEMPTS    = 0;
 
     private WebSocketClient mClient;
     private boolean mConnected = false;
@@ -87,10 +88,11 @@ public class FayeClient implements Listener {
 
             if (!mConnected) {
 
-                openWebSocketConnection();
+                
 
                 if (mConnectionAttempts < MAX_CONNECTION_ATTEMPTS) {
                     mConnectionAttempts++;
+                    openWebSocketConnection();
                     getHandler().postDelayed(this, RECONNECT_WAIT);
                 }
 

@@ -13,7 +13,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,6 +44,7 @@ import com.joyplus.tv.Video.VideoPlayerActivity;
 import com.joyplus.tv.entity.HotItemInfo;
 import com.joyplus.tv.ui.NavigateView;
 import com.joyplus.tv.ui.NavigateView.OnResultListener;
+import com.joyplus.tv.utils.Log;
 
 public class ShowShoucangHistoryActivity extends Activity implements OnClickListener, OnItemSelectedListener {
 	private static final String TAG = "ShowShoucangHistoryActivity";
@@ -682,8 +682,12 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		aq.id(R.id.iv_head_user_icon).image(app.getUserInfo().getUserAvatarUrl(),false,true,0,R.drawable.avatar_defult);
-		aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
+		if(app.getUserInfo()!=null){
+			aq.id(R.id.iv_head_user_icon).image(
+					app.getUserInfo().getUserAvatarUrl(), false, true, 0,
+					R.drawable.avatar_defult);
+			aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
+		}
 	}
 	
 	class ViewHolder{

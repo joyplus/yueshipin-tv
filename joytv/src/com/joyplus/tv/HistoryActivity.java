@@ -13,7 +13,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -37,6 +36,7 @@ import com.joyplus.tv.Adapters.CurrentPlayData;
 import com.joyplus.tv.Service.Return.ReturnUserPlayHistories;
 import com.joyplus.tv.Video.VideoPlayerActivity;
 import com.joyplus.tv.entity.HotItemInfo;
+import com.joyplus.tv.utils.Log;
 
 public class HistoryActivity extends Activity implements OnClickListener, OnItemSelectedListener {
 	private static final String TAG = "HistoryActivity";
@@ -671,8 +671,12 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		aq.id(R.id.iv_head_user_icon).image(app.getUserInfo().getUserAvatarUrl(),false,true,0,R.drawable.avatar_defult);
-		aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
+		if(app.getUserInfo()!=null){
+			aq.id(R.id.iv_head_user_icon).image(
+					app.getUserInfo().getUserAvatarUrl(), false, true, 0,
+					R.drawable.avatar_defult);
+			aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
+		}
 	}
 	
 	

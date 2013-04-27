@@ -13,7 +13,6 @@ import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -36,6 +35,7 @@ import com.joyplus.tv.entity.MovieItemData;
 import com.joyplus.tv.ui.MyMovieGridView;
 import com.joyplus.tv.ui.WaitingDialog;
 import com.joyplus.tv.utils.ItemStateUtils;
+import com.joyplus.tv.utils.Log;
 
 public class ShowYueDanActivity extends AbstractShowActivity {
 
@@ -154,10 +154,12 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		aq.id(R.id.iv_head_user_icon).image(
-				app.getUserInfo().getUserAvatarUrl(), false, true, 0,
-				R.drawable.avatar_defult);
-		aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
+		if(app.getUserInfo()!=null){
+			aq.id(R.id.iv_head_user_icon).image(
+					app.getUserInfo().getUserAvatarUrl(), false, true, 0,
+					R.drawable.avatar_defult);
+			aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
+		}
 	}
 
 	@Override

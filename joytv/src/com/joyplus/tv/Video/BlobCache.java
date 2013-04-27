@@ -74,7 +74,8 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.zip.Adler32;
 
-import android.util.Log;
+import com.joyplus.tv.utils.Log;
+
 
 public class BlobCache implements Closeable {
 	private static final String TAG = "BlobCache";

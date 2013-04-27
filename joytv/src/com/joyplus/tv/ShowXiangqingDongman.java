@@ -16,7 +16,6 @@ import android.content.Intent;
 import android.content.DialogInterface.OnCancelListener;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -44,6 +43,7 @@ import com.joyplus.tv.Service.Return.ReturnProgramView.DOWN_URLS;
 import com.joyplus.tv.Video.VideoPlayerActivity;
 import com.joyplus.tv.ui.WaitingDialog;
 import com.joyplus.tv.utils.DefinationComparatorIndex;
+import com.joyplus.tv.utils.Log;
 import com.joyplus.tv.utils.MyKeyEventKey;
 import com.joyplus.tv.utils.SouceComparatorIndex1;
 import com.joyplus.tv.utils.URLS_INDEX;
@@ -265,8 +265,12 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		aq.id(R.id.iv_head_user_icon).image(app.getUserInfo().getUserAvatarUrl(),false,true,0,R.drawable.avatar_defult);
-		aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
+		if(app.getUserInfo()!=null){
+			aq.id(R.id.iv_head_user_icon).image(
+					app.getUserInfo().getUserAvatarUrl(), false, true, 0,
+					R.drawable.avatar_defult);
+			aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
+		}
 	}
 
 	@Override
@@ -311,9 +315,11 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 				seletedButtonIndex = 1;
 				Button b = (Button) table.findViewById(1);
 				seletedIndexButton = b;
-				b.setBackgroundResource(R.drawable.bg_button_tv_selector_1);
-				b.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector_1));
-				b.setPadding(8, 0, 0, 0);
+				if(b!=null){
+					b.setBackgroundResource(R.drawable.bg_button_tv_selector_1);
+					b.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector_1));
+					b.setPadding(8, 0, 0, 0);
+				}
 				play(0);
 			}else{
 				play(seletedButtonIndex-1);
@@ -800,6 +806,9 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 	}
 	
 	private void play(int index){
+		if(num<=index){
+			return;
+		}
 		CurrentPlayData playDate = new CurrentPlayData();
 		Intent intent = new Intent(this,VideoPlayerActivity.class);
 		playDate.prod_id = prod_id;

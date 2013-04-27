@@ -16,7 +16,6 @@ import android.app.Instrumentation;
 import android.content.Context;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
@@ -34,6 +33,7 @@ import com.joyplus.tv.entity.MovieItemData;
 import com.joyplus.tv.entity.ReturnFilterMovieSearch;
 import com.joyplus.tv.utils.BangDanKey;
 import com.joyplus.tv.utils.JieMianConstant;
+import com.joyplus.tv.utils.Log;
 
 public class StatisticsUtils implements JieMianConstant,BangDanKey{
 

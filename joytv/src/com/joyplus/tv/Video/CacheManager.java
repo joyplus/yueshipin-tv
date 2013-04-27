@@ -20,10 +20,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 
+import com.joyplus.tv.utils.Log;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 public class CacheManager {
 	private static final String TAG = "CacheManager";

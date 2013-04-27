@@ -1,9 +1,10 @@
 package com.joyplus.tv.ui;
 
+import com.joyplus.tv.utils.Log;
+
 import android.content.Context;
 import android.os.Handler;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup.MarginLayoutParams;
