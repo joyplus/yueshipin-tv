@@ -666,18 +666,81 @@ public class StatisticsUtils implements JieMianConstant,BangDanKey{
 		return durationValue;
 	}
 	
+	
 	public static String formatMovieDuration(String duration) {
 		
-		int index = duration.indexOf("：");
-		
-		if(index == -1) {
+		if(duration != null && !duration.equals("")) {
 			
-			return duration + "分钟";
-		} else {
+			int indexFenZhong = duration.indexOf("分钟");
 			
-			String str = duration.substring(0, index);
-			return str + "分钟";
+			if(indexFenZhong != -1) {
+				
+				duration = duration.replaceAll("分钟", "");
+			}
+			
+			int indexFen = duration.indexOf("分");
+			
+			if(indexFen != -1) {
+				
+				duration = duration.replaceAll("分", "");
+			}
+			
+			String[] strs = duration.split("：");
+			
+			if(strs.length == 1) {
+				
+				strs = duration.split(":");
+			}
+			
+			if(strs.length == 1) {
+				
+				return duration + "分钟";
+			} else if(strs.length == 2){
+				
+				return strs[0] + "分钟";
+			} else if(strs.length == 3) {
+				
+				String hourStr = strs[0];
+				String minuteStr = strs[1];
+				
+				if(hourStr != null && !hourStr.equals("")) {
+					
+					int hour = Integer.valueOf(hourStr);
+					
+					if(minuteStr != null && !hourStr.equals("")){
+						
+						int minute = Integer.valueOf(minuteStr);
+						
+						if(hour != 0) {
+							
+							return (hour * 60 + minute) +"分钟";
+						} else {
+							
+							if(minute != 0) {
+								
+								return minute + "分钟";
+							}
+						}
+						
+					}
+				} else {
+					
+					if(minuteStr != null && !hourStr.equals("")){
+						
+						int minute = Integer.valueOf(minuteStr);
+						
+						if(minute != 0) {
+							
+							return minute + "分钟";
+						}
+					}
+				}
+			}
+			
 		}
+		
+
+		return "";
 
 	}
 	

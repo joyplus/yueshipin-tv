@@ -952,7 +952,8 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 //				holder.content.setText("时长未知");
 			}else{
 //				holder.content.setText("时长："+hot_list.get(position).duration);
-				holder.content.setText("时长:"+recommendMoviesData.items[position].duration.replace("：00", "分钟"));
+//				holder.content.setText("时长:"+recommendMoviesData.items[position].duration.replace("：00", "分钟"));
+				holder.content.setText(StatisticsUtils.formatMovieDuration(recommendMoviesData.items[position].duration ));
 			}
 			holder.score.setText(recommendMoviesData.items[position].score);
 			switch (Integer.valueOf(recommendMoviesData.items[position].definition)) {

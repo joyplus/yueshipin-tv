@@ -94,7 +94,8 @@ public class MainHotItemAdapter extends BaseAdapter {
 //					holder.content.setText("时长未知");
 				}else{
 //					holder.content.setText("时长："+hot_list.get(position).duration);
-					holder.content.setText("时长:"+hot_list.get(position).duration.replace("：00", "分钟"));
+//					holder.content.setText("时长:"+hot_list.get(position).duration.replace("：00", "分钟"));
+					holder.content.setText(StatisticsUtils.formatMovieDuration(hot_list.get(position).duration));
 				}
 				break;
 			case 2:
