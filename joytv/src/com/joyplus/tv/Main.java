@@ -719,6 +719,9 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 					public void run() {
 						// TODO Auto-generated method stub
 						Log.d(TAG, "index = " + arg2 + "lengh = " +  hot_contentViews.size());
+						if(titleGroup.getSelectedTitleIndex()!=1){
+							return;
+						}
 						contentLayout.removeAllViews();
 						View hotView = hot_contentViews.get(arg2);
 						hotView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
@@ -758,7 +761,9 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 						@Override
 						public void run() {
 							// TODO Auto-generated method stub
-							
+							if(titleGroup.getSelectedTitleIndex()!=2){
+								return;
+							}
 							contentLayout.removeAllViews();
 							if(arg2<yuedan_contentViews.size()){
 								View yeuDanView = yuedan_contentViews.get(arg2);
@@ -773,9 +778,9 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 						}
 					}),300);
 				}else{
-					if(gallery1.getSelectedItemPosition()==6){
+					if(gallery1.getSelectedItemPosition()==yuedan_list.size()-2){
 						highlightImageView.setImageResource(R.drawable.more_movie_active);
-					}else if(gallery1.getSelectedItemPosition()==7){
+					}else if(gallery1.getSelectedItemPosition()==yuedan_list.size()-1){
 						highlightImageView.setImageResource(R.drawable.more_episode_active);
 					}else {
 						ImageView img2 = (ImageView) gallery1.findViewWithTag(yuedan_list.get(gallery1.getSelectedItemPosition()).pic_url);
@@ -796,7 +801,9 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 						@Override
 						public void run() {
 							// TODO Auto-generated method stub
-							
+							if(titleGroup.getSelectedTitleIndex()!=2){
+								return;
+							}
 							contentLayout.removeAllViews();
 							if(arg2<yuedan_contentViews.size()){
 								View yeuDanView = yuedan_contentViews.get(arg2);
@@ -989,7 +996,7 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 	            } 
 	        return true; 
 		}
-		return false;
+		return super.onKeyDown(keyCode, event);
 	}
 	
 	@Override

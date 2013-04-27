@@ -74,6 +74,21 @@
 		                        android:id="@+id/user_notice"/>
 		                </LinearLayout>
 		            </LinearLayout>
+		             <ImageView android:layout_width="fill_parent"
+		                android:layout_height="1px"
+		                android:background="@drawable/line"/>
+		            <TextView android:layout_width="fill_parent"
+		                android:layout_height="0dp"
+		                android:id="@+id/faq_layout"
+		                 android:background="@drawable/historty_listitem_drawable_selector"
+		                android:layout_weight="1"
+		                android:gravity="center_vertical"
+		                android:focusable="true"
+		                android:focusableInTouchMode="true"
+		                android:textColor="@color/hot_content_notice"
+		                android:paddingLeft="15dp"
+		                android:textSize="25sp"
+		                android:text="常见问题"/>
 		            <ImageView android:layout_width="fill_parent"
 		                android:layout_height="1px"
 		                android:background="@drawable/line"/>

@@ -21,7 +21,7 @@ import android.widget.TextView;
 public class SettingActivity extends Activity implements OnClickListener {
 	
 	private LinearLayout unbandLayout;
-	private TextView aboutLayout,declarationLayout;
+	private TextView aboutLayout,declarationLayout,faqLayout;
 	private App app;
 	private AQuery aq;
 	private BroadcastReceiver receiver = new BroadcastReceiver(){
@@ -44,11 +44,13 @@ public class SettingActivity extends Activity implements OnClickListener {
 		unbandLayout = (LinearLayout) findViewById(R.id.bandLayout);
 		aboutLayout = (TextView) findViewById(R.id.about_layout);
 		declarationLayout = (TextView) findViewById(R.id.declaration_layout);
+		faqLayout = (TextView) findViewById(R.id.faq_layout);
 		app = (App) getApplication();
 		aq = new AQuery(this);
 		unbandLayout.setOnClickListener(this);
 		aboutLayout.setOnClickListener(this);
 		declarationLayout.setOnClickListener(this);
+		faqLayout.setOnClickListener(this);
 		IntentFilter filter = new IntentFilter(Main.ACTION_USERUPDATE);
 		registerReceiver(receiver, filter);
 	}
@@ -63,6 +65,10 @@ public class SettingActivity extends Activity implements OnClickListener {
 		case R.id.declaration_layout:
 			Intent intentDeclaration = new Intent(this,DeclarationActivity.class);
 			startActivity(intentDeclaration);
+			break;
+		case R.id.faq_layout:
+			Intent intentFaq = new Intent(this,FAQActivity.class);
+			startActivity(intentFaq);
 			break;
 		case R.id.bandLayout:
 			if(!app.getUserInfo().getUserId().equals(app.getUserData("userId"))){
