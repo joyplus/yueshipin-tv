@@ -222,7 +222,7 @@ public class MovieControllerOverlay extends FrameLayout implements
 		playPauseReplayView.setBackgroundResource(R.drawable.player_btn_pause);
 		if (mCurrentPlayData != null) {
 			Integer bookmark = mBookmarker.getBookmark(Uri
-					.parse(mCurrentPlayData.prod_src));
+					.parse(mCurrentPlayData.prod_url));
 			TextView mViewTime = (TextView) rootView
 					.findViewById(R.id.textView7);
 			if (mCurrentPlayData.prod_time != 0L) {
