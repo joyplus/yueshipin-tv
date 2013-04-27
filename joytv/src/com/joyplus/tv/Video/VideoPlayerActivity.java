@@ -49,6 +49,7 @@ import com.androidquery.callback.AjaxStatus;
 import com.joyplus.tv.App;
 import com.joyplus.tv.Constant;
 import com.joyplus.tv.R;
+import com.joyplus.tv.StatisticsUtils;
 import com.joyplus.tv.Adapters.CurrentPlayData;
 import com.joyplus.tv.Service.Return.ReturnProgramView;
 import com.umeng.analytics.MobclickAgent;
@@ -57,7 +58,7 @@ import com.umeng.analytics.MobclickAgent;
  * This activity plays a video from a specified URI.
  */
 public class VideoPlayerActivity extends Activity {
-	@SuppressWarnings("unused")         
+	@SuppressWarnings("unused")
 	private static final String TAG = "MovieActivity";
 
 	private MoviePlayer mPlayer;
@@ -111,6 +112,7 @@ public class VideoPlayerActivity extends Activity {
 					aq.id(R.id.imageControl_r).gone();
 
 			}
+			SaveRecordToService();
 			// else {
 			// aq.id(R.id.imageControl_r).getView().setVisibility(View.)
 			// aq.id(R.id.imageControl_t).v
@@ -125,8 +127,8 @@ public class VideoPlayerActivity extends Activity {
 		((TextView) findViewById(R.id.textView1)).setText(prod_name);
 		mFinishOnCompletion = intent.getBooleanExtra(
 				MediaStore.EXTRA_FINISH_ON_COMPLETION, true);
-		mPlayer = new MoviePlayer(rootView, this, mTime, prod_type,
-				mUri, savedInstanceState, !mFinishOnCompletion) {
+		mPlayer = new MoviePlayer(rootView, this, mTime, prod_type, mUri,
+				savedInstanceState, !mFinishOnCompletion) {
 			@Override
 			public void onCompletion() {
 				if (mFinishOnCompletion) {
@@ -162,13 +164,11 @@ public class VideoPlayerActivity extends Activity {
 				int mCMD = intent.getIntExtra("cmd", 0);
 				String mContent = intent.getStringExtra("content");
 				String mProd_url = intent.getStringExtra("prod_url");
-				if(!mProd_url.equalsIgnoreCase(mPlayer.getCurrentUrl()))
+				if (!mProd_url.equalsIgnoreCase(mPlayer.getCurrentUrl()))
 					return;
 				/*
-				 * “403”：视频推送后，手机发送播放指令。
-“405”：视频推送后，手机发送暂停指令。
-“407”：视频推送后，手机发送快进指令。
-“409”：视频推送后，手机发送后退指令。
+				 * “403”：视频推送后，手机发送播放指令。 “405”：视频推送后，手机发送暂停指令。
+				 * “407”：视频推送后，手机发送快进指令。 “409”：视频推送后，手机发送后退指令。
 				 */
 				switch (mCMD) {
 				case 403:
@@ -180,10 +180,10 @@ public class VideoPlayerActivity extends Activity {
 						mPlayer.pauseVideo();
 					break;
 				case 407:
-				
-					if(Integer.parseInt(mContent) <= mPlayer.getDuration()){
-						if(mPlayer.getDuration() - Integer.parseInt(mContent) <10000 && 
-								mCurrentPlayData.prod_type != 1)// 下一集
+
+					if (Integer.parseInt(mContent) <= mPlayer.getDuration()) {
+						if (mPlayer.getDuration() - Integer.parseInt(mContent) < 10000
+								&& mCurrentPlayData.prod_type != 1)// 下一集
 							mPlayer.OnContinueVideoPlay();
 						else
 							mPlayer.onSeekMove(Integer.parseInt(mContent));
@@ -221,33 +221,42 @@ public class VideoPlayerActivity extends Activity {
 	}
 
 	public void OnClickPause(View v) {
-		if(prod_type != 1  && mPlayer.getCurrentKeyEvent() == KeyEvent.KEYCODE_BACK)
+		if (prod_type != 1
+				&& mPlayer.getCurrentKeyEvent() == KeyEvent.KEYCODE_BACK
+				&& mPlayer.getCurrentReturnMode())
 			finish();
-		else if (mPlayer.isPause())
-			mPlayer.playVideo();
-		else
-			mPlayer.pauseVideo();
+		else {
+			if (mPlayer.isPause())
+				mPlayer.playVideo();
+			else
+				mPlayer.pauseVideo();
+		}
 	}
 
 	public void OnClickPre(View v) {
 		if (mPlayer != null) {
+			mPlayer.exitReturnMode();
 			mPlayer.OnPreVideoPlay();
 		}
 	}
 
 	public void OnClickContinue(View v) {
-		if (mPlayer.isPause())
-			mPlayer.playVideo();
+		if (mPlayer.isPause()) {
+			mPlayer.exitReturnMode();
+			mPlayer.playTVVideo();
+		}
 	}
 
 	public void OnClickNext(View v) {
 		if (mPlayer != null) {
+			mPlayer.exitReturnMode();
 			mPlayer.OnContinueVideoPlay();
 		}
 	}
 
 	public void OnClickFav(View v) {
-		if(!mCurrentPlayData.prod_favority){
+		mPlayer.exitReturnMode();
+		if (!mCurrentPlayData.prod_favority) {
 			String url = Constant.BASE_URL + "program/favority";
 
 			Map<String, Object> params = new HashMap<String, Object>();
@@ -259,7 +268,7 @@ public class VideoPlayerActivity extends Activity {
 			cb.params(params).url(url).type(JSONObject.class)
 					.weakHandler(this, "CallServiceFavorityResult");
 			aq.ajax(cb);
-		}else{//取消收藏
+		} else {// 取消收藏
 			String url = Constant.BASE_URL + "program/unfavority";
 
 			Map<String, Object> params = new HashMap<String, Object>();
@@ -274,6 +283,7 @@ public class VideoPlayerActivity extends Activity {
 			aq.ajax(cb);
 		}
 	}
+
 	public void CallServiceFavorityResult(String url, JSONObject json,
 			AjaxStatus status) {
 
@@ -298,6 +308,7 @@ public class VideoPlayerActivity extends Activity {
 		}
 
 	}
+
 	public void UnfavorityResult(String url, JSONObject json, AjaxStatus status) {
 		if (json != null) {
 			try {
@@ -321,6 +332,7 @@ public class VideoPlayerActivity extends Activity {
 						getResources().getString(R.string.networknotwork));
 		}
 	}
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
@@ -377,7 +389,7 @@ public class VideoPlayerActivity extends Activity {
 			 * 获取当前播放时间和总时间,将播放时间和总时间放在服务器上
 			 */
 			SaveToServer(mPlayer.getCurrentPositon() / 1000,
-					mPlayer.getDuration()/1000);
+					mPlayer.getDuration() / 1000);
 
 		}
 		super.onPause();
@@ -476,6 +488,39 @@ public class VideoPlayerActivity extends Activity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// add here.
 		super.onActivityResult(requestCode, resultCode, data);
+	}
+
+	public void SaveRecordToService() {
+		if (mCurrentPlayData != null) {
+			switch (mCurrentPlayData.prod_type) {
+			case 1:
+				StatisticsUtils.StatisticsClicksShow(new AQuery(this), app,
+						prod_id, prod_name,
+						"", 1);
+				break;
+			case 131:
+				StatisticsUtils.StatisticsClicksShow(new AQuery(this), app,
+						m_ReturnProgramView.tv.id, m_ReturnProgramView.tv.name,
+						m_ReturnProgramView.tv.episodes[mCurrentPlayData.CurrentIndex].name, 131);
+				break;
+			case 2:
+
+				StatisticsUtils.StatisticsClicksShow(new AQuery(this), app,
+						m_ReturnProgramView.tv.id, m_ReturnProgramView.tv.name,
+						m_ReturnProgramView.tv.episodes[mCurrentPlayData.CurrentIndex].name, 2);
+
+				break;
+			case 3:
+
+				StatisticsUtils.StatisticsClicksShow(new AQuery(this), app,
+						m_ReturnProgramView.show.id,
+						m_ReturnProgramView.show.name,
+						m_ReturnProgramView.show.episodes[mCurrentPlayData.CurrentIndex].name, 3);
+
+				break;
+			}
+		}
+
 	}
 
 }

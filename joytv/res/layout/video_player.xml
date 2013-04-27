@@ -200,7 +200,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true" >
+        android:layout_centerVertical="true" 
+        android:visibility="gone" >
 
         <ImageButton
             android:id="@+id/imageControl_c"
@@ -220,7 +221,8 @@
             android:nextFocusDown="@+id/imageControl_b"
             android:nextFocusRight="@+id/imageControl_c"
             android:nextFocusUp="@+id/imageControl_t"
-            android:onClick="OnClickPre" />
+            android:onClick="OnClickPre" 
+            android:visibility="gone" />
 
         <ImageButton
             android:id="@+id/imageControl_t"
@@ -231,7 +233,8 @@
             android:nextFocusDown="@+id/imageControl_c"
             android:nextFocusLeft="@+id/imageControl_l"
             android:nextFocusRight="@+id/imageControl_r"
-            android:onClick="OnClickContinue" />
+            android:onClick="OnClickContinue" 
+            android:visibility="gone" />
 
         <ImageButton
             android:id="@+id/imageControl_l"
@@ -244,7 +247,8 @@
             android:nextFocusDown="@+id/imageControl_b"
             android:nextFocusRight="@+id/imageControl_c"
             android:nextFocusUp="@+id/imageControl_t"
-            android:onClick="OnClickNext" />
+            android:onClick="OnClickNext" 
+            android:visibility="gone" />
 
         <ImageButton
             android:id="@+id/imageControl_b"
@@ -258,7 +262,8 @@
             android:nextFocusLeft="@+id/imageControl_l"
             android:nextFocusRight="@+id/imageControl_r"
             android:nextFocusUp="@+id/imageControl_t"
-            android:onClick="OnClickFav" />
+            android:onClick="OnClickFav" 
+            android:visibility="gone" />
     </RelativeLayout>
 
     <FrameLayout
