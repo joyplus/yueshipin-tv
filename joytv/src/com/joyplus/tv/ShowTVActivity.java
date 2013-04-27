@@ -524,6 +524,7 @@ public class ShowTVActivity extends AbstractShowActivity {
 		if(list.size() <= 0) {
 			
 			playGv.setAdapter(null);
+			app.MyToast(getApplicationContext(), getString(R.string.toast_no_play));
 		} else {
 			
 			ListAdapter adapter = playGv.getAdapter();

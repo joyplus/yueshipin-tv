@@ -24,6 +24,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -456,6 +457,19 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 		}
 
 		searchAdapter.setList(list);
+		
+		if(list.size() <= 0) {
+			
+			playGv.setAdapter(null);
+			app.MyToast(getApplicationContext(), getString(R.string.toast_no_play));
+		} else {
+			
+			ListAdapter adapter = playGv.getAdapter();
+			if(adapter == null) {
+				
+				playGv.setAdapter(searchAdapter);
+			}
+		}
 
 		if (list != null && !list.isEmpty()) {// 判断其能否向获取更多数据
 

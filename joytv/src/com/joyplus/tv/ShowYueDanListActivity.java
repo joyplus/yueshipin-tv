@@ -17,6 +17,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
@@ -441,6 +442,19 @@ public class ShowYueDanListActivity extends AbstractShowActivity{
 		}
 
 		searchAdapter.setList(list);
+		
+		if(list.size() <= 0) {
+			
+			playGv.setAdapter(null);
+			app.MyToast(getApplicationContext(), getString(R.string.toast_no_play));
+		} else {
+			
+			ListAdapter adapter = playGv.getAdapter();
+			if(adapter == null) {
+				
+				playGv.setAdapter(searchAdapter);
+			} 
+		}
 
 		if (list != null && !list.isEmpty() && currentListIndex != QUANBUFENLEI) {// 判断其能否向获取更多数据
 

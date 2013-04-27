@@ -43,6 +43,7 @@ import com.joyplus.tv.Service.Return.ReturnProgramView.DOWN_URLS;
 import com.joyplus.tv.Video.VideoPlayerActivity;
 import com.joyplus.tv.ui.WaitingDialog;
 import com.joyplus.tv.utils.DefinationComparatorIndex;
+import com.joyplus.tv.utils.ItemStateUtils;
 import com.joyplus.tv.utils.Log;
 import com.joyplus.tv.utils.MyKeyEventKey;
 import com.joyplus.tv.utils.SouceComparatorIndex1;
@@ -66,7 +67,7 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 	private PopupWindow popupWindow;
 	private View popupView;
 
-	private boolean isDing, isXiai;
+	private boolean isDing = false, isXiai = false;
 	private boolean isPopupWindowShow;
 
 	private View beforeTempPop, currentBofangViewPop;
@@ -228,7 +229,7 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 				
 				if(hasFocus) {
 					
-					
+					ItemStateUtils.shoucangButtonToFocusState(xiaiBt, getApplicationContext());
 				} else {
 					
 					
@@ -244,7 +245,7 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 				
 				if(hasFocus) {
 					
-					
+					ItemStateUtils.dingButtonToFocusState(dingBt, getApplicationContext());
 				} else {
 					
 					
@@ -942,14 +943,16 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 			
 			if(flag.contains("true")) {
 				
-				xiaiBt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_fav_active, 0, 0,0);
+				ItemStateUtils.shoucangButtonToFocusState(xiaiBt, getApplicationContext());
 			} else {
 				
-				isXiai = true;
+				isXiai = false;
+				ItemStateUtils.shoucangButtonToNormalState(xiaiBt, getApplicationContext());
 			}
 		} else {
 			
 			isXiai = true;
+			ItemStateUtils.shoucangButtonToFocusState(xiaiBt, getApplicationContext());
 		}
 	}
 	
