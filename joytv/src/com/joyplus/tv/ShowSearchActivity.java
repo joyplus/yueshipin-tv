@@ -279,17 +279,17 @@ public class ShowSearchActivity extends AbstractShowActivity {
 				playGv.setAdapter(searchAdapter);
 				Editable editable = searchEt.getText();
 				String searchStr = editable.toString();
-				searchEt.setText("");
+//				searchEt.setText("");
 				playGv.setNextFocusForwardId(searchEt.getId());//
-				showDialog(DIALOG_WAITING);
 				ItemStateUtils
 						.viewToNormal(getApplicationContext(), activeView);
 				activeView = searchEt;
-				resetGvActive();
 
 				if (searchStr != null && !searchStr.equals("")) {
+					showDialog(DIALOG_WAITING);
 
 					search = searchStr;
+					resetGvActive();
 					StatisticsUtils.clearList(lists[SEARCH]);
 					currentListIndex = SEARCH;
 					String url = StatisticsUtils.getSearch_FirstURL(searchStr);

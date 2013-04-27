@@ -416,16 +416,18 @@ public class ShowTVActivity extends AbstractShowActivity {
 
 				Editable editable = searchEt.getText();
 				String searchStr = editable.toString();
-				searchEt.setText("");
+//				searchEt.setText("");
 				playGv.setNextFocusForwardId(searchEt.getId());//
-				showDialog(DIALOG_WAITING);
+				
 				ItemStateUtils
 						.viewToNormal(getApplicationContext(), activeView);
 				activeView = searchEt;
-				resetGvActive();
+				
 
 				if (searchStr != null && !searchStr.equals("")) {
 
+					showDialog(DIALOG_WAITING);
+					resetGvActive();
 					search = searchStr;
 					StatisticsUtils.clearList(lists[SEARCH]);
 					currentListIndex = SEARCH;
