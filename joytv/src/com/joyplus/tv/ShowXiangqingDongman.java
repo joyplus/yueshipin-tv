@@ -372,7 +372,7 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 				seletedTitleButton = (Button) v;
 				seletedTitleButton.setEnabled(false);
 			}else{
-				Toast.makeText(this, "click btn = " + v.getId(), 100).show();
+//				Toast.makeText(this, "click btn = " + v.getId(), 100).show();
 				if(seletedIndexButton == null){
 					seletedIndexButton = (Button) v;
 					seletedIndexButton.setBackgroundResource(R.drawable.bg_button_tv_selector_1);
