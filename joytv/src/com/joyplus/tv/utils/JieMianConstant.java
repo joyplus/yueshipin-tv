@@ -46,5 +46,8 @@ public interface JieMianConstant {
 	int QUAN_TEN = 1;
 	int QUAN_FILTER = 2;
 	int SEARCH = 3;
+	
+	int SHOUCANG_ADD = 101;
+	int SHOUCANG_CANCEL = 102;
 
 }

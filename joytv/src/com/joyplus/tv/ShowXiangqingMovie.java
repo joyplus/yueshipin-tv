@@ -499,6 +499,7 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 				playDate.prod_id = movieData.movie.id;
 				playDate.prod_type = 1;
 				playDate.prod_name = movieData.movie.name;
+				playDate.prod_favority = isXiai;
 //				if(gaoqing_url!=null){
 //					playDate.prod_url = gaoqing_url;
 //				}else if(chaoqing_url != null){
@@ -820,7 +821,7 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 		xiaiBt.setEnabled(true);
 		
 		
-			if(favNum - 1 >0) {
+			if(favNum - 1 >=0) {
 				
 				favNum --;
 				xiaiBt.setText((favNum) + "");

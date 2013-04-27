@@ -45,6 +45,7 @@ import com.joyplus.tv.Video.VideoPlayerActivity;
 import com.joyplus.tv.ui.WaitingDialog;
 import com.joyplus.tv.utils.DefinationComparatorIndex;
 import com.joyplus.tv.utils.ItemStateUtils;
+import com.joyplus.tv.utils.JieMianConstant;
 import com.joyplus.tv.utils.Log;
 import com.joyplus.tv.utils.MyKeyEventKey;
 import com.joyplus.tv.utils.SouceComparatorIndex1;
@@ -850,6 +851,7 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 		}
 		playDate.prod_url = urls.get(0).url;
 		playDate.prod_src = urls.get(0).source_from;
+		playDate.prod_favority = isXiai;
 //		if(Constant.player_quality_index[0].equals(date.show.episodes[0].down_urls[0].urls[0].type)){
 //			//mp4
 //		}else if(Constant.player_quality_index[1].equals(date.show.episodes[0].down_urls[0].urls[0].type)){
@@ -861,7 +863,31 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 		playDate.CurrentIndex = index;
 		app.set_ReturnProgramView(date);
 		app.setCurrentPlayData(playDate);
-		startActivity(intent);
+		startActivityForResult(intent, 0);
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// TODO Auto-generated method stub
+//		super.onActivityResult(requestCode, resultCode, data);
+		
+		if(resultCode == JieMianConstant.SHOUCANG_ADD) {
+			
+			favNum ++;
+			
+			xiaiBt.setText(favNum + "");
+			ItemStateUtils.shoucangButtonToFocusState(xiaiBt, getApplicationContext());
+			isXiai = true;
+		}else if(resultCode == JieMianConstant.SHOUCANG_CANCEL){
+//			Toast.makeText(getApplicationContext(), "SHOUCANG_CANCEL:" + requestCode, Toast.LENGTH_SHORT);
+			if(favNum - 1 >=0) {
+				
+				favNum --;
+				xiaiBt.setText((favNum) + "");
+				ItemStateUtils.shoucangButtonToNormalState(xiaiBt, getApplicationContext());
+			}
+			isXiai = false;
+		}
 	}
 	
 	private List<URLS_INDEX> getBofangList(int index){
@@ -945,11 +971,11 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 		xiaiBt.setEnabled(true);
 		
 		
-			if(favNum - 1 >0) {
+			if(favNum - 1 >=0) {
 				
 				favNum --;
 				xiaiBt.setText((favNum) + "");
-				ItemStateUtils.shoucangButtonToFocusState(xiaiBt, getApplicationContext());
+				ItemStateUtils.shoucangButtonToNormalState(xiaiBt, getApplicationContext());
 			}
 		isXiai = false;
 		Log.d(TAG, "cancel:----->"+json.toString());
