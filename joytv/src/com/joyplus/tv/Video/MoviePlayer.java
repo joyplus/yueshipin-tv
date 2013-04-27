@@ -193,7 +193,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 
 		mLayoutBottomTime = (View) rootView.findViewById(R.id.LayoutBottomTime);
 
-		mController = new MovieControllerOverlay(mContext, rootView);
+		mController = new MovieControllerOverlay(mContext, rootView,mBookmarker);
 		((ViewGroup) rootView).addView(mController.getView());
 		mController.setListener(this);
 		mController.setCanReplay(canReplay);

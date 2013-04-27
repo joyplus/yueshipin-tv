@@ -23,6 +23,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.media.AudioManager;
 import android.net.TrafficStats;
+import android.net.Uri;
 import android.os.Handler;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -116,10 +117,11 @@ public class MovieControllerOverlay extends FrameLayout implements
 	private AudioManager mAudioManager;
 	private ArcView mArcView;
 	private CurrentPlayData mCurrentPlayData = null;
-	
-	private boolean RETURNMODE = false;//等一会消失
 
-	public MovieControllerOverlay(Context context, View rootView) {
+	private boolean RETURNMODE = false;// 等一会消失
+
+	public MovieControllerOverlay(Context context, View rootView,
+			Bookmarker mBookmarker) {
 		super(context);
 		app = (App) context.getApplicationContext();
 		this.rootView = rootView;
@@ -219,45 +221,57 @@ public class MovieControllerOverlay extends FrameLayout implements
 		mCurrentPlayData = app.getCurrentPlayData();
 		playPauseReplayView.setBackgroundResource(R.drawable.player_btn_pause);
 		if (mCurrentPlayData != null) {
+			Integer bookmark = mBookmarker.getBookmark(Uri
+					.parse(mCurrentPlayData.prod_src));
+			TextView mViewTime = (TextView) rootView
+					.findViewById(R.id.textView7);
 			if (mCurrentPlayData.prod_time != 0L) {
-				TextView mViewTime = (TextView) rootView
-						.findViewById(R.id.textView7);
-				;
+
 				mViewTime.setText(StatisticsUtils
 						.formatDuration(mCurrentPlayData.prod_time));
+			} else if (bookmark != null) {
+				mViewTime.setText(StatisticsUtils.formatDuration(bookmark));
+
 			}
+			if (mCurrentPlayData.prod_time == 0 && bookmark == null) {
+				rootView.findViewById(R.id.textView6).setVisibility(View.GONE);
+				rootView.findViewById(R.id.textView7).setVisibility(View.GONE);
+			}
+			
 			if (mCurrentPlayData.prod_src != null) {
 				TextView mViewSrc = (TextView) rootView
 						.findViewById(R.id.textView9);
 				;
 				/*
 				 * "wangpan","le_tv_fee","letv",
-	"fengxing","qiyi","youku","sinahd","sohu","56","qq","pptv","m1905"
+				 * "fengxing","qiyi","youku","sinahd"
+				 * ,"sohu","56","qq","pptv","m1905"
 				 */
 				String strSrc = mCurrentPlayData.prod_src;
-				if(mCurrentPlayData.prod_src.equalsIgnoreCase("wangpan"))
+				if (mCurrentPlayData.prod_src.equalsIgnoreCase("wangpan"))
 					strSrc = "PPTV";
-				else if(mCurrentPlayData.prod_src.equalsIgnoreCase("le_tv_fee"))
+				else if (mCurrentPlayData.prod_src
+						.equalsIgnoreCase("le_tv_fee"))
 					strSrc = "乐视";
-				else if(mCurrentPlayData.prod_src.equalsIgnoreCase("letv"))
+				else if (mCurrentPlayData.prod_src.equalsIgnoreCase("letv"))
 					strSrc = "乐视";
-				else if(mCurrentPlayData.prod_src.equalsIgnoreCase("fengxing"))
+				else if (mCurrentPlayData.prod_src.equalsIgnoreCase("fengxing"))
 					strSrc = "风行";
-				else if(mCurrentPlayData.prod_src.equalsIgnoreCase("qiyi"))
+				else if (mCurrentPlayData.prod_src.equalsIgnoreCase("qiyi"))
 					strSrc = "爱奇艺";
-				else if(mCurrentPlayData.prod_src.equalsIgnoreCase("youku"))
+				else if (mCurrentPlayData.prod_src.equalsIgnoreCase("youku"))
 					strSrc = "优酷";
-				else if(mCurrentPlayData.prod_src.equalsIgnoreCase("sinahd"))
+				else if (mCurrentPlayData.prod_src.equalsIgnoreCase("sinahd"))
 					strSrc = "新浪视频";
-				else if(mCurrentPlayData.prod_src.equalsIgnoreCase("sohu"))
+				else if (mCurrentPlayData.prod_src.equalsIgnoreCase("sohu"))
 					strSrc = "搜狐视频";
-//				else if(mCurrentPlayData.prod_src.equalsIgnoreCase("56"))
-//					strSrc = "网盘";
-				else if(mCurrentPlayData.prod_src.equalsIgnoreCase("qq"))
+				// else if(mCurrentPlayData.prod_src.equalsIgnoreCase("56"))
+				// strSrc = "网盘";
+				else if (mCurrentPlayData.prod_src.equalsIgnoreCase("qq"))
 					strSrc = "腾讯视频";
-				else if(mCurrentPlayData.prod_src.equalsIgnoreCase("pptv"))
+				else if (mCurrentPlayData.prod_src.equalsIgnoreCase("pptv"))
 					strSrc = "PPTV";
-				else if(mCurrentPlayData.prod_src.equalsIgnoreCase("m1905"))
+				else if (mCurrentPlayData.prod_src.equalsIgnoreCase("m1905"))
 					strSrc = "电影网";
 				mViewSrc.setText(strSrc);
 			}
@@ -268,10 +282,6 @@ public class MovieControllerOverlay extends FrameLayout implements
 			else
 				mImageSrc.setImageResource(R.drawable.player_1080p);
 
-			if (mCurrentPlayData.prod_time == 0) {
-				rootView.findViewById(R.id.textView6).setVisibility(View.GONE);
-				rootView.findViewById(R.id.textView7).setVisibility(View.GONE);
-			}
 			TVControlViewGone(true);
 
 		}
@@ -285,12 +295,12 @@ public class MovieControllerOverlay extends FrameLayout implements
 	public void returnShowView() {
 		mCurrentPlayData = app.getCurrentPlayData();
 		if (mCurrentPlayData.prod_type != 1) {
-			
+
 			playPauseReplayView
 					.setBackgroundResource(R.drawable.player_btn_finish);
 			if (mCurrentPlayData.prod_favority)
 				playFavView.setBackgroundResource(R.drawable.player_btn_unfav);
-			
+
 			playPauseReplayView.setVisibility(View.VISIBLE);
 			playContinueView.setVisibility(View.VISIBLE);
 			playFavView.setVisibility(View.VISIBLE);
@@ -333,8 +343,7 @@ public class MovieControllerOverlay extends FrameLayout implements
 			playFavView.setVisibility(View.GONE);
 			playPreView.setVisibility(View.GONE);
 			playNextView.setVisibility(View.GONE);
-		}
-		else {
+		} else {
 			RETURNMODE = true;
 		}
 
@@ -422,6 +431,7 @@ public class MovieControllerOverlay extends FrameLayout implements
 		state = State.PAUSED;
 		showMainView(mLayoutControl);
 	}
+
 	public void showTVReturn() {
 		state = State.TVRETURN;
 		showMainView(mLayoutControl);
@@ -476,7 +486,7 @@ public class MovieControllerOverlay extends FrameLayout implements
 		playPauseReplayView.setVisibility(View.GONE);
 
 		background.setVisibility(View.GONE);
-		if(RETURNMODE){
+		if (RETURNMODE) {
 			TVControlViewGone(true);
 			RETURNMODE = false;
 		}
@@ -497,15 +507,17 @@ public class MovieControllerOverlay extends FrameLayout implements
 				: View.GONE);
 		loadingView.setVisibility(mainView == loadingView ? View.VISIBLE
 				: View.GONE);
-		if(state == State.TVRETURN){ //tv return
-			mLayoutControl.setVisibility(mainView == mLayoutControl ? View.VISIBLE
-				: View.GONE);
-		}else{
-			mLayoutControl.setVisibility(mainView == mLayoutControl ? View.VISIBLE
-					: View.GONE);
+		if (state == State.TVRETURN) { // tv return
+			mLayoutControl
+					.setVisibility(mainView == mLayoutControl ? View.VISIBLE
+							: View.GONE);
+		} else {
+			mLayoutControl
+					.setVisibility(mainView == mLayoutControl ? View.VISIBLE
+							: View.GONE);
 			playPauseReplayView
-				.setVisibility(mainView == playPauseReplayView ? View.VISIBLE
-						: View.GONE);
+					.setVisibility(mainView == playPauseReplayView ? View.VISIBLE
+							: View.GONE);
 		}
 		show();
 
@@ -608,9 +620,9 @@ public class MovieControllerOverlay extends FrameLayout implements
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-//		if (hidden) {
-//			show();
-//		}
+		// if (hidden) {
+		// show();
+		// }
 		return super.onKeyDown(keyCode, event);
 	}
 
@@ -719,12 +731,12 @@ public class MovieControllerOverlay extends FrameLayout implements
 		if (state == State.TVRETURN) {
 			returnShowView();
 		} else if (state == State.PAUSED) {
-			
+
 			playPauseReplayView
 					.setBackgroundResource(R.drawable.player_btn_play_play);
 			playPauseReplayView.setVisibility(View.VISIBLE);
 		} else if (state == State.PLAYING) {
-			
+
 			playPauseReplayView
 					.setBackgroundResource(R.drawable.player_btn_pause);
 			playPauseReplayView.setVisibility(View.VISIBLE);
@@ -733,12 +745,12 @@ public class MovieControllerOverlay extends FrameLayout implements
 		// playPauseReplayView
 		// .setBackgroundResource(R.drawable.player_btn_finish);
 
-//		if (state != State.LOADING && state != State.ERROR
-//				&& !(state == State.ENDED && !canReplay)) {
-//			mLayoutControl.setVisibility(View.VISIBLE);
-//		} else {
-//			mLayoutControl.setVisibility(View.GONE);
-//		}
+		// if (state != State.LOADING && state != State.ERROR
+		// && !(state == State.ENDED && !canReplay)) {
+		// mLayoutControl.setVisibility(View.VISIBLE);
+		// } else {
+		// mLayoutControl.setVisibility(View.GONE);
+		// }
 		// mLayoutControl
 		// .setImageResource(state == State.PAUSED ?
 		// R.drawable.player_s_ic_vidcontrol_play
