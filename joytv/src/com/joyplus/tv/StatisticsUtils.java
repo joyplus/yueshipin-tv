@@ -561,6 +561,8 @@ public class StatisticsUtils implements JieMianConstant,BangDanKey{
 		
 	}
 	
+//	public static isChineseString
+	
 	public static ScaleAnimation getOutScaleAnimation() {
 		
 		ScaleAnimation outScaleAnimation = new ScaleAnimation(OUT_ANIMATION_FROM_X,

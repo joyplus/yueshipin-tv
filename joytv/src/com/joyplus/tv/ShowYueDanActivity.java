@@ -12,6 +12,7 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.view.KeyEvent;
 import android.view.View;
@@ -76,7 +77,10 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 	private int defalutYuedan = 0;
 
 	private boolean isFirstActive = false;
+	private boolean isOnKeyActive = false;
 	private View firstFloatView;
+	
+	private Handler handler = new Handler();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -132,6 +136,16 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 					activeView);
 		}
 
+	}
+	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		// TODO Auto-generated method stub
+		if(!isOnKeyActive) {
+			
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
 	}
 
 	@Override
@@ -579,12 +593,23 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 		// playGv.setSelection(0);
 		searchAdapter.notifyDataSetChanged();
 		removeDialog(DIALOG_WAITING);
-		if (isFirstActive) {
-
+		if(isFirstActive) {
+			
 			playGv.requestFocus();
 			isFirstActive = false;
+			handler.postDelayed(new Runnable() {
+				
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					isOnKeyActive = true;
+				}
+			}, 1000);
+		} else {
+			
+			beforeGvView = null;
 		}
-		beforeGvView = null;
+		
 		activeRecordIndex = -1;
 		playGv.setOnFocusChangeListener(gvOnFocusChangeListener);
 

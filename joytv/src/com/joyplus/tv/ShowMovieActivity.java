@@ -12,6 +12,7 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -85,7 +86,12 @@ public class ShowMovieActivity extends AbstractShowActivity {
 	private int[] pageNums = new int[12];
 	
 	private boolean isFirstActive = false;
+	private boolean isOnKeyActive = false;
 	private View firstFloatView;
+	
+	private Handler handler = new Handler();
+	
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -118,6 +124,16 @@ public class ShowMovieActivity extends AbstractShowActivity {
 					activeView);
 		}
 
+	}
+	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		// TODO Auto-generated method stub
+		if(!isOnKeyActive) {
+			
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
 	}
 
 	@Override
@@ -423,7 +439,7 @@ public class ShowMovieActivity extends AbstractShowActivity {
 					search = searchStr;
 					StatisticsUtils.clearList(lists[SEARCH]);
 					currentListIndex = SEARCH;
-					String url = StatisticsUtils.getSearch_FirstURL(searchStr)+ "&type=" + DONGMAN_TYPE;
+					String url = StatisticsUtils.getSearch_FirstURL(searchStr)+ "&type=" + MOVIE_TYPE;
 					getFilterData(url);
 				}
 
@@ -567,8 +583,19 @@ public class ShowMovieActivity extends AbstractShowActivity {
 			
 			playGv.requestFocus();
 			isFirstActive = false;
+			handler.postDelayed(new Runnable() {
+				
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					isOnKeyActive = true;
+				}
+			}, 1000);
+		} else {
+			
+			beforeGvView = null;
 		}
-		beforeGvView = null;
+		
 		activeRecordIndex = -1;
 		playGv.setOnFocusChangeListener(gvOnFocusChangeListener);
 
@@ -814,7 +841,7 @@ public class ShowMovieActivity extends AbstractShowActivity {
 		case SEARCH:
 
 			getMoreFilterData(StatisticsUtils.getSearch_CacheURL(pageNum,
-					search));
+					search) + "&type=" + MOVIE_TYPE) ;
 			break;
 		case DONGZUOPIAN:
 			getMoreBangDanData(StatisticsUtils

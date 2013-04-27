@@ -12,6 +12,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.DialogInterface.OnCancelListener;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -84,7 +85,10 @@ public class ShowTVActivity extends AbstractShowActivity {
 	private int[] pageNums = new int[10];
 	
 	private boolean isFirstActive = false;
+	private boolean isOnKeyActive = false;
 	private View firstFloatView;
+	
+	private Handler handler = new Handler();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -116,6 +120,16 @@ public class ShowTVActivity extends AbstractShowActivity {
 					activeView);
 		}
 
+	}
+	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		// TODO Auto-generated method stub
+		if(!isOnKeyActive) {
+			
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
 	}
 
 	@Override
@@ -559,8 +573,19 @@ public class ShowTVActivity extends AbstractShowActivity {
 			
 			playGv.requestFocus();
 			isFirstActive = false;
+			handler.postDelayed(new Runnable() {
+				
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					isOnKeyActive = true;
+				}
+			}, 1000);
+		} else {
+			
+			beforeGvView = null;
 		}
-		beforeGvView = null;
+		
 		activeRecordIndex = -1;
 		playGv.setOnFocusChangeListener(gvOnFocusChangeListener);
 
