@@ -305,6 +305,11 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 					highlightImageView_2.setVisibility(View.GONE);
 					highlightImageView_3.setVisibility(View.GONE);
 					highlightImageView_4.setVisibility(View.GONE);
+					Log.d("AAAAA", "highlightImageView_1 visibale = " + highlightImageView_1.getVisibility());
+					Log.d("AAAAA", "highlightImageView_2 visibale = " + highlightImageView_2.getVisibility());
+					Log.d("AAAAA", "highlightImageView_3 visibale = " + highlightImageView_3.getVisibility());
+					Log.d("AAAAA", "highlightImageView_4 visibale = " + highlightImageView_4.getVisibility());
+					aq = new AQuery(Main.this);
 					if(isHotLoadedFlag == 2){
 						itemFram.setVisibility(View.VISIBLE);
 						contentLayout.removeAllViews();
@@ -367,10 +372,15 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 					playIcon.setVisibility(View.VISIBLE);
 					break;
 				case 2:
+					aq = new AQuery(Main.this);
 					highlightImageView_1.setVisibility(View.GONE);
 					highlightImageView_2.setVisibility(View.VISIBLE);
 					highlightImageView_3.setVisibility(View.GONE);
 					highlightImageView_4.setVisibility(View.GONE);
+					Log.d("AAAAA", "highlightImageView_1 visibale = " + highlightImageView_1.getVisibility());
+					Log.d("AAAAA", "highlightImageView_2 visibale = " + highlightImageView_2.getVisibility());
+					Log.d("AAAAA", "highlightImageView_3 visibale = " + highlightImageView_3.getVisibility());
+					Log.d("AAAAA", "highlightImageView_4 visibale = " + highlightImageView_4.getVisibility());
 					playIcon.setVisibility(View.INVISIBLE);
 					if(isYueDanLoadedFlag==2){
 						itemFram.setVisibility(View.VISIBLE);
@@ -421,6 +431,7 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 					}
 					break;
 				case 3:
+					aq = new AQuery(Main.this);
 					highlightImageView_1.setVisibility(View.GONE);
 					highlightImageView_2.setVisibility(View.GONE);
 					highlightImageView_3.setVisibility(View.VISIBLE);
@@ -444,6 +455,7 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 					definitionIcon.setImageDrawable(null);
 					break;
 				case 4:
+					aq = new AQuery(Main.this);
 					highlightImageView_1.setVisibility(View.GONE);
 					highlightImageView_2.setVisibility(View.GONE);
 					highlightImageView_3.setVisibility(View.GONE);

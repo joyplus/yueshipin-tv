@@ -149,7 +149,7 @@ public class MainHotItemAdapter extends BaseAdapter {
 			holder.definition.setImageResource(R.drawable.icon_ts);
 			break;
 		default:
-			holder.definition.setVisibility(View.GONE);
+			holder.definition.setImageDrawable(null);
 			break;
 		}
 		convertView.setPadding(15, 10, 15, 10);
