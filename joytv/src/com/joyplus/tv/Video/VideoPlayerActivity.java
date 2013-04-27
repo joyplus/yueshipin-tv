@@ -501,22 +501,21 @@ public class VideoPlayerActivity extends Activity {
 				break;
 			case 131:
 				StatisticsUtils.StatisticsClicksShow(new AQuery(this), app,
-						m_ReturnProgramView.tv.id, m_ReturnProgramView.tv.name,
-						m_ReturnProgramView.tv.episodes[mCurrentPlayData.CurrentIndex].name, 131);
+						prod_id, prod_name,
+						mCurrentPlayData.CurrentIndex+"", 131);
 				break;
 			case 2:
 
 				StatisticsUtils.StatisticsClicksShow(new AQuery(this), app,
-						m_ReturnProgramView.tv.id, m_ReturnProgramView.tv.name,
-						m_ReturnProgramView.tv.episodes[mCurrentPlayData.CurrentIndex].name, 2);
+						prod_id, prod_name,
+						mCurrentPlayData.CurrentIndex+"", 2);
 
 				break;
 			case 3:
 
 				StatisticsUtils.StatisticsClicksShow(new AQuery(this), app,
-						m_ReturnProgramView.show.id,
-						m_ReturnProgramView.show.name,
-						m_ReturnProgramView.show.episodes[mCurrentPlayData.CurrentIndex].name, 3);
+						prod_id, prod_name,
+						mCurrentPlayData.CurrentIndex+"", 3);
 
 				break;
 			}
