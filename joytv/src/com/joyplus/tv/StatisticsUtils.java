@@ -744,6 +744,37 @@ public class StatisticsUtils implements JieMianConstant,BangDanKey{
 
 	}
 	
+	
+	public static String formateZongyi(String curEpisode,Context context) {
+		
+		if(curEpisode != null && !curEpisode.equals("") && !curEpisode.equals("0")) {
+			
+			if(isNumber(curEpisode)) {
+				
+				if(curEpisode.length() > 2 && curEpisode.length() <= 9) {
+					
+					return context.getString(R.string.zongyi_gengxinzhi) +curEpisode;
+				}
+			}
+		}
+		
+		return "";
+	}
+	
+    public static boolean isNumber(String str)
+    {
+        java.util.regex.Pattern pattern=java.util.regex.Pattern.compile("[0-9]*");
+        java.util.regex.Matcher match=pattern.matcher(str);
+        if(match.matches()==false)
+        {
+             return false;
+        }
+        else
+        {
+             return true;
+        }
+    }
+	
 	public  static void clearList(List list) {
 
 		if (list != null && !list.isEmpty()) {
