@@ -852,6 +852,7 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 		Intent intent = new Intent(this,VideoPlayerActivity.class);
 		playDate.prod_id = prod_id;
 		playDate.prod_type = 131;
+		playDate.CurrentIndex = index+1;
 		playDate.prod_name = date.tv.name+" 第" + (index+1) +"集";;
 //		playDate.prod_url = date.tv.episodes[0].down_urls[0].urls[0].url;
 //		playDate.prod_src = date.tv.episodes[0].down_urls[0].source;
@@ -871,7 +872,7 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 //			//other
 //		}
 //		playDate.prod_qua = Integer.valueOf(info.definition);
-		playDate.CurrentIndex = index;
+//		playDate.CurrentIndex = index;
 		app.set_ReturnProgramView(date);
 		app.setCurrentPlayData(playDate);
 		startActivityForResult(intent, 0);

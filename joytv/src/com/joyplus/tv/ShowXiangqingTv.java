@@ -845,6 +845,7 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 			Toast.makeText(this, "没有可以播放的地址", Toast.LENGTH_SHORT).show();
 			return;
 		}
+		playDate.CurrentIndex = index+1;
 		playDate.prod_url = urls.get(0).url;
 		playDate.prod_src = urls.get(0).source_from;
 		playDate.prod_favority = isXiai;
@@ -856,7 +857,7 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 //			//other
 //		}
 //		playDate.prod_qua = Integer.valueOf(info.definition);
-		playDate.CurrentIndex = index;
+//		playDate.CurrentIndex = index;
 		app.set_ReturnProgramView(date);
 		app.setCurrentPlayData(playDate);
 		startActivityForResult(intent, 0);

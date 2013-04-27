@@ -58,6 +58,7 @@ import com.joyplus.tv.Adapters.CurrentPlayData;
 import com.joyplus.tv.Adapters.MainHotItemAdapter;
 import com.joyplus.tv.Adapters.MainLibAdapter;
 import com.joyplus.tv.Adapters.MainYueDanItemAdapter;
+import com.joyplus.tv.HistoryActivity.HistortyAdapter;
 import com.joyplus.tv.Service.Return.ReturnMainHot;
 import com.joyplus.tv.Service.Return.ReturnTops;
 import com.joyplus.tv.Service.Return.ReturnUserPlayHistories;
@@ -1103,6 +1104,14 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 				if(!"".equals(info.playback_time)){
 					playDate.prod_time = Long.valueOf(info.playback_time)*1000;
 				}
+				String  currentIndex = info.prod_subname;
+				if(currentIndex!=null&&"".equals(currentIndex)){
+					int current = Integer.valueOf(currentIndex);
+					if(current>0){
+						current = current-1;
+					}
+					playDate.CurrentIndex = current;
+				}
 //				playDate.prod_qua = Integer.valueOf(info.definition);
 				app.setCurrentPlayData(playDate);
 				app.set_ReturnProgramView(null);
@@ -1495,6 +1504,7 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 			item.cur_episode = result.histories[0].cur_episode;
 			item.definition = result.histories[0].definition;
 			item.prod_summary = result.histories[0].prod_summary;
+			item.prod_subname = result.histories[0].prod_subname;
 			item.duration = result.histories[0].duration;
 			item.playback_time = result.histories[0].playback_time;
 			item.video_url = result.histories[0].video_url;

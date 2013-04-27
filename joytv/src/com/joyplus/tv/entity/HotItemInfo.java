@@ -31,5 +31,6 @@ public class HotItemInfo{
 		public String prod_subname;
 		public String play_type;
 		
+		
 		public PLAY_URLS[] play_urls;
 	}
