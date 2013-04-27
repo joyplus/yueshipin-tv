@@ -256,11 +256,13 @@ public class MovieControllerOverlay extends FrameLayout implements
 	public void returnShowView() {
 		mCurrentPlayData = app.getCurrentPlayData();
 		if (mCurrentPlayData.prod_type != 1) {
+			
 			playPauseReplayView
 					.setBackgroundResource(R.drawable.player_btn_finish);
 			if (mCurrentPlayData.prod_favority)
 				playFavView.setBackgroundResource(R.drawable.player_btn_unfav);
-
+			
+			playPauseReplayView.setVisibility(View.VISIBLE);
 			playContinueView.setVisibility(View.VISIBLE);
 			playFavView.setVisibility(View.VISIBLE);
 			playPreView.setVisibility(View.VISIBLE);

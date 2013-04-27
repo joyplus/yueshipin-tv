@@ -552,8 +552,8 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 
 		switch (keyCode) {
 		case KeyEvent.KEYCODE_DPAD_RIGHT:
-			if(!mController.isHidden())
-				return false;
+//			if(!mController.isHidden())
+//				return false;
 			if (mHasPaused == false)
 				OnMediaFastForward();
 			else {
@@ -567,8 +567,8 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 			}
 			return true;
 		case KeyEvent.KEYCODE_MEDIA_FAST_FORWARD:
-			OnMediaFastForward();
-			return true;
+//			OnMediaFastForward();
+//			return true;
 		case KeyEvent.KEYCODE_DPAD_LEFT:
 			if(!mController.isHidden())
 				return false;
