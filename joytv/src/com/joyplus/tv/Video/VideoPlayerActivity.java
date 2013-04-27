@@ -118,7 +118,7 @@ public class VideoPlayerActivity extends Activity {
 			// aq.id(R.id.imageControl_t).v
 			// }
 		}
-		if (prod_url == null)
+		if (prod_url == null || prod_url.length() == 0)
 			finish();
 		Uri mUri = Uri.parse(prod_url);
 		// prod_url
@@ -455,6 +455,7 @@ public class VideoPlayerActivity extends Activity {
 		mPlayer.onDestroy();
 		if (aq != null)
 			aq.dismiss();
+		unregisterReceiver(mReceiver);
 		super.onDestroy();
 	}
 

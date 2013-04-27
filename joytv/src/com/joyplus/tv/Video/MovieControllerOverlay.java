@@ -376,12 +376,12 @@ public class MovieControllerOverlay extends FrameLayout implements
 
 	public void showPlaying() {
 		state = State.PLAYING;
-		showMainView(playPauseReplayView);
+		showMainView(mLayoutControl);
 	}
 
 	public void showPaused() {
 		state = State.PAUSED;
-		showMainView(playPauseReplayView);
+		showMainView(mLayoutControl);
 	}
 
 	public void showTVPlaying() {
@@ -518,8 +518,8 @@ public class MovieControllerOverlay extends FrameLayout implements
 
 	private void startHiding() {
 		// startHideAnimation(timeBar);
-
 		startHideAnimation(mLayoutControl);
+
 	}
 
 	private void startVolumeHiding() {

@@ -958,7 +958,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 
 				textView1.setText(StatisticsUtils.formatDuration(progress));
 				textView1.setVisibility(View.VISIBLE);
-				if (totalTime > 0 && totalTime - progress <= 10000
+				if (totalTime > 0 && totalTime - progress <= 5000
 						&& (prod_type == 2 || prod_type == 3)) {
 
 					OnContinueVideoPlay();
