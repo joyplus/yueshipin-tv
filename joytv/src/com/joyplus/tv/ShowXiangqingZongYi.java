@@ -44,6 +44,7 @@ import com.joyplus.tv.Service.Return.ReturnProgramView.DOWN_URLS;
 import com.joyplus.tv.Video.VideoPlayerActivity;
 import com.joyplus.tv.ui.WaitingDialog;
 import com.joyplus.tv.utils.DefinationComparatorIndex;
+import com.joyplus.tv.utils.ItemStateUtils;
 import com.joyplus.tv.utils.Log;
 import com.joyplus.tv.utils.MyKeyEventKey;
 import com.joyplus.tv.utils.SouceComparatorIndex1;
@@ -67,7 +68,7 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 	private PopupWindow popupWindow;
 	private View popupView;
 
-	private boolean isDing, isXiai;
+	private boolean isDing = false, isXiai= false;
 	private boolean isPopupWindowShow;
 
 	private View beforeTempPop, currentBofangViewPop;
@@ -86,6 +87,9 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 	private AQuery aq;
 	private App app;
 	private ReturnProgramView date;
+	
+	private static int favNum = 0;
+	
 	private Handler handler =  new Handler();
 	
 	@Override
@@ -219,6 +223,50 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 		xiaiBt.setOnClickListener(this);
 		bofangLL.setOnClickListener(this);
 //		yingpingBt.setOnClickListener(this);
+		
+		xiaiBt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+			
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				// TODO Auto-generated method stub
+				
+				if(hasFocus) {
+					
+					ItemStateUtils.shoucangButtonToFocusState(xiaiBt, getApplicationContext());
+				} else {
+					
+					if(isXiai) {
+						
+						ItemStateUtils.shoucangButtonToFocusState(xiaiBt, getApplicationContext());
+					} else {
+						
+						ItemStateUtils.shoucangButtonToNormalState(xiaiBt, getApplicationContext());
+					}
+				}
+			}
+		});
+		
+		dingBt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+			
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				// TODO Auto-generated method stub
+				
+				if(hasFocus) {
+					
+					ItemStateUtils.dingButtonToFocusState(dingBt, getApplicationContext());
+				} else {
+					
+					if(isDing){
+						
+						ItemStateUtils.dingButtonToFocusState(dingBt, getApplicationContext());
+					}else {
+						
+						ItemStateUtils.dingButtonToNormalState(dingBt, getApplicationContext());
+					}
+				}
+			}
+		});
 	}
 
 	@Override
@@ -226,27 +274,28 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
 		case R.id.bt_xiangqingding:
-			if (isDing) {
-				isDing = false;
-			} else {
-				isDing = true;
+			dingService();
+			String dingNum = dingBt.getText().toString();
+			if(dingNum != null && !dingNum.equals("")) {
+				
+				int nums = Integer.valueOf(dingNum) + 1;
+				dingBt.setText(nums + "");
 			}
-			dingBt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_dig_active, 0, 0,0);
-			dingBt.setTextColor(getResources().getColor(R.color.text_foucs));
+			ItemStateUtils.dingButtonToFocusState(dingBt, getApplicationContext());
+			dingBt.setEnabled(false);
+			isDing = true;
 			break;
 		case R.id.bt_xiangqing_xiai:
-			shoucang();
-			String shoucangNum = xiaiBt.getText().toString();
-			
-			if(shoucangNum != null && !shoucangNum.equals("")) {
+			if(isXiai) {
 				
-				int nums = Integer.valueOf(shoucangNum) + 1;
-				xiaiBt.setText(nums + "");
-				xiaiBt.setEnabled(false);
-				xiaiBt.setFocusable(false);
-				xiaiBt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_fav_active, 0, 0,0);
-				xiaiBt.setTextColor(getResources().getColor(R.color.text_foucs));
+				cancelshoucang();
+				
+			} else {
+				
+				shoucang();
+
 			}
+
 			break;
 		case R.id.ll_xiangqing_bofang_gaoqing:
 			// bofangLL.setN
@@ -640,6 +689,15 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 	}
 	
 	private void updateView(){
+		
+		String strNum = date.tv.favority_num;
+		
+		if(strNum != null && !strNum.equals("")){
+			
+			favNum = Integer.valueOf(strNum);
+		}
+		
+		
 		initButton();
 		aq.id(R.id.image).image(pic_url, false, true,0, R.drawable.post_normal);
 		aq.id(R.id.image).image(date.show.poster, false, true,0, R.drawable.post_normal);
@@ -866,7 +924,39 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 		return list;
 	}
 	
+	private void cancelshoucang(){
+		
+		xiaiBt.setEnabled(false);
+		String url = Constant.BASE_URL + "program/unfavority";
+
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("prod_id", prod_id);
+
+		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
+		cb.SetHeader(app.getHeaders());
+
+		cb.params(params).url(url).type(JSONObject.class)
+				.weakHandler(this, "cancelshoucangResult");
+		aq.ajax(cb);
+	}
+	
+	public void cancelshoucangResult(String url, JSONObject json, AjaxStatus status){
+		
+		xiaiBt.setEnabled(true);
+		
+		
+			if(favNum - 1 >0) {
+				
+				favNum --;
+				xiaiBt.setText((favNum) + "");
+				ItemStateUtils.shoucangButtonToFocusState(xiaiBt, getApplicationContext());
+			}
+		isXiai = false;
+		Log.d(TAG, "cancel:----->"+json.toString());
+	}
+	
 	private void shoucang(){
+		xiaiBt.setEnabled(false);
 		String url = Constant.BASE_URL + "program/favority";
 
 		Map<String, Object> params = new HashMap<String, Object>();
@@ -881,10 +971,35 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 	}
 	
 	public void shoucangResult(String url, JSONObject json, AjaxStatus status){
+		xiaiBt.setEnabled(true);
+		favNum ++;
+		
+		xiaiBt.setText(favNum + "");
+		ItemStateUtils.shoucangButtonToFocusState(xiaiBt, getApplicationContext());
+		isXiai = true;
+		Log.d(TAG, "shoucangResult:----->" + json.toString());
+	}
+	
+	private void dingService(){
+		String url = Constant.BASE_URL + "program/support";
+
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("prod_id", prod_id);
+
+		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
+		cb.SetHeader(app.getHeaders());
+
+		cb.params(params).url(url).type(JSONObject.class)
+				.weakHandler(this, "dingResult");
+		aq.ajax(cb);
+	}
+	
+	public void dingResult(String url, JSONObject json, AjaxStatus status){
 		Log.d(TAG, json.toString());
 	}
 	
 	private void getIsShoucangData(){
+		xiaiBt.setEnabled(false);
 		String url = Constant.BASE_URL + "program/is_favority";
 //	+"?prod_id=" + prod_id;
 		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
@@ -896,6 +1011,8 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 	}
 	
 	public void initIsShoucangData(String url, JSONObject json, AjaxStatus status){
+		
+		xiaiBt.setEnabled(true);
 		
 		if (status.getCode() == AjaxStatus.NETWORK_ERROR||json == null) {
 			app.MyToast(aq.getContext(),
@@ -910,10 +1027,17 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 		if(!flag.equals("")) {
 			
 			if(flag.contains("true")) {
+				isXiai = true;
+				ItemStateUtils.shoucangButtonToFocusState(xiaiBt, getApplicationContext());
+			} else {
 				
-				xiaiBt.setEnabled(false);
-				xiaiBt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_fav_active, 0, 0,0);
+				isXiai = false;
+				ItemStateUtils.shoucangButtonToNormalState(xiaiBt, getApplicationContext());
 			}
+		} else {
+			
+			isXiai = true;
+			ItemStateUtils.shoucangButtonToFocusState(xiaiBt, getApplicationContext());
 		}
 	}
 	

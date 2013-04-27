@@ -358,7 +358,7 @@ public class ItemStateUtils implements JieMianConstant{
 	
 	public static void shoucangButtonToNormalState(Button button, Context context) {
 		
-		button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_dig_normal, 0, 0,0);
+		button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_fav_normal, 0, 0,0);
 		button.setTextColor(context.getResources().getColorStateList(R.color.ding_selector));
 	}
 
