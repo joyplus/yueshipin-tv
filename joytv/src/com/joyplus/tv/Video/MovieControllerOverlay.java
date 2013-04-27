@@ -253,7 +253,7 @@ public class MovieControllerOverlay extends FrameLayout implements
 
 	public void returnShowView() {
 		mCurrentPlayData = app.getCurrentPlayData();
-		if (mCurrentPlayData.prod_type == 2 || mCurrentPlayData.prod_type == 3) {
+		if (mCurrentPlayData.prod_type != 1) {
 			playPauseReplayView.setBackgroundResource(R.drawable.player_btn_finish);
 			if(mCurrentPlayData.prod_favority)
 				playFavView.setBackgroundResource(R.drawable.player_btn_unfav);
@@ -782,8 +782,9 @@ public class MovieControllerOverlay extends FrameLayout implements
 			mArcView.setBackgroundResource(R.drawable.player_volume_mute);
 		else{
 			mArcView.setBackgroundResource(R.drawable.player_volume);
-			mArcView.SetAngle(mAngle);
+			
 		}
+		mArcView.SetAngle(mAngle);
 
 	}
 
