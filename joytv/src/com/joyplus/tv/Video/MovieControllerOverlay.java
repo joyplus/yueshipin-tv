@@ -490,7 +490,7 @@ public class MovieControllerOverlay extends FrameLayout implements
 		// startHideAnimation(timeBar);
 		startHideAnimation(mLayoutControl);
 	}
-
+	
 	private void startVolumeHiding() {
 		startHideAnimation(mLayoutVolume);
 	}

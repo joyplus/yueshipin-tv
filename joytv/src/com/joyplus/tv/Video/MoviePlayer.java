@@ -531,6 +531,8 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 
 		switch (keyCode) {
 		case KeyEvent.KEYCODE_DPAD_RIGHT:
+			if(!mController.isHidden())
+				return false;
 			if (mHasPaused == false)
 				OnMediaFastForward();
 			else {
@@ -547,6 +549,8 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 			OnMediaFastForward();
 			return true;
 		case KeyEvent.KEYCODE_DPAD_LEFT:
+			if(!mController.isHidden())
+				return false;
 			if (mHasPaused == false)
 				OnMediaRewind();
 			else {
@@ -729,7 +733,6 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		else
 			JUMP_TIME_TIMES--;
 
-		mController.hide();
 		mDragging = true;
 		if (!mShowing) {
 			mController.showTimerBar();
@@ -760,8 +763,6 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 			JUMP_TIME_TIMES = 1;
 		else
 			JUMP_TIME_TIMES++;
-
-		mController.hide();
 
 		mDragging = true;
 		if (!mShowing) {
