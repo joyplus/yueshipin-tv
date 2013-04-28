@@ -269,6 +269,64 @@ public class ShowSearchActivity extends AbstractShowActivity {
 
 			}
 		});
+		
+		playGv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				// TODO Auto-generated method stub
+				List<MovieItemData> list = searchAdapter.getMovieList();
+				if (list != null && !list.isEmpty()) {
+					String pro_type = list.get(position).getMovieProType();
+					Log.i(TAG, "pro_type:" + pro_type);
+					if (pro_type != null && !pro_type.equals("")) {
+						Intent intent = new Intent();
+						if (pro_type.equals("2")) {
+							Log.i(TAG, "pro_type:" + pro_type + "   --->2");
+							intent.setClass(ShowSearchActivity.this,
+									ShowXiangqingTv.class);
+							intent.putExtra("ID", list.get(position)
+									.getMovieID());
+						} else if (pro_type.equals("1")) {
+							Log.i(TAG, "pro_type:" + pro_type + "   --->1");
+							intent.setClass(ShowSearchActivity.this,
+									ShowXiangqingMovie.class);
+						} else if (pro_type.equals("131")) {
+
+							intent.setClass(ShowSearchActivity.this,
+									ShowXiangqingDongman.class);
+						} else if (pro_type.equals("3")) {
+
+							intent.setClass(ShowSearchActivity.this,
+									ShowXiangqingZongYi.class);
+						}
+
+						intent.putExtra("ID", list.get(position).getMovieID());
+
+						intent.putExtra("prod_url", list.get(position)
+								.getMoviePicUrl());
+						intent.putExtra("prod_name", list.get(position)
+								.getMovieName());
+						intent.putExtra("stars", list.get(position).getStars());
+						intent.putExtra("directors", list.get(position)
+								.getDirectors());
+						intent.putExtra("summary", list.get(position)
+								.getSummary());
+						intent.putExtra("support_num", list.get(position)
+								.getSupport_num());
+						intent.putExtra("favority_num", list.get(position)
+								.getFavority_num());
+						intent.putExtra("definition", list.get(position)
+								.getDefinition());
+						intent.putExtra("score", list.get(position)
+								.getMovieScore());
+						startActivity(intent);
+
+					}
+				}
+			}
+		});
 
 		searchEt.setOnClickListener(new View.OnClickListener() {
 
