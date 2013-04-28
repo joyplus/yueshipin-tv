@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
+	<LinearLayout android:layout_width="fill_parent"
+	    android:gravity="center_vertical"
+	    android:layout_height="35dp">
+	    <TextView android:layout_width="wrap_content"
+	        android:layout_height="fill_parent"
+	        android:gravity="center_vertical"
+	        android:textColor="@color/blue_content_title"
+	        android:textSize="25sp"
+	        android:id="@+id/hot_content_name"/>
+	    <ImageView android:layout_width="wrap_content"
+	        android:layout_height="fill_parent"
+	        android:layout_marginLeft="14dp"
+	        android:paddingTop="4dp"
+	        android:layout_gravity="center_vertical"
+	        android:src="@drawable/douban"/>
+	    <TextView android:layout_width="wrap_content"
+	        android:layout_height="fill_parent"
+	        android:layout_marginLeft="5dp"
+	        android:textSize="20sp"
+	        android:gravity="center_vertical"
+	        android:textColor="@color/clock_green"
+	        android:id="@+id/hot_content_score"
+	        />
+	    <LinearLayout android:orientation="horizontal"
+	        android:layout_width="0dp"
+	        android:visibility="gone"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1">
+	        <TextView android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_marginLeft="48dp"
+	        android:textSize="20sp"
+	        android:textColor="@color/clock_green"
+	        android:text="约在"
+	        />
+	    <LinearLayout
+	        android:layout_width="wrap_content"
+	        android:layout_marginTop="3dp"
+	        android:layout_height="25dp"
+	        android:background="@drawable/bg_time"
+	        android:layout_gravity="center_vertical"
+	        android:layout_marginBottom="2dp"
+	        android:orientation="horizontal" >
+
+	        <ImageView android:layout_height="fill_parent"
+	            android:layout_width="wrap_content"
+	            android:src="@drawable/icon_time"
+	            />
+	        <TextView android:layout_width="wrap_content"
+		        android:layout_height="fill_parent"
+		        android:layout_marginLeft="5dp"
+		        android:textSize="18sp"
+		        android:layout_marginTop="-3dp"
+		        android:gravity="center_vertical"
+		        android:textColor="@color/common_title_selected"
+		        android:text="15:08"/>
+	    </LinearLayout>
+	    <TextView android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textSize="20sp"
+	        android:textColor="@color/clock_green"
+	        android:text="看完"
+	        />
+	    </LinearLayout>
+	</LinearLayout>
+    <LinearLayout android:layout_width="fill_parent"
+        android:layout_height="25dp"
+        android:layout_marginTop="15dp">
+        <TextView android:layout_width="wrap_content"
+	        android:layout_height="25dp"
+	        android:textSize="20sp"
+	        android:textColor="@color/hot_content_notice"
+	        android:id="@+id/title_directors"
+	        android:text="导演:"
+	        />
+         <TextView android:layout_width="wrap_content"
+	        android:layout_height="25dp"
+	        android:layout_marginLeft="5dp"
+	        android:textSize="20sp"
+	        android:textColor="@color/hot_content_content"
+	        android:id="@+id/hot_content_directors"
+	        />
+          <TextView android:layout_width="wrap_content"
+	        android:layout_height="25dp"
+	        android:layout_marginLeft="48dp"
+	        android:textSize="20sp"
+	        android:textColor="@color/hot_content_notice"
+	        android:id="@+id/title_stars"
+	        android:text="主演:"
+	        />
+          <TextView android:layout_width="wrap_content"
+	        android:layout_height="25dp"
+	        android:layout_marginLeft="5dp"
+	        android:textSize="20sp"
+	        android:singleLine="true"
+	        android:textColor="@color/hot_content_content"
+	        android:id="@+id/hot_content_stars"
+	        />
+    </LinearLayout>
+    <TextView android:layout_width="wrap_content"
+	        android:layout_height="25dp"
+	        android:layout_marginTop="15dp"
+	        android:textSize="20sp"
+	        android:textColor="@color/hot_content_notice"
+	        android:text="剧情简介:"
+	        />
+    <TextView android:layout_width="fill_parent"
+	        android:layout_height="fill_parent"
+	        android:layout_marginTop="10dp"
+	        android:textSize="20sp"
+	        android:maxLines="3"
+	        android:ellipsize="end"
+	       	android:lineSpacingExtra="5dip"
+	        android:textColor="@color/hot_content_content"
+	        android:id="@+id/hot_content_introduce"
+	        />
+</LinearLayout>

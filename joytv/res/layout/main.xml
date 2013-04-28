@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#08111a">
+	<RelativeLayout 
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent"
+	    android:id="@+id/root_layout">
+		<include layout="@layout/show_head"
+		    android:layout_width="fill_parent"
+		    android:layout_height="65dp"
+	        android:layout_marginLeft="30dp"
+		    />
+		<TextView android:layout_width="fill_parent"
+		    android:layout_height="45dp"
+		    android:layout_marginTop="105dp"
+		    android:layout_marginLeft="212dp"
+		    android:paddingRight="35dp"
+		    android:gravity="center_vertical|right"
+		    android:id="@+id/notice_text"
+		    android:textSize="18sp"
+		    android:textColor="@color/common_title_selected"
+		    android:background="@drawable/menubg"/>
+	    <com.joyplus.tv.ui.MyScrollLayout
+				android:layout_width="fill_parent"
+				android:layout_marginLeft="166dp"
+				android:id="@+id/group"
+				android:layout_marginTop="15dp"
+				android:layout_height="135dp">
+	        <TextView android:layout_width="fill_parent"
+				android:layout_height="45dp"
+				android:textColor="@color/common_title_unselected"
+				android:text="我的悦视频"
+				android:focusable="false"
+				android:gravity="center_vertical"
+				android:paddingLeft="14dp"
+				android:textSize="30sp"/>
+	        <TextView android:layout_width="fill_parent"
+				android:layout_height="45dp"
+				android:textColor="@color/common_title_unselected"
+				android:paddingLeft="14dp"
+				android:text="悦片库"
+				android:focusable="false"
+				android:gravity="center_vertical"
+				android:textSize="30sp"
+				/>
+	        <TextView android:layout_width="fill_parent"
+				android:layout_height="45dp"
+				android:textColor="@color/common_title_unselected"
+				android:paddingLeft="14dp"
+				android:focusable="false"
+				android:text="悦单"
+				android:gravity="center_vertical"
+				android:textSize="30sp"/>
+	        <TextView android:layout_width="fill_parent"
+				android:layout_height="45dp"
+				android:paddingLeft="14dp"
+				android:textColor="@color/common_title_unselected"
+				android:focusable="false"
+				android:text="热播"
+				android:gravity="center_vertical"
+				android:textSize="30sp"/>
+	    </com.joyplus.tv.ui.MyScrollLayout>
+	<!--     <ImageView android:layout_width="fill_parent" -->
+	<!-- 			    android:layout_height="5dp" -->
+	<!-- 			    android:layout_marginTop="10dp" -->
+	<!-- 			    android:layout_below="@id/group" -->
+	<!-- 			    android:src="@drawable/line"/> -->
+	<!--     <LinearLayout android:layout_width="fill_parent" -->
+	<!-- 			    android:layout_height="wrap_content" -->
+	<!-- 			    android:orientation="horizontal" -->
+	<!-- 			    android:layout_below="@id/group" -->
+	<!-- 			    android:layout_marginTop="5dp" -->
+	<!-- 			    android:id="@+id/gallery_layout" -->
+	<!-- 			    android:paddingLeft="2dp" -->
+	<!-- 			    android:paddingRight="2dp"> -->
+	<!-- 			    <ImageView android:layout_width="18dp" -->
+	<!-- 			        android:layout_height="fill_parent" -->
+	<!-- 			        android:src="@drawable/arrow_left"/> -->
+	<!-- 			    <com.joyplus.tv.ui.CustomGallery android:layout_width="fill_parent" -->
+	<!-- 			        android:layout_weight="1" -->
+	<!-- 			        android:layout_height="wrap_content" -->
+	<!-- 			        android:spacing="1dp" -->
+	<!-- 			        android:fadingEdge="@null" -->
+	<!-- 			        android:id="@+id/gallery"/> -->
+	<!-- 			    <ImageView android:layout_width="18dp" -->
+	<!-- 			        android:layout_height="fill_parent" -->
+	<!-- 			        android:src="@drawable/arrow_right"/> -->
+	<!-- 	</LinearLayout> -->
+	    
+	    <FrameLayout android:layout_width="fill_parent"
+	        android:layout_below="@id/group"
+	        android:id="@+id/galleryFram"
+	        android:layout_marginTop="5dp"
+	        android:layout_height="wrap_content">
+	        <LinearLayout android:layout_width="fill_parent"
+	            android:layout_height="wrap_content"
+	            android:layout_marginTop="5dp"
+	            android:orientation="vertical">
+	            <ImageView android:layout_width="fill_parent"
+				    android:layout_height="5dp"
+				    android:layout_marginTop="5dp"
+				    android:src="@drawable/line"/>
+				<LinearLayout android:layout_width="fill_parent"
+				    android:layout_height="wrap_content"
+				    android:orientation="horizontal"
+				    android:paddingLeft="2dp"
+				    android:layout_marginTop="5dp"
+				    android:paddingRight="2dp">
+				    <ImageView android:layout_width="18dp"
+				        android:layout_height="fill_parent"
+				        android:id="@+id/icon_arrow_left"
+				        android:visibility="invisible"
+				        android:src="@drawable/arrow_left"/>
+				    <com.joyplus.tv.ui.CustomGallery android:layout_width="fill_parent"
+				        android:layout_weight="1"
+				        android:layout_height="wrap_content"
+				        android:spacing="1dp"
+				        android:focusable="false"
+				        android:focusableInTouchMode="false"
+				        android:fadingEdge="@null"
+				        android:id="@+id/gallery"/>
+				    <ImageView android:layout_width="18dp"
+				        android:layout_height="fill_parent"
+				        android:id="@+id/icon_arrow_right"
+				        android:visibility="invisible"
+				        android:src="@drawable/arrow_right"/>
+				</LinearLayout>
+	        </LinearLayout>
+	    </FrameLayout>
+		<FrameLayout android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:padding="5dp"
+		    android:id="@+id/itemFram"
+		    android:layout_below="@id/group"
+		    android:layout_marginTop="5dp"
+		    android:layout_alignLeft="@id/group"
+		    android:layout_alignTop="@id/galleryFram"
+		    android:background="@drawable/bg_gallery_highlight">
+		    <ImageView android:layout_width="fill_parent"
+		        android:layout_height="fill_parent"
+		        android:scaleType="fitXY"
+		        android:background="@drawable/post_active"
+		        android:id="@+id/highlight_img_1"/>
+		    <ImageView android:layout_width="fill_parent"
+		        android:layout_height="fill_parent"
+		        android:scaleType="fitXY"
+		        android:background="@drawable/post_active"
+		        android:id="@+id/highlight_img_2"/>
+		    <ImageView android:layout_width="fill_parent"
+		        android:layout_height="fill_parent"
+		        android:scaleType="fitXY"
+		        android:background="@drawable/post_active"
+		        android:id="@+id/highlight_img_3"/>
+		    <ImageView android:layout_width="fill_parent"
+		        android:layout_height="fill_parent"
+		        android:scaleType="fitXY"
+		        android:background="@drawable/post_active"
+		        android:id="@+id/highlight_img_4"/>
+		    <ImageView android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_gravity="center"
+		        android:id="@+id/play_icon"
+		        android:src="@drawable/play"/>
+		    <ImageView android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_gravity="right|top"
+		        android:id="@+id/icon_defination"/>
+		</FrameLayout>
+		<LinearLayout android:layout_width="match_parent"
+		    android:layout_below="@id/galleryFram"
+		    android:layout_marginTop="5dp"
+		    android:paddingLeft="226dp"
+		    android:paddingTop="15dp"
+		    android:layout_height="fill_parent"
+		    android:background="@drawable/bg_teat_repeat">
+		    <LinearLayout android:layout_width="match_parent"
+		        android:layout_height="match_parent"
+		        android:paddingLeft="10dp"
+		        android:paddingRight="35dp"
+		       	android:id="@+id/contentlayout"
+		        >
+	<!-- 			<include layout="@layout/layout_hot"/> -->
+		    </LinearLayout>
+		</LinearLayout>
+	</RelativeLayout>
+	<ImageView android:layout_width="fill_parent"
+	    android:layout_height="fill_parent"
+	    android:scaleType="fitXY"
+	    android:id="@+id/image_starting"
+	    android:src="@drawable/starting"/>
+</RelativeLayout>
+
