@@ -1290,7 +1290,7 @@ public class ShowMovieActivity extends AbstractShowActivity {
 					R.drawable.post_active);
 
 			movieName.setText(list.get(position).getMovieName());
-			movieScore.setText(list.get(position).getMovieScore());
+			movieScore.setText(StatisticsUtils.formateScore(list.get(position).getMovieScore()));
 
 			String duration = list.get(position).getMovieDuration();
 			if (duration != null && !duration.equals("")) {

@@ -1100,7 +1100,7 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 				playDate.prod_name = info.prod_name;
 				playDate.prod_url = info.video_url;
 				Log.d(TAG, "url" + playDate.prod_url);
-//				playDate.prod_src = "";
+				playDate.prod_src = info.source;
 				if(!"".equals(info.playback_time)){
 					playDate.prod_time = Long.valueOf(info.playback_time)*1000;
 				}
@@ -1515,7 +1515,7 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 			TextView hot_directors_tv = (TextView) hotView.findViewById(R.id.hot_content_directors);
 			TextView hot_starts_tv = (TextView) hotView.findViewById(R.id.hot_content_stars);
 			TextView hot_introduce_tv = (TextView) hotView.findViewById(R.id.hot_content_introduce);
-			
+			ImageView icon_douban = (ImageView) hotView.findViewById(R.id.icon_douban);
 			if("3".equals(item.prod_type.trim())){
 				TextView hot_title_director = (TextView) hotView.findViewById(R.id.title_directors);
 				TextView hot_title_stars = (TextView) hotView.findViewById(R.id.title_stars);
@@ -1523,14 +1523,14 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 				hot_title_stars.setText(R.string.xiangqing_zongyi_shoubo);
 				hot_starts_tv.setText(item.directors);
 				hot_directors_tv.setText(item.stars);
-			
+				icon_douban.setVisibility(View.INVISIBLE);
 			}else{
 				hot_directors_tv.setText(item.directors);
 				hot_starts_tv.setText(item.stars);
 			}
 			
 			hot_name_tv.setText(item.prod_name);
-			hot_score_tv.setText(item.score);
+			hot_score_tv.setText(StatisticsUtils.formateScore(item.score));
 			hot_introduce_tv.setText(item.prod_summary);
 			hot_list.add(0,item);
 			hot_contentViews.add(0,hotView);
@@ -1621,7 +1621,7 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 				TextView hot_directors_tv = (TextView) hotView.findViewById(R.id.hot_content_directors);
 				TextView hot_starts_tv = (TextView) hotView.findViewById(R.id.hot_content_stars);
 				TextView hot_introduce_tv = (TextView) hotView.findViewById(R.id.hot_content_introduce);
-				
+				ImageView icon_douban = (ImageView) hotView.findViewById(R.id.icon_douban);
 				if("3".equals(item.prod_type.trim())){
 					TextView hot_title_director = (TextView) hotView.findViewById(R.id.title_directors);
 					TextView hot_title_stars = (TextView) hotView.findViewById(R.id.title_stars);
@@ -1629,7 +1629,7 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 					hot_title_stars.setText(R.string.xiangqing_zongyi_shoubo);
 					hot_starts_tv.setText(item.directors);
 					hot_directors_tv.setText(item.stars);
-				
+					icon_douban.setVisibility(View.INVISIBLE);
 				}else{
 					hot_directors_tv.setText(item.directors);
 					hot_starts_tv.setText(item.stars);
@@ -1637,7 +1637,7 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 				
 				
 				hot_name_tv.setText(item.prod_name);
-				hot_score_tv.setText(item.score);
+				hot_score_tv.setText(StatisticsUtils.formateScore(item.score));
 				hot_introduce_tv.setText(item.prod_summary);
 				hot_contentViews.add(hotView);
 			}

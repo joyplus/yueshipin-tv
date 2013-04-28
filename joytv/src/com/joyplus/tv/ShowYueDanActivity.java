@@ -1064,7 +1064,7 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 
 				if (proType.equals("1")) {
 
-					movieScore.setText(list.get(position).getMovieScore());
+					movieScore.setText(StatisticsUtils.formateScore(list.get(position).getMovieScore()));
 					String duration = list.get(position).getMovieDuration();
 					if (duration != null && !duration.equals("")) {
 
@@ -1073,7 +1073,7 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 					}
 				} else if (proType.equals("2") || proType.equals("131")) {
 
-					movieScore.setText(list.get(position).getMovieScore());
+					movieScore.setText(StatisticsUtils.formateScore(list.get(position).getMovieScore()));
 					String curEpisode = list.get(position).getMovieCurEpisode();
 					String maxEpisode = list.get(position).getMovieMaxEpisode();
 

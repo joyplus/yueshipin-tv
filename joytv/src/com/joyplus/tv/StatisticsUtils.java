@@ -747,6 +747,17 @@ public class StatisticsUtils implements JieMianConstant,BangDanKey{
 	}
 	
 	
+	public static String formateScore(String score) {
+		
+		if(score != null && !score.equals("") && !score.equals("0") && !score.equals("-1")) {
+			
+			return score;
+		}
+		
+		return "";
+	}
+	
+	
 	public static String formateZongyi(String curEpisode,Context context) {
 		
 		if(curEpisode != null && !curEpisode.equals("") && !curEpisode.equals("0")) {
@@ -900,7 +911,7 @@ public class StatisticsUtils implements JieMianConstant,BangDanKey{
 			movieItemData.setDirectors(result.items[i].directors);
 			movieItemData.setSupport_num(result.items[i].support_num);
 			movieItemData.setFavority_num(result.items[i].favority_num);
-			
+			movieItemData.setMovieDuration(result.items[i].duration);
 			list.add(movieItemData);
 		}
 		

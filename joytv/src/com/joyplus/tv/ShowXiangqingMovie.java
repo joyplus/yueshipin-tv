@@ -324,12 +324,15 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 			playDate.prod_name = movieData.movie.name;
 			if(gaoqing_url!=null){
 				playDate.prod_url = gaoqing_url;
+				playDate.prod_src = gaoqing_url_souce;
 			}else if(chaoqing_url != null){
 				playDate.prod_url = chaoqing_url;
+				playDate.prod_src = chaoqing_url_souce;
 			}else if(puqing_url !=null){
 				playDate.prod_url = puqing_url;
+				playDate.prod_src = puqing_url_souce;
 			}
-//			playDate.prod_src = "";
+//			playDate.prod_src = movieData.movie.sources;
 //			playDate.prod_qua = Integer.valueOf(info.definition);
 			app.setCurrentPlayData(playDate);
 			app.set_ReturnProgramView(null);

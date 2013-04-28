@@ -1229,7 +1229,7 @@ public class ShowTVActivity extends AbstractShowActivity {
 					R.drawable.post_active);
 
 			movieName.setText(list.get(position).getMovieName());
-			movieScore.setText(list.get(position).getMovieScore());
+			movieScore.setText(StatisticsUtils.formateScore(list.get(position).getMovieScore()));
 			
 			String curEpisode = list.get(position).getMovieCurEpisode();
 			String maxEpisode = list.get(position).getMovieMaxEpisode();
