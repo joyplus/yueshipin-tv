@@ -120,7 +120,7 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 						playDate.prod_name = ((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_name;
 						playDate.prod_url = ((HistortyAdapter)listView.getAdapter()).data.get(arg2).video_url;
 						String  currentIndex = ((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_subname;
-						if(currentIndex!=null&&"".equals(currentIndex)){
+						if(currentIndex!=null&&!"".equals(currentIndex)){
 							int current = Integer.valueOf(currentIndex);
 							if(current>0){
 								current = current-1;
