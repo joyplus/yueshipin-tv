@@ -992,7 +992,10 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		// if(firstJumpTime < 1 ){
 		mController.setPrepared(true);
 		// sb.setProgress(100);
-		mHandler.post(mProgressChecker);
+		mSeekComplete= true; 
+		mHandler.postDelayed(mProgressChecker, 2000);
+//		mHandler.post(mProgressChecker);
+		
 		// }
 	}
 
