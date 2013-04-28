@@ -110,7 +110,7 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 					finish();
 					return;
 				}
-				Toast.makeText(ShowShoucangHistoryActivity.this, "seleced index = " + arg2, 100).show();
+//				Toast.makeText(ShowShoucangHistoryActivity.this, "seleced index = " + arg2, 100).show();
 				final Dialog dialog = new AlertDialog.Builder(ShowShoucangHistoryActivity.this).create();
 				dialog.show();
 				LayoutInflater inflater = LayoutInflater.from(ShowShoucangHistoryActivity.this);

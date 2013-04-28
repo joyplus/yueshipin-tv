@@ -849,7 +849,7 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 			Toast.makeText(this, "没有可以播放的地址", Toast.LENGTH_SHORT).show();
 			return;
 		}
-		playDate.CurrentIndex = index+1;
+		playDate.CurrentIndex = index;
 		playDate.prod_url = urls.get(0).url;
 		playDate.prod_src = urls.get(0).source_from;
 		playDate.prod_favority = isXiai;
