@@ -17,6 +17,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
@@ -44,9 +45,10 @@ import com.joyplus.tv.Video.VideoPlayerActivity;
 import com.joyplus.tv.entity.HotItemInfo;
 import com.joyplus.tv.ui.NavigateView;
 import com.joyplus.tv.ui.NavigateView.OnResultListener;
+import com.joyplus.tv.utils.ItemStateUtils;
 import com.joyplus.tv.utils.Log;
 
-public class ShowShoucangHistoryActivity extends Activity implements OnClickListener, OnItemSelectedListener {
+public class ShowShoucangHistoryActivity extends Activity implements OnClickListener, OnItemSelectedListener,OnFocusChangeListener {
 	private static final String TAG = "ShowShoucangHistoryActivity";
 	private Button btn_fenlei_all;
 	private Button btn_fenlei_movie;
@@ -88,6 +90,15 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 		btn_fenlei_tv.setOnClickListener(this);
 		btn_fenlei_dongman.setOnClickListener(this);
 		btn_fenlei_zongyi.setOnClickListener(this);
+		
+		
+		btn_fenlei_all.setOnFocusChangeListener(this);
+		btn_fenlei_movie.setOnFocusChangeListener(this);
+		btn_fenlei_tv.setOnFocusChangeListener(this);
+		btn_fenlei_dongman.setOnFocusChangeListener(this);
+		btn_fenlei_zongyi.setOnFocusChangeListener(this);
+		
+		
 		btn_fenlei_all.setPadding(0, 0, 5, 0);
 		btn_fenlei_movie.setPadding(0, 0, 5, 0);
 		btn_fenlei_tv.setPadding(0, 0, 5, 0);
@@ -95,7 +106,10 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 		btn_fenlei_zongyi.setPadding(0, 0, 5, 0);
 		btn_fenlei_all.setTextColor(getResources().getColor(R.color.common_title_selected));
 		btn_fenlei_all.setBackgroundResource(R.drawable.menubg);
+		
 		selectedButton = btn_fenlei_all;
+		
+		listView.setNextFocusLeftId(R.id.fenlei_all);
 		selectedButton.setPadding(0, 0, 5, 0);
 //		listView.setAdapter(new MovieAdapter());
 		listView.setOnItemSelectedListener(this);
@@ -336,8 +350,8 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 		case R.id.fenlei_all:
 			selectedButton.setTextColor(getResources().getColorStateList(R.color.text_color_selector));
 			selectedButton.setBackgroundResource(R.drawable.text_drawable_selector);
-			btn_fenlei_all.setTextColor(getResources().getColor(R.color.common_title_selected));
-			btn_fenlei_all.setBackgroundResource(R.drawable.menubg);
+//			btn_fenlei_all.setTextColor(getResources().getColor(R.color.common_title_selected));
+//			btn_fenlei_all.setBackgroundResource(R.drawable.menubg);
 			selectedButton = btn_fenlei_all;
 			selectedButton.setPadding(0, 0, 5, 0);
 			index = 0;
@@ -347,12 +361,14 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 			}else{
 				listView.setAdapter(new HistortyAdapter(allHistoryList));
 			}
+			listView.setNextFocusLeftId(R.id.fenlei_all);
+			
 			break;
 		case R.id.fenlei_movie:
 			selectedButton.setTextColor(getResources().getColorStateList(R.color.text_color_selector));
 			selectedButton.setBackgroundResource(R.drawable.text_drawable_selector);
-			btn_fenlei_movie.setTextColor(getResources().getColor(R.color.common_title_selected));
-			btn_fenlei_movie.setBackgroundResource(R.drawable.menubg);
+//			btn_fenlei_movie.setTextColor(getResources().getColor(R.color.common_title_selected));
+//			btn_fenlei_movie.setBackgroundResource(R.drawable.menubg);
 			selectedButton = btn_fenlei_movie;
 			selectedButton.setPadding(0, 0, 5, 0);
 			index = 1;
@@ -362,12 +378,14 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 			}else{
 				listView.setAdapter(new HistortyAdapter(movieHistoryList));
 			}
+			
+			listView.setNextFocusLeftId(R.id.fenlei_movie);
 			break;
 		case R.id.fenlei_tv:
 			selectedButton.setTextColor(getResources().getColorStateList(R.color.text_color_selector));
 			selectedButton.setBackgroundResource(R.drawable.text_drawable_selector);
-			btn_fenlei_tv.setTextColor(getResources().getColor(R.color.common_title_selected));
-			btn_fenlei_tv.setBackgroundResource(R.drawable.menubg);
+//			btn_fenlei_tv.setTextColor(getResources().getColor(R.color.common_title_selected));
+//			btn_fenlei_tv.setBackgroundResource(R.drawable.menubg);
 			selectedButton = btn_fenlei_tv;
 			selectedButton.setPadding(0, 0, 5, 0);
 			index = 2;
@@ -377,12 +395,15 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 			}else{
 				listView.setAdapter(new HistortyAdapter(tvHistoryList));
 			}
+			
+			listView.setNextFocusLeftId(R.id.fenlei_tv);
+			
 			break;
 		case R.id.fenlei_dongman:
 			selectedButton.setTextColor(getResources().getColorStateList(R.color.text_color_selector));
 			selectedButton.setBackgroundResource(R.drawable.text_drawable_selector);
-			btn_fenlei_dongman.setTextColor(getResources().getColor(R.color.common_title_selected));
-			btn_fenlei_dongman.setBackgroundResource(R.drawable.menubg);
+//			btn_fenlei_dongman.setTextColor(getResources().getColor(R.color.common_title_selected));
+//			btn_fenlei_dongman.setBackgroundResource(R.drawable.menubg);
 			selectedButton = btn_fenlei_dongman;
 			selectedButton.setPadding(0, 0, 5, 0);
 			index = 131;
@@ -392,12 +413,13 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 			}else{
 				listView.setAdapter(new HistortyAdapter(dongmanHistoryList));
 			}
+			listView.setNextFocusLeftId(R.id.fenlei_dongman);
 			break;
 		case R.id.fenlei_zongyi:
 			selectedButton.setTextColor(getResources().getColorStateList(R.color.text_color_selector));
 			selectedButton.setBackgroundResource(R.drawable.text_drawable_selector);
-			btn_fenlei_zongyi.setTextColor(getResources().getColor(R.color.common_title_selected));
-			btn_fenlei_zongyi.setBackgroundResource(R.drawable.menubg);
+//			btn_fenlei_zongyi.setTextColor(getResources().getColor(R.color.common_title_selected));
+//			btn_fenlei_zongyi.setBackgroundResource(R.drawable.menubg);
 			selectedButton = btn_fenlei_zongyi;
 			selectedButton.setPadding(0, 0, 5, 0);
 			index = 3;
@@ -407,6 +429,8 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 			}else{
 				listView.setAdapter(new HistortyAdapter(zongyiHistoryList));
 			}
+			
+			listView.setNextFocusLeftId(R.id.fenlei_zongyi);
 			break;
 		case R.id.delete_btn:
 			final Dialog dialog = new AlertDialog.Builder(ShowShoucangHistoryActivity.this).create();
@@ -455,6 +479,28 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 			});
 		default:
 			break;
+		}
+	}
+	
+	
+	@Override
+	public void onFocusChange(View v, boolean hasFocus) {
+		// TODO Auto-generated method stub
+		
+		
+		if(!hasFocus) {
+			
+			if(selectedButton.getId() == v.getId()) {
+				Button button = (Button) v;
+				ItemStateUtils.buttonToActiveState(getApplicationContext(), button);
+			}
+		} else {
+			
+			if(selectedButton.getId() == v.getId()) {
+				
+				Button button = (Button) v;
+				ItemStateUtils.buttonToPTState(getApplicationContext(), button);
+			}
 		}
 	}
 

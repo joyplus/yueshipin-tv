@@ -120,14 +120,14 @@ public class ItemStateUtils implements JieMianConstant{
 			LinearLayout linearLayout = (LinearLayout) v;
 			if (v.getId() != activeView.getId()) {
 				ItemStateUtils.beforeViewActiveStateBack(context,activeView);
-				ItemStateUtils.linearLayoutToActiveState(context,linearLayout);
+//				ItemStateUtils.linearLayoutToActiveState(context,linearLayout);
 				return v;
 			}
 		} else if (v instanceof Button) {
 			Button button = (Button) v;
 			if (v.getId() != activeView.getId()) {
 				ItemStateUtils.beforeViewActiveStateBack(context,activeView);
-				ItemStateUtils.buttonToActiveState(context,button);
+//				ItemStateUtils.buttonToActiveState(context,button);
 				return v;
 			}
 		}
