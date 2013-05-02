@@ -87,7 +87,6 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 	private AQuery aq;
 	private App app;
 	private ReturnProgramView date;
-	private Handler handler =  new Handler();
 	
 	private static int favNum = 0;
 	
@@ -231,8 +230,14 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 				// TODO Auto-generated method stub
 				
 				if(hasFocus) {
+					if(isXiai) {
+						
+						ItemStateUtils.shoucangButtonToFocusState(xiaiBt, getApplicationContext());
+					} else {
+						
+						ItemStateUtils.shoucangButtonToNormalState(xiaiBt, getApplicationContext());
+					}
 					
-					ItemStateUtils.shoucangButtonToFocusState(xiaiBt, getApplicationContext());
 				} else {
 					
 					if(isXiai) {
@@ -253,8 +258,14 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 				// TODO Auto-generated method stub
 				
 				if(hasFocus) {
+					if(isDing) {
+						
+						ItemStateUtils.dingButtonToFocusState(dingBt, getApplicationContext());
+					} else {
+						
+						ItemStateUtils.dingButtonToNormalState(dingBt, getApplicationContext());
+					}
 					
-					ItemStateUtils.dingButtonToFocusState(dingBt, getApplicationContext());
 				} else {
 					
 					if(isDing){
@@ -400,31 +411,6 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 
 	}
 
-	private void backToNormalState() {
-		int id = beforeView.getId();
-		switch (id) {
-		case R.id.bt_xiangqingding:
-			if (!isDing) {
-				dingBt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ding_selector, 0, 0,0);
-			}
-			dingBt.setTextColor(getResources().getColor(R.color.time_color));
-			break;
-		case R.id.bt_xiangqing_xiai:
-			if (!isXiai) {
-				xiaiBt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.xiai_selector, 0, 0,0);
-			}
-			xiaiBt.setTextColor(getResources().getColor(R.color.time_color));
-			break;
-		case R.id.ll_xiangqing_bofang_gaoqing:
-			// bofangLL.setN
-			// xiaiIv.setImageResource(R.drawable.icon_fav_active);
-			// xiaiTv.setTextColor(getResources().getColor(R.color.text_foucs));
-			break;
-		default:
-			break;
-		}
-	}
-
 	@Override
 	public boolean onKey(View v, int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
@@ -433,24 +419,6 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 		if (action == KeyEvent.ACTION_UP) {
 
 			switch (v.getId()) {
-			case R.id.bt_xiangqingding:
-				if (keyCode == KEY_UP || keyCode == KEY_LEFT) {
-					backToNormalState();
-					dingBt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_dig_active, 0, 0,0);
-					dingBt.setTextColor(getResources().getColor(
-							R.color.text_foucs));
-				}
-				break;
-			case R.id.bt_xiangqing_xiai:
-				if (keyCode == KEY_UP || keyCode == KEY_LEFT
-						|| keyCode == KEY_RIGHT) {
-					backToNormalState();
-					dingBt.setSelected(false);
-					xiaiBt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_fav_active, 0, 0,0);
-					xiaiBt.setTextColor(getResources().getColor(
-							R.color.text_foucs));
-				}
-				break;
 			case R.id.ll_xiangqing_bofang_gaoqing:
 				if (keyCode == KEY_UP || keyCode == KEY_LEFT
 						|| keyCode == KEY_RIGHT) {
@@ -469,14 +437,7 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 						popupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
 								location[0] - 6, location[1] - locationY -40);
 
-					} else {
-
-						backToNormalState();
-					}
-					// Log.i("Yangzhg", "UPUP!!!!!!");
-					// bofangLL.setN
-					// xiaiIv.setImageResource(R.drawable.icon_fav_active);
-					// xiaiTv.setTextColor(getResources().getColor(R.color.text_foucs));
+					} 
 				}
 				break;
 			default:
@@ -852,7 +813,7 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 		Intent intent = new Intent(this,VideoPlayerActivity.class);
 		playDate.prod_id = prod_id;
 		playDate.prod_type = 131;
-		playDate.CurrentIndex = index;
+		playDate.CurrentIndex = index+1;
 		playDate.prod_name = date.tv.name+" 第" + (index+1) +"集";;
 //		playDate.prod_url = date.tv.episodes[0].down_urls[0].urls[0].url;
 //		playDate.prod_src = date.tv.episodes[0].down_urls[0].source;

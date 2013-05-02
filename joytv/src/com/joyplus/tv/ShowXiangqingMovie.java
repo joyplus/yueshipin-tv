@@ -242,8 +242,14 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 				// TODO Auto-generated method stub
 				
 				if(hasFocus) {
+					if(isXiai) {
+						
+						ItemStateUtils.shoucangButtonToFocusState(xiaiBt, getApplicationContext());
+					} else {
+						
+						ItemStateUtils.shoucangButtonToNormalState(xiaiBt, getApplicationContext());
+					}
 					
-					ItemStateUtils.shoucangButtonToFocusState(xiaiBt, getApplicationContext());
 				} else {
 					
 					if(isXiai) {
@@ -264,8 +270,14 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 				// TODO Auto-generated method stub
 				
 				if(hasFocus) {
+					if(isDing) {
+						
+						ItemStateUtils.dingButtonToFocusState(dingBt, getApplicationContext());
+					} else {
+						
+						ItemStateUtils.dingButtonToNormalState(dingBt, getApplicationContext());
+					}
 					
-					ItemStateUtils.dingButtonToFocusState(dingBt, getApplicationContext());
 				} else {
 					
 					if(isDing){
@@ -332,7 +344,7 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 				playDate.prod_url = puqing_url;
 				playDate.prod_src = puqing_url_souce;
 			}
-//			playDate.prod_src = movieData.movie.sources;
+//			playDate.prod_src = "";
 //			playDate.prod_qua = Integer.valueOf(info.definition);
 			app.setCurrentPlayData(playDate);
 			app.set_ReturnProgramView(null);
@@ -364,31 +376,6 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 
 	}
 
-	private void backToNormalState() {
-		int id = beforeView.getId();
-		switch (id) {
-		case R.id.bt_xiangqingding:
-			if (!isDing) {
-				dingBt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ding_selector, 0, 0,0);
-			}
-			dingBt.setTextColor(getResources().getColor(R.color.time_color));
-			break;
-		case R.id.bt_xiangqing_xiai:
-			if (!isXiai) {
-				xiaiBt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.xiai_selector, 0, 0,0);
-			}
-			xiaiBt.setTextColor(getResources().getColor(R.color.time_color));
-			break;
-		case R.id.ll_xiangqing_bofang_gaoqing:
-			// bofangLL.setN
-			// xiaiIv.setImageResource(R.drawable.icon_fav_active);
-			// xiaiTv.setTextColor(getResources().getColor(R.color.text_foucs));
-			break;
-		default:
-			break;
-		}
-	}
-
 	@Override
 	public boolean onKey(View v, int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
@@ -397,24 +384,6 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 		if (action == KeyEvent.ACTION_UP) {
 
 			switch (v.getId()) {
-			case R.id.bt_xiangqingding:
-				if (keyCode == KEY_UP || keyCode == KEY_LEFT) {
-					backToNormalState();
-					dingBt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_dig_active, 0, 0,0);
-					dingBt.setTextColor(getResources().getColor(
-							R.color.text_foucs));
-				}
-				break;
-			case R.id.bt_xiangqing_xiai:
-				if (keyCode == KEY_UP || keyCode == KEY_LEFT
-						|| keyCode == KEY_RIGHT) {
-					backToNormalState();
-					dingBt.setSelected(false);
-					xiaiBt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_fav_active, 0, 0,0);
-					xiaiBt.setTextColor(getResources().getColor(
-							R.color.text_foucs));
-				}
-				break;
 			case R.id.ll_xiangqing_bofang_gaoqing:
 				if (keyCode == KEY_UP || keyCode == KEY_LEFT
 						|| keyCode == KEY_RIGHT) {
@@ -448,18 +417,12 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 									location[0] - 6, location[1] - locationY -40);
 						}
 
-					} else {
-
-						backToNormalState();
 					}
 					// Log.i("Yangzhg", "UPUP!!!!!!");
 					// bofangLL.setN
 					// xiaiIv.setImageResource(R.drawable.icon_fav_active);
 					// xiaiTv.setTextColor(getResources().getColor(R.color.text_foucs));
 				}
-				break;
-			case R.id.gv_xiangqing_tuijian:
-				backToNormalState();
 				break;
 			default:
 				break;

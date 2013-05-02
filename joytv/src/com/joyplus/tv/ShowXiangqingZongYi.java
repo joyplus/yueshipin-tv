@@ -232,8 +232,14 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 				// TODO Auto-generated method stub
 				
 				if(hasFocus) {
+					if(isXiai) {
+						
+						ItemStateUtils.shoucangButtonToFocusState(xiaiBt, getApplicationContext());
+					} else {
+						
+						ItemStateUtils.shoucangButtonToNormalState(xiaiBt, getApplicationContext());
+					}
 					
-					ItemStateUtils.shoucangButtonToFocusState(xiaiBt, getApplicationContext());
 				} else {
 					
 					if(isXiai) {
@@ -254,8 +260,14 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 				// TODO Auto-generated method stub
 				
 				if(hasFocus) {
+					if(isDing) {
+						
+						ItemStateUtils.dingButtonToFocusState(dingBt, getApplicationContext());
+					} else {
+						
+						ItemStateUtils.dingButtonToNormalState(dingBt, getApplicationContext());
+					}
 					
-					ItemStateUtils.dingButtonToFocusState(dingBt, getApplicationContext());
 				} else {
 					
 					if(isDing){
@@ -381,31 +393,6 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 
 	}
 
-	private void backToNormalState() {
-		int id = beforeView.getId();
-		switch (id) {
-		case R.id.bt_xiangqingding:
-			if (!isDing) {
-				dingBt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ding_selector, 0, 0,0);
-			}
-			dingBt.setTextColor(getResources().getColor(R.color.time_color));
-			break;
-		case R.id.bt_xiangqing_xiai:
-			if (!isXiai) {
-				xiaiBt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.xiai_selector, 0, 0,0);
-			}
-			xiaiBt.setTextColor(getResources().getColor(R.color.time_color));
-			break;
-		case R.id.ll_xiangqing_bofang_gaoqing:
-			// bofangLL.setN
-			// xiaiIv.setImageResource(R.drawable.icon_fav_active);
-			// xiaiTv.setTextColor(getResources().getColor(R.color.text_foucs));
-			break;
-		default:
-			break;
-		}
-	}
-
 	@Override
 	public boolean onKey(View v, int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
@@ -414,24 +401,6 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 		if (action == KeyEvent.ACTION_UP) {
 
 			switch (v.getId()) {
-			case R.id.bt_xiangqingding:
-				if (keyCode == KEY_UP || keyCode == KEY_LEFT) {
-					backToNormalState();
-					dingBt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_dig_active, 0, 0,0);
-					dingBt.setTextColor(getResources().getColor(
-							R.color.text_foucs));
-				}
-				break;
-			case R.id.bt_xiangqing_xiai:
-				if (keyCode == KEY_UP || keyCode == KEY_LEFT
-						|| keyCode == KEY_RIGHT) {
-					backToNormalState();
-					dingBt.setSelected(false);
-					xiaiBt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_fav_active, 0, 0,0);
-					xiaiBt.setTextColor(getResources().getColor(
-							R.color.text_foucs));
-				}
-				break;
 			case R.id.ll_xiangqing_bofang_gaoqing:
 				if (keyCode == KEY_UP || keyCode == KEY_LEFT
 						|| keyCode == KEY_RIGHT) {
@@ -450,9 +419,6 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 						popupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
 								location[0] - 6, location[1] - locationY -40);
 
-					} else {
-
-						backToNormalState();
 					}
 					// Log.i("Yangzhg", "UPUP!!!!!!");
 					// bofangLL.setN
@@ -849,7 +815,7 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 			Toast.makeText(this, "没有可以播放的地址", Toast.LENGTH_SHORT).show();
 			return;
 		}
-		playDate.CurrentIndex = index;
+		playDate.CurrentIndex = index+1;
 		playDate.prod_url = urls.get(0).url;
 		playDate.prod_src = urls.get(0).source_from;
 		playDate.prod_favority = isXiai;
