@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.content.DialogInterface.OnCancelListener;
 import android.os.Bundle;
 import android.text.Editable;
+import android.util.SparseArray;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -31,6 +32,7 @@ import com.androidquery.callback.AjaxStatus;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.joyplus.tv.Adapters.SearchAdapter;
+import com.joyplus.tv.Adapters.ZongYiAdapter;
 import com.joyplus.tv.entity.MovieItemData;
 import com.joyplus.tv.ui.MyMovieGridView;
 import com.joyplus.tv.ui.WaitingDialog;
@@ -53,7 +55,7 @@ public class ShowSearchActivity extends AbstractShowActivity {
 	private boolean isGridViewUp = false;
 	private int[] beforeFirstAndLastVible = { 0, 9 };
 	private View beforeGvView = null;
-	private SearchAdapter searchAdapter = null;
+	private ZongYiAdapter searchAdapter = null;
 	private int beforepostion = 0;
 	private int currentListIndex;
 	private String search;
@@ -66,6 +68,10 @@ public class ShowSearchActivity extends AbstractShowActivity {
 	private boolean[] isNextPagePossibles = new boolean[4];
 	private int[] pageNums = new int[4];
 
+	private boolean isCurrentKeyVertical = false;//水平方向移动
+	private boolean isFirstActive = true;//是否界面初始化
+	private SparseArray<View> mSparseArray = new SparseArray<View>();
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -77,27 +83,101 @@ public class ShowSearchActivity extends AbstractShowActivity {
 		
 		initActivity();
 		
-		searchAdapter = new SearchAdapter(this,aq);
+		searchAdapter = new ZongYiAdapter(this,aq);
+		searchAdapter.setList(lists[SEARCH], false);
+		playGv.setAdapter(searchAdapter);
 	}
 	
 	@Override
+	public void onFocusChange(View v, boolean hasFocus) {
+		// TODO Auto-generated method stub
+		
+		if(v.getId() == R.id.et_search) {
+			
+			if (hasFocus == true) {
+				((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
+						.showSoftInput(v, InputMethodManager.SHOW_FORCED);
+
+			} else { // ie searchBoxEditText doesn't have focus
+				((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
+						.hideSoftInputFromWindow(v.getWindowToken(), 0);
+
+			}
+		} else {
+			
+			if (hasFocus) {
+
+				ItemStateUtils.viewToFocusState(getApplicationContext(), v);
+			} else {
+
+				ItemStateUtils.viewToOutFocusState(getApplicationContext(), v,
+						activeView);
+			}
+		}
+		
+		if(!isCurrentKeyVertical) {
+			
+			int postion = playGv.getSelectedItemPosition();
+			View view =mSparseArray.get(postion);
+			
+			if(view != null) {
+				
+				if (hasFocus) {// 如果gridview没有获取焦点，把item中高亮取消
+
+					ItemStateUtils.viewOutAnimation(getApplicationContext(),
+							view);
+				} else {
+					
+					ItemStateUtils.viewInAnimation(getApplicationContext(), view);
+					activeRecordIndex = postion;
+				}
+			}
+		}
+
+	}
+
+	@Override
 	public boolean onKey(View v, int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
-		int action = event.getAction();
-		if (action == KeyEvent.ACTION_UP) {
 
-		}
 		return false;
 	}
 	
 	@Override
-	protected void onDestroy() {
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
-		if (aq != null)
-			aq.dismiss();
 		
-		clearLists();
-		super.onDestroy();
+		int action = event.getAction();
+
+		if (action == KeyEvent.ACTION_DOWN) {
+
+			switch (keyCode) {
+			case KEY_UP:
+
+//				isGridViewUp = true;
+				isCurrentKeyVertical = true;
+				break;
+			case KEY_DOWN:
+
+//				isGridViewUp = false;
+				isCurrentKeyVertical = true;
+				break;
+			case KEY_LEFT:
+
+				isCurrentKeyVertical = false;
+				break;
+			case KEY_RIGHT:
+
+				isCurrentKeyVertical = false;
+				break;
+
+			default:
+				break;
+			}
+
+		}
+		
+		return super.onKeyDown(keyCode, event);
 	}
 	
 	@Override
@@ -135,140 +215,10 @@ public class ShowSearchActivity extends AbstractShowActivity {
 	}
 
 	@Override
-	public void onFocusChange(View v, boolean hasFocus) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	protected void initViewListener() {
 		// TODO Auto-generated method stub
-
-		playGv.setOnKeyListener(new View.OnKeyListener() {
-
-			@Override
-			public boolean onKey(View v, int keyCode, KeyEvent event) {
-				// TODO Auto-generated method stub
-				int action = event.getAction();
-
-				if (keyCode == KEY_UP) {
-
-					isGridViewUp = true;
-					// isGridViewDown = false;
-				} else if (keyCode == KEY_DOWN) {
-
-					isGridViewUp = false;
-					// isGridViewDown = true;
-				}
-				if (action == KeyEvent.ACTION_UP) {
-					if (keyCode == KEY_RIGHT) {
-
-					}
-
-				}
-				return false;
-			}
-		});
-
-		playGv.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
-			@Override
-			public void onItemSelected(AdapterView<?> parent, final View view,
-					int position, long id) {
-				// TODO Auto-generated method stub
-				// if (BuildConfig.DEBUG)
-				Log.i(TAG, "Positon:" + position + " View:" + view
-						+ " beforGvView:" + beforeGvView);
-
-				if (view == null) {
-
-					return;
-				}
-
-				final float y = view.getY();
-
-				boolean isSmoonthScroll = false;
-
-				boolean isSameContent = position >= beforeFirstAndLastVible[0]
-						&& position <= beforeFirstAndLastVible[1];
-				if (position >= 5 && !isSameContent) {
-
-					if (beforepostion >= beforeFirstAndLastVible[0]
-							&& beforepostion <= beforeFirstAndLastVible[0] + 4) {
-
-						if (isGridViewUp) {
-
-							playGv.smoothScrollBy(-popHeight, 1000);
-							isSmoonthScroll = true;
-						}
-					} else {
-
-						if (!isGridViewUp) {
-
-							playGv.smoothScrollBy(popHeight, 1000 * 2);
-							isSmoonthScroll = true;
-
-						}
-					}
-
-				}
-
-				if (beforeGvView != null && beforeGvView != view) {
-
-					ItemStateUtils.viewOutAnimation(getApplicationContext(),
-							beforeGvView);
-				} 
-				
-				if(position != activeRecordIndex) {
-					
-					ItemStateUtils.viewInAnimation(getApplicationContext(), view);
-					activeRecordIndex = position;
-				}
-				
-
-				int[] firstAndLastVisible = new int[2];
-				firstAndLastVisible[0] = playGv.getFirstVisiblePosition();
-				firstAndLastVisible[1] = playGv.getLastVisiblePosition();
-
-				if (y == 0 || y - popHeight == 0) {// 顶部没有渐影
-
-					beforeFirstAndLastVible = ItemStateUtils
-							.reCaculateFirstAndLastVisbile(
-									beforeFirstAndLastVible,
-									firstAndLastVisible, isSmoonthScroll, false);
-
-				} else {// 顶部有渐影
-
-					beforeFirstAndLastVible = ItemStateUtils
-							.reCaculateFirstAndLastVisbile(
-									beforeFirstAndLastVible,
-									firstAndLastVisible, isSmoonthScroll, true);
-
-				}
-
-				beforeGvView = view;
-				beforepostion = position;
-
-				// 缓存
-				int size = searchAdapter.getMovieList().size();
-				if (size - 1 - firstAndLastVisible[1] < StatisticsUtils.CACHE_NUM) {
-
-					if (isNextPagePossibles[currentListIndex]) {
-
-						pageNums[currentListIndex]++;
-						playGv.setOnFocusChangeListener(null);
-						cachePlay(currentListIndex, pageNums[currentListIndex]);
-					}
-				}
-
-			}
-
-			@Override
-			public void onNothingSelected(AdapterView<?> parent) {
-				// TODO Auto-generated method stub
-
-			}
-		});
+		searchEt.setOnKeyListener(this);
+		searchEt.setOnFocusChangeListener(this);
 		
 		playGv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -328,26 +278,135 @@ public class ShowSearchActivity extends AbstractShowActivity {
 			}
 		});
 
+		playGv.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+			@Override
+			public void onItemSelected(AdapterView<?> parent, final View view,
+					int position, long id) {
+				// TODO Auto-generated method stub
+				// if (BuildConfig.DEBUG)
+				Log.i(TAG, "Positon:" + position + " View:" + view + 
+						" before: " + activeRecordIndex);
+
+				if (view == null) {
+
+					return;
+				}else {
+					
+//					Log.i(TAG, "mSparseArray: " + mSparseArray.get(position));
+//					if(mSparseArray.get(position) == null){
+						
+						mSparseArray.put(position,view);
+//					}
+				}
+
+				final float y = view.getY();
+
+				boolean isSmoonthScroll = false;
+
+				boolean isSameContent = position >= beforeFirstAndLastVible[0]
+						&& position <= beforeFirstAndLastVible[1];
+//				if (position >= 5 && !isSameContent) {
+//
+//					if (beforepostion >= beforeFirstAndLastVible[0]
+//							&& beforepostion <= beforeFirstAndLastVible[0] + 4) {
+//
+//						if (isGridViewUp) {
+//
+//							playGv.smoothScrollBy(-popHeight, 1000);
+//							isSmoonthScroll = true;
+//						}
+//					} else {
+//
+//						if (!isGridViewUp) {
+//
+//							playGv.smoothScrollBy(popHeight, 1000 * 2);
+//							isSmoonthScroll = true;
+//
+//						}
+//					}
+//
+//				}
+
+				if (mSparseArray.get(activeRecordIndex) != null && activeRecordIndex != position) {
+
+					ItemStateUtils.viewOutAnimation(getApplicationContext(),
+							mSparseArray.get(activeRecordIndex));
+				}
+
+				if (position != activeRecordIndex && isFirstActive) {
+
+					ItemStateUtils.viewInAnimation(getApplicationContext(),
+							view);
+					activeRecordIndex = position;
+				}
+				
+				if(!isFirstActive) {//如果不是初始化，那就设为true
+					
+					isFirstActive = true;
+				}
+
+				int[] firstAndLastVisible = new int[2];
+				firstAndLastVisible[0] = playGv.getFirstVisiblePosition();
+				firstAndLastVisible[1] = playGv.getLastVisiblePosition();
+
+				if (y == 0 || y - popHeight == 0) {// 顶部没有渐影
+
+					beforeFirstAndLastVible = ItemStateUtils
+							.reCaculateFirstAndLastVisbile(
+									beforeFirstAndLastVible,
+									firstAndLastVisible, isSmoonthScroll, false);
+
+				} else {// 顶部有渐影
+
+					beforeFirstAndLastVible = ItemStateUtils
+							.reCaculateFirstAndLastVisbile(
+									beforeFirstAndLastVible,
+									firstAndLastVisible, isSmoonthScroll, true);
+
+				}
+
+				beforepostion = position;
+
+				// 缓存
+				int size = searchAdapter.getMovieList().size();
+				if (size - 1 - firstAndLastVisible[1] < StatisticsUtils.CACHE_NUM) {
+
+					if (isNextPagePossibles[currentListIndex]) {
+
+						pageNums[currentListIndex]++;
+						cachePlay(currentListIndex, pageNums[currentListIndex]);
+					}
+				}
+
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parent) {
+				// TODO Auto-generated method stub
+
+			}
+		});
+
 		searchEt.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 
-				playGv.setAdapter(searchAdapter);
 				Editable editable = searchEt.getText();
 				String searchStr = editable.toString();
-//				searchEt.setText("");
+				// searchEt.setText("");
 				playGv.setNextFocusForwardId(searchEt.getId());//
+
 				ItemStateUtils
 						.viewToNormal(getApplicationContext(), activeView);
 				activeView = searchEt;
 
 				if (searchStr != null && !searchStr.equals("")) {
-					showDialog(DIALOG_WAITING);
-
-					search = searchStr;
 					resetGvActive();
+					showDialog(DIALOG_WAITING);
+					search = searchStr;
 					StatisticsUtils.clearList(lists[SEARCH]);
 					currentListIndex = SEARCH;
 					String url = StatisticsUtils.getSearch_FirstURL(searchStr);
@@ -356,41 +415,7 @@ public class ShowSearchActivity extends AbstractShowActivity {
 
 			}
 		});
-
-		searchEt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-
-			@Override
-			public void onFocusChange(View v, boolean hasFocus) {
-				// TODO Auto-generated method stub
-				if (hasFocus == true) {
-					((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
-							.showSoftInput(v, InputMethodManager.SHOW_FORCED);
-
-				} else { // ie searchBoxEditText doesn't have focus
-					((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
-							.hideSoftInputFromWindow(v.getWindowToken(), 0);
-
-				}
-			}
-		});
 	}
-	
-	private View.OnFocusChangeListener gvOnFocusChangeListener = new View.OnFocusChangeListener() {
-		
-		@Override
-		public void onFocusChange(View v, boolean hasFocus) {
-			// TODO Auto-generated method stub
-			
-			if (!hasFocus) {// 如果gridview没有获取焦点，把item中高亮取消
-
-				if (beforeGvView != null) {
-
-					ItemStateUtils.viewOutAnimation(
-							getApplicationContext(), beforeGvView);
-				}
-			}
-		}
-	};
 
 	@Override
 	protected void clearLists() {
@@ -427,22 +452,31 @@ public class ShowSearchActivity extends AbstractShowActivity {
 			popHeight = height;
 		}
 
-		searchAdapter.setList(list);
-		
-		if(list.size() <= 0) {
+		if(currentListIndex != SEARCH &&
+				currentListIndex != QUAN_FILTER) {
 			
-			playGv.setAdapter(null);
-			app.MyToast(getApplicationContext(), getString(R.string.toast_no_play));
+			searchAdapter.setList(list,true);
+		}else {
+			
+			searchAdapter.setList(list,false);
+		}
+		
+		
+		if(searchAdapter.getItemId() == list.size()) {
+			
+			searchAdapter.setItemId(list.size() + 1);
 		} else {
 			
-			ListAdapter adapter = playGv.getAdapter();
-			if(adapter == null) {
-				
-				playGv.setAdapter(searchAdapter);
-			} 
+			searchAdapter.setItemId(list.size());
 		}
 
-		if (list != null && !list.isEmpty() && currentListIndex != QUANBUFENLEI) {// 判断其能否向获取更多数据
+		if (list.size() <= 0) {
+
+			app.MyToast(getApplicationContext(),
+					getString(R.string.toast_no_play));
+		}
+
+		if (list != null && !list.isEmpty()&&QUANBUFENLEI != currentListIndex) {// 判断其能否向获取更多数据
 
 			if (list.size() == StatisticsUtils.FIRST_NUM) {
 
@@ -454,12 +488,14 @@ public class ShowSearchActivity extends AbstractShowActivity {
 		}
 		lists[currentListIndex] = list;
 
-		beforeGvView = null;
 		playGv.setSelection(0);
 		searchAdapter.notifyDataSetChanged();
+		
 		removeDialog(DIALOG_WAITING);
-		playGv.requestFocus();
-		playGv.setOnFocusChangeListener(gvOnFocusChangeListener);
+//		if(isFirstActive) {
+//			
+//			playGv.requestFocus();
+//		}
 
 	}
 
@@ -530,7 +566,7 @@ public class ShowSearchActivity extends AbstractShowActivity {
 			isNextPagePossibles[currentListIndex] = false;
 		}
 
-		searchAdapter.setList(srcList);
+		searchAdapter.setList(srcList,true);
 		lists[currentListIndex] = srcList;
 
 		searchAdapter.notifyDataSetChanged();
@@ -686,9 +722,10 @@ public class ShowSearchActivity extends AbstractShowActivity {
 	protected void resetGvActive() {
 		// TODO Auto-generated method stub
 		
-		playGv.setOnFocusChangeListener(null);
-		playGv.setSelection(-1);
+		mSparseArray.clear();
 		activeRecordIndex = -1;
+		isCurrentKeyVertical = false;
+		isFirstActive = false;
 	}
 
 	@Override

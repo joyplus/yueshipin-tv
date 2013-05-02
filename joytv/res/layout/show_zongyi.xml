@@ -297,14 +297,14 @@
                 android:layout_height="match_parent"
                 android:paddingRight="34dp" >
 
-                <com.joyplus.tv.ui.MyMovieGridView
+                <com.joyplus.tv.ui.MyZongYiGridView
                     android:id="@+id/gv_movie_show"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center"
                     android:listSelector="@android:color/transparent"
                     android:numColumns="5" >
-                </com.joyplus.tv.ui.MyMovieGridView>
+                </com.joyplus.tv.ui.MyZongYiGridView>
 
                 <include
                     android:id="@+id/inclue_movie_show_item"

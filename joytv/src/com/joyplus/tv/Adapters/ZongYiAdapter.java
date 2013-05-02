@@ -17,14 +17,14 @@ import com.joyplus.tv.R;
 import com.joyplus.tv.StatisticsUtils;
 import com.joyplus.tv.entity.GridViewItemHodler;
 import com.joyplus.tv.entity.MovieItemData;
-import com.joyplus.tv.entity.YueDanInfo2;
 import com.joyplus.tv.utils.JieMianConstant;
 import com.joyplus.tv.utils.Log;
 
-public class YueDanAdapter extends BaseAdapter implements JieMianConstant{
-	public static final String TAG = "YueDanAdapter";
-	
+public class ZongYiAdapter extends BaseAdapter implements JieMianConstant{
+	private static final String TAG = "ZongYiAdapter";
+
 	private List<MovieItemData> movieList = new ArrayList<MovieItemData>();
+
 	private int popWidth,popHeight;
 	
 	private Context context;
@@ -33,7 +33,7 @@ public class YueDanAdapter extends BaseAdapter implements JieMianConstant{
 	private boolean isPreLoad = true;
 	private long itemId = 0;
 
-	public YueDanAdapter(Context context,AQuery aq) {
+	public ZongYiAdapter(Context context,AQuery aq) {
 		
 		this.context = context;
 		this.aq = aq;
@@ -87,17 +87,19 @@ public class YueDanAdapter extends BaseAdapter implements JieMianConstant{
 			viewItemHodler.haibaoIv = (ImageView) convertView
 					.findViewById(R.id.iv_item_layout_haibao);
 			viewItemHodler.definition = (ImageView) convertView.findViewById(R.id.iv_item_layout_gaoqing_logo);
+			viewItemHodler.isActive = false;
 			convertView.setTag(viewItemHodler);
 			
 			convertView.setPadding(GRIDVIEW_ITEM_PADDING_LEFT,
 					GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING_LEFT,
 					GRIDVIEW_ITEM_PADDING);
 
+
 		} else {
 
 			viewItemHodler = (GridViewItemHodler) convertView.getTag();
 		}
-
+		
 		AbsListView.LayoutParams params = new AbsListView.LayoutParams(
 				width, height);
 		convertView.setLayoutParams(params);
@@ -108,7 +110,8 @@ public class YueDanAdapter extends BaseAdapter implements JieMianConstant{
 			popWidth = width;
 		}
 
-		if (movieList.size() <= 0) {
+
+		if (movieList.size() <= 0 && isPreLoad) {
 
 			return convertView;
 		}
@@ -116,79 +119,82 @@ public class YueDanAdapter extends BaseAdapter implements JieMianConstant{
 		viewItemHodler.nameTv.setText("");
 		viewItemHodler.otherInfo.setText("");
 
-		Log.i(TAG, "postion:" + position + " " + movieList.get(position).getMovieName());
 		viewItemHodler.nameTv.setText(movieList.get(position).getMovieName());
 		
+		String definition = movieList.get(position).getDefinition();
 		
-		String num = movieList.get(position).getNum();
-		if(num != null && !num.equals("") ) {
-			
-			viewItemHodler.otherInfo.setText(movieList.get(position).getNum() + context.getString(R.string.yingpianshu));
-		} else {
-			
-			String definition = movieList.get(position).getDefinition();
-			
-			if(definition != null && !definition.equals("")) {
-				viewItemHodler.definition.setVisibility(View.VISIBLE);
-				switch (Integer.valueOf(definition)) {
-				case 8:
-					viewItemHodler.definition.setImageResource(R.drawable.icon_bd);
-					break;
-				case 7:
-					viewItemHodler.definition.setImageResource(R.drawable.icon_hd);
-					break;
-				case 6:
-					viewItemHodler.definition.setImageResource(R.drawable.icon_ts);
-					break;
-				default:
-					viewItemHodler.definition.setVisibility(View.GONE);
-					break;
-				}
+		Log.i(TAG, "position:" + position + " definition:" + definition);
+		if(definition != null && !definition.equals("")) {
+			viewItemHodler.definition.setVisibility(View.VISIBLE);
+			switch (Integer.valueOf(definition)) {
+			case 8:
+				viewItemHodler.definition.setImageResource(R.drawable.icon_bd);
+				break;
+			case 7:
+				viewItemHodler.definition.setImageResource(R.drawable.icon_hd);
+				break;
+			case 6:
+				viewItemHodler.definition.setImageResource(R.drawable.icon_ts);
+				break;
+			default:
+				viewItemHodler.definition.setVisibility(View.GONE);
+				break;
 			}
-			String proType = movieList.get(position).getMovieProType();
-			
-			if(proType != null && !proType.equals("")) {
-				
-				if(proType.equals("1")) {
-					
-					viewItemHodler.scoreTv.setText(StatisticsUtils.formateScore(movieList.get(position).getMovieScore()));
-					String duration = movieList.get(position).getMovieDuration();
-					if(duration != null && !duration.equals("")) {
-						
-						viewItemHodler.otherInfo.setText(StatisticsUtils.formatMovieDuration(duration));
-					}
-				} else if(proType.equals("2") || proType.equals("131")){
-					
-					viewItemHodler.scoreTv.setText(StatisticsUtils.formateScore(movieList.get(position).getMovieScore()));
-					String curEpisode = movieList.get(position).getMovieCurEpisode();
-					String maxEpisode = movieList.get(position).getMovieMaxEpisode();
-					
-					if(maxEpisode != null && !maxEpisode.equals("")) {
-						
-						if(curEpisode == null || curEpisode.equals("0") || 
-								curEpisode.compareTo(maxEpisode) >= 0) {
-							
-							viewItemHodler.otherInfo.setText(
-									maxEpisode + context.getString(R.string.dianshiju_jiquan));
-							} else if(maxEpisode.compareTo(curEpisode) > 0) {
+		}
 
+		
+		String proType = movieList.get(position).getMovieProType();
+		
+		if(proType != null && !proType.equals("")) {
+			
+			if(proType.equals("1")) {
+				
+				viewItemHodler.scoreTv.setText(StatisticsUtils.formateScore(movieList.get(position).getMovieScore()));
+				String duration = movieList.get(position).getMovieDuration();
+				if(duration != null && !duration.equals("")) {
+					
+					viewItemHodler.otherInfo.setText(StatisticsUtils.formatMovieDuration(duration));
+				}
+				
+			} else if(proType.equals("2") || proType.equals("131")){
+				
+				viewItemHodler.scoreTv.setText(StatisticsUtils.formateScore(movieList.get(position).getMovieScore()));
+				String curEpisode = movieList.get(position).getMovieCurEpisode();
+				String maxEpisode = movieList.get(position).getMovieMaxEpisode();
+				
+				if(maxEpisode != null && !maxEpisode.equals("")) {
+
+					if(curEpisode == null || curEpisode.equals("0")) {
+						
+						viewItemHodler.otherInfo.setText(
+								maxEpisode + context.getString(R.string.dianshiju_jiquan));
+						} else{
+
+							int max = Integer.valueOf(maxEpisode);
+							int min = Integer.valueOf(curEpisode);
+							
+							if(min >= max) {
+								
+								viewItemHodler.otherInfo.setText(
+										maxEpisode + context.getString(R.string.dianshiju_jiquan));
+							} else {
+								
 								viewItemHodler.otherInfo.setText(context.getString(R.string.zongyi_gengxinzhi) + 
 										curEpisode);
-						}
-					}
+							}
 
-				} else if(proType.equals("3")) {
-					
-					String curEpisode = movieList.get(position).getMovieCurEpisode();
-					if(curEpisode != null && !curEpisode.equals("")) {
-						
-						viewItemHodler.otherInfo.setText(StatisticsUtils.formateZongyi(curEpisode, context));
 					}
+				}
+
+			} else if(proType.equals("3")) {
+				
+				String curEpisode = movieList.get(position).getMovieCurEpisode();
+				if(curEpisode != null && !curEpisode.equals("")) {
+					
+					viewItemHodler.otherInfo.setText(StatisticsUtils.formateZongyi(curEpisode, context));
 				}
 			}
 		}
-		
-
 
 		aq.id(viewItemHodler.haibaoIv).image(movieList.get(position).getMoviePicUrl(), 
 				true, true,0, R.drawable.post_normal);

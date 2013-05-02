@@ -2,6 +2,7 @@ package com.joyplus.tv.Adapters;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import android.app.Activity;
 import android.content.Context;
@@ -67,11 +68,10 @@ public class SearchAdapter extends BaseAdapter implements JieMianConstant{
 	@Override
 	public long getItemId(int position) {
 		// TODO Auto-generated method stub
-		if (movieList.size() <= 0) {
 
-			return DEFAULT_ITEM_NUM;
-		}
-		return movieList.size();
+		Random random = new Random(System.currentTimeMillis());
+//		random.nextLong();
+		return random.nextLong();
 	}
 
 	@Override

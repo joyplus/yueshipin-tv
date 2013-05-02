@@ -8,14 +8,14 @@ import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.widget.GridView;
 
-public class MyMovieGridView extends GridView implements MyKeyEventKey{
+public class MyZongYiGridView extends GridView implements MyKeyEventKey{
 	
-	public MyMovieGridView(Context context) {
+	public MyZongYiGridView(Context context) {
 		super(context);
 		// TODO Auto-generated constructor stub
 	}
 
-	public MyMovieGridView(Context context, AttributeSet attrs) {
+	public MyZongYiGridView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		// TODO Auto-generated constructor stub
 	}
