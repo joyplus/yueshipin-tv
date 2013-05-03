@@ -485,6 +485,14 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 			searchAdapter.setList(list,false);
 		}
 		
+		if(searchAdapter.getItemId() == list.size()) {
+			
+			searchAdapter.setItemId(list.size() + 1);
+		} else {
+			
+			searchAdapter.setItemId(list.size());
+		}
+		
 
 		if (list.size() <= 0) {
 
