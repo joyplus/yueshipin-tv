@@ -5,6 +5,10 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -17,8 +21,10 @@ import com.joyplus.tv.R;
 import com.joyplus.tv.StatisticsUtils;
 import com.joyplus.tv.entity.GridViewItemHodler;
 import com.joyplus.tv.entity.MovieItemData;
+import com.joyplus.tv.utils.AsyncImageLoader;
 import com.joyplus.tv.utils.JieMianConstant;
 import com.joyplus.tv.utils.Log;
+import com.joyplus.tv.utils.OnImageLoadListener;
 
 public class ZongYiAdapter extends BaseAdapter implements JieMianConstant{
 	private static final String TAG = "ZongYiAdapter";
@@ -32,11 +38,26 @@ public class ZongYiAdapter extends BaseAdapter implements JieMianConstant{
 	
 	private boolean isPreLoad = true;
 	private long itemId = 0;
+	private AsyncImageLoader loader;
+	private SparseArray<View> arrays = new SparseArray<View>();
+	private Resources resources;
 
 	public ZongYiAdapter(Context context,AQuery aq) {
 		
 		this.context = context;
 		this.aq = aq;
+		this.resources = context.getResources();
+		loader = new AsyncImageLoader(new OnImageLoadListener() {
+			
+			@Override
+			public void ImageLoadFinished(Bitmap bitmap, String imageUrl, int position) {
+				// TODO Auto-generated method stub
+				View view = arrays.get(position);
+				GridViewItemHodler gvGridViewItemHodler = (GridViewItemHodler) view.getTag();
+				gvGridViewItemHodler.haibaoIv.setBackgroundDrawable(new BitmapDrawable(resources, bitmap));
+			}
+		});
+		
 	}
 
 	@Override
@@ -70,7 +91,8 @@ public class ZongYiAdapter extends BaseAdapter implements JieMianConstant{
 	public View getView(int position, View convertView, ViewGroup parent) {
 		// TODO Auto-generated method stub
 		GridViewItemHodler viewItemHodler = null;
-
+		
+		
 		int width = parent.getWidth() / 5;
 		int height = (int) (width / 1.0f / STANDARD_PIC_WIDTH * STANDARD_PIC_HEIGHT);
 
@@ -100,6 +122,11 @@ public class ZongYiAdapter extends BaseAdapter implements JieMianConstant{
 			viewItemHodler = (GridViewItemHodler) convertView.getTag();
 		}
 		
+		if(arrays.get(position) != convertView) {
+			
+			arrays.put(position, convertView);
+		}
+		
 		AbsListView.LayoutParams params = new AbsListView.LayoutParams(
 				width, height);
 		convertView.setLayoutParams(params);
@@ -118,6 +145,7 @@ public class ZongYiAdapter extends BaseAdapter implements JieMianConstant{
 		
 		viewItemHodler.nameTv.setText("");
 		viewItemHodler.otherInfo.setText("");
+		viewItemHodler.haibaoIv.setBackgroundResource(R.drawable.post_normal);
 
 		viewItemHodler.nameTv.setText(movieList.get(position).getMovieName());
 		
@@ -196,6 +224,8 @@ public class ZongYiAdapter extends BaseAdapter implements JieMianConstant{
 			}
 		}
 
+//		loader.loadBitmap(movieList.get(position).getMoviePicUrl(), position);
+		
 		aq.id(viewItemHodler.haibaoIv).image(movieList.get(position).getMoviePicUrl(), 
 				true, true,0, R.drawable.post_normal);
 		return convertView;

@@ -89,8 +89,11 @@ public class Constant {
 	public static final String USER_AGENT_FIRFOX = "	Mozilla/5.0 (Windows NT 6.1; rv:19.0) Gecko/20100101 Firefox/19.0";
 	
 	//图片路径
+//	public static String PATH = Environment.getExternalStorageDirectory()
+//			+ "/joy/image_cache/";
+	//用此目录用户清除程序时，可以删掉缓存信息
 	public static String PATH = Environment.getExternalStorageDirectory()
-			+ "/joy/image_cache/";
+	+ "/Android/data/com.joyplus.tv/image_cache";
 	public static String PATH_HEAD = Environment.getExternalStorageDirectory()
 			+ "/joy/admin/";
 
