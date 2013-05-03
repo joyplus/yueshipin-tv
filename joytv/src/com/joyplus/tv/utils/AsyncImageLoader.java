@@ -14,6 +14,8 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import com.joyplus.tv.Constant;
+
 
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
@@ -24,12 +26,9 @@ import android.os.Handler;
 import android.os.Message;
 
 public class AsyncImageLoader {
-
-	
-	public static final String PIC_FILE_PATH ="joyplus_tv";
 	
 	private static Map<String, SoftReference<Bitmap>> imageCache = new HashMap<String, SoftReference<Bitmap>>();
-	private static final int nThreadPoolSize = 10;
+	private static final int nThreadPoolSize = 20;
 	private static ExecutorService mExecutorService = Executors.newFixedThreadPool(nThreadPoolSize);
 	private OnImageLoadListener mImageLoadListener;
 	private Handler mHandler;
@@ -125,7 +124,7 @@ public class AsyncImageLoader {
 	private Bitmap loadBitmapFromLocal(String imageUrl){
 
 		String filename = getFilenameFromUrl(imageUrl);
-		File dir = new File(Environment.getExternalStorageDirectory(), PIC_FILE_PATH);
+		File dir = new File(Constant.PATH_BIG_IMAGE);
 		if(dir.exists()){
 			File filepath = new File(dir, filename);
 			Bitmap bm = BitmapFactory.decodeFile(filepath.getAbsolutePath());
@@ -166,7 +165,7 @@ public class AsyncImageLoader {
 	
 	public static void saveBitmap(Bitmap bitmap, String filename){
 		if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)){
-			File dir = new File(Environment.getExternalStorageDirectory(), PIC_FILE_PATH);
+			File dir = new File(Constant.PATH_BIG_IMAGE);
 			if(!dir.exists()){
 				dir.mkdirs();
 			}

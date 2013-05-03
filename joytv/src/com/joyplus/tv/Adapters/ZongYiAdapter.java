@@ -54,7 +54,11 @@ public class ZongYiAdapter extends BaseAdapter implements JieMianConstant{
 				// TODO Auto-generated method stub
 				View view = arrays.get(position);
 				GridViewItemHodler gvGridViewItemHodler = (GridViewItemHodler) view.getTag();
-				gvGridViewItemHodler.haibaoIv.setBackgroundDrawable(new BitmapDrawable(resources, bitmap));
+				if(gvGridViewItemHodler.haibaoIv.getTag().equals(imageUrl)) {
+					
+//					gvGridViewItemHodler.haibaoIv.setBackgroundDrawable(new BitmapDrawable(resources, bitmap));
+					gvGridViewItemHodler.haibaoIv.setImageBitmap(bitmap);
+				}
 			}
 		});
 		
@@ -145,7 +149,13 @@ public class ZongYiAdapter extends BaseAdapter implements JieMianConstant{
 		
 		viewItemHodler.nameTv.setText("");
 		viewItemHodler.otherInfo.setText("");
-		viewItemHodler.haibaoIv.setBackgroundResource(R.drawable.post_normal);
+//		viewItemHodler.haibaoIv.setBackgroundResource(R.drawable.post_normal);	
+		
+		if(viewItemHodler.haibaoIv.getTag()==null || 
+				!viewItemHodler.haibaoIv.getTag().equals(movieList.get(position).getMoviePicUrl())){
+		
+			viewItemHodler.haibaoIv.setImageBitmap(null);
+		}
 
 		viewItemHodler.nameTv.setText(movieList.get(position).getMovieName());
 		
@@ -224,10 +234,12 @@ public class ZongYiAdapter extends BaseAdapter implements JieMianConstant{
 			}
 		}
 
+		viewItemHodler.haibaoIv.setTag(movieList.get(position).getMoviePicUrl());
+		
 //		loader.loadBitmap(movieList.get(position).getMoviePicUrl(), position);
 		
 		aq.id(viewItemHodler.haibaoIv).image(movieList.get(position).getMoviePicUrl(), 
-				true, true,0, R.drawable.post_normal);
+				false, true,0, R.drawable.post_normal);
 		return convertView;
 	}
 
