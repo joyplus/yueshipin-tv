@@ -613,6 +613,10 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 					getResources().getString(R.string.networknotwork));
 			return;
 		}
+		
+		if(json == null || json.equals("")) 
+			return;
+		
 		Log.d(TAG, "data = " + json.toString());
 		ObjectMapper mapper = new ObjectMapper();
 		try {
@@ -952,6 +956,9 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 				ItemStateUtils.shoucangButtonToNormalState(xiaiBt, getApplicationContext());
 			}
 		isXiai = false;
+		
+		if(json == null || json.equals("")) 
+			return;
 		Log.d(TAG, "cancel:----->"+json.toString());
 	}
 	
@@ -977,6 +984,10 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 		xiaiBt.setText(favNum + "");
 		ItemStateUtils.shoucangButtonToFocusState(xiaiBt, getApplicationContext());
 		isXiai = true;
+		
+		if(json == null || json.equals("")) 
+			return;
+		
 		Log.d(TAG, "shoucangResult:----->" + json.toString());
 	}
 	
@@ -995,6 +1006,9 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 	}
 	
 	public void dingResult(String url, JSONObject json, AjaxStatus status){
+		
+		if(json == null || json.equals("")) 
+			return;
 		Log.d(TAG, json.toString());
 	}
 	
@@ -1019,6 +1033,9 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 					getResources().getString(R.string.networknotwork));
 			return;
 		}
+		
+		if(json == null || json.equals("")) 
+			return;
 		
 		Log.d(TAG, "data = " + json.toString());
 		

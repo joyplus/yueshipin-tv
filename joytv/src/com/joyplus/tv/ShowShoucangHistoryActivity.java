@@ -584,6 +584,10 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 					getResources().getString(R.string.networknotwork));
 			return;
 		}
+		
+		if(json == null || json.equals("")) 
+			return;
+		
 		Log.d(TAG, "favourate data = " + json.toString());
 		try {
 			ReturnUserFavorities result  = mapper.readValue(json.toString(), ReturnUserFavorities.class);
@@ -721,6 +725,10 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 					getResources().getString(R.string.networknotwork));
 			return;
 		}
+		
+		if(json == null || json.equals("")) 
+			return;
+		
 		Log.d(TAG, json.toString());
 	}
 	

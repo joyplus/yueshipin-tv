@@ -680,6 +680,10 @@ private void checkBand(){
 public void CheckBandResult(String url, JSONObject json, AjaxStatus status){
 
 	if (json != null) {
+		
+		if(json == null || json.equals("")) 
+			return;
+		
 		Log.d(TAG, json.toString());
 		try {
 			String result = json.getString("status");
@@ -703,6 +707,10 @@ public void CheckBandResult(String url, JSONObject json, AjaxStatus status){
 public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 
 	if (json != null) {
+
+		if(json == null || json.equals("")) 
+			return;
+		
 		Log.d(TAG, json.toString()); 
 		try {
 			UserInfo currentUserInfo = new UserInfo();
@@ -1305,6 +1313,10 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 					getResources().getString(R.string.networknotwork));
 			return;
 		}
+		
+		if(json == null || json.equals("")) 
+			return;
+		
 		Log.d(TAG, "history data = " + json.toString());
 		try {
 			ReturnTops result  = mapper.readValue(json.toString(), ReturnTops.class);
@@ -1450,6 +1462,10 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 					getResources().getString(R.string.networknotwork));
 			return;
 		}
+
+		if(json == null || json.equals("")) 
+			return;
+		
 		Log.d(TAG, "history data = " + json.toString());
 		try {
 			ReturnUserPlayHistories result  = mapper.readValue(json.toString(), ReturnUserPlayHistories.class);
@@ -1589,6 +1605,10 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 			return;
 		}
 		try {
+			
+			if(json == null || json.equals("")) 
+				return;
+			
 			Log.d(TAG, json.toString());
 			ReturnMainHot result  = mapper.readValue(json.toString(), ReturnMainHot.class);
 //			hot_list.clear();
@@ -1783,6 +1803,10 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 	public void getBandUserInfoResult(String url, JSONObject json, AjaxStatus status){
 
 		if (json != null) {
+			
+			if(json == null || json.equals("")) 
+				return;
+			
 			Log.d(TAG, json.toString());
 			try {
 				UserInfo currentUserInfo = new UserInfo();

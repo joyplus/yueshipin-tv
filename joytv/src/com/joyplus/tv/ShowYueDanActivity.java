@@ -713,6 +713,10 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 		}
 
 		try {
+			
+			if(json == null || json.equals("")) 
+				return;
+			
 			Log.d(TAG, json.toString());
 			refreshAdpter(StatisticsUtils.returnFilterMovieSearch_TVJson(json
 					.toString()));
@@ -739,6 +743,10 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 		}
 
 		try {
+			
+			if(json == null || json.equals("")) 
+				return;
+			
 			Log.d(TAG, json.toString());
 			refreshAdpter(StatisticsUtils.returnTopsJson(json.toString()));
 		} catch (JsonParseException e) {
@@ -808,6 +816,10 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 			return;
 		}
 		try {
+			
+			if(json == null || json.equals("")) 
+				return;
+			
 			Log.d(TAG, json.toString());
 			notifyAdapter(StatisticsUtils.returnTopsJson(json.toString()));
 		} catch (JsonParseException e) {
@@ -835,6 +847,10 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 		}
 
 		try {
+			
+			if(json == null || json.equals("")) 
+				return;
+			
 			Log.d(TAG, json.toString());
 			notifyAdapter(StatisticsUtils.returnFilterMovieSearch_TVJson(json
 					.toString()));

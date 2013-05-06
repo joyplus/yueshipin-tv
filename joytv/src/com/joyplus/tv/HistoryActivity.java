@@ -566,6 +566,10 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 					getResources().getString(R.string.networknotwork));
 			return;
 		}
+		
+		if(json == null || json.equals("")) 
+			return;
+		
 		Log.d(TAG, "history data = " + json.toString());
 		try {
 			ReturnUserPlayHistories result  = mapper.readValue(json.toString(), ReturnUserPlayHistories.class);
@@ -713,7 +717,10 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 					getResources().getString(R.string.networknotwork));
 			return;
 		}
-		Log.d(TAG, json.toString());
+		if(json == null || json.equals("")) 
+			return;
+		
+			Log.d(TAG, json.toString());
 	}
 	
 	@Override

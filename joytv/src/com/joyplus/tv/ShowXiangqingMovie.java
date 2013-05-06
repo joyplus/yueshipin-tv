@@ -582,6 +582,10 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 					getResources().getString(R.string.networknotwork));
 			return;
 		}
+		
+		if(json == null || json.equals("")) 
+			return;
+		
 		Log.d(TAG, "data = " + json.toString());
 		ObjectMapper mapper = new ObjectMapper();
 		try {
@@ -659,6 +663,10 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 					getResources().getString(R.string.networknotwork));
 			return;
 		}
+		
+		if(json == null || json.equals("")) 
+			return;
+		
 		Log.d(TAG, "data = " + json.toString());
 		ObjectMapper mapper = new ObjectMapper();
 		try {
@@ -794,6 +802,10 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 				ItemStateUtils.shoucangButtonToFocusState(xiaiBt, getApplicationContext());
 			}
 		isXiai = false;
+		
+		if(json == null || json.equals("")) 
+			return;
+		
 		Log.d(TAG, "cancel:----->"+json.toString());
 	}
 	
@@ -819,6 +831,10 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 		xiaiBt.setText(favNum + "");
 		ItemStateUtils.shoucangButtonToFocusState(xiaiBt, getApplicationContext());
 		isXiai = true;
+		
+		if(json == null || json.equals("")) 
+			return;
+		
 		Log.d(TAG, "shoucangResult:----->" + json.toString());
 	}
 	
@@ -837,6 +853,10 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 	}
 	
 	public void dingResult(String url, JSONObject json, AjaxStatus status){
+		
+		if(json == null || json.equals("")) 
+			return;
+		
 		Log.d(TAG, json.toString());
 	}
 	
@@ -861,6 +881,9 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 					getResources().getString(R.string.networknotwork));
 			return;
 		}
+		
+		if(json == null || json.equals("")) 
+			return;
 		
 		Log.d(TAG, "data = " + json.toString());
 		

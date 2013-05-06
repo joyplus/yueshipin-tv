@@ -744,6 +744,9 @@ public class ShowMovieActivity extends AbstractShowActivity {
 		}
 
 		try {
+			if(json == null || json.equals("")) 
+				return;
+			
 			Log.d(TAG, json.toString());
 
 			refreshAdpter(StatisticsUtils
@@ -774,6 +777,10 @@ public class ShowMovieActivity extends AbstractShowActivity {
 		}
 
 		try {
+			
+			if(json == null || json.equals("")) 
+				return;
+			
 			Log.d(TAG, json.toString());
 
 			refreshAdpter(StatisticsUtils.returnFilterMovieSearch_TVJson(json
@@ -856,6 +863,10 @@ public class ShowMovieActivity extends AbstractShowActivity {
 			return;
 		}
 		try {
+			
+			if(json == null || json.equals("")) 
+				return;
+			
 			Log.d(TAG, json.toString());
 			if (lists[QUAN_TEN] != null && !lists[QUAN_TEN].isEmpty()) {
 
@@ -914,6 +925,10 @@ public class ShowMovieActivity extends AbstractShowActivity {
 			return;
 		}
 		try {
+			
+			if(json == null || json.equals("")) 
+				return;
+			
 			Log.d(TAG, json.toString());
 			notifyAdapter(StatisticsUtils
 					.returnTVBangDanList_YueDanListJson(json.toString()));
@@ -942,6 +957,9 @@ public class ShowMovieActivity extends AbstractShowActivity {
 		}
 
 		try {
+			if(json == null || json.equals("")) 
+				return;
+			
 			Log.d(TAG, json.toString());
 			notifyAdapter(StatisticsUtils.returnFilterMovieSearch_TVJson(json
 					.toString()));
@@ -969,6 +987,10 @@ public class ShowMovieActivity extends AbstractShowActivity {
 			return;
 		}
 		try {
+			
+			if(json == null || json.equals("")) 
+				return;
+			
 			Log.d(TAG, json.toString());
 			lists[QUAN_TEN] = StatisticsUtils
 					.returnTVBangDanList_YueDanListJson(json.toString());
