@@ -11,11 +11,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
@@ -293,6 +295,33 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
         lastBandTimeView = (TextView) myView.findViewById(R.id.lastBandTime);
         ImageView erweimaImage = (ImageView) myView.findViewById(R.id.img_erweima);
         
+        app = (App) getApplicationContext();
+        
+        if(!app.isNetworkAvailable()) {
+        	
+        	
+        	AlertDialog.Builder builder = new AlertDialog.
+        			Builder(this).setTitle(getString(R.string.toast_no_network))
+        			.setPositiveButton(getString(R.string.toast_no_retry), new OnClickListener() {
+						
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							// TODO Auto-generated method stub
+							
+						}
+					}).setNegativeButton(getString(R.string.toast_no_exit), new OnClickListener() {
+						
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							// TODO Auto-generated method stub
+							finish();
+						}
+					});
+        	
+        	builder.show();
+        	return;
+        }
+        
         erweimaImage.setImageBitmap(CreateBarCode());
         titleGroup.SetOnViewChangeListener(new OnViewChangeListener() {
 			
@@ -541,7 +570,7 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
         itemFram.setVisibility(View.INVISIBLE);
         alpha_appear = AnimationUtils.loadAnimation(this, R.anim.alpha_appear);
         alpha_disappear = AnimationUtils.loadAnimation(this, R.anim.alpha_disappear);
-		app = (App) getApplicationContext();
+        
 		headers = new HashMap<String, String>();
 		headers.put("User-Agent",
 				"Mozilla/5.0 (Windows NT 6.1; WOW64; rv:6.0.2) Gecko/20100101 Firefox/6.0.2");
