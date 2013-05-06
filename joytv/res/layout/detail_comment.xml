@@ -3,190 +3,144 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/movie_bg"
-    android:orientation="vertical">
+    android:orientation="vertical" >
 
-        <include
-            android:layout_width="match_parent"
-            android:layout_height="65dp"
-            android:layout_marginLeft="25dp"
-            layout="@layout/show_head" />
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:layout_marginLeft="30dp"
+        layout="@layout/show_head" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
-        android:layout_marginTop="10dp"
-        android:orientation="horizontal" >
+        android:orientation="vertical" >
 
-        <RelativeLayout
-            android:layout_width="@dimen/layout_zero"
-            android:layout_height="wrap_content"
-             android:paddingLeft="28dp"
-                android:paddingRight="8dp"
-            android:layout_weight="1" >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:paddingLeft="50dp" >
+        </LinearLayout>
 
-            <ImageView
-                android:id="@+id/imageViewBarCode"
-                android:layout_width="170dp"
-                android:layout_height="241dp"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
-                android:background="@drawable/post_normal"
-                android:scaleType="fitXY" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:orientation="horizontal" >
 
-            <RelativeLayout
-                android:id="@+id/relativeLayout_Dou"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/imageViewBarCode"
-                android:layout_marginTop="10dp"
-                android:orientation="vertical" >
+            <LinearLayout
+                android:layout_width="@dimen/layout_zero"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:paddingLeft="33dp"
+                android:paddingRight="8dp" >
 
-                <ImageView
-                    android:id="@+id/imageView2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/star_off" />
-
-                <ImageView
-                    android:id="@+id/imageView3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_toRightOf="@+id/imageView2"
-                    android:src="@drawable/star_off" />
-
-                <ImageView
-                    android:id="@+id/imageView4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_toRightOf="@+id/imageView3"
-                    android:src="@drawable/star_off" />
-
-                <ImageView
-                    android:id="@+id/imageView5"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_toRightOf="@+id/imageView4"
-                    android:src="@drawable/star_off" />
-
-                <ImageView
-                    android:id="@+id/imageView6"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_toRightOf="@+id/imageView5"
-                    android:src="@drawable/star_off" />
-            </RelativeLayout>
-
-            <TextView
-                android:id="@+id/textView_dou"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fadeScrollbars="false"
-                android:layout_alignBaseline="@+id/imageView7"
-                android:layout_below="@+id/imageViewBarCode"
-                android:layout_marginRight="2dp"
-                android:layout_marginTop="10dp"
-                android:layout_toLeftOf="@+id/imageView7"
-                android:text="7.3"
-                android:textColor="@color/time_color"
-                android:textSize="16sp" />
-
-            <ImageView
-                android:id="@+id/imageView7"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignRight="@id/imageViewBarCode"
-                android:layout_below="@+id/imageViewBarCode"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/douban" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="@dimen/layout_zero"
-            android:layout_height="match_parent"
-            android:layout_weight="5"
-                android:paddingLeft="20dp"
-                android:paddingRight="25dp"
-            android:orientation="vertical" >
-
-            <TextView
-                android:id="@+id/textView1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
-                android:text="西游降魔篇"
-                android:textColor="@color/menu_bg_select_ok"
-                android:textSize="25sp" />
-
-            <TextView
-                android:id="@+id/textView2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBaseline="@+id/textView1"
-                android:layout_alignParentTop="true"
-                android:layout_marginLeft="22dp"
-                android:layout_toRightOf="@+id/textView1"
-                android:text="的影评"
-                android:textColor="@color/white"
-                android:textSize="20sp" />
-
-            <ListView
-                android:id="@+id/listView1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_below="@+id/textView1"
-                android:divider="#4D2A08" 
-                android:dividerHeight="1dp"
-                android:listSelector="@drawable/comment_list_selector"
-                android:cacheColorHint="@android:color/transparent">
-
-            </ListView>
-
-<!--             <TextView -->
-<!--                 android:id="@+id/textView3" -->
-<!--                 android:layout_width="wrap_content" -->
-<!--                 android:layout_height="wrap_content" -->
-<!--                 android:layout_alignParentRight="true" -->
-<!--                 android:layout_alignParentTop="true" -->
-<!--                 android:text="1/8" -->
-<!--                 android:textColor="@color/text_normal" -->
-<!--                 android:textSize="16sp" -->
-<!--                 android:visibility="gone" /> -->
-
-            <ScrollView
-                android:id="@+id/scrollViewItemDetail"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_below="@+id/textView1"
-                android:visibility="invisible" >
+                <include
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/layout_zero"
+                    android:layout_weight="6.623"
+                    layout="@layout/show_pic_rating_item" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="4dp"
-                    android:orientation="vertical" >
-
-                    <TextView
-                        android:id="@+id/listViewItemTitle"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="18dp"
-                        android:textColor="@color/white"
-                        android:lineSpacingExtra = "5dp"
-                        android:textSize="20sp" />
-
-                    <TextView
-                        android:id="@+id/textViewItemDetail"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="48dp"
-                        android:lineSpacingExtra = "5dp"
-                        android:textSize="20sp" />
+                    android:layout_height="@dimen/layout_zero"
+                    android:layout_weight="7.23" >
                 </LinearLayout>
-            </ScrollView>
-        </RelativeLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="@dimen/layout_zero"
+                android:layout_height="match_parent"
+                android:layout_weight="5" >
+
+                <RelativeLayout
+                    android:layout_width="@dimen/layout_zero"
+                    android:layout_height="match_parent"
+                    android:layout_weight="5"
+                    android:orientation="vertical"
+                    android:paddingLeft="25dp"
+                    android:paddingRight="25dp" >
+
+                    <TextView
+                        android:id="@+id/textView1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentTop="true"
+                        android:text="西游降魔篇"
+                        android:textColor="@color/menu_bg_select_ok"
+                        android:textSize="25sp" />
+
+                    <TextView
+                        android:id="@+id/textView2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBaseline="@+id/textView1"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginLeft="22dp"
+                        android:layout_toRightOf="@+id/textView1"
+                        android:text="的影评"
+                        android:textColor="@color/white"
+                        android:textSize="20sp" />
+
+                    <ListView
+                        android:id="@+id/listView1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_below="@+id/textView1"
+                        android:cacheColorHint="@android:color/transparent"
+                        android:divider="#4D2A08"
+                        android:dividerHeight="1dp"
+                        android:listSelector="@drawable/comment_list_selector" >
+                    </ListView>
+
+                    <!-- <TextView -->
+                    <!-- android:id="@+id/textView3" -->
+                    <!-- android:layout_width="wrap_content" -->
+                    <!-- android:layout_height="wrap_content" -->
+                    <!-- android:layout_alignParentRight="true" -->
+                    <!-- android:layout_alignParentTop="true" -->
+                    <!-- android:text="1/8" -->
+                    <!-- android:textColor="@color/text_normal" -->
+                    <!-- android:textSize="16sp" -->
+                    <!-- android:visibility="gone" /> -->
+
+                    <ScrollView
+                        android:id="@+id/scrollViewItemDetail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_below="@+id/textView1"
+                        android:visibility="invisible" >
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginTop="4dp"
+                            android:orientation="vertical" >
+
+                            <TextView
+                                android:id="@+id/listViewItemTitle"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="18dp"
+                                android:lineSpacingExtra="5dp"
+                                android:textColor="@color/white"
+                                android:textSize="20sp" />
+
+                            <TextView
+                                android:id="@+id/textViewItemDetail"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="48dp"
+                                android:lineSpacingExtra="5dp"
+                                android:textSize="20sp" />
+                        </LinearLayout>
+                    </ScrollView>
+                </RelativeLayout>
+            </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>

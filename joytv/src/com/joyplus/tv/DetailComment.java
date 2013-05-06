@@ -143,9 +143,9 @@ public class DetailComment extends Activity implements
 //		prod_dou = "3.5";
 //		prod_url = "http://img3.douban.com/view/photo/photo/public/p1869602430.jpg";
 
-		aq.id(R.id.textView_dou).text(prod_dou);
+		aq.id(R.id.textView_score).text(prod_dou);
 		aq.id(R.id.textView1).text(prod_name);
-		aq.id(R.id.imageViewBarCode).image(prod_url, true, true, 0,
+		aq.id(R.id.image).image(prod_url, true, true, 0,
 				R.drawable.movie_pic);
 
 		scrollViewItemDetail = (ScrollView) findViewById(R.id.scrollViewItemDetail);
@@ -156,30 +156,30 @@ public class DetailComment extends Activity implements
 //		if (prod_dou != null)
 //			updateScore(prod_dou);
 		if (Float.parseFloat(prod_dou) > 0 && Float.parseFloat(prod_dou) <= 10)
-			InitDou();
+			updateScore(prod_dou);
 		// MobclickAgent.setDebugMode(true);
 	}
 
-	public void InitDou() {
-		String m_j = null;
-		int i = 0;
-		Float f_dou = Float.parseFloat(prod_dou)/2;
-
-		for (i = 0; i < f_dou / 1; i++) {
-			m_j = Integer.toString(i + 2);
-			ImageView m_ImageView = (ImageView) this
-					.findViewById(getResources().getIdentifier(
-							"imageView" + m_j, "id", getPackageName()));
-			m_ImageView.setImageResource(R.drawable.star_on);
-		}
-		if (f_dou % i > 0) {
-			m_j = Integer.toString(i + 1);
-			ImageView m_ImageView = (ImageView) this
-					.findViewById(getResources().getIdentifier(
-							"imageView" + m_j, "id", getPackageName()));
-			m_ImageView.setImageResource(R.drawable.star_half);
-		}
-	}
+//	public void InitDou() {
+//		String m_j = null;
+//		int i = 0;
+//		Float f_dou = Float.parseFloat(prod_dou)/2;
+//
+//		for (i = 0; i < f_dou / 1; i++) {
+//			m_j = Integer.toString(i + 2);
+//			ImageView m_ImageView = (ImageView) this
+//					.findViewById(getResources().getIdentifier(
+//							"imageView" + m_j, "id", getPackageName()));
+//			m_ImageView.setImageResource(R.drawable.star_on);
+//		}
+//		if (f_dou % i > 0) {
+//			m_j = Integer.toString(i + 1);
+//			ImageView m_ImageView = (ImageView) this
+//					.findViewById(getResources().getIdentifier(
+//							"imageView" + m_j, "id", getPackageName()));
+//			m_ImageView.setImageResource(R.drawable.star_half);
+//		}
+//	}
 
 	public void OnClickTab1TopLeft(View v) {
 
