@@ -159,6 +159,14 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 				layout.addView(t);
 			}
 			
+			if(i == 0) {
+				
+				b.setNextFocusLeftId(b.getId());
+			} else if(i == 4) {
+				
+				b.setNextFocusRightId(b.getId());
+			}
+			
 		}
 		
 		selectedIndex = 1;
@@ -591,6 +599,19 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 				if(i!=4){
 					row.addView(t);
 				}
+				
+				
+//				if(!btn.isShown()) {
+//					Log.i(TAG, "DongMan---->Button");
+					if(i == 0) {
+						
+						btn.setNextFocusLeftId(btn.getId());
+					} else if(i == 4) {
+						
+						btn.setNextFocusRightId(btn.getId());
+					}
+//				}
+
 			}
 			row.setLayoutParams(new LayoutParams(table.getWidth(),35));
 			row.setPadding(0, 5, 0, 5);
