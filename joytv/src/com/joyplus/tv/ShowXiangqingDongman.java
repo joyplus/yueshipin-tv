@@ -214,7 +214,10 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 		addListener();
 
 		initPopWindow();
-
+		
+		dingBt.setNextFocusUpId(R.id.bt_xiangqingding);
+		xiaiBt.setNextFocusUpId(R.id.bt_xiangqing_xiai);
+		yingpingBt.setNextFocusUpId(R.id.bt_xiangqing_yingping);
 
 		beforeView = dingBt;
 

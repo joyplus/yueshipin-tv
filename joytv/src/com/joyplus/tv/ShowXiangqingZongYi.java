@@ -218,6 +218,9 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 		addListener();
 
 		initPopWindow();
+		
+		dingBt.setNextFocusUpId(R.id.bt_xiangqingding);
+		xiaiBt.setNextFocusUpId(R.id.bt_xiangqing_xiai);
 
 		beforeView = dingBt;
 
