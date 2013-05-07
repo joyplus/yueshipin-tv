@@ -83,9 +83,11 @@
     <string name="xiangqing_yingping_no">没有影评</string>
     <string name="movie_fenzhong">分钟</string>
     <string name="toast_no_play">此分类中找不到影片哦, 试试其他分类吧</string>
-    <string name="toast_no_network">请检查网络设置!</string>
+    <string name="toast_no_network">请检查网络设置</string>
     <string name="toast_no_retry">重试</string>
     <string name="toast_no_exit">退出悦视频</string>
+    <string name="toast_setting_wifi">网络设置</string>
+    <string name="toast_network_slow">网络速度像蜗牛</string>
     
     <!--Yangzhg  -->
     

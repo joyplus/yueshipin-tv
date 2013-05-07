@@ -28,6 +28,7 @@ import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.Settings;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.KeyEvent;
@@ -42,6 +43,7 @@ import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -60,7 +62,6 @@ import com.joyplus.tv.Adapters.CurrentPlayData;
 import com.joyplus.tv.Adapters.MainHotItemAdapter;
 import com.joyplus.tv.Adapters.MainLibAdapter;
 import com.joyplus.tv.Adapters.MainYueDanItemAdapter;
-import com.joyplus.tv.HistoryActivity.HistortyAdapter;
 import com.joyplus.tv.Service.Return.ReturnMainHot;
 import com.joyplus.tv.Service.Return.ReturnTops;
 import com.joyplus.tv.Service.Return.ReturnUserPlayHistories;
@@ -101,6 +102,10 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 	
 	
 	private static final int MESSAGE_UPDATEUSER_HISTORY_SUCEESS = MESSAGE_UPDATEUSER + 1;
+	private static final int MESSAGE_30S_TIMEOUT = MESSAGE_UPDATEUSER_HISTORY_SUCEESS + 1;
+	
+	private static final long LOADING_PIC_TIME = 10*1000;
+	private static final long LOADING_TIME_OUT = 30*1000;
 	
 	private ImageView startingImageView;
 	private RelativeLayout rootLayout;
@@ -146,6 +151,8 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 						gallery1.requestFocus(); 
 						new Thread(new CheckPlayUrl()).start();
 					}
+					
+					handler.removeMessages(MESSAGE_30S_TIMEOUT);
 				}
 				break;
 			case MESSAGE_START_TIMEOUT://超时还未加载好
@@ -154,6 +161,7 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 					contentLayout.setVisibility(View.INVISIBLE);
 					showDialog(DIALOG_WAITING);
 				}
+				
 				break;
 			case MESSAGE_UPDATEUSER_HISTORY_SUCEESS://超时还未加载好
 //				if(initStep<3){
@@ -161,6 +169,12 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 //					contentLayout.setVisibility(View.INVISIBLE);
 //					showDialog(DIALOG_WAITING);
 //				}
+				break;
+			case MESSAGE_30S_TIMEOUT://超过30S时间，弹出网络速度慢dialog
+				removeDialog(DIALOG_WAITING);
+				showDialog(DIALOG_NETWORK_SLOW);
+				handler.removeCallbacksAndMessages(null);
+				initStep = -1;
 				break;
 			default:
 				break;
@@ -254,6 +268,15 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 	private String macAddress;
 	
 	
+	private static final int DIALOG_NETWORK_ERROR = DIALOG_WAITING + 1;
+	private static final int DIALOG_NETWORK_SLOW = DIALOG_NETWORK_ERROR + 1;
+	
+	private boolean isNetWorkFine = true;//记录网络是否正常
+	private boolean isWifiReset = false;//wifi网络是否重新设置
+	
+	private ImageView erweimaImage;
+	
+	
 	private BroadcastReceiver receiver = new BroadcastReceiver(){
 
 		@Override
@@ -281,6 +304,10 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+        
+        app = (App) getApplicationContext();
+        aq = new AQuery(this);
+        
         startingImageView = (ImageView) findViewById(R.id.image_starting);
         rootLayout = (RelativeLayout) findViewById(R.id.root_layout);
         gallery1 = (CustomGallery) findViewById(R.id.gallery);
@@ -293,36 +320,16 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
         kuView = LayoutInflater.from(Main.this).inflate(R.layout.layout_lib, null);
         myView = LayoutInflater.from(Main.this).inflate(R.layout.layout_my, null);
         lastBandTimeView = (TextView) myView.findViewById(R.id.lastBandTime);
-        ImageView erweimaImage = (ImageView) myView.findViewById(R.id.img_erweima);
+        erweimaImage = (ImageView) myView.findViewById(R.id.img_erweima);
         
-        app = (App) getApplicationContext();
-        
-        if(!app.isNetworkAvailable()) {
+        //一开始判断有没有网络
+        if(!app.isNetworkAvailable()) {//如果没有网络，弹出提示dialog
         	
+        	isNetWorkFine = false;//网络不正常
+        	showDialog(DIALOG_NETWORK_ERROR);
         	
-        	AlertDialog.Builder builder = new AlertDialog.
-        			Builder(this).setTitle(getString(R.string.toast_no_network))
-        			.setPositiveButton(getString(R.string.toast_no_retry), new OnClickListener() {
-						
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							// TODO Auto-generated method stub
-							
-						}
-					}).setNegativeButton(getString(R.string.toast_no_exit), new OnClickListener() {
-						
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							// TODO Auto-generated method stub
-							finish();
-						}
-					});
-        	
-        	builder.show();
-        	return;
         }
         
-        erweimaImage.setImageBitmap(CreateBarCode());
         titleGroup.SetOnViewChangeListener(new OnViewChangeListener() {
 			
 			@Override
@@ -519,6 +526,7 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 			}
 		});
 
+        
         itemFram = (FrameLayout) findViewById(R.id.itemFram);
 //        clock = (ClockTextView) findViewById(R.id.clock);
         highlightImageView_1 = (ImageView) findViewById(R.id.highlight_img_1);
@@ -530,6 +538,7 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
         highlightImageView_4.setVisibility(View.GONE);
         playIcon = (ImageView) findViewById(R.id.play_icon);
         definitionIcon = (ImageView) findViewById(R.id.icon_defination);
+        
 //        MarginLayoutParams mlp = (MarginLayoutParams) gallery1.getLayoutParams();
         DisplayMetrics metrics = new DisplayMetrics();
         density = metrics.density;
@@ -548,7 +557,7 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
         gallery1.setOnItemSelectedListener(this);
         gallery1.setOnItemClickListener(this);
         gallery1.setSelection(1);
-        aq = new AQuery(this);
+
         MarginLayoutParams mlp2 = (MarginLayoutParams) titleGroup.getLayoutParams();
         mlp2.setMargins((displayWith-40)/6+15, 
 		        		mlp2.topMargin, 
@@ -571,6 +580,7 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
         alpha_appear = AnimationUtils.loadAnimation(this, R.anim.alpha_appear);
         alpha_disappear = AnimationUtils.loadAnimation(this, R.anim.alpha_disappear);
         
+        
 		headers = new HashMap<String, String>();
 		headers.put("User-Agent",
 				"Mozilla/5.0 (Windows NT 6.1; WOW64; rv:6.0.2) Gecko/20100101 Firefox/6.0.2");
@@ -582,6 +592,26 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		if(isNetWorkFine) {//如果网络正常就执行
+			
+			initNetWorkData();
+		}
+		
+		//友盟自动升级
+		UmengUpdateAgent.setUpdateOnlyWifi(false);
+		UmengUpdateAgent.setOnDownloadListener(null);
+		UmengUpdateAgent.update(this);
+		
+    }
+	
+	//数据初始化
+	
+	private void initNetWorkData() {
+		
+		
+		//需要网络连接
+		erweimaImage.setImageBitmap(CreateBarCode());
 		
 		IntentFilter filter = new IntentFilter();
         filter.addAction(FayeService.ACTION_RECIVEACTION_BAND);
@@ -596,7 +626,8 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 			ReadLocalAppKey();
 		checkLogin();
 //		getHotServiceData();
-		handler.sendEmptyMessageDelayed(MESSAGE_START_TIMEOUT, 10*1000);
+		handler.sendEmptyMessageDelayed(MESSAGE_START_TIMEOUT, LOADING_PIC_TIME);
+		handler.sendEmptyMessageDelayed(MESSAGE_30S_TIMEOUT, LOADING_TIME_OUT);//图片撤掉20S后
 //		getHistoryServiceData();
 //		
 //		DisplayMetrics dm = new DisplayMetrics();
@@ -605,23 +636,40 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 //		int height = dm.heightPixels;//屏幕高度
 //		
 //		Toast.makeText(this, "Width:" + width + " Height:" + height, Toast.LENGTH_LONG).show();
-		//友盟自动升级
-		UmengUpdateAgent.setUpdateOnlyWifi(false);
-		UmengUpdateAgent.setOnDownloadListener(null);
-		UmengUpdateAgent.update(this);
-    }
+	}
+	
+	
+	
 	@Override
 	public void onResume() {
 		super.onResume();
+		
 		MobclickAgent.onResume(this);
+		
+		
 		if(app.getUserInfo()!=null){
 			aq.id(R.id.iv_head_user_icon).image(
 					app.getUserInfo().getUserAvatarUrl(), false, true, 0,
 					R.drawable.avatar_defult);
 			aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
 		}
+		
 		if(titleGroup.getSelectedTitleIndex() == 4){
 			sendBroadcast(new Intent(FayeService.ACTION_M_APPEAR));
+		}
+		
+		if(!isNetWorkFine && isWifiReset){//如果之前网络不正常并且重新设置过wifi
+			
+			if(app.isNetworkAvailable()){
+				
+				initNetWorkData();
+				
+				isNetWorkFine = true;
+				isWifiReset = false;
+			} else {
+				
+				showDialog(DIALOG_NETWORK_ERROR);
+			}
 		}
 	}
 
@@ -632,12 +680,18 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 		if(titleGroup.getSelectedTitleIndex() == 4){
 			sendBroadcast(new Intent(FayeService.ACTION_M_DISAPPEAR));
 		}
+		
 	}
 	@Override
 	protected void onDestroy() {
 		if (aq != null)
 			aq.dismiss();
-		unregisterReceiver(receiver);
+		
+		if(isNetWorkFine) {
+			
+			unregisterReceiver(receiver);
+		}
+		
 		super.onDestroy();
 	}
 	public void ReadLocalAppKey() {
@@ -1895,6 +1949,68 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 			});
 			dlg.setDialogWindowStyle();
 			return dlg;
+		case DIALOG_NETWORK_ERROR:
+        	AlertDialog.Builder builder = new AlertDialog.
+			Builder(this).setTitle(getString(R.string.toast_no_network))
+			.setPositiveButton(getString(R.string.toast_setting_wifi), new OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					// TODO Auto-generated method stub
+					//wifi设置
+					isWifiReset = true;
+					startActivity(new
+							 Intent(Settings.ACTION_WIFI_SETTINGS));
+					
+				}
+			}).setNegativeButton(getString(R.string.toast_no_exit), new OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					// TODO Auto-generated method stub
+					//退出应用
+					finish();
+				}
+			});
+        	AlertDialog dialog = builder.show();
+        	dialog.setCancelable(false);
+        	Button btn = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+        	btn.setFocusable(true);
+        	btn.setSelected(true);
+        	btn.requestFocus();
+        	return null;
+		case DIALOG_NETWORK_SLOW:
+        	AlertDialog.Builder builder2 = new AlertDialog.
+			Builder(this).setTitle(getString(R.string.toast_network_slow))
+			.setPositiveButton(getString(R.string.toast_no_retry), new OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					// TODO Auto-generated method stub
+					initStep = 0;
+					isHotLoadedFlag = 0;
+					isYueDanLoadedFlag = 0;
+					showDialog(DIALOG_WAITING);
+					handler.sendEmptyMessageDelayed(MESSAGE_30S_TIMEOUT, LOADING_TIME_OUT);//图片撤掉20S后
+					checkLogin();
+					
+				}
+			}).setNegativeButton(getString(R.string.toast_no_exit), new OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					// TODO Auto-generated method stub
+					//退出应用
+					finish();
+				}
+			});
+        	AlertDialog dialog2 = builder2.show();
+        	dialog2.setCancelable(false);
+        	Button btn2 = dialog2.getButton(DialogInterface.BUTTON_NEGATIVE);
+        	btn2.setFocusable(true);
+        	btn2.setSelected(true);
+        	btn2.requestFocus();
+        	return null;
 		default:
 			return super.onCreateDialog(id);
 		}
