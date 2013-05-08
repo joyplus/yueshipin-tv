@@ -912,40 +912,41 @@ public class StatisticsUtils implements JieMianConstant,BangDanKey{
 			movieItemData.setSupport_num(result.items[i].support_num);
 			movieItemData.setFavority_num(result.items[i].favority_num);
 			movieItemData.setMovieDuration(result.items[i].duration);
+			movieItemData.setDefinition(result.items[i].definition);
 			list.add(movieItemData);
 		}
 		
 		return list;
 	}
 	
-	public static List<MovieItemData> returnUserFavoritiesJson(String json) throws JsonParseException, JsonMappingException, IOException {
-		
-		if(json == null || json.equals("")) {
-			
-			return new ArrayList<MovieItemData>();
-		}
-		ObjectMapper mapper = new ObjectMapper();
-		
-		ReturnUserFavorities result  = mapper.readValue(json.toString(), ReturnUserFavorities.class);
-		List<MovieItemData> list = new ArrayList<MovieItemData>();
-		for(int i=0; i<result.favorities.length; i++){
-			MovieItemData movieItemData = new MovieItemData();
-			movieItemData.setMovieID(result.favorities[i].content_id);
-			movieItemData.setMovieName(result.favorities[i].content_name);
-			movieItemData.setMovieProType(result.favorities[i].content_type);
-			String bigPicUrl = result.favorities[i].big_content_pic_url;
-			if(bigPicUrl == null || bigPicUrl.equals("")
-					||bigPicUrl.equals(EMPTY)) {
-				
-				bigPicUrl = result.favorities[i].content_pic_url;
-			}
-			movieItemData.setMoviePicUrl(bigPicUrl);
-			movieItemData.setMovieScore(result.favorities[i].score);
-			list.add(movieItemData);
-		}
-		
-		return list;
-	}
+//	public static List<MovieItemData> returnUserFavoritiesJson(String json) throws JsonParseException, JsonMappingException, IOException {
+//		
+//		if(json == null || json.equals("")) {
+//			
+//			return new ArrayList<MovieItemData>();
+//		}
+//		ObjectMapper mapper = new ObjectMapper();
+//		
+//		ReturnUserFavorities result  = mapper.readValue(json.toString(), ReturnUserFavorities.class);
+//		List<MovieItemData> list = new ArrayList<MovieItemData>();
+//		for(int i=0; i<result.favorities.length; i++){
+//			MovieItemData movieItemData = new MovieItemData();
+//			movieItemData.setMovieID(result.favorities[i].content_id);
+//			movieItemData.setMovieName(result.favorities[i].content_name);
+//			movieItemData.setMovieProType(result.favorities[i].content_type);
+//			String bigPicUrl = result.favorities[i].big_content_pic_url;
+//			if(bigPicUrl == null || bigPicUrl.equals("")
+//					||bigPicUrl.equals(EMPTY)) {
+//				
+//				bigPicUrl = result.favorities[i].content_pic_url;
+//			}
+//			movieItemData.setMoviePicUrl(bigPicUrl);
+//			movieItemData.setMovieScore(result.favorities[i].score);
+//			list.add(movieItemData);
+//		}
+//		
+//		return list;
+//	}
 	
 	
 	public static String getLastBandNotice(String lastTime){

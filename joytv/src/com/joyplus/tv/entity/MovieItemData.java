@@ -17,6 +17,14 @@ public class MovieItemData {
 	private String movieDuration;
 	private String movieProType;
 	private String num;
+	
+	private String stars;
+	private String directors;
+	private String summary;
+	private String support_num;
+	private String favority_num;
+	private String definition;
+	
 	public String getStars() {
 		return stars;
 	}
@@ -64,13 +72,6 @@ public class MovieItemData {
 	public void setDefinition(String definition) {
 		this.definition = definition;
 	}
-
-	private String stars;
-	private String directors;
-	private String summary;
-	private String support_num;
-	private String favority_num;
-	private String definition;
 
 	public String getNum() {
 		return num;
