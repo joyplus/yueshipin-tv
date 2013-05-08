@@ -89,6 +89,11 @@ public class DetailComment extends Activity implements
 
 		// 获取listview对象
 		ItemsListView = (ListView) findViewById(R.id.listView1);
+		
+		
+		ItemsListView.setNextFocusLeftId(R.id.listView1);
+		
+		
 		// 设置listview的点击事件监听器
 		ItemsListView.setOnItemClickListener(this);
 //		ItemsListView.setOnKeyListener(new View.OnKeyListener() {
@@ -230,7 +235,8 @@ public class DetailComment extends Activity implements
 
 		aq.id(R.id.scrollViewItemDetail).gone();
 		aq.id(R.id.listView1).visible();
-		aq.id(R.id.listView1).getView().requestFocus();
+//		aq.id(R.id.listView1).getView().requestFocus();
+		
 
 		if (isLastisNext > 1) {
 			for (int i = 0; i < m_ReturnProgramReviews.reviews.length; i++) {
@@ -257,6 +263,9 @@ public class DetailComment extends Activity implements
 			dataStruct.add(m_DetailCommentListData);
 		}
 		DetailCommentAdapter.notifyDataSetChanged();
+		
+		ItemsListView.requestFocus();
+		ItemsListView.setSelection(0);
 	}
 
 	public void OnClickImageView(View v) {
