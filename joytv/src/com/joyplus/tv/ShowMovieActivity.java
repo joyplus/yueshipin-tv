@@ -171,6 +171,8 @@ public class ShowMovieActivity extends AbstractShowActivity {
 		// TODO Auto-generated method stub
 		
 		int action = event.getAction();
+//		Toast.makeText(getApplicationContext(), "KEYCODE:" + keyCode, Toast.LENGTH_SHORT).show();
+//		Log.i(TAG, "KEYCODE:" + keyCode);
 
 		if (action == KeyEvent.ACTION_DOWN) {
 

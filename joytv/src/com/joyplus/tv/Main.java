@@ -1969,7 +1969,7 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 					//wifi设置
 					isWifiReset = true;
 					startActivity(new
-							 Intent(Settings.ACTION_WIFI_SETTINGS));
+							 Intent(Settings.ACTION_SETTINGS));
 					
 				}
 			}).setNegativeButton(getString(R.string.toast_no_exit), new OnClickListener() {
