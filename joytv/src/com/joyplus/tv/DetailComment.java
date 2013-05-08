@@ -155,6 +155,8 @@ public class DetailComment extends Activity implements
 
 		scrollViewItemDetail = (ScrollView) findViewById(R.id.scrollViewItemDetail);
 		
+//		scrollViewItemDetail.setScrollbarFadingEnabled(false);
+		
 		mtextViewItemDetail = (TextView) findViewById(R.id.textViewItemDetail);
 		if (prod_id != null)
 			CheckSaveData();
@@ -343,20 +345,20 @@ public class DetailComment extends Activity implements
 			aq.id(R.id.scrollViewItemDetail).visible();
 			aq.id(R.id.scrollViewItemDetail).getView().requestFocus();
 
-			scrollViewItemDetail.fullScroll(ScrollView.FOCUS_UP);
-
-			ViewTreeObserver vto = mtextViewItemDetail.getViewTreeObserver();
-			vto.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
-				@Override
-				public void onGlobalLayout() {
-					// TODO Auto-generated method stub
-					if(isDetailComment){
-						totalDetailCommentHeight = mtextViewItemDetail.getHeight() /scrollViewItemDetail.getHeight()+1;//scrollViewItemDetail.getMeasuredHeight();
-						aq.id(R.id.textView3).text(
-							Integer.toString(CurrentDetailComment + 1) + "/" + Integer.toString(totalDetailCommentHeight));
-					}
-				}
-			});
+//			scrollViewItemDetail.fullScroll(ScrollView.FOCUS_UP);
+//
+//			ViewTreeObserver vto = mtextViewItemDetail.getViewTreeObserver();
+//			vto.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
+//				@Override
+//				public void onGlobalLayout() {
+//					// TODO Auto-generated method stub
+//					if(isDetailComment){
+//						totalDetailCommentHeight = mtextViewItemDetail.getHeight() /scrollViewItemDetail.getHeight()+1;//scrollViewItemDetail.getMeasuredHeight();
+//						aq.id(R.id.textView3).text(
+//							Integer.toString(CurrentDetailComment + 1) + "/" + Integer.toString(totalDetailCommentHeight));
+//					}
+//				}
+//			});
 
 		} else {
 			app.MyToast(this, "ReturnProgramReviews is empty.");
@@ -364,38 +366,38 @@ public class DetailComment extends Activity implements
 
 	}
 
-	@Override
-	public boolean dispatchKeyEvent(KeyEvent event) {
-		if (isDetailComment) {
-			if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN) {
-				if (event.getAction() == KeyEvent.ACTION_DOWN
-						&& event.getRepeatCount() == 0
-						&& scrollViewItemDetail.arrowScroll(View.FOCUS_DOWN)
-								&& CurrentDetailComment < totalDetailCommentHeight-1) {
-					scrollViewItemDetail.startAnimation(fade_in);
-					scrollViewItemDetail.pageScroll(View.FOCUS_DOWN);
-					
-					CurrentDetailComment++;
-//					scrollViewItemDetail.smoothScrollBy(0, scrollViewItemDetail.getHeight());
-					return true;
-				}
-			} else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP) {
-				if (event.getAction() == KeyEvent.ACTION_DOWN
-						&& event.getRepeatCount() == 0
-						&& scrollViewItemDetail.arrowScroll(View.FOCUS_UP)
-						&& CurrentDetailComment >0) {
-					scrollViewItemDetail.startAnimation(fade_in);
-					scrollViewItemDetail.pageScroll(View.FOCUS_UP);
-					CurrentDetailComment--;
-//					scrollViewItemDetail.smoothScrollBy(0, 0);
-
-					return true;
-				}
-			}
-		}
-
-		return super.dispatchKeyEvent(event);
-	}
+//	@Override
+//	public boolean dispatchKeyEvent(KeyEvent event) {
+////		if (isDetailComment) {
+////			if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN) {
+////				if (event.getAction() == KeyEvent.ACTION_DOWN
+////						&& event.getRepeatCount() == 0
+////						&& scrollViewItemDetail.arrowScroll(View.FOCUS_DOWN)
+////								&& CurrentDetailComment < totalDetailCommentHeight-1) {
+//////					scrollViewItemDetail.startAnimation(fade_in);
+////					scrollViewItemDetail.pageScroll(View.FOCUS_DOWN);
+////					
+////					CurrentDetailComment++;
+//////					scrollViewItemDetail.smoothScrollBy(0, scrollViewItemDetail.getHeight());
+////					return true;
+////				}
+////			} else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP) {
+////				if (event.getAction() == KeyEvent.ACTION_DOWN
+////						&& event.getRepeatCount() == 0
+////						&& scrollViewItemDetail.arrowScroll(View.FOCUS_UP)
+////						&& CurrentDetailComment >0) {
+//////					scrollViewItemDetail.startAnimation(fade_in);
+////					scrollViewItemDetail.pageScroll(View.FOCUS_UP);
+////					CurrentDetailComment--;
+//////					scrollViewItemDetail.smoothScrollBy(0, 0);
+////
+////					return true;
+////				}
+////			}
+////		}
+//
+//		return super.dispatchKeyEvent(event);
+//	}
 
 	private void CheckSaveData() {
 		String SaveData = null;
