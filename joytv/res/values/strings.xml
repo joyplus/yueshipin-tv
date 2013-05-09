@@ -89,6 +89,10 @@
     <string name="toast_setting_wifi">网络设置</string>
     <string name="toast_network_slow">网络速度像蜗牛</string>
     
+    <string name="dialog_unband">是否取消与悦视频手机版的绑定？</string>
+    <string name="dialog_unband_yes">是</string>
+    <string name="dialog_unband_no">否</string>
+    
     <!--Yangzhg  -->
     
     
