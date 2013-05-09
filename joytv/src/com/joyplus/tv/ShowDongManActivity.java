@@ -594,6 +594,7 @@ public class ShowDongManActivity extends AbstractShowActivity {
 
 		showDialog(DIALOG_WAITING);
 		StatisticsUtils.clearList(lists[QUAN_FILTER]);
+		resetGvActive();
 		currentListIndex = QUAN_FILTER;
 		filterSource = StatisticsUtils.getFileterURL3Param(choice, quanbu);
 		String url = StatisticsUtils.getFilter_DongmanFirstURL(filterSource);

@@ -589,7 +589,7 @@ public class ShowTVActivity extends AbstractShowActivity {
 		StatisticsUtils.clearList(lists[QUAN_FILTER]);
 		currentListIndex = QUAN_FILTER;
 		filterSource = StatisticsUtils.getFileterURL3Param(choice, quanbu);
-		String url = StatisticsUtils.getFilter_DongmanFirstURL(filterSource);
+		String url = StatisticsUtils.getFilter_DianshijuFirstURL(filterSource);
 		Log.i(TAG, "POP--->URL:" + url);
 		getFilterData(url);
 	}
@@ -802,7 +802,7 @@ public class ShowTVActivity extends AbstractShowActivity {
 
 			break;
 		case QUAN_FILTER:
-			getMoreFilterData(StatisticsUtils.getFilter_DongmanCacheURL(
+			getMoreFilterData(StatisticsUtils.getFilter_DianshijuCacheURL(
 					pageNum, filterSource));
 			break;
 		case SEARCH:

@@ -803,7 +803,7 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 				
 				favNum --;
 				xiaiBt.setText((favNum) + "");
-				ItemStateUtils.shoucangButtonToFocusState(xiaiBt, getApplicationContext());
+				ItemStateUtils.shoucangButtonToNormalState(xiaiBt, getApplicationContext());
 			}
 		isXiai = false;
 		

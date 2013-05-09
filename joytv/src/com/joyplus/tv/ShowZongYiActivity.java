@@ -548,7 +548,7 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 		StatisticsUtils.clearList(lists[QUAN_FILTER]);
 		currentListIndex = QUAN_FILTER;
 		filterSource = StatisticsUtils.getFileterURL3Param(choice, quanbu);
-		String url = StatisticsUtils.getFilter_DongmanFirstURL(filterSource);
+		String url = StatisticsUtils.getFilter_ZongyiFirstURL(filterSource);
 		getFilterData(url);
 	}
 
@@ -733,7 +733,7 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 
 			break;
 		case QUAN_FILTER:
-			getMoreFilterData(StatisticsUtils.getFilter_DongmanCacheURL(
+			getMoreFilterData(StatisticsUtils.getFilter_ZongyiCacheURL(
 					pageNum, filterSource));
 			break;
 		case SEARCH:

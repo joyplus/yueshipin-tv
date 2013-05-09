@@ -337,6 +337,7 @@ public class DetailComment extends Activity implements
 			CurrentDetailComment = 0;
 //			 ItemsListView.startAnimation(fade_out);
 			scrollViewItemDetail.startAnimation(fade_in);
+			scrollViewItemDetail.setScrollY(0);
 			aq.id(R.id.listViewItemTitle).text(
 					m_DetailCommentListData.Prod_title);
 			aq.id(R.id.textViewItemDetail).text(

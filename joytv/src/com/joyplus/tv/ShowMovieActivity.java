@@ -525,6 +525,10 @@ public class ShowMovieActivity extends AbstractShowActivity {
 			popWidth = width;
 			popHeight = height;
 		}
+		
+		Log.i(TAG, "notifyAdapter---> " + list.size()
+				+ "index:" + currentListIndex);
+		
 
 		if(currentListIndex != SEARCH &&
 				currentListIndex != QUAN_FILTER) {
@@ -813,7 +817,7 @@ public class ShowMovieActivity extends AbstractShowActivity {
 			break;
 		case QUAN_FILTER:
 
-			getMoreFilterData(StatisticsUtils.getFilter_DongmanCacheURL(
+			getMoreFilterData(StatisticsUtils.getFilter_DianyingCacheURL(
 					pageNum, filterSource));
 			break;
 		case SEARCH:

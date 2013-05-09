@@ -501,6 +501,28 @@ public class StatisticsUtils implements JieMianConstant,BangDanKey{
 		return StatisticsUtils.getFilterURL(FILTER_URL, (pageNum + 1) + "", CACHE_NUM + "",MOVIE_TYPE) + filterSource;
 	}
 	
+	//电视剧filter
+	public static String getFilter_DianshijuFirstURL(String filterSource) {
+		
+		return StatisticsUtils.getFilterURL(FILTER_URL, 1 + "", FIRST_NUM + "",TV_TYPE) + filterSource;
+	}
+	
+	public static String getFilter_DianshijuCacheURL(int pageNum,String filterSource) {
+		
+		return StatisticsUtils.getFilterURL(FILTER_URL, (pageNum + 1) + "", CACHE_NUM + "",TV_TYPE) + filterSource;
+	}
+	
+	//综艺filter
+	public static String getFilter_ZongyiFirstURL(String filterSource) {
+		
+		return StatisticsUtils.getFilterURL(FILTER_URL, 1 + "", FIRST_NUM + "",ZONGYI_TYPE) + filterSource;
+	}
+	
+	public static String getFilter_ZongyiCacheURL(int pageNum,String filterSource) {
+		
+		return StatisticsUtils.getFilterURL(FILTER_URL, (pageNum + 1) + "", CACHE_NUM + "",ZONGYI_TYPE) + filterSource;
+	}
+	
 	
 	public static final String YEAR = "&year=";
 	public static final String AREA = "&area=";

@@ -6,7 +6,9 @@ import com.saulpower.fayeclient.FayeService;
 import com.umeng.analytics.MobclickAgent;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Application;
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -19,6 +21,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class SettingActivity extends Activity implements OnClickListener {
+	
+	private static final int SHOW_DIALOG_UNBAND = 0;
 	
 	private LinearLayout unbandLayout;
 	private TextView aboutLayout,declarationLayout,faqLayout;
@@ -88,6 +92,25 @@ public class SettingActivity extends Activity implements OnClickListener {
 		default:
 			break;
 		}
+	}
+	
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		// TODO Auto-generated method stub
+		switch (id) {
+		case SHOW_DIALOG_UNBAND:
+			
+			AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+//			builder.setTitle(title)
+			
+			break;
+
+		default:
+			break;
+		}
+		
+		
+		return super.onCreateDialog(id);
 	}
 	
 	@Override
