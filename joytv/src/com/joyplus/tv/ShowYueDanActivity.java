@@ -927,6 +927,14 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 		}
 
 		if (activeView.getId() == v.getId()) {
+			
+			if(v.getId() == R.id.bt_zuijinguankan) {
+				
+				startActivity(new Intent(this, HistoryActivity.class));
+			} else if( v.getId() == R.id.bt_zhuijushoucang) {
+				
+				startActivity(new Intent(this, ShowShoucangHistoryActivity.class));
+			}
 
 			return;
 		}
