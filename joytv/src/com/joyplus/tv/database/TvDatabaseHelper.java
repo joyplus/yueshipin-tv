@@ -98,6 +98,7 @@ public class TvDatabaseHelper extends SQLiteOpenHelper implements UserShouCang,S
 			+ MAX_EPISODE + TEXT_DOT 
 			+ STARS + TEXT_DOT 
 			+ DIRECTORS + TEXT_DOT 
+			+ IS_NEW + INTEGER 
 			+ " )";
 
 	@Override

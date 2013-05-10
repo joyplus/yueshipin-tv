@@ -154,7 +154,7 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 			String page_size, String vod_type, String userId) {
 
 		return url + "?page_num=" + page_num + "&page_size=" + page_size
-				+ "&vod_type=" + vod_type + "&userId=" + userId;
+				+ "&vod_type=" + vod_type + "&userid=" + userId;
 	}
 
 	public static final int CACHE_NUM = 20;
@@ -577,7 +577,7 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 	// 收藏 取100条数据 为全部类型
 	public static String getShoucangURL(String userId) {
 
-		return getUserFavURL(FAV_URL, 1 + "", 100 + "", "", userId);
+		return getUserFavURL(FAV_URL, 1 + "", SHOUCANG_NUM + "", "", userId);
 	}
 
 	public static final String YEAR = "&year=";

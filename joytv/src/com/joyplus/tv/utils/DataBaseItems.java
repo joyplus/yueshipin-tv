@@ -17,13 +17,16 @@ public class DataBaseItems {
 		String TEXT_DOT = " TEXT, ";
 		String BLOB_DOT = " BLOB, ";
 	}
+	
+	public static final int NEW = 1;
+	public static final int OLD = 0;
 
 	public static interface UserShouCang {
 
-		String USER_ID = "user_id";// 用户id
-
 		String ID = "id";// 自增id
 
+		String USER_ID = "user_id";// 用户id
+		
 		String PRO_ID = "pro_id";// 影片id
 		String NAME = "name";// 影片名字
 		String SCORE = "score";// 影片评分
@@ -35,6 +38,8 @@ public class DataBaseItems {
 		
 		String STARS = "stars";//主演
 		String DIRECTORS = "directors";//导演
+		
+		String IS_NEW = "is_new";//同步标记字段 1为new 0为old
 		// String NUM = "num";
 	}
 	

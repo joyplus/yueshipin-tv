@@ -14,6 +14,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
@@ -22,6 +23,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
@@ -66,6 +69,7 @@ import com.joyplus.tv.Service.Return.ReturnMainHot;
 import com.joyplus.tv.Service.Return.ReturnTops;
 import com.joyplus.tv.Service.Return.ReturnUserPlayHistories;
 import com.joyplus.tv.Video.VideoPlayerActivity;
+import com.joyplus.tv.database.TvDatabaseHelper;
 import com.joyplus.tv.entity.HotItemInfo;
 import com.joyplus.tv.entity.ShiPinInfoParcelable;
 import com.joyplus.tv.entity.YueDanInfo;
@@ -74,6 +78,8 @@ import com.joyplus.tv.ui.MyScrollLayout;
 import com.joyplus.tv.ui.MyScrollLayout.OnViewChangeListener;
 import com.joyplus.tv.ui.UserInfo;
 import com.joyplus.tv.ui.WaitingDialog;
+import com.joyplus.tv.utils.DataBaseItems;
+import com.joyplus.tv.utils.DataBaseItems.UserShouCang;
 import com.joyplus.tv.utils.DefinationComparatorIndex;
 import com.joyplus.tv.utils.Log;
 import com.joyplus.tv.utils.SouceComparatorIndex1;
@@ -2101,7 +2107,7 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 			
 			Log.d(TAG, json.toString());
 			compareUsrFav4DB(StatisticsUtils
-					.returnUserFavoritiesJson(json.toString()));
+					.returnUserFavoritiesJson(json.toString()),app.getUserInfo().getUserId());
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -2114,9 +2120,73 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 		}
 	}
 	
-	private void compareUsrFav4DB(List<HotItemInfo> list) {
+	//网上用户id数据和本地用户id数据进行比较
+	//以网上数据为标准，如果本地用户id数据多余的就删除，不存在的就进行添加
+	private void compareUsrFav4DB(List<HotItemInfo> list,String userId) {
 		
-		
+//		if(list == null || list.isEmpty() ) {
+//			
+//			return;
+//		}
+//		
+//		if(list.size() > 0) {
+//			
+//			String selection = UserShouCang.ID + "=?";
+//			String[] selectionArgs = {userId};
+//			
+//			TvDatabaseHelper helper = TvDatabaseHelper.newTvDatabaseHelper(getApplicationContext());
+//			SQLiteDatabase database = helper.getWritableDatabase();//获取写db
+//			
+//			String[] columns = {UserShouCang.PRO_ID};
+//			Cursor cursor = database.query(TvDatabaseHelper.ZHUIJU_TABLE_NAME, columns, selection, selectionArgs, null, null, null);
+//			
+//			if(cursor != null && cursor.getCount() > 0) {//数据库有数据
+//				
+//				int count = cursor.getCount();
+//				
+//				String[] ids = new String[count];
+//				
+//				for(int i=0;i<count;i++) {
+//					
+//					int index = cursor.getColumnIndex(UserShouCang.PRO_ID);
+//					
+//					if(index != -1) {
+//						
+//						ids[i] = cursor.getString(index);
+//					}
+//				}
+//				
+//				//首先数据库数据全部改为旧数据
+//				ContentValues contentValues = new ContentValues();
+//				contentValues.put(UserShouCang.IS_NEW, DataBaseItems.OLD);
+//
+//				database.update(TvDatabaseHelper.ZHUIJU_TABLE_NAME, contentValues, selection, selectionArgs);
+//				
+//				for()
+//			} else {//数据库没有数据
+//				
+//				//把下载的数据插入到数据库
+//				for(HotItemInfo info : list) {
+//					
+//					ContentValues contentValues = new ContentValues();
+//					contentValues.put(UserShouCang.USER_ID, userId);
+//					contentValues.put(UserShouCang.PRO_ID, info.prod_id);
+//					contentValues.put(UserShouCang.NAME, info.prod_name);
+//					contentValues.put(UserShouCang.SCORE, info.score);
+//					contentValues.put(UserShouCang.PRO_TYPE, info.prod_type);
+//					contentValues.put(UserShouCang.PIC_URL, info.prod_pic_url);
+//					contentValues.put(UserShouCang.DURATION, info.duration);
+//					contentValues.put(UserShouCang.CUR_EPISODE, info.cur_episode);
+//					contentValues.put(UserShouCang.MAX_EPISODE, info.max_episode);
+//					contentValues.put(UserShouCang.STARS, info.stars);
+//					contentValues.put(UserShouCang.DIRECTORS, info.directors);
+//					contentValues.put(UserShouCang.IS_NEW, DataBaseItems.NEW);
+//					
+//					database.insert(TvDatabaseHelper.ZHUIJU_TABLE_NAME, null, contentValues);
+//				}
+//			}
+//			
+//		}
 	}
 	
 	class CheckPlayUrl implements Runnable{

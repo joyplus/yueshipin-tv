@@ -588,6 +588,7 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 		if(json == null || json.equals("")) 
 			return;
 		
+		Log.d(TAG, "url--->>>>" + url);
 		Log.d(TAG, "favourate data = " + json.toString());
 		try {
 			ReturnUserFavorities result  = mapper.readValue(json.toString(), ReturnUserFavorities.class);
