@@ -7,9 +7,10 @@ import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.joyplus.tv.utils.DataBaseItems;
+import com.joyplus.tv.utils.DataBaseItems.SQLite3_DataType;
 import com.joyplus.tv.utils.DataBaseItems.UserShouCang;
 
-public class TvDatabaseHelper extends SQLiteOpenHelper implements UserShouCang{
+public class TvDatabaseHelper extends SQLiteOpenHelper implements UserShouCang,SQLite3_DataType{
 
 	public static final String DATABASE_NAME = "joyplus.db";
 	public static final int DATABASE_VERSION = 1;
@@ -86,11 +87,18 @@ public class TvDatabaseHelper extends SQLiteOpenHelper implements UserShouCang{
 	private String sql_table_zhuiju = "create table if not exists "
 			+ ZHUIJU_TABLE_NAME + " ( " + ID
 			+ " integer primary key autoincrement, " 
-			+ USER_ID + " varchar, " + PRO_ID + " varchar, "
-			+ NAME + " varchar, " + SCORE + " varchar, " 
-			+ PRO_TYPE + " varchar, " + PIC_URL + " varchar, " 
-			+ DURATION + " varchar, " + CUR_EPISODE + " varchar, "
-			+ MAX_EPISODE + " varchar, " + " )";
+			+ USER_ID + TEXT_DOT 
+			+ PRO_ID + TEXT_DOT
+			+ NAME + TEXT_DOT 
+			+ SCORE + TEXT_DOT 
+			+ PRO_TYPE + TEXT_DOT 
+			+ PIC_URL + TEXT_DOT
+			+ DURATION + TEXT_DOT 
+			+ CUR_EPISODE + TEXT_DOT
+			+ MAX_EPISODE + TEXT_DOT 
+			+ STARS + TEXT_DOT 
+			+ DIRECTORS + TEXT_DOT 
+			+ " )";
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {

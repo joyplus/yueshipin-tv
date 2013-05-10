@@ -154,6 +154,10 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 					
 					handler.removeMessages(MESSAGE_30S_TIMEOUT);
 				}
+				
+				//当悦单加载完成时，开始下载用户收藏数据，并插入到数据库
+//				getShouCangData(StatisticsUtils.getShoucangURL(app.getUserInfo().getUserId()));
+				
 				break;
 			case MESSAGE_START_TIMEOUT://超时还未加载好
 				if(initStep<3){
@@ -2061,6 +2065,59 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 //			}
 //		}
 //	}
+	
+	
+	protected void getServiceData(String url, String interfaceName) {
+		// TODO Auto-generated method stub
+
+		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
+		cb.url(url).type(JSONObject.class).weakHandler(this, interfaceName);
+
+		cb.SetHeader(app.getHeaders());
+		aq.ajax(cb);
+	}
+	
+	
+	protected void getShouCangData(String url) {
+		// TODO Auto-generated method stub
+
+		getServiceData(url, "initShouCangServiceData");
+	}
+	
+	public void initShouCangServiceData(String url, JSONObject json,
+			AjaxStatus status) {
+		// TODO Auto-generated method stub
+
+		if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
+
+			app.MyToast(aq.getContext(),
+					getResources().getString(R.string.networknotwork));
+			return;
+		}
+		try {
+			
+			if(json == null || json.equals("")) 
+				return;
+			
+			Log.d(TAG, json.toString());
+			compareUsrFav4DB(StatisticsUtils
+					.returnUserFavoritiesJson(json.toString()));
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	private void compareUsrFav4DB(List<HotItemInfo> list) {
+		
+		
+	}
 	
 	class CheckPlayUrl implements Runnable{
 

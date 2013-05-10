@@ -7,7 +7,7 @@
     <dimen name="menu_vertical_margin">2dp</dimen>
     <dimen name="text_horizontal_margin">5dp</dimen>
     <dimen name="layout_zero">0dp</dimen>
-    <dimen name="user_name_text_size">12sp</dimen>
+    <dimen name="user_name_text_size">16sp</dimen>
     <dimen name="time_text_size">24sp</dimen>
     <dimen name="empty_margin_right">18dp</dimen>
     <dimen name="theme_name_margin">20dp</dimen>

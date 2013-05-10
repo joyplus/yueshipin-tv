@@ -48,7 +48,7 @@ public class ShowYueDanListActivity extends AbstractShowActivity{
 	private EditText searchEt;
 	private MyMovieGridView playGv;
 	private LinearLayout topLinearLayout;
-	private View activeView;
+//	private View activeView;
 	private int popWidth = 0, popHeight = 0;
 	private boolean isGridViewUp = false;
 	private int[] beforeFirstAndLastVible = { 0, 9 };
@@ -132,8 +132,8 @@ public class ShowYueDanListActivity extends AbstractShowActivity{
 				ItemStateUtils.viewToFocusState(getApplicationContext(), v);
 			} else {
 
-				ItemStateUtils.viewToOutFocusState(getApplicationContext(), v,
-						activeView);
+//				ItemStateUtils.viewToOutFocusState(getApplicationContext(), v,
+//						activeView);
 			}
 		}
 		
@@ -418,9 +418,9 @@ public class ShowYueDanListActivity extends AbstractShowActivity{
 				// searchEt.setText("");
 				playGv.setNextFocusForwardId(searchEt.getId());//
 
-				ItemStateUtils
-						.viewToNormal(getApplicationContext(), activeView);
-				activeView = searchEt;
+//				ItemStateUtils
+//						.viewToNormal(getApplicationContext(), activeView);
+//				activeView = searchEt;
 
 				if (searchStr != null && !searchStr.equals("")) {
 					resetGvActive();
@@ -799,7 +799,7 @@ public class ShowYueDanListActivity extends AbstractShowActivity{
 		
 		playGv.setNextFocusLeftId(R.id.bt_zuijinguankan);
 		
-		activeView = zuijinguankanBtn;
+//		activeView = zuijinguankanBtn;
 	}
 	
 	@Override
@@ -807,18 +807,21 @@ public class ShowYueDanListActivity extends AbstractShowActivity{
 		// TODO Auto-generated method stub
 		Log.i("Yangzhg", "onClick");
 
-		if (activeView.getId() == v.getId()) {
-			
-			if(v.getId() == R.id.bt_zuijinguankan) {
-				
-				startActivity(new Intent(this, HistoryActivity.class));
-			} else if( v.getId() == R.id.bt_zhuijushoucang) {
-				
-				startActivity(new Intent(this, ShowShoucangHistoryActivity.class));
-			}
+//		if(v.getId() == R.id.bt_zuijinguankan) {
+//			
+//			startActivity(new Intent(this, HistoryActivity.class));
+//			
+//			return;
+//		} else if( v.getId() == R.id.bt_zhuijushoucang) {
+//			
+//			startActivity(new Intent(this, ShowShoucangHistoryActivity.class));
+//			return;
+//		}
 
-			return;
-		}
+//		if (activeView.getId() == v.getId()) {
+//
+//			return;
+//		}
 		
 		switch (v.getId()) {
 		case R.id.bt_zuijinguankan:
@@ -832,13 +835,13 @@ public class ShowYueDanListActivity extends AbstractShowActivity{
 			break;
 		}
 
-		View tempView = ItemStateUtils.viewToActive(getApplicationContext(), v,
-				activeView);
-
-		if (tempView != null) {
-
-			activeView = tempView;
-		}
+//		View tempView = ItemStateUtils.viewToActive(getApplicationContext(), v,
+//				activeView);
+//
+//		if (tempView != null) {
+//
+//			activeView = tempView;
+//		}
 
 		playGv.setNextFocusLeftId(v.getId());
 	}

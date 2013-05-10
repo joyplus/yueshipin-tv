@@ -25,6 +25,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.Toast;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
@@ -168,6 +169,8 @@ public class ShowDongManActivity extends AbstractShowActivity {
 	@Override
 	public boolean onKey(View v, int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
+		
+		
 
 		return false;
 	}
@@ -228,6 +231,17 @@ public class ShowDongManActivity extends AbstractShowActivity {
 					R.drawable.avatar_defult);
 			aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
 		}
+	}
+	
+	@Override
+	public boolean dispatchKeyEvent(KeyEvent event) {
+		// TODO Auto-generated method stub
+		
+		int keycode = event.getKeyCode();
+		
+		Log.i(TAG, "dispatchKeyEvent--->" + keycode);
+//		Toast.makeText(getApplicationContext(), "dispatchKeyEvent--->" + keycode, Toast.LENGTH_SHORT).show();
+		return super.dispatchKeyEvent(event);
 	}
 
 	@Override
@@ -1064,16 +1078,19 @@ public class ShowDongManActivity extends AbstractShowActivity {
 
 			filterPopWindowShow();
 		}
+		
+		if(v.getId() == R.id.bt_zuijinguankan) {
+			
+			startActivity(new Intent(this, HistoryActivity.class));
+			
+			return;
+		} else if( v.getId() == R.id.bt_zhuijushoucang) {
+			
+			startActivity(new Intent(this, ShowShoucangHistoryActivity.class));
+			return;
+		}
 
 		if (activeView.getId() == v.getId()) {
-			
-			if(v.getId() == R.id.bt_zuijinguankan) {
-				
-				startActivity(new Intent(this, HistoryActivity.class));
-			} else if( v.getId() == R.id.bt_zhuijushoucang) {
-				
-				startActivity(new Intent(this, ShowShoucangHistoryActivity.class));
-			}
 
 			return;
 		}
