@@ -78,6 +78,7 @@ import com.joyplus.tv.ui.MyScrollLayout;
 import com.joyplus.tv.ui.MyScrollLayout.OnViewChangeListener;
 import com.joyplus.tv.ui.UserInfo;
 import com.joyplus.tv.ui.WaitingDialog;
+import com.joyplus.tv.utils.BangDanKey;
 import com.joyplus.tv.utils.DataBaseItems;
 import com.joyplus.tv.utils.DataBaseItems.UserShouCang;
 import com.joyplus.tv.utils.DefinationComparatorIndex;
@@ -2139,7 +2140,7 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 			TvDatabaseHelper helper = TvDatabaseHelper.newTvDatabaseHelper(getApplicationContext());
 			SQLiteDatabase database = helper.getWritableDatabase();//获取写db
 			
-			String[] columns = {UserShouCang.PRO_ID};//返回影片id
+			String[] columns = {UserShouCang.PRO_ID,UserShouCang.PRO_TYPE,UserShouCang.CUR_EPISODE};//返回影片id 类型和当前更新集数
 			Cursor cursor_proId = database.query(TvDatabaseHelper.ZHUIJU_TABLE_NAME, columns, selection, selectionArgs, null, null, null);
 			
 			if(cursor_proId != null && cursor_proId.getCount() > 0) {//数据库有数据
@@ -2147,18 +2148,24 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 				int count = cursor_proId.getCount();
 				
 				String[] pro_ids = new String[count];//数据库的影片id
+				String[] pro_types = new String[count];//数据库的影片类型
+				String[] pro_cur_episode = new String[count];//数据库的影片当前更新集数
 				
 				
 				int temp=0;
 //				cursor_proId.moveToFirst();
 				while(cursor_proId.moveToNext()) {
 					
-					int index = cursor_proId.getColumnIndex(UserShouCang.PRO_ID);
+					int indexId = cursor_proId.getColumnIndex(UserShouCang.PRO_ID);
+					int indexType = cursor_proId.getColumnIndex(UserShouCang.PRO_TYPE);
+					int indexCurEpisode = cursor_proId.getColumnIndex(UserShouCang.CUR_EPISODE);
 					
-					if(index != -1) {
+					if(indexId != -1) {
 					
-						Log.i(TAG, "compareUsrFav4DB--->:pro_id" + cursor_proId.getString(index));
-					pro_ids[temp] = cursor_proId.getString(index);//把用户id信息影片id存储到字符串中
+						Log.i(TAG, "compareUsrFav4DB--->:pro_id" + cursor_proId.getString(indexId));
+					pro_ids[temp] = cursor_proId.getString(indexId);//把用户id信息影片id存储到字符串中
+					pro_types[temp] = cursor_proId.getString(indexType);
+					pro_cur_episode[temp] = cursor_proId.getString(indexCurEpisode);
 					
 					}
 					
@@ -2166,11 +2173,14 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 				}
 				
 				String[] netWork_Pro_ids = StatisticsUtils.getStrs4List(list);
+				
 				for(int i=0;i<netWork_Pro_ids.length;i++)
 				Log.i(TAG, "netWork_Pro_ids---->" + netWork_Pro_ids[i]);
+				
 				//以网络的数据为标准 A 数据库为B
 				List<String> samelist = StatisticsUtils.findSameElement4A(netWork_Pro_ids, pro_ids);
 				Log.i(TAG, "samelist---->" + samelist.toString());
+				
 				String[] sameStrs =  StatisticsUtils.changeList2Strs(samelist);
 //				List<String> uniqueList = StatisticsUtils.findUniqueElement4A(netWork_Pro_ids, sameStrs);
 				List<Integer> uniqueIndexList = StatisticsUtils.findUniqueElementIndex4A(netWork_Pro_ids, sameStrs);
@@ -2190,8 +2200,42 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 					tempValues.put(UserShouCang.IS_NEW, DataBaseItems.NEW);
 					String tempSelection = UserShouCang.PRO_ID  + "=?";
 					String[] tempselectionArgs = {samelist.get(i)};
-					database.update(TvDatabaseHelper.ZHUIJU_TABLE_NAME, tempValues, tempSelection, tempselectionArgs);
 					
+					//A与B有相同数据，比较其cur_episode，如果A中不等于B中数据，把IS_UPDATE改为new
+					
+					String type = pro_types[i];
+					String pro_id = samelist.get(i);
+					
+					if(type != null) {
+						//如果相同数据有电视剧、动漫和综艺类型
+						if(type.equals(BangDanKey.TV_TYPE) || type.equals(BangDanKey.DONGMAN_TYPE)
+								|| type.equals(BangDanKey.ZONGYI_TYPE)) {
+							int recordIndex = -1;//找到原list中的顺序值
+							for(int j=0;j < netWork_Pro_ids.length;j++) {
+								
+								if(netWork_Pro_ids[j].equals(pro_id)) {
+									
+									recordIndex = j;
+									break;
+								}
+							}
+							
+							String cur_episode = pro_cur_episode[i];
+							if(recordIndex != -1) {
+								
+								String netWorkCur_Episode = list.get(recordIndex).cur_episode;//拿到最新的当前集数
+								if(netWorkCur_Episode != null && !netWorkCur_Episode.equals("")) {
+									
+									if(!cur_episode.equals(netWorkCur_Episode)) {//与本地的当前集数比较 不相等
+										//那证明有最新集数更新
+										tempValues.put(UserShouCang.IS_UPDATE, DataBaseItems.NEW);
+									}
+								}
+							}
+							
+						}
+					}
+					database.update(TvDatabaseHelper.ZHUIJU_TABLE_NAME, tempValues, tempSelection, tempselectionArgs);
 				}
 				
 				//插入A不同的数据
@@ -2211,6 +2255,8 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 					tempContentValues.put(UserShouCang.STARS, info.stars);
 					tempContentValues.put(UserShouCang.DIRECTORS, info.directors);
 					tempContentValues.put(UserShouCang.IS_NEW, DataBaseItems.NEW);
+//					tempContentValues.put(UserShouCang.IS_UPDATE, DataBaseItems.OLD);
+					tempContentValues.put(UserShouCang.IS_UPDATE, DataBaseItems.NEW);//测试
 					
 					database.insert(TvDatabaseHelper.ZHUIJU_TABLE_NAME, null, tempContentValues);
 				}
@@ -2238,11 +2284,15 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 					contentValues.put(UserShouCang.STARS, info.stars);
 					contentValues.put(UserShouCang.DIRECTORS, info.directors);
 					contentValues.put(UserShouCang.IS_NEW, DataBaseItems.NEW);
+//					contentValues.put(UserShouCang.IS_UPDATE, DataBaseItems.OLD);
+					contentValues.put(UserShouCang.IS_UPDATE, DataBaseItems.NEW);//测试
 					
 					database.insert(TvDatabaseHelper.ZHUIJU_TABLE_NAME, null, contentValues);
 				}
 			}
 			
+			cursor_proId.close();//关闭
+			helper.closeDatabase();//关闭数据库
 		}
 	}
 	

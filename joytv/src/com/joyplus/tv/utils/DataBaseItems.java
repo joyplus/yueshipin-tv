@@ -40,6 +40,10 @@ public class DataBaseItems {
 		String DIRECTORS = "directors";//导演
 		
 		String IS_NEW = "is_new";//同步标记字段 1为new 0为old
+		//追剧中，用户收藏过，并且有最新更新。
+		//更新规则为 当首页首次启动时候，检查网络数据是否有最新集数
+		//如果有那就设为true 1，否则一直为false 0
+		String IS_UPDATE = "is_update";
 		// String NUM = "num";
 	}
 	
