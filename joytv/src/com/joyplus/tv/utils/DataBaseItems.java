@@ -23,11 +23,11 @@ public class DataBaseItems {
 
 	public static interface UserShouCang {
 
-		String ID = "id";// 自增id
+//		String ID = "id";// 自增id
 
-		String USER_ID = "user_id";// 用户id
+		String USER_ID = "user_id";// 用户id 
 		
-		String PRO_ID = "pro_id";// 影片id
+		String PRO_ID = "pro_id";// 影片id key
 		String NAME = "name";// 影片名字
 		String SCORE = "score";// 影片评分
 		String PRO_TYPE = "pro_type";// 影片类型
@@ -47,7 +47,7 @@ public class DataBaseItems {
 		
 		String USER_ID = "user_id";// 用户id
 
-		String ID = "id";// 自增id
+//		String ID = "id";// 自增id
 	}
 
 }

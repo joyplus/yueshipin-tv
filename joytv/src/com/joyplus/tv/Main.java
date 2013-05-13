@@ -162,7 +162,7 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 				}
 				
 				//当悦单加载完成时，开始下载用户收藏数据，并插入到数据库
-//				getShouCangData(StatisticsUtils.getShoucangURL(app.getUserInfo().getUserId()));
+				getShouCangData(StatisticsUtils.getShoucangURL(app.getUserInfo().getUserId()));
 				
 				break;
 			case MESSAGE_START_TIMEOUT://超时还未加载好
@@ -2124,69 +2124,126 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 	//以网上数据为标准，如果本地用户id数据多余的就删除，不存在的就进行添加
 	private void compareUsrFav4DB(List<HotItemInfo> list,String userId) {
 		
-//		if(list == null || list.isEmpty() ) {
-//			
-//			return;
-//		}
-//		
-//		if(list.size() > 0) {
-//			
-//			String selection = UserShouCang.ID + "=?";
-//			String[] selectionArgs = {userId};
-//			
-//			TvDatabaseHelper helper = TvDatabaseHelper.newTvDatabaseHelper(getApplicationContext());
-//			SQLiteDatabase database = helper.getWritableDatabase();//获取写db
-//			
-//			String[] columns = {UserShouCang.PRO_ID};
-//			Cursor cursor = database.query(TvDatabaseHelper.ZHUIJU_TABLE_NAME, columns, selection, selectionArgs, null, null, null);
-//			
-//			if(cursor != null && cursor.getCount() > 0) {//数据库有数据
-//				
-//				int count = cursor.getCount();
-//				
-//				String[] ids = new String[count];
-//				
-//				for(int i=0;i<count;i++) {
-//					
-//					int index = cursor.getColumnIndex(UserShouCang.PRO_ID);
-//					
-//					if(index != -1) {
-//						
-//						ids[i] = cursor.getString(index);
-//					}
-//				}
-//				
-//				//首先数据库数据全部改为旧数据
-//				ContentValues contentValues = new ContentValues();
-//				contentValues.put(UserShouCang.IS_NEW, DataBaseItems.OLD);
-//
-//				database.update(TvDatabaseHelper.ZHUIJU_TABLE_NAME, contentValues, selection, selectionArgs);
-//				
-//				for()
-//			} else {//数据库没有数据
-//				
-//				//把下载的数据插入到数据库
-//				for(HotItemInfo info : list) {
-//					
-//					ContentValues contentValues = new ContentValues();
-//					contentValues.put(UserShouCang.USER_ID, userId);
-//					contentValues.put(UserShouCang.PRO_ID, info.prod_id);
-//					contentValues.put(UserShouCang.NAME, info.prod_name);
-//					contentValues.put(UserShouCang.SCORE, info.score);
-//					contentValues.put(UserShouCang.PRO_TYPE, info.prod_type);
-//					contentValues.put(UserShouCang.PIC_URL, info.prod_pic_url);
-//					contentValues.put(UserShouCang.DURATION, info.duration);
-//					contentValues.put(UserShouCang.CUR_EPISODE, info.cur_episode);
-//					contentValues.put(UserShouCang.MAX_EPISODE, info.max_episode);
-//					contentValues.put(UserShouCang.STARS, info.stars);
-//					contentValues.put(UserShouCang.DIRECTORS, info.directors);
-//					contentValues.put(UserShouCang.IS_NEW, DataBaseItems.NEW);
-//					
-//					database.insert(TvDatabaseHelper.ZHUIJU_TABLE_NAME, null, contentValues);
-//				}
-//			}
-//			
-//		}
+		if(list == null || list.isEmpty() ) {
+			
+			return;
+		}
+		
+		if(list.size() > 0) {
+			
+//			int listSize = list.size();//获取此id，用户信息大小
+			
+			String selection = UserShouCang.USER_ID + "=?";//通过用户id，找到相应信息
+			String[] selectionArgs = {userId};
+			
+			TvDatabaseHelper helper = TvDatabaseHelper.newTvDatabaseHelper(getApplicationContext());
+			SQLiteDatabase database = helper.getWritableDatabase();//获取写db
+			
+			String[] columns = {UserShouCang.PRO_ID};//返回影片id
+			Cursor cursor_proId = database.query(TvDatabaseHelper.ZHUIJU_TABLE_NAME, columns, selection, selectionArgs, null, null, null);
+			
+			if(cursor_proId != null && cursor_proId.getCount() > 0) {//数据库有数据
+				
+				int count = cursor_proId.getCount();
+				
+				String[] pro_ids = new String[count];//数据库的影片id
+				
+				
+				int temp=0;
+//				cursor_proId.moveToFirst();
+				while(cursor_proId.moveToNext()) {
+					
+					int index = cursor_proId.getColumnIndex(UserShouCang.PRO_ID);
+					
+					if(index != -1) {
+					
+						Log.i(TAG, "compareUsrFav4DB--->:pro_id" + cursor_proId.getString(index));
+					pro_ids[temp] = cursor_proId.getString(index);//把用户id信息影片id存储到字符串中
+					
+					}
+					
+					temp++;
+				}
+				
+				String[] netWork_Pro_ids = StatisticsUtils.getStrs4List(list);
+				for(int i=0;i<netWork_Pro_ids.length;i++)
+				Log.i(TAG, "netWork_Pro_ids---->" + netWork_Pro_ids[i]);
+				//以网络的数据为标准 A 数据库为B
+				List<String> samelist = StatisticsUtils.findSameElement4A(netWork_Pro_ids, pro_ids);
+				Log.i(TAG, "samelist---->" + samelist.toString());
+				String[] sameStrs =  StatisticsUtils.changeList2Strs(samelist);
+//				List<String> uniqueList = StatisticsUtils.findUniqueElement4A(netWork_Pro_ids, sameStrs);
+				List<Integer> uniqueIndexList = StatisticsUtils.findUniqueElementIndex4A(netWork_Pro_ids, sameStrs);
+				Log.i(TAG, "uniqueIndexList---->" + uniqueIndexList.toString());
+				
+				
+				//首先数据库数据全部改为旧数据
+				ContentValues contentValues = new ContentValues();
+				contentValues.put(UserShouCang.IS_NEW, DataBaseItems.OLD);
+
+				database.update(TvDatabaseHelper.ZHUIJU_TABLE_NAME, contentValues, selection, selectionArgs);
+				
+				//A与B相同的信息，数据更新为新的
+				for(int i=0;i< samelist.size();i++) {
+					
+					ContentValues tempValues = new ContentValues();
+					tempValues.put(UserShouCang.IS_NEW, DataBaseItems.NEW);
+					String tempSelection = UserShouCang.PRO_ID  + "=?";
+					String[] tempselectionArgs = {samelist.get(i)};
+					database.update(TvDatabaseHelper.ZHUIJU_TABLE_NAME, tempValues, tempSelection, tempselectionArgs);
+					
+				}
+				
+				//插入A不同的数据
+				for(int i=0;i<uniqueIndexList.size();i++) {
+					
+					HotItemInfo info = list.get(uniqueIndexList.get(i));
+					ContentValues tempContentValues = new ContentValues();
+					tempContentValues.put(UserShouCang.USER_ID, userId);
+					tempContentValues.put(UserShouCang.PRO_ID, info.prod_id);
+					tempContentValues.put(UserShouCang.NAME, info.prod_name);
+					tempContentValues.put(UserShouCang.SCORE, info.score);
+					tempContentValues.put(UserShouCang.PRO_TYPE, info.prod_type);
+					tempContentValues.put(UserShouCang.PIC_URL, info.prod_pic_url);
+					tempContentValues.put(UserShouCang.DURATION, info.duration);
+					tempContentValues.put(UserShouCang.CUR_EPISODE, info.cur_episode);
+					tempContentValues.put(UserShouCang.MAX_EPISODE, info.max_episode);
+					tempContentValues.put(UserShouCang.STARS, info.stars);
+					tempContentValues.put(UserShouCang.DIRECTORS, info.directors);
+					tempContentValues.put(UserShouCang.IS_NEW, DataBaseItems.NEW);
+					
+					database.insert(TvDatabaseHelper.ZHUIJU_TABLE_NAME, null, tempContentValues);
+				}
+				
+				//删除掉旧的数据 通过新旧数据标记来删除
+				String deleteSelection = UserShouCang.IS_NEW  + "=?";
+				String[] deleteselectionArgs = {DataBaseItems.OLD + ""};
+				database.delete(TvDatabaseHelper.ZHUIJU_TABLE_NAME, deleteSelection, deleteselectionArgs);
+				
+			} else {//数据库没有数据
+				
+				//把下载的数据插入到数据库
+				for(HotItemInfo info : list) {
+					
+					ContentValues contentValues = new ContentValues();
+					contentValues.put(UserShouCang.USER_ID, userId);
+					contentValues.put(UserShouCang.PRO_ID, info.prod_id);
+					contentValues.put(UserShouCang.NAME, info.prod_name);
+					contentValues.put(UserShouCang.SCORE, info.score);
+					contentValues.put(UserShouCang.PRO_TYPE, info.prod_type);
+					contentValues.put(UserShouCang.PIC_URL, info.prod_pic_url);
+					contentValues.put(UserShouCang.DURATION, info.duration);
+					contentValues.put(UserShouCang.CUR_EPISODE, info.cur_episode);
+					contentValues.put(UserShouCang.MAX_EPISODE, info.max_episode);
+					contentValues.put(UserShouCang.STARS, info.stars);
+					contentValues.put(UserShouCang.DIRECTORS, info.directors);
+					contentValues.put(UserShouCang.IS_NEW, DataBaseItems.NEW);
+					
+					database.insert(TvDatabaseHelper.ZHUIJU_TABLE_NAME, null, contentValues);
+				}
+			}
+			
+		}
 	}
 	
 	class CheckPlayUrl implements Runnable{

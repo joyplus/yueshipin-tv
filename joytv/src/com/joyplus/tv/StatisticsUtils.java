@@ -13,6 +13,7 @@ import java.util.Map;
 import org.json.JSONObject;
 
 import android.app.Instrumentation;
+import android.content.ContentValues;
 import android.content.Context;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
@@ -33,8 +34,10 @@ import com.joyplus.tv.entity.HotItemInfo;
 import com.joyplus.tv.entity.MovieItemData;
 import com.joyplus.tv.entity.ReturnFilterMovieSearch;
 import com.joyplus.tv.utils.BangDanKey;
+import com.joyplus.tv.utils.DataBaseItems;
 import com.joyplus.tv.utils.JieMianConstant;
 import com.joyplus.tv.utils.Log;
+import com.joyplus.tv.utils.DataBaseItems.UserShouCang;
 
 public class StatisticsUtils implements JieMianConstant, BangDanKey {
 
@@ -1057,6 +1060,9 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 			item.publish_date = result.favorities[i].publish_date;
 			item.score = result.favorities[i].score;
 			item.area = result.favorities[i].area;
+			item.duration = result.favorities[i].duration;
+			item.cur_episode = result.favorities[i].cur_episode;
+			item.max_episode = result.favorities[i].max_episode;
 			list.add(item);
 		}
 
@@ -1087,6 +1093,132 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 		long lcc_time = Long.valueOf(lastTime);
 		re_StrTime = sdf.format(new Date(lcc_time));
 		return re_StrTime;
+	}
+	
+	//B为A的子集，返回除B外的集合
+	public static List<String> findUniqueElement4A(String[] aStrs,String[] bStrs) {
+		
+		List<String> list = new ArrayList<String>();
+		
+		if(aStrs == null || bStrs == null ||
+				aStrs.length < 0|| bStrs.length < 0) {
+			
+			return list;
+		}
+		
+		for(int i=0;i<aStrs.length;i++) {
+			
+			boolean hasSame = false;//有相同
+			for(int j=0 ; j < bStrs.length ; j++ ) {
+				
+				if(aStrs[i].equals(bStrs[j])) {
+					
+					hasSame = true;
+					break;
+				}
+			}
+			
+			if(!hasSame) {//没有相同的
+				
+				list.add(aStrs[i]);
+			}
+		}
+		
+		return list;
+	}
+	
+	//B为A的子集，返回除B外的集合
+	public static List<Integer> findUniqueElementIndex4A(String[] aStrs,String[] bStrs) {
+		
+		List<Integer> list = new ArrayList<Integer>();
+		
+		if(aStrs == null || bStrs == null ||
+				aStrs.length < 0|| bStrs.length < 0) {
+			
+			return list;
+		}
+		
+		for(int i=0;i<aStrs.length;i++) {
+			
+			boolean hasSame = false;//有相同
+			for(int j=0 ; j < bStrs.length ; j++ ) {
+				
+				if(aStrs[i].equals(bStrs[j])) {
+					
+					hasSame = true;
+					break;
+				}
+			}
+			
+			if(!hasSame) {//没有相同的
+				
+				list.add(i);
+			}
+		}
+		
+		return list;
+	}
+	
+	
+	//找到A与B中相同的元素
+	public static List<String> findSameElement4A(String[] aStrs,String[] bStrs) {
+		
+		List<String> list = new ArrayList<String>();
+		
+		if(aStrs == null || bStrs == null ||
+				aStrs.length < 0|| bStrs.length < 0) {
+			
+			return list;
+		}
+		
+		for(int i=0 ;i < aStrs.length ; i++ ) {
+			
+			for(int j=0 ; j < bStrs.length ; j++ ) {
+				
+				if(aStrs[i].equals(bStrs[j])) {
+					
+					list.add(aStrs[i]);
+					break;
+				}
+			}
+		}
+		
+		return list;
+	}
+	
+	//把 集合中pro_id保存到字符串
+	public static String[] getStrs4List(List<HotItemInfo> list) {
+		
+		if(list == null || list.size() < 0) {
+			
+			return null;
+		}
+		
+		String[] strs = new String[list.size()];
+		
+		for(int i=0 ;i<list.size();i++) {
+			
+			strs[i] = list.get(i).prod_id;
+		}
+		
+		return strs;
+	}
+	
+	public static String[] changeList2Strs(List<String> list) {
+		
+		if(list == null || list.size() < 0) {
+			
+			return null;
+		}
+		
+		String[] strs = new String[list.size()];
+		
+		for(int i=0 ;i<list.size();i++) {
+			
+			strs[i] = list.get(i);
+		}
+		
+		return strs;
 	}
 
 }

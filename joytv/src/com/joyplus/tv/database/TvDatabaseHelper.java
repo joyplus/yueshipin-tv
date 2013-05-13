@@ -84,11 +84,27 @@ public class TvDatabaseHelper extends SQLiteOpenHelper implements UserShouCang,S
 		// TODO Auto-generated constructor stub
 	}
 	
+//	private String sql_table_zhuiju = "create table if not exists "
+//			+ ZHUIJU_TABLE_NAME + " ( " + ID
+//			+ " integer primary key autoincrement, " 
+//			+ USER_ID + TEXT_DOT 
+//			+ PRO_ID + TEXT_DOT
+//			+ NAME + TEXT_DOT 
+//			+ SCORE + TEXT_DOT 
+//			+ PRO_TYPE + TEXT_DOT 
+//			+ PIC_URL + TEXT_DOT
+//			+ DURATION + TEXT_DOT 
+//			+ CUR_EPISODE + TEXT_DOT
+//			+ MAX_EPISODE + TEXT_DOT 
+//			+ STARS + TEXT_DOT 
+//			+ DIRECTORS + TEXT_DOT 
+//			+ IS_NEW + INTEGER 
+//			+ " )";
+	
 	private String sql_table_zhuiju = "create table if not exists "
-			+ ZHUIJU_TABLE_NAME + " ( " + ID
-			+ " integer primary key autoincrement, " 
+			+ ZHUIJU_TABLE_NAME + " ( " + PRO_ID
+			+ TEXT + " primary key , " 
 			+ USER_ID + TEXT_DOT 
-			+ PRO_ID + TEXT_DOT
 			+ NAME + TEXT_DOT 
 			+ SCORE + TEXT_DOT 
 			+ PRO_TYPE + TEXT_DOT 
