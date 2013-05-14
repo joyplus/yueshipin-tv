@@ -882,6 +882,10 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 	};
 
 	private void OnVolumeDown() {
+		
+		//调节音量时 控制栏不消失
+		((MovieControllerOverlay)mController).cancelHiding();
+		
 		mVolume--;
 		if (mVolume < 0)
 			mVolume = 0;
@@ -889,6 +893,10 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 	}
 
 	private void OnVolumeUp() {
+		
+		//调节音量时 控制栏不消失
+		((MovieControllerOverlay)mController).cancelHiding();
+		
 		mVolume++;
 		if (mVolume > mMaxVolume)
 			mVolume = mMaxVolume;

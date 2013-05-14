@@ -558,7 +558,7 @@ public class MovieControllerOverlay extends FrameLayout implements
 	}
 
 	private void maybeStartHiding() {
-		Log.i(TAG, "maybeStartHiding--->");
+		Log.i(TAG, "maybeStartHiding--->" + state);
 		cancelHiding();
 		if (state == State.PLAYING) {
 			handler.postDelayed(startHidingRunnable, 800);
@@ -572,7 +572,9 @@ public class MovieControllerOverlay extends FrameLayout implements
 	}
 
 	private void startVolumeHiding() {
+		Log.i(TAG, "startVolumeHiding--->");
 		startHideAnimation(mLayoutVolume);
+		startTimerBarHiding();
 	}
 
 	private void startTimerBarHiding() {
@@ -624,9 +626,12 @@ public class MovieControllerOverlay extends FrameLayout implements
 	}
 
 	public void onAnimationEnd(Animation animation) {
-		if (mShowVolume)
+		if (mShowVolume) {
+			
 			hideVolume();
-		else
+		}
+			
+//		else
 			hide();
 	}
 
