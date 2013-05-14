@@ -15,6 +15,8 @@ import org.json.JSONObject;
 import android.app.Instrumentation;
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.view.View;
@@ -30,6 +32,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joyplus.tv.Service.Return.ReturnTVBangDanList;
 import com.joyplus.tv.Service.Return.ReturnTops;
 import com.joyplus.tv.Service.Return.ReturnUserFavorities;
+import com.joyplus.tv.database.TvDatabaseHelper;
 import com.joyplus.tv.entity.HotItemInfo;
 import com.joyplus.tv.entity.MovieItemData;
 import com.joyplus.tv.entity.ReturnFilterMovieSearch;
@@ -1219,6 +1222,142 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 		}
 		
 		return strs;
+	}
+	
+	//一进入到能够收藏的界面list排序顺序 收藏集合，将要填充的集合，文字集合（5个），其他集合
+	//判断当前位置是为不可见
+	public static boolean isPostionEmpty(int position,int shoucangNum) {
+		
+		//因为position是从零开始 因此需要加1
+		position++;
+		
+		int chu = shoucangNum/5;
+		int quyu = shoucangNum%5;
+		
+		if(quyu != 0) {
+			
+			int max = (chu + 1) * 5 ;
+			int min = shoucangNum;
+			
+			if(position <= max && position >= min) {
+				
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	public static boolean isPostionShowText(int position,int shoucangNum) {
+		
+		int chu = shoucangNum/5;
+		
+			
+		int max = (chu + 1) * 5 ;
+		
+		if(position == max) {
+			
+			return true;
+		}
+		
+		return false;
+	}
+	
+	public static boolean isPositionShowQitaTitle(int position,int shoucangNum) {
+		
+		int chu = shoucangNum/5;
+		
+		int max = (chu + 1) * 5;
+		
+		if(position >=max && position <= max +4) {
+			
+			return true;
+		}
+		
+		return false;
+	}
+	
+	public static List<MovieItemData> getList4DB(Context context,String userId,String type) {
+		
+		List<MovieItemData> list = new ArrayList<MovieItemData>();
+		
+		String selection = UserShouCang.USER_ID + "=? and " + UserShouCang.PRO_TYPE + "=? and "
+				+ UserShouCang.IS_UPDATE + "=?";//通过用户id，找到相应信息
+		String[] selectionArgs = {userId,type,DataBaseItems.NEW + ""};
+		
+		TvDatabaseHelper helper = TvDatabaseHelper.newTvDatabaseHelper(context);
+		SQLiteDatabase database = helper.getWritableDatabase();//获取写db
+		
+		Cursor cursor = database.query(TvDatabaseHelper.ZHUIJU_TABLE_NAME, null, selection, selectionArgs, null, null, null);
+		
+		if(cursor != null && cursor.getCount() > 0) {//数据库有数据
+			
+			while(cursor.moveToNext()) {
+				
+				//总共10组数据
+				int indexId = cursor.getColumnIndex(UserShouCang.PRO_ID);
+				int indexName = cursor.getColumnIndex(UserShouCang.NAME);
+				int indexScore = cursor.getColumnIndex(UserShouCang.SCORE);
+				int indexType = cursor.getColumnIndex(UserShouCang.PRO_TYPE);
+				int indexPicUrl = cursor.getColumnIndex(UserShouCang.PIC_URL);
+				int indexDuration = cursor.getColumnIndex(UserShouCang.DURATION);
+				int indexCurEpisode = cursor.getColumnIndex(UserShouCang.CUR_EPISODE);
+				int indexMaxEpisode = cursor.getColumnIndex(UserShouCang.MAX_EPISODE);
+				int indexStars = cursor.getColumnIndex(UserShouCang.STARS);
+				int indexDirectors = cursor.getColumnIndex(UserShouCang.DIRECTORS);
+				
+				if(indexId != -1) {
+					
+					String pro_id = cursor.getString(indexId);
+					String name = cursor.getString(indexName);
+					String score = cursor.getString(indexScore);
+					String type2 = cursor.getString(indexType);
+					String pic_url = cursor.getString(indexPicUrl);
+					String duration = cursor.getString(indexDuration);
+					String curEpisode = cursor.getString(indexCurEpisode);
+					String maxEpisode = cursor.getString(indexMaxEpisode);
+					String stars = cursor.getString(indexStars);
+					String directors = cursor.getString(indexDirectors);
+					
+					MovieItemData item = new MovieItemData();
+					
+					item.setMovieID(pro_id);
+					item.setMovieName(name);
+					item.setMovieScore(score);
+					item.setMovieProType(type2);
+					item.setMoviePicUrl(pic_url);
+					item.setMovieDuration(duration);
+					item.setMovieCurEpisode(curEpisode);
+					item.setMovieMaxEpisode(maxEpisode);
+					item.setStars(stars);
+					item.setDirectors(directors);
+					
+					list.add(item);
+				}
+				
+			}
+		}
+		
+		cursor.close();
+		helper.closeDatabase();
+		
+		return list;
+	}
+	
+	public static int tianchongEmptyItem(int shoucangNum) {
+		
+		int chu = shoucangNum/5;
+		int quyu = shoucangNum%5;
+		
+		if(quyu != 0) {
+			
+			int max = (chu + 1) * 5 ;
+			int min = shoucangNum;
+			
+			return max-min + 5;
+		}
+		
+		return 5;
 	}
 
 }

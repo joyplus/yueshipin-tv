@@ -9,6 +9,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.util.SparseArray;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -22,6 +23,7 @@ import com.joyplus.tv.StatisticsUtils;
 import com.joyplus.tv.entity.GridViewItemHodler;
 import com.joyplus.tv.entity.MovieItemData;
 import com.joyplus.tv.utils.AsyncImageLoader;
+import com.joyplus.tv.utils.BangDanKey;
 import com.joyplus.tv.utils.JieMianConstant;
 import com.joyplus.tv.utils.Log;
 import com.joyplus.tv.utils.OnImageLoadListener;
@@ -41,6 +43,10 @@ public class ZongYiAdapter extends BaseAdapter implements JieMianConstant{
 	private AsyncImageLoader loader;
 	private SparseArray<View> arrays = new SparseArray<View>();
 	private Resources resources;
+	
+	private boolean isShoucangShow = false;
+	private String qita_name = "";//其他类型
+	private int shouCangCount = 0;
 
 	public ZongYiAdapter(Context context,AQuery aq) {
 		
@@ -124,6 +130,27 @@ public class ZongYiAdapter extends BaseAdapter implements JieMianConstant{
 		} else {
 
 			viewItemHodler = (GridViewItemHodler) convertView.getTag();
+			
+			if(viewItemHodler == null) {
+				viewItemHodler = new GridViewItemHodler();
+				convertView = ((Activity)context).getLayoutInflater().inflate(
+						R.layout.show_item_layout_dianying, null);
+				viewItemHodler.nameTv = (TextView) convertView
+						.findViewById(R.id.tv_item_layout_name);
+				viewItemHodler.scoreTv = (TextView) convertView
+						.findViewById(R.id.tv_item_layout_score);
+				viewItemHodler.otherInfo = (TextView) convertView
+						.findViewById(R.id.tv_item_layout_other_info);
+				viewItemHodler.haibaoIv = (ImageView) convertView
+						.findViewById(R.id.iv_item_layout_haibao);
+				viewItemHodler.definition = (ImageView) convertView.findViewById(R.id.iv_item_layout_gaoqing_logo);
+				viewItemHodler.isActive = false;
+				convertView.setTag(viewItemHodler);
+				
+				convertView.setPadding(GRIDVIEW_ITEM_PADDING_LEFT,
+						GRIDVIEW_ITEM_PADDING, GRIDVIEW_ITEM_PADDING_LEFT,
+						GRIDVIEW_ITEM_PADDING);
+			}
 		}
 		
 		if(arrays.get(position) != convertView) {
@@ -134,6 +161,7 @@ public class ZongYiAdapter extends BaseAdapter implements JieMianConstant{
 		AbsListView.LayoutParams params = new AbsListView.LayoutParams(
 				width, height);
 		convertView.setLayoutParams(params);
+		convertView.setVisibility(View.VISIBLE);
 		
 		if(width != 0) {
 			
@@ -145,6 +173,48 @@ public class ZongYiAdapter extends BaseAdapter implements JieMianConstant{
 		if (movieList.size() <= 0 && isPreLoad) {
 
 			return convertView;
+		}
+		
+		//如果要显示收藏
+		if(isShoucangShow) {
+			
+			//首先拿到收藏数 如果收藏数不能被5整除，凑满，整除
+			if(StatisticsUtils.isPostionEmpty(position, shouCangCount)) {
+				
+				convertView.setVisibility(View.INVISIBLE);
+				
+				convertView.setTag(null);
+				
+				return convertView;
+			}
+			
+			//显示其他
+			if(StatisticsUtils.isPositionShowQitaTitle(position, shouCangCount)) {
+				
+				AbsListView.LayoutParams paramsTv = new AbsListView.LayoutParams(
+						width, 31);
+				TextView tv = new TextView(context);
+				tv.setBackgroundColor(context.getResources().getColor(R.color.menu_bg));
+				
+				//显示文字
+				if(StatisticsUtils.isPostionShowText(position, shouCangCount)) {
+					
+					tv.setText(qita_name);
+					
+					tv.setGravity(Gravity.CENTER|Gravity.LEFT);
+					tv.setTextSize(20);
+					tv.setPadding(23, 0, 0, 0);
+					tv.setTextColor(context.getResources().getColor(R.color.text_normal));
+				}
+				tv.setLayoutParams(paramsTv);
+				tv.setEnabled(false);
+				tv.setFocusable(false);
+				
+				convertView = tv;
+				convertView.setTag(null);
+				
+				return convertView;
+			}
 		}
 		
 		viewItemHodler.nameTv.setText("");
@@ -266,6 +336,30 @@ public class ZongYiAdapter extends BaseAdapter implements JieMianConstant{
 
 	public void setItemId(long itemId) {
 		this.itemId = itemId;
+	}
+	
+	public String getQita_name() {
+		return qita_name;
+	}
+
+	public void setQita_name(String qita_name) {
+		this.qita_name = qita_name;
+	}
+
+	public int getShouCangCount() {
+		return shouCangCount;
+	}
+
+	public void setShouCangCount(int shouCangCount) {
+		this.shouCangCount = shouCangCount;
+	}
+	
+	public boolean isShoucangShow() {
+		return isShoucangShow;
+	}
+
+	public void setShoucangShow(boolean isShoucangShow) {
+		this.isShoucangShow = isShoucangShow;
 	}
 
 }

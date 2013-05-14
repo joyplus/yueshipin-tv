@@ -299,7 +299,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@drawable/menubg"
-                    android:paddingRight="30dp" >
+                    android:paddingRight="34dp" >
 
                     <TextView
                         android:id="@+id/tv_shoucanggengxin_name"
