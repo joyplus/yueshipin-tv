@@ -576,7 +576,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		case KeyEvent.KEYCODE_DPAD_LEFT:
 			if(!mController.isHidden())
 				return false;
-			if (mHasPaused == false)
+			if (mHasPaused == false) 
 				OnMediaRewind();
 			else {
 				if (CURRENT_KEY == 1) {
@@ -775,6 +775,10 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		}
 	}
 	private void OnMediaRewind() {
+		
+		//调节音量时 控制栏不消失
+		((MovieControllerOverlay)mController).cancelHiding();
+		
 		if (JUMP_TIME_TIMES > 1)
 			JUMP_TIME_TIMES = 1;
 		else if (JUMP_TIME_TIMES - 1 < -3)
@@ -806,6 +810,10 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 	}
 
 	private void OnMediaFastForward() {
+		
+		//调节音量时 控制栏不消失
+		((MovieControllerOverlay)mController).cancelHiding();
+		
 		if (JUMP_TIME_TIMES < -1)
 			JUMP_TIME_TIMES = -1;
 		else if (JUMP_TIME_TIMES + 1 > 3)
@@ -893,7 +901,6 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 	}
 
 	private void OnVolumeUp() {
-		
 		//调节音量时 控制栏不消失
 		((MovieControllerOverlay)mController).cancelHiding();
 		
