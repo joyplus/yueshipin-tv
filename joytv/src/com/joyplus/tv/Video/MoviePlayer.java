@@ -534,15 +534,18 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 
 	// Below are key events passed from MovieActivity.
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		
+		Log.i(TAG, "KEYCODE_BACK---->"+ keyCode);
 
 		// Some headsets will fire off 7-10 events on a single click
 		if (event.getRepeatCount() > 0) {
 			return isMediaKey(keyCode);
 		}
-		if(totalTime <=0 ){//
+		
+		if(totalTime <=0 ){//如果没有获取到时间，按返回键直接退出播放
 			if(keyCode == KeyEvent.KEYCODE_BACK)
 				return false;
-			else
+			else//否则返回键自己处理
 				return true;
 		}
 
@@ -550,6 +553,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		if (JUMP_TIME_TIMES != 0 && !isFastForwardKey(keyCode)) // 快进模式才能按的键
 			return true;
 
+		
 		switch (keyCode) {
 		case KeyEvent.KEYCODE_DPAD_RIGHT:
 //			if(!mController.isHidden())
@@ -721,7 +725,8 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 			// TODO: Handle next / previous accordingly, for now we're
 			// just consuming the events.
 			return true;
-		case KeyEvent.KEYCODE_BACK:
+		case KeyEvent.KEYCODE_BACK://返回键
+			
 			currentKeyEvent = KeyEvent.KEYCODE_BACK;
 			if (JUMP_TIME_TIMES != 0) {// 快进模式
 				mDragging = false;
@@ -735,6 +740,11 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 				// 没有加载完就返回，bug,加到前面去了。
 //				if (totalTime <= 0)
 //					return false;
+				
+				Log.i(TAG, "KEYCODE_BACK---->");
+				//处理正在播放时，退出键功能
+				((MovieControllerOverlay)mController).cancelHiding();
+				
 				RETURNMODE = true;
 //				if (mVideoView.isPlaying()) {
 					returnTVVideo();
@@ -746,7 +756,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 //				}
 				
 				return true;
-			}
+			} 
 
 		}
 		return false;

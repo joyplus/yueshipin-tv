@@ -25,6 +25,7 @@ import android.media.AudioManager;
 import android.net.TrafficStats;
 import android.net.Uri;
 import android.os.Handler;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -58,6 +59,8 @@ import com.joyplus.tv.ui.ArcView;
  */
 public class MovieControllerOverlay extends FrameLayout implements
 		ControllerOverlay, View.OnTouchListener, AnimationListener {
+	
+	public static final String TAG = "MovieControllerOverlay";
 
 	private enum State {
 		PLAYING, PAUSED, ENDED, ERROR, LOADING, TVRETURN
@@ -196,21 +199,25 @@ public class MovieControllerOverlay extends FrameLayout implements
 
 		startHidingRunnable = new Runnable() {
 			public void run() {
+				Log.i(TAG, "startHidingRunnable--->");
 				startHiding();
 			}
 		};
 		startHidingVolumeRunnable = new Runnable() {
 			public void run() {
+				Log.i(TAG, "startHidingVolumeRunnable--->");
 				startVolumeHiding();
 			}
 		};
 		startHidingTimerBarRunnable = new Runnable() {
 			public void run() {
+				Log.i(TAG, "startHidingTimerBarRunnable--->");
 				startTimerBarHiding();
 			}
 		};
 		startHidingTimesRunnable = new Runnable() {
 			public void run() {
+				Log.i(TAG, "startHidingTimesRunnable--->");
 				startTimesHiding();
 			}
 		};
@@ -551,6 +558,7 @@ public class MovieControllerOverlay extends FrameLayout implements
 	}
 
 	private void maybeStartHiding() {
+		Log.i(TAG, "maybeStartHiding--->");
 		cancelHiding();
 		if (state == State.PLAYING) {
 			handler.postDelayed(startHidingRunnable, 800);
@@ -584,11 +592,15 @@ public class MovieControllerOverlay extends FrameLayout implements
 		}
 	}
 
-	private void cancelHiding() {
+	public void cancelHiding() {
+		Log.i(TAG, "cancelHiding--->");
 		handler.removeCallbacks(startHidingRunnable);
 		background.setAnimation(null);
 		// timeBar.setAnimation(null);
 		mLayoutControl.setAnimation(null);
+		
+		//yzg
+		handler.removeCallbacks(startHidingTimerBarRunnable);
 	}
 
 	private void cancelHidingVolume() {
@@ -623,6 +635,8 @@ public class MovieControllerOverlay extends FrameLayout implements
 		// if (hidden) {
 		// show();
 		// }
+		Log.i(TAG, "KEYCODE_BACK---->");
+		
 		return super.onKeyDown(keyCode, event);
 	}
 
