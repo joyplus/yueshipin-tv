@@ -16,6 +16,7 @@
 
 package com.joyplus.tv.Video;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,6 +32,7 @@ import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.media.AudioManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.KeyEvent;
@@ -46,12 +48,16 @@ import android.widget.TextView;
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joyplus.tv.App;
 import com.joyplus.tv.Constant;
 import com.joyplus.tv.R;
 import com.joyplus.tv.StatisticsUtils;
 import com.joyplus.tv.Adapters.CurrentPlayData;
 import com.joyplus.tv.Service.Return.ReturnProgramView;
+import com.joyplus.tv.utils.Log;
 import com.umeng.analytics.MobclickAgent;
 
 /**
@@ -153,6 +159,66 @@ public class VideoPlayerActivity extends Activity {
 		IntentFilter intentFilter = new IntentFilter();
 		intentFilter.addAction(Constant.VIDEOPLAYERCMD);
 		registerReceiver(mReceiver, intentFilter);
+		
+		if(m_ReturnProgramView == null) {//如果为空，那就调用此方法
+			
+			loadReturnProgramView();
+		}
+	}
+	
+	
+	private void loadReturnProgramView() {
+		
+		AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {
+
+			@Override
+			protected Void doInBackground(Void... params) {
+				// TODO Auto-generated method stub
+				getServiceDate();
+				return null;
+			}
+		};
+		task.execute();
+	}
+	
+	
+	
+	private void getServiceDate(){
+		String url = Constant.BASE_URL + "program/view" +"?prod_id=" + prod_id;
+		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
+		cb.url(url).type(JSONObject.class).weakHandler(this, "initDate");
+		cb.SetHeader(app.getHeaders());
+		aq.ajax(cb);
+	}
+	
+	public void initDate(String url, JSONObject json, AjaxStatus status){
+		if (status.getCode() == AjaxStatus.NETWORK_ERROR||json == null) {
+			app.MyToast(aq.getContext(),
+					getResources().getString(R.string.networknotwork));
+			return;
+		}
+		
+		if(json == null || json.equals("")) 
+			return;
+		
+		Log.d(TAG, "data = " + json.toString());
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			
+			ReturnProgramView date  = mapper.readValue(json.toString(), ReturnProgramView.class);
+			m_ReturnProgramView = date;
+			app.set_ReturnProgramView(date);
+
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	private BroadcastReceiver mReceiver = new BroadcastReceiver() {

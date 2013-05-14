@@ -163,7 +163,7 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 				}
 				
 				//当悦单加载完成时，开始下载用户收藏数据，并插入到数据库
-				getShouCangData(StatisticsUtils.getShoucangURL(app.getUserInfo().getUserId()));
+//				getShouCangData(StatisticsUtils.getShoucangURL(app.getUserInfo().getUserId()));
 				
 				break;
 			case MESSAGE_START_TIMEOUT://超时还未加载好
@@ -811,20 +811,23 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 			if(json.has("user_id"))
 			{
 				currentUserInfo.setUserId(json.getString("user_id").trim());
-			}
-			else
-			{
+			} else if(json.has("id")){
 				currentUserInfo.setUserId(json.getString("id").trim());
 			}
-			currentUserInfo.setUserName(json.getString("nickname"));
-			currentUserInfo.setUserAvatarUrl(json.getString("pic_url"));
-			app.SaveUserData("userId", currentUserInfo.getUserId());
-			app.SaveUserData("userName", json.getString("nickname"));
-			app.SaveUserData("userAvatarUrl", json.getString("pic_url"));
-			app.setUser(currentUserInfo);
-			headers.put("user_id", currentUserInfo.getUserId());
-//			handler.sendEmptyMessage(MESSAGE_UPDATEUSER);  
-			checkBand();
+			
+			if(json.has("user_id") || json.has("id")) {
+				
+				currentUserInfo.setUserName(json.getString("nickname"));
+				currentUserInfo.setUserAvatarUrl(json.getString("pic_url"));
+				app.SaveUserData("userId", currentUserInfo.getUserId());
+				app.SaveUserData("userName", json.getString("nickname"));
+				app.SaveUserData("userAvatarUrl", json.getString("pic_url"));
+				app.setUser(currentUserInfo);
+				headers.put("user_id", currentUserInfo.getUserId());
+//				handler.sendEmptyMessage(MESSAGE_UPDATEUSER);  
+				checkBand();
+			}
+
 		} catch (JSONException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
