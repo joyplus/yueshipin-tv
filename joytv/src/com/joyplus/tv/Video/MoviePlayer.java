@@ -827,7 +827,8 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 	}
 
 	private final Runnable mMediaFastForwardRunnable = new Runnable() {
-		int[] mTimes = { 1000, 333, 55 };
+//		int[] mTimes = { 1000, 333, 55 };
+		int[] mTimes = { 1000, 333, 18 };
 
 		public void run() {
 
@@ -841,7 +842,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 				if (JUMP_TIME + 10000 >= totalTime)
 					JUMP_TIME = totalTime;
 				else
-					JUMP_TIME = JUMP_TIME + 10000;
+					JUMP_TIME = JUMP_TIME + 10 * 1000;
 			}
 			RelativeLayout.LayoutParams parms = new RelativeLayout.LayoutParams(
 					RelativeLayout.LayoutParams.WRAP_CONTENT,
