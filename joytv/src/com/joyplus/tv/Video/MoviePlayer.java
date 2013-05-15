@@ -640,6 +640,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 			return true;
 		case KeyEvent.KEYCODE_DPAD_CENTER:
 		case KeyEvent.KEYCODE_ENTER:
+			mController.hideVolume();
 			if (JUMP_TIME_TIMES != 0) {// 快进模式
 				mDragging = false;
 				if (JUMP_TIME != totalTime)
@@ -651,7 +652,6 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 				mController.HidingTimes();
 			} else {
 				if (mController.isHidden()) {
-					mController.hideVolume();
 					mController.show();
 				}
 				if (prod_type == 1){
@@ -728,6 +728,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		case KeyEvent.KEYCODE_BACK://返回键
 			
 			currentKeyEvent = KeyEvent.KEYCODE_BACK;
+			mController.hideVolume();
 			if (JUMP_TIME_TIMES != 0) {// 快进模式
 				mDragging = false;
 				JUMP_TIME = 0;
@@ -778,6 +779,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		
 		//调节音量时 控制栏不消失
 		((MovieControllerOverlay)mController).cancelHiding();
+		((MovieControllerOverlay)mController).hidden5ControlView();
 		
 		if (JUMP_TIME_TIMES > 1)
 			JUMP_TIME_TIMES = 1;
@@ -813,6 +815,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		
 		//调节音量时 控制栏不消失
 		((MovieControllerOverlay)mController).cancelHiding();
+		((MovieControllerOverlay)mController).hidden5ControlView();
 		
 		if (JUMP_TIME_TIMES < -1)
 			JUMP_TIME_TIMES = -1;
