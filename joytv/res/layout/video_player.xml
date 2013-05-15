@@ -13,6 +13,23 @@
         android:configChanges="orientation" />
 
     <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:background="@drawable/player_mask_top" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/player_mask_bottom" />
+    </RelativeLayout>
+
+    <RelativeLayout
         android:id="@+id/LayoutPreload"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
@@ -121,8 +138,7 @@
         android:id="@+id/relativeLayoutControl"
         android:layout_width="fill_parent"
         android:layout_height="50dp"
-        android:layout_alignParentBottom="true"
-        android:background="@drawable/player_mask_bottom" >
+        android:layout_alignParentBottom="true" >
 
         <SeekBar
             android:id="@+id/seekBar1"
@@ -160,8 +176,7 @@
     <RelativeLayout
         android:id="@+id/LayoutName"
         android:layout_width="fill_parent"
-        android:layout_height="50dp"
-        android:background="@drawable/player_mask_top" >
+        android:layout_height="50dp">
 
         <TextView
             android:id="@+id/textView1"
@@ -200,7 +215,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true" 
+        android:layout_centerVertical="true"
         android:visibility="gone" >
 
         <ImageButton
@@ -221,7 +236,7 @@
             android:nextFocusDown="@+id/imageControl_b"
             android:nextFocusRight="@+id/imageControl_c"
             android:nextFocusUp="@+id/imageControl_t"
-            android:onClick="OnClickPre" 
+            android:onClick="OnClickPre"
             android:visibility="gone" />
 
         <ImageButton
@@ -233,7 +248,7 @@
             android:nextFocusDown="@+id/imageControl_c"
             android:nextFocusLeft="@+id/imageControl_l"
             android:nextFocusRight="@+id/imageControl_r"
-            android:onClick="OnClickContinue" 
+            android:onClick="OnClickContinue"
             android:visibility="gone" />
 
         <ImageButton
@@ -247,7 +262,7 @@
             android:nextFocusDown="@+id/imageControl_b"
             android:nextFocusRight="@+id/imageControl_c"
             android:nextFocusUp="@+id/imageControl_t"
-            android:onClick="OnClickNext" 
+            android:onClick="OnClickNext"
             android:visibility="gone" />
 
         <ImageButton
@@ -262,7 +277,7 @@
             android:nextFocusLeft="@+id/imageControl_l"
             android:nextFocusRight="@+id/imageControl_r"
             android:nextFocusUp="@+id/imageControl_t"
-            android:onClick="OnClickFav" 
+            android:onClick="OnClickFav"
             android:visibility="gone" />
     </RelativeLayout>
 
