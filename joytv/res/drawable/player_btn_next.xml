@@ -3,6 +3,7 @@
     <item android:drawable="@drawable/player_btn_next_active" android:state_enabled="true" android:state_focused="true" android:state_pressed="false"/>
     <item android:drawable="@drawable/player_btn_next_press" android:state_enabled="true" android:state_focused="true" android:state_pressed="true"/>
     <item android:drawable="@drawable/player_btn_next_press" android:state_enabled="true" android:state_focused="false" android:state_pressed="true"/>
+    <item android:drawable="@drawable/player_btn_next_press" android:state_enabled="false" android:state_focused="true"/>
      <item android:drawable="@drawable/player_btn_next_unuse" android:state_enabled="false"/>
     <item android:drawable="@drawable/player_btn_next_normal"/>
 </selector>
