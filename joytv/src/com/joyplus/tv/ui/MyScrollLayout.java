@@ -54,6 +54,18 @@ public class MyScrollLayout extends ViewGroup {
 					childView.layout(0, childBottom, childView.getMeasuredWidth(),
 							childBottom+childHeight);
 					childBottom += childHeight;
+					
+					
+					final int position = getChildCount()-i; 
+					//添加鼠标点击事件
+					childView.setOnClickListener(new View.OnClickListener() {
+						
+						@Override
+						public void onClick(View v) {
+							// TODO Auto-generated method stub
+							setSelectedTitleIndex(position);
+						}
+					});
 				}
 			}
 		}
