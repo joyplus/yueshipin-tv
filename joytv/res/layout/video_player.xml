@@ -12,7 +12,8 @@
         android:layout_centerInParent="true"
         android:configChanges="orientation" />
 
-    <RelativeLayout
+<!--     <RelativeLayout
+        android:id="@+id/rlJianBian"
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
 
@@ -27,7 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:background="@drawable/player_mask_bottom" />
-    </RelativeLayout>
+    </RelativeLayout> -->
 
     <RelativeLayout
         android:id="@+id/LayoutPreload"
@@ -188,77 +189,100 @@
     <RelativeLayout
         android:id="@+id/relativeLayoutControl"
         android:layout_width="fill_parent"
-        android:layout_height="50dp"
-        android:layout_alignParentBottom="true" >
-
-        <SeekBar
-            android:id="@+id/seekBar1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginBottom="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="150dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:indeterminateOnly="false"
-            android:max="100"
-            android:maxHeight="15dp"
-            android:minHeight="15dp"
-            android:progressDrawable="@drawable/player_seekbar_img"
-            android:secondaryProgress="0"
-            android:thumb="@drawable/player_seekbar_thumb" />
-
+        android:layout_height="match_parent">
+        
         <TextView
-            android:id="@+id/textViewTime2"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginBottom="18dp"
-            android:layout_marginRight="40dp"
-            android:text="--:--"
-            android:textColor="@color/white"
-            android:textSize="22sp" />
+            android:background="@drawable/player_mask_bottom" />
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="true" >
+
+            <SeekBar
+                android:id="@+id/seekBar1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="150dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:indeterminateOnly="false"
+                android:max="100"
+                android:maxHeight="15dp"
+                android:minHeight="15dp"
+                android:progressDrawable="@drawable/player_seekbar_img"
+                android:secondaryProgress="0"
+                android:thumb="@drawable/player_seekbar_thumb" />
+
+            <TextView
+                android:id="@+id/textViewTime2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginBottom="18dp"
+                android:layout_marginRight="40dp"
+                android:text="--:--"
+                android:textColor="@color/white"
+                android:textSize="22sp" />
+        </RelativeLayout>
     </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/LayoutName"
         android:layout_width="fill_parent"
-        android:layout_height="50dp" >
-
-        <TextView
-            android:id="@+id/textView1"
-            android:layout_width="wrap_content"
+        android:layout_height="fill_parent" >
+        
+             <TextView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
-            android:text="Name"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="@color/white"
-            android:textSize="24sp" />
+            android:layout_alignParentTop="true"
+            android:background="@drawable/player_mask_top" />
 
-        <com.joyplus.tv.ui.ClockTextView
-            android:id="@+id/digitalClock1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="10dp"
-            android:text="24sp"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="@color/white" />
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:layout_alignParentTop="true" >
 
-        <ImageView
-            android:id="@+id/imageView1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/textView1"
-            android:layout_marginLeft="20dp"
-            android:layout_toRightOf="@+id/textView1"
-            android:src="@drawable/player_1080p" />
+            <TextView
+                android:id="@+id/textView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:text="Name"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="@color/white"
+                android:textSize="24sp" />
+
+            <com.joyplus.tv.ui.ClockTextView
+                android:id="@+id/digitalClock1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:text="24sp"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="@color/white" />
+
+            <ImageView
+                android:id="@+id/imageView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/textView1"
+                android:layout_marginLeft="20dp"
+                android:layout_toRightOf="@+id/textView1"
+                android:src="@drawable/player_1080p" />
+        </RelativeLayout>
     </RelativeLayout>
 
     <RelativeLayout

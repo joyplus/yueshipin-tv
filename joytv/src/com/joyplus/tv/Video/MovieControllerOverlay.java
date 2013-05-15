@@ -608,6 +608,11 @@ public class MovieControllerOverlay extends FrameLayout implements
 	private void startHiding() {
 		// startHideAnimation(timeBar);
 		startHideAnimation(mLayoutControl);
+		
+		if(mLayoutTop.isShown()) {
+			
+			startTimerBarHiding();
+		}
 
 	}
 
