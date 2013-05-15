@@ -144,6 +144,8 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 	private int mPreparedPercent = 0;
 
 	private String PROD_SOURCE = null;
+	
+	private View mLayoutBottomTime2;// x 几倍显示组件
 
 	// private final Runnable mPlayingChecker = new Runnable() {
 	// public void run() {
@@ -175,6 +177,8 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 			int prod_type, Uri videoUri, Bundle savedInstance, boolean canReplay) {
 		this.mContext = movieActivity;
 		mSeekComplete= false;
+		
+		mLayoutBottomTime2 = rootView.findViewById(R.id.LayoutBottomTime2);
 		mVideoView = (VideoView) rootView.findViewById(R.id.surface_view);
 
 		mBookmarker = new Bookmarker(mContext);
@@ -373,12 +377,12 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 						RelativeLayout.TRUE);
 
 				double mLeft = (double) firstJumpTime / totalTime
-						* (sb.getMeasuredWidth() - seekBarWidthOffset) + 20;
+						* (sb.getMeasuredWidth() - seekBarWidthOffset) + 18;
 
 				if (firstJumpTime > 0)
 					parms.leftMargin = (int) mLeft;
 				else
-					parms.leftMargin = 20;
+					parms.leftMargin = 18;
 				parms.bottomMargin = 20 + 10;
 				mLayoutBottomTime.setLayoutParams(parms);
 
@@ -780,6 +784,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		//调节音量时 控制栏不消失
 		((MovieControllerOverlay)mController).cancelHiding();
 		((MovieControllerOverlay)mController).hidden5ControlView();
+		mLayoutBottomTime2.setBackgroundResource(R.drawable.play_time_left);
 		
 		if (JUMP_TIME_TIMES > 1)
 			JUMP_TIME_TIMES = 1;
@@ -816,7 +821,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		//调节音量时 控制栏不消失
 		((MovieControllerOverlay)mController).cancelHiding();
 		((MovieControllerOverlay)mController).hidden5ControlView();
-		
+		mLayoutBottomTime2.setBackgroundResource(R.drawable.play_time_right);
 		if (JUMP_TIME_TIMES < -1)
 			JUMP_TIME_TIMES = -1;
 		else if (JUMP_TIME_TIMES + 1 > 3)

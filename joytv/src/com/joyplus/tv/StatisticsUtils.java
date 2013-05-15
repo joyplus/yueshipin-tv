@@ -728,11 +728,11 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 		int m = (int) (duration - h * 3600) / 60;
 		int s = (int) duration - (h * 3600 + m * 60);
 		String durationValue;
-		if (h == 0) {
-			durationValue = String.format("%1$02d:%2$02d", m, s);
-		} else {
-			durationValue = String.format("%1$d:%2$02d:%3$02d", h, m, s);
-		}
+//		if (h == 0) {
+//			durationValue = String.format("%1$02d:%2$02d", m, s);
+//		} else {
+			durationValue = String.format("%1$02d:%2$02d:%3$02d", h, m, s);
+//		}
 		return durationValue;
 	}
 

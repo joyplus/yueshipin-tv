@@ -65,7 +65,7 @@ import com.umeng.analytics.MobclickAgent;
  */
 public class VideoPlayerActivity extends Activity {
 	@SuppressWarnings("unused")
-	private static final String TAG = "MovieActivity";
+	private static final String TAG = "VideoPlayerActivity";
 
 	private MoviePlayer mPlayer;
 	private boolean mFinishOnCompletion;
@@ -97,6 +97,7 @@ public class VideoPlayerActivity extends Activity {
 		Intent intent = getIntent();
 		prod_name = intent.getStringExtra("title");
 		prod_url = intent.getStringExtra("prod_url");
+		
 		prod_name = "未命名";
 		// prod_url =
 		// "http://221.130.179.66/25/36/53/kingsoft/movie/47978987920B0079FF686B6370B4E039-xiyoupian.mp4?crypt=61740d1aa7f2e300&b=800&gn=132&nc=1&bf=30&p2p=1&video_type=mp4&check=0&tm=1364191200&key=af7b9ad0697560c682a0070cf225e65e&opck=1&lgn=letv&proxy=3702889363&cipi=2026698610&tsnp=1&tag=ios&tag=kingsoft&sign=coopdown&realext=.mp4test=m3u8";
@@ -164,6 +165,8 @@ public class VideoPlayerActivity extends Activity {
 			
 			loadReturnProgramView();
 		}
+		
+		Log.i(TAG, "url------->" + prod_url);
 	}
 	
 	

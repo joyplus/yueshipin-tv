@@ -135,6 +135,57 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/LayoutBottomTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="30dp"
+        android:layout_marginLeft="18dp"
+        android:visibility="gone" >
+
+        <RelativeLayout
+            android:id="@+id/LayoutBottomTime1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/player_time" >
+
+            <TextView
+                android:id="@+id/textViewTime1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="28dp"
+                android:layout_marginTop="10dp"
+                android:text="00:00:00"
+                android:textColor="@color/white"
+                android:textSize="22sp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/LayoutBottomTime2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/LayoutBottomTime1"
+            android:layout_alignParentLeft="true"
+            android:layout_marginBottom="19dp"
+            android:layout_marginLeft="126dp"
+            android:background="@drawable/play_time_right"
+            android:visibility="gone" >
+
+            <TextView
+                android:id="@+id/textViewTimes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="10dp"
+                android:text="×2"
+                android:textColor="@color/white"
+                android:textSize="20sp" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
         android:id="@+id/relativeLayoutControl"
         android:layout_width="fill_parent"
         android:layout_height="50dp"
@@ -176,7 +227,7 @@
     <RelativeLayout
         android:id="@+id/LayoutName"
         android:layout_width="fill_parent"
-        android:layout_height="50dp">
+        android:layout_height="50dp" >
 
         <TextView
             android:id="@+id/textView1"
@@ -298,55 +349,5 @@
             android:layout_gravity="center"
             android:background="@drawable/player_volume" />
     </FrameLayout>
-
-    <RelativeLayout
-        android:id="@+id/LayoutBottomTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginBottom="30dp"
-        android:layout_marginLeft="20dp"
-        android:visibility="gone" >
-
-        <RelativeLayout
-            android:id="@+id/LayoutBottomTime1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/player_time" >
-
-            <TextView
-                android:id="@+id/textViewTime1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="10dp"
-                android:text="00:00"
-                android:textColor="@color/white"
-                android:textSize="22sp" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/LayoutBottomTime2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/LayoutBottomTime1"
-            android:layout_alignParentLeft="true"
-            android:layout_marginLeft="138dp"
-            android:background="@drawable/player_time_2"
-            android:visibility="gone" >
-
-            <TextView
-                android:id="@+id/textViewTimes"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
-                android:text="×2"
-                android:textColor="@color/white"
-                android:textSize="20sp" />
-        </RelativeLayout>
-    </RelativeLayout>
 
 </RelativeLayout>
