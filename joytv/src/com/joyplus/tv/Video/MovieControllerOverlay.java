@@ -630,7 +630,35 @@ public class MovieControllerOverlay extends FrameLayout implements
 	}
 
 	private void startTimesHiding() {
-		startHideAnimation(mLayoutBottomTime2);
+//		startHideAnimation(mLayoutBottomTime2);
+		
+		if (mLayoutBottomTime2.getVisibility() == View.VISIBLE) {
+			
+			Animation animation = AnimationUtils
+			.loadAnimation(getContext(), R.anim.player_out);
+			animation.setAnimationListener(new Animation.AnimationListener() {
+				
+				@Override
+				public void onAnimationStart(Animation animation) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				public void onAnimationRepeat(Animation animation) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				public void onAnimationEnd(Animation animation) {
+					// TODO Auto-generated method stub
+					
+					mLayoutBottomTime2.setVisibility(View.GONE);
+				}
+			});
+			mLayoutBottomTime2.startAnimation(animation);
+		}
 	}
 
 	private void startHideAnimation(View view) {

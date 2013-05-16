@@ -270,9 +270,9 @@ public class NavigateView extends RelativeLayout implements OnItemSelectedListen
 		this.array_leibie = array_leibie;
 		this.array_niandai = array_niandai;
 		this.resultListener = listener;
-		gallery1.setPadding(-(1280-480)+100, 0, 0, 0);
-		gallery2.setPadding(-(1280-480)+100, 0, 0, 0);
-		gallery3.setPadding(-(1280-480)+100, 0, 0, 0);
+		gallery1.setPadding(-(1280-480)+105, 0, 0, 0);
+		gallery2.setPadding(-(1280-480)+105, 0, 0, 0);
+		gallery3.setPadding(-(1280-480)+105, 0, 0, 0);
 		gallery1.setCallbackDuringFling(false);
 		gallery2.setCallbackDuringFling(false);
 		gallery3.setCallbackDuringFling(false);
