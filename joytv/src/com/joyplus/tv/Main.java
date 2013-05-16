@@ -251,6 +251,11 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 	private ImageView highlightImageView_4;
 	private ImageView playIcon;
 	private ImageView definitionIcon;
+	
+	private ImageView image_bar1;
+	private ImageView image_bar2;
+	private ImageView image_bar3;
+	
 	private LinearLayout contentLayout;
 	private TextView noticeView;
 	
@@ -328,6 +333,13 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
         titleGroup.setFocusable(false);
         titleGroup.setFocusableInTouchMode(false);
         
+        image_bar1 = (ImageView) findViewById(R.id.img_navagatorbar1);
+        image_bar2 = (ImageView) findViewById(R.id.img_navagatorbar2);
+        image_bar3 = (ImageView) findViewById(R.id.img_navagatorbar3);
+        image_bar1.setVisibility(View.INVISIBLE);
+        image_bar2.setVisibility(View.INVISIBLE);
+        image_bar3.setVisibility(View.INVISIBLE);
+        
         kuView = LayoutInflater.from(Main.this).inflate(R.layout.layout_lib, null);
         myView = LayoutInflater.from(Main.this).inflate(R.layout.layout_my, null);
         lastBandTimeView = (TextView) myView.findViewById(R.id.lastBandTime);
@@ -349,6 +361,15 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 				handler.removeCallbacks(null, null);
 				switch (index) {
 				case 1:
+					image_bar1.clearAnimation();
+					image_bar2.clearAnimation();
+					image_bar3.clearAnimation();
+					image_bar2.setVisibility(View.INVISIBLE);
+					image_bar3.setVisibility(View.INVISIBLE);
+					if(image_bar1.getVisibility() == View.VISIBLE){
+						image_bar1.startAnimation(alpha_disappear);
+						image_bar1.setVisibility(View.INVISIBLE);
+					}
 					highlightImageView_1.setVisibility(View.VISIBLE);
 					highlightImageView_2.setVisibility(View.GONE);
 					highlightImageView_3.setVisibility(View.GONE);
@@ -420,6 +441,17 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 					playIcon.setVisibility(View.VISIBLE);
 					break;
 				case 2:
+					image_bar1.clearAnimation();
+					image_bar2.clearAnimation();
+					image_bar3.clearAnimation();
+					image_bar3.setVisibility(View.INVISIBLE);
+					if(image_bar2.getVisibility() == View.VISIBLE){
+						image_bar2.startAnimation(alpha_disappear);
+						image_bar2.setVisibility(View.INVISIBLE);
+					}else{
+						image_bar1.startAnimation(alpha_appear);
+						image_bar1.setVisibility(View.VISIBLE);
+					}
 					aq = new AQuery(Main.this);
 					highlightImageView_1.setVisibility(View.GONE);
 					highlightImageView_2.setVisibility(View.VISIBLE);
@@ -479,6 +511,17 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 					}
 					break;
 				case 3:
+					image_bar1.clearAnimation();
+					image_bar2.clearAnimation();
+					image_bar3.clearAnimation();
+					image_bar1.setVisibility(View.VISIBLE);
+					if(image_bar3.getVisibility() == View.VISIBLE){
+						image_bar3.startAnimation(alpha_disappear);
+						image_bar3.setVisibility(View.INVISIBLE);
+					}else{
+						image_bar2.startAnimation(alpha_appear);
+						image_bar2.setVisibility(View.VISIBLE);
+					}
 					aq = new AQuery(Main.this);
 					highlightImageView_1.setVisibility(View.GONE);
 					highlightImageView_2.setVisibility(View.GONE);
@@ -503,6 +546,13 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 					definitionIcon.setImageDrawable(null);
 					break;
 				case 4:
+					image_bar1.clearAnimation();
+					image_bar2.clearAnimation();
+					image_bar3.clearAnimation();
+					image_bar1.setVisibility(View.VISIBLE);
+					image_bar2.setVisibility(View.VISIBLE);
+					image_bar3.setVisibility(View.VISIBLE);
+					image_bar3.startAnimation(alpha_appear);
 					aq = new AQuery(Main.this);
 					highlightImageView_1.setVisibility(View.GONE);
 					highlightImageView_2.setVisibility(View.GONE);

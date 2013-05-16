@@ -171,10 +171,29 @@
 		<LinearLayout android:layout_width="match_parent"
 		    android:layout_below="@id/galleryFram"
 		    android:layout_marginTop="5dp"
-		    android:paddingLeft="226dp"
+		    android:paddingLeft="221dp"
 		    android:paddingTop="15dp"
+		    android:orientation="horizontal"
 		    android:layout_height="fill_parent"
 		    android:background="@drawable/bg_teat_repeat">
+		    <LinearLayout android:layout_width="wrap_content"
+		        android:layout_height="fill_parent"
+		        android:orientation="vertical">
+		        <ImageView android:layout_width="2dp"
+		            android:layout_height="40dp"
+		            android:background="@drawable/bg_gallery_highlight"
+		            android:id="@+id/img_navagatorbar1"/>
+		        <ImageView android:layout_width="2dp"
+		            android:layout_height="40dp"
+		            android:background="@drawable/bg_gallery_highlight"
+		            android:layout_marginTop="10dp"
+		            android:id="@+id/img_navagatorbar2"/>
+		        <ImageView android:layout_width="2dp"
+		            android:layout_height="40dp"
+		            android:layout_marginTop="10dp"
+		            android:background="@drawable/bg_gallery_highlight"
+		            android:id="@+id/img_navagatorbar3"/>
+		    </LinearLayout>
 		    <LinearLayout android:layout_width="match_parent"
 		        android:layout_height="match_parent"
 		        android:paddingLeft="10dp"
@@ -189,6 +208,7 @@
 	    android:layout_height="fill_parent"
 	    android:scaleType="fitXY"
 	    android:id="@+id/image_starting"
+	    android:visibility="gone"
 	    android:src="@drawable/starting"/>
 </RelativeLayout>
 
