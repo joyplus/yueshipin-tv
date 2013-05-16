@@ -65,6 +65,7 @@ import com.joyplus.tv.Adapters.CurrentPlayData;
 import com.joyplus.tv.Adapters.MainHotItemAdapter;
 import com.joyplus.tv.Adapters.MainLibAdapter;
 import com.joyplus.tv.Adapters.MainYueDanItemAdapter;
+import com.joyplus.tv.HistoryActivity.HistortyAdapter;
 import com.joyplus.tv.Service.Return.ReturnMainHot;
 import com.joyplus.tv.Service.Return.ReturnTops;
 import com.joyplus.tv.Service.Return.ReturnUserPlayHistories;
@@ -1254,6 +1255,10 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 				playDate.prod_type = Integer.valueOf(info.prod_type);
 				playDate.prod_name = info.prod_name;
 				playDate.prod_url = info.video_url;
+				
+				//清晰度
+				playDate.prod_qua = StatisticsUtils.string2Int(info.definition);
+				
 				Log.d(TAG, "url" + playDate.prod_url);
 				playDate.prod_src = info.source;
 				if(!"".equals(info.playback_time)){
@@ -1283,6 +1288,10 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 					playDate.prod_name = info.prod_name;
 					playDate.prod_url = info.video_url;
 					playDate.prod_src = info.source;
+					
+					//清晰度
+					playDate.prod_qua = StatisticsUtils.string2Int(info.definition);
+					
 					if(!"".equals(info.playback_time)){
 						playDate.prod_time = Long.valueOf(info.playback_time);
 					}

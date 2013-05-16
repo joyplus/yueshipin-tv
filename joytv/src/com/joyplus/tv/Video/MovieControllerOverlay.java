@@ -273,10 +273,23 @@ public class MovieControllerOverlay extends FrameLayout implements
 			}
 			ImageView mImageSrc = (ImageView) rootView
 					.findViewById(R.id.imageView1);
-			if (mCurrentPlayData.prod_qua == 0)
+//			if (mCurrentPlayData.prod_qua == 0)
+//				mImageSrc.setImageResource(R.drawable.player_720p);
+//			else
+//				mImageSrc.setImageResource(R.drawable.player_1080p);
+			
+			//判断清晰度
+			int pro_qua = mCurrentPlayData.prod_qua;
+			if(pro_qua == 7) {
+				mImageSrc.setVisibility(View.VISIBLE);
 				mImageSrc.setImageResource(R.drawable.player_720p);
-			else
+			} else if(pro_qua == 8) {
+				mImageSrc.setVisibility(View.VISIBLE);
 				mImageSrc.setImageResource(R.drawable.player_1080p);
+			} else {
+				
+				mImageSrc.setVisibility(View.INVISIBLE);
+			}
 
 			TVControlViewGone(true);
 

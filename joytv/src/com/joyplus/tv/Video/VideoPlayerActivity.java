@@ -114,6 +114,7 @@ public class VideoPlayerActivity extends Activity {
 			prod_qua = mCurrentPlayData.prod_qua;
 			prod_type = mCurrentPlayData.prod_type;
 			mTime = (int) mCurrentPlayData.prod_time;
+			
 			if (prod_type == 2 && prod_type == 3) {
 				if (mCurrentPlayData.CurrentIndex == 0)
 					aq.id(R.id.imageControl_r).gone();

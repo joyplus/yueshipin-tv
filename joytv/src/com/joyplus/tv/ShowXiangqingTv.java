@@ -828,6 +828,10 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 		playDate.prod_id = prod_id;
 		playDate.prod_type = 2;
 		playDate.prod_name = date.tv.name+" 第" + (index+1) +"集";
+		
+		//清晰度
+		playDate.prod_qua = StatisticsUtils.string2Int(date.tv.definition);
+		
 //		playDate.prod_url = date.tv.episodes[0].down_urls[0].urls[0].url;
 //		playDate.prod_src = date.tv.episodes[0].down_urls[0].source;
 		List<URLS_INDEX> urls = getBofangList(index);

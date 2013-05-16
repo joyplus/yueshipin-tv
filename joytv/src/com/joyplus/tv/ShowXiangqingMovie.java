@@ -338,6 +338,10 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 			playDate.prod_id = movieData.movie.id;
 			playDate.prod_type = 1;
 			playDate.prod_name = movieData.movie.name;
+			
+			//清晰度
+			playDate.prod_qua = StatisticsUtils.string2Int(movieData.movie.definition);
+			
 			if(gaoqing_url!=null){
 				playDate.prod_url = gaoqing_url;
 				playDate.prod_src = gaoqing_url_souce;
@@ -469,6 +473,10 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 				playDate.prod_id = movieData.movie.id;
 				playDate.prod_type = 1;
 				playDate.prod_name = movieData.movie.name;
+				
+				//清晰度
+				playDate.prod_qua = StatisticsUtils.string2Int(movieData.movie.definition);
+				
 				playDate.prod_favority = isXiai;
 //				if(gaoqing_url!=null){
 //					playDate.prod_url = gaoqing_url;

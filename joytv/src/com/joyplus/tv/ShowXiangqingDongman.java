@@ -842,7 +842,11 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 		playDate.prod_id = prod_id;
 		playDate.prod_type = 131;
 		playDate.CurrentIndex = index+1;
-		playDate.prod_name = date.tv.name+" 第" + (index+1) +"集";;
+		playDate.prod_name = date.tv.name+" 第" + (index+1) +"集";
+		
+		//清晰度
+		playDate.prod_qua = StatisticsUtils.string2Int(date.tv.definition);
+		
 //		playDate.prod_url = date.tv.episodes[0].down_urls[0].urls[0].url;
 //		playDate.prod_src = date.tv.episodes[0].down_urls[0].source;
 		List<URLS_INDEX> urls = getBofangList(index);

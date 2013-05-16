@@ -1359,5 +1359,21 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 		
 		return 5;
 	}
+	
+	public static int string2Int(String str) {
+		
+		if(str== null || str.equals("")) {
+			
+			return 0;
+		}
+		
+		try {
+			return Integer.valueOf(str.trim());
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return 0;
+		}
+	}
 
 }
