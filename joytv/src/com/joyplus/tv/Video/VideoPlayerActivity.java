@@ -43,6 +43,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.webkit.URLUtil;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.androidquery.AQuery;
@@ -168,6 +169,7 @@ public class VideoPlayerActivity extends Activity {
 		}
 		
 		Log.i(TAG, "url------->" + prod_url);
+		
 	}
 	
 	
@@ -223,6 +225,14 @@ public class VideoPlayerActivity extends Activity {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	@Override
+	public boolean dispatchKeyEvent(KeyEvent event) {
+		// TODO Auto-generated method stub
+		
+		Log.i(TAG, "event--->" + event.getKeyCode());
+		return super.dispatchKeyEvent(event);
 	}
 
 	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -291,6 +301,7 @@ public class VideoPlayerActivity extends Activity {
 	}
 
 	public void OnClickPause(View v) {
+		Log.i(TAG, "OnClickPause---->");
 		if (prod_type != 1
 				&& mPlayer.getCurrentKeyEvent() == KeyEvent.KEYCODE_BACK
 				&& mPlayer.getCurrentReturnMode())
@@ -304,6 +315,7 @@ public class VideoPlayerActivity extends Activity {
 	}
 
 	public void OnClickPre(View v) {
+		Log.i(TAG, "OnClickPre---->");
 		if (mPlayer != null) {
 			mPlayer.exitReturnMode();
 			mPlayer.OnPreVideoPlay();
@@ -311,6 +323,7 @@ public class VideoPlayerActivity extends Activity {
 	}
 
 	public void OnClickContinue(View v) {
+		Log.i(TAG, "OnClickContinue---->");
 		if (mPlayer.isPause()) {
 			mPlayer.exitReturnMode();
 			mPlayer.playTVVideo();
@@ -318,6 +331,8 @@ public class VideoPlayerActivity extends Activity {
 	}
 
 	public void OnClickNext(View v) {
+		Log.i(TAG, "OnClickNext---->");
+		
 		if (mPlayer != null) {
 			mPlayer.exitReturnMode();
 			mPlayer.OnContinueVideoPlay();
@@ -325,6 +340,7 @@ public class VideoPlayerActivity extends Activity {
 	}
 
 	public void OnClickFav(View v) {
+		Log.i(TAG, "OnClickFav---->");
 		mPlayer.exitReturnMode();
 		if (!mCurrentPlayData.prod_favority) {
 			String url = Constant.BASE_URL + "program/favority";

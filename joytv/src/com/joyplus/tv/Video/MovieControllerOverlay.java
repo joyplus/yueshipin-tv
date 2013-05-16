@@ -136,6 +136,8 @@ public class MovieControllerOverlay extends FrameLayout implements
 	boolean mShowVolume = false;//是否显示声音控制
 //	boolean mShowTimerBar = false;
 	private boolean RETURNMODE = false;// 等一会消失
+	
+	private View rootView;
 
 	public MovieControllerOverlay(Context context, View rootView,
 			Bookmarker mBookmarker) {
@@ -147,6 +149,8 @@ public class MovieControllerOverlay extends FrameLayout implements
 		mLayoutTime = rootView.findViewById(R.id.LayoutBottomTime);
 
 		state = State.LOADING;
+		
+		this.rootView = rootView;
 
 		// LayoutParams wrapContent = new
 		// LayoutParams(LayoutParams.WRAP_CONTENT,
@@ -488,12 +492,37 @@ public class MovieControllerOverlay extends FrameLayout implements
 	public void showTVPaused() {
 		state = State.PAUSED;
 		showMainView(mLayoutControl);
+		
+//		RelativeLayout layout = (RelativeLayout) rootView;
+		
+//		for (int i = 0; i < layout.getChildCount(); i++) {
+//			
+//			View view = layout.getChildAt(i);
+////			view.setBackgroundColor(getContext().getResources().getColor(colorIds[i]));
+//		}
 	}
 
 	public void showTVReturn() {
 		state = State.TVRETURN;
 		showMainView(mLayoutControl);
+		
+//		RelativeLayout layout = (RelativeLayout) rootView;
+		
+//		for (int i = 0; i < layout.getChildCount(); i++) {
+//			
+//			View view = layout.getChildAt(i);
+////			view.setBackgroundColor(getContext().getResources().getColor(colorIds[i]));
+//			
+//			if(i== layout.getChildCount()-1) {
+//				
+//				view.setVisibility(GONE);
+//			}
+//		}
 	}
+	
+//	private int[] colorIds = {R.color.red,R.color.grey,R.color.blue,
+//			R.color.item_1,R.color.item_2,R.color.orange,
+//			R.color.yellow,R.color.listbg};
 
 	public void showEnded() {
 		state = State.ENDED;
