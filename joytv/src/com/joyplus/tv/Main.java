@@ -752,7 +752,7 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 			
 			unregisterReceiver(receiver);
 		}
-		
+		handler.removeCallbacksAndMessages(null);
 		super.onDestroy();
 	}
 	public void ReadLocalAppKey() {

@@ -3,7 +3,7 @@
 <alpha
 	android:fromAlpha="1.0"
 	android:toAlpha="0.1"
-	android:duration="500"
+	android:duration="200"
 /> 
 <!-- 透明度控制动画效果 alpha
         浮点型值：

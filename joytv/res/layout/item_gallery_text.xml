@@ -2,7 +2,7 @@
     android:textAppearance="?android:attr/textAppearanceMedium"
     android:textColor="@color/common_title_unselected"
     android:gravity="center"
-    android:layout_width="75dp"
+    android:layout_width="100dp"
     android:layout_height="40dp"
     android:textSize="20sp"
 	android:maxLines="1" />
