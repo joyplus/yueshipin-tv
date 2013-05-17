@@ -580,6 +580,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		case KeyEvent.KEYCODE_DPAD_LEFT:
 //			if(!mController.isHidden())
 //				return false;
+			
 			if (mHasPaused == false) 
 				OnMediaRewind();
 			else {
