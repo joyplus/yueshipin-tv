@@ -242,18 +242,6 @@
                     android:layout_height="@dimen/layout_zero"
                     android:layout_weight="1.73" />
 
-                <Button
-                    android:id="@+id/bt_lixianshipin"
-                    style="@style/style_4"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/layout_zero"
-                    android:layout_weight="1"
-                    android:background="@drawable/text_drawable_selector"
-                    android:gravity="right|center_vertical"
-                    android:text="@string/lixianshipin_name"
-                    android:textColor="@color/text_color_selector"
-                    android:visibility="invisible" />
-
                 <TextView
                     style="@style/style_4"
                     android:layout_width="wrap_content"
@@ -282,6 +270,18 @@
                     android:gravity="right|center_vertical"
                     android:text="@string/zhuijushoucang_name"
                     android:textColor="@color/text_color_selector" />
+
+                <Button
+                    android:id="@+id/bt_lixianshipin"
+                    style="@style/style_4"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/layout_zero"
+                    android:layout_weight="1"
+                    android:background="@drawable/text_drawable_selector"
+                    android:gravity="right|center_vertical"
+                    android:text="@string/lixianshipin_name"
+                    android:textColor="@color/text_color_selector"
+                    android:visibility="invisible" />
             </LinearLayout>
         </LinearLayout>
 
