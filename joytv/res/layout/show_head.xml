@@ -68,15 +68,15 @@
         android:layout_width="@dimen/layout_zero"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:gravity="center"
+        android:gravity="right|center_vertical"
         android:orientation="horizontal" >
 
-        <TextView 
+<!--         <TextView 
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="left|center_vertical"
             android:text="测试版本"
-            android:visibility="visible"/>
+            android:visibility="visible"/> -->
         
         <ImageView
             android:id="@+id/iv_head_logo"

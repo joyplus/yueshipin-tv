@@ -826,8 +826,10 @@ public void CheckBandResult(String url, JSONObject json, AjaxStatus status){
 
 	if (json != null) {
 		
-		if(json == null || json.equals("")) 
+		if(json == null || json.equals("")) {
+			handler.sendEmptyMessage(MESSAGE_UPDATEUSER); 
 			return;
+		}
 		
 		Log.d(TAG, json.toString());
 		try {
@@ -841,6 +843,7 @@ public void CheckBandResult(String url, JSONObject json, AjaxStatus status){
 			}
 		} catch (JSONException e1) {
 			// TODO Auto-generated catch block
+			handler.sendEmptyMessage(MESSAGE_UPDATEUSER); 
 			e1.printStackTrace();
 		}
 		

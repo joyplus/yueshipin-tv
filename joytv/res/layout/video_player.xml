@@ -211,7 +211,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_marginBottom="10dp"
                 android:layout_marginLeft="10dp"
-                android:layout_marginRight="150dp"
+                android:layout_marginRight="170dp"
                 android:clickable="true"
                 android:focusable="true"
                 android:indeterminateOnly="false"
@@ -229,7 +229,7 @@
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentRight="true"
                 android:layout_marginBottom="18dp"
-                android:layout_marginRight="40dp"
+                android:layout_marginRight="60dp"
                 android:text="--:--"
                 android:textColor="@color/white"
                 android:textSize="22sp" />
