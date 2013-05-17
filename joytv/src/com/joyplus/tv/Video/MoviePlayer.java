@@ -578,8 +578,8 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 //			OnMediaFastForward();
 //			return true;
 		case KeyEvent.KEYCODE_DPAD_LEFT:
-			if(!mController.isHidden())
-				return false;
+//			if(!mController.isHidden())
+//				return false;
 			if (mHasPaused == false) 
 				OnMediaRewind();
 			else {
@@ -784,7 +784,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		//调节音量时 控制栏不消失
 		((MovieControllerOverlay)mController).cancelHiding();
 		((MovieControllerOverlay)mController).hidden5ControlView();
-		mLayoutBottomTime2.setBackgroundResource(R.drawable.play_time_left);
+		
 		
 		if (JUMP_TIME_TIMES > 1)
 			JUMP_TIME_TIMES = 1;
@@ -794,6 +794,11 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 			JUMP_TIME_TIMES = -1;
 		else
 			JUMP_TIME_TIMES--;
+		
+		if(JUMP_TIME_TIMES < 0) {
+			
+			mLayoutBottomTime2.setBackgroundResource(R.drawable.play_time_left);
+		}
 
 		mDragging = true;
 		if (!mShowing) {
@@ -821,7 +826,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		//调节音量时 控制栏不消失
 		((MovieControllerOverlay)mController).cancelHiding();
 		((MovieControllerOverlay)mController).hidden5ControlView();
-		mLayoutBottomTime2.setBackgroundResource(R.drawable.play_time_right);
+		
 		if (JUMP_TIME_TIMES < -1)
 			JUMP_TIME_TIMES = -1;
 		else if (JUMP_TIME_TIMES + 1 > 3)
@@ -830,6 +835,11 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 			JUMP_TIME_TIMES = 1;
 		else
 			JUMP_TIME_TIMES++;
+		
+		if(JUMP_TIME_TIMES > 0) {
+			
+			mLayoutBottomTime2.setBackgroundResource(R.drawable.play_time_right);
+		}
 
 		mDragging = true;
 		if (!mShowing) {
