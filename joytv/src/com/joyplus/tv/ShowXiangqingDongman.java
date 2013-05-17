@@ -841,7 +841,7 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 		Intent intent = new Intent(this,VideoPlayerActivity.class);
 		playDate.prod_id = prod_id;
 		playDate.prod_type = 131;
-		playDate.CurrentIndex = index+1;
+		playDate.CurrentIndex = index;
 		playDate.prod_name = date.tv.name+" 第" + (index+1) +"集";
 		
 		//清晰度

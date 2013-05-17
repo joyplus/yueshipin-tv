@@ -1132,9 +1132,10 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 													Constant.video_index[j])) {
 
 								String name = m_ReturnProgramView.tv.name;
-								title = "第"
+								title = " 第"
 										+ m_ReturnProgramView.tv.episodes[index].name
 										+ "集";
+								mCurrentPlayData.prod_name=  name + title;
 								mTextViewProdName.setText(name + title);
 								PROD_SOURCE = GetSource(m_ReturnProgramView,
 										mCurrentPlayData.prod_type, index, i);
@@ -1227,9 +1228,10 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 													Constant.video_index[j])) {
 
 								String name = m_ReturnProgramView.tv.name;
-								title = "第"
+								title = " 第"
 										+ m_ReturnProgramView.tv.episodes[index].name
 										+ "集";
+								mCurrentPlayData.prod_name=  name + title;
 								mTextViewProdName.setText(name + title);
 								PROD_SOURCE = GetSource(m_ReturnProgramView,
 										mCurrentPlayData.prod_type, index, i);

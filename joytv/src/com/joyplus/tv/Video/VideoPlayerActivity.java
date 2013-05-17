@@ -489,7 +489,12 @@ public class VideoPlayerActivity extends Activity {
 												// 申请应用时分配的AppKey。
 		params.put("prod_id", prod_id);// required string
 										// 视频id
-		params.put("prod_name", prod_name);// required
+//		prod_name
+//		String titleName = " 第"
+//				+ (mCurrentPlayData.CurrentIndex + 1)
+//				+ "集";
+//		mCurrentPlayData.prod_name=  name + title;
+		params.put("prod_name", mCurrentPlayData.prod_name);// required
 		// string 视频名字
 		if (mCurrentPlayData != null && mCurrentPlayData.prod_type != 1) {
 			params.put("prod_subname",
