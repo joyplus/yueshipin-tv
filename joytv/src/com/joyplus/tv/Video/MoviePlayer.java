@@ -888,11 +888,11 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 					RelativeLayout.TRUE);
 
 			double mLeft = (double) JUMP_TIME / totalTime
-					* (sb.getMeasuredWidth() - seekBarWidthOffset) + 20;
+					* (sb.getMeasuredWidth() - seekBarWidthOffset) + 16;
 			if (totalTime > 0)
 				parms.leftMargin = (int) mLeft;
 			else
-				parms.leftMargin = 20;
+				parms.leftMargin = 16;
 			parms.bottomMargin = 20 + 10;
 
 			mLayoutBottomTime.setLayoutParams(parms);
