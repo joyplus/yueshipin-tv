@@ -1127,9 +1127,10 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 			case 131:
 			case 2:
 				
-				if(Integer.valueOf(m_ReturnProgramView.tv.max_episode) > Integer.valueOf(m_ReturnProgramView.tv.cur_episode)
-						|| (m_ReturnProgramView.tv.max_episode != null && 
-						(m_ReturnProgramView.tv.cur_episode == null || Integer.valueOf(m_ReturnProgramView.tv.cur_episode) == 0))){
+				if((m_ReturnProgramView.tv.max_episode != null && 
+						(m_ReturnProgramView.tv.cur_episode == null || Integer.valueOf(m_ReturnProgramView.tv.cur_episode) == 0))
+						|| Integer.valueOf(m_ReturnProgramView.tv.max_episode) > Integer.valueOf(m_ReturnProgramView.tv.cur_episode)
+						){
 					index = mCurrentPlayData.CurrentIndex + 1;
 					mCurrentPlayData.CurrentIndex += 1;
 				}else{
@@ -1173,16 +1174,10 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 				}
 				break;
 			case 3:
-				if(Integer.valueOf(m_ReturnProgramView.show.max_episode) > Integer.valueOf(m_ReturnProgramView.show.cur_episode)
-						|| (m_ReturnProgramView.show.max_episode != null && 
-						(m_ReturnProgramView.show.cur_episode == null || Integer.valueOf(m_ReturnProgramView.show.cur_episode) == 0))){
-					index = mCurrentPlayData.CurrentIndex + 1;
-					mCurrentPlayData.CurrentIndex += 1;
-				}else{
-					index = mCurrentPlayData.CurrentIndex - 1;
-					mCurrentPlayData.CurrentIndex -= 1;
-				}
+				index = mCurrentPlayData.CurrentIndex + 1;
+				mCurrentPlayData.CurrentIndex += 1;
 				app.setCurrentPlayData(mCurrentPlayData);
+				
 				if (m_ReturnProgramView.show.episodes[index].down_urls != null) {
 					// videoSourceSort(m_ReturnProgramView.show.episodes[index].down_urls);
 					for (int i = 0; i < m_ReturnProgramView.show.episodes[index].down_urls.length; i++) {
@@ -1241,9 +1236,10 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 				break;
 			case 131:
 			case 2:
-				if(Integer.valueOf(m_ReturnProgramView.tv.max_episode) > Integer.valueOf(m_ReturnProgramView.tv.cur_episode)
-						|| (m_ReturnProgramView.tv.max_episode != null && 
-						(m_ReturnProgramView.tv.cur_episode == null || Integer.valueOf(m_ReturnProgramView.tv.cur_episode) == 0))){
+				if( (m_ReturnProgramView.tv.max_episode != null && 
+						(m_ReturnProgramView.tv.cur_episode == null || Integer.valueOf(m_ReturnProgramView.tv.cur_episode) == 0))
+						|| Integer.valueOf(m_ReturnProgramView.tv.max_episode) > Integer.valueOf(m_ReturnProgramView.tv.cur_episode)
+						){
 					index = mCurrentPlayData.CurrentIndex - 1;
 					mCurrentPlayData.CurrentIndex -= 1;
 				}else{
@@ -1288,15 +1284,9 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 				}
 				break;
 			case 3:
-				if(Integer.valueOf(m_ReturnProgramView.show.max_episode) > Integer.valueOf(m_ReturnProgramView.show.cur_episode)
-						|| (m_ReturnProgramView.show.max_episode != null && 
-						(m_ReturnProgramView.show.cur_episode == null || Integer.valueOf(m_ReturnProgramView.show.cur_episode) == 0))){
-					index = mCurrentPlayData.CurrentIndex - 1;
-					mCurrentPlayData.CurrentIndex -= 1;
-				}else{
-					index = mCurrentPlayData.CurrentIndex + 1;
-					mCurrentPlayData.CurrentIndex += 1;
-				}
+				index = mCurrentPlayData.CurrentIndex - 1;
+				mCurrentPlayData.CurrentIndex -= 1;
+
 				app.setCurrentPlayData(mCurrentPlayData);
 				
 				if (m_ReturnProgramView.show.episodes[index].down_urls != null) {
