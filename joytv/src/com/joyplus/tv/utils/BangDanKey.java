@@ -68,7 +68,7 @@ public interface BangDanKey {
 	String REBO_GAOXIAO_DONGMAN = "7265";//7265 热播搞笑动漫
 	
 	String TV_DIANYING = "7280";//7280 电影 for TV 
-	String TV_DIANSHIJU = "282";//282 电视剧 for TV 
+	String TV_DIANSHIJU = "7282";//282 电视剧 for TV 
 	String TV_DONGMAN = "7284";//7284 动漫 for TV
 	
 	String TOP_ITEM_URL = Constant.BASE_URL + "top_items";
