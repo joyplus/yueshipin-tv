@@ -322,24 +322,29 @@ public class MovieControllerOverlay extends FrameLayout implements
 			
 			show5ControlView();
 
-			if (mCurrentPlayData.CurrentIndex > 0)
-				playPreView.setEnabled(true);
-			else
-				playPreView.setEnabled(false);
-
 			ReturnProgramView m_ReturnProgramView = app.get_ReturnProgramView();
 
 			if (m_ReturnProgramView != null) {
 				switch (mCurrentPlayData.prod_type) {
 				case 131:
 				case 2:
+					if (mCurrentPlayData.CurrentIndex > 0)
+						playPreView.setEnabled(true);
+					else
+						playPreView.setEnabled(false);
+					
 					if (mCurrentPlayData.CurrentIndex < m_ReturnProgramView.tv.episodes.length-1)
 						playNextView.setEnabled(true);
 					else
 						playNextView.setEnabled(false);
 					break;
 				case 3:
-					if (mCurrentPlayData.CurrentIndex < m_ReturnProgramView.show.episodes.length-1)
+					if (mCurrentPlayData.CurrentIndex == m_ReturnProgramView.show.episodes.length-1)
+						playPreView.setEnabled(true);
+					else
+						playPreView.setEnabled(false);
+					
+					if (mCurrentPlayData.CurrentIndex > 0)
 						playNextView.setEnabled(true);
 					else
 						playNextView.setEnabled(false);
