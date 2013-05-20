@@ -340,9 +340,9 @@ public class MovieControllerOverlay extends FrameLayout implements
 					break;
 				case 3:
 					if (mCurrentPlayData.CurrentIndex == m_ReturnProgramView.show.episodes.length-1)
-						playPreView.setEnabled(true);
-					else
 						playPreView.setEnabled(false);
+					else
+						playPreView.setEnabled(true);
 					
 					if (mCurrentPlayData.CurrentIndex > 0)
 						playNextView.setEnabled(true);
