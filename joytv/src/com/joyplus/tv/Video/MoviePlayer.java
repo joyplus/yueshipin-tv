@@ -888,11 +888,11 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 					RelativeLayout.TRUE);
 
 			double mLeft = (double) JUMP_TIME / totalTime
-					* (sb.getMeasuredWidth() - seekBarWidthOffset) + 16;
+					* (sb.getMeasuredWidth() - seekBarWidthOffset) + 20;
 			if (totalTime > 0)
 				parms.leftMargin = (int) mLeft;
 			else
-				parms.leftMargin = 16;
+				parms.leftMargin = 20;
 			parms.bottomMargin = 20 + 10;
 
 			mLayoutBottomTime.setLayoutParams(parms);
@@ -993,12 +993,12 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 						RelativeLayout.TRUE);
 
 				double mLeft = (double) progress / totalTime
-						* (sb.getMeasuredWidth() - seekBarWidthOffset) + 16;
+						* (sb.getMeasuredWidth() - seekBarWidthOffset) + 20;
 
 				if (progress > 0)
 					parms.leftMargin = (int) mLeft;
 				else
-					parms.leftMargin = 16;
+					parms.leftMargin = 20;
 				parms.bottomMargin = 20 + 10;
 				mLayoutBottomTime.setLayoutParams(parms);
 
