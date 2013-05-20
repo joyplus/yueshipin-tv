@@ -360,7 +360,21 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 					b.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector_1));
 					b.setPadding(8, 0, 0, 0);
 				}
-				play(0);
+				//如果用户播放过，那就从播放过的片子进入
+				CurrentPlayData playData = app.getCurrentPlayData();
+				if(playData != null) {
+					
+					int index = playData.CurrentIndex;
+					
+					if(index > -1) {
+						
+						play(index);
+					}
+				} else {
+					
+					play(0);
+				}
+				
 			}else{
 				play(seletedButtonIndex-1);
 			}
