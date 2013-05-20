@@ -65,7 +65,6 @@ import com.joyplus.tv.Adapters.CurrentPlayData;
 import com.joyplus.tv.Adapters.MainHotItemAdapter;
 import com.joyplus.tv.Adapters.MainLibAdapter;
 import com.joyplus.tv.Adapters.MainYueDanItemAdapter;
-import com.joyplus.tv.HistoryActivity.HistortyAdapter;
 import com.joyplus.tv.Service.Return.ReturnMainHot;
 import com.joyplus.tv.Service.Return.ReturnTops;
 import com.joyplus.tv.Service.Return.ReturnUserPlayHistories;
@@ -118,83 +117,7 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 	private ImageView startingImageView;
 	private RelativeLayout rootLayout;
 	private Map<String, String> headers;
-	private Handler handler = new Handler(){
 
-		@Override
-		public void handleMessage(Message msg) {
-			// TODO Auto-generated method stub
-			switch (msg.what) {
-			case MESSAGE_UPDATEUSER://userInfo相关验证完成
-				if(initStep ==0){
-					initStep += 1;
-					getHotServiceData();
-				}
-				Log.d(TAG, "MESSAGE_UPDATEUSER --- >Initstep = " + initStep);
-				aq.id(R.id.iv_head_user_icon).image(app.getUserInfo().getUserAvatarUrl(),false,true,0,R.drawable.avatar_defult);
-				aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
-				getHistoryServiceData();
-				break;
-			case MESSAGE_STEP1_SUCESS://热播列表加载完成
-				Log.d(TAG, "MESSAGE_STEP1_SUCESS --- >Initstep = " + initStep); 
-				if(initStep ==1){ 
-					initStep +=1;
-					getMovieYueDanServiceData(); 
-					getTVYueDanServiceData(); 
-				}
-				break;//悦单加载完成
-			case MESSAGE_STEP2_SUCESS://悦单加载完成
-				Log.d(TAG, "MESSAGE_STEP2_SUCESS --- >Initstep = " + initStep);
-				if(initStep ==2){
-					initStep +=1;
-					if(startingImageView.getVisibility() == View.VISIBLE){
-						startingImageView.setVisibility(View.GONE);
-						startingImageView.startAnimation(alpha_disappear);
-						rootLayout.setVisibility(View.VISIBLE);
-						gallery1.requestFocus();
-						handler.removeMessages(MESSAGE_START_TIMEOUT);
-						new Thread(new CheckPlayUrl()).start();
-					}else{
-						removeDialog(DIALOG_WAITING);
-						contentLayout.setVisibility(View.VISIBLE);
-						gallery1.requestFocus(); 
-						new Thread(new CheckPlayUrl()).start();
-					}
-					
-					handler.removeMessages(MESSAGE_30S_TIMEOUT);
-				}
-				
-				//当悦单加载完成时，开始下载用户收藏数据，并插入到数据库
-//				getShouCangData(StatisticsUtils.getShoucangURL(app.getUserInfo().getUserId()));
-				
-				break;
-			case MESSAGE_START_TIMEOUT://超时还未加载好
-				if(initStep<3){
-					startingImageView.setVisibility(View.GONE);
-					contentLayout.setVisibility(View.INVISIBLE);
-					showDialog(DIALOG_WAITING);
-				}
-				
-				break;
-			case MESSAGE_UPDATEUSER_HISTORY_SUCEESS://超时还未加载好
-//				if(initStep<3){
-//					startingImageView.setVisibility(View.GONE);
-//					contentLayout.setVisibility(View.INVISIBLE);
-//					showDialog(DIALOG_WAITING);
-//				}
-				break;
-			case MESSAGE_30S_TIMEOUT://超过30S时间，弹出网络速度慢dialog
-				removeDialog(DIALOG_WAITING);
-				showDialog(DIALOG_NETWORK_SLOW);
-				handler.removeCallbacksAndMessages(null);
-				initStep = -1;
-				break;
-			default:
-				break;
-			}
-			
-		}
-		
-	};
 	ObjectMapper mapper = new ObjectMapper();
 	private List<View> hot_contentViews = new ArrayList<View>();
 	private List<View> yuedan_contentViews = new ArrayList<View>();
@@ -292,27 +215,6 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 	private boolean isWifiReset = false;//wifi网络是否重新设置
 	
 	private ImageView erweimaImage;
-	
-	
-	private BroadcastReceiver receiver = new BroadcastReceiver(){
-
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			// TODO Auto-generated method stub
-			String action = intent.getAction();
-			if(FayeService.ACTION_RECIVEACTION_BAND.equals(action)){
-				//band
-				updateLastTimeView();
-				updateUser(app.getUserData("phoneID"));
-			}else if(FayeService.ACTION_RECIVEACTION_UNBAND.equals(action)){
-				//unband by mobile
-				Log.d(TAG, "unband userId = " + app.getUserData("userId"));
-				updateUser(app.getUserData("userId"));
-			}
-		}
-
-		
-	};
 	
 //	private Handler mHandler = new Handler();
 	
@@ -666,6 +568,103 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 		UmengUpdateAgent.update(this);
 		
     }
+	
+	private Handler handler = new Handler(){
+
+		@Override
+		public void handleMessage(Message msg) {
+			// TODO Auto-generated method stub
+			switch (msg.what) {
+			case MESSAGE_UPDATEUSER://userInfo相关验证完成
+				if(initStep ==0){
+					initStep += 1;
+					getHotServiceData();
+				}
+				Log.d(TAG, "MESSAGE_UPDATEUSER --- >Initstep = " + initStep);
+				aq.id(R.id.iv_head_user_icon).image(app.getUserInfo().getUserAvatarUrl(),false,true,0,R.drawable.avatar_defult);
+				aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
+				getHistoryServiceData();
+				break;
+			case MESSAGE_STEP1_SUCESS://热播列表加载完成
+				Log.d(TAG, "MESSAGE_STEP1_SUCESS --- >Initstep = " + initStep); 
+				if(initStep ==1){ 
+					initStep +=1;
+					getMovieYueDanServiceData(); 
+					getTVYueDanServiceData(); 
+				}
+				break;//悦单加载完成
+			case MESSAGE_STEP2_SUCESS://悦单加载完成
+				Log.d(TAG, "MESSAGE_STEP2_SUCESS --- >Initstep = " + initStep);
+				if(initStep ==2){
+					initStep +=1;
+					if(startingImageView.getVisibility() == View.VISIBLE){
+						startingImageView.setVisibility(View.GONE);
+						startingImageView.startAnimation(alpha_disappear);
+						rootLayout.setVisibility(View.VISIBLE);
+						gallery1.requestFocus();
+						handler.removeMessages(MESSAGE_START_TIMEOUT);
+						new Thread(new CheckPlayUrl()).start();
+					}else{
+						removeDialog(DIALOG_WAITING);
+						contentLayout.setVisibility(View.VISIBLE);
+						gallery1.requestFocus(); 
+						new Thread(new CheckPlayUrl()).start();
+					}
+					
+					handler.removeMessages(MESSAGE_30S_TIMEOUT);
+				}
+				
+				//当悦单加载完成时，开始下载用户收藏数据，并插入到数据库
+//				getShouCangData(StatisticsUtils.getShoucangURL(app.getUserInfo().getUserId()));
+				
+				break;
+			case MESSAGE_START_TIMEOUT://超时还未加载好
+				if(initStep<3){
+					startingImageView.setVisibility(View.GONE);
+					contentLayout.setVisibility(View.INVISIBLE);
+					showDialog(DIALOG_WAITING);
+				}
+				
+				break;
+			case MESSAGE_UPDATEUSER_HISTORY_SUCEESS://超时还未加载好
+//				if(initStep<3){
+//					startingImageView.setVisibility(View.GONE);
+//					contentLayout.setVisibility(View.INVISIBLE);
+//					showDialog(DIALOG_WAITING);
+//				}
+				break;
+			case MESSAGE_30S_TIMEOUT://超过30S时间，弹出网络速度慢dialog
+				removeDialog(DIALOG_WAITING);
+				showDialog(DIALOG_NETWORK_SLOW);
+				handler.removeCallbacksAndMessages(null);
+				initStep = -1;
+				break;
+			default:
+				break;
+			}
+			
+		}
+		
+	};
+	
+	private BroadcastReceiver receiver = new BroadcastReceiver(){
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			// TODO Auto-generated method stub
+			String action = intent.getAction();
+			if(FayeService.ACTION_RECIVEACTION_BAND.equals(action)){
+				//band
+				updateLastTimeView();
+				updateUser(app.getUserData("phoneID"));
+			}else if(FayeService.ACTION_RECIVEACTION_UNBAND.equals(action)){
+				//unband by mobile
+				Log.d(TAG, "unband userId = " + app.getUserData("userId"));
+				updateUser(app.getUserData("userId"));
+			}
+		}
+
+	};
 	
 	//数据初始化
 	
