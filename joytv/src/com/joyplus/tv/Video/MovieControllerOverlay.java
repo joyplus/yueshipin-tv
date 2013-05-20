@@ -333,13 +333,13 @@ public class MovieControllerOverlay extends FrameLayout implements
 				switch (mCurrentPlayData.prod_type) {
 				case 131:
 				case 2:
-					if (mCurrentPlayData.CurrentIndex < m_ReturnProgramView.tv.episodes.length)
+					if (mCurrentPlayData.CurrentIndex < m_ReturnProgramView.tv.episodes.length-1)
 						playNextView.setEnabled(true);
 					else
 						playNextView.setEnabled(false);
 					break;
 				case 3:
-					if (mCurrentPlayData.CurrentIndex < m_ReturnProgramView.show.episodes.length)
+					if (mCurrentPlayData.CurrentIndex < m_ReturnProgramView.show.episodes.length-1)
 						playNextView.setEnabled(true);
 					else
 						playNextView.setEnabled(false);
