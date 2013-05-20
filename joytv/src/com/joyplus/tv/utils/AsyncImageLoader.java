@@ -14,16 +14,14 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import com.joyplus.tv.Constant;
-
-
-import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+
+import com.joyplus.tv.Constant;
 
 public class AsyncImageLoader {
 	
@@ -33,7 +31,6 @@ public class AsyncImageLoader {
 	private OnImageLoadListener mImageLoadListener;
 	private Handler mHandler;
 	
-	@SuppressLint("HandlerLeak")
 	public AsyncImageLoader(OnImageLoadListener l){
 		mImageLoadListener = l;
 		
