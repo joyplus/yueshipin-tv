@@ -639,7 +639,7 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 					getString(R.string.toast_no_play));
 		}
 
-		if (list != null && !list.isEmpty()) {// 判断其能否向获取更多数据
+		if (list != null && !list.isEmpty() && currentListIndex != QUANBUFENLEI) {// 判断其能否向获取更多数据
 
 			if (list.size() == StatisticsUtils.FIRST_NUM) {
 
@@ -907,6 +907,11 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 			
 			List<MovieItemData> temp10List = StatisticsUtils.returnFilterMovieSearch_TVJson(json
 					.toString());
+			
+			if (temp10List.size() == StatisticsUtils.FIRST_NUM) {
+
+				isNextPagePossibles[currentListIndex] = true;
+			}
 			
 			if(isShowShoucang) {
 				

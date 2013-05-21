@@ -110,12 +110,18 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 		getIsShoucangData();
 		getServiceDate();
 	}
+	
+	private boolean isShowHeadTable = false;
 
 	private void initButton() {
 		// TODO Auto-generated method stub
 		
+		int indexButton = -1;
+		
 		totle_pagecount = (num%COUNT ==0)? num/COUNT:num/COUNT+1;
 		if(totle_pagecount<2){
+			
+			isShowHeadTable = false;
 			selectedIndex = 1;
 			initTableView(num);
 			aq.id(R.id.arrow_left).invisible();
@@ -123,6 +129,9 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 			aq.id(R.id.scrollview).gone();
 			return;
 		}
+		
+		isShowHeadTable = true;
+		
 		for(int i=0; i<totle_pagecount; i++){
 			Button b = new Button(this);
 //			b.setWidth(table.getWidth()/5);
@@ -166,6 +175,13 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 				
 				b.setNextFocusRightId(b.getId());
 			}
+			
+			if(indexButton >= 0 && indexButton <= 2) {
+				
+				b.setNextFocusUpId(bofangLL.getId());
+			}
+			
+			indexButton ++;
 			
 		}
 		
@@ -576,6 +592,9 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 	
 	private void initTableView(int count){
 		table.removeAllViews();
+		
+		int indexButton = -1;
+		
 		int col = (count%5 ==0)? count/5:count/5+1;
 		for(int j=0; j<col; j++){
 			TableRow row = new TableRow(this);
@@ -629,6 +648,15 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 					}
 //				}
 
+					if(!isShowHeadTable) {
+						
+						if(indexButton >=0 && indexButton <= 2) {
+							
+							btn.setNextFocusUpId(bofangLL.getId());
+						}
+					}
+					
+					indexButton ++;
 			}
 			row.setLayoutParams(new LayoutParams(table.getWidth(),35));
 			row.setPadding(0, 5, 0, 5);
