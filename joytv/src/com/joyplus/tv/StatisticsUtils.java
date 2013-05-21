@@ -1239,7 +1239,7 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 			int max = (chu + 1) * 5 ;
 			int min = shoucangNum;
 			
-			if(position <= max && position >= min) {
+			if(position <= max && position > min) {
 				
 				return true;
 			}
@@ -1255,7 +1255,7 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 			
 		int max = (chu + 1) * 5 ;
 		
-		if(position == max - 5) {
+		if(position == max) {
 			
 			return true;
 		}
@@ -1269,12 +1269,19 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 		
 		int max = (chu + 1) * 5;
 		
-		if(position >= max-5 && position < max) {
+		if(position >= max && position < max + 5) {
 			
 			return true;
 		}
 		
 		return false;
+	}
+	
+	public static int stepToFirstInThisRow(int position) {
+		
+		int chu = position/5;
+		
+		return chu *5;
 	}
 	
 	public static List<MovieItemData> getList4DB(Context context,String userId,String type) {

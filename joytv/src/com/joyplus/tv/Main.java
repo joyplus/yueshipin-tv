@@ -2189,23 +2189,24 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 	//以网上数据为标准，如果本地用户id数据多余的就删除，不存在的就进行添加
 	private void compareUsrFav4DB(List<HotItemInfo> list,String userId) {
 		
-		if(list == null || list.isEmpty() ) {
+		if(list == null) {
 			
 			return;
 		}
 		
+		String selection = UserShouCang.USER_ID + "=?";//通过用户id，找到相应信息
+		String[] selectionArgs = {userId};
+		
+		TvDatabaseHelper helper = TvDatabaseHelper.newTvDatabaseHelper(getApplicationContext());
+		SQLiteDatabase database = helper.getWritableDatabase();//获取写db
+		
+		
+		String[] columns = {UserShouCang.PRO_ID,UserShouCang.PRO_TYPE,UserShouCang.CUR_EPISODE};//返回影片id 类型和当前更新集数
+		Cursor cursor_proId = database.query(TvDatabaseHelper.ZHUIJU_TABLE_NAME, columns, selection, selectionArgs, null, null, null);
+		
 		if(list.size() > 0) {
 			
 //			int listSize = list.size();//获取此id，用户信息大小
-			
-			String selection = UserShouCang.USER_ID + "=?";//通过用户id，找到相应信息
-			String[] selectionArgs = {userId};
-			
-			TvDatabaseHelper helper = TvDatabaseHelper.newTvDatabaseHelper(getApplicationContext());
-			SQLiteDatabase database = helper.getWritableDatabase();//获取写db
-			
-			String[] columns = {UserShouCang.PRO_ID,UserShouCang.PRO_TYPE,UserShouCang.CUR_EPISODE};//返回影片id 类型和当前更新集数
-			Cursor cursor_proId = database.query(TvDatabaseHelper.ZHUIJU_TABLE_NAME, columns, selection, selectionArgs, null, null, null);
 			
 			if(cursor_proId != null && cursor_proId.getCount() > 0) {//数据库有数据
 				
@@ -2355,9 +2356,16 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 				}
 			}
 			
-			cursor_proId.close();//关闭
-			helper.closeDatabase();//关闭数据库
+		} else {
+			//如果网上用户没有任何收藏,但是数据库中有相应用户数据
+			if(cursor_proId != null && cursor_proId.getCount() > 0) {//数据库有数据
+				//清空DB中相关用户数据
+				database.delete(TvDatabaseHelper.ZHUIJU_TABLE_NAME, selection, selectionArgs);
+			}
 		}
+		
+		cursor_proId.close();//关闭
+		helper.closeDatabase();//关闭数据库
 	}
 	
 	class CheckPlayUrl implements Runnable{

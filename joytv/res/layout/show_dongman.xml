@@ -33,7 +33,7 @@
             android:layout_weight="5.61"
             android:background="@drawable/menubg"
             android:orientation="horizontal"
-            android:paddingRight="30dp" >
+            android:paddingRight="34dp" >
 
             <TextView
                 android:layout_width="@dimen/layout_zero"
@@ -352,7 +352,8 @@
                         android:layout_marginTop="20dp"
                         android:layout_weight="1"
                         android:background="@color/menu_bg"
-                        android:orientation="horizontal" >
+                        android:orientation="horizontal"
+                        android:paddingRight="34dp" >
 
                         <TextView
                             android:layout_width="@dimen/layout_zero"

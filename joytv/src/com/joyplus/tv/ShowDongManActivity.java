@@ -118,9 +118,12 @@ public class ShowDongManActivity extends AbstractShowActivity {
 
 		searchAdapter = new ZongYiAdapter(this, aq);
 		
-		searchAdapter.setShouCangCount(shoucangList.size());
-		searchAdapter.setQita_name(getString(R.string.qitadongman_play_name));
-		searchAdapter.setShoucangShow(true);
+		if(isShowShoucang) {
+			
+			searchAdapter.setShouCangCount(shoucangList.size());
+			searchAdapter.setQita_name(getString(R.string.qitadongman_play_name));
+			searchAdapter.setShoucangShow(true);
+		}
 		
 		playGv.setAdapter(searchAdapter);
 		
@@ -485,53 +488,84 @@ public class ShowDongManActivity extends AbstractShowActivity {
 //
 //				}
 				
-				int shoucangNum = shoucangList.size();
-				if(!StatisticsUtils.isPostionEmpty(position, shoucangNum)) {
+				if(isShowShoucang) {
 					
-					if(StatisticsUtils.isPositionShowQitaTitle(position, shoucangNum)) {
-						Log.i(TAG, "Position:--->" + position + " isGridViewUp--->" + isGridViewUp);
-						if(isGridViewUp) {
-							
-							playGv.setSelection(position - 5);
+					int shoucangNum = shoucangList.size();
+					if(!StatisticsUtils.isPostionEmpty(position, shoucangNum)) {
+						
+						if(StatisticsUtils.isPositionShowQitaTitle(position, shoucangNum)) {
+							Log.i(TAG, "Position:--->" + position + " isGridViewUp--->" + isGridViewUp);
+							if(isGridViewUp) {
+								
+								playGv.setSelection(position - 5);
+							} else {
+								
+								playGv.setSelection(position + 5);
+								qitaNextPoistion = position + 5;
+							}
 						} else {
 							
-							playGv.setSelection(position + 5);
-							qitaNextPoistion = position + 5;
+							if(!isGridViewUp && qitaNextPoistion + 5 == position) {
+								
+								playGv.smoothScrollBy(35, -1);
+//								int scrolly = playGv.getScrollY();
+
+								shoucangTv.setText(R.string.qitadongman_play_name);
+								
+							} else if(isGridViewUp && qitaNextPoistion - 10  == position) {
+								
+								shoucangTv.setText(R.string.shoucang_update_name);
+							}
+							
+							if (mSparseArray.get(activeRecordIndex) != null && activeRecordIndex != position) {
+
+								ItemStateUtils.viewOutAnimation(getApplicationContext(),
+										mSparseArray.get(activeRecordIndex));
+							}
+
+							if (position != activeRecordIndex && isFirstActive) {
+
+								ItemStateUtils.viewInAnimation(getApplicationContext(),
+										view);
+								activeRecordIndex = position;
+							}
+							
+							if(!isFirstActive) {//如果不是初始化，那就设为true
+								
+								isFirstActive = true;
+							}
 						}
 					} else {
-						
-						if(!isGridViewUp && qitaNextPoistion + 5 == position) {
+						//当前位置为空的组件
+						if(isGridViewUp) {//向上
 							
-							playGv.smoothScrollBy(35, -1);
-//							int scrolly = playGv.getScrollY();
-
-							shoucangTv.setText(R.string.qitadongman_play_name);
+							playGv.setSelection(StatisticsUtils.stepToFirstInThisRow(position));
+						} else {//向下
 							
-						} else if(isGridViewUp && qitaNextPoistion - 10  == position) {
-							
-							shoucangTv.setText(R.string.shoucang_update_name);
+							playGv.setSelection(StatisticsUtils.stepToFirstInThisRow(position));
 						}
 						
-						if (mSparseArray.get(activeRecordIndex) != null && activeRecordIndex != position) {
+					}
+				} else {
+					
+					if (mSparseArray.get(activeRecordIndex) != null && activeRecordIndex != position) {
 
-							ItemStateUtils.viewOutAnimation(getApplicationContext(),
-									mSparseArray.get(activeRecordIndex));
-						}
+						ItemStateUtils.viewOutAnimation(getApplicationContext(),
+								mSparseArray.get(activeRecordIndex));
+					}
 
-						if (position != activeRecordIndex && isFirstActive) {
+					if (position != activeRecordIndex && isFirstActive) {
 
-							ItemStateUtils.viewInAnimation(getApplicationContext(),
-									view);
-							activeRecordIndex = position;
-						}
+						ItemStateUtils.viewInAnimation(getApplicationContext(),
+								view);
+						activeRecordIndex = position;
+					}
+					
+					if(!isFirstActive) {//如果不是初始化，那就设为true
 						
-						if(!isFirstActive) {//如果不是初始化，那就设为true
-							
-							isFirstActive = true;
-						}
+						isFirstActive = true;
 					}
 				}
-
 
 				int[] firstAndLastVisible = new int[2];
 				firstAndLastVisible[0] = playGv.getFirstVisiblePosition();
@@ -1019,27 +1053,35 @@ public class ShowDongManActivity extends AbstractShowActivity {
 					isNextPagePossibles[currentListIndex] = true;
 				}
 				
-				int tianchongEmpty = StatisticsUtils.tianchongEmptyItem(shoucangList.size());
-				
-				Log.i(TAG, "tianchongEmpty--->" + tianchongEmpty + " temp10List" + temp10List.size());
-				
-				List<MovieItemData> tempList2 = new ArrayList<MovieItemData>(
-						shoucangList);
-				
-				for(int i=0;i<tianchongEmpty;i++) {
+				if(isShowShoucang) {
 					
-					MovieItemData item = new MovieItemData();
-					tempList2.add(item);
+					int tianchongEmpty = StatisticsUtils.tianchongEmptyItem(shoucangList.size());
 					
+					Log.i(TAG, "tianchongEmpty--->" + tianchongEmpty + " temp10List" + temp10List.size());
+					
+					List<MovieItemData> tempList2 = new ArrayList<MovieItemData>(
+							shoucangList);
+					
+					for(int i=0;i<tianchongEmpty;i++) {
+						
+						MovieItemData item = new MovieItemData();
+						tempList2.add(item);
+						
+					}
+					
+					Log.i(TAG, "tempList2 start--->" + tempList2.size());
+					
+					tempList2.addAll(temp10List);
+					
+					Log.i(TAG, "tempList2 end--->" + tempList2.size());
+					
+					notifyAdapter(tempList2);
+				} else {
+					
+					notifyAdapter(temp10List);
 				}
 				
-				Log.i(TAG, "tempList2 start--->" + tempList2.size());
-				
-				tempList2.addAll(temp10List);
-				
-				Log.i(TAG, "tempList2 end--->" + tempList2.size());
-				
-				notifyAdapter(tempList2);
+
 			}
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
