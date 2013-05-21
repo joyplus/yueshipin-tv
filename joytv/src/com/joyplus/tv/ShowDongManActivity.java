@@ -713,10 +713,10 @@ public class ShowDongManActivity extends AbstractShowActivity {
 		searchAdapter.notifyDataSetChanged();
 		
 		removeDialog(DIALOG_WAITING);
-		if(isFirstActive) {
-			
-			playGv.requestFocus();
-		}
+//		if(isFirstActive) {
+//			
+//			playGv.requestFocus();
+//		}
 
 	}
 

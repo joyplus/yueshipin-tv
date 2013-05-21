@@ -2320,8 +2320,8 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 					tempContentValues.put(UserShouCang.STARS, info.stars);
 					tempContentValues.put(UserShouCang.DIRECTORS, info.directors);
 					tempContentValues.put(UserShouCang.IS_NEW, DataBaseItems.NEW);
-//					tempContentValues.put(UserShouCang.IS_UPDATE, DataBaseItems.OLD);
-					tempContentValues.put(UserShouCang.IS_UPDATE, DataBaseItems.NEW);//测试
+					tempContentValues.put(UserShouCang.IS_UPDATE, DataBaseItems.OLD);
+//					tempContentValues.put(UserShouCang.IS_UPDATE, DataBaseItems.NEW);//测试
 					
 					database.insert(TvDatabaseHelper.ZHUIJU_TABLE_NAME, null, tempContentValues);
 				}
@@ -2349,8 +2349,8 @@ public void CallServiceResult(String url, JSONObject json, AjaxStatus status){
 					contentValues.put(UserShouCang.STARS, info.stars);
 					contentValues.put(UserShouCang.DIRECTORS, info.directors);
 					contentValues.put(UserShouCang.IS_NEW, DataBaseItems.NEW);
-//					contentValues.put(UserShouCang.IS_UPDATE, DataBaseItems.OLD);
-					contentValues.put(UserShouCang.IS_UPDATE, DataBaseItems.NEW);//测试
+					contentValues.put(UserShouCang.IS_UPDATE, DataBaseItems.OLD);
+//					contentValues.put(UserShouCang.IS_UPDATE, DataBaseItems.NEW);//测试
 					
 					database.insert(TvDatabaseHelper.ZHUIJU_TABLE_NAME, null, contentValues);
 				}

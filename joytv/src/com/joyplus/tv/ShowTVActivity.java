@@ -9,10 +9,9 @@ import org.json.JSONObject;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.DialogInterface.OnCancelListener;
+import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.Editable;
 import android.util.SparseArray;
 import android.view.Gravity;
@@ -23,26 +22,21 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.PopupWindow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.joyplus.tv.Adapters.SearchAdapter;
 import com.joyplus.tv.Adapters.ZongYiAdapter;
 import com.joyplus.tv.entity.MovieItemData;
 import com.joyplus.tv.ui.MyMovieGridView;
 import com.joyplus.tv.ui.NavigateView;
-import com.joyplus.tv.ui.WaitingDialog;
 import com.joyplus.tv.ui.NavigateView.OnResultListener;
+import com.joyplus.tv.ui.WaitingDialog;
 import com.joyplus.tv.utils.ItemStateUtils;
 import com.joyplus.tv.utils.Log;
 
@@ -89,6 +83,13 @@ public class ShowTVActivity extends AbstractShowActivity {
 	private boolean isCurrentKeyVertical = false;//水平方向移动
 	private boolean isFirstActive = true;//是否界面初始化
 	private SparseArray<View> mSparseArray = new SparseArray<View>();
+	
+	private List<MovieItemData> shoucangList = null;
+	private boolean isShowShoucang = false;
+	
+	private LinearLayout shoucangTitlleLL;
+	private int qitaNextPoistion = -1;
+	private TextView shoucangTv;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -98,10 +99,32 @@ public class ShowTVActivity extends AbstractShowActivity {
 
 		app = (App) getApplication();
 		aq = new AQuery(this);
+		
+		//本地收藏，有没有更新
+		shoucangList = StatisticsUtils.getList4DB(getApplicationContext(), app.getUserInfo().getUserId(), TV_TYPE);
+		
+		if(shoucangList != null && !shoucangList.isEmpty()) {
+			
+			if(shoucangList.size() > 0) {
+				
+				Log.i(TAG, "shoucangList--->:" + shoucangList.size());
+				
+				isShowShoucang = true;
+			}
+		}
+		
 
 		initActivity();
 		
 		searchAdapter = new ZongYiAdapter(this, aq);
+		
+		if(isShowShoucang) {
+			
+			searchAdapter.setShouCangCount(shoucangList.size());
+			searchAdapter.setQita_name(getString(R.string.qitadongman_play_name));
+			searchAdapter.setShoucangShow(true);
+		}
+		
 		playGv.setAdapter(searchAdapter);
 		
 		playGv.requestFocus();
@@ -257,6 +280,49 @@ public class ShowTVActivity extends AbstractShowActivity {
 		meijuLL.setOnKeyListener(this);
 		rijuLL.setOnKeyListener(this);
 		searchEt.setOnKeyListener(this);
+		
+		playGv.setOnKeyListener(new View.OnKeyListener() {
+			
+			@Override
+			public boolean onKey(View v, int keyCode, KeyEvent event) {
+				// TODO Auto-generated method stub
+				
+				int action = event.getAction();
+
+				if (action == KeyEvent.ACTION_DOWN) {
+					Log.i(TAG, "onKeyDown--->" + keyCode);
+
+					switch (keyCode) {
+					case KEY_UP:
+
+						isGridViewUp = true;
+//						isCurrentKeyVertical = true;
+						Log.i(TAG, "onKeyDown--->KEY_UP" + keyCode + " "+isGridViewUp);
+						break;
+					case KEY_DOWN:
+
+						isGridViewUp = false;
+//						isCurrentKeyVertical = true;
+						Log.i(TAG, "onKeyDown--->KEY_DOWN" + keyCode + " "+isGridViewUp);
+						break;
+					case KEY_LEFT:
+
+//						isCurrentKeyVertical = false;
+						break;
+					case KEY_RIGHT:
+
+//						isCurrentKeyVertical = false;
+						break;
+
+					default:
+						break;
+					}
+
+				}
+				
+				return false;
+			}
+		});
 
 		zuijinguankanBtn.setOnKeyListener(this);
 		zhuijushoucangBtn.setOnKeyListener(this);
@@ -359,10 +425,13 @@ public class ShowTVActivity extends AbstractShowActivity {
 				}else {
 					
 //					Log.i(TAG, "mSparseArray: " + mSparseArray.get(position));
-//					if(mSparseArray.get(position) == null){
+					if(view.getTag() != null){
 						
 						mSparseArray.put(position,view);
-//					}
+					} else {
+						
+						mSparseArray.delete(position);
+					}
 				}
 
 				final float y = view.getY();
@@ -392,23 +461,84 @@ public class ShowTVActivity extends AbstractShowActivity {
 //					}
 //
 //				}
-
-				if (mSparseArray.get(activeRecordIndex) != null && activeRecordIndex != position) {
-
-					ItemStateUtils.viewOutAnimation(getApplicationContext(),
-							mSparseArray.get(activeRecordIndex));
-				}
-
-				if (position != activeRecordIndex && isFirstActive) {
-
-					ItemStateUtils.viewInAnimation(getApplicationContext(),
-							view);
-					activeRecordIndex = position;
-				}
 				
-				if(!isFirstActive) {//如果不是初始化，那就设为true
+				if(isShowShoucang) {
 					
-					isFirstActive = true;
+					int shoucangNum = shoucangList.size();
+					if(!StatisticsUtils.isPostionEmpty(position, shoucangNum)) {
+						
+						if(StatisticsUtils.isPositionShowQitaTitle(position, shoucangNum)) {
+							Log.i(TAG, "Position:--->" + position + " isGridViewUp--->" + isGridViewUp);
+							if(isGridViewUp) {
+								
+								playGv.setSelection(position - 5);
+							} else {
+								
+								playGv.setSelection(position + 5);
+								qitaNextPoistion = position + 5;
+							}
+						} else {
+							
+							if(!isGridViewUp && qitaNextPoistion + 5 == position) {
+								
+								playGv.smoothScrollBy(35, -1);
+//								int scrolly = playGv.getScrollY();
+
+								shoucangTv.setText(R.string.qitadongman_play_name);
+								
+							} else if(isGridViewUp && qitaNextPoistion - 10  == position) {
+								
+								shoucangTv.setText(R.string.shoucang_update_name);
+							}
+							
+							if (mSparseArray.get(activeRecordIndex) != null && activeRecordIndex != position) {
+
+								ItemStateUtils.viewOutAnimation(getApplicationContext(),
+										mSparseArray.get(activeRecordIndex));
+							}
+
+							if (position != activeRecordIndex && isFirstActive) {
+
+								ItemStateUtils.viewInAnimation(getApplicationContext(),
+										view);
+								activeRecordIndex = position;
+							}
+							
+							if(!isFirstActive) {//如果不是初始化，那就设为true
+								
+								isFirstActive = true;
+							}
+						}
+					} else {
+						//当前位置为空的组件
+						if(isGridViewUp) {//向上
+							
+							playGv.setSelection(StatisticsUtils.stepToFirstInThisRow(position));
+						} else {//向下
+							
+							playGv.setSelection(StatisticsUtils.stepToFirstInThisRow(position));
+						}
+						
+					}
+				} else {
+					
+					if (mSparseArray.get(activeRecordIndex) != null && activeRecordIndex != position) {
+
+						ItemStateUtils.viewOutAnimation(getApplicationContext(),
+								mSparseArray.get(activeRecordIndex));
+					}
+
+					if (position != activeRecordIndex && isFirstActive) {
+
+						ItemStateUtils.viewInAnimation(getApplicationContext(),
+								view);
+						activeRecordIndex = position;
+					}
+					
+					if(!isFirstActive) {//如果不是初始化，那就设为true
+						
+						isFirstActive = true;
+					}
 				}
 
 				int[] firstAndLastVisible = new int[2];
@@ -431,7 +561,7 @@ public class ShowTVActivity extends AbstractShowActivity {
 
 				}
 
-				beforepostion = position;
+//				beforepostion = position;
 
 				// 缓存
 				int size = searchAdapter.getMovieList().size();
@@ -851,7 +981,6 @@ public class ShowTVActivity extends AbstractShowActivity {
 				return;
 			
 			Log.d(TAG, json.toString());
-
 			if (lists[QUAN_TEN] != null && !lists[QUAN_TEN].isEmpty()) {
 
 				List<MovieItemData> temp10List = new ArrayList<MovieItemData>(
@@ -879,13 +1008,42 @@ public class ShowTVActivity extends AbstractShowActivity {
 					}
 				}
 
+				Log.i(TAG, "Temp size:" + tempList.size());
 				if (tempList.size() == StatisticsUtils.CACHE_NUM) {
 
 					isNextPagePossibles[currentListIndex] = true;
 				}
-				notifyAdapter(temp10List);
-			}
+				
+				if(isShowShoucang) {
+					
+					int tianchongEmpty = StatisticsUtils.tianchongEmptyItem(shoucangList.size());
+					
+					Log.i(TAG, "tianchongEmpty--->" + tianchongEmpty + " temp10List" + temp10List.size());
+					
+					List<MovieItemData> tempList2 = new ArrayList<MovieItemData>(
+							shoucangList);
+					
+					for(int i=0;i<tianchongEmpty;i++) {
+						
+						MovieItemData item = new MovieItemData();
+						tempList2.add(item);
+						
+					}
+					
+					Log.i(TAG, "tempList2 start--->" + tempList2.size());
+					
+					tempList2.addAll(temp10List);
+					
+					Log.i(TAG, "tempList2 end--->" + tempList2.size());
+					
+					notifyAdapter(tempList2);
+				} else {
+					
+					notifyAdapter(temp10List);
+				}
+				
 
+			}
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -1015,6 +1173,14 @@ public class ShowTVActivity extends AbstractShowActivity {
 		ItemStateUtils.setItemPadding(zuijinguankanBtn);
 		ItemStateUtils.setItemPadding(zhuijushoucangBtn);
 		ItemStateUtils.setItemPadding(mFenLeiBtn);
+		
+		if(isShowShoucang) {
+			
+			shoucangTitlleLL.setVisibility(View.VISIBLE);
+		} else {
+			
+			shoucangTitlleLL.setVisibility(View.GONE);
+		}
 	}
 	
 	@Override
@@ -1037,7 +1203,11 @@ public class ShowTVActivity extends AbstractShowActivity {
 
 		topLinearLayout = (LinearLayout) findViewById(R.id.ll_show_movie_top);
 
+		shoucangTitlleLL = (LinearLayout) findViewById(R.id.ll_shoucanggengxin);
+		shoucangTv = (TextView) findViewById(R.id.tv_shoucanggengxin_name);
+
 		playGv.setNextFocusLeftId(R.id.bt_quanbufenlei);
+		playGv.setNextFocusUpId(R.id.gv_movie_show);
 	}
 	
 	@Override
@@ -1191,6 +1361,17 @@ public class ShowTVActivity extends AbstractShowActivity {
 	@Override
 	protected void resetGvActive() {
 		// TODO Auto-generated method stub
+		
+		if(currentListIndex == QUANBUFENLEI) {
+			
+			searchAdapter.setShoucangShow(true);
+			shoucangTitlleLL.setVisibility(View.VISIBLE);
+		} else {
+			
+			searchAdapter.setShoucangShow(false);
+			shoucangTitlleLL.setVisibility(View.GONE);
+		}
+		
 		mSparseArray.clear();
 		activeRecordIndex = -1;
 		isCurrentKeyVertical = false;
