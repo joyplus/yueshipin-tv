@@ -1255,7 +1255,7 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 			
 		int max = (chu + 1) * 5 ;
 		
-		if(position == max) {
+		if(position == max - 5) {
 			
 			return true;
 		}
@@ -1269,7 +1269,7 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 		
 		int max = (chu + 1) * 5;
 		
-		if(position >=max && position <= max +4) {
+		if(position >= max-5 && position < max) {
 			
 			return true;
 		}

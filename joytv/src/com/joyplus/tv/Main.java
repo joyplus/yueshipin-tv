@@ -615,7 +615,7 @@ public class Main extends Activity implements OnItemSelectedListener, OnItemClic
 				}
 				
 				//当悦单加载完成时，开始下载用户收藏数据，并插入到数据库
-//				getShouCangData(StatisticsUtils.getShoucangURL(app.getUserInfo().getUserId()));
+				getShouCangData(StatisticsUtils.getShoucangURL(app.getUserInfo().getUserId()));
 				
 				break;
 			case MESSAGE_START_TIMEOUT://超时还未加载好

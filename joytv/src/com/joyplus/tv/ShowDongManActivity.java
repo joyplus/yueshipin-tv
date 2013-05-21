@@ -63,9 +63,9 @@ public class ShowDongManActivity extends AbstractShowActivity {
 	private int popWidth = 0, popHeight = 0;
 	private boolean isGridViewUp = false;
 	private int[] beforeFirstAndLastVible = { 0, 9 };
-	private View beforeGvView = null;
+//	private View beforeGvView = null;
 	private ZongYiAdapter searchAdapter = null;
-	private int beforepostion = 0;
+//	private int beforepostion = 0;
 	private int currentListIndex;
 	private String search;
 	private String filterSource;
@@ -85,12 +85,12 @@ public class ShowDongManActivity extends AbstractShowActivity {
 	private SparseArray<View> mSparseArray = new SparseArray<View>();
 	
 
-//	private List<MovieItemData> shoucangList = null;
-//	private boolean isShowShoucang = false;
-//	
-//	private LinearLayout shoucangTitlleLL;
-//	private int qitaNextPoistion = -1;
-//	private TextView shoucangTv;
+	private List<MovieItemData> shoucangList = null;
+	private boolean isShowShoucang = false;
+	
+	private LinearLayout shoucangTitlleLL;
+	private int qitaNextPoistion = -1;
+	private TextView shoucangTv;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -102,25 +102,25 @@ public class ShowDongManActivity extends AbstractShowActivity {
 		aq = new AQuery(this);
 		
 		//本地收藏，有没有更新
-//		shoucangList = StatisticsUtils.getList4DB(getApplicationContext(), app.getUserInfo().getUserId(), DONGMAN_TYPE);
-//		
-//		if(shoucangList != null && !shoucangList.isEmpty()) {
-//			
-//			if(shoucangList.size() > 0) {
-//				
-//				Log.i(TAG, "shoucangList--->:" + shoucangList.size());
-//				
-//				isShowShoucang = true;
-//			}
-//		}
+		shoucangList = StatisticsUtils.getList4DB(getApplicationContext(), app.getUserInfo().getUserId(), DONGMAN_TYPE);
+		
+		if(shoucangList != null && !shoucangList.isEmpty()) {
+			
+			if(shoucangList.size() > 0) {
+				
+				Log.i(TAG, "shoucangList--->:" + shoucangList.size());
+				
+				isShowShoucang = true;
+			}
+		}
 
 		initActivity();
 
 		searchAdapter = new ZongYiAdapter(this, aq);
 		
-//		searchAdapter.setShouCangCount(shoucangList.size());
-//		searchAdapter.setQita_name(getString(R.string.qitadongman_play_name));
-//		searchAdapter.setShoucangShow(true);
+		searchAdapter.setShouCangCount(shoucangList.size());
+		searchAdapter.setQita_name(getString(R.string.qitadongman_play_name));
+		searchAdapter.setShoucangShow(true);
 		
 		playGv.setAdapter(searchAdapter);
 		
@@ -193,8 +193,6 @@ public class ShowDongManActivity extends AbstractShowActivity {
 	@Override
 	public boolean onKey(View v, int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
-		
-		
 
 		return false;
 	}
@@ -450,10 +448,13 @@ public class ShowDongManActivity extends AbstractShowActivity {
 				}else {
 					
 //					Log.i(TAG, "mSparseArray: " + mSparseArray.get(position));
-//					if(mSparseArray.get(position) == null){
+					if(view.getTag() != null){
 						
 						mSparseArray.put(position,view);
-//					}
+					} else {
+						
+						mSparseArray.delete(position);
+					}
 				}
 
 				final float y = view.getY();
@@ -484,30 +485,32 @@ public class ShowDongManActivity extends AbstractShowActivity {
 //
 //				}
 				
-//				int shoucangNum = shoucangList.size();
-//				if(!StatisticsUtils.isPostionEmpty(position, shoucangNum)) {
-//					
-//					if(StatisticsUtils.isPositionShowQitaTitle(position, shoucangNum)) {
-//						Log.i(TAG, "Position:--->" + position + " isGridViewUp--->" + isGridViewUp);
-//						if(isGridViewUp) {
-//							
-//							playGv.setSelection(position - 5);
-//						} else {
-//							
-//							playGv.setSelection(position + 5);
-//							qitaNextPoistion = position + 5;
-//						}
-//					} else {
-//						
-//						if(!isGridViewUp && qitaNextPoistion + 5 == position) {
-//							
-//							playGv.smoothScrollBy(31, 0);
-//							shoucangTv.setText(R.string.qitadongman_play_name);
-//							
-//						} else if(isGridViewUp && qitaNextPoistion - 10  == position) {
-//							
-//							shoucangTv.setText(R.string.shoucang_update_name);
-//						}
+				int shoucangNum = shoucangList.size();
+				if(!StatisticsUtils.isPostionEmpty(position, shoucangNum)) {
+					
+					if(StatisticsUtils.isPositionShowQitaTitle(position, shoucangNum)) {
+						Log.i(TAG, "Position:--->" + position + " isGridViewUp--->" + isGridViewUp);
+						if(isGridViewUp) {
+							
+							playGv.setSelection(position - 5);
+						} else {
+							
+							playGv.setSelection(position + 5);
+							qitaNextPoistion = position + 5;
+						}
+					} else {
+						
+						if(!isGridViewUp && qitaNextPoistion + 5 == position) {
+							
+							playGv.smoothScrollBy(35, -1);
+//							int scrolly = playGv.getScrollY();
+
+							shoucangTv.setText(R.string.qitadongman_play_name);
+							
+						} else if(isGridViewUp && qitaNextPoistion - 10  == position) {
+							
+							shoucangTv.setText(R.string.shoucang_update_name);
+						}
 						
 						if (mSparseArray.get(activeRecordIndex) != null && activeRecordIndex != position) {
 
@@ -526,8 +529,8 @@ public class ShowDongManActivity extends AbstractShowActivity {
 							
 							isFirstActive = true;
 						}
-//					}
-//				}
+					}
+				}
 
 
 				int[] firstAndLastVisible = new int[2];
@@ -550,7 +553,7 @@ public class ShowDongManActivity extends AbstractShowActivity {
 
 				}
 
-				beforepostion = position;
+//				beforepostion = position;
 
 				// 缓存
 				int size = searchAdapter.getMovieList().size();
@@ -676,10 +679,10 @@ public class ShowDongManActivity extends AbstractShowActivity {
 		searchAdapter.notifyDataSetChanged();
 		
 		removeDialog(DIALOG_WAITING);
-//		if(isFirstActive) {
-//			
-//			playGv.requestFocus();
-//		}
+		if(isFirstActive) {
+			
+			playGv.requestFocus();
+		}
 
 	}
 
@@ -1016,21 +1019,27 @@ public class ShowDongManActivity extends AbstractShowActivity {
 					isNextPagePossibles[currentListIndex] = true;
 				}
 				
-//				int tianchongEmpty = StatisticsUtils.tianchongEmptyItem(shoucangList.size());
+				int tianchongEmpty = StatisticsUtils.tianchongEmptyItem(shoucangList.size());
 				
-//				List<MovieItemData> tempList2 = new ArrayList<MovieItemData>(
-//						shoucangList);
-//				
-//				for(int i=0;i<tianchongEmpty;i++) {
-//					
-//					MovieItemData item = new MovieItemData();
-//					shoucangList.add(item);
-//					
-//				}
+				Log.i(TAG, "tianchongEmpty--->" + tianchongEmpty + " temp10List" + temp10List.size());
 				
-//				shoucangList.
+				List<MovieItemData> tempList2 = new ArrayList<MovieItemData>(
+						shoucangList);
 				
-				notifyAdapter(temp10List);
+				for(int i=0;i<tianchongEmpty;i++) {
+					
+					MovieItemData item = new MovieItemData();
+					tempList2.add(item);
+					
+				}
+				
+				Log.i(TAG, "tempList2 start--->" + tempList2.size());
+				
+				tempList2.addAll(temp10List);
+				
+				Log.i(TAG, "tempList2 end--->" + tempList2.size());
+				
+				notifyAdapter(tempList2);
 			}
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
@@ -1158,13 +1167,13 @@ public class ShowDongManActivity extends AbstractShowActivity {
 		ItemStateUtils.setItemPadding(zhuijushoucangBtn);
 		ItemStateUtils.setItemPadding(mFenLeiBtn);
 		
-//		if(isShowShoucang) {
-//			
-//			shoucangTitlleLL.setVisibility(View.VISIBLE);
-//		} else {
-//			
-//			shoucangTitlleLL.setVisibility(View.GONE);
-//		}
+		if(isShowShoucang) {
+			
+			shoucangTitlleLL.setVisibility(View.VISIBLE);
+		} else {
+			
+			shoucangTitlleLL.setVisibility(View.GONE);
+		}
 	}
 	
 	@Override
@@ -1187,8 +1196,8 @@ public class ShowDongManActivity extends AbstractShowActivity {
 
 		topLinearLayout = (LinearLayout) findViewById(R.id.ll_show_movie_top);
 		
-//		shoucangTitlleLL = (LinearLayout) findViewById(R.id.ll_shoucanggengxin);
-//		shoucangTv = (TextView) findViewById(R.id.tv_shoucanggengxin_name);
+		shoucangTitlleLL = (LinearLayout) findViewById(R.id.ll_shoucanggengxin);
+		shoucangTv = (TextView) findViewById(R.id.tv_shoucanggengxin_name);
 
 		playGv.setNextFocusLeftId(R.id.bt_quanbufenlei);
 		playGv.setNextFocusUpId(R.id.gv_movie_show);
@@ -1339,15 +1348,15 @@ public class ShowDongManActivity extends AbstractShowActivity {
 	@Override
 	protected void resetGvActive() {
 		// TODO Auto-generated method stub
-//		if(currentListIndex == QUANBUFENLEI) {
-//			
-//			searchAdapter.setShoucangShow(true);
-//			shoucangTitlleLL.setVisibility(View.VISIBLE);
-//		} else {
-//			
-//			searchAdapter.setShoucangShow(false);
-//			shoucangTitlleLL.setVisibility(View.GONE);
-//		}
+		if(currentListIndex == QUANBUFENLEI) {
+			
+			searchAdapter.setShoucangShow(true);
+			shoucangTitlleLL.setVisibility(View.VISIBLE);
+		} else {
+			
+			searchAdapter.setShoucangShow(false);
+			shoucangTitlleLL.setVisibility(View.GONE);
+		}
 		
 		mSparseArray.clear();
 		activeRecordIndex = -1;

@@ -40,9 +40,9 @@ public class ZongYiAdapter extends BaseAdapter implements JieMianConstant{
 	
 	private boolean isPreLoad = true;
 	private long itemId = 0;
-	private AsyncImageLoader loader;
+//	private AsyncImageLoader loader;
 	private SparseArray<View> arrays = new SparseArray<View>();
-	private Resources resources;
+//	private Resources resources;
 	
 	private boolean isShoucangShow = false;
 	private String qita_name = "";//其他类型
@@ -52,21 +52,21 @@ public class ZongYiAdapter extends BaseAdapter implements JieMianConstant{
 		
 		this.context = context;
 		this.aq = aq;
-		this.resources = context.getResources();
-		loader = new AsyncImageLoader(new OnImageLoadListener() {
-			
-			@Override
-			public void ImageLoadFinished(Bitmap bitmap, String imageUrl, int position) {
-				// TODO Auto-generated method stub
-				View view = arrays.get(position);
-				GridViewItemHodler gvGridViewItemHodler = (GridViewItemHodler) view.getTag();
-				if(gvGridViewItemHodler.haibaoIv.getTag().equals(imageUrl)) {
-					
-//					gvGridViewItemHodler.haibaoIv.setBackgroundDrawable(new BitmapDrawable(resources, bitmap));
-					gvGridViewItemHodler.haibaoIv.setImageBitmap(bitmap);
-				}
-			}
-		});
+//		this.resources = context.getResources();
+//		loader = new AsyncImageLoader(new OnImageLoadListener() {
+//			
+//			@Override
+//			public void ImageLoadFinished(Bitmap bitmap, String imageUrl, int position) {
+//				// TODO Auto-generated method stub
+//				View view = arrays.get(position);
+//				GridViewItemHodler gvGridViewItemHodler = (GridViewItemHodler) view.getTag();
+//				if(gvGridViewItemHodler.haibaoIv.getTag().equals(imageUrl)) {
+//					
+////					gvGridViewItemHodler.haibaoIv.setBackgroundDrawable(new BitmapDrawable(resources, bitmap));
+//					gvGridViewItemHodler.haibaoIv.setImageBitmap(bitmap);
+//				}
+//			}
+//		});
 		
 	}
 
