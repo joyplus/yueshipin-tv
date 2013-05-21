@@ -1060,6 +1060,8 @@ public class ShowMovieActivity extends AbstractShowActivity {
 		topLinearLayout = (LinearLayout) findViewById(R.id.ll_show_movie_top);
 
 		playGv.setNextFocusLeftId(R.id.bt_quanbufenlei);
+		playGv.setNextFocusUpId(R.id.gv_movie_show);
+		playGv.setNextFocusDownId(R.id.gv_movie_show);
 	}
 	
 	@Override

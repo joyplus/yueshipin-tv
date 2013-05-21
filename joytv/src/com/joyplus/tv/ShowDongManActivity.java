@@ -1243,6 +1243,7 @@ public class ShowDongManActivity extends AbstractShowActivity {
 
 		playGv.setNextFocusLeftId(R.id.bt_quanbufenlei);
 		playGv.setNextFocusUpId(R.id.gv_movie_show);
+		playGv.setNextFocusDownId(R.id.gv_movie_show);
 	}
 	
 	@Override
@@ -1394,10 +1395,24 @@ public class ShowDongManActivity extends AbstractShowActivity {
 			
 			searchAdapter.setShoucangShow(true);
 			shoucangTitlleLL.setVisibility(View.VISIBLE);
+			
+			if(shoucangList != null && !shoucangList.isEmpty()) {
+				
+				if(shoucangList.size() > 0) {
+					
+					Log.i(TAG, "shoucangList--->:" + shoucangList.size());
+					
+					isShowShoucang = true;
+				}
+			} else {
+				
+				isShowShoucang = false;
+			}
 		} else {
 			
 			searchAdapter.setShoucangShow(false);
 			shoucangTitlleLL.setVisibility(View.GONE);
+			isShowShoucang = false;
 		}
 		
 		mSparseArray.clear();

@@ -908,6 +908,8 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 		zhuijushoucangBtn = (Button) findViewById(R.id.bt_zhuijushoucang);
 
 		playGv.setNextFocusLeftId(R.id.bt_dianyingyuedan);
+		playGv.setNextFocusUpId(R.id.gv_movie_show);
+		playGv.setNextFocusDownId(R.id.gv_movie_show);
 	}
 
 	@Override

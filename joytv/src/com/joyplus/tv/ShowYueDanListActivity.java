@@ -799,6 +799,9 @@ public class ShowYueDanListActivity extends AbstractShowActivity{
 		
 		playGv.setNextFocusLeftId(R.id.bt_zuijinguankan);
 		
+		playGv.setNextFocusUpId(R.id.gv_movie_show);
+		playGv.setNextFocusDownId(R.id.gv_movie_show);
+		
 //		activeView = zuijinguankanBtn;
 	}
 	
