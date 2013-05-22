@@ -36,6 +36,8 @@ public interface ControllerOverlay {
 
 		void onReplay();
 
+		void onCompletion();
+
 	}
 
 	void setListener(Listener listener);

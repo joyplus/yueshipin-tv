@@ -779,16 +779,20 @@ public class MovieControllerOverlay extends FrameLayout implements
 			return true;
 		}
 		if (view == playPauseReplayView) {
-			switch (event.getAction()) {
-			case MotionEvent.ACTION_DOWN:
-				cancelHiding();
-				if (state == State.PLAYING || state == State.PAUSED) {
-					listener.onPlayPause();
+			if (mCurrentPlayData.prod_type != 1){
+				listener.onCompletion();
+			} else {
+				switch (event.getAction()) {
+				case MotionEvent.ACTION_DOWN:
+					cancelHiding();
+					if (state == State.PLAYING || state == State.PAUSED) {
+						listener.onPlayPause();
+					}
+					break;
+				case MotionEvent.ACTION_UP:
+					maybeStartHiding();
+					break;
 				}
-				break;
-			case MotionEvent.ACTION_UP:
-				maybeStartHiding();
-				break;
 			}
 		} else if (view == playContinueView) {
 

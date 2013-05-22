@@ -5,6 +5,7 @@ import java.net.URI;
 import java.net.URL;
 import java.util.Map;
 
+import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.HttpGet;
@@ -266,7 +267,7 @@ public class App extends Application {
 			StatusLine statusLine = response.getStatusLine();
 			int status = statusLine.getStatusCode();
 
-//			Header headertop = response.getFirstHeader("Content-Type");// 拿到重新定位后的header
+			Header headertop = response.getFirstHeader("Content-Type");// 拿到重新定位后的header
 //			String type = headertop.getValue().toLowerCase();// 从header重新取出信息
 //			Header header_length = response.getFirstHeader("Content-Length");
 //			String lengthStr = header_length.getValue();
@@ -274,7 +275,7 @@ public class App extends Application {
 			
 			mAndroidHttpClient.close();
 			
-			if(status != 404){
+			if(status >=200 && status <300 && !headertop.toString().startsWith("text")){
 				return true;
 			}else{
 				return false;
