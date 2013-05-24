@@ -99,7 +99,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 	private int prod_type = 0;
 	private int currentKeyEvent = 0;
 
-	private int seekBarWidthOffset = 24;
+	private int seekBarWidthOffset = 80;
 
 	private Context mContext;
 	private final VideoView mVideoView;
@@ -377,12 +377,12 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 						RelativeLayout.TRUE);
 
 				double mLeft = (double) firstJumpTime / totalTime
-						* (sb.getMeasuredWidth() - seekBarWidthOffset) + 20;
+						* (sb.getMeasuredWidth() - seekBarWidthOffset) + 40;
 
 				if (firstJumpTime > 0)
 					parms.leftMargin = (int) mLeft;
 				else
-					parms.leftMargin = 20;
+					parms.leftMargin = 40;
 				parms.bottomMargin = 20 + 10;
 				mLayoutBottomTime.setLayoutParams(parms);
 
@@ -891,11 +891,11 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 					RelativeLayout.TRUE);
 
 			double mLeft = (double) JUMP_TIME / totalTime
-					* (sb.getMeasuredWidth() - seekBarWidthOffset) + 20;
+					* (sb.getMeasuredWidth() - seekBarWidthOffset) + 40;
 			if (totalTime > 0)
 				parms.leftMargin = (int) mLeft;
 			else
-				parms.leftMargin = 20;
+				parms.leftMargin = 40;
 			parms.bottomMargin = 20 + 10;
 
 			mLayoutBottomTime.setLayoutParams(parms);
@@ -996,12 +996,12 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 						RelativeLayout.TRUE);
 
 				double mLeft = (double) progress / totalTime
-						* (sb.getMeasuredWidth() - seekBarWidthOffset) + 20;
+						* (sb.getMeasuredWidth() - seekBarWidthOffset) + 40;
 
 				if (progress > 0)
 					parms.leftMargin = (int) mLeft;
 				else
-					parms.leftMargin = 20;
+					parms.leftMargin = 40;
 				parms.bottomMargin = 20 + 10;
 				mLayoutBottomTime.setLayoutParams(parms);
 
@@ -1315,24 +1315,9 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		}
 	}
 
-	private boolean CheckUrl(String srcUrl) {
-
-		// url本身不正常 直接返回
-		if (srcUrl == null || srcUrl.length() <= 0) {
-
-			return false;
-		} else {
-
-			if (!URLUtil.isValidUrl(srcUrl)) {
-
-				return false;
-			}
-		}
-		return true;
-	}
-
 	private String GetSource(ReturnProgramView m_ReturnProgramView,
 			int CurrentCategory, int proi_index, int sourceIndex) {
+		App app = (App) this.mContext.getApplicationContext();
 		switch (CurrentCategory) {
 		case 1:
 			break;
@@ -1341,7 +1326,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 			for (int k = 0; k < m_ReturnProgramView.tv.episodes[proi_index].down_urls[sourceIndex].urls.length; k++) {
 				ReturnProgramView.DOWN_URLS.URLS CurrentURLS = m_ReturnProgramView.tv.episodes[proi_index].down_urls[sourceIndex].urls[k];
 				if (CurrentURLS != null && CurrentURLS.url != null
-						&& CheckUrl(CurrentURLS.url.trim())) {
+						&& app.CheckUrl(CurrentURLS.url.trim())) {
 					for (int i = 0; i < Constant.quality_index.length; i++) {
 						if (PROD_SOURCE == null
 								&& CurrentURLS.type.trim().equalsIgnoreCase(
@@ -1359,7 +1344,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 			for (int k = 0; k < m_ReturnProgramView.show.episodes[proi_index].down_urls[sourceIndex].urls.length; k++) {
 				ReturnProgramView.DOWN_URLS.URLS CurrentURLS = m_ReturnProgramView.show.episodes[proi_index].down_urls[sourceIndex].urls[k];
 				if (CurrentURLS != null && CurrentURLS.url != null
-						&& CheckUrl(CurrentURLS.url.trim())) {
+						&& app.CheckUrl(CurrentURLS.url.trim())) {
 					for (int i = 0; i < Constant.quality_index.length; i++) {
 						if (PROD_SOURCE == null
 								&& CurrentURLS.type.trim().equalsIgnoreCase(

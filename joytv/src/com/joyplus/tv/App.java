@@ -275,7 +275,8 @@ public class App extends Application {
 			
 			mAndroidHttpClient.close();
 			
-			if(status >=200 && status <300 && !headertop.toString().startsWith("text")){
+//			if(status >=200 && status <300 && !headertop.toString().startsWith("text")){
+			if(status >=200 && status <300){
 				return true;
 			}else{
 				return false;
