@@ -1236,6 +1236,7 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 	
 	public static List<MovieItemData> getList4DB(Context context,String userId,String type) {
 		
+		
 		List<MovieItemData> list = new ArrayList<MovieItemData>();
 		
 		String selection = UserShouCang.USER_ID + "=? and " + UserShouCang.PRO_TYPE + "=? and "
@@ -1247,6 +1248,8 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 		
 		Cursor cursor = database.query(TvDatabaseHelper.ZHUIJU_TABLE_NAME, null, selection, selectionArgs, null, null, null);
 		
+		Log.i(TAG, "getList4DB----> userId--->>" + userId + " type--->>" + type 
+				+ " count--->" + cursor.getCount());
 		if(cursor != null && cursor.getCount() > 0) {//数据库有数据
 			
 			while(cursor.moveToNext()) {
@@ -1391,15 +1394,22 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 		
 		if(cursor != null && cursor.getCount() > 0 ) {
 			
-			int indexCurEpisode = cursor
-					.getColumnIndex(UserShouCang.CUR_EPISODE);
-			
-			if(indexCurEpisode != -1) {
+			while(cursor.moveToNext()) {
 				
-				String curEpisode = cursor.getString(indexCurEpisode);
-				return curEpisode;
+				int indexCurEpisode = cursor
+						.getColumnIndex(UserShouCang.CUR_EPISODE);
+				
+				if(indexCurEpisode != -1) {
+					
+					String curEpisode = cursor.getString(indexCurEpisode);
+					return curEpisode;
+				}
 			}
+
 		}
+		
+		cursor.close();
+		helper.close();
 		
 		return "";
 		

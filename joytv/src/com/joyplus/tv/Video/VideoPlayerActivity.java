@@ -63,6 +63,7 @@ import com.joyplus.tv.R;
 import com.joyplus.tv.StatisticsUtils;
 import com.joyplus.tv.Adapters.CurrentPlayData;
 import com.joyplus.tv.Service.Return.ReturnProgramView;
+import com.joyplus.tv.utils.BangDanKey;
 import com.joyplus.tv.utils.Log;
 import com.umeng.analytics.MobclickAgent;
 
@@ -93,6 +94,8 @@ public class VideoPlayerActivity extends Activity {
 	
 	private int mTime = 0;
 	private List<Result> Result_list = new ArrayList<Result>();
+	
+	private String dbCurEpisode = "";//数据库中当前影片的更新集数
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -129,6 +132,26 @@ public class VideoPlayerActivity extends Activity {
 					aq.id(R.id.imageControl_r).gone();
 
 			}
+			
+			//判断当前影片是否为置顶影片，获取数据库中当前更新集数
+			if(prod_type == Integer.valueOf(BangDanKey.DONGMAN_TYPE) 
+					||prod_type == Integer.valueOf(BangDanKey.TV_TYPE)
+					||prod_type == Integer.valueOf(BangDanKey.ZONGYI_TYPE)) {
+				
+				dbCurEpisode = StatisticsUtils.getTopPlayerCurEpisode(getApplicationContext(),
+						StatisticsUtils.getCurrentUserId(getApplicationContext()), prod_id);
+				if(dbCurEpisode != null && !dbCurEpisode.equals("")) {
+					
+					if(prod_name.contains(dbCurEpisode)) {//如果名字中含有当前集数，那就播放过 取消置顶状态
+						
+						StatisticsUtils.cancelAPlayTopState(getApplicationContext(),
+								StatisticsUtils.getCurrentUserId(getApplicationContext()), prod_id);
+					}
+				}
+				
+			}
+			
+			
 			SaveRecordToService();
 			// else {
 			// aq.id(R.id.imageControl_r).getView().setVisibility(View.)
@@ -328,6 +351,8 @@ public class VideoPlayerActivity extends Activity {
 		if (mPlayer != null) {
 			mPlayer.exitReturnMode();
 			mPlayer.OnPreVideoPlay();
+			
+			cancelAPlayerTopState();//符合条件，因为播放 取消置顶状态
 		}
 	}
 
@@ -345,6 +370,37 @@ public class VideoPlayerActivity extends Activity {
 		if (mPlayer != null) {
 			mPlayer.exitReturnMode();
 			mPlayer.OnContinueVideoPlay();
+			
+			cancelAPlayerTopState();//符合条件，因为播放 取消置顶状态
+		}
+	}
+	
+	private void cancelAPlayerTopState() {
+		
+		CurrentPlayData currentPlayData = app.getCurrentPlayData();
+		
+		if(currentPlayData != null) {
+			
+			int tempType = currentPlayData.CurrentIndex;
+			String tempProName = currentPlayData.prod_name;
+			
+			//判断当前影片是否为置顶影片，获取数据库中当前更新集数
+			if(tempType == Integer.valueOf(BangDanKey.DONGMAN_TYPE) 
+					||tempType == Integer.valueOf(BangDanKey.TV_TYPE)
+					||tempType == Integer.valueOf(BangDanKey.ZONGYI_TYPE)) {
+				
+//				dbCurEpisode = StatisticsUtils.getTopPlayerCurEpisode(getApplicationContext(),
+//						StatisticsUtils.getCurrentUserId(getApplicationContext()), prod_id);
+				if(dbCurEpisode != null && !dbCurEpisode.equals("")) {
+					
+					if(tempProName.contains(dbCurEpisode)) {//如果名字中含有当前集数，那就播放过 取消置顶状态
+						
+						StatisticsUtils.cancelAPlayTopState(getApplicationContext(),
+								StatisticsUtils.getCurrentUserId(getApplicationContext()), prod_id);
+					}
+				}
+				
+			}
 		}
 	}
 

@@ -103,6 +103,8 @@ public class ShowTVActivity extends AbstractShowActivity {
 		//本地收藏，有没有更新
 		shoucangList = StatisticsUtils.getList4DB(getApplicationContext(), app.getUserInfo().getUserId(), TV_TYPE);
 		
+		Log.i(TAG, "shoucangList--->:" + shoucangList.size());
+		
 		if(shoucangList != null && !shoucangList.isEmpty()) {
 			
 			if(shoucangList.size() > 0) {
