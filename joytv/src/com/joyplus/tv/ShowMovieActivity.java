@@ -600,8 +600,8 @@ public class ShowMovieActivity extends AbstractShowActivity {
 
 		showDialog(DIALOG_WAITING);
 		StatisticsUtils.clearList(lists[QUAN_FILTER]);
-		resetGvActive();
 		currentListIndex = QUAN_FILTER;
+		resetGvActive();
 		filterSource = StatisticsUtils.getFileterURL3Param(choice, quanbu);
 		String url = StatisticsUtils.getFilter_DianyingFirstURL(filterSource);
 		Log.i(TAG, "POP--->URL:" + url);

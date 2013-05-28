@@ -1236,6 +1236,7 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 	
 	public static List<MovieItemData> getList4DB(Context context,String userId,String type) {
 		
+		
 		List<MovieItemData> list = new ArrayList<MovieItemData>();
 		
 		String selection = UserShouCang.USER_ID + "=? and " + UserShouCang.PRO_TYPE + "=? and "
@@ -1247,6 +1248,8 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 		
 		Cursor cursor = database.query(TvDatabaseHelper.ZHUIJU_TABLE_NAME, null, selection, selectionArgs, null, null, null);
 		
+		Log.i(TAG, "getList4DB----> userId--->>" + userId + " type--->>" + type 
+				+ " count--->" + cursor.getCount());
 		if(cursor != null && cursor.getCount() > 0) {//数据库有数据
 			
 			while(cursor.moveToNext()) {
@@ -1329,6 +1332,8 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 		database.delete(TvDatabaseHelper.ZHUIJU_TABLE_NAME, deleteSelection, deleteselectionArgs);
 		
 		helper.closeDatabase();
+		
+		setCancelShoucangProId(context, proId);
 	}
 	
 	//HotItemInfo 插入数据,置顶状态不开启
@@ -1347,8 +1352,8 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 		tempContentValues.put(UserShouCang.STARS, info.stars);
 		tempContentValues.put(UserShouCang.DIRECTORS, info.directors);
 		tempContentValues.put(UserShouCang.IS_NEW, DataBaseItems.NEW);
-//		tempContentValues.put(UserShouCang.IS_UPDATE, DataBaseItems.OLD);
-		tempContentValues.put(UserShouCang.IS_UPDATE, DataBaseItems.NEW);//测试
+		tempContentValues.put(UserShouCang.IS_UPDATE, DataBaseItems.OLD);
+//		tempContentValues.put(UserShouCang.IS_UPDATE, DataBaseItems.NEW);//测试
 		
 		database.insert(TvDatabaseHelper.ZHUIJU_TABLE_NAME, null, tempContentValues);
 	}
@@ -1391,15 +1396,22 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 		
 		if(cursor != null && cursor.getCount() > 0 ) {
 			
-			int indexCurEpisode = cursor
-					.getColumnIndex(UserShouCang.CUR_EPISODE);
-			
-			if(indexCurEpisode != -1) {
+			while(cursor.moveToNext()) {
 				
-				String curEpisode = cursor.getString(indexCurEpisode);
-				return curEpisode;
+				int indexCurEpisode = cursor
+						.getColumnIndex(UserShouCang.CUR_EPISODE);
+				
+				if(indexCurEpisode != -1) {
+					
+					String curEpisode = cursor.getString(indexCurEpisode);
+					return curEpisode;
+				}
 			}
+
 		}
+		
+		cursor.close();
+		helper.close();
 		
 		return "";
 		
@@ -1419,6 +1431,8 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 		database.update(TvDatabaseHelper.ZHUIJU_TABLE_NAME,tempValues, updateSelection, updateselectionArgs);
 		
 		helper.closeDatabase();
+		
+		setCancelShoucangProId(context, pro_id);
 	}
 	
 	
@@ -1502,6 +1516,21 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 		SharedPreferences sp = context.getSharedPreferences(TV_SETTING_XML, Context.MODE_PRIVATE);
 		
 		return sp.getString("currentUserId", "");
+	}
+	
+	public static void setCancelShoucangProId(Context context,String proId) {
+		
+		SharedPreferences sp = context.getSharedPreferences(TV_SETTING_XML, Context.MODE_PRIVATE);
+		Editor editor = sp.edit();
+		editor.putString("cancelShoucangProId", proId);
+		editor.commit();
+	}
+	
+	public static String getCancelShoucangProId(Context context) {
+		
+		SharedPreferences sp = context.getSharedPreferences(TV_SETTING_XML, Context.MODE_PRIVATE);
+
+		return sp.getString("cancelShoucangProId", "");
 	}
 
 }
