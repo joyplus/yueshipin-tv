@@ -25,6 +25,8 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
@@ -50,6 +52,7 @@ import android.net.http.AndroidHttpClient;
 import android.net.http.SslCertificate;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -84,6 +87,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		MediaPlayer.OnVideoSizeChangedListener, ControllerOverlay.Listener {
 	@SuppressWarnings("unused")
 	private static final String TAG = "MoviePlayer";
+	private App app;
 
 	private static final String KEY_VIDEO_POSITION = "video-position";
 	private static final String KEY_RESUMEABLE_TIME = "resumeable-timeout";
@@ -102,6 +106,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 	private int JUMP_TIME_TIMES = 0;// 检查是否处在快进模式中
 	private int ERROR_JUMP_TIME = 0;
 	private boolean RETURNMODE = false;// 检查是否处在tv的返回模式中
+	private boolean ERRORREPLAYMODE = false;
 	private int CURRENT_KEY = 0;
 	private int prod_type = 0;
 	private int currentKeyEvent = 0;
@@ -184,6 +189,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 			int prod_type, Uri videoUri, Bundle savedInstance, boolean canReplay) {
 		this.mContext = movieActivity;
 		mSeekComplete= false;
+		app = (App) this.mContext.getApplicationContext();
 		
 		mLayoutBottomTime2 = rootView.findViewById(R.id.LayoutBottomTime2);
 		mVideoView = (VideoView) rootView.findViewById(R.id.surface_view);
@@ -448,6 +454,8 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 
 		mVideoView.start();
 		mHasPaused = false;
+		
+		ERRORREPLAYMODE = false;
 		// setProgress();
 	}
 
@@ -487,19 +495,44 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 	
 	// Below are notifications from VideoView
 	public boolean onError(MediaPlayer player, int arg1, int arg2) {
-
-		GetNextValURL();
-		if (PROD_SOURCE == null) {
-			mHandler.removeCallbacksAndMessages(null);
-			// VideoView will show an error dialog if we return false, so no
-			// need
-			// to show more message.
-			mController.showErrorMessage("");
-		} else {
-			setVideoURI(Uri.parse(PROD_SOURCE), ERROR_JUMP_TIME);
-			return true;
+		mHandler.removeCallbacksAndMessages(null);
+//		mController.showErrorMessage("");
+//		CurrentPlayData mCurrentPlayData = app.getCurrentPlayData();
+//		String where = mCurrentPlayData.prod_id+
+//				"_"+mCurrentPlayData.prod_type+
+//				"_"+mCurrentPlayData.CurrentIndex+
+//				"_"+mCurrentPlayData.CurrentSource+
+//				"_"+mCurrentPlayData.CurrentQuality;
+//		app.SavePlayData(where,PROD_SOURCE);
+//		return false;
+		if(!ERRORREPLAYMODE){
+			ERRORREPLAYMODE = true;
+			GetNextValURL();
+			if (PROD_SOURCE != null)
+				setVideoURI(Uri.parse(PROD_SOURCE), ERROR_JUMP_TIME);
+//			if (PROD_SOURCE == null) {
+				// VideoView will show an error dialog if we return false, so no
+				// need
+				// to show more message.
+//				mController.showErrorMessage("");
+//				return false;
+//			} else {
+//				if(arg1 == MediaPlayer.MEDIA_ERROR_SERVER_DIED){
+//					player.release();
+//					onCompletion();
+//					Intent intent = new Intent(mContext, VideoPlayerActivity.class);
+//					mContext.startActivity(intent);
+//					
+//				}else
+//				if(arg1 == MediaPlayer.MEDIA_ERROR_SERVER_DIED)
+//					player.reset();
+//				setVideoURI(Uri.parse(PROD_SOURCE), ERROR_JUMP_TIME);
+//				return false;
+//			}
 		}
-		return false;
+		return true;
+		
+		
 	}
 
 	public void onCompletion(MediaPlayer mp) {
@@ -1061,6 +1094,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		// sb.setProgress(100);
 		mSeekComplete= true; 
 		mHandler.postDelayed(mProgressChecker, 2000);
+		
 //		mHandler.post(mProgressChecker);
 		
 		// }
@@ -1127,7 +1161,6 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 
 	public void OnPreVideoPlay() {
 		PROD_SOURCE = null;
-		App app = (App) this.mContext.getApplicationContext();
 		CurrentPlayData mCurrentPlayData = app.getCurrentPlayData();
 		ReturnProgramView m_ReturnProgramView = app.get_ReturnProgramView();
 		if (mCurrentPlayData != null && m_ReturnProgramView != null) {
@@ -1232,7 +1265,6 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 
 	public void OnContinueVideoPlay() {
 		PROD_SOURCE = null;
-		App app = (App) this.mContext.getApplicationContext();
 		CurrentPlayData mCurrentPlayData = app.getCurrentPlayData();
 		ReturnProgramView m_ReturnProgramView = app.get_ReturnProgramView();
 		if (mCurrentPlayData != null && m_ReturnProgramView != null) {
@@ -1335,7 +1367,6 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 
 	private String GetSource(ReturnProgramView m_ReturnProgramView,
 			int CurrentCategory, int proi_index, int sourceIndex) {
-		App app = (App) this.mContext.getApplicationContext();
 		switch (CurrentCategory) {
 		case 1:
 			break;
@@ -1383,12 +1414,19 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 
 	}
 	private void GetNextValURL() {
+		
 
-		PROD_SOURCE = null;
-		App app = (App) this.mContext.getApplicationContext();
 		CurrentPlayData mCurrentPlayData = app.getCurrentPlayData();
 		ReturnProgramView m_ReturnProgramView = app.get_ReturnProgramView();
 		
+		String where = mCurrentPlayData.prod_id+
+				"_"+mCurrentPlayData.prod_type+
+				"_"+mCurrentPlayData.CurrentIndex+
+				"_"+mCurrentPlayData.CurrentSource+
+				"_"+mCurrentPlayData.CurrentQuality;
+		app.SavePlayData(where,PROD_SOURCE);
+		
+		PROD_SOURCE = null;
 		int index = 0;
 		index = mCurrentPlayData.CurrentQuality + 1;
 		mCurrentPlayData.CurrentQuality += 1;

@@ -116,6 +116,7 @@ public class VideoPlayerActivity extends Activity {
 		m_ReturnProgramView = app.get_ReturnProgramView();
 		
 		if (mCurrentPlayData != null) {
+
 			prod_id = mCurrentPlayData.prod_id;
 			prod_name = mCurrentPlayData.prod_name;
 			prod_url = mCurrentPlayData.prod_url;
@@ -124,6 +125,15 @@ public class VideoPlayerActivity extends Activity {
 			prod_type = mCurrentPlayData.prod_type;
 			mTime = (int) mCurrentPlayData.prod_time;
 
+			if (m_ReturnProgramView != null) { //过滤不能播放的地址
+				String where = mCurrentPlayData.prod_id + "_"
+						+ mCurrentPlayData.prod_type + "_"
+						+ mCurrentPlayData.CurrentIndex + "_"
+						+ mCurrentPlayData.CurrentSource + "_"
+						+ mCurrentPlayData.CurrentQuality;
+				GetNextValURL(where);
+			}
+			
 			if (prod_type == 2 && prod_type == 3) {
 				if (mCurrentPlayData.CurrentIndex == 0)
 					aq.id(R.id.imageControl_r).gone();
@@ -181,7 +191,62 @@ public class VideoPlayerActivity extends Activity {
 		Log.i(TAG, "url------->" + prod_url);
 
 	}
+	private void GetNextValURL(String where) {
 
+		prod_url = null;
+		int index = 0;
+		
+		while (app.GetPlayData(where) != null) {
+			index = mCurrentPlayData.CurrentQuality + 1;
+			mCurrentPlayData.CurrentQuality += 1;
+			where = mCurrentPlayData.prod_id + "_"
+					+ mCurrentPlayData.prod_type + "_"
+					+ mCurrentPlayData.CurrentIndex + "_"
+					+ mCurrentPlayData.CurrentSource + "_"
+					+ mCurrentPlayData.CurrentQuality;
+			
+		}
+
+		app.setCurrentPlayData(mCurrentPlayData);
+		
+		switch (mCurrentPlayData.prod_type) {
+		case 1: {
+			try{
+				prod_url = m_ReturnProgramView.movie.episodes[0].
+						down_urls[mCurrentPlayData.CurrentSource].
+						urls[index].url;
+			}catch (Exception e) {
+				// TODO: url is null
+			}
+		}
+			break;
+		case 131:
+		case 2: {
+			try{
+				prod_url = m_ReturnProgramView.tv.episodes[mCurrentPlayData.CurrentIndex].
+						down_urls[mCurrentPlayData.CurrentSource].
+						urls[index].url;
+			}catch (Exception e) {
+				// TODO: url is null
+			}
+		}
+
+			break;
+		case 3: {
+			try{
+				prod_url = m_ReturnProgramView.show.episodes[mCurrentPlayData.CurrentIndex].
+						down_urls[mCurrentPlayData.CurrentSource].
+						urls[index].url;
+			}catch (Exception e) {
+				// TODO: url is null
+			}
+		}
+
+			break;
+		}
+		
+
+	}
 	private void loadReturnProgramView() {
 
 		AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {
