@@ -248,49 +248,50 @@ public class App extends Application {
 				return false;
 			}
 		}
+		return true;
 		// 模拟火狐ios发用请求 使用userAgent
-		AndroidHttpClient mAndroidHttpClient = AndroidHttpClient
-				.newInstance(Constant.USER_AGENT_IOS);
-
-		HttpParams httpParams = mAndroidHttpClient.getParams();
-		// 连接时间最长5秒，可以更改
-		HttpConnectionParams.setConnectionTimeout(httpParams, 2000);
-
-		try {
-			URL url = new URL(srcUrl);
-			URI uri = new URI(url.getProtocol(), url.getHost(), url.getPath(), url.getQuery(),null);
-			HttpGet mHttpGet = new HttpGet(uri);
-			HttpResponse response = mAndroidHttpClient.execute(mHttpGet);
-
-			// 限定连接时间
-
-			StatusLine statusLine = response.getStatusLine();
-			int status = statusLine.getStatusCode();
-
-			Header headertop = response.getFirstHeader("Content-Type");// 拿到重新定位后的header
-//			String type = headertop.getValue().toLowerCase();// 从header重新取出信息
-//			Header header_length = response.getFirstHeader("Content-Length");
-//			String lengthStr = header_length.getValue();
-			Log.i(TAG, "HTTP STATUS : " + status);
-			
-			mAndroidHttpClient.close();
-			
-//			if(status >=200 && status <300 && !headertop.toString().startsWith("text")){
-			if(status >=200 && status <300){
-				return true;
-			}else{
-				return false;
-			}
-
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			if (BuildConfig.DEBUG)
-				Log.i(TAG, "NOT OK" + e);
-			// 如果地址真的不存在，那就往里面加NULL字符串
-			mAndroidHttpClient.close();
-			e.printStackTrace();
-			return false;
-		}
+//		AndroidHttpClient mAndroidHttpClient = AndroidHttpClient
+//				.newInstance(Constant.USER_AGENT_IOS);
+//
+//		HttpParams httpParams = mAndroidHttpClient.getParams();
+//		// 连接时间最长5秒，可以更改
+//		HttpConnectionParams.setConnectionTimeout(httpParams, 2000);
+//
+//		try {
+//			URL url = new URL(srcUrl);
+//			URI uri = new URI(url.getProtocol(), url.getHost(), url.getPath(), url.getQuery(),null);
+//			HttpGet mHttpGet = new HttpGet(uri);
+//			HttpResponse response = mAndroidHttpClient.execute(mHttpGet);
+//
+//			// 限定连接时间
+//
+//			StatusLine statusLine = response.getStatusLine();
+//			int status = statusLine.getStatusCode();
+//
+//			Header headertop = response.getFirstHeader("Content-Type");// 拿到重新定位后的header
+////			String type = headertop.getValue().toLowerCase();// 从header重新取出信息
+////			Header header_length = response.getFirstHeader("Content-Length");
+////			String lengthStr = header_length.getValue();
+//			Log.i(TAG, "HTTP STATUS : " + status);
+//			
+//			mAndroidHttpClient.close();
+//			
+////			if(status >=200 && status <300 && !headertop.toString().startsWith("text")){
+//			if(status >=200 && status <300){
+//				return true;
+//			}else{
+//				return false;
+//			}
+//
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			if (BuildConfig.DEBUG)
+//				Log.i(TAG, "NOT OK" + e);
+//			// 如果地址真的不存在，那就往里面加NULL字符串
+//			mAndroidHttpClient.close();
+//			e.printStackTrace();
+//			return false;
+//		}
 	}
 
 }

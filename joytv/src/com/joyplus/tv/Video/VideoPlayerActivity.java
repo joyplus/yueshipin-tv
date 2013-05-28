@@ -56,7 +56,6 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joyplus.tv.Service.Return.ReturnProgramView.DOWN_URLS;
-import com.joyplus.tv.Video.VideoPlayerActivity.EComparatorIndex;
 import com.joyplus.tv.entity.YueDanInfo;
 import com.joyplus.tv.App;
 import com.joyplus.tv.Constant;
@@ -174,10 +173,10 @@ public class VideoPlayerActivity extends Activity {
 		intentFilter.addAction(Constant.VIDEOPLAYERCMD);
 		registerReceiver(mReceiver, intentFilter);
 
-		if (m_ReturnProgramView == null) {// 如果为空，那就调用此方法
+//		if (m_ReturnProgramView == null) {// 如果为空，那就调用此方法
 
 			loadReturnProgramView();
-		}
+//		}
 
 		Log.i(TAG, "url------->" + prod_url);
 
@@ -223,7 +222,6 @@ public class VideoPlayerActivity extends Activity {
 					ReturnProgramView.class);
 			m_ReturnProgramView = date;
 			app.set_ReturnProgramView(date);
-//			GetRedirectURL();
 
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
@@ -237,177 +235,7 @@ public class VideoPlayerActivity extends Activity {
 		}
 	}
 
-	private void GetRedirectURL() {
 
-		String PROD_SOURCE = null;
-		switch (mCurrentPlayData.prod_type) {
-		case 1: {
-			if (m_ReturnProgramView.movie.episodes[0].down_urls != null) {
-				videoSourceSort(m_ReturnProgramView.movie.episodes[0].down_urls);
-				for (int i = 0; i < m_ReturnProgramView.movie.episodes[0].down_urls.length; i++) {
-					for (int k = 0; k < m_ReturnProgramView.movie.episodes[0].down_urls[i].urls.length; k++) {
-
-						for (int qi = 0; qi < Constant.player_quality_index.length; qi++) {
-							if (PROD_SOURCE == null)
-								for (int ki = 0; ki < m_ReturnProgramView.movie.episodes[0].down_urls[i].urls.length; ki++) {
-									if (m_ReturnProgramView.movie.episodes[0].down_urls[i].urls[ki].type
-											.equalsIgnoreCase(Constant.player_quality_index[qi])) {
-										ReturnProgramView.DOWN_URLS.URLS urls = m_ReturnProgramView.movie.episodes[0].down_urls[i].urls[ki];
-										
-										if (urls != null && urls.url != null) {
-											CheckUrl(urls.url);
-										}
-
-									}
-								}
-						}
-
-					}
-				}
-			}
-
-		}
-			break;
-		case 2: {
-			if (m_ReturnProgramView.tv.episodes[mCurrentPlayData.CurrentIndex].down_urls != null) {
-				videoSourceSort(m_ReturnProgramView.tv.episodes[mCurrentPlayData.CurrentIndex].down_urls);
-				for (int i = 0; i < m_ReturnProgramView.tv.episodes[mCurrentPlayData.CurrentIndex].down_urls.length; i++) {
-					for (int qi = 0; qi < Constant.player_quality_index.length; qi++) {
-						if (PROD_SOURCE == null)
-							for (int ki = 0; ki < m_ReturnProgramView.tv.episodes[mCurrentPlayData.CurrentIndex].down_urls[i].urls.length; ki++) {// 原来字典里的值为0yy
-								if (m_ReturnProgramView.tv.episodes[mCurrentPlayData.CurrentIndex].down_urls[i].urls[ki].type
-										.equalsIgnoreCase(Constant.player_quality_index[qi])) {
-									ReturnProgramView.DOWN_URLS.URLS urls = m_ReturnProgramView.tv.episodes[mCurrentPlayData.CurrentIndex].down_urls[i].urls[ki];
-
-									if (urls != null && urls.url != null) {
-										CheckUrl(urls.url);
-									}
-
-								}
-							}
-					}
-				}
-				
-			}
-		}
-
-			break;
-		case 3: {
-			if (m_ReturnProgramView.show.episodes[mCurrentPlayData.CurrentIndex].down_urls != null) {
-				videoSourceSort(m_ReturnProgramView.show.episodes[mCurrentPlayData.CurrentIndex].down_urls);
-				for (int i = 0; i < m_ReturnProgramView.show.episodes[mCurrentPlayData.CurrentIndex].down_urls.length; i++) {
-
-					for (int qi = 0; qi < Constant.player_quality_index.length; qi++) {
-						if (PROD_SOURCE == null)
-							for (int ki = 0; ki < m_ReturnProgramView.show.episodes[mCurrentPlayData.CurrentIndex].down_urls[i].urls.length; ki++) {
-								if (m_ReturnProgramView.show.episodes[mCurrentPlayData.CurrentIndex].down_urls[i].urls[ki].type
-										.equalsIgnoreCase(Constant.player_quality_index[qi])) {
-									ReturnProgramView.DOWN_URLS.URLS urls = m_ReturnProgramView.show.episodes[mCurrentPlayData.CurrentIndex].down_urls[i].urls[ki];
-
-									if (urls != null && urls.url != null) {
-										CheckUrl(urls.url);
-									}
-
-								}
-							}
-					}
-				}
-				
-			}
-		}
-
-			break;
-		}
-
-
-	}
-
-	// 给片源赋权值
-	public void videoSourceSort(DOWN_URLS[] down_urls) {
-
-		if (down_urls != null) {
-			for (int j = 0; j < down_urls.length; j++) {
-				if (down_urls[j].source.equalsIgnoreCase("letv")) {
-					down_urls[j].index = 0;
-				} else if (down_urls[j].source.equalsIgnoreCase("fengxing")) {
-					down_urls[j].index = 1;
-				} else if (down_urls[j].source.equalsIgnoreCase("qiyi")) {
-					down_urls[j].index = 2;
-				} else if (down_urls[j].source.equalsIgnoreCase("youku")) {
-					down_urls[j].index = 3;
-				} else if (down_urls[j].source.equalsIgnoreCase("sinahd")) {
-					down_urls[j].index = 4;
-				} else if (down_urls[j].source.equalsIgnoreCase("sohu")) {
-					down_urls[j].index = 5;
-				} else if (down_urls[j].source.equalsIgnoreCase("56")) {
-					down_urls[j].index = 6;
-				} else if (down_urls[j].source.equalsIgnoreCase("qq")) {
-					down_urls[j].index = 7;
-				} else if (down_urls[j].source.equalsIgnoreCase("pptv")) {
-					down_urls[j].index = 8;
-				} else if (down_urls[j].source.equalsIgnoreCase("m1905")) {
-					down_urls[j].index = 9;
-				}
-			}
-			if (down_urls.length > 1) {
-				Arrays.sort(down_urls, new EComparatorIndex());
-			}
-		}
-	}
-
-	// 将片源排序
-	class EComparatorIndex implements Comparator {
-
-		@Override
-		public int compare(Object first, Object second) {
-			// TODO Auto-generated method stub
-			int first_name = ((DOWN_URLS) first).index;
-			int second_name = ((DOWN_URLS) second).index;
-			if (first_name - second_name < 0) {
-				return -1;
-			} else {
-				return 1;
-			}
-		}
-	}
-
-	public void CheckUrl(String srcUrl) {
-		Map<String, Object> params = new HashMap<String, Object>();
-
-
-		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
-		cb.header("User-Agent",Constant.USER_AGENT_IOS);
-
-		cb.params(params).url(srcUrl).type(JSONObject.class)
-				.weakHandler(this, "CheckUrlResult");
-		aq.ajax(cb);
-
-	}
-	public void CheckUrlResult(String url, JSONObject json, AjaxStatus status) {
-		//Content-Type: application/x-mpegURL; charset=utf-8
-		//if(status >=200 && status <300 && !headertop.toString().startsWith("text")){
-
-		if (Math.abs(status.getCode()) <300 && status.getHeader("Content-Type").indexOf("text") == -1) {
-//			Result mResult = new Result();
-//			mResult.url = url;
-//			mResult.status = status;
-//			Result_list.add(mResult);
-			
-			
-//			if (urls != null && urls.url != null
-//					&& app.CheckUrl(urls.url.trim())) {
-//				mCurrentPlayData.CurrentSource = i;
-//				mCurrentPlayData.CurrentQuality = ki;
-//				PROD_SOURCE = urls.url.trim();
-//
-//				MobclickAgent.onEventBegin(this,
-//						SHOW_PLAY);
-//				break;
-//			}
-			mPlayer.setVideoURI(Uri.parse(url), mTime);
-			return;
-		}
-	}
 	@Override
 	public boolean dispatchKeyEvent(KeyEvent event) {
 		// TODO Auto-generated method stub

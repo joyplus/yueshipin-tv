@@ -23,6 +23,8 @@ import java.io.DataOutputStream;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
@@ -30,6 +32,7 @@ import org.apache.http.StatusLine;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
+import org.json.JSONObject;
 
 import android.R.integer;
 import android.R.string;
@@ -62,6 +65,8 @@ import android.widget.MediaController.MediaPlayerControl;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 
 import com.androidquery.AQuery;
+import com.androidquery.callback.AjaxCallback;
+import com.androidquery.callback.AjaxStatus;
 import com.joyplus.tv.App;
 import com.joyplus.tv.BuildConfig;
 import com.joyplus.tv.Constant;
@@ -70,6 +75,7 @@ import com.joyplus.tv.R;
 import com.joyplus.tv.StatisticsUtils;
 import com.joyplus.tv.Adapters.CurrentPlayData;
 import com.joyplus.tv.Service.Return.ReturnProgramView;
+import com.joyplus.tv.Service.Return.ReturnProgramView.DOWN_URLS;
 
 public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		MediaPlayer.OnCompletionListener, MediaPlayer.OnPreparedListener,
@@ -94,6 +100,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 
 	private int JUMP_TIME = 0;
 	private int JUMP_TIME_TIMES = 0;// 检查是否处在快进模式中
+	private int ERROR_JUMP_TIME = 0;
 	private boolean RETURNMODE = false;// 检查是否处在tv的返回模式中
 	private int CURRENT_KEY = 0;
 	private int prod_type = 0;
@@ -182,6 +189,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		mVideoView = (VideoView) rootView.findViewById(R.id.surface_view);
 
 		mBookmarker = new Bookmarker(mContext);
+		ERROR_JUMP_TIME = Time;
 		// mActionBar = movieActivity.getActionBar();
 		mUri = videoUri;
 		this.prod_type = prod_type;
@@ -253,19 +261,21 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 				mVideoView.seekTo(bookmark);
 				// showResumeDialog(mContext, bookmark);
 			}
+			
 			startVideo();
 		}
 	}
 
 	public void setVideoURI(Uri mUri, int Time) {
-		totalTime = 0;
-		mVideoView.setVideoURI(mUri);
-		PROD_SOURCE = mUri.toString();
-		if (Time > 0)
-			mVideoView.seekTo(Time);
-		// mVideoView.start();
-		// mHasPaused = false;
-		startVideo();
+		
+			totalTime = 0;
+			mVideoView.setVideoURI(mUri);
+			PROD_SOURCE = mUri.toString();
+			if (Time > 0)
+				mVideoView.seekTo(Time);
+			// mVideoView.start();
+			// mHasPaused = false;
+			startVideo();
 
 	}
 
@@ -477,10 +487,18 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 	
 	// Below are notifications from VideoView
 	public boolean onError(MediaPlayer player, int arg1, int arg2) {
-		mHandler.removeCallbacksAndMessages(null);
-		// VideoView will show an error dialog if we return false, so no need
-		// to show more message.
-		mController.showErrorMessage("");
+
+		GetNextValURL();
+		if (PROD_SOURCE == null) {
+			mHandler.removeCallbacksAndMessages(null);
+			// VideoView will show an error dialog if we return false, so no
+			// need
+			// to show more message.
+			mController.showErrorMessage("");
+		} else {
+			setVideoURI(Uri.parse(PROD_SOURCE), ERROR_JUMP_TIME);
+			return true;
+		}
 		return false;
 	}
 
@@ -1363,6 +1381,104 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 
 		return PROD_SOURCE;
 
+	}
+	private void GetNextValURL() {
+
+		PROD_SOURCE = null;
+		App app = (App) this.mContext.getApplicationContext();
+		CurrentPlayData mCurrentPlayData = app.getCurrentPlayData();
+		ReturnProgramView m_ReturnProgramView = app.get_ReturnProgramView();
+		
+		int index = 0;
+		index = mCurrentPlayData.CurrentQuality + 1;
+		mCurrentPlayData.CurrentQuality += 1;
+		app.setCurrentPlayData(mCurrentPlayData);
+		
+		switch (mCurrentPlayData.prod_type) {
+		case 1: {
+			try{
+				PROD_SOURCE = m_ReturnProgramView.movie.episodes[0].
+						down_urls[mCurrentPlayData.CurrentSource].
+						urls[index].url;
+			}catch (Exception e) {
+				// TODO: url is null
+			}
+		}
+			break;
+		case 2: {
+			try{
+				PROD_SOURCE = m_ReturnProgramView.tv.episodes[mCurrentPlayData.CurrentIndex].
+						down_urls[mCurrentPlayData.CurrentSource].
+						urls[index].url;
+			}catch (Exception e) {
+				// TODO: url is null
+			}
+		}
+
+			break;
+		case 3: {
+			try{
+				PROD_SOURCE = m_ReturnProgramView.show.episodes[mCurrentPlayData.CurrentIndex].
+						down_urls[mCurrentPlayData.CurrentSource].
+						urls[index].url;
+			}catch (Exception e) {
+				// TODO: url is null
+			}
+		}
+
+			break;
+		}
+
+
+	}
+
+	// 给片源赋权值
+	public void videoSourceSort(DOWN_URLS[] down_urls) {
+
+		if (down_urls != null) {
+			for (int j = 0; j < down_urls.length; j++) {
+				if (down_urls[j].source.equalsIgnoreCase("letv")) {
+					down_urls[j].index = 0;
+				} else if (down_urls[j].source.equalsIgnoreCase("fengxing")) {
+					down_urls[j].index = 1;
+				} else if (down_urls[j].source.equalsIgnoreCase("qiyi")) {
+					down_urls[j].index = 2;
+				} else if (down_urls[j].source.equalsIgnoreCase("youku")) {
+					down_urls[j].index = 3;
+				} else if (down_urls[j].source.equalsIgnoreCase("sinahd")) {
+					down_urls[j].index = 4;
+				} else if (down_urls[j].source.equalsIgnoreCase("sohu")) {
+					down_urls[j].index = 5;
+				} else if (down_urls[j].source.equalsIgnoreCase("56")) {
+					down_urls[j].index = 6;
+				} else if (down_urls[j].source.equalsIgnoreCase("qq")) {
+					down_urls[j].index = 7;
+				} else if (down_urls[j].source.equalsIgnoreCase("pptv")) {
+					down_urls[j].index = 8;
+				} else if (down_urls[j].source.equalsIgnoreCase("m1905")) {
+					down_urls[j].index = 9;
+				}
+			}
+			if (down_urls.length > 1) {
+				Arrays.sort(down_urls, new EComparatorIndex());
+			}
+		}
+	}
+
+	// 将片源排序
+	class EComparatorIndex implements Comparator {
+
+		@Override
+		public int compare(Object first, Object second) {
+			// TODO Auto-generated method stub
+			int first_name = ((DOWN_URLS) first).index;
+			int second_name = ((DOWN_URLS) second).index;
+			if (first_name - second_name < 0) {
+				return -1;
+			} else {
+				return 1;
+			}
+		}
 	}
 
 }
