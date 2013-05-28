@@ -745,8 +745,8 @@ public class ShowDongManActivity extends AbstractShowActivity {
 
 		showDialog(DIALOG_WAITING);
 		StatisticsUtils.clearList(lists[QUAN_FILTER]);
-		resetGvActive();
 		currentListIndex = QUAN_FILTER;
+		resetGvActive();
 		filterSource = StatisticsUtils.getFileterURL3Param(choice, quanbu);
 		String url = StatisticsUtils.getFilter_DongmanFirstURL(filterSource);
 		Log.i(TAG, "POP--->URL:" + url);
@@ -1409,6 +1409,8 @@ public class ShowDongManActivity extends AbstractShowActivity {
 			} else {
 				
 				isShowShoucang = false;
+				searchAdapter.setShoucangShow(false);
+				shoucangTitlleLL.setVisibility(View.GONE);
 			}
 		} else {
 			
