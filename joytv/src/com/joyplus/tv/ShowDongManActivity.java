@@ -85,7 +85,7 @@ public class ShowDongManActivity extends AbstractShowActivity {
 	private SparseArray<View> mSparseArray = new SparseArray<View>();
 	
 
-	private List<MovieItemData> shoucangList = null;
+	private List<MovieItemData> shoucangList = new ArrayList<MovieItemData>();
 	private boolean isShowShoucang = false;
 	
 	private LinearLayout shoucangTitlleLL;
@@ -102,7 +102,23 @@ public class ShowDongManActivity extends AbstractShowActivity {
 		aq = new AQuery(this);
 		
 		//本地收藏，有没有更新
-		shoucangList = StatisticsUtils.getList4DB(getApplicationContext(), app.getUserInfo().getUserId(), DONGMAN_TYPE);
+		String userId = null;
+		if(app.getUserInfo() != null) {
+			
+			if(app.getUserInfo().getUserId() != null) {
+				
+				userId = app.getUserInfo().getUserId();
+			}
+		} else {
+			
+			userId = StatisticsUtils.getCurrentUserId(getApplicationContext());
+		}
+		
+		if(userId != null) {
+			
+			shoucangList = StatisticsUtils.getList4DB(getApplicationContext(), userId, DONGMAN_TYPE);
+		}
+		
 		
 		if(shoucangList != null && !shoucangList.isEmpty()) {
 			

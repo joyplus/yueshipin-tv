@@ -48,11 +48,37 @@ public class DataBaseItems {
 		// String NUM = "num";
 	}
 	
-	public static interface UserBoFang {
+	public static interface UserHistory {
+		
+		String ID = "id";// 自增id
 		
 		String USER_ID = "user_id";// 用户id
+		String PROD_TYPE = "prod_type"; //视频类别 1：电影，2：电视剧，3：综艺，4：视频
+		String PROD_NAME= "prod_name";//视频名字,
+		String PROD_SUBNAME = "prod_subname";//视频的集数,
+		String PRO_ID = "prod_id";//视频id,
+		String CREATE_DATE = "create_date";//播放时间
+		String PLAY_TYPE = "play_type";//播放的类别  1: 视频地址播放 2:webview播放
+		String PLAYBACK_TIME = "playback_time";//上次播放时间，单位：秒,
+		String VIDEO_URL = "video_url";//视频地址,
+		String DURATION = "duration";//视频时长， 单位：秒
+		String BOFANG_ID = "bofang_id";//播放记录id
+		String PROD_PIC_URL = "prod_pic_url";//视频图片,
+		String BIG_PROD_PIC_URL="big_prod_pic_url";//视频图片（tv版）,
+		String DEFINITION = "definition";//清晰度，5：超清，4：高清,3：超鲜
+//		String PROD_SUMMARY = "prod_summary";//视频描述,
+		String STARS = "stars";//演员
+		String DIRECTORS = "directors";//导演,
+		String FAVORITY_NUM = "favority_num";//收藏数,
+		String SUPPORT_NUM = "support_num";//顶数
+		String PUBLISH_DATE = "publish_date";
+		String SCORE = "score";//豆瓣积分,
+		String AREA = "area";//地区,
+		String MAX_EPISODE = "max_episode";//最大集数,
+		String CUR_EPISODE = "cur_episode";//当前集数
+		
+		String IS_NEW = "is_new";//同步标记字段 1为new 0为old
 
-//		String ID = "id";// 自增id
 	}
 
 }

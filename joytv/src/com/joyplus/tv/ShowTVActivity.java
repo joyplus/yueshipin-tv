@@ -84,7 +84,7 @@ public class ShowTVActivity extends AbstractShowActivity {
 	private boolean isFirstActive = true;//是否界面初始化
 	private SparseArray<View> mSparseArray = new SparseArray<View>();
 	
-	private List<MovieItemData> shoucangList = null;
+	private List<MovieItemData> shoucangList = new ArrayList<MovieItemData>();
 	private boolean isShowShoucang = false;
 	
 	private LinearLayout shoucangTitlleLL;
@@ -101,7 +101,22 @@ public class ShowTVActivity extends AbstractShowActivity {
 		aq = new AQuery(this);
 		
 		//本地收藏，有没有更新
-		shoucangList = StatisticsUtils.getList4DB(getApplicationContext(), app.getUserInfo().getUserId(), TV_TYPE);
+		String userId = null;
+		if(app.getUserInfo() != null) {
+			
+			if(app.getUserInfo().getUserId() != null) {
+				
+				userId = app.getUserInfo().getUserId();
+			}
+		} else {
+			
+			userId = StatisticsUtils.getCurrentUserId(getApplicationContext());
+		}
+		
+		if(userId != null) {
+			
+			shoucangList = StatisticsUtils.getList4DB(getApplicationContext(), userId, DONGMAN_TYPE);
+		}
 		
 		Log.i(TAG, "shoucangList--->:" + shoucangList.size());
 		

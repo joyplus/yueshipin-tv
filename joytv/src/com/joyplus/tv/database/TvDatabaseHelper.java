@@ -8,13 +8,15 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import com.joyplus.tv.utils.DataBaseItems;
 import com.joyplus.tv.utils.DataBaseItems.SQLite3_DataType;
+import com.joyplus.tv.utils.DataBaseItems.UserHistory;
 import com.joyplus.tv.utils.DataBaseItems.UserShouCang;
 
 public class TvDatabaseHelper extends SQLiteOpenHelper implements UserShouCang,SQLite3_DataType{
 
 	public static final String DATABASE_NAME = "joyplus.db";
 	public static final int DATABASE_VERSION = 1;
-	public static final String ZHUIJU_TABLE_NAME = "zhuiju";
+	public static final String ZHUIJU_TABLE_NAME = "zhuiju";//追剧收藏
+	public static final String HISTORY_TABLE_NAME = "history";//历史记录
 
 	private SQLiteDatabase sqLiteDatabase;
 
@@ -118,12 +120,43 @@ public class TvDatabaseHelper extends SQLiteOpenHelper implements UserShouCang,S
 			+ IS_NEW + INTEGER_DOT
 			+ IS_UPDATE + INTEGER 
 			+ " )";
+	
+	private String sql_table_history = "create table if not exists "
+			+ HISTORY_TABLE_NAME + " ( " + UserHistory.ID
+			+ " integer primary key autoincrement, "
+			+ UserHistory.USER_ID + TEXT_DOT
+			+ UserHistory.PROD_TYPE + TEXT_DOT 
+			+ UserHistory.PROD_NAME + TEXT_DOT 
+			+ UserHistory.PROD_SUBNAME + TEXT_DOT 
+			+ UserHistory.PRO_ID + TEXT_DOT 
+			+ UserHistory.CREATE_DATE + TEXT_DOT
+			+ UserHistory.PLAY_TYPE + TEXT_DOT 
+			+ UserHistory.PLAYBACK_TIME + TEXT_DOT
+			+ UserHistory.VIDEO_URL + TEXT_DOT 
+			+ UserHistory.DURATION + TEXT_DOT 
+			+ UserHistory.BOFANG_ID + TEXT_DOT 
+			+ UserHistory.PROD_PIC_URL + TEXT_DOT 
+			+ UserHistory.BIG_PROD_PIC_URL + TEXT_DOT 
+			+ UserHistory.DEFINITION + TEXT_DOT 
+			+ UserHistory.STARS + TEXT_DOT 
+			+ UserHistory.DIRECTORS + TEXT_DOT 
+			+ UserHistory.FAVORITY_NUM + TEXT_DOT 
+			+ UserHistory.SUPPORT_NUM + TEXT_DOT 
+			+ UserHistory.PUBLISH_DATE + TEXT_DOT 
+			+ UserHistory.SCORE + TEXT_DOT 
+			+ UserHistory.AREA + TEXT_DOT 
+			+ UserHistory.MAX_EPISODE + TEXT_DOT 
+			+ UserHistory.CUR_EPISODE + TEXT_DOT 
+			
+			+ IS_NEW + INTEGER_DOT
+			+ " )";
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		// TODO Auto-generated method stub
 
 		db.execSQL(sql_table_zhuiju);
+		db.execSQL(sql_table_history);
 	}
 
 	@Override
