@@ -1002,6 +1002,8 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 	
 	public void cancelshoucangResult(String url, JSONObject json, AjaxStatus status){
 		
+		//闹钟开启的情况下，取消收藏删除数据库中相关数据
+		if(StatisticsUtils.is48TimeClock(getApplicationContext()))
 		StatisticsUtils.deleteData4ProId(getApplicationContext(), 
 				StatisticsUtils.getCurrentUserId(getApplicationContext()), prod_id);
 		

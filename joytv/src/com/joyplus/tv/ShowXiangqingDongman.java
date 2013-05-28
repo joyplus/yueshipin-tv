@@ -387,7 +387,6 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 						play(index);
 					}
 				} else {
-					
 					play(0);
 				}
 				
@@ -1018,9 +1017,10 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 		
 		xiaiBt.setEnabled(true);
 		
+		//闹钟开启的情况下，取消收藏删除数据库中相关数据
+		if(StatisticsUtils.is48TimeClock(getApplicationContext()))
 		StatisticsUtils.deleteData4ProId(getApplicationContext(), 
 				StatisticsUtils.getCurrentUserId(getApplicationContext()), prod_id);
-		
 		
 			if(favNum - 1 >=0) {
 				

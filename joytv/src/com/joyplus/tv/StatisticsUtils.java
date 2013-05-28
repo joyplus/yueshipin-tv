@@ -1347,8 +1347,8 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 		tempContentValues.put(UserShouCang.STARS, info.stars);
 		tempContentValues.put(UserShouCang.DIRECTORS, info.directors);
 		tempContentValues.put(UserShouCang.IS_NEW, DataBaseItems.NEW);
-//		tempContentValues.put(UserShouCang.IS_UPDATE, DataBaseItems.OLD);
-		tempContentValues.put(UserShouCang.IS_UPDATE, DataBaseItems.NEW);//测试
+		tempContentValues.put(UserShouCang.IS_UPDATE, DataBaseItems.OLD);
+//		tempContentValues.put(UserShouCang.IS_UPDATE, DataBaseItems.NEW);//测试
 		
 		database.insert(TvDatabaseHelper.ZHUIJU_TABLE_NAME, null, tempContentValues);
 	}
@@ -1373,6 +1373,52 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 		tempContentValues.put(UserShouCang.IS_UPDATE, DataBaseItems.NEW);//测试
 		
 		database.insert(TvDatabaseHelper.ZHUIJU_TABLE_NAME, null, tempContentValues);
+	}
+	
+	//当前影片是否是置顶影片，并且返回当前更新集数
+	public static String getTopPlayerCurEpisode(Context context, String userId,String proId) {
+		
+		String selection = UserShouCang.USER_ID + "=? and " + UserShouCang.PRO_ID + 
+				"=? and " + UserShouCang.IS_UPDATE + "=?";//通过用户id，找到相应信息
+		String[] selectionArgs = {userId,proId,DataBaseItems.NEW + ""};
+		
+		TvDatabaseHelper helper = TvDatabaseHelper.newTvDatabaseHelper(context);
+		SQLiteDatabase database = helper.getWritableDatabase();//获取写db
+		
+		String[] columns = { UserShouCang.CUR_EPISODE };// 返回当前更新集数
+		
+		Cursor cursor = database.query(TvDatabaseHelper.ZHUIJU_TABLE_NAME, columns, selection, selectionArgs, null, null, null);
+		
+		if(cursor != null && cursor.getCount() > 0 ) {
+			
+			int indexCurEpisode = cursor
+					.getColumnIndex(UserShouCang.CUR_EPISODE);
+			
+			if(indexCurEpisode != -1) {
+				
+				String curEpisode = cursor.getString(indexCurEpisode);
+				return curEpisode;
+			}
+		}
+		
+		return "";
+		
+	}
+	
+	//取消当前影片的置顶状态
+	public static void cancelAPlayTopState(Context context,String userId,String pro_id) {
+		
+		TvDatabaseHelper helper = TvDatabaseHelper.newTvDatabaseHelper(context);
+		SQLiteDatabase database = helper.getWritableDatabase();//获取写db
+		
+		String updateSelection = UserShouCang.PRO_ID  + "=? and " + UserShouCang.USER_ID + "=?";
+		String[] updateselectionArgs = {pro_id,userId};
+		
+		ContentValues tempValues = new ContentValues();
+		tempValues.put(UserShouCang.IS_UPDATE, DataBaseItems.OLD);
+		database.update(TvDatabaseHelper.ZHUIJU_TABLE_NAME,tempValues, updateSelection, updateselectionArgs);
+		
+		helper.closeDatabase();
 	}
 	
 	
