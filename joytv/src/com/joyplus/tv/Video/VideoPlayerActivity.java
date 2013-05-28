@@ -173,10 +173,10 @@ public class VideoPlayerActivity extends Activity {
 		intentFilter.addAction(Constant.VIDEOPLAYERCMD);
 		registerReceiver(mReceiver, intentFilter);
 
-//		if (m_ReturnProgramView == null) {// 如果为空，那就调用此方法
+		if (m_ReturnProgramView == null) {// 如果为空，那就调用此方法
 
 			loadReturnProgramView();
-//		}
+		}
 
 		Log.i(TAG, "url------->" + prod_url);
 
