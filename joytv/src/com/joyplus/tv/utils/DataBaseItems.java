@@ -23,11 +23,11 @@ public class DataBaseItems {
 
 	public static interface UserShouCang {
 
-//		String ID = "id";// 自增id
+		String ID = "id";// 自增id key 不同的用户收藏相同的影片
 
 		String USER_ID = "user_id";// 用户id 
 		
-		String PRO_ID = "pro_id";// 影片id key
+		String PRO_ID = "pro_id";// 影片id
 		String NAME = "name";// 影片名字
 		String SCORE = "score";// 影片评分
 		String PRO_TYPE = "pro_type";// 影片类型
@@ -40,6 +40,7 @@ public class DataBaseItems {
 		String DIRECTORS = "directors";//导演
 		
 		String IS_NEW = "is_new";//同步标记字段 1为new 0为old
+		
 		//追剧中，用户收藏过，并且有最新更新。
 		//更新规则为 当首页首次启动时候，检查网络数据是否有最新集数
 		//如果有那就设为true 1，否则一直为false 0

@@ -1002,6 +1002,9 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 	
 	public void cancelshoucangResult(String url, JSONObject json, AjaxStatus status){
 		
+		StatisticsUtils.deleteData4ProId(getApplicationContext(), 
+				StatisticsUtils.getCurrentUserId(getApplicationContext()), prod_id);
+		
 		xiaiBt.setEnabled(true);
 		
 		
