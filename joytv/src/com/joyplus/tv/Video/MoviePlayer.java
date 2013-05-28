@@ -1405,6 +1405,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 			}
 		}
 			break;
+		case 131:
 		case 2: {
 			try{
 				PROD_SOURCE = m_ReturnProgramView.tv.episodes[mCurrentPlayData.CurrentIndex].
@@ -1430,55 +1431,6 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		}
 
 
-	}
-
-	// 给片源赋权值
-	public void videoSourceSort(DOWN_URLS[] down_urls) {
-
-		if (down_urls != null) {
-			for (int j = 0; j < down_urls.length; j++) {
-				if (down_urls[j].source.equalsIgnoreCase("letv")) {
-					down_urls[j].index = 0;
-				} else if (down_urls[j].source.equalsIgnoreCase("fengxing")) {
-					down_urls[j].index = 1;
-				} else if (down_urls[j].source.equalsIgnoreCase("qiyi")) {
-					down_urls[j].index = 2;
-				} else if (down_urls[j].source.equalsIgnoreCase("youku")) {
-					down_urls[j].index = 3;
-				} else if (down_urls[j].source.equalsIgnoreCase("sinahd")) {
-					down_urls[j].index = 4;
-				} else if (down_urls[j].source.equalsIgnoreCase("sohu")) {
-					down_urls[j].index = 5;
-				} else if (down_urls[j].source.equalsIgnoreCase("56")) {
-					down_urls[j].index = 6;
-				} else if (down_urls[j].source.equalsIgnoreCase("qq")) {
-					down_urls[j].index = 7;
-				} else if (down_urls[j].source.equalsIgnoreCase("pptv")) {
-					down_urls[j].index = 8;
-				} else if (down_urls[j].source.equalsIgnoreCase("m1905")) {
-					down_urls[j].index = 9;
-				}
-			}
-			if (down_urls.length > 1) {
-				Arrays.sort(down_urls, new EComparatorIndex());
-			}
-		}
-	}
-
-	// 将片源排序
-	class EComparatorIndex implements Comparator {
-
-		@Override
-		public int compare(Object first, Object second) {
-			// TODO Auto-generated method stub
-			int first_name = ((DOWN_URLS) first).index;
-			int second_name = ((DOWN_URLS) second).index;
-			if (first_name - second_name < 0) {
-				return -1;
-			} else {
-				return 1;
-			}
-		}
 	}
 
 }
