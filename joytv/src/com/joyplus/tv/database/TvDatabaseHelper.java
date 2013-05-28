@@ -102,8 +102,9 @@ public class TvDatabaseHelper extends SQLiteOpenHelper implements UserShouCang,S
 //			+ " )";
 	
 	private String sql_table_zhuiju = "create table if not exists "
-			+ ZHUIJU_TABLE_NAME + " ( " + PRO_ID
-			+ TEXT + " primary key , " 
+			+ ZHUIJU_TABLE_NAME + " ( " + ID
+			+ " integer primary key autoincrement, "
+			+ PRO_ID + TEXT_DOT
 			+ USER_ID + TEXT_DOT 
 			+ NAME + TEXT_DOT 
 			+ SCORE + TEXT_DOT 

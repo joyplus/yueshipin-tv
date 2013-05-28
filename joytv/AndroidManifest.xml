@@ -322,6 +322,7 @@
                 <action android:name="com.example.UPDATE_STATUS" />
             </intent-filter>
         </receiver>
+        <receiver android:name="AlarmBroadcastReceiver"></receiver>
     </application>
 
 </manifest>

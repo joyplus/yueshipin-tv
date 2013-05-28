@@ -1001,6 +1001,9 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 	
 	public void cancelshoucangResult(String url, JSONObject json, AjaxStatus status){
 		
+		StatisticsUtils.deleteData4ProId(getApplicationContext(), 
+				StatisticsUtils.getCurrentUserId(getApplicationContext()), prod_id);
+		
 		xiaiBt.setEnabled(true);
 		
 		

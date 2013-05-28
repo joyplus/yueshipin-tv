@@ -259,6 +259,8 @@ public class ShowDongManActivity extends AbstractShowActivity {
 					R.drawable.avatar_defult);
 			aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
 		}
+		
+		//只有在重新进来的时候刷新数据
 	}
 	
 	@Override

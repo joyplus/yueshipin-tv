@@ -15,6 +15,8 @@ import org.json.JSONObject;
 import android.app.Instrumentation;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.wifi.WifiInfo;
@@ -1098,90 +1100,23 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 		return re_StrTime;
 	}
 	
-	//B为A的子集，返回除B外的集合
-	public static List<String> findUniqueElement4A(String[] aStrs,String[] bStrs) {
+	/**
+	 * 
+	 * @param networkList
+	 * @param dbList 此list中HotItemInfo数据不全
+	 * @return
+	 */
+	public static List<HotItemInfo> sameList4NetWork(List<HotItemInfo> networkList,List<HotItemInfo> dbList) {
 		
-		List<String> list = new ArrayList<String>();
+		List<HotItemInfo> list = new ArrayList<HotItemInfo>();
 		
-		if(aStrs == null || bStrs == null ||
-				aStrs.length < 0|| bStrs.length < 0) {
+		for(HotItemInfo netWorkInfo : networkList) {
 			
-			return list;
-		}
-		
-		for(int i=0;i<aStrs.length;i++) {
-			
-			boolean hasSame = false;//有相同
-			for(int j=0 ; j < bStrs.length ; j++ ) {
+			for(HotItemInfo dbInfo : dbList) {
 				
-				if(aStrs[i].equals(bStrs[j])) {
+				if(netWorkInfo.prod_id.equals(dbInfo.prod_id)) {
 					
-					hasSame = true;
-					break;
-				}
-			}
-			
-			if(!hasSame) {//没有相同的
-				
-				list.add(aStrs[i]);
-			}
-		}
-		
-		return list;
-	}
-	
-	//B为A的子集，返回除B外的集合
-	public static List<Integer> findUniqueElementIndex4A(String[] aStrs,String[] bStrs) {
-		
-		List<Integer> list = new ArrayList<Integer>();
-		
-		if(aStrs == null || bStrs == null ||
-				aStrs.length < 0|| bStrs.length < 0) {
-			
-			return list;
-		}
-		
-		for(int i=0;i<aStrs.length;i++) {
-			
-			boolean hasSame = false;//有相同
-			for(int j=0 ; j < bStrs.length ; j++ ) {
-				
-				if(aStrs[i].equals(bStrs[j])) {
-					
-					hasSame = true;
-					break;
-				}
-			}
-			
-			if(!hasSame) {//没有相同的
-				
-				list.add(i);
-			}
-		}
-		
-		return list;
-	}
-	
-	
-	//找到A与B中相同的元素
-	public static List<String> findSameElement4A(String[] aStrs,String[] bStrs) {
-		
-		List<String> list = new ArrayList<String>();
-		
-		if(aStrs == null || bStrs == null ||
-				aStrs.length < 0|| bStrs.length < 0) {
-			
-			return list;
-		}
-		
-		for(int i=0 ;i < aStrs.length ; i++ ) {
-			
-			for(int j=0 ; j < bStrs.length ; j++ ) {
-				
-				if(aStrs[i].equals(bStrs[j])) {
-					
-					list.add(aStrs[i]);
-					break;
+					list.add(netWorkInfo);
 				}
 			}
 		}
@@ -1189,39 +1124,54 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 		return list;
 	}
 	
-	//把 集合中pro_id保存到字符串
-	public static String[] getStrs4List(List<HotItemInfo> list) {
+	/**
+	 * 
+	 * @param networkList
+	 * @param dbList 此list中HotItemInfo数据不全
+	 * @return
+	 */
+	public static List<HotItemInfo> sameList4DB(List<HotItemInfo> networkList,List<HotItemInfo> dbList) {
 		
-		if(list == null || list.size() < 0) {
+		List<HotItemInfo> list = new ArrayList<HotItemInfo>();
+		
+		for(HotItemInfo netWorkInfo : networkList) {
 			
-			return null;
+			for(HotItemInfo dbInfo : dbList) {
+				
+				if(netWorkInfo.prod_id.equals(dbInfo.prod_id)) {
+					
+					list.add(dbInfo);
+				}
+			}
 		}
 		
-		String[] strs = new String[list.size()];
-		
-		for(int i=0 ;i<list.size();i++) {
-			
-			strs[i] = list.get(i).prod_id;
-		}
-		
-		return strs;
+		return list;
 	}
 	
-	public static String[] changeList2Strs(List<String> list) {
+	public static List<HotItemInfo> differentList4NetWork(List<HotItemInfo> networkList,List<HotItemInfo> dbList) {
 		
-		if(list == null || list.size() < 0) {
+		List<HotItemInfo> sameList = sameList4NetWork(networkList, dbList);
+		List<HotItemInfo> list = new ArrayList<HotItemInfo>();
+		
+		for(HotItemInfo netWorkInfo : networkList) {
 			
-			return null;
+			boolean isSame = false;
+			
+			for(HotItemInfo sameInfo : sameList) {
+				
+				if(netWorkInfo.prod_id.equals(sameInfo.prod_id)) {
+					
+					isSame = true;
+				}
+			}
+			
+			if(!isSame){
+				
+				list.add(netWorkInfo);
+			}
 		}
 		
-		String[] strs = new String[list.size()];
-		
-		for(int i=0 ;i<list.size();i++) {
-			
-			strs[i] = list.get(i);
-		}
-		
-		return strs;
+		return list;
 	}
 	
 	//一进入到能够收藏的界面list排序顺序 收藏集合，将要填充的集合，文字集合（5个），其他集合
@@ -1351,6 +1301,81 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 		return list;
 	}
 	
+	//收藏48小时后，取消全部置顶状态
+	public static void cancelTopState(Context context,String userId) {
+		
+		String selection = UserShouCang.USER_ID + "=?";//通过用户id，找到相应信息
+		String[] selectionArgs = {userId};
+		
+		TvDatabaseHelper helper = TvDatabaseHelper.newTvDatabaseHelper(context);
+		SQLiteDatabase database = helper.getWritableDatabase();//获取写db
+		
+		ContentValues tempValues = new ContentValues();
+		tempValues.put(UserShouCang.IS_UPDATE, DataBaseItems.OLD);
+		
+		database.update(TvDatabaseHelper.ZHUIJU_TABLE_NAME, tempValues, selection, selectionArgs);
+		
+		helper.closeDatabase();
+	}
+	
+	//取消收藏，删除prodId影片数据
+	public static void deleteData4ProId(Context context,String userId,String proId) {
+		
+		TvDatabaseHelper helper = TvDatabaseHelper.newTvDatabaseHelper(context);
+		SQLiteDatabase database = helper.getWritableDatabase();//获取写db
+		
+		String deleteSelection = UserShouCang.PRO_ID  + "=? and " + UserShouCang.USER_ID + "=?";
+		String[] deleteselectionArgs = {proId,userId};
+		database.delete(TvDatabaseHelper.ZHUIJU_TABLE_NAME, deleteSelection, deleteselectionArgs);
+		
+		helper.closeDatabase();
+	}
+	
+	//HotItemInfo 插入数据,置顶状态不开启
+	public static void insertHotItemInfo2DB(Context context,HotItemInfo info,String userId,SQLiteDatabase database) {
+		
+		ContentValues tempContentValues = new ContentValues();
+		tempContentValues.put(UserShouCang.USER_ID, userId);
+		tempContentValues.put(UserShouCang.PRO_ID, info.prod_id);
+		tempContentValues.put(UserShouCang.NAME, info.prod_name);
+		tempContentValues.put(UserShouCang.SCORE, info.score);
+		tempContentValues.put(UserShouCang.PRO_TYPE, info.prod_type);
+		tempContentValues.put(UserShouCang.PIC_URL, info.prod_pic_url);
+		tempContentValues.put(UserShouCang.DURATION, info.duration);
+		tempContentValues.put(UserShouCang.CUR_EPISODE, info.cur_episode);
+		tempContentValues.put(UserShouCang.MAX_EPISODE, info.max_episode);
+		tempContentValues.put(UserShouCang.STARS, info.stars);
+		tempContentValues.put(UserShouCang.DIRECTORS, info.directors);
+		tempContentValues.put(UserShouCang.IS_NEW, DataBaseItems.NEW);
+//		tempContentValues.put(UserShouCang.IS_UPDATE, DataBaseItems.OLD);
+		tempContentValues.put(UserShouCang.IS_UPDATE, DataBaseItems.NEW);//测试
+		
+		database.insert(TvDatabaseHelper.ZHUIJU_TABLE_NAME, null, tempContentValues);
+	}
+	
+	//HotItemInfo 插入数据,置顶状态开启
+	public static void insertHotItemInfo2DB_Update(Context context,HotItemInfo info,String userId,SQLiteDatabase database) {
+		
+		ContentValues tempContentValues = new ContentValues();
+		tempContentValues.put(UserShouCang.USER_ID, userId);
+		tempContentValues.put(UserShouCang.PRO_ID, info.prod_id);
+		tempContentValues.put(UserShouCang.NAME, info.prod_name);
+		tempContentValues.put(UserShouCang.SCORE, info.score);
+		tempContentValues.put(UserShouCang.PRO_TYPE, info.prod_type);
+		tempContentValues.put(UserShouCang.PIC_URL, info.prod_pic_url);
+		tempContentValues.put(UserShouCang.DURATION, info.duration);
+		tempContentValues.put(UserShouCang.CUR_EPISODE, info.cur_episode);
+		tempContentValues.put(UserShouCang.MAX_EPISODE, info.max_episode);
+		tempContentValues.put(UserShouCang.STARS, info.stars);
+		tempContentValues.put(UserShouCang.DIRECTORS, info.directors);
+		tempContentValues.put(UserShouCang.IS_NEW, DataBaseItems.NEW);
+//		tempContentValues.put(UserShouCang.IS_UPDATE, DataBaseItems.OLD);
+		tempContentValues.put(UserShouCang.IS_UPDATE, DataBaseItems.NEW);//测试
+		
+		database.insert(TvDatabaseHelper.ZHUIJU_TABLE_NAME, null, tempContentValues);
+	}
+	
+	
 	public static int tianchongEmptyItem(int shoucangNum) {
 		
 		int chu = shoucangNum/5;
@@ -1390,5 +1415,47 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 //		
 //		return str.substring(start)
 //	}
+	
+	public static final String TV_SETTING_XML = "tv_setting_xml";
+	
+	public static boolean is48TimeClock(Context context) {
+		
+		SharedPreferences sp = context.getSharedPreferences(TV_SETTING_XML, Context.MODE_PRIVATE);
+		
+		return sp.getBoolean("is48TimeClock", false);
+	}
+	
+	public static void set48TimeClock(Context context,boolean is48TimeClock) {
+		
+		SharedPreferences sp = context.getSharedPreferences(TV_SETTING_XML, Context.MODE_PRIVATE);
+		Editor editor = sp.edit();
+		editor.putBoolean("is48TimeClock", is48TimeClock);
+		editor.commit();
+	}
+	
+	/**
+	 * 闹钟保存的id
+	 * @param context
+	 * @param userId
+	 */
+	public static void setCurrentUserId(Context context, String userId) {
+		
+		SharedPreferences sp = context.getSharedPreferences(TV_SETTING_XML, Context.MODE_PRIVATE);
+		Editor editor = sp.edit();
+		editor.putString("currentUserId", userId);
+		editor.commit();
+	}
+	
+	/**
+	 * 闹钟绑定的id
+	 * @param context
+	 * @return
+	 */
+	public static String getCurrentUserId(Context context) {
+		
+		SharedPreferences sp = context.getSharedPreferences(TV_SETTING_XML, Context.MODE_PRIVATE);
+		
+		return sp.getString("currentUserId", "");
+	}
 
 }

@@ -1018,6 +1018,9 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 		
 		xiaiBt.setEnabled(true);
 		
+		StatisticsUtils.deleteData4ProId(getApplicationContext(), 
+				StatisticsUtils.getCurrentUserId(getApplicationContext()), prod_id);
+		
 		
 			if(favNum - 1 >=0) {
 				
