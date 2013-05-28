@@ -1347,8 +1347,8 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 		tempContentValues.put(UserShouCang.STARS, info.stars);
 		tempContentValues.put(UserShouCang.DIRECTORS, info.directors);
 		tempContentValues.put(UserShouCang.IS_NEW, DataBaseItems.NEW);
-		tempContentValues.put(UserShouCang.IS_UPDATE, DataBaseItems.OLD);
-//		tempContentValues.put(UserShouCang.IS_UPDATE, DataBaseItems.NEW);//测试
+//		tempContentValues.put(UserShouCang.IS_UPDATE, DataBaseItems.OLD);
+		tempContentValues.put(UserShouCang.IS_UPDATE, DataBaseItems.NEW);//测试
 		
 		database.insert(TvDatabaseHelper.ZHUIJU_TABLE_NAME, null, tempContentValues);
 	}
