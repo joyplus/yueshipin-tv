@@ -510,22 +510,14 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 			GetNextValURL();
 			if (PROD_SOURCE != null)
 				setVideoURI(Uri.parse(PROD_SOURCE), ERROR_JUMP_TIME);
-//			if (PROD_SOURCE == null) {
-				// VideoView will show an error dialog if we return false, so no
-				// need
-				// to show more message.
+//			if (!GetNextValURL()) {
+//				// VideoView will show an error dialog if we return false, so no
+//				// need
+//				// to show more message.
 //				mController.showErrorMessage("");
 //				return false;
 //			} else {
-//				if(arg1 == MediaPlayer.MEDIA_ERROR_SERVER_DIED){
-//					player.release();
-//					onCompletion();
-//					Intent intent = new Intent(mContext, VideoPlayerActivity.class);
-//					mContext.startActivity(intent);
-//					
-//				}else
-//				if(arg1 == MediaPlayer.MEDIA_ERROR_SERVER_DIED)
-//					player.reset();
+//
 //				setVideoURI(Uri.parse(PROD_SOURCE), ERROR_JUMP_TIME);
 //				return false;
 //			}
@@ -1413,8 +1405,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		return PROD_SOURCE;
 
 	}
-	private void GetNextValURL() {
-		
+	private boolean GetNextValURL() {
 
 		CurrentPlayData mCurrentPlayData = app.getCurrentPlayData();
 		ReturnProgramView m_ReturnProgramView = app.get_ReturnProgramView();
@@ -1435,6 +1426,9 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		switch (mCurrentPlayData.prod_type) {
 		case 1: {
 			try{
+				if (mCurrentPlayData.CurrentQuality > m_ReturnProgramView.movie.episodes[0].down_urls[mCurrentPlayData.CurrentSource].urls.length - 1) {
+					return false;
+				}
 				PROD_SOURCE = m_ReturnProgramView.movie.episodes[0].
 						down_urls[mCurrentPlayData.CurrentSource].
 						urls[index].url;
@@ -1446,6 +1440,9 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		case 131:
 		case 2: {
 			try{
+				if (mCurrentPlayData.CurrentQuality > m_ReturnProgramView.tv.episodes[0].down_urls[mCurrentPlayData.CurrentSource].urls.length - 1) {
+					return false;
+				}
 				PROD_SOURCE = m_ReturnProgramView.tv.episodes[mCurrentPlayData.CurrentIndex].
 						down_urls[mCurrentPlayData.CurrentSource].
 						urls[index].url;
@@ -1457,6 +1454,9 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 			break;
 		case 3: {
 			try{
+				if (mCurrentPlayData.CurrentQuality > m_ReturnProgramView.show.episodes[0].down_urls[mCurrentPlayData.CurrentSource].urls.length - 1) {
+					return false;
+				}
 				PROD_SOURCE = m_ReturnProgramView.show.episodes[mCurrentPlayData.CurrentIndex].
 						down_urls[mCurrentPlayData.CurrentSource].
 						urls[index].url;
@@ -1466,6 +1466,11 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		}
 
 			break;
+		}
+		if(PROD_SOURCE != null)
+			return true;
+		else {
+			return false;
 		}
 
 
