@@ -590,7 +590,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		}
 		
 		if(totalTime <=0 ){//如果没有获取到时间，按返回键直接退出播放
-			if(keyCode == KeyEvent.KEYCODE_BACK)
+			if(keyCode == KeyEvent.KEYCODE_BACK || keyCode == KeyEvent.KEYCODE_ESCAPE)
 				return false;
 			else//否则返回键自己处理
 				return true;
@@ -773,6 +773,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 			// TODO: Handle next / previous accordingly, for now we're
 			// just consuming the events.
 			return true;
+		case KeyEvent.KEYCODE_ESCAPE:
 		case KeyEvent.KEYCODE_BACK://返回键
 			
 			currentKeyEvent = KeyEvent.KEYCODE_BACK;
