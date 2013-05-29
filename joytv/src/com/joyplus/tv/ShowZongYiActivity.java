@@ -108,7 +108,8 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 		
 		if(userId != null) {
 			
-			shoucangList = StatisticsUtils.getList4DB(getApplicationContext(), userId, DONGMAN_TYPE);
+			shoucangList = StatisticsUtils.getList4DB(getApplicationContext(), 
+					StatisticsUtils.getCurrentUserId(getApplicationContext()), ZONGYI_TYPE);
 		}
 		
 		if(shoucangList != null && !shoucangList.isEmpty()) {

@@ -1440,7 +1440,8 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 		String[] updateselectionArgs = {info.prod_id,userId};
 		
 //		database.insert(TvDatabaseHelper.ZHUIJU_TABLE_NAME, null, tempContentValues);
-		database.update(TvDatabaseHelper.ZHUIJU_TABLE_NAME, tempContentValues, updateSelection, updateselectionArgs);
+		int updateInt = database.update(TvDatabaseHelper.ZHUIJU_TABLE_NAME, tempContentValues, updateSelection, updateselectionArgs);
+	    Log.i(TAG, "info.prod_id--->" + info.prod_id + " updateInt--->" + updateInt);
 	}
 	
 	//HotItemInfo 插入数据 History

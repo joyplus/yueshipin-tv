@@ -2642,7 +2642,7 @@ public class Main extends Activity implements OnItemSelectedListener,
 					.is48TimeClock(getApplicationContext());// 是否开启闹钟
 
 			AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
-			long time = 48 * 60 * 60 * 1000;
+			long time =System.currentTimeMillis()+ 48 * 60 * 60 * 1000;//教训
 			// long time = 1000;
 
 			PendingIntent pi = PendingIntent.getBroadcast(this, 0, new Intent(

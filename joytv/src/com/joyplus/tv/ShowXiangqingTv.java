@@ -171,10 +171,10 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 			
 			if(i == 0) {
 				
-				b.setNextFocusLeftId(b.getId());
+//				b.setNextFocusLeftId(b.getId());
 			} else if(i == 4) {
 				
-				b.setNextFocusRightId(b.getId());
+//				b.setNextFocusRightId(b.getId());
 			}
 			
 			if(indexButton >= 0 && indexButton <= 2) {
@@ -919,34 +919,36 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 		
 		Log.i(TAG, "selectedIndex--->" + selectedIndex);
 		
-		if(num>COUNT*selectedIndex){
-			initTableView(COUNT);
-		}else{
-			initTableView(num-COUNT*(selectedIndex-1));
-		}
-		
-		seletedTitleButton = (Button) findViewById(selectedIndex*10000);
-		if(seletedTitleButton != null) {
-			if(selectedIndex != 1) {
-				
-				Button button = (Button) findViewById(1 * 10000);
-				button.setEnabled(true);
-			}
-			seletedTitleButton.setEnabled(false);
+		if(date != null) {
 			
-			seletedIndexButton = (Button) findViewById(seletedButtonIndex);
-			if(seletedIndexButton != null) {
+			if(num>COUNT*selectedIndex){
+				initTableView(COUNT);
+			}else{
+				initTableView(num-COUNT*(selectedIndex-1));
+			}
+			
+			seletedTitleButton = (Button) findViewById(selectedIndex*10000);
+			if(seletedTitleButton != null) {
+				if(selectedIndex != 1) {
+					
+					Button button = (Button) findViewById(1 * 10000);
+					button.setEnabled(true);
+				}
+				seletedTitleButton.setEnabled(false);
 				
-				seletedIndexButton.setBackgroundResource(R.drawable.bg_button_tv_selector);
-				seletedIndexButton.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector));
-				seletedIndexButton.setPadding(8, 0, 0, 0);
-				seletedIndexButton.setBackgroundResource(R.drawable.bg_button_tv_selector_1);
-				seletedIndexButton.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector_1));
-//				seletedIndexButton.setEnabled(false);
-				seletedIndexButton.setPadding(8, 0, 0, 0);
+				seletedIndexButton = (Button) findViewById(seletedButtonIndex);
+				if(seletedIndexButton != null) {
+					
+					seletedIndexButton.setBackgroundResource(R.drawable.bg_button_tv_selector);
+					seletedIndexButton.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector));
+					seletedIndexButton.setPadding(8, 0, 0, 0);
+					seletedIndexButton.setBackgroundResource(R.drawable.bg_button_tv_selector_1);
+					seletedIndexButton.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector_1));
+//					seletedIndexButton.setEnabled(false);
+					seletedIndexButton.setPadding(8, 0, 0, 0);
+				}
 			}
 		}
-		
 		
 	}
 	
