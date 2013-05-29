@@ -746,9 +746,10 @@ public class MovieControllerOverlay extends FrameLayout implements
 	}
 
 	public void onAnimationEnd(Animation animation) {
-		if (mShowVolume) {
-
+		if (mShowVolume && mLayoutBottom.getVisibility() == View.GONE) {
+			
 			hideVolume();
+			
 		}else
 			
 		hide();

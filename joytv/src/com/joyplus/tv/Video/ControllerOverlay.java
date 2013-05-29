@@ -98,4 +98,7 @@ public interface ControllerOverlay {
 	void setPrepared(boolean mPrepared);
 	
 	void returnShowView();
+	
+	void cancelHiding();
+	void hidden5ControlView();
 }
