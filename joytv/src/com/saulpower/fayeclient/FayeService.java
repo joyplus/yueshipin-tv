@@ -118,7 +118,7 @@ public class FayeService extends Service implements FayeListener{
 		if(app.getUserData("isBand")!=null&&"1".equals(app.getUserData("isBand"))){
 			myClient.connectToServer(null);
 		}
-		return super.onStartCommand(intent, flags, START_STICKY); 
+		return super.onStartCommand(intent, START_STICKY, startId); 
 	}
 
 

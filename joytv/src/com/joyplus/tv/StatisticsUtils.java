@@ -34,15 +34,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joyplus.tv.Service.Return.ReturnTVBangDanList;
 import com.joyplus.tv.Service.Return.ReturnTops;
 import com.joyplus.tv.Service.Return.ReturnUserFavorities;
+import com.joyplus.tv.Service.Return.ReturnUserPlayHistories;
 import com.joyplus.tv.database.TvDatabaseHelper;
 import com.joyplus.tv.entity.HotItemInfo;
 import com.joyplus.tv.entity.MovieItemData;
 import com.joyplus.tv.entity.ReturnFilterMovieSearch;
 import com.joyplus.tv.utils.BangDanKey;
 import com.joyplus.tv.utils.DataBaseItems;
+import com.joyplus.tv.utils.DataBaseItems.UserHistory;
+import com.joyplus.tv.utils.DataBaseItems.UserShouCang;
 import com.joyplus.tv.utils.JieMianConstant;
 import com.joyplus.tv.utils.Log;
-import com.joyplus.tv.utils.DataBaseItems.UserShouCang;
 
 public class StatisticsUtils implements JieMianConstant, BangDanKey {
 
@@ -164,6 +166,8 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 		return url + "?page_num=" + page_num + "&page_size=" + page_size
 				+ "&vod_type=" + vod_type + "&userid=" + userId;
 	}
+	
+	
 
 	public static final int CACHE_NUM = 20;
 	public static final int FIRST_NUM = 30;
@@ -513,6 +517,8 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 	// search
 
 	public static String getSearch_FirstURL(String search) {
+		Log.i(TAG, "getSearch_FirstURL-->" + StatisticsUtils.getSearchURL(SEARCH_URL, 1 + "", FIRST_NUM + "",
+				search));
 
 		return StatisticsUtils.getSearchURL(SEARCH_URL, 1 + "", FIRST_NUM + "",
 				search);
@@ -586,6 +592,12 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 	public static String getShoucangURL(String userId) {
 
 		return getUserFavURL(FAV_URL, 1 + "", SHOUCANG_NUM + "", "", userId);
+	}
+	
+	// 历史 取100条数据 为全部类型
+	public static String getHistoryURL(String userId) {
+
+		return getUserFavURL(HISTORY_URL, 1 + "", SHOUCANG_NUM + "", "", userId);
 	}
 
 	public static final String YEAR = "&year=";
@@ -1073,6 +1085,54 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 
 		return list;
 	}
+	
+	//存储历史数据
+	public static List<HotItemInfo> returnUserHistoryJson(String json)
+			throws JsonParseException, JsonMappingException, IOException {
+
+		if (json == null || json.equals("")) {
+
+			return new ArrayList<HotItemInfo>();
+		}
+		ObjectMapper mapper = new ObjectMapper();
+
+		ReturnUserPlayHistories result = mapper.readValue(json.toString(),
+				ReturnUserPlayHistories.class);
+		List<HotItemInfo> list = new ArrayList<HotItemInfo>();
+		for (int i = 0; i < result.histories.length; i++) {
+			HotItemInfo item = new HotItemInfo();
+			item.id = result.histories[i].id;
+			item.prod_id = result.histories[i].prod_id;
+			item.prod_name = result.histories[i].prod_name;
+			item.prod_type = result.histories[i].prod_type;
+			String bigPicUrl = result.histories[i].big_prod_pic_url;
+			if(bigPicUrl == null || bigPicUrl.equals("")
+					||bigPicUrl.equals(StatisticsUtils.EMPTY)) {
+				
+				bigPicUrl = result.histories[i].prod_pic_url;
+			}
+			item.prod_pic_url = bigPicUrl;
+			item.stars = result.histories[i].stars;
+			item.directors = result.histories[i].directors;
+			item.favority_num = result.histories[i].favority_num;
+			item.support_num = result.histories[i].support_num;
+			item.publish_date = result.histories[i].publish_date;
+			item.score = result.histories[i].score;
+			item.area = result.histories[i].area;
+			item.cur_episode = result.histories[i].cur_episode;
+			item.max_episode = result.histories[i].max_episode;
+			item.definition = result.histories[i].definition;
+			item.prod_summary = result.histories[i].prod_summary;
+			item.duration = result.histories[i].duration;
+			item.video_url = result.histories[i].video_url;
+			item.playback_time = result.histories[i].playback_time;
+			item.prod_subname = result.histories[i].prod_subname;
+			item.play_type = result.histories[i].play_type;
+			list.add(item);
+		}
+
+		return list;
+	}
 
 	public static String getLastBandNotice(String lastTime) {
 		// long last = Long.valueOf(lastTime);
@@ -1333,10 +1393,9 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 		
 		helper.closeDatabase();
 		
-		setCancelShoucangProId(context, proId);
 	}
 	
-	//HotItemInfo 插入数据,置顶状态不开启
+	//HotItemInfo 插入数据,置顶状态不开启 Shoucang
 	public static void insertHotItemInfo2DB(Context context,HotItemInfo info,String userId,SQLiteDatabase database) {
 		
 		ContentValues tempContentValues = new ContentValues();
@@ -1358,8 +1417,8 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 		database.insert(TvDatabaseHelper.ZHUIJU_TABLE_NAME, null, tempContentValues);
 	}
 	
-	//HotItemInfo 插入数据,置顶状态开启
-	public static void insertHotItemInfo2DB_Update(Context context,HotItemInfo info,String userId,SQLiteDatabase database) {
+	//HotItemInfo 插入数据,置顶状态开启 Shoucang
+	public static void updateHotItemInfo2DB(Context context,HotItemInfo info,String userId,SQLiteDatabase database) {
 		
 		ContentValues tempContentValues = new ContentValues();
 		tempContentValues.put(UserShouCang.USER_ID, userId);
@@ -1377,7 +1436,45 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 //		tempContentValues.put(UserShouCang.IS_UPDATE, DataBaseItems.OLD);
 		tempContentValues.put(UserShouCang.IS_UPDATE, DataBaseItems.NEW);//测试
 		
-		database.insert(TvDatabaseHelper.ZHUIJU_TABLE_NAME, null, tempContentValues);
+		String updateSelection = UserShouCang.PRO_ID  + "=? and " + UserShouCang.USER_ID + "=?";
+		String[] updateselectionArgs = {info.prod_id,userId};
+		
+//		database.insert(TvDatabaseHelper.ZHUIJU_TABLE_NAME, null, tempContentValues);
+		database.update(TvDatabaseHelper.ZHUIJU_TABLE_NAME, tempContentValues, updateSelection, updateselectionArgs);
+	}
+	
+	//HotItemInfo 插入数据 History
+	public static void insertHotItemInfo2DB_History(Context context,HotItemInfo info,String userId,SQLiteDatabase database) {
+		
+		ContentValues tempContentValues = new ContentValues();
+		tempContentValues.put(UserHistory.USER_ID, userId);
+		tempContentValues.put(UserHistory.PROD_TYPE, info.prod_type);
+		tempContentValues.put(UserHistory.PROD_NAME, info.prod_name);
+		tempContentValues.put(UserHistory.PROD_SUBNAME, info.prod_subname);
+		tempContentValues.put(UserHistory.PRO_ID, info.prod_id);
+//		tempContentValues.put(UserHistory.CREATE_DATE, info.);
+		tempContentValues.put(UserHistory.PLAY_TYPE, info.play_type);
+		tempContentValues.put(UserHistory.PLAYBACK_TIME, info.playback_time);
+		tempContentValues.put(UserHistory.VIDEO_URL, info.video_url);
+		tempContentValues.put(UserHistory.DURATION, info.duration);
+		tempContentValues.put(UserHistory.BOFANG_ID, info.id);
+		tempContentValues.put(UserHistory.PROD_PIC_URL, info.prod_pic_url);
+//		tempContentValues.put(UserHistory.BIG_PROD_PIC_URL, info);
+		tempContentValues.put(UserHistory.DEFINITION, info.definition);
+		tempContentValues.put(UserHistory.STARS, info.stars);
+		tempContentValues.put(UserHistory.DIRECTORS, info.directors);
+		tempContentValues.put(UserHistory.FAVORITY_NUM, info.favority_num);
+		tempContentValues.put(UserHistory.SUPPORT_NUM, info.support_num);
+		tempContentValues.put(UserHistory.PUBLISH_DATE, info.publish_date);
+		tempContentValues.put(UserHistory.SCORE, info.score);
+		tempContentValues.put(UserHistory.AREA, info.area);
+		tempContentValues.put(UserHistory.MAX_EPISODE, info.max_episode);
+		tempContentValues.put(UserHistory.CUR_EPISODE, info.cur_episode);
+		tempContentValues.put(UserHistory.IS_NEW, DataBaseItems.NEW);
+		
+//		tempContentValues.put(UserShouCang.IS_UPDATE, DataBaseItems.NEW);//测试
+		
+		database.insert(TvDatabaseHelper.HISTORY_TABLE_NAME, null, tempContentValues);
 	}
 	
 	//当前影片是否是置顶影片，并且返回当前更新集数
@@ -1431,8 +1528,51 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 		database.update(TvDatabaseHelper.ZHUIJU_TABLE_NAME,tempValues, updateSelection, updateselectionArgs);
 		
 		helper.closeDatabase();
+	}
+	
+	//通过proid获取单条历史记录
+	public static HotItemInfo getHotItemInfo4DB_History(Context context,String userId,String prod_id) {
 		
-		setCancelShoucangProId(context, pro_id);
+		TvDatabaseHelper helper = TvDatabaseHelper.newTvDatabaseHelper(context);
+		SQLiteDatabase database = helper.getWritableDatabase();//获取写db
+		
+		String selection = UserHistory.PRO_ID  + "=? and " + UserShouCang.USER_ID + "=?";
+		String[] selectionArgs = {prod_id,userId};
+		
+		String[] columns = { UserHistory.PROD_TYPE,
+				UserHistory.PROD_SUBNAME,UserHistory.PLAYBACK_TIME};// 返回当前类型、看到的集数【电影为Empty】,所看到的的时间
+		
+		Cursor cursor = database.query(TvDatabaseHelper.HISTORY_TABLE_NAME, columns, selection, selectionArgs, null, null, null);
+		
+		HotItemInfo info = new HotItemInfo();
+		
+		if(cursor != null && cursor.getCount() > 0) {
+			
+			Log.i(TAG, "cursor.getCount()--->" + cursor.getCount());
+			
+			if(cursor.getCount() == 1) {
+				
+				if(cursor.moveToNext()) {
+					
+					int indexType = cursor.getColumnIndex(UserHistory.PROD_TYPE);
+					int indexSubName = cursor.getColumnIndex(UserHistory.PROD_SUBNAME);
+					int indexPlayBackTime = cursor.getColumnIndex(UserHistory.PLAYBACK_TIME);
+					
+					if(indexSubName != -1) {
+						
+						String type = cursor.getString(indexType);
+						String subName = cursor.getString(indexSubName);
+						String playBackTime = cursor.getString(indexPlayBackTime);
+						
+						info.prod_type = type;
+						info.prod_subname = subName;
+						info.playback_time = playBackTime;
+					}
+				}
+			}
+		}
+		
+		return info;
 	}
 	
 	

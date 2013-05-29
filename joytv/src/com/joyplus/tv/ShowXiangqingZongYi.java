@@ -42,7 +42,9 @@ import com.joyplus.tv.Adapters.CurrentPlayData;
 import com.joyplus.tv.Service.Return.ReturnProgramView;
 import com.joyplus.tv.Service.Return.ReturnProgramView.DOWN_URLS;
 import com.joyplus.tv.Video.VideoPlayerActivity;
+import com.joyplus.tv.entity.HotItemInfo;
 import com.joyplus.tv.ui.WaitingDialog;
+import com.joyplus.tv.utils.BangDanKey;
 import com.joyplus.tv.utils.DefinationComparatorIndex;
 import com.joyplus.tv.utils.ItemStateUtils;
 import com.joyplus.tv.utils.JieMianConstant;
@@ -710,6 +712,8 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 			
 			num = Integer.valueOf(date.show.episodes.length);
 			updateView();
+			
+			showHistorySelect();
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -863,7 +867,92 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 					app.getUserInfo().getUserAvatarUrl(), false, true, 0,
 					R.drawable.avatar_defult);
 			aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
+			
+			showHistorySelect();
 		}
+	}
+	
+	private synchronized void  showHistorySelect() {
+		
+		HotItemInfo info = StatisticsUtils.getHotItemInfo4DB_History(getApplicationContext(),
+				app.getUserInfo().getUserId(), prod_id);
+		
+		if(info != null){
+			
+			String type = info.prod_type;
+			Log.i(TAG, "type--->" + type);
+			if(type != null && type.equals(BangDanKey.TV_TYPE)){
+				
+				String prod_subName = info.prod_subname;
+				Log.i(TAG, "prod_subName--->" + prod_subName);
+				if(prod_subName != null && !prod_subName.equals("")
+						&& !prod_subName.equals("EMPTY")) {
+					
+					int currentIndex = Integer.valueOf(prod_subName);
+					
+					if(currentIndex > 0 && currentIndex < 2000) {
+						Log.i(TAG, "currentIndex--->" + currentIndex);
+						
+						if(isOver) {//如果为正序
+							
+							//选择多少页，然后选择多少页下的第几个Button
+							int chu = (currentIndex - 1)/COUNT;
+							int quyu = currentIndex%COUNT;
+							
+							selectedIndex = chu+ 1;//当前页数
+							seletedButtonIndex = currentIndex;
+						} else {//如果为倒序
+							
+							int tempFirstIndex = num%COUNT;
+							int tempTotal = num - tempFirstIndex;
+							
+							if(currentIndex >=1 && currentIndex <= tempFirstIndex) {//最后一页
+								
+								selectedIndex = totle_pagecount;
+								seletedButtonIndex = currentIndex;
+							} else if(currentIndex > tempFirstIndex){
+								
+								int tempIndex = (currentIndex - tempFirstIndex - 1)/COUNT;
+								selectedIndex = totle_pagecount - tempIndex;
+								seletedButtonIndex = currentIndex;
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		Log.i(TAG, "selectedIndex--->" + selectedIndex);
+		
+		if(num>COUNT*selectedIndex){
+			initTableView(COUNT);
+		}else{
+			initTableView(num-COUNT*(selectedIndex-1));
+		}
+		
+		seletedTitleButton = (Button) findViewById(selectedIndex*10000);
+		if(seletedTitleButton != null) {
+			if(selectedIndex != 1) {
+				
+				Button button = (Button) findViewById(1 * 10000);
+				button.setEnabled(true);
+			}
+			seletedTitleButton.setEnabled(false);
+			
+			seletedIndexButton = (Button) findViewById(seletedButtonIndex);
+			if(seletedIndexButton != null) {
+				
+				seletedIndexButton.setBackgroundResource(R.drawable.bg_button_tv_selector);
+				seletedIndexButton.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector));
+				seletedIndexButton.setPadding(8, 0, 0, 0);
+				seletedIndexButton.setBackgroundResource(R.drawable.bg_button_tv_selector_1);
+				seletedIndexButton.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector_1));
+//				seletedIndexButton.setEnabled(false);
+				seletedIndexButton.setPadding(8, 0, 0, 0);
+			}
+		}
+		
+		
 	}
 	
 	private void play(int index){

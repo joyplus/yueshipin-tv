@@ -33,6 +33,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
+import android.database.sqlite.SQLiteDatabase;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -56,6 +57,8 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joyplus.tv.Service.Return.ReturnProgramView.DOWN_URLS;
+import com.joyplus.tv.database.TvDatabaseHelper;
+import com.joyplus.tv.entity.HotItemInfo;
 import com.joyplus.tv.entity.YueDanInfo;
 import com.joyplus.tv.App;
 import com.joyplus.tv.Constant;
@@ -64,7 +67,9 @@ import com.joyplus.tv.StatisticsUtils;
 import com.joyplus.tv.Adapters.CurrentPlayData;
 import com.joyplus.tv.Service.Return.ReturnProgramView;
 import com.joyplus.tv.utils.BangDanKey;
+import com.joyplus.tv.utils.DataBaseItems.UserHistory;
 import com.joyplus.tv.utils.Log;
+import com.joyplus.tv.utils.DataBaseItems.UserShouCang;
 import com.umeng.analytics.MobclickAgent;
 
 /**
@@ -584,6 +589,35 @@ public class VideoPlayerActivity extends Activity {
 		cb.params(params).url(url).type(JSONObject.class)
 				.weakHandler(this, "CallProgramPlayResult");
 		aq.ajax(cb);
+		
+		//DB操作，把存储到服务器的数据保存到数据库
+		TvDatabaseHelper helper = TvDatabaseHelper
+				.newTvDatabaseHelper(getApplicationContext());
+		SQLiteDatabase database = helper.getWritableDatabase();// 获取写db
+		
+		String selection = UserShouCang.USER_ID + "=? and " + UserHistory.PRO_ID + "=?";// 通过用户id，找到相应信息
+		String[] selectionArgs = { StatisticsUtils.getCurrentUserId(getApplicationContext()),prod_id };
+		
+		database.delete(TvDatabaseHelper.HISTORY_TABLE_NAME, selection,
+				selectionArgs);
+		
+		HotItemInfo info = new HotItemInfo();
+		info.prod_type = prod_type + "";
+		info.prod_name = prod_name;
+		if (mCurrentPlayData != null) {
+			
+			info.prod_subname = (mCurrentPlayData.CurrentIndex + 1) + "";
+		}
+		info.prod_id = prod_id;
+		info.play_type = "1";
+		info.playback_time = playback_time + "";
+		info.video_url = prod_url;
+		info.duration = duration + "";
+				
+		StatisticsUtils.insertHotItemInfo2DB_History(getApplicationContext(), info,
+				StatisticsUtils.getCurrentUserId(getApplicationContext()), database);
+		
+		helper.closeDatabase();
 
 	}
 

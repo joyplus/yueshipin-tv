@@ -66,6 +66,8 @@ public class TvDatabaseHelper extends SQLiteOpenHelper implements UserShouCang,S
             	
             	sqLiteDatabase.close();
             }
+            
+            close();
         } catch (SQLException e) {
         	e.printStackTrace();
 //            return;
@@ -129,14 +131,14 @@ public class TvDatabaseHelper extends SQLiteOpenHelper implements UserShouCang,S
 			+ UserHistory.PROD_NAME + TEXT_DOT 
 			+ UserHistory.PROD_SUBNAME + TEXT_DOT 
 			+ UserHistory.PRO_ID + TEXT_DOT 
-			+ UserHistory.CREATE_DATE + TEXT_DOT
+//			+ UserHistory.CREATE_DATE + TEXT_DOT
 			+ UserHistory.PLAY_TYPE + TEXT_DOT 
 			+ UserHistory.PLAYBACK_TIME + TEXT_DOT
 			+ UserHistory.VIDEO_URL + TEXT_DOT 
 			+ UserHistory.DURATION + TEXT_DOT 
 			+ UserHistory.BOFANG_ID + TEXT_DOT 
 			+ UserHistory.PROD_PIC_URL + TEXT_DOT 
-			+ UserHistory.BIG_PROD_PIC_URL + TEXT_DOT 
+//			+ UserHistory.BIG_PROD_PIC_URL + TEXT_DOT 
 			+ UserHistory.DEFINITION + TEXT_DOT 
 			+ UserHistory.STARS + TEXT_DOT 
 			+ UserHistory.DIRECTORS + TEXT_DOT 
@@ -148,7 +150,7 @@ public class TvDatabaseHelper extends SQLiteOpenHelper implements UserShouCang,S
 			+ UserHistory.MAX_EPISODE + TEXT_DOT 
 			+ UserHistory.CUR_EPISODE + TEXT_DOT 
 			
-			+ IS_NEW + INTEGER_DOT
+			+ IS_NEW + INTEGER
 			+ " )";
 
 	@Override

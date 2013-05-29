@@ -12,10 +12,9 @@ import org.json.JSONObject;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.DialogInterface.OnCancelListener;
+import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -41,7 +40,9 @@ import com.joyplus.tv.Adapters.CurrentPlayData;
 import com.joyplus.tv.Service.Return.ReturnProgramView;
 import com.joyplus.tv.Service.Return.ReturnProgramView.DOWN_URLS;
 import com.joyplus.tv.Video.VideoPlayerActivity;
+import com.joyplus.tv.entity.HotItemInfo;
 import com.joyplus.tv.ui.WaitingDialog;
+import com.joyplus.tv.utils.BangDanKey;
 import com.joyplus.tv.utils.DefinationComparatorIndex;
 import com.joyplus.tv.utils.ItemStateUtils;
 import com.joyplus.tv.utils.JieMianConstant;
@@ -60,9 +61,6 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 	private Button dingBt,xiaiBt, yingpingBt;
 	private Button bofangBt,gaoqingBt;
 
-	private Button seletedTitleButton;
-	private Button seletedIndexButton;
-	private int seletedButtonIndex=0;
 	private View beforeView;
 
 	private PopupWindow popupWindow;
@@ -76,10 +74,7 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 	
 	private LinearLayout layout;
 	private TableLayout table;
-	private boolean isOver = false;
-	private int num = 0;
-	private int totle_pagecount;
-	private int selectedIndex;
+	
 	private static final int COUNT = 20;
 	
 	private String prod_id;
@@ -89,6 +84,15 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 	private ReturnProgramView date;
 	
 	private static int favNum = 0;
+	
+	private boolean isOver = false;//默认倒序 是否倒序或者正序的判断
+	private int num = 0;//影片的总集数
+	private int totle_pagecount;//20一页，页数
+	
+	private Button seletedTitleButton;//选中页数的Button
+	private Button seletedIndexButton;//选中当前页数下 当前想要播放集数的Button
+	private int seletedButtonIndex=0;//选中当前页数下，当前想要播放集数的Button的索引 1开始
+	private int selectedIndex;//选中页数的索引 1开始
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -324,7 +328,92 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 					app.getUserInfo().getUserAvatarUrl(), false, true, 0,
 					R.drawable.avatar_defult);
 			aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
+			
+			showHistorySelect();
 		}
+	}
+	
+	private synchronized void  showHistorySelect() {
+		
+		HotItemInfo info = StatisticsUtils.getHotItemInfo4DB_History(getApplicationContext(),
+				app.getUserInfo().getUserId(), prod_id);
+		
+		if(info != null){
+			
+			String type = info.prod_type;
+			Log.i(TAG, "type--->" + type);
+			if(type != null && type.equals(BangDanKey.DONGMAN_TYPE)){
+				
+				String prod_subName = info.prod_subname;
+				Log.i(TAG, "prod_subName--->" + prod_subName);
+				if(prod_subName != null && !prod_subName.equals("")
+						&& !prod_subName.equals("EMPTY")) {
+					
+					int currentIndex = Integer.valueOf(prod_subName);
+					
+					if(currentIndex > 0 && currentIndex < 2000) {
+						Log.i(TAG, "currentIndex--->" + currentIndex);
+						
+						if(isOver) {//如果为正序
+							
+							//选择多少页，然后选择多少页下的第几个Button
+							int chu = (currentIndex - 1)/COUNT;
+							int quyu = currentIndex%COUNT;
+							
+							selectedIndex = chu+ 1;//当前页数
+							seletedButtonIndex = currentIndex;
+						} else {//如果为倒序
+							
+							int tempFirstIndex = num%COUNT;
+							int tempTotal = num - tempFirstIndex;
+							
+							if(currentIndex >=1 && currentIndex <= tempFirstIndex) {//最后一页
+								
+								selectedIndex = totle_pagecount;
+								seletedButtonIndex = currentIndex;
+							} else if(currentIndex > tempFirstIndex){
+								
+								int tempIndex = (currentIndex - tempFirstIndex - 1)/COUNT;
+								selectedIndex = totle_pagecount - tempIndex;
+								seletedButtonIndex = currentIndex;
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		Log.i(TAG, "selectedIndex--->" + selectedIndex);
+		
+		if(num>COUNT*selectedIndex){
+			initTableView(COUNT);
+		}else{
+			initTableView(num-COUNT*(selectedIndex-1));
+		}
+		
+		seletedTitleButton = (Button) findViewById(selectedIndex*10000);
+		if(seletedTitleButton != null) {
+			if(selectedIndex != 1) {
+				
+				Button button = (Button) findViewById(1 * 10000);
+				button.setEnabled(true);
+			}
+			seletedTitleButton.setEnabled(false);
+			
+			seletedIndexButton = (Button) findViewById(seletedButtonIndex);
+			if(seletedIndexButton != null) {
+				
+				seletedIndexButton.setBackgroundResource(R.drawable.bg_button_tv_selector);
+				seletedIndexButton.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector));
+				seletedIndexButton.setPadding(8, 0, 0, 0);
+				seletedIndexButton.setBackgroundResource(R.drawable.bg_button_tv_selector_1);
+				seletedIndexButton.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector_1));
+//				seletedIndexButton.setEnabled(false);
+				seletedIndexButton.setPadding(8, 0, 0, 0);
+			}
+		}
+		
+		
 	}
 
 	@Override
@@ -414,7 +503,7 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 		default:
 			
 			if(v.getId()>=10000){
-				selectedIndex = v.getId()/10000;
+				selectedIndex = v.getId()/10000;//导航栏button位置索引，从1开始
 				if(num>COUNT*selectedIndex){
 					initTableView(COUNT);
 				}else{
@@ -729,6 +818,8 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 			pic_url = bigPicUrl;
 			removeDialog(DIALOG_WAITING);
 			updateView();
+			
+			showHistorySelect();
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

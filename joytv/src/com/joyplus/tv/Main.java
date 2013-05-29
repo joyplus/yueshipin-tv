@@ -82,6 +82,7 @@ import com.joyplus.tv.ui.UserInfo;
 import com.joyplus.tv.ui.WaitingDialog;
 import com.joyplus.tv.utils.BangDanKey;
 import com.joyplus.tv.utils.DataBaseItems;
+import com.joyplus.tv.utils.DataBaseItems.UserHistory;
 import com.joyplus.tv.utils.DataBaseItems.UserShouCang;
 import com.joyplus.tv.utils.DefinationComparatorIndex;
 import com.joyplus.tv.utils.Log;
@@ -2359,6 +2360,12 @@ public class Main extends Activity implements OnItemSelectedListener,
 
 		getServiceData(url, "initShouCangServiceData");
 	}
+	
+	protected void getHistoryData(String url) {
+		// TODO Auto-generated method stub
+
+		getServiceData(url, "initHistoryServiceData");
+	}
 
 	public void initShouCangServiceData(String url, JSONObject json,
 			AjaxStatus status) {
@@ -2379,6 +2386,10 @@ public class Main extends Activity implements OnItemSelectedListener,
 			compareUsrFav4DB(
 					StatisticsUtils.returnUserFavoritiesJson(json.toString()),
 					app.getUserInfo().getUserId());
+			
+			//获取历史播放记录数据
+			getHistoryData(StatisticsUtils.
+					getHistoryURL(StatisticsUtils.getCurrentUserId(getApplicationContext())));
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -2389,6 +2400,87 @@ public class Main extends Activity implements OnItemSelectedListener,
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public void initHistoryServiceData(String url, JSONObject json,
+			AjaxStatus status) {
+		// TODO Auto-generated method stub
+		
+		if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
+
+			app.MyToast(aq.getContext(),
+					getResources().getString(R.string.networknotwork));
+			return;
+		}
+		
+		try {
+
+			if (json == null || json.equals(""))
+				return;
+
+			Log.d(TAG, json.toString());
+			compareUsrHis4DB(
+					StatisticsUtils.returnUserHistoryJson(json.toString()),
+					app.getUserInfo().getUserId());
+			
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	// 网上用户id数据和本地用户id数据进行比较
+	// 以网上数据为标准，如果本地用户id数据多余的就删除，不存在的就进行添加
+	private void compareUsrHis4DB(List<HotItemInfo> list, String userId) {
+		
+		if (list == null) {
+
+			return;
+		}
+		
+		String selection = UserShouCang.USER_ID + "=?";// 通过用户id，找到相应信息
+		String[] selectionArgs = { userId };
+
+		TvDatabaseHelper helper = TvDatabaseHelper
+				.newTvDatabaseHelper(getApplicationContext());
+		SQLiteDatabase database = helper.getWritableDatabase();// 获取写db
+		
+		String[] columns = { UserHistory.PRO_ID};// 返回影片id
+		
+		Cursor cursor_proId = database.query(
+				TvDatabaseHelper.HISTORY_TABLE_NAME, columns, selection,
+				selectionArgs, null, null, null);
+		
+		if (list.size() > 0) {// 当用户有历史记录时
+			
+			if (cursor_proId != null && cursor_proId.getCount() > 0) {// 数据库有数据
+				
+				database.delete(TvDatabaseHelper.HISTORY_TABLE_NAME, selection,
+						selectionArgs);
+				
+			}
+			
+			for(HotItemInfo info:list) {
+				
+				StatisticsUtils.insertHotItemInfo2DB_History(getApplicationContext(),
+						info, userId, database);
+			}
+			
+		}else {// 如果网上此用户没有任何收藏,但是数据库中有相应用户数据，清空掉此用户数据
+
+			if (cursor_proId != null && cursor_proId.getCount() > 0) {// 数据库有数据
+
+				database.delete(TvDatabaseHelper.HISTORY_TABLE_NAME, selection,
+						selectionArgs);
+			}
+		}
+		
 	}
 
 	// 网上用户id数据和本地用户id数据进行比较
@@ -2491,7 +2583,7 @@ public class Main extends Activity implements OnItemSelectedListener,
 							if (!sameList4NetWork.get(i).cur_episode
 									.equals(sameList4DB.get(i).cur_episode)) {
 
-								StatisticsUtils.insertHotItemInfo2DB_Update(
+								StatisticsUtils.updateHotItemInfo2DB(
 										getApplicationContext(),
 										sameList4NetWork.get(i), userId,
 										database);
