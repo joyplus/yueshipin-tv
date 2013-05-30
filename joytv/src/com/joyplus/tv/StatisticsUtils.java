@@ -1568,12 +1568,47 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 						info.prod_type = type;
 						info.prod_subname = subName;
 						info.playback_time = playBackTime;
+						Log.i(TAG, "sub_name---->" + subName);
 					}
 				}
 			}
 		}
 		
 		return info;
+	}
+	
+	public static int getHistoryPlayIndex4DB(Context context,String prod_id,String prod_type) {
+		
+		HotItemInfo info = StatisticsUtils.getHotItemInfo4DB_History(context,
+				StatisticsUtils.getCurrentUserId(context), prod_id);
+		
+		if(info != null){
+			
+			String type = info.prod_type;
+			Log.i(TAG, "type--->" + type);
+			if(type != null && type.equals(prod_type)){
+				
+				String prod_subName = info.prod_subname;
+				Log.i(TAG, "prod_subName--->" + prod_subName);
+				if(prod_subName != null && !prod_subName.equals("")
+						&& !prod_subName.equals("EMPTY")) {
+					
+					int currentIndex = -1;
+					try {
+						currentIndex = Integer.valueOf(prod_subName);
+					} catch (NumberFormatException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+					return currentIndex;
+				}
+			}
+				
+		}
+		
+		return -1;
+		
 	}
 	
 	

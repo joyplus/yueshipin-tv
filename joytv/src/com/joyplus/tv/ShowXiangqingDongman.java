@@ -94,6 +94,8 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 	private int seletedButtonIndex=0;//选中当前页数下，当前想要播放集数的Button的索引 1开始
 	private int selectedIndex;//选中页数的索引 1开始
 	
+	private int historyPlayIndex4DB = -1;//当前数据库中播放的集数
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -111,8 +113,46 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 		showDefultDate();
 		initView();
 		showDialog(DIALOG_WAITING);
+		
+		//从DB文件中获取历史播放集数
+		historyPlayIndex4DB = StatisticsUtils.
+				getHistoryPlayIndex4DB(getApplicationContext(),prod_id,BangDanKey.DONGMAN_TYPE);
+		Log.i(TAG, "onCreate--->historyPlayIndex4DB:" + historyPlayIndex4DB);
+		
+		
 		getIsShoucangData();
 		getServiceDate();
+	}
+	
+	private void setTitleButtonEnable(int index , int tempStartTag,int tempEndTag,Button button) {
+		
+		int max = 0;
+		int min = 0;
+		
+		if(historyPlayIndex4DB != -1) {//能够获取历史记录
+			
+			if(tempStartTag < tempEndTag) {//正序
+				
+				max = tempEndTag;
+				min = tempStartTag;
+			} else {//倒序
+				
+				max = tempStartTag;
+				min = tempEndTag;
+			}
+			
+			//如果历史播放记录集数属于这个区间
+			if(historyPlayIndex4DB <= max && historyPlayIndex4DB >= min) {
+				
+				seletedTitleButton = button;
+				seletedTitleButton.setEnabled(false);
+				seletedTitleButton.requestFocus();
+				selectedIndex = index;
+			}
+		} else {
+			
+			selectedIndex = 1;//默认选择
+		}
 	}
 	
 	private boolean isShowHeadTable = false;
@@ -143,19 +183,34 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 			b.setLayoutParams(new LayoutParams((table.getWidth()-80)/5,35));
 			if(isOver){
 				if((i+1)*COUNT>num){
+					
 					b.setText((i*COUNT+1) +"-"+num);
+					
+					int tempStartTag = i*COUNT+1;
+					int tempEndTag = num;
+					
+					setTitleButtonEnable(i+1,tempStartTag, tempEndTag, b);
 				}else{
 					b.setText((i*COUNT+1) +"-"+(i+1)*COUNT);
+					
+					int tempStartTag = i*COUNT+1;
+					int tempEndTag = (i+1)*COUNT;
+					
+					setTitleButtonEnable(i+1,tempStartTag, tempEndTag, b);
 				}
 			}else{
 				if(num-(i+1)*COUNT<0){
 					b.setText((num-i*COUNT) + "-1");
+					
+					setTitleButtonEnable(i+1,(num-i*COUNT), 1, b);
 				}else{
 					b.setText((num-i*COUNT) + "-" + (num-(i+1)*COUNT+1));
+					
+					setTitleButtonEnable(i+1,(num-i*COUNT), num-(i+1)*COUNT+1, b);
 				}
 				
 			}
-			if(i==0){
+			if(i==0 && historyPlayIndex4DB == -1){//如果获取不到历史播放记录集数，就使用默认值
 				seletedTitleButton = b;
 				seletedTitleButton.setEnabled(false);
 			}
@@ -189,12 +244,14 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 			
 		}
 		
-		selectedIndex = 1;
+//		selectedIndex = 1;
 		if(num>COUNT){
 			initTableView(COUNT);
 		}else{
 			initTableView(num);
 		}
+		
+		bofangLL.requestFocus();
 	}
 
 	private void initPopWindow() {
@@ -329,94 +386,115 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 					R.drawable.avatar_defult);
 			aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
 			
-			showHistorySelect();
+//			showHistorySelect();
 		}
 	}
 	
-	private synchronized void  showHistorySelect() {
-		
-		HotItemInfo info = StatisticsUtils.getHotItemInfo4DB_History(getApplicationContext(),
-				app.getUserInfo().getUserId(), prod_id);
-		
-		if(info != null){
-			
-			String type = info.prod_type;
-			Log.i(TAG, "type--->" + type);
-			if(type != null && type.equals(BangDanKey.DONGMAN_TYPE)){
-				
-				String prod_subName = info.prod_subname;
-				Log.i(TAG, "prod_subName--->" + prod_subName);
-				if(prod_subName != null && !prod_subName.equals("")
-						&& !prod_subName.equals("EMPTY")) {
-					
-					int currentIndex = Integer.valueOf(prod_subName);
-					
-					if(currentIndex > 0 && currentIndex < 2000) {
-						Log.i(TAG, "currentIndex--->" + currentIndex);
-						
-						if(isOver) {//如果为正序
-							
-							//选择多少页，然后选择多少页下的第几个Button
-							int chu = (currentIndex - 1)/COUNT;
-							int quyu = currentIndex%COUNT;
-							
-							selectedIndex = chu+ 1;//当前页数
-							seletedButtonIndex = currentIndex;
-						} else {//如果为倒序
-							
-							int tempFirstIndex = num%COUNT;
-							int tempTotal = num - tempFirstIndex;
-							
-							if(currentIndex >=1 && currentIndex <= tempFirstIndex) {//最后一页
-								
-								selectedIndex = totle_pagecount;
-								seletedButtonIndex = currentIndex;
-							} else if(currentIndex > tempFirstIndex){
-								
-								int tempIndex = (currentIndex - tempFirstIndex - 1)/COUNT;
-								selectedIndex = totle_pagecount - tempIndex;
-								seletedButtonIndex = currentIndex;
-							}
-						}
-					}
-				}
-			}
-		}
-		
-		Log.i(TAG, "selectedIndex--->" + selectedIndex);
-		
-		if(date != null) {
-			
-			if(num>COUNT*selectedIndex){
-				initTableView(COUNT);
-			}else{
-				initTableView(num-COUNT*(selectedIndex-1));
-			}
-			
-			Button temp1 = (Button) findViewById(selectedIndex*10000);
-			if(seletedTitleButton != null) {
-				if(selectedIndex != 1) {
-					
-					Button button = (Button) findViewById(1 * 10000);
-					button.setEnabled(true);
-				}
-				seletedTitleButton.setEnabled(false);
-				
-				seletedIndexButton = (Button) findViewById(seletedButtonIndex);
-				if(seletedIndexButton != null) {
-					
-					seletedIndexButton.setBackgroundResource(R.drawable.bg_button_tv_selector);
-					seletedIndexButton.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector));
-					seletedIndexButton.setPadding(8, 0, 0, 0);
-					seletedIndexButton.setBackgroundResource(R.drawable.bg_button_tv_selector_1);
-					seletedIndexButton.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector_1));
-//					seletedIndexButton.setEnabled(false);
-					seletedIndexButton.setPadding(8, 0, 0, 0);
-				}
-			}
-		}
-		
-	}
+//	private synchronized void  showHistorySelect() {
+//		
+//		HotItemInfo info = StatisticsUtils.getHotItemInfo4DB_History(getApplicationContext(),
+//				app.getUserInfo().getUserId(), prod_id);
+//		
+//		if(info != null){
+//			
+//			String type = info.prod_type;
+//			Log.i(TAG, "type--->" + type);
+//			if(type != null && type.equals(BangDanKey.DONGMAN_TYPE)){
+//				
+//				String prod_subName = info.prod_subname;
+//				Log.i(TAG, "prod_subName--->" + prod_subName);
+//				if(prod_subName != null && !prod_subName.equals("")
+//						&& !prod_subName.equals("EMPTY")) {
+//					
+//					int currentIndex = Integer.valueOf(prod_subName);
+//					
+//					if(currentIndex > 0 && currentIndex < 2000) {
+//						Log.i(TAG, "currentIndex--->" + currentIndex);
+//						
+//						if(isOver) {//如果为正序
+//							
+//							//选择多少页，然后选择多少页下的第几个Button
+//							int chu = (currentIndex - 1)/COUNT;
+//							int quyu = currentIndex%COUNT;
+//							
+//							selectedIndex = chu+ 1;//当前页数
+//							seletedButtonIndex = currentIndex;
+//						} else {//如果为倒序
+//							
+//							int tempFirstIndex = num%COUNT;
+//							int tempTotal = num - tempFirstIndex;
+//							
+//							if(currentIndex >=1 && currentIndex <= tempFirstIndex) {//最后一页
+//								
+//								selectedIndex = totle_pagecount;
+//								seletedButtonIndex = currentIndex;
+//							} else if(currentIndex > tempFirstIndex){
+//								
+//								int tempIndex = (currentIndex - tempFirstIndex - 1)/COUNT;
+//								selectedIndex = totle_pagecount - tempIndex;
+//								seletedButtonIndex = currentIndex;
+//							}
+//						}
+//					}
+//				}
+//			}
+//		}
+//		
+//		Log.i(TAG, "selectedIndex--->" + selectedIndex);
+//		
+//		if(date != null) {
+//			
+//			if(isShowHeadTable) {//导航栏显示出来
+//				
+//				if(num>COUNT*selectedIndex){
+//					initTableView(COUNT);
+//				}else{
+//					initTableView(num-COUNT*(selectedIndex-1));
+//				}
+//				
+//				if(seletedTitleButton != null) {
+//					
+//					seletedTitleButton.setEnabled(true);
+//				}
+//				
+//				seletedTitleButton = (Button) findViewById(selectedIndex*10000);
+//				seletedTitleButton.setEnabled(false);
+//				seletedTitleButton.requestFocus();
+//				
+//			} else {//导航栏没显示出来
+//				
+//			}
+//			
+//			if(seletedIndexButton == null){
+//				seletedIndexButton = (Button) findViewById(seletedButtonIndex);
+//				
+//				if(seletedIndexButton != null) {
+//					
+//					seletedIndexButton.setBackgroundResource(R.drawable.bg_button_tv_selector_1);
+//					seletedIndexButton.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector_1));
+//					seletedIndexButton.setPadding(8, 0, 0, 0);
+////					seletedIndexButton.setEnabled(false);
+//				}
+//				
+//			}else{
+////				seletedIndexButton.setEnabled(true);
+//				seletedIndexButton.setBackgroundResource(R.drawable.bg_button_tv_selector);
+//				seletedIndexButton.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector));
+//				seletedIndexButton.setPadding(8, 0, 0, 0);
+//				seletedIndexButton = (Button) findViewById(seletedButtonIndex);
+//				
+//				if(seletedIndexButton != null) {
+//					
+//					seletedIndexButton.setBackgroundResource(R.drawable.bg_button_tv_selector_1);
+//					seletedIndexButton.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector_1));
+//					seletedIndexButton.setPadding(8, 0, 0, 0);
+////					seletedIndexButton.setEnabled(false);
+//				}
+//			}
+//			
+//		}
+//		
+//	}
 
 	@Override
 	public void onClick(View v) {
@@ -684,6 +762,7 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 		table.removeAllViews();
 		
 		int indexButton = -1;
+		boolean isSelected = false;
 		
 		int col = (count%5 ==0)? count/5:count/5+1;
 		for(int j=0; j<col; j++){
@@ -694,20 +773,29 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 				btn.setWidth((table.getWidth()-80)/5);
 				btn.setTextSize(18);
 				btn.setHeight(25);
+				
+				int tempIndex = -1;
+				
 				if(isOver){
 					btn.setText("" + (j*5+i+1 + (selectedIndex-1)*COUNT));
 					btn.setId(j*5+i+1 + (selectedIndex-1)*COUNT);
+					
+					tempIndex = j*5+i+1 + (selectedIndex-1)*COUNT;
 				}else{
 					btn.setText("" + (num-((j*5+i)+ (selectedIndex-1)*COUNT)));
 					btn.setId(num-((j*5+i)+ (selectedIndex-1)*COUNT));
+					
+					tempIndex = num-((j*5+i)+ (selectedIndex-1)*COUNT);
 				}
 				btn.setOnClickListener(this);
 				btn.setOnKeyListener(this);
+				
 				if(seletedButtonIndex==btn.getId()){
 //					btn.setEnabled(false);
 					seletedIndexButton = btn;
 					btn.setBackgroundResource(R.drawable.bg_button_tv_selector_1);
 					btn.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector_1));
+					isSelected = true;
 				}else{
 					btn.setBackgroundResource(R.drawable.bg_button_tv_selector);
 					btn.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector)) ;
@@ -751,6 +839,23 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 			row.setLayoutParams(new LayoutParams(table.getWidth(),35));
 			row.setPadding(0, 5, 0, 5);
 			table.addView(row);
+			
+			if(!isSelected){//如果当前页没有一个button被选中
+				
+				if(seletedIndexButton == null) { //如果当前页没有一个button被选中
+					
+					Button button = (Button) findViewById(historyPlayIndex4DB);
+					if(button != null) {
+						
+						button.setBackgroundResource(R.drawable.bg_button_tv_selector_1);
+						button.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector_1));
+						button.setPadding(8, 0, 0, 0);
+						
+						seletedIndexButton = button;
+						seletedButtonIndex = historyPlayIndex4DB;
+					}
+				}
+			}
 		}
 	}
 	
@@ -821,7 +926,7 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 			removeDialog(DIALOG_WAITING);
 			updateView();
 			
-			showHistorySelect();
+//			showHistorySelect();
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
