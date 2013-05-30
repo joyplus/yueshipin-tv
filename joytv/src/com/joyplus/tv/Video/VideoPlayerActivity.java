@@ -643,8 +643,8 @@ public class VideoPlayerActivity extends Activity {
 					app.MyToast(this, "收藏成功!");
 				} else
 					app.MyToast(this, "已收藏!");
-				setResult(101);
-				finish();
+//				setResult(101);
+//				finish();
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -666,8 +666,8 @@ public class VideoPlayerActivity extends Activity {
 					// GetServiceData(1);
 				} else
 					app.MyToast(this, "取消收藏失败!");
-				setResult(102);
-				finish();
+//				setResult(102);
+//				finish();
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
