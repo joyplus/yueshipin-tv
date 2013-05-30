@@ -521,7 +521,8 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 		if(listView.getAdapter()==null || ((HistortyAdapter)listView.getAdapter()).data==null){
 			index = 1;
 		}else{
-			index = ((HistortyAdapter)listView.getAdapter()).data.size()/10 +1;
+			double count = ((HistortyAdapter)listView.getAdapter()).data.size();
+			index = (int)Math.ceil(count/10) +1;
 		}
 		String url = Constant.BASE_URL + "user/playHistories" +"?page_size=10&page_num=" + index;
 		if(type!=0){
@@ -626,7 +627,10 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 					listView.setAdapter(new HistortyAdapter(allHistoryList));
 					listView.requestFocus();
 				}else{
-					allHistoryList.addAll(list);
+					for(int i=0; i<list.size(); i++){
+						allHistoryList.add(list.get(i));
+					}
+//					allHistoryList.addAll(list);
 					((BaseAdapter)listView.getAdapter()).notifyDataSetChanged();
 				}
 				break;
@@ -635,7 +639,10 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 					movieHistoryList = list;
 					listView.setAdapter(new HistortyAdapter(movieHistoryList));
 				}else{
-					movieHistoryList.addAll(list);
+					for(int i=0; i<list.size(); i++){
+						movieHistoryList.add(list.get(i));
+					}
+//					movieHistoryList.addAll(list);
 					((BaseAdapter)listView.getAdapter()).notifyDataSetChanged();
 				}
 				break;
@@ -644,7 +651,10 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 					tvHistoryList = list;
 					listView.setAdapter(new HistortyAdapter(tvHistoryList));
 				}else{
-					tvHistoryList.addAll(list);
+					for(int i=0; i<list.size(); i++){
+						tvHistoryList.add(list.get(i));
+					}
+//					tvHistoryList.addAll(list);
 					((BaseAdapter)listView.getAdapter()).notifyDataSetChanged();
 				}
 				break;
@@ -653,7 +663,10 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 					zongyiHistoryList = list;
 					listView.setAdapter(new HistortyAdapter(zongyiHistoryList));
 				}else{
-					zongyiHistoryList.addAll(list);
+					for(int i=0; i<list.size(); i++){
+						zongyiHistoryList.add(list.get(i));
+					}
+//					zongyiHistoryList.addAll(list);
 					((BaseAdapter)listView.getAdapter()).notifyDataSetChanged();
 				}
 				break;
@@ -662,7 +675,10 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 					dongmanHistoryList = list;
 					listView.setAdapter(new HistortyAdapter(dongmanHistoryList));
 				}else{
-					dongmanHistoryList.addAll(list);
+					for(int i=0; i<list.size(); i++){
+						dongmanHistoryList.add(list.get(i));
+					}
+//					dongmanHistoryList.addAll(list);
 					((BaseAdapter)listView.getAdapter()).notifyDataSetChanged();
 				}
 				break;
