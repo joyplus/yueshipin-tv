@@ -123,6 +123,12 @@ public class VideoPlayerActivity extends Activity {
 		mCurrentPlayData = app.getCurrentPlayData();
 		m_ReturnProgramView = app.get_ReturnProgramView();
 		
+		if (m_ReturnProgramView == null) {// 如果为空，那就调用此方法
+
+			loadReturnProgramView();
+
+		}
+
 		if (mCurrentPlayData != null) {
 
 			prod_id = mCurrentPlayData.prod_id;
@@ -133,6 +139,18 @@ public class VideoPlayerActivity extends Activity {
 			prod_type = mCurrentPlayData.prod_type;
 			mTime = (int) mCurrentPlayData.prod_time;
 
+			//如果是综艺，重新计算集数
+			if(mCurrentPlayData.prod_type == 3 &&
+					mCurrentPlayData.CurrentIndex == -1
+					&& m_ReturnProgramView != null){
+				for (int i = 0; i < m_ReturnProgramView.show.episodes.length; i++) {
+					if(m_ReturnProgramView.show.episodes[i].name.equalsIgnoreCase(mCurrentPlayData.prod_sub_name))
+						mCurrentPlayData.CurrentIndex = i;
+				}
+				
+			}
+
+			
 			if (m_ReturnProgramView != null) { //过滤不能播放的地址
 				String where = mCurrentPlayData.prod_id + "_"
 						+ mCurrentPlayData.prod_type + "_"
@@ -211,38 +229,35 @@ public class VideoPlayerActivity extends Activity {
 		intentFilter.addAction(Constant.VIDEOPLAYERCMD);
 		registerReceiver(mReceiver, intentFilter);
 
-		if (m_ReturnProgramView == null) {// 如果为空，那就调用此方法
-
-			loadReturnProgramView();
-		}
-
 		Log.i(TAG, "url------->" + prod_url);
 
 	}
 	private void GetNextValURL(String where) {
-
 		prod_url = null;
-		int index = 0;
-		
-		while (app.GetPlayData(where) != null) {
-			index = mCurrentPlayData.CurrentQuality + 1;
-			mCurrentPlayData.CurrentQuality += 1;
-			where = mCurrentPlayData.prod_id + "_"
-					+ mCurrentPlayData.prod_type + "_"
-					+ mCurrentPlayData.CurrentIndex + "_"
-					+ mCurrentPlayData.CurrentSource + "_"
-					+ mCurrentPlayData.CurrentQuality;
-			
-		}
 
-		app.setCurrentPlayData(mCurrentPlayData);
-		
 		switch (mCurrentPlayData.prod_type) {
 		case 1: {
+			while (app.GetPlayData(where) != null) {
+				if (mCurrentPlayData.CurrentQuality < m_ReturnProgramView.movie.episodes[mCurrentPlayData.CurrentIndex].down_urls[mCurrentPlayData.CurrentSource].urls.length) {
+					mCurrentPlayData.CurrentQuality += 1;
+				}
+				else {
+					mCurrentPlayData.CurrentSource += 1;
+					mCurrentPlayData.CurrentQuality = 0;
+				}
+				where = mCurrentPlayData.prod_id + "_"
+						+ mCurrentPlayData.prod_type + "_"
+						+ mCurrentPlayData.CurrentIndex + "_"
+						+ mCurrentPlayData.CurrentSource + "_"
+						+ mCurrentPlayData.CurrentQuality;
+				
+			}
+
+			app.setCurrentPlayData(mCurrentPlayData);
 			try{
 				prod_url = m_ReturnProgramView.movie.episodes[0].
 						down_urls[mCurrentPlayData.CurrentSource].
-						urls[index].url;
+						urls[mCurrentPlayData.CurrentQuality].url;
 			}catch (Exception e) {
 				// TODO: url is null
 			}
@@ -250,10 +265,27 @@ public class VideoPlayerActivity extends Activity {
 			break;
 		case 131:
 		case 2: {
+			while (app.GetPlayData(where) != null) {
+				if (mCurrentPlayData.CurrentQuality < m_ReturnProgramView.tv.episodes[mCurrentPlayData.CurrentIndex].down_urls[mCurrentPlayData.CurrentSource].urls.length) {
+					mCurrentPlayData.CurrentQuality += 1;
+				}
+				else {
+					mCurrentPlayData.CurrentSource += 1;
+					mCurrentPlayData.CurrentQuality = 0;
+				}
+				where = mCurrentPlayData.prod_id + "_"
+						+ mCurrentPlayData.prod_type + "_"
+						+ mCurrentPlayData.CurrentIndex + "_"
+						+ mCurrentPlayData.CurrentSource + "_"
+						+ mCurrentPlayData.CurrentQuality;
+				
+			}
+
+			app.setCurrentPlayData(mCurrentPlayData);
 			try{
 				prod_url = m_ReturnProgramView.tv.episodes[mCurrentPlayData.CurrentIndex].
 						down_urls[mCurrentPlayData.CurrentSource].
-						urls[index].url;
+						urls[mCurrentPlayData.CurrentQuality].url;
 			}catch (Exception e) {
 				// TODO: url is null
 			}
@@ -261,10 +293,27 @@ public class VideoPlayerActivity extends Activity {
 
 			break;
 		case 3: {
+			while (app.GetPlayData(where) != null) {
+				if (mCurrentPlayData.CurrentQuality < m_ReturnProgramView.show.episodes[mCurrentPlayData.CurrentIndex].down_urls[mCurrentPlayData.CurrentSource].urls.length) {
+					mCurrentPlayData.CurrentQuality += 1;
+				}
+				else {
+					mCurrentPlayData.CurrentSource += 1;
+					mCurrentPlayData.CurrentQuality = 0;
+				}
+				where = mCurrentPlayData.prod_id + "_"
+						+ mCurrentPlayData.prod_type + "_"
+						+ mCurrentPlayData.CurrentIndex + "_"
+						+ mCurrentPlayData.CurrentSource + "_"
+						+ mCurrentPlayData.CurrentQuality;
+				
+			}
+
+			app.setCurrentPlayData(mCurrentPlayData);
 			try{
 				prod_url = m_ReturnProgramView.show.episodes[mCurrentPlayData.CurrentIndex].
 						down_urls[mCurrentPlayData.CurrentSource].
-						urls[index].url;
+						urls[mCurrentPlayData.CurrentQuality].url;
 			}catch (Exception e) {
 				// TODO: url is null
 			}
@@ -311,10 +360,10 @@ public class VideoPlayerActivity extends Activity {
 		ObjectMapper mapper = new ObjectMapper();
 		try {
 
-			ReturnProgramView date = mapper.readValue(json.toString(),
+			m_ReturnProgramView = mapper.readValue(json.toString(),
 					ReturnProgramView.class);
-			m_ReturnProgramView = date;
-			app.set_ReturnProgramView(date);
+			ReIndexURL();
+			app.set_ReturnProgramView(m_ReturnProgramView);
 
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
@@ -328,7 +377,86 @@ public class VideoPlayerActivity extends Activity {
 		}
 	}
 
+	private void ReIndexURL() {
 
+		switch (mCurrentPlayData.prod_type) {
+		case 1: {
+			if (m_ReturnProgramView.movie.episodes[0].down_urls != null) {
+				videoSourceSort(m_ReturnProgramView.movie.episodes[0].down_urls);
+			}
+
+		}
+			break;
+		case 131:
+		case 2: {
+			if (m_ReturnProgramView.tv.episodes[mCurrentPlayData.CurrentIndex].down_urls != null) {
+				videoSourceSort(m_ReturnProgramView.tv.episodes[mCurrentPlayData.CurrentIndex].down_urls);
+				
+			}
+
+		}
+			break;
+		case 3: {
+			if (m_ReturnProgramView.show.episodes[mCurrentPlayData.CurrentIndex].down_urls != null) {
+				videoSourceSort(m_ReturnProgramView.show.episodes[mCurrentPlayData.CurrentIndex].down_urls);
+			}
+
+		}
+			break;
+		}
+
+	}
+
+	// 给片源赋权值
+	@SuppressWarnings("unchecked")
+	public void videoSourceSort(DOWN_URLS[] down_urls) {
+		
+		if (down_urls != null) {
+			for (int j = 0; j < down_urls.length; j++) {
+				if (down_urls[j].source.equalsIgnoreCase("letv")) {
+					down_urls[j].index = 0;
+				} else if (down_urls[j].source.equalsIgnoreCase("fengxing")) {
+					down_urls[j].index = 1;
+				} else if (down_urls[j].source.equalsIgnoreCase("qiyi")) {
+					down_urls[j].index = 2;
+				} else if (down_urls[j].source.equalsIgnoreCase("youku")) {
+					down_urls[j].index = 3;
+				} else if (down_urls[j].source.equalsIgnoreCase("sinahd")) {
+					down_urls[j].index = 4;
+				} else if (down_urls[j].source.equalsIgnoreCase("sohu")) {
+					down_urls[j].index = 5;
+				} else if (down_urls[j].source.equalsIgnoreCase("56")) {
+					down_urls[j].index = 6;
+				} else if (down_urls[j].source.equalsIgnoreCase("qq")) {
+					down_urls[j].index = 7;
+				} else if (down_urls[j].source.equalsIgnoreCase("pptv")) {
+					down_urls[j].index = 8;
+				} else if (down_urls[j].source.equalsIgnoreCase("m1905")) {
+					down_urls[j].index = 9;
+				}
+			}
+			if (down_urls.length > 1) {
+				Arrays.sort(down_urls, new EComparatorIndex());
+			}
+		}
+	}
+
+	// 将片源排序
+	@SuppressWarnings("rawtypes")
+	class EComparatorIndex implements Comparator {
+
+		@Override
+		public int compare(Object first, Object second) {
+			// TODO Auto-generated method stub
+			int first_name = ((DOWN_URLS) first).index;
+			int second_name = ((DOWN_URLS) second).index;
+			if (first_name - second_name < 0) {
+				return -1;
+			} else {
+				return 1;
+			}
+		}
+	}
 	@Override
 	public boolean dispatchKeyEvent(KeyEvent event) {
 		// TODO Auto-generated method stub
@@ -631,10 +759,33 @@ public class VideoPlayerActivity extends Activity {
 		// mCurrentPlayData.prod_name= name + title;
 		params.put("prod_name", mCurrentPlayData.prod_name);// required
 		// string 视频名字
-		if (mCurrentPlayData != null && mCurrentPlayData.prod_type != 1) {
-			params.put("prod_subname",
-					Integer.toString(mCurrentPlayData.CurrentIndex + 1));// required
+		switch (mCurrentPlayData.prod_type) {
+		case 1: {
+			params.put(
+					"prod_subname",
+					m_ReturnProgramView.movie.episodes[mCurrentPlayData.CurrentIndex].name);
 		}
+			break;
+		case 131:
+		case 2: {
+			params.put(
+					"prod_subname",
+					m_ReturnProgramView.tv.episodes[mCurrentPlayData.CurrentIndex].name);
+
+		}
+			break;
+		case 3: {
+			params.put(
+					"prod_subname",
+					m_ReturnProgramView.show.episodes[mCurrentPlayData.CurrentIndex].name);
+
+		}
+			break;
+		}
+//		if (mCurrentPlayData != null && mCurrentPlayData.prod_type != 1) {
+//			params.put("prod_subname",
+//					Integer.toString(mCurrentPlayData.CurrentIndex + 1));// required
+//		}
 
 		// string
 		// 视频的集数

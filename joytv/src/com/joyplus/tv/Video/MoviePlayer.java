@@ -111,7 +111,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 	private int prod_type = 0;
 	private int currentKeyEvent = 0;
 
-	private int seekBarWidthOffset = 80;
+	private int seekBarWidthOffset = 75;
 
 	private Context mContext;
 	private final VideoView mVideoView;
@@ -130,7 +130,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 
 	// If the time bar is visible.
 	private boolean mShowing;
-	
+
 	private boolean mSeekComplete;
 
 	private SeekBar sb;
@@ -156,7 +156,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 	private int mPreparedPercent = 0;
 
 	private String PROD_SOURCE = null;
-	
+
 	private View mLayoutBottomTime2;// x 几倍显示组件
 
 	// private final Runnable mPlayingChecker = new Runnable() {
@@ -188,9 +188,9 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 	public MoviePlayer(View rootView, Context movieActivity, int Time,
 			int prod_type, Uri videoUri, Bundle savedInstance, boolean canReplay) {
 		this.mContext = movieActivity;
-		mSeekComplete= false;
+		mSeekComplete = false;
 		app = (App) this.mContext.getApplicationContext();
-		
+
 		mLayoutBottomTime2 = rootView.findViewById(R.id.LayoutBottomTime2);
 		mVideoView = (VideoView) rootView.findViewById(R.id.surface_view);
 
@@ -211,7 +211,8 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 
 		mLayoutBottomTime = (View) rootView.findViewById(R.id.LayoutBottomTime);
 
-		mController = new MovieControllerOverlay(mContext, rootView,mBookmarker);
+		mController = new MovieControllerOverlay(mContext, rootView,
+				mBookmarker);
 		((ViewGroup) rootView).addView(mController.getView());
 		mController.setListener(this);
 		mController.setCanReplay(canReplay);
@@ -267,21 +268,21 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 				mVideoView.seekTo(bookmark);
 				// showResumeDialog(mContext, bookmark);
 			}
-			
+
 			startVideo();
 		}
 	}
 
 	public void setVideoURI(Uri mUri, int Time) {
-		
-			totalTime = 0;
-			mVideoView.setVideoURI(mUri);
-			PROD_SOURCE = mUri.toString();
-			if (Time > 0)
-				mVideoView.seekTo(Time);
-			// mVideoView.start();
-			// mHasPaused = false;
-			startVideo();
+
+		totalTime = 0;
+		mVideoView.setVideoURI(mUri);
+		PROD_SOURCE = mUri.toString();
+		if (Time > 0)
+			mVideoView.seekTo(Time);
+		// mVideoView.start();
+		// mHasPaused = false;
+		startVideo();
 
 	}
 
@@ -374,7 +375,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		int duration = mVideoView.getDuration();
 
 		if (mVideoView.isPlaying() && duration > 1) {
-			if(firstJumpTime == 0){
+			if (firstJumpTime == 0) {
 				mController.showPlayingAtFirstTime();
 				sb.setMax(duration);
 				sb.setOnSeekBarChangeListener(sbLis);
@@ -382,8 +383,8 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 				this.currentTime = position;
 				setTime(duration);
 				mController.setTimes(position, duration);
-				
-			}else if (firstJumpTime > 0 && mSeekComplete) {
+
+			} else if (firstJumpTime > 0 && mSeekComplete) {
 				firstJumpTime = 0;
 				mSeekComplete = false;
 				RelativeLayout.LayoutParams parms = new RelativeLayout.LayoutParams(
@@ -402,7 +403,8 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 				parms.bottomMargin = 20 + 10;
 				mLayoutBottomTime.setLayoutParams(parms);
 
-				textView1.setText(StatisticsUtils.formatDuration(firstJumpTime));
+				textView1
+						.setText(StatisticsUtils.formatDuration(firstJumpTime));
 				textView1.setVisibility(View.VISIBLE);
 				// mHandler.removeCallbacks(mPreparedProgress);
 				mController.showPlayingAtFirstTime();
@@ -454,7 +456,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 
 		mVideoView.start();
 		mHasPaused = false;
-		
+
 		ERRORREPLAYMODE = false;
 		// setProgress();
 	}
@@ -486,45 +488,48 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		mVideoView.pause();
 		mController.showTVPaused();
 	}
+
 	public void returnTVVideo() {
 		mHasPaused = true;
 		mVideoView.pause();
 		mController.showTVReturn();
 	}
-	
-	
+
 	// Below are notifications from VideoView
 	public boolean onError(MediaPlayer player, int arg1, int arg2) {
 		mHandler.removeCallbacksAndMessages(null);
-//		mController.showErrorMessage("");
-//		CurrentPlayData mCurrentPlayData = app.getCurrentPlayData();
-//		String where = mCurrentPlayData.prod_id+
-//				"_"+mCurrentPlayData.prod_type+
-//				"_"+mCurrentPlayData.CurrentIndex+
-//				"_"+mCurrentPlayData.CurrentSource+
-//				"_"+mCurrentPlayData.CurrentQuality;
-//		app.SavePlayData(where,PROD_SOURCE);
-//		return false;
-		if(!ERRORREPLAYMODE){
+		// mController.showErrorMessage("");
+		// CurrentPlayData mCurrentPlayData = app.getCurrentPlayData();
+		// String where = mCurrentPlayData.prod_id+
+		// "_"+mCurrentPlayData.prod_type+
+		// "_"+mCurrentPlayData.CurrentIndex+
+		// "_"+mCurrentPlayData.CurrentSource+
+		// "_"+mCurrentPlayData.CurrentQuality;
+		// app.SavePlayData(where,PROD_SOURCE);
+		// return false;
+		if (!ERRORREPLAYMODE) {
 			ERRORREPLAYMODE = true;
-			GetNextValURL();
+			if(GetNextValURL() == -2){
+				mController.showErrorMessage("");
+				return false;
+			}
 			if (PROD_SOURCE != null)
 				setVideoURI(Uri.parse(PROD_SOURCE), ERROR_JUMP_TIME);
-//			if (!GetNextValURL()) {
-//				// VideoView will show an error dialog if we return false, so no
-//				// need
-//				// to show more message.
-//				mController.showErrorMessage("");
-//				return false;
-//			} else {
-//
-//				setVideoURI(Uri.parse(PROD_SOURCE), ERROR_JUMP_TIME);
-//				return false;
-//			}
+
+			// if (!GetNextValURL()) {
+			// // VideoView will show an error dialog if we return false, so no
+			// // need
+			// // to show more message.
+			// mController.showErrorMessage("");
+			// return false;
+			// } else {
+			//
+			// setVideoURI(Uri.parse(PROD_SOURCE), ERROR_JUMP_TIME);
+			// return false;
+			// }
 		}
 		return true;
-		
-		
+
 	}
 
 	public void onCompletion(MediaPlayer mp) {
@@ -581,18 +586,20 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 
 	// Below are key events passed from MovieActivity.
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		
-		Log.i(TAG, "KEYCODE_BACK---->"+ keyCode);
+
+		Log.i(TAG, "KEYCODE_BACK---->" + keyCode);
 
 		// Some headsets will fire off 7-10 events on a single click
 		if (event.getRepeatCount() > 0) {
 			return isMediaKey(keyCode);
 		}
-		
-		if(totalTime <=0 ){//如果没有获取到时间，按返回键直接退出播放
-			if(keyCode == KeyEvent.KEYCODE_BACK || keyCode == KeyEvent.KEYCODE_ESCAPE)
+
+		if (totalTime <= 0) {// 如果没有获取到时间，按返回键直接退出播放
+			if (keyCode == KeyEvent.KEYCODE_BACK
+					|| keyCode == KeyEvent.KEYCODE_ESCAPE)
 				return false;
-			else//否则返回键自己处理
+			else
+				// 否则返回键自己处理
 				return true;
 		}
 
@@ -600,11 +607,10 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		if (JUMP_TIME_TIMES != 0 && !isFastForwardKey(keyCode)) // 快进模式才能按的键
 			return true;
 
-		
 		switch (keyCode) {
 		case KeyEvent.KEYCODE_DPAD_RIGHT:
-//			if(!mController.isHidden())
-//				return false;
+			// if(!mController.isHidden())
+			// return false;
 			if (mHasPaused == false)
 				OnMediaFastForward();
 			else {
@@ -618,13 +624,13 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 			}
 			return true;
 		case KeyEvent.KEYCODE_MEDIA_FAST_FORWARD:
-//			OnMediaFastForward();
-//			return true;
+			// OnMediaFastForward();
+			// return true;
 		case KeyEvent.KEYCODE_DPAD_LEFT:
-//			if(!mController.isHidden())
-//				return false;
-			
-			if (mHasPaused == false) 
+			// if(!mController.isHidden())
+			// return false;
+
+			if (mHasPaused == false)
 				OnMediaRewind();
 			else {
 				if (CURRENT_KEY == 1) {
@@ -702,24 +708,23 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 				if (mController.isHidden()) {
 					mController.show();
 				}
-				if (prod_type == 1){
-					if (mVideoView.isPlaying()) {	
-						pauseVideo();	
+				if (prod_type == 1) {
+					if (mVideoView.isPlaying()) {
+						pauseVideo();
 						mController.focusLayoutControl(0);
 						CURRENT_KEY = 0;
 					} else {
 						playVideo();
 					}
-				}else{
-					if (mVideoView.isPlaying()) {	
-						pauseTVVideo();	
+				} else {
+					if (mVideoView.isPlaying()) {
+						pauseTVVideo();
 						mController.focusLayoutControl(0);
 						CURRENT_KEY = 0;
 					} else {
 						playTVVideo();
 					}
 				}
-				
 
 			}
 
@@ -774,8 +779,8 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 			// just consuming the events.
 			return true;
 		case KeyEvent.KEYCODE_ESCAPE:
-		case KeyEvent.KEYCODE_BACK://返回键
-			
+		case KeyEvent.KEYCODE_BACK:// 返回键
+
 			currentKeyEvent = KeyEvent.KEYCODE_BACK;
 			mController.hideVolume();
 			if (JUMP_TIME_TIMES != 0) {// 快进模式
@@ -788,25 +793,25 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 				return true;
 			} else if (prod_type != 1) {
 				// 没有加载完就返回，bug,加到前面去了。
-//				if (totalTime <= 0)
-//					return false;
-				
+				// if (totalTime <= 0)
+				// return false;
+
 				Log.i(TAG, "KEYCODE_BACK---->");
-				//处理正在播放时，退出键功能
-				((MovieControllerOverlay)mController).cancelHiding();
-				
+				// 处理正在播放时，退出键功能
+				((MovieControllerOverlay) mController).cancelHiding();
+
 				RETURNMODE = true;
-//				if (mVideoView.isPlaying()) {
-					returnTVVideo();
-					mController.focusLayoutControl(0);
-					CURRENT_KEY = 0;
-//				} 
-//				else {
-//					playVideo();
-//				}
-				
+				// if (mVideoView.isPlaying()) {
+				returnTVVideo();
+				mController.focusLayoutControl(0);
+				CURRENT_KEY = 0;
+				// }
+				// else {
+				// playVideo();
+				// }
+
 				return true;
-			} 
+			}
 
 		}
 		return false;
@@ -815,25 +820,27 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 	public int getCurrentKeyEvent() {
 		return currentKeyEvent;
 	}
-	public boolean getCurrentReturnMode(){
+
+	public boolean getCurrentReturnMode() {
 		return RETURNMODE;
 	}
-	public void exitReturnMode(){
-		if(RETURNMODE){
+
+	public void exitReturnMode() {
+		if (RETURNMODE) {
 			RETURNMODE = false;
-			mController.TVControlViewGone(false);//一会消失
+			mController.TVControlViewGone(false);// 一会消失
 		}
 	}
+
 	private void OnMediaRewind() {
-		
-		//调节音量时 控制栏不消失
-		((MovieControllerOverlay)mController).cancelHiding();
-		((MovieControllerOverlay)mController).hidden5ControlView();
-		
-		
-		if (JUMP_TIME == 0 && JUMP_TIME_TIMES == 0) //非快进后退模式的第一次
+
+		// 调节音量时 控制栏不消失
+		((MovieControllerOverlay) mController).cancelHiding();
+		((MovieControllerOverlay) mController).hidden5ControlView();
+
+		if (JUMP_TIME == 0 && JUMP_TIME_TIMES == 0) // 非快进后退模式的第一次
 			JUMP_TIME = mVideoView.getCurrentPosition();
-		
+
 		if (JUMP_TIME_TIMES > 1)
 			JUMP_TIME_TIMES = 1;
 		else if (JUMP_TIME_TIMES - 1 < -3)
@@ -842,9 +849,9 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 			JUMP_TIME_TIMES = -1;
 		else
 			JUMP_TIME_TIMES--;
-		
-		if(JUMP_TIME_TIMES < 0) {
-			
+
+		if (JUMP_TIME_TIMES < 0) {
+
 			mLayoutBottomTime2.setBackgroundResource(R.drawable.play_time_left);
 		}
 
@@ -869,14 +876,14 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 	}
 
 	private void OnMediaFastForward() {
-		
-		//调节音量时 控制栏不消失
-		((MovieControllerOverlay)mController).cancelHiding();
-		((MovieControllerOverlay)mController).hidden5ControlView();
-		
-		if (JUMP_TIME == 0 && JUMP_TIME_TIMES == 0) //非快进后退模式的第一次
+
+		// 调节音量时 控制栏不消失
+		((MovieControllerOverlay) mController).cancelHiding();
+		((MovieControllerOverlay) mController).hidden5ControlView();
+
+		if (JUMP_TIME == 0 && JUMP_TIME_TIMES == 0) // 非快进后退模式的第一次
 			JUMP_TIME = mVideoView.getCurrentPosition();
-		
+
 		if (JUMP_TIME_TIMES < -1)
 			JUMP_TIME_TIMES = -1;
 		else if (JUMP_TIME_TIMES + 1 > 3)
@@ -885,10 +892,11 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 			JUMP_TIME_TIMES = 1;
 		else
 			JUMP_TIME_TIMES++;
-		
-		if(JUMP_TIME_TIMES > 0) {
-			
-			mLayoutBottomTime2.setBackgroundResource(R.drawable.play_time_right);
+
+		if (JUMP_TIME_TIMES > 0) {
+
+			mLayoutBottomTime2
+					.setBackgroundResource(R.drawable.play_time_right);
 		}
 
 		mDragging = true;
@@ -911,7 +919,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 	}
 
 	private final Runnable mMediaFastForwardRunnable = new Runnable() {
-//		int[] mTimes = { 1000, 333, 55 };
+		// int[] mTimes = { 1000, 333, 55 };
 		int[] mTimes = { 1000, 333, 18 };
 
 		public void run() {
@@ -920,8 +928,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 				if (JUMP_TIME - 10000 < 0)
 					JUMP_TIME = 0;
 				else
-					JUMP_TIME = JUMP_TIME
-							- 10000;
+					JUMP_TIME = JUMP_TIME - 10000;
 			} else if (JUMP_TIME_TIMES > 0) {// 快进模式
 				if (JUMP_TIME + 10000 >= totalTime)
 					JUMP_TIME = totalTime;
@@ -951,16 +958,16 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 			sb.setProgress(JUMP_TIME);
 
 			// Fun_downloadrate();
-			mHandler.postDelayed(mMediaFastForwardRunnable, mTimes[Math.abs(JUMP_TIME_TIMES)-1]);
+			mHandler.postDelayed(mMediaFastForwardRunnable,
+					mTimes[Math.abs(JUMP_TIME_TIMES) - 1]);
 		}
 	};
 
 	private void OnVolumeDown() {
-		
-		//调节音量时 控制栏不消失
+
+		// 调节音量时 控制栏不消失
 		mController.cancelHiding();
-		
-		
+
 		mVolume--;
 		if (mVolume < 0)
 			mVolume = 0;
@@ -968,10 +975,9 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 	}
 
 	private void OnVolumeUp() {
-		//调节音量时 控制栏不消失
+		// 调节音量时 控制栏不消失
 		mController.cancelHiding();
-		
-		
+
 		mVolume++;
 		if (mVolume > mMaxVolume)
 			mVolume = mMaxVolume;
@@ -1087,11 +1093,11 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		// if(firstJumpTime < 1 ){
 		mController.setPrepared(true);
 		// sb.setProgress(100);
-		mSeekComplete= true; 
+		mSeekComplete = true;
 		mHandler.postDelayed(mProgressChecker, 2000);
-		
-//		mHandler.post(mProgressChecker);
-		
+
+		// mHandler.post(mProgressChecker);
+
 		// }
 	}
 
@@ -1114,7 +1120,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 	public void onSeekComplete(MediaPlayer mp) {
 		// TODO Auto-generated method stub
 		Log.d(TAG, "onSeekComplete");
-		mSeekComplete= true; 
+		mSeekComplete = true;
 		// if(firstJumpTime > 0 ){
 		// mController.setPrepared(true);
 		// sb.setProgress(100);
@@ -1160,9 +1166,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		ReturnProgramView m_ReturnProgramView = app.get_ReturnProgramView();
 		if (mCurrentPlayData != null && m_ReturnProgramView != null) {
 			/*
-			 * 全集数字>更新数字，显示更新至XX集
-			   全集不为空，更新数字为空或者0，显示全XX集
-			   这时候次序是倒序
+			 * 全集数字>更新数字，显示更新至XX集 全集不为空，更新数字为空或者0，显示全XX集 这时候次序是倒序
 			 */
 			int index = 0;
 			String title = null;
@@ -1189,7 +1193,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 								title = " 第"
 										+ m_ReturnProgramView.tv.episodes[index].name
 										+ "集";
-								mCurrentPlayData.prod_name=  name + title;
+								mCurrentPlayData.prod_name = name + title;
 								mTextViewProdName.setText(name + title);
 								PROD_SOURCE = GetSource(m_ReturnProgramView,
 										mCurrentPlayData.prod_type, index, i);
@@ -1214,7 +1218,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 				index = mCurrentPlayData.CurrentIndex + 1;
 				mCurrentPlayData.CurrentIndex += 1;
 				app.setCurrentPlayData(mCurrentPlayData);
-				
+
 				if (m_ReturnProgramView.show.episodes[index].down_urls != null) {
 					// videoSourceSort(m_ReturnProgramView.show.episodes[index].down_urls);
 					for (int i = 0; i < m_ReturnProgramView.show.episodes[index].down_urls.length; i++) {
@@ -1275,7 +1279,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 				index = mCurrentPlayData.CurrentIndex + 1;
 				mCurrentPlayData.CurrentIndex += 1;
 				app.setCurrentPlayData(mCurrentPlayData);
-				
+
 				if (m_ReturnProgramView.tv.episodes[index].down_urls != null) {
 					// videoSourceSort(m_ReturnProgramView.tv.episodes[index].down_urls);
 					for (int i = 0; i < m_ReturnProgramView.tv.episodes[index].down_urls.length; i++) {
@@ -1290,7 +1294,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 								title = " 第"
 										+ m_ReturnProgramView.tv.episodes[index].name
 										+ "集";
-								mCurrentPlayData.prod_name=  name + title;
+								mCurrentPlayData.prod_name = name + title;
 								mTextViewProdName.setText(name + title);
 								PROD_SOURCE = GetSource(m_ReturnProgramView,
 										mCurrentPlayData.prod_type, index, i);
@@ -1316,7 +1320,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 				mCurrentPlayData.CurrentIndex -= 1;
 
 				app.setCurrentPlayData(mCurrentPlayData);
-				
+
 				if (m_ReturnProgramView.show.episodes[index].down_urls != null) {
 					// videoSourceSort(m_ReturnProgramView.show.episodes[index].down_urls);
 					for (int i = 0; i < m_ReturnProgramView.show.episodes[index].down_urls.length; i++) {
@@ -1408,74 +1412,123 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		return PROD_SOURCE;
 
 	}
-	private boolean GetNextValURL() {
+
+	private int GetNextValURL() {
 
 		CurrentPlayData mCurrentPlayData = app.getCurrentPlayData();
 		ReturnProgramView m_ReturnProgramView = app.get_ReturnProgramView();
-		
-		String where = mCurrentPlayData.prod_id+
-				"_"+mCurrentPlayData.prod_type+
-				"_"+mCurrentPlayData.CurrentIndex+
-				"_"+mCurrentPlayData.CurrentSource+
-				"_"+mCurrentPlayData.CurrentQuality;
-		app.SavePlayData(where,PROD_SOURCE);
-		
+		if (mCurrentPlayData == null || m_ReturnProgramView == null) {
+			
+			return -2;
+		}
+
+		String where = mCurrentPlayData.prod_id + "_"
+				+ mCurrentPlayData.prod_type + "_"
+				+ mCurrentPlayData.CurrentIndex + "_"
+				+ mCurrentPlayData.CurrentSource + "_"
+				+ mCurrentPlayData.CurrentQuality;
+		app.SavePlayData(where, PROD_SOURCE);
+
 		PROD_SOURCE = null;
 		int index = 0;
-		index = mCurrentPlayData.CurrentQuality + 1;
-		mCurrentPlayData.CurrentQuality += 1;
-		app.setCurrentPlayData(mCurrentPlayData);
-		
+
 		switch (mCurrentPlayData.prod_type) {
 		case 1: {
-			try{
-				if (mCurrentPlayData.CurrentQuality > m_ReturnProgramView.movie.episodes[0].down_urls[mCurrentPlayData.CurrentSource].urls.length - 1) {
-					return false;
+			if (mCurrentPlayData.CurrentSource < m_ReturnProgramView.movie.episodes[0].down_urls.length) {
+				if (mCurrentPlayData.CurrentQuality < m_ReturnProgramView.movie.episodes[0].down_urls[mCurrentPlayData.CurrentSource].urls.length) {
+
+					index = mCurrentPlayData.CurrentQuality + 1;
+					mCurrentPlayData.CurrentQuality += 1;
+					app.setCurrentPlayData(mCurrentPlayData);
+					try {
+
+						PROD_SOURCE = m_ReturnProgramView.movie.episodes[0].down_urls[mCurrentPlayData.CurrentSource].urls[index].url;
+					} catch (Exception e) {
+						// TODO: url is null
+					}
+				} else {
+
+					index = mCurrentPlayData.CurrentSource + 1;
+					mCurrentPlayData.CurrentSource += 1;
+					mCurrentPlayData.CurrentQuality = 0;
+					app.setCurrentPlayData(mCurrentPlayData);
+					try {
+
+						PROD_SOURCE = m_ReturnProgramView.movie.episodes[0].down_urls[index].urls[mCurrentPlayData.CurrentQuality].url;
+					} catch (Exception e) {
+						// TODO: url is null
+					}
 				}
-				PROD_SOURCE = m_ReturnProgramView.movie.episodes[0].
-						down_urls[mCurrentPlayData.CurrentSource].
-						urls[index].url;
-			}catch (Exception e) {
-				// TODO: url is null
-			}
+
+			} else
+				return -2;
 		}
 			break;
 		case 131:
 		case 2: {
-			try{
-				if (mCurrentPlayData.CurrentQuality > m_ReturnProgramView.tv.episodes[0].down_urls[mCurrentPlayData.CurrentSource].urls.length - 1) {
-					return false;
+			if (mCurrentPlayData.CurrentSource < m_ReturnProgramView.tv.episodes[0].down_urls.length) {
+				if (mCurrentPlayData.CurrentQuality < m_ReturnProgramView.tv.episodes[mCurrentPlayData.CurrentIndex].down_urls[mCurrentPlayData.CurrentSource].urls.length) {
+
+					index = mCurrentPlayData.CurrentQuality + 1;
+					mCurrentPlayData.CurrentQuality += 1;
+					app.setCurrentPlayData(mCurrentPlayData);
+					try {
+						PROD_SOURCE = m_ReturnProgramView.tv.episodes[mCurrentPlayData.CurrentIndex].down_urls[mCurrentPlayData.CurrentSource].urls[index].url;
+					} catch (Exception e) {
+						// TODO: url is null
+					}
+				} else {
+					index = mCurrentPlayData.CurrentSource + 1;
+					mCurrentPlayData.CurrentSource += 1;
+					mCurrentPlayData.CurrentQuality = 0;
+					app.setCurrentPlayData(mCurrentPlayData);
+					try {
+
+						PROD_SOURCE = m_ReturnProgramView.tv.episodes[mCurrentPlayData.CurrentIndex].down_urls[index].urls[mCurrentPlayData.CurrentQuality].url;
+					} catch (Exception e) {
+						// TODO: url is null
+					}
 				}
-				PROD_SOURCE = m_ReturnProgramView.tv.episodes[mCurrentPlayData.CurrentIndex].
-						down_urls[mCurrentPlayData.CurrentSource].
-						urls[index].url;
-			}catch (Exception e) {
-				// TODO: url is null
-			}
+			} else
+				return -2;
 		}
 
 			break;
 		case 3: {
-			try{
-				if (mCurrentPlayData.CurrentQuality > m_ReturnProgramView.show.episodes[0].down_urls[mCurrentPlayData.CurrentSource].urls.length - 1) {
-					return false;
+			if (mCurrentPlayData.CurrentSource < m_ReturnProgramView.show.episodes[0].down_urls.length) {
+				if (mCurrentPlayData.CurrentQuality < m_ReturnProgramView.show.episodes[mCurrentPlayData.CurrentIndex].down_urls[mCurrentPlayData.CurrentSource].urls.length) {
+
+					index = mCurrentPlayData.CurrentQuality + 1;
+					mCurrentPlayData.CurrentQuality += 1;
+					app.setCurrentPlayData(mCurrentPlayData);
+					try {
+						PROD_SOURCE = m_ReturnProgramView.show.episodes[mCurrentPlayData.CurrentIndex].down_urls[mCurrentPlayData.CurrentSource].urls[index].url;
+					} catch (Exception e) {
+						// TODO: url is null
+					}
+				} else {
+					index = mCurrentPlayData.CurrentSource + 1;
+					mCurrentPlayData.CurrentSource += 1;
+					mCurrentPlayData.CurrentQuality = 0;
+					app.setCurrentPlayData(mCurrentPlayData);
+					try {
+
+						PROD_SOURCE = m_ReturnProgramView.show.episodes[mCurrentPlayData.CurrentIndex].down_urls[index].urls[mCurrentPlayData.CurrentQuality].url;
+					} catch (Exception e) {
+						// TODO: url is null
+					}
 				}
-				PROD_SOURCE = m_ReturnProgramView.show.episodes[mCurrentPlayData.CurrentIndex].
-						down_urls[mCurrentPlayData.CurrentSource].
-						urls[index].url;
-			}catch (Exception e) {
-				// TODO: url is null
-			}
+			} else
+				return -2;
 		}
 
 			break;
 		}
-		if(PROD_SOURCE != null)
-			return true;
-		else {
-			return false;
+		if (PROD_SOURCE == null){
+			if(GetNextValURL() == -2)
+				return -2;
 		}
-
+		return 1;
 
 	}
 
