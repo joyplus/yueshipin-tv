@@ -312,13 +312,13 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 					break;
 				case 2:
 					
-					holder.content.setText("上次观看到：第" + data.get(position).prod_subname +"集"+playBack_time);
+					holder.content.setText("上次观看到：第" + data.get(position).prod_subname +"集 "+playBack_time);
 					break;
 				case 3:
-					holder.content.setText("上次观看到：第" + data.get(position).prod_subname+"期"+playBack_time);
+					holder.content.setText("上次观看到：第" + data.get(position).prod_subname+"期 "+playBack_time);
 					break;
 				case 131:
-					holder.content.setText("上次观看到：第" + data.get(position).prod_subname+"集"+playBack_time);
+					holder.content.setText("上次观看到：第" + data.get(position).prod_subname+"集 "+playBack_time);
 					break;
 				}
 				aq.id(holder.img).image(data.get(position).prod_pic_url);
