@@ -213,6 +213,8 @@ public class Main extends Activity implements OnItemSelectedListener,
 
 		app = (App) getApplicationContext();
 		aq = new AQuery(this);
+		
+		MobclickAgent.onError(this);
 
 		startingImageView = (ImageView) findViewById(R.id.image_starting);
 		rootLayout = (RelativeLayout) findViewById(R.id.root_layout);

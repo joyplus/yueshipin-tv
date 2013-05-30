@@ -752,9 +752,12 @@ public class VideoPlayerActivity extends Activity {
 		// string 视频名字
 		switch (mCurrentPlayData.prod_type) {
 		case 1: {
+//			params.put(
+//					"prod_subname",
+//					m_ReturnProgramView.movie.episodes[mCurrentPlayData.CurrentIndex].name);
 			params.put(
-					"prod_subname",
-					m_ReturnProgramView.movie.episodes[mCurrentPlayData.CurrentIndex].name);
+			"prod_subname",
+			"");
 		}
 			break;
 		case 131:
