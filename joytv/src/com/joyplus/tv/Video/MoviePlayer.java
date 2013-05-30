@@ -512,8 +512,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 			if(GetNextValURL() == -2){
 				mController.showErrorMessage("");
 				return false;
-			}
-			if (PROD_SOURCE != null)
+			}else if (PROD_SOURCE != null)
 				setVideoURI(Uri.parse(PROD_SOURCE), ERROR_JUMP_TIME);
 
 			// if (!GetNextValURL()) {
