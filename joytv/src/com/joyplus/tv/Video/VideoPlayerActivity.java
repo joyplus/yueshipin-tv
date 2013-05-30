@@ -737,7 +737,8 @@ public class VideoPlayerActivity extends Activity {
 			/*
 			 * 获取当前播放时间和总时间,将播放时间和总时间放在服务器上
 			 */
-			SaveToServer(mPlayer.getCurrentPositon() / 1000,
+			if(m_ReturnProgramView != null)
+				SaveToServer(mPlayer.getCurrentPositon() / 1000,
 					mPlayer.getDuration() / 1000);
 
 		}
