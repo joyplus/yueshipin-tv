@@ -1311,8 +1311,8 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 		
 		List<MovieItemData> list = new ArrayList<MovieItemData>();
 		
-		String selection = UserShouCang.USER_ID + "=? and " + UserShouCang.PRO_TYPE + "=? and "
-				+ UserShouCang.IS_UPDATE + "=?";//通过用户id，找到相应信息
+		String selection = UserShouCang.USER_ID + " = ? and " + UserShouCang.PRO_TYPE + " = ? and "
+				+ UserShouCang.IS_UPDATE + " = ?";//通过用户id，找到相应信息
 		String[] selectionArgs = {userId,type,DataBaseItems.NEW + ""};
 		
 		TvDatabaseHelper helper = TvDatabaseHelper.newTvDatabaseHelper(context);

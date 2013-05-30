@@ -115,7 +115,7 @@ public class ShowTVActivity extends AbstractShowActivity {
 		
 		if(userId != null) {
 			
-			shoucangList = StatisticsUtils.getList4DB(getApplicationContext(), userId, DONGMAN_TYPE);
+			shoucangList = StatisticsUtils.getList4DB(getApplicationContext(), userId, TV_TYPE);
 		}
 		
 		Log.i(TAG, "shoucangList--->:" + shoucangList.size());
