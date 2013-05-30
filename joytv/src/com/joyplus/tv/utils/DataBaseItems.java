@@ -46,6 +46,16 @@ public class DataBaseItems {
 		//如果有那就设为true 1，否则一直为false 0
 		String IS_UPDATE = "is_update";
 		// String NUM = "num";
+		
+		String TEXT_1 = "text_1";
+		String TEXT_2 = "text_2";
+		String TEXT_3 = "text_3";
+		String TEXT_4 = "text_4";
+		
+		String INTEGER_1 = "integer_1";
+		String INTEGER_2 = "integer_2";
+		String INTEGER_3 = "integer_3";
+		String INTEGER_4 = "integer_4";
 	}
 	
 	public static interface UserHistory {
@@ -78,6 +88,16 @@ public class DataBaseItems {
 		String CUR_EPISODE = "cur_episode";//当前集数
 		
 		String IS_NEW = "is_new";//同步标记字段 1为new 0为old
+		
+		String TEXT_1 = "text_1";
+		String TEXT_2 = "text_2";
+		String TEXT_3 = "text_3";
+		String TEXT_4 = "text_4";
+		
+		String INTEGER_1 = "integer_1";
+		String INTEGER_2 = "integer_2";
+		String INTEGER_3 = "integer_3";
+		String INTEGER_4 = "integer_4";
 
 	}
 

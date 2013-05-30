@@ -37,6 +37,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joyplus.tv.Adapters.CurrentPlayData;
+import com.joyplus.tv.Service.Return.ReturnProgramReviews;
 import com.joyplus.tv.Service.Return.ReturnProgramView;
 import com.joyplus.tv.Service.Return.ReturnProgramView.DOWN_URLS;
 import com.joyplus.tv.Video.VideoPlayerActivity;
@@ -95,6 +96,8 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 	private int selectedIndex;//选中页数的索引 1开始
 	
 	private int historyPlayIndex4DB = -1;//当前数据库中播放的集数
+	
+	private boolean isYingPing = false;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -566,9 +569,9 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 		case R.id.bt_xiangqing_yingping:
 			Intent yingpingIntent = new Intent(this, DetailComment.class);
 //			yingpingIntent.putExtra("ID", prod_id);
-			int yingpingSize = date.comments.length;
+//			int yingpingSize = date.comments.length;
 			
-			if(yingpingSize >0) {
+			if(isYingPing) {
 				
 				Bundle bundle = new Bundle();
 				bundle.putString("prod_id", prod_id);
@@ -927,6 +930,7 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 			updateView();
 			
 //			showHistorySelect();
+			getYingpingData(StatisticsUtils.getYingPin_1_URL(prod_id));
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -939,15 +943,54 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 		}
 	}
 	
-	private void updateView(){
+	protected void getServiceData(String url, String interfaceName) {
+		// TODO Auto-generated method stub
+
+		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
+		cb.url(url).type(JSONObject.class).weakHandler(this, interfaceName);
+
+		cb.SetHeader(app.getHeaders());
+		aq.ajax(cb);
+	}
+
+	protected void getYingpingData(String url) {
+		// TODO Auto-generated method stub
+
+		getServiceData(url, "initYingpingServiceData");
+	}
+	
+	public void initYingpingServiceData(String url, JSONObject json,
+			AjaxStatus status) {
+		// TODO Auto-generated method stub
+
+		if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
+
+			app.MyToast(aq.getContext(),
+					getResources().getString(R.string.networknotwork));
+			return;
+		}
 		
-		if(date.comments.length <=0) {
+		if (json == null || json.equals(""))
+			return;
+		
+		String str = json.toString();
+		if(str.contains("review_id")) {
+			
+			isYingPing = true;
+		}
+		
+		Log.i(TAG, "isYingPing--->" + yingpingBt);
+		
+		if(!isYingPing) {
 			
 			yingpingBt.setEnabled(false);
 			yingpingBt.setBackgroundResource(R.drawable.yingping_button_unuse_selector);
 			yingpingBt.setTextColor(getResources().getColor(R.color.unuse_color));
 //			yingpingBt.setFocusable(false);
 		}
+	}
+	
+	private void updateView(){
 		
 		String strNum = date.tv.favority_num;
 		

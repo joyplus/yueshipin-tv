@@ -96,6 +96,7 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 	private int selectedIndex;//选中页数的索引 1开始
 	
 	private int historyPlayIndex4DB = -1;//当前数据库中播放的集数
+	private String historyPlayProdSubName;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -116,8 +117,10 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 		showDialog(DIALOG_WAITING);
 		
 		//从DB文件中获取历史播放集数
-		historyPlayIndex4DB = StatisticsUtils.
-				getHistoryPlayIndex4DB(getApplicationContext(),prod_id,BangDanKey.ZONGYI_TYPE);
+		HotItemInfo info = StatisticsUtils.
+				getHotItemInfo4DB_History(getApplicationContext(),
+						StatisticsUtils.getCurrentUserId(getApplicationContext()), prod_id);
+		historyPlayProdSubName = info.prod_subname;
 		Log.i(TAG, "onCreate--->historyPlayIndex4DB:" + historyPlayIndex4DB);
 		
 		getIsShoucangData();
@@ -406,6 +409,7 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 //			intent.putExtra("prod_url", str2);
 //			intent.putExtra("title", str1);
 //			startActivity(intent);
+			Log.i(TAG, "ll_xiangqing_bofang_gaoqing--->" +seletedButtonIndex );
 			if(seletedButtonIndex==0){
 				seletedButtonIndex = 1;
 				Button b = (Button) table.findViewById(1);
@@ -420,12 +424,26 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 				CurrentPlayData playData = app.getCurrentPlayData();
 				if(playData != null) {
 					
-					int index = playData.CurrentIndex;
+//					int index = playData.CurrentIndex;
+					String prod_subName = playData.prod_sub_name;
 					
-					if(index > -1) {
+					if(prod_subName != null && !prod_subName.equals("")) {
 						
-						play(index);
+						if(date != null) {
+							
+							if(date.show.episodes != null) {
+								
+								for(int i=0;i< date.show.episodes.length;i++) {
+									
+									if(prod_subName.equals(date.show.episodes[i].name) ) {
+										
+										play(i);
+									}
+								}
+							}
+						}
 					}
+
 				} else {
 					
 					play(0);
@@ -786,6 +804,20 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 			}
 			
 			num = Integer.valueOf(date.show.episodes.length);
+			
+			Log.i(TAG, "historyPlayProdSubName--->" + historyPlayProdSubName);
+			for(int i=0;i<date.show.episodes.length;i++) {
+				
+				if(historyPlayProdSubName != null && !historyPlayProdSubName.equals("")) {
+					
+					if(historyPlayProdSubName.equals(date.show.episodes[i].name)) {
+						
+						historyPlayIndex4DB = date.show.episodes.length - i;
+						Log.i(TAG, "onCreate--->historyPlayIndex4DB:" + historyPlayIndex4DB);
+					}
+				}
+			}
+			
 			updateView();
 			
 //			showHistorySelect();
@@ -1061,6 +1093,8 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 //	}
 	
 	private void play(int index){
+		Log.i(TAG, "play--->" + index);
+		
 		if(num<=index){
 			return;
 		}
@@ -1077,6 +1111,7 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 			return;
 		}
 		playDate.CurrentIndex = index;
+//		playDate.CurrentIndex = date.show.episodes.length -1 - index;
 		playDate.prod_url = urls.get(0).url;
 		playDate.prod_src = urls.get(0).source_from;
 		playDate.prod_favority = isXiai;

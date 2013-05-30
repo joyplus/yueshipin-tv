@@ -139,16 +139,6 @@ public class VideoPlayerActivity extends Activity {
 			prod_type = mCurrentPlayData.prod_type;
 			mTime = (int) mCurrentPlayData.prod_time;
 
-			//如果是综艺，重新计算集数
-			if(mCurrentPlayData.prod_type == 3 &&
-					mCurrentPlayData.CurrentIndex == -1
-					&& m_ReturnProgramView != null){
-				for (int i = 0; i < m_ReturnProgramView.show.episodes.length; i++) {
-					if(m_ReturnProgramView.show.episodes[i].name.equalsIgnoreCase(mCurrentPlayData.prod_sub_name))
-						mCurrentPlayData.CurrentIndex = i;
-				}
-				
-			}
 
 			
 //			if (m_ReturnProgramView != null) { //过滤不能播放的地址
@@ -362,6 +352,18 @@ public class VideoPlayerActivity extends Activity {
 
 			m_ReturnProgramView = mapper.readValue(json.toString(),
 					ReturnProgramView.class);
+			
+
+			//如果是综艺，重新计算集数
+			if(mCurrentPlayData.prod_type == 3 &&
+					mCurrentPlayData.CurrentIndex == -1
+					){
+				for (int i = 0; i < m_ReturnProgramView.show.episodes.length; i++) {
+					if(m_ReturnProgramView.show.episodes[i].name.equalsIgnoreCase(mCurrentPlayData.prod_sub_name))
+						mCurrentPlayData.CurrentIndex = i;
+				}
+				
+			}
 			ReIndexURL();
 			app.set_ReturnProgramView(m_ReturnProgramView);
 
@@ -729,19 +731,7 @@ public class VideoPlayerActivity extends Activity {
 	public void onPause() {
 		mPlayer.onPause();
 
-		MobclickAgent.onEventEnd(this, MOVIE_PLAY);
-		MobclickAgent.onEventEnd(this, TV_PLAY);
-		MobclickAgent.onEventEnd(this, SHOW_PLAY);
-		MobclickAgent.onPause(this);
-		if (mPlayer != null && URLUtil.isNetworkUrl(prod_url)) {
-			/*
-			 * 获取当前播放时间和总时间,将播放时间和总时间放在服务器上
-			 */
-			if(m_ReturnProgramView != null)
-				SaveToServer(mPlayer.getCurrentPositon() / 1000,
-					mPlayer.getDuration() / 1000);
 
-		}
 		super.onPause();
 	}
 
@@ -860,6 +850,19 @@ public class VideoPlayerActivity extends Activity {
 	@Override
 	public void onDestroy() {
 		
+		MobclickAgent.onEventEnd(this, MOVIE_PLAY);
+		MobclickAgent.onEventEnd(this, TV_PLAY);
+		MobclickAgent.onEventEnd(this, SHOW_PLAY);
+		MobclickAgent.onPause(this);
+		if (mPlayer != null && URLUtil.isNetworkUrl(prod_url)) {
+			/*
+			 * 获取当前播放时间和总时间,将播放时间和总时间放在服务器上
+			 */
+			if(m_ReturnProgramView != null && mCurrentPlayData.CurrentIndex != -1)
+				SaveToServer(mPlayer.getCurrentPositon() / 1000,
+					mPlayer.getDuration() / 1000);
+
+		}
 		if (aq != null)
 			aq.dismiss();
 		if(mPlayer != null){

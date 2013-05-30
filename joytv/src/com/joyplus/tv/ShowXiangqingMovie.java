@@ -101,6 +101,8 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 	
 	private static int favNum = 0;
 	
+	private boolean isYingPing = false;
+	
 	private Handler handler = new Handler(){
 
 		@Override
@@ -363,10 +365,10 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 		case R.id.bt_xiangqing_yingping:
 			Intent yingpingIntent = new Intent(this, DetailComment.class);
 //			yingpingIntent.putExtra("ID", prod_id);
-			int yingpingSize = movieData.comments.length;
-			Log.i(TAG, "Comments : " + yingpingSize);
+//			int yingpingSize = movieData.comments.length;
+//			Log.i(TAG, "Comments : " + yingpingSize);
 			
-			if(yingpingSize >0) {
+			if(isYingPing) {
 				
 				Bundle bundle = new Bundle();
 				bundle.putString("prod_id", prod_id);
@@ -614,6 +616,8 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 				pic_url = bigPicUrl;
 				updateView();
 			}
+			
+			getYingpingData(StatisticsUtils.getYingPin_1_URL(prod_id));
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -626,16 +630,55 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 		}
 	}
 	
-	private void updateView(){
+	protected void getServiceData(String url, String interfaceName) {
+		// TODO Auto-generated method stub
+
+		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
+		cb.url(url).type(JSONObject.class).weakHandler(this, interfaceName);
+
+		cb.SetHeader(app.getHeaders());
+		aq.ajax(cb);
+	}
+
+	protected void getYingpingData(String url) {
+		// TODO Auto-generated method stub
+
+		Log.i(TAG, "getYingpingData--->");
+		getServiceData(url, "initYingpingServiceData");
+	}
+	
+	public void initYingpingServiceData(String url, JSONObject json,
+			AjaxStatus status) {
+		// TODO Auto-generated method stub
+
+		if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
+
+			app.MyToast(aq.getContext(),
+					getResources().getString(R.string.networknotwork));
+			return;
+		}
 		
-		if(movieData.comments.length <=0) {
+		if (json == null || json.equals(""))
+			return;
+		
+		String str = json.toString();
+		if(str.contains("review_id")) {
+			
+			isYingPing = true;
+		}
+		
+		Log.i(TAG, "isYingPing--->" + isYingPing + "   --->" + str);
+		
+		if(!isYingPing) {
 			
 			yingpingBt.setEnabled(false);
 			yingpingBt.setBackgroundResource(R.drawable.yingping_button_unuse_selector);
 			yingpingBt.setTextColor(getResources().getColor(R.color.unuse_color));
 //			yingpingBt.setFocusable(false);
 		}
-		
+	}
+	
+	private void updateView(){
 		
 		String strNum = movieData.movie.favority_num;
 		

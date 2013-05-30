@@ -120,6 +120,17 @@ public class TvDatabaseHelper extends SQLiteOpenHelper implements UserShouCang,S
 			+ STARS + TEXT_DOT 
 			+ DIRECTORS + TEXT_DOT 
 			+ IS_NEW + INTEGER_DOT
+			
+			+ TEXT_1 + TEXT_DOT
+			+ TEXT_2 + TEXT_DOT
+			+ TEXT_3 + TEXT_DOT
+			+ TEXT_4 + TEXT_DOT
+			
+			+ INTEGER_1 + INTEGER_DOT
+			+ INTEGER_2 + INTEGER_DOT 
+			+ INTEGER_3 + INTEGER_DOT 
+			+ INTEGER_4 + INTEGER_DOT 
+			
 			+ IS_UPDATE + INTEGER 
 			+ " )";
 	
@@ -149,6 +160,16 @@ public class TvDatabaseHelper extends SQLiteOpenHelper implements UserShouCang,S
 			+ UserHistory.AREA + TEXT_DOT 
 			+ UserHistory.MAX_EPISODE + TEXT_DOT 
 			+ UserHistory.CUR_EPISODE + TEXT_DOT 
+			
+			+ TEXT_1 + TEXT_DOT
+			+ TEXT_2 + TEXT_DOT
+			+ TEXT_3 + TEXT_DOT
+			+ TEXT_4 + TEXT_DOT
+			
+			+ INTEGER_1 + INTEGER_DOT 
+			+ INTEGER_2 + INTEGER_DOT 
+			+ INTEGER_3 + INTEGER_DOT 
+			+ INTEGER_4 + INTEGER_DOT 
 			
 			+ IS_NEW + INTEGER
 			+ " )";

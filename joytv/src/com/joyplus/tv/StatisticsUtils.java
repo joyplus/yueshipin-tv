@@ -167,7 +167,12 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 				+ "&vod_type=" + vod_type + "&userid=" + userId;
 	}
 	
-	
+	public static String getYingPinURL(String url,String page_num,
+			String page_size,String prod_id) {
+		
+		return url + "?page_num=" + page_num + "&page_size=" + page_size
+				+ "&prod_id=" + prod_id ;
+	}
 
 	public static final int CACHE_NUM = 20;
 	public static final int FIRST_NUM = 30;
@@ -599,7 +604,14 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 
 		return getUserFavURL(HISTORY_URL, 1 + "", SHOUCANG_NUM + "", "", userId);
 	}
-
+	
+	//影评
+	public static String getYingPin_1_URL(String prod_id) {
+		Log.i(TAG, "getYingPin_1_URL--->" + getYingPinURL(YINGPING_URL, 1+ "", 1 + "", prod_id));
+		
+		return getYingPinURL(YINGPING_URL, 1+ "", 1 + "", prod_id);
+	}
+	
 	public static final String YEAR = "&year=";
 	public static final String AREA = "&area=";
 	public static final String SUB_TYPE = "&sub_type=";
@@ -1551,9 +1563,9 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 			
 			Log.i(TAG, "cursor.getCount()--->" + cursor.getCount());
 			
-			if(cursor.getCount() == 1) {
+			if(cursor.getCount() >= 1) {
 				
-				if(cursor.moveToNext()) {
+				while(cursor.moveToNext()) {
 					
 					int indexType = cursor.getColumnIndex(UserHistory.PROD_TYPE);
 					int indexSubName = cursor.getColumnIndex(UserHistory.PROD_SUBNAME);

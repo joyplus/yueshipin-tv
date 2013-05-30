@@ -138,14 +138,22 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 						playDate.prod_qua = StatisticsUtils.string2Int(definition);
 						
 						if(playDate.prod_type!=1){
-							String  currentIndex = ((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_subname;
-							if(currentIndex!=null&&!"".equals(currentIndex)){
-								int current = Integer.valueOf(currentIndex);
-								if(current>0){
-									current = current-1;
+							
+							if(playDate.prod_type == 3) {
+								
+								playDate.CurrentIndex = - 1;
+							} else {
+								
+								String  currentIndex = ((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_subname;
+								if(currentIndex!=null&&!"".equals(currentIndex)){
+									int current = Integer.valueOf(currentIndex);
+									if(current>0){
+										current = current-1;
+									}
+									playDate.CurrentIndex = current;
 								}
-								playDate.CurrentIndex = current;
 							}
+							
 						}
 //						playDate.prod_src = "";
 						if(!"".equals(((HistortyAdapter)listView.getAdapter()).data.get(arg2).playback_time)){
@@ -304,13 +312,13 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 					break;
 				case 2:
 					
-					holder.content.setText("上次观看到：第" + (Integer.valueOf(data.get(position).prod_subname)) +"集"+playBack_time);
+					holder.content.setText("上次观看到：第" + data.get(position).prod_subname +"集"+playBack_time);
 					break;
 				case 3:
-					holder.content.setText("上次观看到：第" + (Integer.valueOf(data.get(position).prod_subname))+"期"+playBack_time);
+					holder.content.setText("上次观看到：第" + data.get(position).prod_subname+"期"+playBack_time);
 					break;
 				case 131:
-					holder.content.setText("上次观看到：第" + (Integer.valueOf(data.get(position).prod_subname))+"集"+playBack_time);
+					holder.content.setText("上次观看到：第" + data.get(position).prod_subname+"集"+playBack_time);
 					break;
 				}
 				aq.id(holder.img).image(data.get(position).prod_pic_url);
