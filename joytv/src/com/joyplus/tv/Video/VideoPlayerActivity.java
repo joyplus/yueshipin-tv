@@ -151,14 +151,14 @@ public class VideoPlayerActivity extends Activity {
 			}
 
 			
-			if (m_ReturnProgramView != null) { //过滤不能播放的地址
-				String where = mCurrentPlayData.prod_id + "_"
-						+ mCurrentPlayData.prod_type + "_"
-						+ mCurrentPlayData.CurrentIndex + "_"
-						+ mCurrentPlayData.CurrentSource + "_"
-						+ mCurrentPlayData.CurrentQuality;
-				GetNextValURL(where);
-			}
+//			if (m_ReturnProgramView != null) { //过滤不能播放的地址
+//				String where = mCurrentPlayData.prod_id + "_"
+//						+ mCurrentPlayData.prod_type + "_"
+//						+ mCurrentPlayData.CurrentIndex + "_"
+//						+ mCurrentPlayData.CurrentSource + "_"
+//						+ mCurrentPlayData.CurrentQuality;
+//				GetNextValURL(where);
+//			}
 			
 			if (prod_type == 2 && prod_type == 3) {
 				if (mCurrentPlayData.CurrentIndex == 0)
