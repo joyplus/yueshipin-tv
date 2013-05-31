@@ -107,6 +107,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:paddingRight="34dp" >
+                
+               <ImageView 
+                   android:id="@+id/iv_help_for_search"
+                   android:layout_width="match_parent"
+                   android:layout_height="match_parent"
+                   android:src="@drawable/help_for_search"
+                   android:scaleType="fitXY"
+                   android:paddingLeft="20dp"
+                   android:paddingRight="40dp"
+                   android:paddingTop="40dp"
+                   android:paddingBottom="80dp"/>
 
                 <com.joyplus.tv.ui.MyMovieGridView
                     android:id="@+id/gv_movie_show"

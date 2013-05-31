@@ -441,13 +441,26 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 							
 							if(date.show.episodes != null) {
 								
+								boolean isPiPei = false;
+								Log.i(TAG, "date.show.episodes.length--->" + date.show.episodes.length);
 								for(int i=0;i< date.show.episodes.length;i++) {
 									
 									if(prod_subName.equals(date.show.episodes[i].name) ) {
 										
+										Log.i(TAG, "date.show.episodes.length--->" + date.show.episodes.length + 
+												" i--->" + i);
+										isPiPei = true;
 										play(i);
 									}
 								}
+								
+								if(!isPiPei) {
+									
+									play(0);
+								}
+							} else {
+								
+								play(0);
 							}
 						}
 					}else {
@@ -746,16 +759,20 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 				
 				if(seletedIndexButton == null) { //如果当前页没有一个button被选中
 					
-					Button button = (Button) findViewById(num-historyPlayIndex4DB + 1);
-					if(button != null) {
+					if(historyPlayIndex4DB != -1) {
 						
-						button.setBackgroundResource(R.drawable.bg_button_tv_selector_1);
-						button.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector_1));
-//						button.setPadding(8, 0, 0, 0);
-						
-						seletedIndexButton = button;
-						seletedButtonIndex = num-historyPlayIndex4DB + 1;
+						Button button = (Button) findViewById(num-historyPlayIndex4DB + 1);
+						if(button != null) {
+							
+							button.setBackgroundResource(R.drawable.bg_button_tv_selector_1);
+							button.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector_1));
+//							button.setPadding(8, 0, 0, 0);
+							
+							seletedIndexButton = button;
+							seletedButtonIndex = num-historyPlayIndex4DB + 1;
+						}
 					}
+
 				}
 			}
 			

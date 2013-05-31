@@ -72,6 +72,8 @@ public class ShowSearchActivity extends AbstractShowActivity {
 	private boolean isFirstActive = true;//是否界面初始化
 	private SparseArray<View> mSparseArray = new SparseArray<View>();
 	
+	private ImageView helpForSearch;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -402,6 +404,8 @@ public class ShowSearchActivity extends AbstractShowActivity {
 				ItemStateUtils
 						.viewToNormal(getApplicationContext(), activeView);
 				activeView = searchEt;
+				
+				helpForSearch.setVisibility(View.GONE);
 
 				if (searchStr != null && !searchStr.equals("")) {
 					resetGvActive();
@@ -718,6 +722,7 @@ public class ShowSearchActivity extends AbstractShowActivity {
 		
 		searchEt = (EditText) findViewById(R.id.et_search);
 		playGv = (MyMovieGridView) findViewById(R.id.gv_movie_show);
+		helpForSearch = (ImageView) findViewById(R.id.iv_help_for_search);
 
 	}
 	
