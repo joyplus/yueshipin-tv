@@ -116,6 +116,7 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 		//从DB文件中获取历史播放集数
 		historyPlayIndex4DB = StatisticsUtils.
 				getHistoryPlayIndex4DB(getApplicationContext(),prod_id,BangDanKey.TV_TYPE);
+		seletedButtonIndex = historyPlayIndex4DB;
 		Log.i(TAG, "onCreate--->historyPlayIndex4DB:" + historyPlayIndex4DB);
 		
 		getIsShoucangData();
@@ -241,11 +242,16 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 		}
 		
 //		selectedIndex = 1;
-		if(num>COUNT){
+		if(num>COUNT*selectedIndex){
 			initTableView(COUNT);
 		}else{
-			initTableView(num);
+			initTableView(num-COUNT*(selectedIndex-1));
 		}
+//		if(num>COUNT * selectedIndex){
+//			initTableView(COUNT);
+//		}else{
+//			initTableView(num);
+//		}
 		
 		bofangLL.requestFocus();
 	}

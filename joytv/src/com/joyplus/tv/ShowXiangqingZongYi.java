@@ -247,10 +247,16 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 		}
 		
 //		selectedIndex = 1;
-		if(num>COUNT){
+//		if(num>COUNT){
+//			initTableView(COUNT);
+//		}else{
+//			initTableView(num);
+//		}
+		
+		if(num>COUNT*selectedIndex){
 			initTableView(COUNT);
 		}else{
-			initTableView(num);
+			initTableView(num-COUNT*(selectedIndex-1));
 		}
 		
 		bofangLL.requestFocus();

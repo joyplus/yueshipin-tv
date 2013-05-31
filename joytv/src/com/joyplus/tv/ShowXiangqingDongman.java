@@ -121,7 +121,7 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 		historyPlayIndex4DB = StatisticsUtils.
 				getHistoryPlayIndex4DB(getApplicationContext(),prod_id,BangDanKey.DONGMAN_TYPE);
 		Log.i(TAG, "onCreate--->historyPlayIndex4DB:" + historyPlayIndex4DB);
-		
+		seletedButtonIndex = historyPlayIndex4DB;
 		
 		getIsShoucangData();
 		getServiceDate();
@@ -248,12 +248,16 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 		}
 		
 //		selectedIndex = 1;
-		if(num>COUNT){
+//		if(num>COUNT){
+//			initTableView(COUNT);
+//		}else{
+//			initTableView(num);
+//		}
+		if(num>COUNT*selectedIndex){
 			initTableView(COUNT);
 		}else{
-			initTableView(num);
+			initTableView(num-COUNT*(selectedIndex-1));
 		}
-		
 		bofangLL.requestFocus();
 	}
 
@@ -539,7 +543,7 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 //			intent.putExtra("prod_url", str2);
 //			intent.putExtra("title", str1);
 //			startActivity(intent);
-			if(seletedButtonIndex==0){
+			if(seletedButtonIndex<=0){
 				seletedButtonIndex = 1;
 				Button b = (Button) table.findViewById(1);
 				seletedIndexButton = b;

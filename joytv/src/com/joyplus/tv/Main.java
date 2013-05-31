@@ -67,6 +67,7 @@ import com.joyplus.tv.Adapters.CurrentPlayData;
 import com.joyplus.tv.Adapters.MainHotItemAdapter;
 import com.joyplus.tv.Adapters.MainLibAdapter;
 import com.joyplus.tv.Adapters.MainYueDanItemAdapter;
+import com.joyplus.tv.HistoryActivity.HistortyAdapter;
 import com.joyplus.tv.Service.Return.ReturnMainHot;
 import com.joyplus.tv.Service.Return.ReturnTops;
 import com.joyplus.tv.Service.Return.ReturnUserPlayHistories;
@@ -875,7 +876,8 @@ public class Main extends Activity implements OnItemSelectedListener,
 					+ "&tv_channel="
 					+ (Constant.FAYECHANNEL_TV_BASE + StatisticsUtils
 							.MD5(macAddress)).replace(
-							Constant.FAYECHANNEL_TV_HEAD, "");
+							Constant.FAYECHANNEL_TV_HEAD, "")
+							+"&app_key=" + Constant.APPKEY;
 			// String url = Constant.BASE_URL;
 			Log.d(TAG, url);
 			AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
@@ -1384,12 +1386,23 @@ public class Main extends Activity implements OnItemSelectedListener,
 					playDate.prod_time = Long.valueOf(info.playback_time) * 1000;
 				}
 				String currentIndex = info.prod_subname;
-				if (currentIndex != null && "".equals(currentIndex)) {
-					int current = Integer.valueOf(currentIndex);
-					if (current > 0) {
-						current = current - 1;
+				if(playDate.prod_type!=1){
+					
+					if(playDate.prod_type == 3) {
+						
+						playDate.CurrentIndex = - 1;
+					} else {
+						
+//						String  currentIndex = ((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_subname;
+						if(currentIndex!=null&&!"".equals(currentIndex)){
+							int current = Integer.valueOf(currentIndex);
+							if(current>0){
+								current = current-1;
+							}
+							playDate.CurrentIndex = current;
+						}
 					}
-					playDate.CurrentIndex = current;
+					
 				}
 				// playDate.prod_qua = Integer.valueOf(info.definition);
 				app.setCurrentPlayData(playDate);

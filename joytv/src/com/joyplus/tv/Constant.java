@@ -4,7 +4,7 @@ import android.os.Environment;
 
 public class Constant {
 	
-	// 正式环境
+//	// 正式环境
 //	public static boolean TestEnv = false;
 //	public static final String BASE_URL = "http://api.joyplus.tv/joyplus-service/index.php/";
 //	public static String DEFAULT_APPKEY = "ijoyplus_android_0001";
@@ -30,8 +30,8 @@ public class Constant {
 	
 //	//测试环境控制
 	public static boolean TestEnv = true;
-	
-	//测试环境
+//	
+//	//测试环境
 	 public static final String BASE_URL =
 	 "http://apitest.yue001.com/joyplus-service/index.php/";
 	 public static String DEFAULT_APPKEY = "ijoyplus_android_0001bj";

@@ -3,16 +3,16 @@
 
 <item android:id="@android:id/background" >
 	<!-- <nine-patch android:src="@drawable/player_time_jindu"/>     -->
-    <shape>
-        <corners android:radius="10dip" />
-        <gradient
-                android:startColor="#00e4d8c8"
-                android:centerColor="#00efe3d3"
-                android:centerY="0.75"
-                android:endColor="#00fbefdf"
-                android:angle="270"
-        />
-    </shape>
+        <shape>
+            <corners android:radius="5dip" />
+            <gradient
+                    android:startColor="#00ff0000"
+                    android:centerColor="#00ff0000"
+                    android:centerY="0.75"
+                    android:endColor="#00ff0000"
+                    android:angle="270"
+            />
+        </shape>
 </item>
 
 <item android:id="@android:id/secondaryProgress" >
