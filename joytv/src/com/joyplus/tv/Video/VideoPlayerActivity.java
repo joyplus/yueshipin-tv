@@ -47,6 +47,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.webkit.URLUtil;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -645,6 +646,9 @@ public class VideoPlayerActivity extends Activity {
 					app.MyToast(this, "收藏成功!");
 				} else
 					app.MyToast(this, "已收藏!");
+				mCurrentPlayData.prod_favority = true;
+				app.setCurrentPlayData(mCurrentPlayData);
+				findViewById(R.id.imageControl_b).setBackgroundResource(R.drawable.player_btn_unfav);
 //				setResult(101);
 //				finish();
 			} catch (JSONException e) {
@@ -668,6 +672,9 @@ public class VideoPlayerActivity extends Activity {
 					// GetServiceData(1);
 				} else
 					app.MyToast(this, "取消收藏失败!");
+				mCurrentPlayData.prod_favority = false;
+				app.setCurrentPlayData(mCurrentPlayData);
+				findViewById(R.id.imageControl_b).setBackgroundResource(R.drawable.player_btn_fav);
 //				setResult(102);
 //				finish();
 			} catch (JSONException e) {
