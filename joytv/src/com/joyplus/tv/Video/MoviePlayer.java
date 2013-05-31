@@ -1175,6 +1175,10 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 				break;
 			case 131:
 			case 2:
+				if(mCurrentPlayData.CurrentIndex - 1 < 0){
+					onCompletion();
+					return;
+				}
 				index = mCurrentPlayData.CurrentIndex - 1;
 				mCurrentPlayData.CurrentIndex -= 1;
 				app.setCurrentPlayData(mCurrentPlayData);
@@ -1214,6 +1218,10 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 				}
 				break;
 			case 3:
+				if(mCurrentPlayData.CurrentIndex + 1 >= m_ReturnProgramView.show.episodes.length){
+					onCompletion();
+					return;
+				}
 				index = mCurrentPlayData.CurrentIndex + 1;
 				mCurrentPlayData.CurrentIndex += 1;
 				app.setCurrentPlayData(mCurrentPlayData);
@@ -1275,6 +1283,10 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 				break;
 			case 131:
 			case 2:
+				if(mCurrentPlayData.CurrentIndex + 1 >= m_ReturnProgramView.tv.episodes.length){
+					onCompletion();
+					return;
+				}
 				index = mCurrentPlayData.CurrentIndex + 1;
 				mCurrentPlayData.CurrentIndex += 1;
 				app.setCurrentPlayData(mCurrentPlayData);
@@ -1315,6 +1327,10 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 				}
 				break;
 			case 3:
+				if(mCurrentPlayData.CurrentIndex - 1 < 0){
+					onCompletion();
+					return;
+				}
 				index = mCurrentPlayData.CurrentIndex - 1;
 				mCurrentPlayData.CurrentIndex -= 1;
 
