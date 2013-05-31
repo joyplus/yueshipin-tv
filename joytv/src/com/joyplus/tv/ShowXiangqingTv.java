@@ -40,6 +40,7 @@ import com.joyplus.tv.Adapters.CurrentPlayData;
 import com.joyplus.tv.Service.Return.ReturnProgramView;
 import com.joyplus.tv.Service.Return.ReturnProgramView.DOWN_URLS;
 import com.joyplus.tv.Video.VideoPlayerActivity;
+import com.joyplus.tv.entity.HotItemInfo;
 import com.joyplus.tv.ui.WaitingDialog;
 import com.joyplus.tv.utils.BangDanKey;
 import com.joyplus.tv.utils.DefinationComparatorIndex;
@@ -412,7 +413,7 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 //			intent.putExtra("prod_url", str2);
 //			intent.putExtra("title", str1);
 //			startActivity(intent);
-			if(seletedButtonIndex==0){
+			if(seletedButtonIndex<=0){
 				seletedButtonIndex = 1;
 				Button b = (Button) table.findViewById(1);
 				seletedIndexButton = b;
@@ -421,16 +422,33 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 					b.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector_1));
 					b.setPadding(8, 0, 0, 0);
 				}
-				
-				//如果用户播放过，那就从播放过的片子进入
-				CurrentPlayData playData = app.getCurrentPlayData();
-				if(playData != null) {
+				//从DB文件中获取历史播放集数
+				HotItemInfo info = StatisticsUtils.
+						getHotItemInfo4DB_History(getApplicationContext(),
+								StatisticsUtils.getCurrentUserId(getApplicationContext()), prod_id);
+				if(info != null) {
 					
-					int index = playData.CurrentIndex;
+//					int index = playData.CurrentIndex;
+					String prod_subName = info.prod_subname;
 					
-					if(index > -1) {
+					if(prod_subName != null && !prod_subName.equals("")) {
 						
-						play(index);
+						int tempIndex = -1;
+						try {
+							tempIndex = Integer.valueOf(prod_subName);
+						} catch (NumberFormatException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						
+						if(tempIndex > -1) {
+							
+							play(tempIndex);
+						}
+						
+					}else {
+						
+						play(0);
 					}
 				} else {
 					

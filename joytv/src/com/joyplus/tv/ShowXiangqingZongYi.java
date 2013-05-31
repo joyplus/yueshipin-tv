@@ -416,7 +416,7 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 //			intent.putExtra("title", str1);
 //			startActivity(intent);
 			Log.i(TAG, "ll_xiangqing_bofang_gaoqing--->" +seletedButtonIndex );
-			if(seletedButtonIndex==0){
+			if(seletedButtonIndex<=0){
 				seletedButtonIndex = 1;
 				Button b = (Button) table.findViewById(1);
 				seletedIndexButton = b;
@@ -426,12 +426,14 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 					b.setPadding(8, 0, 0, 0);
 				}
 				
-				//如果用户播放过，那就从播放过的片子进入
-				CurrentPlayData playData = app.getCurrentPlayData();
-				if(playData != null) {
+				//从DB文件中获取历史播放集数
+				HotItemInfo info = StatisticsUtils.
+						getHotItemInfo4DB_History(getApplicationContext(),
+								StatisticsUtils.getCurrentUserId(getApplicationContext()), prod_id);
+				if(info != null) {
 					
 //					int index = playData.CurrentIndex;
-					String prod_subName = playData.prod_sub_name;
+					String prod_subName = info.prod_subname;
 					
 					if(prod_subName != null && !prod_subName.equals("")) {
 						
@@ -448,6 +450,9 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 								}
 							}
 						}
+					}else {
+						
+						play(0);
 					}
 
 				} else {
