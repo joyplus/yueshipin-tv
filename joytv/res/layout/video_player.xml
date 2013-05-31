@@ -144,7 +144,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_marginBottom="30dp"
-        android:layout_marginLeft="40dp" >
+        android:layout_marginLeft="33dp" >
 
         <RelativeLayout
             android:id="@+id/LayoutBottomTime1"
@@ -211,13 +211,13 @@
                 android:layout_alignParentRight="true"
                 android:layout_marginBottom="10dp"
                 android:layout_marginLeft="10dp"
-                android:layout_marginRight="200dp"
+                android:layout_marginRight="185dp"
                 android:background="@drawable/player_time_jindu" />
             <LinearLayout android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:paddingLeft="20dp"
-                android:paddingRight="210dp"
+                android:paddingRight="195dp"
                 android:layout_marginBottom="11dp">
                <SeekBar
                 android:id="@+id/seekBar1"
@@ -262,6 +262,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginRight="60dp"
                 android:text="--:--"
+                android:paddingBottom="21dp"
                 android:textColor="@color/white"
                 android:textSize="22sp" />
         </RelativeLayout>

@@ -111,7 +111,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 	private int prod_type = 0;
 	private int currentKeyEvent = 0;
 
-	private int seekBarWidthOffset = 75;
+	private int seekBarWidthOffset = 40;
 
 	private Context mContext;
 	private final VideoView mVideoView;
@@ -139,6 +139,8 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 	private TextView mTextViewTime2;
 	private TextView saveTime;
 	private TextView mTextViewProdName;
+	
+	private static final int OFFSET = 33;
 
 	private View mLayoutBottomTime;
 	private int totalTime;
@@ -394,12 +396,12 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 						RelativeLayout.TRUE);
 
 				double mLeft = (double) firstJumpTime / totalTime
-						* (sb.getMeasuredWidth() - seekBarWidthOffset) + 40;
+						* (sb.getMeasuredWidth() - seekBarWidthOffset) + OFFSET;
 
 				if (firstJumpTime > 0)
 					parms.leftMargin = (int) mLeft;
 				else
-					parms.leftMargin = 40;
+					parms.leftMargin = OFFSET;
 				parms.bottomMargin = 20 + 10;
 				mLayoutBottomTime.setLayoutParams(parms);
 
@@ -941,11 +943,11 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 					RelativeLayout.TRUE);
 
 			double mLeft = (double) JUMP_TIME / totalTime
-					* (sb.getMeasuredWidth() - seekBarWidthOffset) + 40;
+					* (sb.getMeasuredWidth() - seekBarWidthOffset) + OFFSET;
 			if (totalTime > 0)
 				parms.leftMargin = (int) mLeft;
 			else
-				parms.leftMargin = 40;
+				parms.leftMargin = OFFSET;
 			parms.bottomMargin = 20 + 10;
 
 			mLayoutBottomTime.setLayoutParams(parms);
@@ -1047,12 +1049,12 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 						RelativeLayout.TRUE);
 
 				double mLeft = (double) progress / totalTime
-						* (sb.getMeasuredWidth() - seekBarWidthOffset) + 40;
+						* (sb.getMeasuredWidth() - seekBarWidthOffset) + OFFSET;
 
 				if (progress > 0)
 					parms.leftMargin = (int) mLeft;
 				else
-					parms.leftMargin = 40;
+					parms.leftMargin = OFFSET;
 				parms.bottomMargin = 20 + 10;
 				mLayoutBottomTime.setLayoutParams(parms);
 
