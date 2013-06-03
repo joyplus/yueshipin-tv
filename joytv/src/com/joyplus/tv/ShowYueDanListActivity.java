@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
+import android.util.SparseArray;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -27,6 +28,7 @@ import com.androidquery.callback.AjaxStatus;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.joyplus.tv.Adapters.SearchAdapter;
+import com.joyplus.tv.Adapters.ZongYiAdapter;
 import com.joyplus.tv.entity.MovieItemData;
 import com.joyplus.tv.ui.MyMovieGridView;
 import com.joyplus.tv.utils.ItemStateUtils;
@@ -46,12 +48,12 @@ public class ShowYueDanListActivity extends AbstractShowActivity{
 	private EditText searchEt;
 	private MyMovieGridView playGv;
 	private LinearLayout topLinearLayout;
-	private View activeView;
+//	private View activeView;
 	private int popWidth = 0, popHeight = 0;
 	private boolean isGridViewUp = false;
 	private int[] beforeFirstAndLastVible = { 0, 9 };
 	private View beforeGvView = null;
-	private SearchAdapter searchAdapter = null;
+	private ZongYiAdapter searchAdapter = null;
 	private int beforepostion = 0;
 	private int currentListIndex;
 	private String search;
@@ -65,6 +67,10 @@ public class ShowYueDanListActivity extends AbstractShowActivity{
 	private List<MovieItemData>[] lists = new List[4];
 	private boolean[] isNextPagePossibles = new boolean[4];
 	private int[] pageNums = new int[4];
+	
+	private boolean isCurrentKeyVertical = false;//水平方向移动
+	private boolean isFirstActive = true;//是否界面初始化
+	private SparseArray<View> mSparseArray = new SparseArray<View>();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -87,12 +93,14 @@ public class ShowYueDanListActivity extends AbstractShowActivity{
 			
 			initActivity();
 			
-			searchAdapter = new SearchAdapter(this,aq);
-
-			searchEt.setFocusable(false);
+			searchAdapter = new ZongYiAdapter(this,aq);
+			
 			showDialog(DIALOG_WAITING);
 			yuedanListTv.setText(name);
 			playGv.setAdapter(searchAdapter);
+			
+			playGv.requestFocus();
+			playGv.setSelection(-1);
 			getUnQuanbuData(StatisticsUtils.getTopItemURL(TOP_ITEM_URL, id, 1 + "", 100 + ""));
 			
 		} else {
@@ -105,14 +113,47 @@ public class ShowYueDanListActivity extends AbstractShowActivity{
 	@Override
 	public void onFocusChange(View v, boolean hasFocus) {
 		// TODO Auto-generated method stub
+		
+		if(v.getId() == R.id.et_search) {
+			
+			if (hasFocus == true) {
+				((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
+						.showSoftInput(v, InputMethodManager.SHOW_FORCED);
 
-		if (hasFocus) {
+			} else { // ie searchBoxEditText doesn't have focus
+				((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
+						.hideSoftInputFromWindow(v.getWindowToken(), 0);
 
-			ItemStateUtils.viewToFocusState(getApplicationContext(), v);
+			}
 		} else {
+			
+			if (hasFocus) {
 
-			ItemStateUtils.viewToOutFocusState(getApplicationContext(), v,
-					activeView);
+				ItemStateUtils.viewToFocusState(getApplicationContext(), v);
+			} else {
+
+//				ItemStateUtils.viewToOutFocusState(getApplicationContext(), v,
+//						activeView);
+			}
+		}
+		
+		if(!isCurrentKeyVertical) {
+			
+			int postion = playGv.getSelectedItemPosition();
+			View view =mSparseArray.get(postion);
+			
+			if(view != null) {
+				
+				if (hasFocus) {// 如果gridview没有获取焦点，把item中高亮取消
+
+					ItemStateUtils.viewOutAnimation(getApplicationContext(),
+							view);
+				} else {
+					
+					ItemStateUtils.viewInAnimation(getApplicationContext(), view);
+					activeRecordIndex = postion;
+				}
+			}
 		}
 
 	}
@@ -120,8 +161,45 @@ public class ShowYueDanListActivity extends AbstractShowActivity{
 	@Override
 	public boolean onKey(View v, int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
-		int action = event.getAction();
+
 		return false;
+	}
+	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		// TODO Auto-generated method stub
+		
+		int action = event.getAction();
+
+		if (action == KeyEvent.ACTION_DOWN) {
+
+			switch (keyCode) {
+			case KEY_UP:
+
+//				isGridViewUp = true;
+				isCurrentKeyVertical = true;
+				break;
+			case KEY_DOWN:
+
+//				isGridViewUp = false;
+				isCurrentKeyVertical = true;
+				break;
+			case KEY_LEFT:
+
+				isCurrentKeyVertical = false;
+				break;
+			case KEY_RIGHT:
+
+				isCurrentKeyVertical = false;
+				break;
+
+			default:
+				break;
+			}
+
+		}
+		
+		return super.onKeyDown(keyCode, event);
 	}
 
 	@Override
@@ -152,38 +230,14 @@ public class ShowYueDanListActivity extends AbstractShowActivity{
 		
 		zuijinguankanBtn.setOnKeyListener(this);
 		zhuijushoucangBtn.setOnKeyListener(this);
+		searchEt.setOnKeyListener(this);
 
 		zuijinguankanBtn.setOnClickListener(this);
 		zhuijushoucangBtn.setOnClickListener(this);
 		
 		zuijinguankanBtn.setOnFocusChangeListener(this);
 		zhuijushoucangBtn.setOnFocusChangeListener(this);
-
-		playGv.setOnKeyListener(new View.OnKeyListener() {
-
-			@Override
-			public boolean onKey(View v, int keyCode, KeyEvent event) {
-				// TODO Auto-generated method stub
-				int action = event.getAction();
-
-				if (keyCode == KEY_UP) {
-
-					isGridViewUp = true;
-					// isGridViewDown = false;
-				} else if (keyCode == KEY_DOWN) {
-
-					isGridViewUp = false;
-					// isGridViewDown = true;
-				}
-				if (action == KeyEvent.ACTION_UP) {
-					if (keyCode == KEY_RIGHT) {
-
-					}
-
-				}
-				return false;
-			}
-		});
+		searchEt.setOnFocusChangeListener(this);
 
 		playGv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -250,12 +304,19 @@ public class ShowYueDanListActivity extends AbstractShowActivity{
 					int position, long id) {
 				// TODO Auto-generated method stub
 				// if (BuildConfig.DEBUG)
-				Log.i(TAG, "Positon:" + position + " View:" + view
-						+ " beforGvView:" + beforeGvView);
+				Log.i(TAG, "Positon:" + position + " View:" + view + 
+						" before: " + activeRecordIndex);
 
 				if (view == null) {
 
 					return;
+				}else {
+					
+//					Log.i(TAG, "mSparseArray: " + mSparseArray.get(position));
+//					if(mSparseArray.get(position) == null){
+						
+						mSparseArray.put(position,view);
+//					}
 				}
 
 				final float y = view.getY();
@@ -264,40 +325,45 @@ public class ShowYueDanListActivity extends AbstractShowActivity{
 
 				boolean isSameContent = position >= beforeFirstAndLastVible[0]
 						&& position <= beforeFirstAndLastVible[1];
-				if (position >= 5 && !isSameContent) {
+//				if (position >= 5 && !isSameContent) {
+//
+//					if (beforepostion >= beforeFirstAndLastVible[0]
+//							&& beforepostion <= beforeFirstAndLastVible[0] + 4) {
+//
+//						if (isGridViewUp) {
+//
+//							playGv.smoothScrollBy(-popHeight, 1000);
+//							isSmoonthScroll = true;
+//						}
+//					} else {
+//
+//						if (!isGridViewUp) {
+//
+//							playGv.smoothScrollBy(popHeight, 1000 * 2);
+//							isSmoonthScroll = true;
+//
+//						}
+//					}
+//
+//				}
 
-					if (beforepostion >= beforeFirstAndLastVible[0]
-							&& beforepostion <= beforeFirstAndLastVible[0] + 4) {
-
-						if (isGridViewUp) {
-
-							playGv.smoothScrollBy(-popHeight, 1000);
-							isSmoonthScroll = true;
-						}
-					} else {
-
-						if (!isGridViewUp) {
-
-							playGv.smoothScrollBy(popHeight, 1000 * 2);
-							isSmoonthScroll = true;
-
-						}
-					}
-
-				}
-
-				if (beforeGvView != null && beforeGvView != view) {
+				if (mSparseArray.get(activeRecordIndex) != null && activeRecordIndex != position) {
 
 					ItemStateUtils.viewOutAnimation(getApplicationContext(),
-							beforeGvView);
-				} 
-				
-				if(position != activeRecordIndex) {
-					
-					ItemStateUtils.viewInAnimation(getApplicationContext(), view);
+							mSparseArray.get(activeRecordIndex));
+				}
+
+				if (position != activeRecordIndex && isFirstActive) {
+
+					ItemStateUtils.viewInAnimation(getApplicationContext(),
+							view);
 					activeRecordIndex = position;
 				}
 				
+				if(!isFirstActive) {//如果不是初始化，那就设为true
+					
+					isFirstActive = true;
+				}
 
 				int[] firstAndLastVisible = new int[2];
 				firstAndLastVisible[0] = playGv.getFirstVisiblePosition();
@@ -319,7 +385,6 @@ public class ShowYueDanListActivity extends AbstractShowActivity{
 
 				}
 
-				beforeGvView = view;
 				beforepostion = position;
 
 				// 缓存
@@ -329,7 +394,6 @@ public class ShowYueDanListActivity extends AbstractShowActivity{
 					if (isNextPagePossibles[currentListIndex]) {
 
 						pageNums[currentListIndex]++;
-						playGv.setOnFocusChangeListener(null);
 						cachePlay(currentListIndex, pageNums[currentListIndex]);
 					}
 				}
@@ -351,13 +415,12 @@ public class ShowYueDanListActivity extends AbstractShowActivity{
 
 				Editable editable = searchEt.getText();
 				String searchStr = editable.toString();
-//				searchEt.setText("");
+				// searchEt.setText("");
 				playGv.setNextFocusForwardId(searchEt.getId());//
-				
-				ItemStateUtils
-						.viewToNormal(getApplicationContext(), activeView);
-				activeView = searchEt;
-				
+
+//				ItemStateUtils
+//						.viewToNormal(getApplicationContext(), activeView);
+//				activeView = searchEt;
 
 				if (searchStr != null && !searchStr.equals("")) {
 					resetGvActive();
@@ -371,41 +434,7 @@ public class ShowYueDanListActivity extends AbstractShowActivity{
 
 			}
 		});
-
-		searchEt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-
-			@Override
-			public void onFocusChange(View v, boolean hasFocus) {
-				// TODO Auto-generated method stub
-				if (hasFocus == true) {
-					((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
-							.showSoftInput(v, InputMethodManager.SHOW_FORCED);
-
-				} else { // ie searchBoxEditText doesn't have focus
-					((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
-							.hideSoftInputFromWindow(v.getWindowToken(), 0);
-
-				}
-			}
-		});
 	}
-	
-	private View.OnFocusChangeListener gvOnFocusChangeListener = new View.OnFocusChangeListener() {
-		
-		@Override
-		public void onFocusChange(View v, boolean hasFocus) {
-			// TODO Auto-generated method stub
-			
-			if (!hasFocus) {// 如果gridview没有获取焦点，把item中高亮取消
-
-				if (beforeGvView != null) {
-
-					ItemStateUtils.viewOutAnimation(
-							getApplicationContext(), beforeGvView);
-				}
-			}
-		}
-	};
 
 	@Override
 	protected void clearLists() {
@@ -442,22 +471,31 @@ public class ShowYueDanListActivity extends AbstractShowActivity{
 			popHeight = height;
 		}
 
-		searchAdapter.setList(list);
-		
-		if(list.size() <= 0) {
+		if(currentListIndex != SEARCH &&
+				currentListIndex != QUAN_FILTER) {
 			
-			playGv.setAdapter(null);
-			app.MyToast(getApplicationContext(), getString(R.string.toast_no_play));
+			searchAdapter.setList(list,true);
+		}else {
+			
+			searchAdapter.setList(list,false);
+		}
+		
+		if(searchAdapter.getItemId() == list.size()) {
+			
+			searchAdapter.setItemId(list.size() + 1);
 		} else {
 			
-			ListAdapter adapter = playGv.getAdapter();
-			if(adapter == null) {
-				
-				playGv.setAdapter(searchAdapter);
-			} 
+			searchAdapter.setItemId(list.size());
+		}
+		
+
+		if (list.size() <= 0) {
+
+			app.MyToast(getApplicationContext(),
+					getString(R.string.toast_no_play));
 		}
 
-		if (list != null && !list.isEmpty() && currentListIndex != QUANBUFENLEI) {// 判断其能否向获取更多数据
+		if (list != null && !list.isEmpty() && QUANBUFENLEI != currentListIndex) {// 判断其能否向获取更多数据
 
 			if (list.size() == StatisticsUtils.FIRST_NUM) {
 
@@ -469,13 +507,14 @@ public class ShowYueDanListActivity extends AbstractShowActivity{
 		}
 		lists[currentListIndex] = list;
 
-		beforeGvView = null;
 		playGv.setSelection(0);
 		searchAdapter.notifyDataSetChanged();
+		
 		removeDialog(DIALOG_WAITING);
-		playGv.requestFocus();
-		playGv.setOnFocusChangeListener(gvOnFocusChangeListener);
-		searchEt.setFocusable(true);
+//		if(isFirstActive) {
+//			
+//			playGv.requestFocus();
+//		}
 
 	}
 
@@ -570,12 +609,12 @@ public class ShowYueDanListActivity extends AbstractShowActivity{
 			isNextPagePossibles[currentListIndex] = false;
 		}
 
-		searchAdapter.setList(srcList);
+		searchAdapter.setList(srcList,true);
 		lists[currentListIndex] = srcList;
 
 		searchAdapter.notifyDataSetChanged();
-		playGv.setOnFocusChangeListener(gvOnFocusChangeListener);
 	}
+
 
 
 	@Override
@@ -616,6 +655,10 @@ public class ShowYueDanListActivity extends AbstractShowActivity{
 		}
 
 		try {
+			
+			if(json == null || json.equals("")) 
+				return;
+			
 			Log.d(TAG, json.toString());
 
 			refreshAdpter(StatisticsUtils.returnFilterMovieSearch_TVJson(json
@@ -675,6 +718,10 @@ public class ShowYueDanListActivity extends AbstractShowActivity{
 			return;
 		}
 		try {
+			
+			if(json == null || json.equals("")) 
+				return;
+			
 			Log.d(TAG, json.toString());
 				
 			notifyAdapter(StatisticsUtils
@@ -704,6 +751,10 @@ public class ShowYueDanListActivity extends AbstractShowActivity{
 		}
 		
 		try {
+			
+			if(json == null || json.equals("")) 
+				return;
+			
 			Log.d(TAG, json.toString());
 			notifyAdapter(StatisticsUtils.returnFilterMovieSearch_TVJson(json
 					.toString()));
@@ -748,7 +799,10 @@ public class ShowYueDanListActivity extends AbstractShowActivity{
 		
 		playGv.setNextFocusLeftId(R.id.bt_zuijinguankan);
 		
-		activeView = zuijinguankanBtn;
+		playGv.setNextFocusUpId(R.id.gv_movie_show);
+		playGv.setNextFocusDownId(R.id.gv_movie_show);
+		
+//		activeView = zuijinguankanBtn;
 	}
 	
 	@Override
@@ -756,10 +810,21 @@ public class ShowYueDanListActivity extends AbstractShowActivity{
 		// TODO Auto-generated method stub
 		Log.i("Yangzhg", "onClick");
 
-		if (activeView.getId() == v.getId()) {
+//		if(v.getId() == R.id.bt_zuijinguankan) {
+//			
+//			startActivity(new Intent(this, HistoryActivity.class));
+//			
+//			return;
+//		} else if( v.getId() == R.id.bt_zhuijushoucang) {
+//			
+//			startActivity(new Intent(this, ShowShoucangHistoryActivity.class));
+//			return;
+//		}
 
-			return;
-		}
+//		if (activeView.getId() == v.getId()) {
+//
+//			return;
+//		}
 		
 		switch (v.getId()) {
 		case R.id.bt_zuijinguankan:
@@ -773,13 +838,13 @@ public class ShowYueDanListActivity extends AbstractShowActivity{
 			break;
 		}
 
-		View tempView = ItemStateUtils.viewToActive(getApplicationContext(), v,
-				activeView);
-
-		if (tempView != null) {
-
-			activeView = tempView;
-		}
+//		View tempView = ItemStateUtils.viewToActive(getApplicationContext(), v,
+//				activeView);
+//
+//		if (tempView != null) {
+//
+//			activeView = tempView;
+//		}
 
 		playGv.setNextFocusLeftId(v.getId());
 	}
@@ -787,15 +852,13 @@ public class ShowYueDanListActivity extends AbstractShowActivity{
 	@Override
 	protected void resetGvActive() {
 		// TODO Auto-generated method stub
-		
-		playGv.setOnFocusChangeListener(null);
-		playGv.setSelection(-1);
+		mSparseArray.clear();
 		activeRecordIndex = -1;
+		isCurrentKeyVertical = false;
+		isFirstActive = false;
 	}
-
-	@Override
-	protected void initFirstFloatView(int position, View view) {
-		// TODO Auto-generated method stub
+	
+	protected void initFirstFloatView(int position,View view) {
 		
 	}
 

@@ -68,7 +68,7 @@ public interface BangDanKey {
 	String REBO_GAOXIAO_DONGMAN = "7265";//7265 热播搞笑动漫
 	
 	String TV_DIANYING = "7280";//7280 电影 for TV 
-	String TV_DIANSHIJU = "282";//282 电视剧 for TV 
+	String TV_DIANSHIJU = "7282";//282 电视剧 for TV 
 	String TV_DONGMAN = "7284";//7284 动漫 for TV
 	
 	String TOP_ITEM_URL = Constant.BASE_URL + "top_items";
@@ -76,6 +76,8 @@ public interface BangDanKey {
 	String FILTER_URL = Constant.BASE_URL + "filter";
 	String SEARCH_URL = Constant.BASE_URL + "search";
 	String FAV_URL = Constant.BASE_URL + "user/favorities";
+	String HISTORY_URL = Constant.BASE_URL + "/user/playHistories";
+	String YINGPING_URL = Constant.BASE_URL + "program/reviews";
 	
 	String MOVIE_TYPE = "1";
 	String TV_TYPE = "2";

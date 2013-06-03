@@ -5,4 +5,5 @@
     <item android:drawable="@drawable/player_btn_next_press" android:state_enabled="true" android:state_focused="false" android:state_pressed="true"/>
      <item android:drawable="@drawable/player_btn_next_unuse" android:state_enabled="false"/>
     <item android:drawable="@drawable/player_btn_next_normal"/>
+
 </selector>

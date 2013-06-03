@@ -89,6 +89,11 @@ public class DetailComment extends Activity implements
 
 		// 获取listview对象
 		ItemsListView = (ListView) findViewById(R.id.listView1);
+		
+		
+		ItemsListView.setNextFocusLeftId(R.id.listView1);
+		
+		
 		// 设置listview的点击事件监听器
 		ItemsListView.setOnItemClickListener(this);
 //		ItemsListView.setOnKeyListener(new View.OnKeyListener() {
@@ -143,12 +148,14 @@ public class DetailComment extends Activity implements
 //		prod_dou = "3.5";
 //		prod_url = "http://img3.douban.com/view/photo/photo/public/p1869602430.jpg";
 
-		aq.id(R.id.textView_dou).text(prod_dou);
+		aq.id(R.id.textView_score).text(prod_dou);
 		aq.id(R.id.textView1).text(prod_name);
-		aq.id(R.id.imageViewBarCode).image(prod_url, true, true, 0,
+		aq.id(R.id.image).image(prod_url, true, true, 0,
 				R.drawable.movie_pic);
 
 		scrollViewItemDetail = (ScrollView) findViewById(R.id.scrollViewItemDetail);
+		
+//		scrollViewItemDetail.setScrollbarFadingEnabled(false);
 		
 		mtextViewItemDetail = (TextView) findViewById(R.id.textViewItemDetail);
 		if (prod_id != null)
@@ -156,30 +163,30 @@ public class DetailComment extends Activity implements
 //		if (prod_dou != null)
 //			updateScore(prod_dou);
 		if (Float.parseFloat(prod_dou) > 0 && Float.parseFloat(prod_dou) <= 10)
-			InitDou();
+			updateScore(prod_dou);
 		// MobclickAgent.setDebugMode(true);
 	}
 
-	public void InitDou() {
-		String m_j = null;
-		int i = 0;
-		Float f_dou = Float.parseFloat(prod_dou)/2;
-
-		for (i = 0; i < f_dou / 1; i++) {
-			m_j = Integer.toString(i + 2);
-			ImageView m_ImageView = (ImageView) this
-					.findViewById(getResources().getIdentifier(
-							"imageView" + m_j, "id", getPackageName()));
-			m_ImageView.setImageResource(R.drawable.star_on);
-		}
-		if (f_dou % i > 0) {
-			m_j = Integer.toString(i + 1);
-			ImageView m_ImageView = (ImageView) this
-					.findViewById(getResources().getIdentifier(
-							"imageView" + m_j, "id", getPackageName()));
-			m_ImageView.setImageResource(R.drawable.star_half);
-		}
-	}
+//	public void InitDou() {
+//		String m_j = null;
+//		int i = 0;
+//		Float f_dou = Float.parseFloat(prod_dou)/2;
+//
+//		for (i = 0; i < f_dou / 1; i++) {
+//			m_j = Integer.toString(i + 2);
+//			ImageView m_ImageView = (ImageView) this
+//					.findViewById(getResources().getIdentifier(
+//							"imageView" + m_j, "id", getPackageName()));
+//			m_ImageView.setImageResource(R.drawable.star_on);
+//		}
+//		if (f_dou % i > 0) {
+//			m_j = Integer.toString(i + 1);
+//			ImageView m_ImageView = (ImageView) this
+//					.findViewById(getResources().getIdentifier(
+//							"imageView" + m_j, "id", getPackageName()));
+//			m_ImageView.setImageResource(R.drawable.star_half);
+//		}
+//	}
 
 	public void OnClickTab1TopLeft(View v) {
 
@@ -230,7 +237,8 @@ public class DetailComment extends Activity implements
 
 		aq.id(R.id.scrollViewItemDetail).gone();
 		aq.id(R.id.listView1).visible();
-		aq.id(R.id.listView1).getView().requestFocus();
+//		aq.id(R.id.listView1).getView().requestFocus();
+		
 
 		if (isLastisNext > 1) {
 			for (int i = 0; i < m_ReturnProgramReviews.reviews.length; i++) {
@@ -257,6 +265,9 @@ public class DetailComment extends Activity implements
 			dataStruct.add(m_DetailCommentListData);
 		}
 		DetailCommentAdapter.notifyDataSetChanged();
+		
+		ItemsListView.requestFocus();
+		ItemsListView.setSelection(0);
 	}
 
 	public void OnClickImageView(View v) {
@@ -326,6 +337,7 @@ public class DetailComment extends Activity implements
 			CurrentDetailComment = 0;
 //			 ItemsListView.startAnimation(fade_out);
 			scrollViewItemDetail.startAnimation(fade_in);
+			scrollViewItemDetail.setScrollY(0);
 			aq.id(R.id.listViewItemTitle).text(
 					m_DetailCommentListData.Prod_title);
 			aq.id(R.id.textViewItemDetail).text(
@@ -334,20 +346,20 @@ public class DetailComment extends Activity implements
 			aq.id(R.id.scrollViewItemDetail).visible();
 			aq.id(R.id.scrollViewItemDetail).getView().requestFocus();
 
-			scrollViewItemDetail.fullScroll(ScrollView.FOCUS_UP);
-
-			ViewTreeObserver vto = mtextViewItemDetail.getViewTreeObserver();
-			vto.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
-				@Override
-				public void onGlobalLayout() {
-					// TODO Auto-generated method stub
-					if(isDetailComment){
-						totalDetailCommentHeight = mtextViewItemDetail.getHeight() /scrollViewItemDetail.getHeight()+1;//scrollViewItemDetail.getMeasuredHeight();
-						aq.id(R.id.textView3).text(
-							Integer.toString(CurrentDetailComment + 1) + "/" + Integer.toString(totalDetailCommentHeight));
-					}
-				}
-			});
+//			scrollViewItemDetail.fullScroll(ScrollView.FOCUS_UP);
+//
+//			ViewTreeObserver vto = mtextViewItemDetail.getViewTreeObserver();
+//			vto.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
+//				@Override
+//				public void onGlobalLayout() {
+//					// TODO Auto-generated method stub
+//					if(isDetailComment){
+//						totalDetailCommentHeight = mtextViewItemDetail.getHeight() /scrollViewItemDetail.getHeight()+1;//scrollViewItemDetail.getMeasuredHeight();
+//						aq.id(R.id.textView3).text(
+//							Integer.toString(CurrentDetailComment + 1) + "/" + Integer.toString(totalDetailCommentHeight));
+//					}
+//				}
+//			});
 
 		} else {
 			app.MyToast(this, "ReturnProgramReviews is empty.");
@@ -355,38 +367,38 @@ public class DetailComment extends Activity implements
 
 	}
 
-	@Override
-	public boolean dispatchKeyEvent(KeyEvent event) {
-		if (isDetailComment) {
-			if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN) {
-				if (event.getAction() == KeyEvent.ACTION_DOWN
-						&& event.getRepeatCount() == 0
-						&& scrollViewItemDetail.arrowScroll(View.FOCUS_DOWN)
-								&& CurrentDetailComment < totalDetailCommentHeight-1) {
-					scrollViewItemDetail.startAnimation(fade_in);
-					scrollViewItemDetail.pageScroll(View.FOCUS_DOWN);
-					
-					CurrentDetailComment++;
-//					scrollViewItemDetail.smoothScrollBy(0, scrollViewItemDetail.getHeight());
-					return true;
-				}
-			} else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP) {
-				if (event.getAction() == KeyEvent.ACTION_DOWN
-						&& event.getRepeatCount() == 0
-						&& scrollViewItemDetail.arrowScroll(View.FOCUS_UP)
-						&& CurrentDetailComment >0) {
-					scrollViewItemDetail.startAnimation(fade_in);
-					scrollViewItemDetail.pageScroll(View.FOCUS_UP);
-					CurrentDetailComment--;
-//					scrollViewItemDetail.smoothScrollBy(0, 0);
-
-					return true;
-				}
-			}
-		}
-
-		return super.dispatchKeyEvent(event);
-	}
+//	@Override
+//	public boolean dispatchKeyEvent(KeyEvent event) {
+////		if (isDetailComment) {
+////			if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN) {
+////				if (event.getAction() == KeyEvent.ACTION_DOWN
+////						&& event.getRepeatCount() == 0
+////						&& scrollViewItemDetail.arrowScroll(View.FOCUS_DOWN)
+////								&& CurrentDetailComment < totalDetailCommentHeight-1) {
+//////					scrollViewItemDetail.startAnimation(fade_in);
+////					scrollViewItemDetail.pageScroll(View.FOCUS_DOWN);
+////					
+////					CurrentDetailComment++;
+//////					scrollViewItemDetail.smoothScrollBy(0, scrollViewItemDetail.getHeight());
+////					return true;
+////				}
+////			} else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP) {
+////				if (event.getAction() == KeyEvent.ACTION_DOWN
+////						&& event.getRepeatCount() == 0
+////						&& scrollViewItemDetail.arrowScroll(View.FOCUS_UP)
+////						&& CurrentDetailComment >0) {
+//////					scrollViewItemDetail.startAnimation(fade_in);
+////					scrollViewItemDetail.pageScroll(View.FOCUS_UP);
+////					CurrentDetailComment--;
+//////					scrollViewItemDetail.smoothScrollBy(0, 0);
+////
+////					return true;
+////				}
+////			}
+////		}
+//
+//		return super.dispatchKeyEvent(event);
+//	}
 
 	private void CheckSaveData() {
 		String SaveData = null;

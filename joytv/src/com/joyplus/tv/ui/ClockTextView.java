@@ -3,7 +3,6 @@ package com.joyplus.tv.ui;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Handler;
@@ -11,7 +10,6 @@ import android.os.Message;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
-@SuppressLint("HandlerLeak")
 public class ClockTextView extends TextView {
 	private static final int MESSAGE_UPDATE = 1;
 	private Handler hadler = new Handler(){
@@ -53,7 +51,6 @@ public class ClockTextView extends TextView {
 		updateTime();
 	}
 	
-	@SuppressLint("SimpleDateFormat")
 	private void updateTime(){
 		Date date = new Date();
 		SimpleDateFormat format = new SimpleDateFormat("H:mm");

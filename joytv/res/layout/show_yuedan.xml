@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:background="@color/movie_bg"
     android:orientation="vertical"
-    android:paddingLeft="30dp">
+    android:paddingLeft="30dp" >
 
     <include
         android:layout_width="match_parent"
@@ -50,8 +50,8 @@
                 android:gravity="right|center_vertical"
                 android:text="2/123"
                 android:textColor="@color/time_color"
-                android:textSize="@dimen/jishu_text_size" 
-                android:visibility="invisible"/>
+                android:textSize="@dimen/jishu_text_size"
+                android:visibility="invisible" />
         </LinearLayout>
     </LinearLayout>
 
@@ -138,8 +138,8 @@
                     style="@style/style_6"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/layout_zero"
-                    android:layout_weight="1" 
-                    android:visibility="invisible">
+                    android:layout_weight="1"
+                    android:visibility="invisible" >
 
                     <Button
                         android:id="@+id/bt_taiju"
@@ -154,8 +154,8 @@
                     style="@style/style_6"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/layout_zero"
-                    android:layout_weight="1" 
-                    android:visibility="invisible">
+                    android:layout_weight="1"
+                    android:visibility="invisible" >
 
                     <Button
                         android:id="@+id/bt_hanju"
@@ -170,8 +170,8 @@
                     style="@style/style_6"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/layout_zero"
-                    android:layout_weight="1" 
-                    android:visibility="invisible">
+                    android:layout_weight="1"
+                    android:visibility="invisible" >
 
                     <Button
                         android:id="@+id/bt_meiju"
@@ -186,8 +186,8 @@
                     style="@style/style_6"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/layout_zero"
-                    android:layout_weight="1" 
-                    android:visibility="invisible">
+                    android:layout_weight="1"
+                    android:visibility="invisible" >
 
                     <Button
                         android:id="@+id/bt_riju"
@@ -202,8 +202,8 @@
                     style="@style/style_6"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/layout_zero"
-                    android:layout_weight="1" 
-                    android:visibility="invisible">
+                    android:layout_weight="1"
+                    android:visibility="invisible" >
 
                     <Button
                         android:id="@+id/bt_kongbupian"
@@ -212,28 +212,35 @@
                         android:layout_height="match_parent"
                         android:text="@string/kongbupian_name" />
                 </LinearLayout>
+
                 <LinearLayout
                     android:id="@+id/ll_donghuapian"
                     style="@style/style_6"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/layout_zero"
-                    android:layout_weight="1" 
-                    android:visibility="invisible">
+                    android:layout_weight="1"
+                    android:visibility="invisible" >
 
                     <Button
                         android:id="@+id/bt_donghuapian"
                         style="@style/style_5"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:text="@string/donghuapian_name" 
-                        />
-                </LinearLayout>                
+                        android:text="@string/donghuapian_name" />
+                </LinearLayout>
 
                 <TextView
                     style="@style/style_4"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/layout_zero"
                     android:layout_weight="1.73" />
+
+                <TextView
+                    style="@style/style_4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/layout_zero"
+                    android:layout_weight="1.77"
+                    android:gravity="right|center_vertical" />
 
                 <Button
                     android:id="@+id/bt_zuijinguankan"
@@ -268,13 +275,6 @@
                     android:text="@string/lixianshipin_name"
                     android:textColor="@color/text_color_selector"
                     android:visibility="invisible" />
-
-                <TextView
-                    style="@style/style_4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/layout_zero"
-                    android:layout_weight="1.77"
-                    android:gravity="right|center_vertical" />
             </LinearLayout>
         </LinearLayout>
 
@@ -304,7 +304,6 @@
                     android:layout_width="0dip"
                     android:layout_height="0dip"
                     layout="@layout/show_item_layout_dianying" />
-
             </FrameLayout>
         </LinearLayout>
     </LinearLayout>

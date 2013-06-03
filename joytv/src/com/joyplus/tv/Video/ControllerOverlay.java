@@ -36,6 +36,8 @@ public interface ControllerOverlay {
 
 		void onReplay();
 
+		void onCompletion();
+
 	}
 
 	void setListener(Listener listener);
@@ -96,4 +98,7 @@ public interface ControllerOverlay {
 	void setPrepared(boolean mPrepared);
 	
 	void returnShowView();
+	
+	void cancelHiding();
+	void hidden5ControlView();
 }
