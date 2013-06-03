@@ -49,7 +49,12 @@ public class FayeService extends Service implements FayeListener{
 		super.onCreate();
 		serverUrl = Constant.FAYESERVERURL;
 		String macAdd = StatisticsUtils.getMacAdd(this);
-		channel = Constant.FAYECHANNEL_TV_BASE + StatisticsUtils.MD5(macAdd);
+		if(macAdd !=null){
+			channel = Constant.FAYECHANNEL_TV_BASE + StatisticsUtils.MD5(macAdd);
+		}else{
+			channel = null;
+		}
+		
 //		preferences = getSharedPreferences("userIdDate",0);
 		app = (App) getApplication();
 		IntentFilter filter = new IntentFilter(ACTION_SEND_UNBAND);
@@ -112,12 +117,15 @@ public class FayeService extends Service implements FayeListener{
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		// TODO Auto-generated method stub
-		URI url = URI.create(serverUrl);
-		myClient = new FayeClient(handler, url, channel);
-		myClient.setFayeListener(this);
-		if(app.getUserData("isBand")!=null&&"1".equals(app.getUserData("isBand"))){
-			myClient.connectToServer(null);
+		if(channel!=null){
+			URI url = URI.create(serverUrl);
+			myClient = new FayeClient(handler, url, channel);
+			myClient.setFayeListener(this);
+			if(app.getUserData("isBand")!=null&&"1".equals(app.getUserData("isBand"))){
+				myClient.connectToServer(null);
+			}
 		}
+		
 		return super.onStartCommand(intent, START_STICKY, startId); 
 	}
 

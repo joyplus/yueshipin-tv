@@ -202,7 +202,7 @@ public class Main extends Activity implements OnItemSelectedListener,
 	private boolean isNetWorkFine = true;// 记录网络是否正常
 	private boolean isWifiReset = false;// wifi网络是否重新设置
 
-	private ImageView erweimaImage;
+	private ImageView erweimaImage;//二维码显示
 
 	// private Handler mHandler = new Handler();
 
@@ -728,12 +728,19 @@ public class Main extends Activity implements OnItemSelectedListener,
 	private void initNetWorkData() {
 
 		// 需要网络连接
-		erweimaImage.setImageBitmap(CreateBarCode());
-
-		IntentFilter filter = new IntentFilter();
-		filter.addAction(FayeService.ACTION_RECIVEACTION_BAND);
-		filter.addAction(FayeService.ACTION_RECIVEACTION_UNBAND);
-		registerReceiver(receiver, filter);
+		Bitmap tempBitmap = CreateBarCode();
+		if(tempBitmap == null) {//如果返回的Bitmap为空，那就隐藏二维码扫描功能，并且不开启service
+			
+			myView.setVisibility(View.INVISIBLE);
+		} else {//如果不为空，照常开启
+			
+			erweimaImage.setImageBitmap(tempBitmap);
+			
+			IntentFilter filter = new IntentFilter();
+			filter.addAction(FayeService.ACTION_RECIVEACTION_BAND);
+			filter.addAction(FayeService.ACTION_RECIVEACTION_UNBAND);
+			registerReceiver(receiver, filter);
+		}
 
 		headers.put("app_key", Constant.APPKEY);
 		headers.put("client", "tv");
@@ -2208,7 +2215,9 @@ public class Main extends Activity implements OnItemSelectedListener,
 
 		if (macAddress == null) {
 
-			date = Constant.CHANNELHEADER;
+//			date = Constant.CHANNELHEADER;
+			
+			return null;//如果不能获取无线网卡Mac地址，返回空的Bitmap
 		} else {
 
 			date = Constant.CHANNELHEADER + StatisticsUtils.MD5(macAddress);

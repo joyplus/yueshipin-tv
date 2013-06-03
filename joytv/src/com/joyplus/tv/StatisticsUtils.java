@@ -718,6 +718,7 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 			macAddress = info.getMacAddress();
 		}
 		return macAddress;
+//		return null;
 	}
 
 	public static String MD5(String str) {
