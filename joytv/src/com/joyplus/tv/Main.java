@@ -98,7 +98,7 @@ public class Main extends Activity implements OnItemSelectedListener,
 	private String TAG = "Main";
 	public static final String ACTION_USERUPDATE = "user_update";
 	private App app;
-	private AQuery aq;
+	private AQuery aq; 
 
 	private int initStep = 0;
 	private long exitTime = 0;
