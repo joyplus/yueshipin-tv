@@ -41,7 +41,7 @@
     <string name="yuedan_name">悦单</string>
     <string name="dianyingyuedan_name">电影悦单</string>
     <string name="dianshijuyuedan_name">电视剧悦单</string>
-    <string name="qitadianshiju_play_name">其他电视剧</string>
+    <string name="qitadianshiju_play_name">其他</string>
     <string name="dianying_name">电影</string>
     <string name="quanbufenlei_name">全部分类</string>
     <string name="dongzuopian_name">动作片</string>
@@ -52,12 +52,12 @@
     <string name="xuanyipian_name">悬疑片</string>
     <string name="kongbupian_name">恐怖片</string>
     <string name="donghuapian_name">动画片</string>
-    <string name="qitadongman_play_name">其他动漫</string>
+    <string name="qitadongman_play_name">其他</string>
     <string name="zuijinguankan_name">最近观看</string>
     <string name="zhuijushoucang_name">追剧收藏</string>
     <string name="lixianshipin_name">离线视频</string>
     <string name="zongyi_name">综艺</string>
-    <string name="qitazongyi_name">其他综艺</string>
+    <string name="qitazongyi_name">其他</string>
     <string name="xiangqing_daoyan_name">导演:&#160;</string>
     <string name="xiangqing_zhuyan_name">主演:&#160;</string>
     <string name="xiangqing_juqingjianjie_name">剧情简介:&#160;</string>
@@ -83,6 +83,15 @@
     <string name="xiangqing_yingping_no">没有影评</string>
     <string name="movie_fenzhong">分钟</string>
     <string name="toast_no_play">此分类中找不到影片哦, 试试其他分类吧</string>
+    <string name="toast_no_network">请检查网络设置</string>
+    <string name="toast_no_retry">重试</string>
+    <string name="toast_no_exit">退出悦视频</string>
+    <string name="toast_setting_wifi">网络设置</string>
+    <string name="toast_network_slow">网络速度像蜗牛</string>
+    
+    <string name="dialog_unband">是否取消与悦视频手机版的绑定？</string>
+    <string name="dialog_unband_yes">是</string>
+    <string name="dialog_unband_no">否</string>
     
     <!--Yangzhg  -->
     

@@ -33,7 +33,7 @@
             android:layout_weight="5.61"
             android:background="@drawable/menubg"
             android:orientation="horizontal"
-            android:paddingRight="30dp" >
+            android:paddingRight="34dp" >
 
             <TextView
                 android:layout_width="@dimen/layout_zero"
@@ -236,6 +236,13 @@
                     android:layout_height="@dimen/layout_zero"
                     android:layout_weight="1.73" />
 
+                <TextView
+                    style="@style/style_4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/layout_zero"
+                    android:layout_weight="1.77"
+                    android:gravity="right|center_vertical" />
+
                 <Button
                     android:id="@+id/bt_zuijinguankan"
                     style="@style/style_4"
@@ -269,13 +276,6 @@
                     android:text="@string/lixianshipin_name"
                     android:textColor="@color/text_color_selector"
                     android:visibility="invisible" />
-
-                <TextView
-                    style="@style/style_4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/layout_zero"
-                    android:layout_weight="1.77"
-                    android:gravity="right|center_vertical" />
             </LinearLayout>
         </LinearLayout>
 
@@ -293,13 +293,14 @@
                 android:orientation="horizontal"
                 android:paddingBottom="@dimen/edit_vertical_margin"
                 android:paddingTop="@dimen/edit_vertical_margin"
-                android:visibility="gone" >
+                android:visibility="gone" 
+                android:paddingRight="34dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@drawable/menubg"
-                    android:paddingRight="30dp" >
+                    android:paddingRight="34dp" >
 
                     <TextView
                         android:id="@+id/tv_shoucanggengxin_name"
@@ -323,11 +324,11 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/ll_dongman_shoucang_5_gridview"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/layout_zero"
                 android:layout_weight="15"
-                android:orientation="vertical" 
-                android:id="@+id/ll_dongman_shoucang_5_gridview">
+                android:orientation="vertical" >
 
                 <LinearLayout
                     android:id="@+id/ll_shoucang_5_qita_title"
@@ -352,7 +353,8 @@
                         android:layout_marginTop="20dp"
                         android:layout_weight="1"
                         android:background="@color/menu_bg"
-                        android:orientation="horizontal" >
+                        android:orientation="horizontal"
+                        android:paddingRight="34dp" >
 
                         <TextView
                             android:layout_width="@dimen/layout_zero"
@@ -385,14 +387,14 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" >
 
-                            <com.joyplus.tv.ui.MyMovieGridView
-                                android:id="@+id/gv_movie_show"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:gravity="center"
-                                android:listSelector="@android:color/transparent"
-                                android:numColumns="5" >
-                            </com.joyplus.tv.ui.MyMovieGridView>
+                        <com.joyplus.tv.ui.MyMovieGridView
+                            android:id="@+id/gv_movie_show"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:listSelector="@android:color/transparent"
+                            android:numColumns="5" >
+                        </com.joyplus.tv.ui.MyMovieGridView>
 
                         <include
                             android:id="@+id/inclue_movie_show_item"

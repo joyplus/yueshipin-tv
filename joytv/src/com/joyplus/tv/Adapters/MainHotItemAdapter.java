@@ -75,6 +75,7 @@ public class MainHotItemAdapter extends BaseAdapter {
 		}
 //		aq = new AQuery(convertView);
 		holder.image.setTag(hot_list.get(position).prod_pic_url);
+		holder.score.setText(StatisticsUtils.formateScore(hot_list.get(position).score));
 //		holder.image.setImageResource(R.drawable.test1);
 		aq.id(holder.image).image(hot_list.get(position).prod_pic_url,true,true,0,R.drawable.post_normal);
 		if(hot_list.get(position).type == 0){
@@ -116,6 +117,7 @@ public class MainHotItemAdapter extends BaseAdapter {
 				}
 				break;
 			case 3:
+				holder.score.setText("");
 				holder.content.setText(StatisticsUtils.formateZongyi(hot_list.get(position).cur_episode, c));
 				break;
 			case 131:
@@ -137,7 +139,7 @@ public class MainHotItemAdapter extends BaseAdapter {
 			}
 		}
 		holder.secondTitle.setText(hot_list.get(position).prod_name);
-		holder.score.setText(hot_list.get(position).score);
+		
 		switch (Integer.valueOf(hot_list.get(position).definition)) {
 		case 8:
 			holder.definition.setImageResource(R.drawable.icon_bd);

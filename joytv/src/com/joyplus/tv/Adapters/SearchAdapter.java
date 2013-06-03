@@ -2,6 +2,7 @@ package com.joyplus.tv.Adapters;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import android.app.Activity;
 import android.content.Context;
@@ -67,11 +68,10 @@ public class SearchAdapter extends BaseAdapter implements JieMianConstant{
 	@Override
 	public long getItemId(int position) {
 		// TODO Auto-generated method stub
-		if (movieList.size() <= 0) {
 
-			return DEFAULT_ITEM_NUM;
-		}
-		return movieList.size();
+		Random random = new Random(System.currentTimeMillis());
+//		random.nextLong();
+		return random.nextLong();
 	}
 
 	@Override
@@ -123,6 +123,9 @@ public class SearchAdapter extends BaseAdapter implements JieMianConstant{
 
 			return convertView;
 		}
+		
+		viewItemHodler.nameTv.setText("");
+		viewItemHodler.otherInfo.setText("");
 
 		viewItemHodler.nameTv.setText(movieList.get(position).getMovieName());
 		
@@ -154,7 +157,7 @@ public class SearchAdapter extends BaseAdapter implements JieMianConstant{
 			
 			if(proType.equals("1")) {
 				
-				viewItemHodler.scoreTv.setText(movieList.get(position).getMovieScore());
+				viewItemHodler.scoreTv.setText(StatisticsUtils.formateScore(movieList.get(position).getMovieScore()));
 				String duration = movieList.get(position).getMovieDuration();
 				if(duration != null && !duration.equals("")) {
 					
@@ -163,7 +166,7 @@ public class SearchAdapter extends BaseAdapter implements JieMianConstant{
 				
 			} else if(proType.equals("2") || proType.equals("131")){
 				
-				viewItemHodler.scoreTv.setText(movieList.get(position).getMovieScore());
+				viewItemHodler.scoreTv.setText(StatisticsUtils.formateScore(movieList.get(position).getMovieScore()));
 				String curEpisode = movieList.get(position).getMovieCurEpisode();
 				String maxEpisode = movieList.get(position).getMovieMaxEpisode();
 				

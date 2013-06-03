@@ -290,6 +290,8 @@ public class ReturnProgramView {
 		public String ipad_poster;
 		public String support_num;
 		public String publish_date;
+		public String cur_episode;
+		public String max_episode;
 		public String directors;
 		public String stars;
 		public String id;

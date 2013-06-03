@@ -26,18 +26,13 @@ public class YueDanAdapter extends BaseAdapter implements JieMianConstant{
 	
 	private List<MovieItemData> movieList = new ArrayList<MovieItemData>();
 	private int popWidth,popHeight;
-
-	public int getWidth() {
-		return popWidth;
-	}
-
-	public int getHeight() {
-		return popHeight;
-	}
-
+	
 	private Context context;
 	private AQuery aq;
 	
+	private boolean isPreLoad = true;
+	private long itemId = 0;
+
 	public YueDanAdapter(Context context,AQuery aq) {
 		
 		this.context = context;
@@ -47,7 +42,7 @@ public class YueDanAdapter extends BaseAdapter implements JieMianConstant{
 	@Override
 	public int getCount() {
 		// TODO Auto-generated method stub
-		if (movieList.size() <= 0) {
+		if (movieList.size() <= 0 && isPreLoad) {
 
 			return DEFAULT_ITEM_NUM;
 		}
@@ -57,7 +52,7 @@ public class YueDanAdapter extends BaseAdapter implements JieMianConstant{
 	@Override
 	public Object getItem(int position) {
 		// TODO Auto-generated method stub
-		if (movieList.size() <= 0) {
+		if (movieList.size() <= 0 && isPreLoad) {
 
 			return null;
 		}
@@ -67,11 +62,8 @@ public class YueDanAdapter extends BaseAdapter implements JieMianConstant{
 	@Override
 	public long getItemId(int position) {
 		// TODO Auto-generated method stub
-		if (movieList.size() <= 0) {
-
-			return DEFAULT_ITEM_NUM;
-		}
-		return movieList.size();
+		
+		return itemId;
 	}
 
 	@Override
@@ -120,6 +112,9 @@ public class YueDanAdapter extends BaseAdapter implements JieMianConstant{
 
 			return convertView;
 		}
+		
+		viewItemHodler.nameTv.setText("");
+		viewItemHodler.otherInfo.setText("");
 
 		Log.i(TAG, "postion:" + position + " " + movieList.get(position).getMovieName());
 		viewItemHodler.nameTv.setText(movieList.get(position).getMovieName());
@@ -156,7 +151,7 @@ public class YueDanAdapter extends BaseAdapter implements JieMianConstant{
 				
 				if(proType.equals("1")) {
 					
-					viewItemHodler.scoreTv.setText(movieList.get(position).getMovieScore());
+					viewItemHodler.scoreTv.setText(StatisticsUtils.formateScore(movieList.get(position).getMovieScore()));
 					String duration = movieList.get(position).getMovieDuration();
 					if(duration != null && !duration.equals("")) {
 						
@@ -164,7 +159,7 @@ public class YueDanAdapter extends BaseAdapter implements JieMianConstant{
 					}
 				} else if(proType.equals("2") || proType.equals("131")){
 					
-					viewItemHodler.scoreTv.setText(movieList.get(position).getMovieScore());
+					viewItemHodler.scoreTv.setText(StatisticsUtils.formateScore(movieList.get(position).getMovieScore()));
 					String curEpisode = movieList.get(position).getMovieCurEpisode();
 					String maxEpisode = movieList.get(position).getMovieMaxEpisode();
 					
@@ -200,12 +195,29 @@ public class YueDanAdapter extends BaseAdapter implements JieMianConstant{
 		return convertView;
 	}
 
-	public void setList(List<MovieItemData> list) {
+	public void setList(List<MovieItemData> list,boolean isPreLoadPic) {
 		this.movieList = list;
+		this.isPreLoad = isPreLoadPic;
 	}
 	
 	public List<MovieItemData> getMovieList() {
 		return movieList;
+	}
+	
+	public int getWidth() {
+		return popWidth;
+	}
+
+	public int getHeight() {
+		return popHeight;
+	}
+	
+	public long getItemId() {
+		return itemId;
+	}
+
+	public void setItemId(long itemId) {
+		this.itemId = itemId;
 	}
 
 }

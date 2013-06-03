@@ -3,6 +3,7 @@ package com.joyplus.tv.ui;
 import com.joyplus.tv.utils.MyKeyEventKey;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.widget.GridView;
@@ -81,6 +82,13 @@ public class MyMovieGridView extends GridView implements MyKeyEventKey{
 //		}
 		return super.onKeyDown(keyCode, event);
 //		return false;
+	}
+	
+	@Override
+	protected void onFocusChanged(boolean gainFocus, int direction,
+			Rect previouslyFocusedRect) {
+		// TODO Auto-generated method stub
+//		super.onFocusChanged(gainFocus, direction, previouslyFocusedRect);
 	}
 	
 	

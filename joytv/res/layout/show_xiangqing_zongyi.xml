@@ -37,7 +37,7 @@
                 android:paddingRight="8dp"
                 android:layout_weight="1" >
 
-                <include layout="@layout/show_pic_rating_item" />
+                <include layout="@layout/show_pic_rating_item_zongyi" />
             </LinearLayout>
 
             <LinearLayout

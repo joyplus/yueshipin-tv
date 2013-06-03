@@ -32,6 +32,10 @@ public class ReturnUserFavorities {
 		public String publish_date;
 		public String support_num;
 		public String create_date;
+		
+		public String max_episode;
+		public String cur_episode;
+		public String duration;
 
 	}
 }

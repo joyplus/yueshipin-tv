@@ -3,6 +3,7 @@ package com.joyplus.tv.Adapters;
 public class CurrentPlayData {
 	public String prod_id;
 	public String prod_name;//视频名称
+	public String prod_sub_name;//视频子名称
 	public String prod_url;//播放地址
 	public String prod_src;//来源
 	public long prod_time;//开始播放时间, 秒*1000 ,单位是毫秒

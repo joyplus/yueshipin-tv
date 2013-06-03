@@ -16,6 +16,7 @@
 	        android:layout_height="fill_parent"
 	        android:layout_marginLeft="14dp"
 	        android:paddingTop="4dp"
+	        android:id="@+id/icon_douban"
 	        android:layout_gravity="center_vertical"
 	        android:src="@drawable/douban"/>
 	    <TextView android:layout_width="wrap_content"

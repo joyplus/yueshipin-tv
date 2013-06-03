@@ -1,35 +1,24 @@
 package com.joyplus.tv;
 
 import java.io.File;
-import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
-import org.json.JSONObject;
 
-import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.app.Application;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.http.AndroidHttpClient;
-import android.os.AsyncTask;
-
 import android.view.Gravity;
 import android.webkit.URLUtil;
 import android.widget.Toast;
@@ -41,9 +30,7 @@ import com.joyplus.tv.Service.Return.ReturnProgramView;
 import com.joyplus.tv.ui.UserInfo;
 import com.joyplus.tv.utils.Log;
 import com.parse.Parse;
-import com.parse.ParseFacebookUtils.Permissions.User;
 
-@SuppressLint("DefaultLocale")
 public class App extends Application {
 	private final String TAG = "App";
 
@@ -261,47 +248,50 @@ public class App extends Application {
 				return false;
 			}
 		}
+		return true;
 		// 模拟火狐ios发用请求 使用userAgent
-		AndroidHttpClient mAndroidHttpClient = AndroidHttpClient
-				.newInstance(Constant.USER_AGENT_IOS);
-
-		HttpParams httpParams = mAndroidHttpClient.getParams();
-		// 连接时间最长5秒，可以更改
-		HttpConnectionParams.setConnectionTimeout(httpParams, 2000);
-
-		try {
-			URL url = new URL(srcUrl);
-			HttpGet mHttpGet = new HttpGet(url.toURI());
-			HttpResponse response = mAndroidHttpClient.execute(mHttpGet);
-
-			// 限定连接时间
-
-			StatusLine statusLine = response.getStatusLine();
-			int status = statusLine.getStatusCode();
-
+//		AndroidHttpClient mAndroidHttpClient = AndroidHttpClient
+//				.newInstance(Constant.USER_AGENT_IOS);
+//
+//		HttpParams httpParams = mAndroidHttpClient.getParams();
+//		// 连接时间最长5秒，可以更改
+//		HttpConnectionParams.setConnectionTimeout(httpParams, 2000);
+//
+//		try {
+//			URL url = new URL(srcUrl);
+//			URI uri = new URI(url.getProtocol(), url.getHost(), url.getPath(), url.getQuery(),null);
+//			HttpGet mHttpGet = new HttpGet(uri);
+//			HttpResponse response = mAndroidHttpClient.execute(mHttpGet);
+//
+//			// 限定连接时间
+//
+//			StatusLine statusLine = response.getStatusLine();
+//			int status = statusLine.getStatusCode();
+//
 //			Header headertop = response.getFirstHeader("Content-Type");// 拿到重新定位后的header
-//			String type = headertop.getValue().toLowerCase();// 从header重新取出信息
-//			Header header_length = response.getFirstHeader("Content-Length");
-//			String lengthStr = header_length.getValue();
-			Log.i(TAG, "HTTP STATUS : " + status);
-			
-			mAndroidHttpClient.close();
-			
-			if(status != 404){
-				return true;
-			}else{
-				return false;
-			}
-
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			if (BuildConfig.DEBUG)
-				Log.i(TAG, "NOT OK" + e);
-			// 如果地址真的不存在，那就往里面加NULL字符串
-			mAndroidHttpClient.close();
-			e.printStackTrace();
-			return false;
-		}
+////			String type = headertop.getValue().toLowerCase();// 从header重新取出信息
+////			Header header_length = response.getFirstHeader("Content-Length");
+////			String lengthStr = header_length.getValue();
+//			Log.i(TAG, "HTTP STATUS : " + status);
+//			
+//			mAndroidHttpClient.close();
+//			
+////			if(status >=200 && status <300 && !headertop.toString().startsWith("text")){
+//			if(status >=200 && status <300){
+//				return true;
+//			}else{
+//				return false;
+//			}
+//
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			if (BuildConfig.DEBUG)
+//				Log.i(TAG, "NOT OK" + e);
+//			// 如果地址真的不存在，那就往里面加NULL字符串
+//			mAndroidHttpClient.close();
+//			e.printStackTrace();
+//			return false;
+//		}
 	}
 
 }

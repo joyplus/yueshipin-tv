@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -36,9 +37,10 @@ import com.joyplus.tv.Adapters.CurrentPlayData;
 import com.joyplus.tv.Service.Return.ReturnUserPlayHistories;
 import com.joyplus.tv.Video.VideoPlayerActivity;
 import com.joyplus.tv.entity.HotItemInfo;
+import com.joyplus.tv.utils.ItemStateUtils;
 import com.joyplus.tv.utils.Log;
 
-public class HistoryActivity extends Activity implements OnClickListener, OnItemSelectedListener {
+public class HistoryActivity extends Activity implements OnClickListener, OnItemSelectedListener,OnFocusChangeListener {
 	private static final String TAG = "HistoryActivity";
 	private Button btn_fenlei_all;
 	private Button btn_fenlei_movie;
@@ -78,6 +80,13 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 		btn_fenlei_tv.setOnClickListener(this);
 		btn_fenlei_dongman.setOnClickListener(this);
 		btn_fenlei_zongyi.setOnClickListener(this);
+		
+		btn_fenlei_all.setOnFocusChangeListener(this);
+		btn_fenlei_movie.setOnFocusChangeListener(this);
+		btn_fenlei_tv.setOnFocusChangeListener(this);
+		btn_fenlei_dongman.setOnFocusChangeListener(this);
+		btn_fenlei_zongyi.setOnFocusChangeListener(this);
+		
 		delBtn.setOnClickListener(this);
 		btn_fenlei_all.setPadding(0, 0, 5, 0);
 		btn_fenlei_movie.setPadding(0, 0, 5, 0);
@@ -86,7 +95,10 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 		btn_fenlei_zongyi.setPadding(0, 0, 5, 0);
 		btn_fenlei_all.setTextColor(getResources().getColor(R.color.common_title_selected));
 		btn_fenlei_all.setBackgroundResource(R.drawable.menubg);
+		
 		selectedButton = btn_fenlei_all;
+		
+		listView.setNextFocusLeftId(R.id.fenlei_all);
 		selectedButton.setPadding(0, 0, 5, 0);
 //		listView.setAdapter(new MovieAdapter());
 		listView.setOnItemSelectedListener(this);
@@ -119,13 +131,29 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 						playDate.prod_type = Integer.valueOf(((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_type);
 						playDate.prod_name = ((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_name;
 						playDate.prod_url = ((HistortyAdapter)listView.getAdapter()).data.get(arg2).video_url;
-						String  currentIndex = ((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_subname;
-						if(currentIndex!=null&&"".equals(currentIndex)){
-							int current = Integer.valueOf(currentIndex);
-							if(current>0){
-								current = current-1;
+						
+						//清晰度
+						String definition = ((HistortyAdapter)listView.getAdapter()).data.get(arg2).definition;
+						
+						playDate.prod_qua = StatisticsUtils.string2Int(definition);
+						
+						if(playDate.prod_type!=1){
+							
+							if(playDate.prod_type == 3) {
+								
+								playDate.CurrentIndex = - 1;
+							} else {
+								
+								String  currentIndex = ((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_subname;
+								if(currentIndex!=null&&!"".equals(currentIndex)){
+									int current = Integer.valueOf(currentIndex);
+									if(current>0){
+										current = current-1;
+									}
+									playDate.CurrentIndex = current;
+								}
 							}
-							playDate.CurrentIndex = current;
+							
 						}
 //						playDate.prod_src = "";
 						if(!"".equals(((HistortyAdapter)listView.getAdapter()).data.get(arg2).playback_time)){
@@ -284,13 +312,13 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 					break;
 				case 2:
 					
-					holder.content.setText("上次观看到：第" + (Integer.valueOf(data.get(position).prod_subname)-1) +"集"+playBack_time);
+					holder.content.setText("上次观看到：第" + data.get(position).prod_subname +"集 "+playBack_time);
 					break;
 				case 3:
-					holder.content.setText("上次观看到：第" + (Integer.valueOf(data.get(position).prod_subname)-1)+"期"+playBack_time);
+					holder.content.setText("上次观看到：第" + data.get(position).prod_subname+"期 "+playBack_time);
 					break;
 				case 131:
-					holder.content.setText("上次观看到：第" + (Integer.valueOf(data.get(position).prod_subname)-1)+"集"+playBack_time);
+					holder.content.setText("上次观看到：第" + data.get(position).prod_subname+"集 "+playBack_time);
 					break;
 				}
 				aq.id(holder.img).image(data.get(position).prod_pic_url);
@@ -320,8 +348,8 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 		case R.id.fenlei_all:
 			selectedButton.setTextColor(getResources().getColorStateList(R.color.text_color_selector));
 			selectedButton.setBackgroundResource(R.drawable.text_drawable_selector);
-			btn_fenlei_all.setTextColor(getResources().getColor(R.color.common_title_selected));
-			btn_fenlei_all.setBackgroundResource(R.drawable.menubg);
+//			btn_fenlei_all.setTextColor(getResources().getColor(R.color.common_title_selected));
+//			btn_fenlei_all.setBackgroundResource(R.drawable.menubg);
 			selectedButton = btn_fenlei_all;
 			selectedButton.setPadding(0, 0, 5, 0);
 			index = 0;
@@ -331,12 +359,13 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 			}else{
 				listView.setAdapter(new HistortyAdapter(allHistoryList));
 			}
+			listView.setNextFocusLeftId(R.id.fenlei_all);
 			break;
 		case R.id.fenlei_movie:
 			selectedButton.setTextColor(getResources().getColorStateList(R.color.text_color_selector));
 			selectedButton.setBackgroundResource(R.drawable.text_drawable_selector);
-			btn_fenlei_movie.setTextColor(getResources().getColor(R.color.common_title_selected));
-			btn_fenlei_movie.setBackgroundResource(R.drawable.menubg);
+//			btn_fenlei_movie.setTextColor(getResources().getColor(R.color.common_title_selected));
+//			btn_fenlei_movie.setBackgroundResource(R.drawable.menubg);
 			selectedButton = btn_fenlei_movie;
 			selectedButton.setPadding(0, 0, 5, 0);
 			index = 1;
@@ -346,12 +375,13 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 			}else{
 				listView.setAdapter(new HistortyAdapter(movieHistoryList));
 			}
+			listView.setNextFocusLeftId(R.id.fenlei_movie);
 			break;
 		case R.id.fenlei_tv:
 			selectedButton.setTextColor(getResources().getColorStateList(R.color.text_color_selector));
 			selectedButton.setBackgroundResource(R.drawable.text_drawable_selector);
-			btn_fenlei_tv.setTextColor(getResources().getColor(R.color.common_title_selected));
-			btn_fenlei_tv.setBackgroundResource(R.drawable.menubg);
+//			btn_fenlei_tv.setTextColor(getResources().getColor(R.color.common_title_selected));
+//			btn_fenlei_tv.setBackgroundResource(R.drawable.menubg);
 			selectedButton = btn_fenlei_tv;
 			selectedButton.setPadding(0, 0, 5, 0);
 			index = 2;
@@ -361,12 +391,13 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 			}else{
 				listView.setAdapter(new HistortyAdapter(tvHistoryList));
 			}
+			listView.setNextFocusLeftId(R.id.fenlei_tv);
 			break;
 		case R.id.fenlei_dongman:
 			selectedButton.setTextColor(getResources().getColorStateList(R.color.text_color_selector));
 			selectedButton.setBackgroundResource(R.drawable.text_drawable_selector);
-			btn_fenlei_dongman.setTextColor(getResources().getColor(R.color.common_title_selected));
-			btn_fenlei_dongman.setBackgroundResource(R.drawable.menubg);
+//			btn_fenlei_dongman.setTextColor(getResources().getColor(R.color.common_title_selected));
+//			btn_fenlei_dongman.setBackgroundResource(R.drawable.menubg);
 			selectedButton = btn_fenlei_dongman;
 			selectedButton.setPadding(0, 0, 5, 0);
 			index = 131;
@@ -376,12 +407,13 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 			}else{
 				listView.setAdapter(new HistortyAdapter(dongmanHistoryList));
 			}
+			listView.setNextFocusLeftId(R.id.fenlei_dongman);
 			break;
 		case R.id.fenlei_zongyi:
 			selectedButton.setTextColor(getResources().getColorStateList(R.color.text_color_selector));
 			selectedButton.setBackgroundResource(R.drawable.text_drawable_selector);
-			btn_fenlei_zongyi.setTextColor(getResources().getColor(R.color.common_title_selected));
-			btn_fenlei_zongyi.setBackgroundResource(R.drawable.menubg);
+//			btn_fenlei_zongyi.setTextColor(getResources().getColor(R.color.common_title_selected));
+//			btn_fenlei_zongyi.setBackgroundResource(R.drawable.menubg);
 			selectedButton = btn_fenlei_zongyi;
 			selectedButton.setPadding(0, 0, 5, 0);
 			index = 3;
@@ -391,6 +423,7 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 			}else{
 				listView.setAdapter(new HistortyAdapter(zongyiHistoryList));
 			}
+			listView.setNextFocusLeftId(R.id.fenlei_zongyi);
 			break;
 		case R.id.delete_btn:
 			final Dialog dialog = new AlertDialog.Builder(HistoryActivity.this).create();
@@ -442,6 +475,27 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 			break;
 		}
 	}
+	
+	@Override
+	public void onFocusChange(View v, boolean hasFocus) {
+		// TODO Auto-generated method stub
+		
+		
+		if(!hasFocus) {
+			
+			if(selectedButton.getId() == v.getId()) {
+				Button button = (Button) v;
+				ItemStateUtils.buttonToActiveState(getApplicationContext(), button);
+			}
+		} else {
+			
+			if(selectedButton.getId() == v.getId()) {
+				
+				Button button = (Button) v;
+				ItemStateUtils.buttonToPTState(getApplicationContext(), button);
+			}
+		}
+	}
 
 	@Override
 	public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2,
@@ -467,7 +521,8 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 		if(listView.getAdapter()==null || ((HistortyAdapter)listView.getAdapter()).data==null){
 			index = 1;
 		}else{
-			index = ((HistortyAdapter)listView.getAdapter()).data.size()/10 +1;
+			double count = ((HistortyAdapter)listView.getAdapter()).data.size();
+			index = (int)Math.ceil(count/10) +1;
 		}
 		String url = Constant.BASE_URL + "user/playHistories" +"?page_size=10&page_num=" + index;
 		if(type!=0){
@@ -526,6 +581,10 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 					getResources().getString(R.string.networknotwork));
 			return;
 		}
+		
+		if(json == null || json.equals("")) 
+			return;
+		
 		Log.d(TAG, "history data = " + json.toString());
 		try {
 			ReturnUserPlayHistories result  = mapper.readValue(json.toString(), ReturnUserPlayHistories.class);
@@ -568,7 +627,10 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 					listView.setAdapter(new HistortyAdapter(allHistoryList));
 					listView.requestFocus();
 				}else{
-					allHistoryList.addAll(list);
+					for(int i=0; i<list.size(); i++){
+						allHistoryList.add(list.get(i));
+					}
+//					allHistoryList.addAll(list);
 					((BaseAdapter)listView.getAdapter()).notifyDataSetChanged();
 				}
 				break;
@@ -577,7 +639,10 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 					movieHistoryList = list;
 					listView.setAdapter(new HistortyAdapter(movieHistoryList));
 				}else{
-					movieHistoryList.addAll(list);
+					for(int i=0; i<list.size(); i++){
+						movieHistoryList.add(list.get(i));
+					}
+//					movieHistoryList.addAll(list);
 					((BaseAdapter)listView.getAdapter()).notifyDataSetChanged();
 				}
 				break;
@@ -586,7 +651,10 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 					tvHistoryList = list;
 					listView.setAdapter(new HistortyAdapter(tvHistoryList));
 				}else{
-					tvHistoryList.addAll(list);
+					for(int i=0; i<list.size(); i++){
+						tvHistoryList.add(list.get(i));
+					}
+//					tvHistoryList.addAll(list);
 					((BaseAdapter)listView.getAdapter()).notifyDataSetChanged();
 				}
 				break;
@@ -595,7 +663,10 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 					zongyiHistoryList = list;
 					listView.setAdapter(new HistortyAdapter(zongyiHistoryList));
 				}else{
-					zongyiHistoryList.addAll(list);
+					for(int i=0; i<list.size(); i++){
+						zongyiHistoryList.add(list.get(i));
+					}
+//					zongyiHistoryList.addAll(list);
 					((BaseAdapter)listView.getAdapter()).notifyDataSetChanged();
 				}
 				break;
@@ -604,7 +675,10 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 					dongmanHistoryList = list;
 					listView.setAdapter(new HistortyAdapter(dongmanHistoryList));
 				}else{
-					dongmanHistoryList.addAll(list);
+					for(int i=0; i<list.size(); i++){
+						dongmanHistoryList.add(list.get(i));
+					}
+//					dongmanHistoryList.addAll(list);
 					((BaseAdapter)listView.getAdapter()).notifyDataSetChanged();
 				}
 				break;
@@ -673,7 +747,10 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 					getResources().getString(R.string.networknotwork));
 			return;
 		}
-		Log.d(TAG, json.toString());
+		if(json == null || json.equals("")) 
+			return;
+		
+			Log.d(TAG, json.toString());
 	}
 	
 	@Override
@@ -698,4 +775,5 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 		TextView content;
 		ImageView img;
 	}
+	
 }

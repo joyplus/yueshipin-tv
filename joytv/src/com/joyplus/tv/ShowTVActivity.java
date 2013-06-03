@@ -9,11 +9,11 @@ import org.json.JSONObject;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.DialogInterface.OnCancelListener;
+import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.Editable;
+import android.util.SparseArray;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -22,25 +22,21 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.PopupWindow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.joyplus.tv.Adapters.SearchAdapter;
+import com.joyplus.tv.Adapters.ZongYiAdapter;
 import com.joyplus.tv.entity.MovieItemData;
 import com.joyplus.tv.ui.MyMovieGridView;
 import com.joyplus.tv.ui.NavigateView;
-import com.joyplus.tv.ui.WaitingDialog;
 import com.joyplus.tv.ui.NavigateView.OnResultListener;
+import com.joyplus.tv.ui.WaitingDialog;
 import com.joyplus.tv.utils.ItemStateUtils;
 import com.joyplus.tv.utils.Log;
 
@@ -68,7 +64,7 @@ public class ShowTVActivity extends AbstractShowActivity {
 	private boolean isGridViewUp = false;
 	private int[] beforeFirstAndLastVible = { 0, 9 };
 	private View beforeGvView = null;
-	private SearchAdapter searchAdapter = null;
+	private ZongYiAdapter searchAdapter = null;
 	private int beforepostion = 0;
 	private int currentListIndex;
 	private String search;
@@ -84,11 +80,16 @@ public class ShowTVActivity extends AbstractShowActivity {
 	private boolean[] isNextPagePossibles = new boolean[10];
 	private int[] pageNums = new int[10];
 	
-	private boolean isFirstActive = false;
-	private boolean isOnKeyActive = false;
-	private View firstFloatView;
+	private boolean isCurrentKeyVertical = false;//水平方向移动
+	private boolean isFirstActive = true;//是否界面初始化
+	private SparseArray<View> mSparseArray = new SparseArray<View>();
 	
-	private Handler handler = new Handler();
+	private List<MovieItemData> shoucangList = new ArrayList<MovieItemData>();
+	private boolean isShowShoucang = false;
+	
+	private LinearLayout shoucangTitlleLL;
+	private int qitaNextPoistion = -1;
+	private TextView shoucangTv;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -98,55 +99,147 @@ public class ShowTVActivity extends AbstractShowActivity {
 
 		app = (App) getApplication();
 		aq = new AQuery(this);
+		
+		//本地收藏，有没有更新
+		String userId = null;
+		if(app.getUserInfo() != null) {
+			
+			if(app.getUserInfo().getUserId() != null) {
+				
+				userId = app.getUserInfo().getUserId();
+			}
+		} else {
+			
+			userId = StatisticsUtils.getCurrentUserId(getApplicationContext());
+		}
+		
+		if(userId != null) {
+			
+			shoucangList = StatisticsUtils.getList4DB(getApplicationContext(), userId, TV_TYPE);
+		}
+		
+		Log.i(TAG, "shoucangList--->:" + shoucangList.size());
+		
+		if(shoucangList != null && !shoucangList.isEmpty()) {
+			
+			if(shoucangList.size() > 0) {
+				
+				Log.i(TAG, "shoucangList--->:" + shoucangList.size());
+				
+				isShowShoucang = true;
+			}
+		}
+		
 
 		initActivity();
 		
-		searchAdapter = new SearchAdapter(this, aq);
+		searchAdapter = new ZongYiAdapter(this, aq);
+		
+		if(isShowShoucang) {
+			
+			searchAdapter.setShouCangCount(shoucangList.size());
+			searchAdapter.setQita_name(getString(R.string.qitadongman_play_name));
+			searchAdapter.setShoucangShow(true);
+		}
+		
 		playGv.setAdapter(searchAdapter);
-		isFirstActive = true;
+		
+		playGv.requestFocus();
+		playGv.setSelection(-1);
+		
 		getQuan10Data(StatisticsUtils.getTV_Quan10URL());
 	}
 
 	@Override
 	public void onFocusChange(View v, boolean hasFocus) {
 		// TODO Auto-generated method stub
-
-		if (hasFocus) {
-
-			ItemStateUtils.viewToFocusState(getApplicationContext(), v);
-		} else {
-
-			ItemStateUtils.viewToOutFocusState(getApplicationContext(), v,
-					activeView);
-		}
-
-	}
-	
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		// TODO Auto-generated method stub
-		if(!isOnKeyActive) {
-			
-			return true;
-		}
-		return super.onKeyDown(keyCode, event);
-	}
-	
-	@Override
-	public boolean onKeyUp(int keyCode, KeyEvent event) {
-		// TODO Auto-generated method stub
 		
-		if(!isOnKeyActive) {
+		if(v.getId() == R.id.et_search) {
 			
-			return true;
+			if (hasFocus == true) {
+				((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
+						.showSoftInput(v, InputMethodManager.SHOW_FORCED);
+
+			} else { // ie searchBoxEditText doesn't have focus
+				((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
+						.hideSoftInputFromWindow(v.getWindowToken(), 0);
+
+			}
+		} else {
+			
+			if (hasFocus) {
+
+				ItemStateUtils.viewToFocusState(getApplicationContext(), v);
+			} else {
+
+				ItemStateUtils.viewToOutFocusState(getApplicationContext(), v,
+						activeView);
+			}
 		}
-		return super.onKeyUp(keyCode, event);
+		
+		if(!isCurrentKeyVertical) {
+			
+			int postion = playGv.getSelectedItemPosition();
+			View view =mSparseArray.get(postion);
+			
+			if(view != null) {
+				
+				if (hasFocus) {// 如果gridview没有获取焦点，把item中高亮取消
+
+					ItemStateUtils.viewOutAnimation(getApplicationContext(),
+							view);
+				} else {
+					
+					ItemStateUtils.viewInAnimation(getApplicationContext(), view);
+					activeRecordIndex = postion;
+				}
+			}
+		}
+
 	}
 
 	@Override
 	public boolean onKey(View v, int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
+
 		return false;
+	}
+	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		// TODO Auto-generated method stub
+		
+		int action = event.getAction();
+
+		if (action == KeyEvent.ACTION_DOWN) {
+
+			switch (keyCode) {
+			case KEY_UP:
+
+//				isGridViewUp = true;
+				isCurrentKeyVertical = true;
+				break;
+			case KEY_DOWN:
+
+//				isGridViewUp = false;
+				isCurrentKeyVertical = true;
+				break;
+			case KEY_LEFT:
+
+				isCurrentKeyVertical = false;
+				break;
+			case KEY_RIGHT:
+
+				isCurrentKeyVertical = false;
+				break;
+
+			default:
+				break;
+			}
+
+		}
+		
+		return super.onKeyDown(keyCode, event);
 	}
 
 	@Override
@@ -203,6 +296,50 @@ public class ShowTVActivity extends AbstractShowActivity {
 		hanjuLL.setOnKeyListener(this);
 		meijuLL.setOnKeyListener(this);
 		rijuLL.setOnKeyListener(this);
+		searchEt.setOnKeyListener(this);
+		
+		playGv.setOnKeyListener(new View.OnKeyListener() {
+			
+			@Override
+			public boolean onKey(View v, int keyCode, KeyEvent event) {
+				// TODO Auto-generated method stub
+				
+				int action = event.getAction();
+
+				if (action == KeyEvent.ACTION_DOWN) {
+					Log.i(TAG, "onKeyDown--->" + keyCode);
+
+					switch (keyCode) {
+					case KEY_UP:
+
+						isGridViewUp = true;
+//						isCurrentKeyVertical = true;
+						Log.i(TAG, "onKeyDown--->KEY_UP" + keyCode + " "+isGridViewUp);
+						break;
+					case KEY_DOWN:
+
+						isGridViewUp = false;
+//						isCurrentKeyVertical = true;
+						Log.i(TAG, "onKeyDown--->KEY_DOWN" + keyCode + " "+isGridViewUp);
+						break;
+					case KEY_LEFT:
+
+//						isCurrentKeyVertical = false;
+						break;
+					case KEY_RIGHT:
+
+//						isCurrentKeyVertical = false;
+						break;
+
+					default:
+						break;
+					}
+
+				}
+				
+				return false;
+			}
+		});
 
 		zuijinguankanBtn.setOnKeyListener(this);
 		zhuijushoucangBtn.setOnKeyListener(this);
@@ -225,36 +362,11 @@ public class ShowTVActivity extends AbstractShowActivity {
 		hanjuLL.setOnFocusChangeListener(this);
 		meijuLL.setOnFocusChangeListener(this);
 		rijuLL.setOnFocusChangeListener(this);
+		searchEt.setOnFocusChangeListener(this);
 
 		zuijinguankanBtn.setOnFocusChangeListener(this);
 		zhuijushoucangBtn.setOnFocusChangeListener(this);
 		mFenLeiBtn.setOnFocusChangeListener(this);
-
-		playGv.setOnKeyListener(new View.OnKeyListener() {
-
-			@Override
-			public boolean onKey(View v, int keyCode, KeyEvent event) {
-				// TODO Auto-generated method stub
-				int action = event.getAction();
-
-				if (keyCode == KEY_UP) {
-
-					isGridViewUp = true;
-					// isGridViewDown = false;
-				} else if (keyCode == KEY_DOWN) {
-
-					isGridViewUp = false;
-					// isGridViewDown = true;
-				}
-				if (action == KeyEvent.ACTION_UP) {
-					if (keyCode == KEY_RIGHT) {
-
-					}
-
-				}
-				return false;
-			}
-		});
 
 		playGv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -321,12 +433,22 @@ public class ShowTVActivity extends AbstractShowActivity {
 					int position, long id) {
 				// TODO Auto-generated method stub
 				// if (BuildConfig.DEBUG)
-				Log.i(TAG, "Positon:" + position + " View:" + view
-						+ " beforGvView:" + beforeGvView);
+				Log.i(TAG, "Positon:" + position + " View:" + view + 
+						" before: " + activeRecordIndex);
 
 				if (view == null) {
 
 					return;
+				}else {
+					
+//					Log.i(TAG, "mSparseArray: " + mSparseArray.get(position));
+					if(view.getTag() != null){
+						
+						mSparseArray.put(position,view);
+					} else {
+						
+						mSparseArray.delete(position);
+					}
 				}
 
 				final float y = view.getY();
@@ -335,45 +457,106 @@ public class ShowTVActivity extends AbstractShowActivity {
 
 				boolean isSameContent = position >= beforeFirstAndLastVible[0]
 						&& position <= beforeFirstAndLastVible[1];
-				if (position >= 5 && !isSameContent) {
-
-					if (beforepostion >= beforeFirstAndLastVible[0]
-							&& beforepostion <= beforeFirstAndLastVible[0] + 4) {
-
-						if (isGridViewUp) {
-
+//				if (position >= 5 && !isSameContent) {
+//
+//					if (beforepostion >= beforeFirstAndLastVible[0]
+//							&& beforepostion <= beforeFirstAndLastVible[0] + 4) {
+//
+//						if (isGridViewUp) {
+//
 //							playGv.smoothScrollBy(-popHeight, 1000);
-							isSmoonthScroll = true;
+//							isSmoonthScroll = true;
+//						}
+//					} else {
+//
+//						if (!isGridViewUp) {
+//
+//							playGv.smoothScrollBy(popHeight, 1000 * 2);
+//							isSmoonthScroll = true;
+//
+//						}
+//					}
+//
+//				}
+				
+				if(isShowShoucang) {
+					
+					int shoucangNum = shoucangList.size();
+					if(!StatisticsUtils.isPostionEmpty(position, shoucangNum)) {
+						
+						if(StatisticsUtils.isPositionShowQitaTitle(position, shoucangNum)) {
+							Log.i(TAG, "Position:--->" + position + " isGridViewUp--->" + isGridViewUp);
+							if(isGridViewUp) {
+								
+								playGv.setSelection(position - 5);
+							} else {
+								
+								playGv.setSelection(position + 5);
+								qitaNextPoistion = position + 5;
+							}
+						} else {
+							
+							if(!isGridViewUp && qitaNextPoistion + 5 == position) {
+								
+								playGv.smoothScrollBy(35, -1);
+//								int scrolly = playGv.getScrollY();
+
+								shoucangTv.setText(R.string.qitadongman_play_name);
+								
+							} else if(isGridViewUp && qitaNextPoistion - 10  == position) {
+								
+								shoucangTv.setText(R.string.shoucang_update_name);
+							}
+							
+							if (mSparseArray.get(activeRecordIndex) != null && activeRecordIndex != position) {
+
+								ItemStateUtils.viewOutAnimation(getApplicationContext(),
+										mSparseArray.get(activeRecordIndex));
+							}
+
+							if (position != activeRecordIndex && isFirstActive) {
+
+								ItemStateUtils.viewInAnimation(getApplicationContext(),
+										view);
+								activeRecordIndex = position;
+							}
+							
+							if(!isFirstActive) {//如果不是初始化，那就设为true
+								
+								isFirstActive = true;
+							}
 						}
 					} else {
-
-						if (!isGridViewUp) {
-
-//							playGv.smoothScrollBy(popHeight, 1000 * 2);
-							isSmoonthScroll = true;
-
+						//当前位置为空的组件
+						if(isGridViewUp) {//向上
+							
+							playGv.setSelection(StatisticsUtils.stepToFirstInThisRow(position));
+						} else {//向下
+							
+							playGv.setSelection(StatisticsUtils.stepToFirstInThisRow(position));
 						}
+						
+					}
+				} else {
+					
+					if (mSparseArray.get(activeRecordIndex) != null && activeRecordIndex != position) {
+
+						ItemStateUtils.viewOutAnimation(getApplicationContext(),
+								mSparseArray.get(activeRecordIndex));
 					}
 
-				}
-				
-				if(firstFloatView.isShown()) {
-					
-					ItemStateUtils.floatViewOutAnimaiton(getApplicationContext(), firstFloatView);
-				}
+					if (position != activeRecordIndex && isFirstActive) {
 
-				if (beforeGvView != null && beforeGvView != view && activeRecordIndex != -1) {
-
-					ItemStateUtils.viewOutAnimation(getApplicationContext(),
-							beforeGvView);
-				}
-				
-				if(position != activeRecordIndex) {
+						ItemStateUtils.viewInAnimation(getApplicationContext(),
+								view);
+						activeRecordIndex = position;
+					}
 					
-					ItemStateUtils.viewInAnimation(getApplicationContext(), view);
-					activeRecordIndex = position;
+					if(!isFirstActive) {//如果不是初始化，那就设为true
+						
+						isFirstActive = true;
+					}
 				}
-				
 
 				int[] firstAndLastVisible = new int[2];
 				firstAndLastVisible[0] = playGv.getFirstVisiblePosition();
@@ -395,8 +578,7 @@ public class ShowTVActivity extends AbstractShowActivity {
 
 				}
 
-				beforeGvView = view;
-				beforepostion = position;
+//				beforepostion = position;
 
 				// 缓存
 				int size = searchAdapter.getMovieList().size();
@@ -405,7 +587,6 @@ public class ShowTVActivity extends AbstractShowActivity {
 					if (isNextPagePossibles[currentListIndex]) {
 
 						pageNums[currentListIndex]++;
-						playGv.setOnFocusChangeListener(null);
 						cachePlay(currentListIndex, pageNums[currentListIndex]);
 					}
 				}
@@ -427,89 +608,26 @@ public class ShowTVActivity extends AbstractShowActivity {
 
 				Editable editable = searchEt.getText();
 				String searchStr = editable.toString();
-//				searchEt.setText("");
+				// searchEt.setText("");
 				playGv.setNextFocusForwardId(searchEt.getId());//
-				
+
 				ItemStateUtils
 						.viewToNormal(getApplicationContext(), activeView);
 				activeView = searchEt;
-				
 
 				if (searchStr != null && !searchStr.equals("")) {
-
-					showDialog(DIALOG_WAITING);
 					resetGvActive();
+					showDialog(DIALOG_WAITING);
 					search = searchStr;
 					StatisticsUtils.clearList(lists[SEARCH]);
 					currentListIndex = SEARCH;
-					String url = StatisticsUtils.getSearch_FirstURL(searchStr)+ "&type=" + TV_TYPE;
+					String url = StatisticsUtils.getSearch_FirstURL(searchStr);
 					getFilterData(url);
 				}
 
 			}
 		});
-
-		searchEt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-
-			@Override
-			public void onFocusChange(View v, boolean hasFocus) {
-				// TODO Auto-generated method stub
-				if (hasFocus == true) {
-					((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
-							.showSoftInput(v, InputMethodManager.SHOW_FORCED);
-
-				} else { // ie searchBoxEditText doesn't have focus
-					((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
-							.hideSoftInputFromWindow(v.getWindowToken(), 0);
-
-				}
-			}
-		});
 	}
-	
-	
-	private View.OnFocusChangeListener gvOnFocusChangeListener = new View.OnFocusChangeListener() {
-		
-		@Override
-		public void onFocusChange(View v, boolean hasFocus) {
-			// TODO Auto-generated method stub
-			
-			if (!hasFocus) {// 如果gridview没有获取焦点，把item中高亮取消
-				
-				if(firstFloatView.isShown()) {
-					
-					ItemStateUtils.floatViewOutAnimaiton(getApplicationContext(), firstFloatView);
-				}
-
-				if (beforeGvView != null) {
-
-					ItemStateUtils.viewOutAnimation(
-							getApplicationContext(), beforeGvView);
-					
-				}
-			} else {
-//				Log.i(TAG, "OnFocusChangeListener--->" + beforeGvView + " Height:" + popHeight
-//						+ " position:" + playGv.getSelectedItemPosition() + "viewY:" + beforeGvView.getY());
-				int beforePostion = playGv.getSelectedItemPosition();
-				if (beforeGvView != null) {
-
-//						ItemStateUtils.viewInAnimation(
-//								getApplicationContext(), beforeGvView);
-					if(beforeGvView.getY() < popHeight/2) {
-						initFirstFloatView(playGv.getSelectedItemPosition(), beforeGvView);
-					}
-					activeRecordIndex = -1;
-					beforeGvView = null;
-//					playGv.setSelection(beforePostion);
-
-				} else {
-					
-					initFirstFloatView(0, null);
-//					playGv.setSelection(playGv.getSelectedItemPosition());
-				}
-			}
-		}
-	};
 
 	@Override
 	protected void clearLists() {
@@ -546,28 +664,31 @@ public class ShowTVActivity extends AbstractShowActivity {
 			popHeight = height;
 		}
 
-		searchAdapter.setList(list);
-		
-		if(list.size() <= 0) {
+		if(currentListIndex != SEARCH &&
+				currentListIndex != QUAN_FILTER) {
 			
-			playGv.setAdapter(null);
-			app.MyToast(getApplicationContext(), getString(R.string.toast_no_play));
+			searchAdapter.setList(list,true);
+		}else {
+			
+			searchAdapter.setList(list,false);
+		}
+		
+		if(searchAdapter.getItemId() == list.size()) {
+			
+			searchAdapter.setItemId(list.size() + 1);
 		} else {
 			
-			ListAdapter adapter = playGv.getAdapter();
-			if(adapter == null) {
-				
-				playGv.setAdapter(searchAdapter);
-			} else {
-				
-				if(!isFirstActive) {
-					
-					playGv.setAdapter(searchAdapter);
-				}
-			}
+			searchAdapter.setItemId(list.size());
+		}
+		
+
+		if (list.size() <= 0) {
+
+			app.MyToast(getApplicationContext(),
+					getString(R.string.toast_no_play));
 		}
 
-		if (list != null && !list.isEmpty() && currentListIndex != QUANBUFENLEI) {// 判断其能否向获取更多数据
+		if (list != null && !list.isEmpty() && QUANBUFENLEI != currentListIndex) {// 判断其能否向获取更多数据
 
 			if (list.size() == StatisticsUtils.FIRST_NUM) {
 
@@ -579,28 +700,14 @@ public class ShowTVActivity extends AbstractShowActivity {
 		}
 		lists[currentListIndex] = list;
 
-//		playGv.setSelection(0);
+		playGv.setSelection(0);
 		searchAdapter.notifyDataSetChanged();
-		removeDialog(DIALOG_WAITING);
-		if(isFirstActive) {
-			
-			playGv.requestFocus();
-			isFirstActive = false;
-			handler.postDelayed(new Runnable() {
-				
-				@Override
-				public void run() {
-					// TODO Auto-generated method stub
-					isOnKeyActive = true;
-				}
-			}, 1000);
-		} else {
-			
-			beforeGvView = null;
-		}
 		
-		activeRecordIndex = -1;
-		playGv.setOnFocusChangeListener(gvOnFocusChangeListener);
+		removeDialog(DIALOG_WAITING);
+//		if(isFirstActive) {
+//			
+//			playGv.requestFocus();
+//		}
 
 	}
 
@@ -628,8 +735,9 @@ public class ShowTVActivity extends AbstractShowActivity {
 		showDialog(DIALOG_WAITING);
 		StatisticsUtils.clearList(lists[QUAN_FILTER]);
 		currentListIndex = QUAN_FILTER;
+		resetGvActive();
 		filterSource = StatisticsUtils.getFileterURL3Param(choice, quanbu);
-		String url = StatisticsUtils.getFilter_DongmanFirstURL(filterSource);
+		String url = StatisticsUtils.getFilter_DianshijuFirstURL(filterSource);
 		Log.i(TAG, "POP--->URL:" + url);
 		getFilterData(url);
 	}
@@ -696,11 +804,10 @@ public class ShowTVActivity extends AbstractShowActivity {
 			isNextPagePossibles[currentListIndex] = false;
 		}
 
-		searchAdapter.setList(srcList);
+		searchAdapter.setList(srcList,true);
 		lists[currentListIndex] = srcList;
 
 		searchAdapter.notifyDataSetChanged();
-		playGv.setOnFocusChangeListener(gvOnFocusChangeListener);
 	}
 
 
@@ -779,6 +886,10 @@ public class ShowTVActivity extends AbstractShowActivity {
 		}
 
 		try {
+			
+			if(json == null || json.equals("")) 
+				return;
+			
 			Log.d(TAG, json.toString());
 
 			refreshAdpter(StatisticsUtils.returnFilterMovieSearch_TVJson(json
@@ -807,6 +918,10 @@ public class ShowTVActivity extends AbstractShowActivity {
 		}
 
 		try {
+			
+			if(json == null || json.equals("")) 
+				return;
+			
 			Log.d(TAG, json.toString());
 
 			refreshAdpter(StatisticsUtils
@@ -835,7 +950,7 @@ public class ShowTVActivity extends AbstractShowActivity {
 
 			break;
 		case QUAN_FILTER:
-			getMoreFilterData(StatisticsUtils.getFilter_DongmanCacheURL(
+			getMoreFilterData(StatisticsUtils.getFilter_DianshijuCacheURL(
 					pageNum, filterSource));
 			break;
 		case SEARCH:
@@ -878,8 +993,11 @@ public class ShowTVActivity extends AbstractShowActivity {
 			return;
 		}
 		try {
+			
+			if(json == null || json.equals("")) 
+				return;
+			
 			Log.d(TAG, json.toString());
-
 			if (lists[QUAN_TEN] != null && !lists[QUAN_TEN].isEmpty()) {
 
 				List<MovieItemData> temp10List = new ArrayList<MovieItemData>(
@@ -907,13 +1025,42 @@ public class ShowTVActivity extends AbstractShowActivity {
 					}
 				}
 
+				Log.i(TAG, "Temp size:" + tempList.size());
 				if (tempList.size() == StatisticsUtils.CACHE_NUM) {
 
 					isNextPagePossibles[currentListIndex] = true;
 				}
-				notifyAdapter(temp10List);
-			}
+				
+				if(isShowShoucang) {
+					
+					int tianchongEmpty = StatisticsUtils.tianchongEmptyItem(shoucangList.size());
+					
+					Log.i(TAG, "tianchongEmpty--->" + tianchongEmpty + " temp10List" + temp10List.size());
+					
+					List<MovieItemData> tempList2 = new ArrayList<MovieItemData>(
+							shoucangList);
+					
+					for(int i=0;i<tianchongEmpty;i++) {
+						
+						MovieItemData item = new MovieItemData();
+						tempList2.add(item);
+						
+					}
+					
+					Log.i(TAG, "tempList2 start--->" + tempList2.size());
+					
+					tempList2.addAll(temp10List);
+					
+					Log.i(TAG, "tempList2 end--->" + tempList2.size());
+					
+					notifyAdapter(tempList2);
+				} else {
+					
+					notifyAdapter(temp10List);
+				}
+				
 
+			}
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -938,6 +1085,10 @@ public class ShowTVActivity extends AbstractShowActivity {
 			return;
 		}
 		try {
+			
+			if(json == null || json.equals("")) 
+				return;
+			
 			Log.d(TAG, json.toString());
 
 			notifyAdapter(StatisticsUtils
@@ -968,6 +1119,10 @@ public class ShowTVActivity extends AbstractShowActivity {
 		}
 
 		try {
+			
+			if(json == null || json.equals("")) 
+				return;
+			
 			Log.d(TAG, json.toString());
 
 			notifyAdapter(StatisticsUtils.returnFilterMovieSearch_TVJson(json
@@ -996,6 +1151,10 @@ public class ShowTVActivity extends AbstractShowActivity {
 			return;
 		}
 		try {
+			
+			if(json == null || json.equals("")) 
+				return;
+			
 			Log.d(TAG, json.toString());
 			lists[QUAN_TEN] = StatisticsUtils
 					.returnTVBangDanList_YueDanListJson(json.toString());
@@ -1031,6 +1190,14 @@ public class ShowTVActivity extends AbstractShowActivity {
 		ItemStateUtils.setItemPadding(zuijinguankanBtn);
 		ItemStateUtils.setItemPadding(zhuijushoucangBtn);
 		ItemStateUtils.setItemPadding(mFenLeiBtn);
+		
+		if(isShowShoucang) {
+			
+			shoucangTitlleLL.setVisibility(View.VISIBLE);
+		} else {
+			
+			shoucangTitlleLL.setVisibility(View.GONE);
+		}
 	}
 	
 	@Override
@@ -1052,9 +1219,13 @@ public class ShowTVActivity extends AbstractShowActivity {
 		zhuijushoucangBtn = (Button) findViewById(R.id.bt_zhuijushoucang);
 
 		topLinearLayout = (LinearLayout) findViewById(R.id.ll_show_movie_top);
-		firstFloatView = findViewById(R.id.inclue_movie_show_item);
+
+		shoucangTitlleLL = (LinearLayout) findViewById(R.id.ll_shoucanggengxin);
+		shoucangTv = (TextView) findViewById(R.id.tv_shoucanggengxin_name);
 
 		playGv.setNextFocusLeftId(R.id.bt_quanbufenlei);
+		playGv.setNextFocusUpId(R.id.gv_movie_show);
+		playGv.setNextFocusDownId(R.id.gv_movie_show);
 	}
 	
 	@Override
@@ -1071,6 +1242,22 @@ public class ShowTVActivity extends AbstractShowActivity {
 				&& activeView.getId() == R.id.bt_quanbufenlei) {
 
 			filterPopWindowShow();
+		}
+		
+		if(v.getId() == R.id.bt_zuijinguankan) {
+			
+			startActivity(new Intent(this, HistoryActivity.class));
+			
+			return;
+		} else if( v.getId() == R.id.bt_zhuijushoucang) {
+			
+			startActivity(new Intent(this, ShowShoucangHistoryActivity.class));
+			return;
+		}
+
+		if (activeView.getId() == v.getId()) {
+
+			return;
 		}
 
 		switch (v.getId()) {
@@ -1192,78 +1379,41 @@ public class ShowTVActivity extends AbstractShowActivity {
 	@Override
 	protected void resetGvActive() {
 		// TODO Auto-generated method stub
-		playGv.setOnFocusChangeListener(null);
-//		playGv.setSelection(-1);
+		
+		if(currentListIndex == QUANBUFENLEI) {
+			
+			searchAdapter.setShoucangShow(true);
+			shoucangTitlleLL.setVisibility(View.VISIBLE);
+			
+			if(shoucangList != null && !shoucangList.isEmpty()) {
+				
+				if(shoucangList.size() > 0) {
+					
+					Log.i(TAG, "shoucangList--->:" + shoucangList.size());
+					
+					isShowShoucang = true;
+				}
+			} else {
+				
+				isShowShoucang = false;
+				searchAdapter.setShoucangShow(false);
+				shoucangTitlleLL.setVisibility(View.GONE);
+			}
+		} else {
+			
+			searchAdapter.setShoucangShow(false);
+			shoucangTitlleLL.setVisibility(View.GONE);
+			isShowShoucang = false;
+		}
+		
+		mSparseArray.clear();
 		activeRecordIndex = -1;
+		isCurrentKeyVertical = false;
+		isFirstActive = false;
 	}
 	
 	protected void initFirstFloatView(int position,View view) {
 		
-		firstFloatView.setLayoutParams(new FrameLayout.LayoutParams(popWidth,
-				popHeight));
-		firstFloatView.setVisibility(View.VISIBLE);
-		
-		if(view != null) {
-			Log.i(TAG, "X:" + view.getX() + "Y: " + view.getY());
-			firstFloatView.setX(view.getX());
-			firstFloatView.setY(view.getY());
-		} else{
-	
-			firstFloatView.setX(0);
-			firstFloatView.setY(0);
-		}
-
-
-
-		TextView movieName = (TextView) firstFloatView
-				.findViewById(R.id.tv_item_layout_name);
-		TextView movieScore = (TextView) firstFloatView
-				.findViewById(R.id.tv_item_layout_score);
-
-		List<MovieItemData> list = searchAdapter.getMovieList();
-		if (list != null && !list.isEmpty()) {
-
-			aq = new AQuery(firstFloatView);
-			aq.id(R.id.iv_item_layout_haibao).image(
-					list.get(position).getMoviePicUrl(), true, true, 0,
-					R.drawable.post_active);
-
-			movieName.setText(list.get(position).getMovieName());
-			movieScore.setText(list.get(position).getMovieScore());
-			
-			String curEpisode = list.get(position).getMovieCurEpisode();
-			String maxEpisode = list.get(position).getMovieMaxEpisode();
-			
-			TextView movieUpdate = (TextView) firstFloatView
-					.findViewById(R.id.tv_item_layout_other_info);
-			if(maxEpisode != null && !maxEpisode.equals("")) {
-
-				if(curEpisode == null || curEpisode.equals("0")) {
-					
-					movieUpdate.setText(
-							maxEpisode + getString(R.string.dianshiju_jiquan));
-					} else{
-
-						int max = Integer.valueOf(maxEpisode);
-						int min = Integer.valueOf(curEpisode);
-						
-						if(min >= max) {
-							
-							movieUpdate.setText(
-									maxEpisode + getString(R.string.dianshiju_jiquan));
-						} else {
-							
-							movieUpdate.setText(getString(R.string.zongyi_gengxinzhi) + 
-									curEpisode);
-						}
-
-				}
-			}
-		}
-
-//		ItemStateUtils.floatViewInAnimaiton(getApplicationContext(),
-//				firstFloatView);
-		ItemStateUtils.floatViewInAnimaiton(getApplicationContext(), firstFloatView);
 	}
 
 }

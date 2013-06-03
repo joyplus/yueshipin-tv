@@ -101,6 +101,8 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 	
 	private static int favNum = 0;
 	
+	private boolean isYingPing = false;
+	
 	private Handler handler = new Handler(){
 
 		@Override
@@ -205,6 +207,10 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 		addListener();
 
 		initPopWindow();
+		
+		dingBt.setNextFocusUpId(R.id.bt_xiangqingding);
+		xiaiBt.setNextFocusUpId(R.id.bt_xiangqing_xiai);
+		yingpingBt.setNextFocusUpId(R.id.bt_xiangqing_yingping);
 
 		beforeView = dingBt;
 
@@ -242,8 +248,14 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 				// TODO Auto-generated method stub
 				
 				if(hasFocus) {
+					if(isXiai) {
+						
+						ItemStateUtils.shoucangButtonToFocusState(xiaiBt, getApplicationContext());
+					} else {
+						
+						ItemStateUtils.shoucangButtonToNormalState(xiaiBt, getApplicationContext());
+					}
 					
-					ItemStateUtils.shoucangButtonToFocusState(xiaiBt, getApplicationContext());
 				} else {
 					
 					if(isXiai) {
@@ -264,8 +276,14 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 				// TODO Auto-generated method stub
 				
 				if(hasFocus) {
+					if(isDing) {
+						
+						ItemStateUtils.dingButtonToFocusState(dingBt, getApplicationContext());
+					} else {
+						
+						ItemStateUtils.dingButtonToNormalState(dingBt, getApplicationContext());
+					}
 					
-					ItemStateUtils.dingButtonToFocusState(dingBt, getApplicationContext());
 				} else {
 					
 					if(isDing){
@@ -322,12 +340,19 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 			playDate.prod_id = movieData.movie.id;
 			playDate.prod_type = 1;
 			playDate.prod_name = movieData.movie.name;
+			
+			//清晰度
+			playDate.prod_qua = StatisticsUtils.string2Int(movieData.movie.definition);
+			
 			if(gaoqing_url!=null){
 				playDate.prod_url = gaoqing_url;
+				playDate.prod_src = gaoqing_url_souce;
 			}else if(chaoqing_url != null){
 				playDate.prod_url = chaoqing_url;
+				playDate.prod_src = chaoqing_url_souce;
 			}else if(puqing_url !=null){
 				playDate.prod_url = puqing_url;
+				playDate.prod_src = puqing_url_souce;
 			}
 //			playDate.prod_src = "";
 //			playDate.prod_qua = Integer.valueOf(info.definition);
@@ -340,10 +365,10 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 		case R.id.bt_xiangqing_yingping:
 			Intent yingpingIntent = new Intent(this, DetailComment.class);
 //			yingpingIntent.putExtra("ID", prod_id);
-			int yingpingSize = movieData.comments.length;
-			Log.i(TAG, "Comments : " + yingpingSize);
+//			int yingpingSize = movieData.comments.length;
+//			Log.i(TAG, "Comments : " + yingpingSize);
 			
-			if(yingpingSize >0) {
+			if(isYingPing) {
 				
 				Bundle bundle = new Bundle();
 				bundle.putString("prod_id", prod_id);
@@ -361,31 +386,6 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 
 	}
 
-	private void backToNormalState() {
-		int id = beforeView.getId();
-		switch (id) {
-		case R.id.bt_xiangqingding:
-			if (!isDing) {
-				dingBt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ding_selector, 0, 0,0);
-			}
-			dingBt.setTextColor(getResources().getColor(R.color.time_color));
-			break;
-		case R.id.bt_xiangqing_xiai:
-			if (!isXiai) {
-				xiaiBt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.xiai_selector, 0, 0,0);
-			}
-			xiaiBt.setTextColor(getResources().getColor(R.color.time_color));
-			break;
-		case R.id.ll_xiangqing_bofang_gaoqing:
-			// bofangLL.setN
-			// xiaiIv.setImageResource(R.drawable.icon_fav_active);
-			// xiaiTv.setTextColor(getResources().getColor(R.color.text_foucs));
-			break;
-		default:
-			break;
-		}
-	}
-
 	@Override
 	public boolean onKey(View v, int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
@@ -394,24 +394,6 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 		if (action == KeyEvent.ACTION_UP) {
 
 			switch (v.getId()) {
-			case R.id.bt_xiangqingding:
-				if (keyCode == KEY_UP || keyCode == KEY_LEFT) {
-					backToNormalState();
-					dingBt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_dig_active, 0, 0,0);
-					dingBt.setTextColor(getResources().getColor(
-							R.color.text_foucs));
-				}
-				break;
-			case R.id.bt_xiangqing_xiai:
-				if (keyCode == KEY_UP || keyCode == KEY_LEFT
-						|| keyCode == KEY_RIGHT) {
-					backToNormalState();
-					dingBt.setSelected(false);
-					xiaiBt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_fav_active, 0, 0,0);
-					xiaiBt.setTextColor(getResources().getColor(
-							R.color.text_foucs));
-				}
-				break;
 			case R.id.ll_xiangqing_bofang_gaoqing:
 				if (keyCode == KEY_UP || keyCode == KEY_LEFT
 						|| keyCode == KEY_RIGHT) {
@@ -445,18 +427,12 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 									location[0] - 6, location[1] - locationY -40);
 						}
 
-					} else {
-
-						backToNormalState();
 					}
 					// Log.i("Yangzhg", "UPUP!!!!!!");
 					// bofangLL.setN
 					// xiaiIv.setImageResource(R.drawable.icon_fav_active);
 					// xiaiTv.setTextColor(getResources().getColor(R.color.text_foucs));
 				}
-				break;
-			case R.id.gv_xiangqing_tuijian:
-				backToNormalState();
 				break;
 			default:
 				break;
@@ -499,6 +475,10 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 				playDate.prod_id = movieData.movie.id;
 				playDate.prod_type = 1;
 				playDate.prod_name = movieData.movie.name;
+				
+				//清晰度
+				playDate.prod_qua = StatisticsUtils.string2Int(movieData.movie.definition);
+				
 				playDate.prod_favority = isXiai;
 //				if(gaoqing_url!=null){
 //					playDate.prod_url = gaoqing_url;
@@ -616,6 +596,10 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 					getResources().getString(R.string.networknotwork));
 			return;
 		}
+		
+		if(json == null || json.equals("")) 
+			return;
+		
 		Log.d(TAG, "data = " + json.toString());
 		ObjectMapper mapper = new ObjectMapper();
 		try {
@@ -632,6 +616,8 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 				pic_url = bigPicUrl;
 				updateView();
 			}
+			
+			getYingpingData(StatisticsUtils.getYingPin_1_URL(prod_id));
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -644,16 +630,55 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 		}
 	}
 	
-	private void updateView(){
+	protected void getServiceData(String url, String interfaceName) {
+		// TODO Auto-generated method stub
+
+		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
+		cb.url(url).type(JSONObject.class).weakHandler(this, interfaceName);
+
+		cb.SetHeader(app.getHeaders());
+		aq.ajax(cb);
+	}
+
+	protected void getYingpingData(String url) {
+		// TODO Auto-generated method stub
+
+		Log.i(TAG, "getYingpingData--->");
+		getServiceData(url, "initYingpingServiceData");
+	}
+	
+	public void initYingpingServiceData(String url, JSONObject json,
+			AjaxStatus status) {
+		// TODO Auto-generated method stub
+
+		if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
+
+			app.MyToast(aq.getContext(),
+					getResources().getString(R.string.networknotwork));
+			return;
+		}
 		
-		if(movieData.comments.length <=0) {
+		if (json == null || json.equals(""))
+			return;
+		
+		String str = json.toString();
+		if(str.contains("review_id")) {
+			
+			isYingPing = true;
+		}
+		
+		Log.i(TAG, "isYingPing--->" + isYingPing + "   --->" + str);
+		
+		if(!isYingPing) {
 			
 			yingpingBt.setEnabled(false);
 			yingpingBt.setBackgroundResource(R.drawable.yingping_button_unuse_selector);
 			yingpingBt.setTextColor(getResources().getColor(R.color.unuse_color));
 //			yingpingBt.setFocusable(false);
 		}
-		
+	}
+	
+	private void updateView(){
 		
 		String strNum = movieData.movie.favority_num;
 		
@@ -693,6 +718,10 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 					getResources().getString(R.string.networknotwork));
 			return;
 		}
+		
+		if(json == null || json.equals("")) 
+			return;
+		
 		Log.d(TAG, "data = " + json.toString());
 		ObjectMapper mapper = new ObjectMapper();
 		try {
@@ -825,9 +854,13 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 				
 				favNum --;
 				xiaiBt.setText((favNum) + "");
-				ItemStateUtils.shoucangButtonToFocusState(xiaiBt, getApplicationContext());
+				ItemStateUtils.shoucangButtonToNormalState(xiaiBt, getApplicationContext());
 			}
 		isXiai = false;
+		
+		if(json == null || json.equals("")) 
+			return;
+		
 		Log.d(TAG, "cancel:----->"+json.toString());
 	}
 	
@@ -853,6 +886,10 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 		xiaiBt.setText(favNum + "");
 		ItemStateUtils.shoucangButtonToFocusState(xiaiBt, getApplicationContext());
 		isXiai = true;
+		
+		if(json == null || json.equals("")) 
+			return;
+		
 		Log.d(TAG, "shoucangResult:----->" + json.toString());
 	}
 	
@@ -871,6 +908,10 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 	}
 	
 	public void dingResult(String url, JSONObject json, AjaxStatus status){
+		
+		if(json == null || json.equals("")) 
+			return;
+		
 		Log.d(TAG, json.toString());
 	}
 	
@@ -895,6 +936,9 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 					getResources().getString(R.string.networknotwork));
 			return;
 		}
+		
+		if(json == null || json.equals("")) 
+			return;
 		
 		Log.d(TAG, "data = " + json.toString());
 		
