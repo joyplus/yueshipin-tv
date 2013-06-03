@@ -607,6 +607,12 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 			movieData  = mapper.readValue(json.toString(), ReturnProgramView.class);
 			new Thread(new CheckPlayUrl()).start();
 			if(movieData!=null){
+				
+				if(movieData.movie == null) {
+					
+					return;
+				}
+				
 				String bigPicUrl = movieData.movie.ipad_poster;
 				if(bigPicUrl == null || bigPicUrl.equals("")
 						||bigPicUrl.equals(StatisticsUtils.EMPTY)) {
