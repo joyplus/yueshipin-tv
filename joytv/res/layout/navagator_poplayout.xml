@@ -50,7 +50,7 @@
 		    android:layout_width="75dp"
 		    android:layout_height="40dp"
 		    android:text="地区"
-		    android:textSize="20sp"
+		    android:textSize="20dp"
 			android:maxLines="1" />
        <ImageView android:layout_width="75dp"
 		   android:layout_height="20dp"
@@ -78,7 +78,7 @@
 		    android:layout_width="75dp"
 		    android:layout_height="40dp"
 		    android:text="类别"
-		    android:textSize="20sp"
+		    android:textSize="20dp"
 			android:maxLines="1" />
        <ImageView android:layout_width="75dp"
 		   android:layout_height="20dp"
@@ -106,7 +106,7 @@
 		    android:layout_width="75dp"
 		    android:layout_height="40dp"
 		    android:text="年代"
-		    android:textSize="20sp"
+		    android:textSize="20dp"
 			android:maxLines="1" />
        <ImageView android:layout_width="75dp"
 		   android:layout_height="20dp"
@@ -129,7 +129,7 @@
        android:layout_above="@+id/row_highlight_backgroun"
        android:layout_alignLeft="@+id/row_highlight_backgroun"
        android:background="@drawable/bg_button_reset_selector"
-       android:textSize="20sp"
+       android:textSize="20dp"
        android:textColor="@color/reset_btn_text_color_selector"
        android:id="@+id/resetButton"
        android:text="重置" />
@@ -148,22 +148,22 @@
         android:id="@+id/all"
         android:text="全部分类"
         android:visibility="gone"
-        android:textSize="20sp"
+        android:textSize="20dp"
         android:textColor="@color/common_title_selected"/>
     <TextView android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/diqu"
-        android:textSize="20sp"
+        android:textSize="20dp"
         android:textColor="@color/common_title_selected"/>
     <TextView android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/leibie"
-        android:textSize="20sp"
+        android:textSize="20dp"
         android:textColor="@color/common_title_selected"/>
     <TextView android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/niandai"
-        android:textSize="20sp"
+        android:textSize="20dp"
         android:textColor="@color/common_title_selected"/>
    </LinearLayout>
 </RelativeLayout>

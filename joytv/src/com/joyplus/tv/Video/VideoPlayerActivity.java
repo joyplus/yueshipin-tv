@@ -34,6 +34,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.PixelFormat;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -109,6 +110,8 @@ public class VideoPlayerActivity extends Activity {
 		app = (App) getApplication();
 		aq = new AQuery(this);
 
+		getWindow().setFormat(PixelFormat.RGBA_8888);
+		
 		setContentView(R.layout.video_player);
 		View rootView = findViewById(R.id.root);
 

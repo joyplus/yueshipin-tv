@@ -1,11 +1,12 @@
 package com.joyplus.tv;
 
-import com.androidquery.AQuery;
-
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
+
+import com.androidquery.AQuery;
 
 public class FAQActivity extends Activity {
 	private App app;
@@ -25,6 +26,17 @@ public class FAQActivity extends Activity {
 		webView.getSettings().setJavaScriptEnabled(false);
 		webView.getSettings().setEnableSmoothTransition(true);
 		webView.setBackgroundColor(Color.TRANSPARENT);
+		webView.setWebViewClient(new WebViewClient()
+		   {
+		          @Override
+		          public boolean shouldOverrideUrlLoading(WebView view, String url)
+		          {
+		 
+		            view.loadUrl(url); // 在当前的webview中跳转到新的url
+		 
+		            return true;
+		          }
+		    });
 //		webView.
 		webView.loadUrl("http://www.joyplus.tv/faq-tv?"+System.currentTimeMillis());
 //		webView.loadUrl("http://apitest.yue001.com/joyplus-service/index.php/tv_net_top?app_key=ijoyplus_android_0001bj&page_num=1&page_size=1000");

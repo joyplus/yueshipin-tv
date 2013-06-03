@@ -27,7 +27,7 @@
 		        android:paddingLeft="15dp"
 			    android:layout_height="wrap_content"
 			    android:gravity="center_vertical"
-			    android:textSize="30sp"
+			    android:textSize="30dp"
 			    android:layout_gravity="bottom"
 			    android:text="设置"
 			    android:textColor="@color/common_title_selected"
@@ -65,11 +65,11 @@
 		                    <TextView android:layout_width="fill_parent"
 		                        android:layout_height="wrap_content"
 		                        android:textColor="@color/hot_content_notice"
-		                        android:textSize="20sp"
+		                        android:textSize="20dp"
 		                        android:id="@+id/user_name"/>
 		                    <TextView android:layout_width="fill_parent"
 		                        android:layout_height="wrap_content"
-		                        android:textSize="18sp"
+		                        android:textSize="18dp"
 		                        android:textColor="@color/hot_content_notice"
 		                        android:id="@+id/user_notice"/>
 		                </LinearLayout>
@@ -87,7 +87,7 @@
 		                android:focusableInTouchMode="true"
 		                android:textColor="@color/hot_content_notice"
 		                android:paddingLeft="15dp"
-		                android:textSize="25sp"
+		                android:textSize="25dp"
 		                android:text="常见问题"/>
 		            <ImageView android:layout_width="fill_parent"
 		                android:layout_height="1px"
@@ -102,7 +102,7 @@
 		                android:focusableInTouchMode="true"
 		                android:textColor="@color/hot_content_notice"
 		                android:paddingLeft="15dp"
-		                android:textSize="25sp"
+		                android:textSize="25dp"
 		                android:text="免责声明"/>
 		            <ImageView android:layout_width="fill_parent"
 		                android:layout_height="1px"
@@ -116,7 +116,7 @@
 		                android:focusable="true"
 		                android:textColor="@color/hot_content_notice"
 		                android:paddingLeft="15dp"
-		                android:textSize="25sp"
+		                android:textSize="25dp"
 		                android:focusableInTouchMode="true"
 		                android:text="关于我们"/>
 		            <LinearLayout android:layout_width="fill_parent"
@@ -136,7 +136,7 @@
 		            <TextView android:layout_width="wrap_content"
 		                android:layout_height="wrap_content"
 		                android:textColor="@color/hot_content_notice"
-		                android:textSize="20sp"
+		                android:textSize="20dp"
 		                android:text="悦视频"/>
 		            <ImageView android:layout_width="90dp"
 		                android:layout_height="90dp"
@@ -145,13 +145,13 @@
 		            <TextView android:layout_width="wrap_content"
 		                android:layout_height="wrap_content"
 		                android:textColor="@color/hot_content_notice"
-		                android:textSize="18sp"
+		                android:textSize="18dp"
 		                android:text="app.joyplus.tv"/>
 		            <TextView android:layout_width="wrap_content"
 		                android:layout_height="wrap_content"
 		                android:layout_marginTop="50dp"
 		                android:textColor="@color/hot_content_notice"
-		                android:textSize="20sp"
+		                android:textSize="20dp"
 		                android:text="微信公众账号"/>
 		            <ImageView android:layout_width="90dp"
 		                android:layout_height="90dp"
@@ -160,13 +160,13 @@
 		            <TextView android:layout_width="wrap_content"
 		                android:layout_height="wrap_content"
 		                android:textColor="@color/hot_content_notice"
-		                android:textSize="18sp"
+		                android:textSize="18dp"
 		                android:text="悦视频"/>
 		            <TextView android:layout_width="wrap_content"
 		                android:layout_height="wrap_content"
 		                android:textColor="@color/hot_content_notice"
 		                android:layout_marginTop="10dp"
-		                android:textSize="18sp"
+		                android:textSize="18dp"
 		                android:text="\t如果您遇到什么问题或者有什么建议，请用微信扫描二维码或搜索&quot;悦视频&quot;。我们时刻倾听您的声音。"/>
 		        </LinearLayout>
 	       </LinearLayout>

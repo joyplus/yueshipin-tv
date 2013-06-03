@@ -80,7 +80,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/textView_score"
                 android:textColor="@color/time_color"
-                android:textSize="20sp"/>
+                android:textSize="20dp"/>
         </LinearLayout>
 
         <LinearLayout

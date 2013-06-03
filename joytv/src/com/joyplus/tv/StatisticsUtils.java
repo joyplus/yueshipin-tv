@@ -1587,6 +1587,9 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 			}
 		}
 		
+		cursor.close();
+		helper.close();
+		
 		return info;
 	}
 	

@@ -2505,6 +2505,9 @@ public class Main extends Activity implements OnItemSelectedListener,
 			}
 		}
 		
+		cursor_proId.close();
+		helper.close();
+		
 	}
 
 	// 网上用户id数据和本地用户id数据进行比较

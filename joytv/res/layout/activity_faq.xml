@@ -27,7 +27,7 @@
 		        android:paddingLeft="15dp"
 			    android:layout_height="wrap_content"
 			    android:gravity="center_vertical"
-			    android:textSize="30sp"
+			    android:textSize="30dp"
 			    android:layout_gravity="bottom"
 			    android:text="常见问题"
 			    android:textColor="@color/common_title_selected"
@@ -47,7 +47,6 @@
 	                    android:layout_height="fill_parent">
 	                    <WebView android:layout_width="fill_parent"
 	                    android:layout_height="wrap_content"
-	                    android:layerType="software"  
 	                    android:fadingEdge="@null"
 	                    android:focusable="false"
 	                    android:focusableInTouchMode="false"
