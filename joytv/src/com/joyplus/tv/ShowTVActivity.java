@@ -1376,6 +1376,7 @@ public class ShowTVActivity extends AbstractShowActivity {
 			if (lists[currentListIndex] != null
 					&& !lists[currentListIndex].isEmpty()) {
 
+				currentListIndex = DALUJU_QUAN;
 				notifyAdapter(lists[DALUJU_QUAN]);
 			} else {
 				showDialog(DIALOG_WAITING);
@@ -1390,6 +1391,7 @@ public class ShowTVActivity extends AbstractShowActivity {
 			if (lists[currentListIndex] != null
 					&& !lists[currentListIndex].isEmpty()) {
 
+				currentListIndex = GANGJU_QUAN;
 				notifyAdapter(lists[GANGJU_QUAN]);
 			} else {
 				showDialog(DIALOG_WAITING);
@@ -1404,6 +1406,7 @@ public class ShowTVActivity extends AbstractShowActivity {
 			if (lists[currentListIndex] != null
 					&& !lists[currentListIndex].isEmpty()) {
 
+				currentListIndex = TAIJU_QUAN;
 				notifyAdapter(lists[TAIJU_QUAN]);
 			} else {
 				showDialog(DIALOG_WAITING);
@@ -1418,6 +1421,7 @@ public class ShowTVActivity extends AbstractShowActivity {
 			if (lists[currentListIndex] != null
 					&& !lists[currentListIndex].isEmpty()) {
 
+				currentListIndex = HANJU_QUAN;
 				notifyAdapter(lists[HANJU_QUAN]);
 			} else {
 				showDialog(DIALOG_WAITING);
@@ -1432,6 +1436,7 @@ public class ShowTVActivity extends AbstractShowActivity {
 			if (lists[currentListIndex] != null
 					&& !lists[currentListIndex].isEmpty()) {
 
+				currentListIndex = MEIJU_QUAN;
 				notifyAdapter(lists[MEIJU_QUAN]);
 			} else {
 				showDialog(DIALOG_WAITING);
@@ -1446,6 +1451,7 @@ public class ShowTVActivity extends AbstractShowActivity {
 			if (lists[currentListIndex] != null
 					&& !lists[currentListIndex].isEmpty()) {
 
+				currentListIndex = RIJU_QUAN;
 				notifyAdapter(lists[RIJU_QUAN]);
 			} else {
 				showDialog(DIALOG_WAITING);

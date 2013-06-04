@@ -1250,23 +1250,23 @@ public class ShowDongManActivity extends AbstractShowActivity {
 					isNextPagePossibles[QINZI_QUAN] = isCache;
 					break;
 				case REXUE_QUAN:
-					tempList2 = StatisticsUtils.getLists4TwoList(lists[REXUE_QUAN],tempList );
+					tempList2 = StatisticsUtils.getLists4TwoList(lists[REXUE],tempList );
 					isNextPagePossibles[REXUE_QUAN] = isCache;
 					break;
 				case HOUGONG_XIAOYUAN_QUAN:
-					tempList2 = StatisticsUtils.getLists4TwoList(lists[HOUGONG_XIAOYUAN_QUAN],tempList );
+					tempList2 = StatisticsUtils.getLists4TwoList(lists[HOUGONG_XIAOYUAN],tempList );
 					isNextPagePossibles[HOUGONG_XIAOYUAN_QUAN] = isCache;
 					break;
 				case TUILI_QUAN:
-					tempList2 = StatisticsUtils.getLists4TwoList(lists[TUILI_QUAN],tempList );
+					tempList2 = StatisticsUtils.getLists4TwoList(lists[TUILI],tempList );
 					isNextPagePossibles[TUILI_QUAN] = isCache;
 					break;
 				case JIZHAN_QUAN:
-					tempList2 = StatisticsUtils.getLists4TwoList(lists[JIZHAN_QUAN],tempList );
+					tempList2 = StatisticsUtils.getLists4TwoList(lists[JIZHAN],tempList );
 					isNextPagePossibles[JIZHAN_QUAN] = isCache;
 					break;
 				case GAOXIAO_QUAN:
-					tempList2 = StatisticsUtils.getLists4TwoList(lists[GAOXIAO_QUAN],tempList );
+					tempList2 = StatisticsUtils.getLists4TwoList(lists[GAOXIAO],tempList );
 					isNextPagePossibles[GAOXIAO_QUAN] = isCache;
 					break;
 				default:
@@ -1411,6 +1411,7 @@ public class ShowDongManActivity extends AbstractShowActivity {
 			if (lists[currentListIndex] != null
 					&& !lists[currentListIndex].isEmpty()) {
 
+				currentListIndex = QINZI_QUAN;
 				notifyAdapter(lists[QINZI_QUAN]);
 			} else {
 
@@ -1425,7 +1426,8 @@ public class ShowDongManActivity extends AbstractShowActivity {
 			if (lists[currentListIndex] != null
 					&& !lists[currentListIndex].isEmpty()) {
 
-				notifyAdapter(lists[REXUE]);
+				currentListIndex = REXUE_QUAN;
+				notifyAdapter(lists[REXUE_QUAN]);
 			} else {
 
 				showDialog(DIALOG_WAITING);
@@ -1440,6 +1442,7 @@ public class ShowDongManActivity extends AbstractShowActivity {
 			if (lists[currentListIndex] != null
 					&& !lists[currentListIndex].isEmpty()) {
 
+				currentListIndex = HOUGONG_XIAOYUAN_QUAN;
 				notifyAdapter(lists[HOUGONG_XIAOYUAN]);
 			} else {
 
@@ -1454,7 +1457,8 @@ public class ShowDongManActivity extends AbstractShowActivity {
 			if (lists[currentListIndex] != null
 					&& !lists[currentListIndex].isEmpty()) {
 
-				notifyAdapter(lists[TUILI]);
+				currentListIndex = TUILI_QUAN;
+				notifyAdapter(lists[TUILI_QUAN]);
 			} else {
 
 				showDialog(DIALOG_WAITING);
@@ -1468,7 +1472,8 @@ public class ShowDongManActivity extends AbstractShowActivity {
 			if (lists[currentListIndex] != null
 					&& !lists[currentListIndex].isEmpty()) {
 
-				notifyAdapter(lists[JIZHAN]);
+				currentListIndex = JIZHAN_QUAN;
+				notifyAdapter(lists[JIZHAN_QUAN]);
 			} else {
 
 				showDialog(DIALOG_WAITING);
@@ -1482,7 +1487,8 @@ public class ShowDongManActivity extends AbstractShowActivity {
 			if (lists[currentListIndex] != null
 					&& !lists[currentListIndex].isEmpty()) {
 
-				notifyAdapter(lists[GAOXIAO]);
+				currentListIndex = GAOXIAO_QUAN;
+				notifyAdapter(lists[GAOXIAO_QUAN]);
 			} else {
 
 				showDialog(DIALOG_WAITING);
