@@ -844,8 +844,8 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 	// search
 
 	public static String getSearch_FirstURL(String search) {
-		Log.i(TAG, "getSearch_FirstURL-->" + StatisticsUtils.getSearchURL(SEARCH_URL, 1 + "", FIRST_NUM + "",
-				search));
+//		Log.i(TAG, "getSearch_FirstURL-->" + StatisticsUtils.getSearchURL(SEARCH_URL, 1 + "", FIRST_NUM + "",
+//				search));
 
 		return StatisticsUtils.getSearchURL(SEARCH_CAPITAL_URL, 1 + "", FIRST_NUM + "",
 				search);
