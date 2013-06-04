@@ -610,7 +610,13 @@ public class VideoPlayerActivity extends Activity {
 
 	public void OnClickFav(View v) {
 		Log.i(TAG, "OnClickFav---->");
-		mPlayer.exitReturnMode();
+//		mPlayer.exitReturnMode();
+		
+		if (mPlayer.isPause()) {//收藏或者取消收藏后
+			mPlayer.exitReturnMode();
+			mPlayer.playTVVideo();
+		}
+		
 		if (!mCurrentPlayData.prod_favority) {
 			String url = Constant.BASE_URL + "program/favority";
 
