@@ -655,7 +655,8 @@ public class ShowDongManActivity extends AbstractShowActivity {
 					search = searchStr;
 					StatisticsUtils.clearList(lists[SEARCH]);
 					currentListIndex = SEARCH;
-					String url = StatisticsUtils.getSearch_FirstURL(searchStr);
+//					String url = StatisticsUtils.getSearch_FirstURL(searchStr);
+					String url = StatisticsUtils.getSearch_Dongman_FirstURL(searchStr);
 					getFilterData(url);
 				}
 
@@ -1003,8 +1004,9 @@ public class ShowDongManActivity extends AbstractShowActivity {
 			break;
 		case SEARCH:
 
-			getMoreFilterData(StatisticsUtils.getSearch_CacheURL(pageNum,
-					search) + "&type=" + DONGMAN_TYPE);
+//			getMoreFilterData(StatisticsUtils.getSearch_CacheURL(pageNum,
+//					search) + "&type=" + DONGMAN_TYPE);
+			getMoreFilterData(StatisticsUtils.getSearch_Dongman_CacheURL(pageNum, search));
 			break;
 		case QINZI_QUAN:
 //			getMoreBangDanData(StatisticsUtils

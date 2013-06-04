@@ -628,7 +628,8 @@ public class ShowTVActivity extends AbstractShowActivity {
 					search = searchStr;
 					StatisticsUtils.clearList(lists[SEARCH]);
 					currentListIndex = SEARCH;
-					String url = StatisticsUtils.getSearch_FirstURL(searchStr);
+//					String url = StatisticsUtils.getSearch_FirstURL(searchStr);
+					String url = StatisticsUtils.getSearch_TV_FirstURL(searchStr);
 					getFilterData(url);
 				}
 
@@ -965,8 +966,9 @@ public class ShowTVActivity extends AbstractShowActivity {
 					pageNum, filterSource));
 			break;
 		case SEARCH:
-			getMoreFilterData(StatisticsUtils.getSearch_CacheURL(pageNum,
-					search) + "&type=" + TV_TYPE);
+//			getMoreFilterData(StatisticsUtils.getSearch_CacheURL(pageNum,
+//					search) + "&type=" + TV_TYPE);
+			getMoreFilterData(StatisticsUtils.getSearch_TV_CacheURL(pageNum, search));
 			break;
 		case DALUJU_QUAN:
 //			getMoreBangDanData(StatisticsUtils.getTV_DalujuCacheURL(pageNum));

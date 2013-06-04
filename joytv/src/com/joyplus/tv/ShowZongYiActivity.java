@@ -588,7 +588,8 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 					search = searchStr;
 					StatisticsUtils.clearList(lists[SEARCH]);
 					currentListIndex = SEARCH;
-					String url = StatisticsUtils.getSearch_FirstURL(searchStr);
+//					String url = StatisticsUtils.getSearch_FirstURL(searchStr);
+					String url = StatisticsUtils.getSearch_Zongyi_FirstURL(searchStr);
 					getFilterData(url);
 				}
 
@@ -893,8 +894,9 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 					pageNum, filterSource));
 			break;
 		case SEARCH:
-			getMoreFilterData(StatisticsUtils.getSearch_CacheURL(pageNum,
-					search));
+//			getMoreFilterData(StatisticsUtils.getSearch_CacheURL(pageNum,
+//					search));
+			getMoreFilterData(StatisticsUtils.getSearch_Zongyi_CacheURL(pageNum, search));
 			break;
 
 		default:

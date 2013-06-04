@@ -85,7 +85,8 @@
                     android:hint="搜索"
                     android:paddingRight="@dimen/menu_horizontal_padding"
                     android:singleLine="true"
-                    android:textSize="15dp" >
+                    android:textSize="15dp" 
+                    android:visibility="invisible">
                 </EditText>
             </LinearLayout>
 

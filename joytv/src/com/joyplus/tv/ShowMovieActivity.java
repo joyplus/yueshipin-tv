@@ -486,7 +486,8 @@ public class ShowMovieActivity extends AbstractShowActivity {
 					search = searchStr;
 					StatisticsUtils.clearList(lists[SEARCH]);
 					currentListIndex = SEARCH;
-					String url = StatisticsUtils.getSearch_FirstURL(searchStr);
+//					String url = StatisticsUtils.getSearch_FirstURL(searchStr);
+					String url = StatisticsUtils.getSearch_Movie_FirstURL(searchStr);
 					getFilterData(url);
 				}
 
@@ -834,8 +835,9 @@ public class ShowMovieActivity extends AbstractShowActivity {
 			break;
 		case SEARCH:
 
-			getMoreFilterData(StatisticsUtils.getSearch_CacheURL(pageNum,
-					search) + "&type=" + MOVIE_TYPE) ;
+//			getMoreFilterData(StatisticsUtils.getSearch_CacheURL(pageNum,
+//					search) + "&type=" + MOVIE_TYPE) ;
+			getMoreFilterData(StatisticsUtils.getSearch_Movie_CacheURL(pageNum, search));
 			break;
 		case DONGZUOPIAN_QUAN:
 //			getMoreBangDanData(StatisticsUtils

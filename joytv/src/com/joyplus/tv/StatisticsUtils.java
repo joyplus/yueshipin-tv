@@ -847,14 +847,74 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 		Log.i(TAG, "getSearch_FirstURL-->" + StatisticsUtils.getSearchURL(SEARCH_URL, 1 + "", FIRST_NUM + "",
 				search));
 
-		return StatisticsUtils.getSearchURL(SEARCH_URL, 1 + "", FIRST_NUM + "",
+		return StatisticsUtils.getSearchURL(SEARCH_CAPITAL_URL, 1 + "", FIRST_NUM + "",
 				search);
 	}
 
 	public static String getSearch_CacheURL(int pageNum, String search) {
 
-		return StatisticsUtils.getSearchURL(SEARCH_URL, (pageNum + 1) + "",
+		return StatisticsUtils.getSearchURL(SEARCH_CAPITAL_URL, (pageNum + 1) + "",
 				CACHE_NUM + "", search);
+	}
+	
+	//电影搜索 search
+	public static String getSearch_Movie_FirstURL(String search) {
+//		Log.i(TAG, "getSearch_FirstURL-->" + StatisticsUtils.getSearchURL(SEARCH_URL, 1 + "", FIRST_NUM + "",
+//				search));
+
+		return StatisticsUtils.getSearchURL(SEARCH_CAPITAL_URL, 1 + "", FIRST_NUM + "",
+				search) + "&type=" + MOVIE_TYPE;
+	}
+
+	public static String getSearch_Movie_CacheURL(int pageNum, String search) {
+
+		return StatisticsUtils.getSearchURL(SEARCH_CAPITAL_URL, (pageNum + 1) + "",
+				CACHE_NUM + "", search) + "&type=" + MOVIE_TYPE;
+	}
+	
+	//电视剧搜索 search
+	public static String getSearch_TV_FirstURL(String search) {
+//		Log.i(TAG, "getSearch_FirstURL-->" + StatisticsUtils.getSearchURL(SEARCH_URL, 1 + "", FIRST_NUM + "",
+//				search));
+
+		return StatisticsUtils.getSearchURL(SEARCH_CAPITAL_URL, 1 + "", FIRST_NUM + "",
+				search) + "&type=" + TV_TYPE;
+	}
+
+	public static String getSearch_TV_CacheURL(int pageNum, String search) {
+
+		return StatisticsUtils.getSearchURL(SEARCH_CAPITAL_URL, (pageNum + 1) + "",
+				CACHE_NUM + "", search) + "&type=" + TV_TYPE;
+	}
+	
+	//综艺搜索 search
+	public static String getSearch_Zongyi_FirstURL(String search) {
+//		Log.i(TAG, "getSearch_FirstURL-->" + StatisticsUtils.getSearchURL(SEARCH_URL, 1 + "", FIRST_NUM + "",
+//				search));
+
+		return StatisticsUtils.getSearchURL(SEARCH_CAPITAL_URL, 1 + "", FIRST_NUM + "",
+				search) + "&type=" + ZONGYI_TYPE;
+	}
+
+	public static String getSearch_Zongyi_CacheURL(int pageNum, String search) {
+
+		return StatisticsUtils.getSearchURL(SEARCH_CAPITAL_URL, (pageNum + 1) + "",
+				CACHE_NUM + "", search) + "&type=" + ZONGYI_TYPE;
+	}
+	
+	//动漫搜索 search
+	public static String getSearch_Dongman_FirstURL(String search) {
+//		Log.i(TAG, "getSearch_FirstURL-->" + StatisticsUtils.getSearchURL(SEARCH_URL, 1 + "", FIRST_NUM + "",
+//				search));
+
+		return StatisticsUtils.getSearchURL(SEARCH_CAPITAL_URL, 1 + "", FIRST_NUM + "",
+				search) + "&type=" + DONGMAN_TYPE;
+	}
+
+	public static String getSearch_Dongman_CacheURL(int pageNum, String search) {
+
+		return StatisticsUtils.getSearchURL(SEARCH_CAPITAL_URL, (pageNum + 1) + "",
+				CACHE_NUM + "", search) + "&type=" + DONGMAN_TYPE;
 	}
 
 	// 动漫filter
