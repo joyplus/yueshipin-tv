@@ -211,6 +211,22 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL, REBO_QINZI_DONGMAN,
 				(pageNum + 1) + "", CACHE_NUM + "");
 	}
+	
+	//获取内地电视剧filter first
+	public static String getTV_Daluju_Quan_FirstURL() {
+
+		return StatisticsUtils.getFilterURL(FILTER_URL, 1 + "",
+				(FIRST_NUM - 10) + "", TV_TYPE) + AREA 
+				+ URLEncoder.encode("内地");
+	}
+	
+	//获取内地电视剧filter cache
+	public static String getTV_Daluju_Quan_AllCacheURL(int pageNum) {
+
+		return StatisticsUtils.getFilterURL(FILTER_URL, (pageNum + 1) + "",
+				CACHE_NUM + "", TV_TYPE)+ AREA 
+				+ URLEncoder.encode("内地");
+	}
 
 	// 港剧
 	public static String getTV_GangjuFirstURL() {
@@ -225,6 +241,22 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL, REBO_GANGJU_DIANSHI,
 				(pageNum + 1) + "", CACHE_NUM + "");
 	}
+	
+	//获取香港电视剧filter first
+	public static String getTV_Gangju_Quan_FirstURL() {
+
+		return StatisticsUtils.getFilterURL(FILTER_URL, 1 + "",
+				(FIRST_NUM - 10) + "", TV_TYPE) + AREA 
+				+ URLEncoder.encode("香港");
+	}
+	
+	//获取香港电视剧filter cache
+	public static String getTV_Gangju_Quan_AllCacheURL(int pageNum) {
+
+		return StatisticsUtils.getFilterURL(FILTER_URL, (pageNum + 1) + "",
+				CACHE_NUM + "", TV_TYPE)+ AREA 
+				+ URLEncoder.encode("香港");
+	}
 
 	public static String getTV_TaijuFirstURL() {
 
@@ -236,6 +268,22 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 
 		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL, REBO_TAIJU_DIANSHI,
 				(pageNum + 1) + "", CACHE_NUM + "");
+	}
+	
+	//获取台湾电视剧filter first
+	public static String getTV_Taiju_Quan_FirstURL() {
+
+		return StatisticsUtils.getFilterURL(FILTER_URL, 1 + "",
+				(FIRST_NUM - 10) + "", TV_TYPE) + AREA 
+				+ URLEncoder.encode("台湾");
+	}
+	
+	//获取台湾电视剧filter cache
+	public static String getTV_Taiju_Quan_AllCacheURL(int pageNum) {
+
+		return StatisticsUtils.getFilterURL(FILTER_URL, (pageNum + 1) + "",
+				CACHE_NUM + "", TV_TYPE)+ AREA 
+				+ URLEncoder.encode("台湾");
 	}
 
 	public static String getTV_HanjuFirstURL() {
@@ -249,6 +297,22 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL, REBO_HANJU_DIANSHI,
 				(pageNum + 1) + "", CACHE_NUM + "");
 	}
+	
+	//获取韩国电视剧filter first
+	public static String getTV_Hanju_Quan_FirstURL() {
+
+		return StatisticsUtils.getFilterURL(FILTER_URL, 1 + "",
+				(FIRST_NUM - 10) + "", TV_TYPE) + AREA 
+				+ URLEncoder.encode("韩国");
+	}
+	
+	//获取韩国电视剧filter cache
+	public static String getTV_Hanju_Quan_AllCacheURL(int pageNum) {
+
+		return StatisticsUtils.getFilterURL(FILTER_URL, (pageNum + 1) + "",
+				CACHE_NUM + "", TV_TYPE)+ AREA 
+				+ URLEncoder.encode("韩国");
+	}
 
 	public static String getTV_MeijuFirstURL() {
 
@@ -261,6 +325,22 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL, REBO_OUMEI_DIANSHI,
 				(pageNum + 1) + "", CACHE_NUM + "");
 	}
+	
+	//获取美国电视剧filter first
+	public static String getTV_Meiju_Quan_FirstURL() {
+
+		return StatisticsUtils.getFilterURL(FILTER_URL, 1 + "",
+				(FIRST_NUM - 10) + "", TV_TYPE) + AREA 
+				+ URLEncoder.encode("美国");
+	}
+	
+	//获取美国电视剧filter cache
+	public static String getTV_Meiju_Quan_AllCacheURL(int pageNum) {
+
+		return StatisticsUtils.getFilterURL(FILTER_URL, (pageNum + 1) + "",
+				CACHE_NUM + "", TV_TYPE)+ AREA 
+				+ URLEncoder.encode("美国");
+	}
 
 	public static String getTV_RijuFirstURL() {
 
@@ -272,6 +352,22 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 
 		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL, REBO_RIJU_DIANSHI,
 				(pageNum + 1) + "", CACHE_NUM + "");
+	}
+	
+	//获取日本电视剧filter first
+	public static String getTV_Riju_Quan_FirstURL() {
+
+		return StatisticsUtils.getFilterURL(FILTER_URL, 1 + "",
+				(FIRST_NUM - 10) + "", TV_TYPE) + AREA 
+				+ URLEncoder.encode("日本");
+	}
+	
+	//获取日本电视剧filter cache
+	public static String getTV_Riju_Quan_AllCacheURL(int pageNum) {
+
+		return StatisticsUtils.getFilterURL(FILTER_URL, (pageNum + 1) + "",
+				CACHE_NUM + "", TV_TYPE)+ AREA 
+				+ URLEncoder.encode("日本");
 	}
 
 	// Movie
