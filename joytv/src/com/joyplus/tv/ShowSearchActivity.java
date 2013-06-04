@@ -9,31 +9,33 @@ import org.json.JSONObject;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.DialogInterface.OnCancelListener;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.util.SparseArray;
+import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.PopupWindow;
-import android.widget.TextView;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.joyplus.tv.Adapters.SearchAdapter;
 import com.joyplus.tv.Adapters.ZongYiAdapter;
 import com.joyplus.tv.entity.MovieItemData;
+import com.joyplus.tv.ui.KeyBoardView;
 import com.joyplus.tv.ui.MyMovieGridView;
 import com.joyplus.tv.ui.WaitingDialog;
 import com.joyplus.tv.utils.ItemStateUtils;
@@ -74,6 +76,13 @@ public class ShowSearchActivity extends AbstractShowActivity {
 	
 	private ImageView helpForSearch;
 	
+	private PopupWindow keyBoardWindow = null;
+	private Button startSearchBtn;
+	
+	private boolean isLeft = false;
+	
+	private KeyBoardView keyBoardView;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -94,17 +103,52 @@ public class ShowSearchActivity extends AbstractShowActivity {
 	public void onFocusChange(View v, boolean hasFocus) {
 		// TODO Auto-generated method stub
 		
-		if(v.getId() == R.id.et_search) {
+		if(mSparseArray == null || mSparseArray.size() <= 0) {
 			
-			if (hasFocus == true) {
-				((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
-						.showSoftInput(v, InputMethodManager.SHOW_FORCED);
-
-			} else { // ie searchBoxEditText doesn't have focus
-				((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
-						.hideSoftInputFromWindow(v.getWindowToken(), 0);
-
+			return ;
+		}
+		
+		if(v.getId() == R.id.bt_search_click) {
+			
+//			if (hasFocus == true) {
+//				Log.i(TAG, "et_search_onFocusChange--->hasFocus:" + hasFocus);
+//				((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
+//				.hideSoftInputFromWindow(v.getWindowToken(), 0);
+//				KeyBoardView view = new KeyBoardView(ShowSearchActivity.this, searchEt, new KeyBoardView.OnKeyBoardResultListener() {
+//					
+//					@Override
+//					public void onResult(boolean isSearch) {
+//						// TODO Auto-generated method stub
+//						if(keyBoardWindow!=null&&keyBoardWindow.isShowing()){
+//							keyBoardWindow.dismiss();
+//						}
+//					}
+//				});
+//				
+//				keyBoardWindow = new PopupWindow(view, searchEt.getRootView().getWidth(),
+//						searchEt.getRootView().getHeight(), true);
+//				keyBoardWindow.showAtLocation(searchEt.getRootView(), Gravity.BOTTOM, 0, 0);
+//
+//			} 
+//			else { // ie searchBoxEditText doesn't have focus
+//				((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
+//						.hideSoftInputFromWindow(v.getWindowToken(), 0);
+//
+//			}
+			if(!hasFocus) {
+				
+				if(isLeft) {//如果是在搜索button上，并且向左移动，就当成垂直方向移动
+					
+					isCurrentKeyVertical = true;
+				}
+			} else {
+				
+				if(!isLeft) {//如果是从搜索button上，并且是从左边移动到button上，当成垂直方向移动
+					
+					isCurrentKeyVertical = true;
+				}
 			}
+
 		} else {
 			
 			if (hasFocus) {
@@ -158,19 +202,23 @@ public class ShowSearchActivity extends AbstractShowActivity {
 
 //				isGridViewUp = true;
 				isCurrentKeyVertical = true;
+				isLeft = false;
 				break;
 			case KEY_DOWN:
 
 //				isGridViewUp = false;
 				isCurrentKeyVertical = true;
+				isLeft = false;
 				break;
 			case KEY_LEFT:
 
 				isCurrentKeyVertical = false;
+				isLeft = true;
 				break;
 			case KEY_RIGHT:
 
 				isCurrentKeyVertical = false;
+				isLeft = false;
 				break;
 
 			default:
@@ -219,8 +267,26 @@ public class ShowSearchActivity extends AbstractShowActivity {
 	@Override
 	protected void initViewListener() {
 		// TODO Auto-generated method stub
-		searchEt.setOnKeyListener(this);
-		searchEt.setOnFocusChangeListener(this);
+//		searchEt.setOnKeyListener(this);
+		
+		Handler handler = new Handler();
+		handler.postDelayed(new Runnable() {
+			
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				if(keyBoardWindow == null) {
+					
+					keyBoardWindow = new PopupWindow(keyBoardView, searchEt.getRootView().getWidth(),
+							searchEt.getRootView().getHeight(), true);
+				}
+				
+				if(keyBoardWindow != null && !keyBoardWindow.isShowing()){
+					
+					keyBoardWindow.showAtLocation(searchEt.getRootView(), Gravity.BOTTOM, 0, 0);
+				}
+			}
+		}, 300);
 		
 		playGv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -390,7 +456,7 @@ public class ShowSearchActivity extends AbstractShowActivity {
 			}
 		});
 
-		searchEt.setOnClickListener(new View.OnClickListener() {
+		startSearchBtn.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
@@ -419,6 +485,27 @@ public class ShowSearchActivity extends AbstractShowActivity {
 
 			}
 		});
+		
+		searchEt.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				
+				if(keyBoardWindow == null) {
+					
+					keyBoardWindow = new PopupWindow(keyBoardView, searchEt.getRootView().getWidth(),
+							searchEt.getRootView().getHeight(), true);
+				}
+
+				if(keyBoardWindow != null && !keyBoardWindow.isShowing()){
+					
+					keyBoardWindow.showAtLocation(searchEt.getRootView(), Gravity.BOTTOM, 0, 0);
+				}
+				
+			}
+		});
+		startSearchBtn.setOnFocusChangeListener(this);
 	}
 
 	@Override
@@ -721,8 +808,20 @@ public class ShowSearchActivity extends AbstractShowActivity {
 		// TODO Auto-generated method stub
 		
 		searchEt = (EditText) findViewById(R.id.et_search);
+		startSearchBtn = (Button) findViewById(R.id.bt_search_click);
 		playGv = (MyMovieGridView) findViewById(R.id.gv_movie_show);
 		helpForSearch = (ImageView) findViewById(R.id.iv_help_for_search);
+		
+		keyBoardView = new KeyBoardView(ShowSearchActivity.this, searchEt, new KeyBoardView.OnKeyBoardResultListener() {
+			
+			@Override
+			public void onResult(boolean isSearch) {
+				// TODO Auto-generated method stub
+				if(keyBoardWindow!=null&&keyBoardWindow.isShowing()){
+					keyBoardWindow.dismiss();
+				}
+			}
+		});
 
 	}
 	
