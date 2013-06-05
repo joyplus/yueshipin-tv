@@ -77,7 +77,7 @@
                 <LinearLayout
                     android:layout_width="@dimen/layout_zero"
                     android:layout_height="match_parent"
-                    android:layout_weight="5"
+                    android:layout_weight="19"
                     android:clickable="true"
                     android:paddingBottom="@dimen/edit_vertical_margin"
                     android:paddingTop="@dimen/edit_vertical_margin" >
@@ -98,13 +98,16 @@
                 <LinearLayout
                     android:layout_width="@dimen/layout_zero"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center">
+                    android:layout_weight="5"
+                    android:gravity="center"
+                    android:paddingBottom="@dimen/edit_vertical_margin"
+                    android:paddingTop="@dimen/edit_vertical_margin" >
 
                     <Button
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/search_menu_icon" />
+                        android:id="@+id/bt_search_click"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/button_search_selector" />
                 </LinearLayout>
             </LinearLayout>
 

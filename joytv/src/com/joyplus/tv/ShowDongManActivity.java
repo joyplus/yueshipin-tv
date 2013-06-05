@@ -33,6 +33,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.joyplus.tv.Adapters.ZongYiAdapter;
 import com.joyplus.tv.entity.MovieItemData;
+import com.joyplus.tv.ui.KeyBoardView;
 import com.joyplus.tv.ui.MyMovieGridView;
 import com.joyplus.tv.ui.NavigateView;
 import com.joyplus.tv.ui.NavigateView.OnResultListener;
@@ -98,6 +99,13 @@ public class ShowDongManActivity extends AbstractShowActivity {
 	private LinearLayout shoucangTitlleLL;
 	private int qitaNextPoistion = -1;
 	private TextView shoucangTv;
+	
+	private PopupWindow keyBoardWindow = null;
+	private Button startSearchBtn;
+	
+	private boolean isLeft = false;
+	
+	private KeyBoardView keyBoardView;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -172,17 +180,52 @@ public class ShowDongManActivity extends AbstractShowActivity {
 	public void onFocusChange(View v, boolean hasFocus) {
 		// TODO Auto-generated method stub
 		
-		if(v.getId() == R.id.et_search) {
+		if(mSparseArray == null || mSparseArray.size() <= 0) {
 			
-			if (hasFocus == true) {
-				((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
-						.showSoftInput(v, InputMethodManager.SHOW_FORCED);
-
-			} else { // ie searchBoxEditText doesn't have focus
-				((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
-						.hideSoftInputFromWindow(v.getWindowToken(), 0);
-
+			return ;
+		}
+		
+		if(v.getId() == R.id.bt_search_click) {
+			
+//			if (hasFocus == true) {
+//				Log.i(TAG, "et_search_onFocusChange--->hasFocus:" + hasFocus);
+//				((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
+//				.hideSoftInputFromWindow(v.getWindowToken(), 0);
+//				KeyBoardView view = new KeyBoardView(ShowSearchActivity.this, searchEt, new KeyBoardView.OnKeyBoardResultListener() {
+//					
+//					@Override
+//					public void onResult(boolean isSearch) {
+//						// TODO Auto-generated method stub
+//						if(keyBoardWindow!=null&&keyBoardWindow.isShowing()){
+//							keyBoardWindow.dismiss();
+//						}
+//					}
+//				});
+//				
+//				keyBoardWindow = new PopupWindow(view, searchEt.getRootView().getWidth(),
+//						searchEt.getRootView().getHeight(), true);
+//				keyBoardWindow.showAtLocation(searchEt.getRootView(), Gravity.BOTTOM, 0, 0);
+//
+//			} 
+//			else { // ie searchBoxEditText doesn't have focus
+//				((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
+//						.hideSoftInputFromWindow(v.getWindowToken(), 0);
+//
+//			}
+			if(!hasFocus) {
+				
+				if(isLeft) {//如果是在搜索button上，并且向左移动，就当成垂直方向移动
+					
+					isCurrentKeyVertical = true;
+				}
+			} else {
+				
+				if(!isLeft) {//如果是从搜索button上，并且是从左边移动到button上，当成垂直方向移动
+					
+					isCurrentKeyVertical = true;
+				}
 			}
+
 		} else {
 			
 			if (hasFocus) {
@@ -230,28 +273,29 @@ public class ShowDongManActivity extends AbstractShowActivity {
 		int action = event.getAction();
 
 		if (action == KeyEvent.ACTION_DOWN) {
-//			Log.i(TAG, "onKeyDown--->" + keyCode);
 
 			switch (keyCode) {
 			case KEY_UP:
 
 //				isGridViewUp = true;
 				isCurrentKeyVertical = true;
-//				Log.i(TAG, "onKeyDown--->KEY_UP" + keyCode + " "+isGridViewUp);
+				isLeft = false;
 				break;
 			case KEY_DOWN:
 
 //				isGridViewUp = false;
 				isCurrentKeyVertical = true;
-//				Log.i(TAG, "onKeyDown--->KEY_DOWN" + keyCode + " "+isGridViewUp);
+				isLeft = false;
 				break;
 			case KEY_LEFT:
 
 				isCurrentKeyVertical = false;
+				isLeft = true;
 				break;
 			case KEY_RIGHT:
 
 				isCurrentKeyVertical = false;
+				isLeft = false;
 				break;
 
 			default:
@@ -334,7 +378,7 @@ public class ShowDongManActivity extends AbstractShowActivity {
 		zuijinguankanBtn.setOnKeyListener(this);
 		zhuijushoucangBtn.setOnKeyListener(this);
 		mFenLeiBtn.setOnKeyListener(this);
-		searchEt.setOnKeyListener(this);
+//		searchEt.setOnKeyListener(this);
 		
 		playGv.setOnKeyListener(new View.OnKeyListener() {
 			
@@ -400,7 +444,7 @@ public class ShowDongManActivity extends AbstractShowActivity {
 		zuijinguankanBtn.setOnFocusChangeListener(this);
 		zhuijushoucangBtn.setOnFocusChangeListener(this);
 		mFenLeiBtn.setOnFocusChangeListener(this);
-		searchEt.setOnFocusChangeListener(this);
+//		searchEt.setOnFocusChangeListener(this);
 
 		playGv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -634,7 +678,7 @@ public class ShowDongManActivity extends AbstractShowActivity {
 			}
 		});
 
-		searchEt.setOnClickListener(new View.OnClickListener() {
+		startSearchBtn.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
@@ -643,11 +687,11 @@ public class ShowDongManActivity extends AbstractShowActivity {
 				Editable editable = searchEt.getText();
 				String searchStr = editable.toString();
 				// searchEt.setText("");
-				playGv.setNextFocusForwardId(searchEt.getId());//
+				playGv.setNextFocusLeftId(startSearchBtn.getId());//
 
 				ItemStateUtils
 						.viewToNormal(getApplicationContext(), activeView);
-				activeView = searchEt;
+				activeView = startSearchBtn;
 
 				if (searchStr != null && !searchStr.equals("")) {
 					resetGvActive();
@@ -662,6 +706,27 @@ public class ShowDongManActivity extends AbstractShowActivity {
 
 			}
 		});
+		
+		searchEt.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				
+				if(keyBoardWindow == null) {
+					
+					keyBoardWindow = new PopupWindow(keyBoardView, searchEt.getRootView().getWidth(),
+							searchEt.getRootView().getHeight(), true);
+				}
+
+				if(keyBoardWindow != null && !keyBoardWindow.isShowing()){
+					
+					keyBoardWindow.showAtLocation(searchEt.getRootView(), Gravity.BOTTOM, 0, 0);
+				}
+				
+			}
+		});
+		startSearchBtn.setOnFocusChangeListener(this);
 	}
 
 	@Override
@@ -1356,6 +1421,7 @@ public class ShowDongManActivity extends AbstractShowActivity {
 		// TODO Auto-generated method stub
 
 		searchEt = (EditText) findViewById(R.id.et_search);
+		startSearchBtn = (Button) findViewById(R.id.bt_search_click);
 		mFenLeiBtn = (Button) findViewById(R.id.bt_quanbufenlei);
 		playGv = (MyMovieGridView) findViewById(R.id.gv_movie_show);
 
@@ -1373,6 +1439,17 @@ public class ShowDongManActivity extends AbstractShowActivity {
 		
 		shoucangTitlleLL = (LinearLayout) findViewById(R.id.ll_shoucanggengxin);
 		shoucangTv = (TextView) findViewById(R.id.tv_shoucanggengxin_name);
+		
+		keyBoardView = new KeyBoardView(this, searchEt, new KeyBoardView.OnKeyBoardResultListener() {
+			
+			@Override
+			public void onResult(boolean isSearch) {
+				// TODO Auto-generated method stub
+				if(keyBoardWindow!=null&&keyBoardWindow.isShowing()){
+					keyBoardWindow.dismiss();
+				}
+			}
+		});
 
 		playGv.setNextFocusLeftId(R.id.bt_quanbufenlei);
 		playGv.setNextFocusUpId(R.id.gv_movie_show);
