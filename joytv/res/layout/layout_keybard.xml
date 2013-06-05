@@ -6,8 +6,8 @@
     android:layout_height="wrap_content"
     android:layout_alignParentBottom="true"
     android:background="@drawable/bg_keyboard"
-    android:layout_marginLeft="220dp"
-    android:layout_marginRight="220dp"
+    android:layout_marginLeft="235dp"
+    android:layout_marginRight="235dp"
     android:paddingRight="5dp"
     android:paddingTop="5dp"
     android:orientation="vertical" >
