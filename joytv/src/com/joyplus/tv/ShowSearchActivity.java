@@ -465,11 +465,11 @@ public class ShowSearchActivity extends AbstractShowActivity {
 				Editable editable = searchEt.getText();
 				String searchStr = editable.toString();
 				// searchEt.setText("");
-				playGv.setNextFocusForwardId(searchEt.getId());//
+				playGv.setNextFocusForwardId(startSearchBtn.getId());//
 
 				ItemStateUtils
 						.viewToNormal(getApplicationContext(), activeView);
-				activeView = searchEt;
+				activeView = startSearchBtn;
 				
 				helpForSearch.setVisibility(View.GONE);
 
