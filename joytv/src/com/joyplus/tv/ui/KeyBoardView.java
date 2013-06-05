@@ -2,7 +2,6 @@ package com.joyplus.tv.ui;
 
 import android.content.Context;
 import android.text.Editable;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -197,7 +196,6 @@ public class KeyBoardView extends LinearLayout implements android.view.View.OnCl
 	@Override
 	public boolean onKey(View v, int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
-		Log.d("ddddddddddddd", "key code =======" + keyCode);
 		if(event.getAction() == KeyEvent.ACTION_UP){
 			if((keyCode<=KeyEvent.KEYCODE_9&&keyCode>=KeyEvent.KEYCODE_0)||(keyCode<=KeyEvent.KEYCODE_Z&&keyCode>=KeyEvent.KEYCODE_A)){
 				Editable editable = mEditText.getText();
