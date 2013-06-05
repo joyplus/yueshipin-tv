@@ -465,27 +465,7 @@ public class ShowSearchActivity extends AbstractShowActivity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 
-				Editable editable = searchEt.getText();
-				String searchStr = editable.toString();
-				// searchEt.setText("");
-				playGv.setNextFocusForwardId(startSearchBtn.getId());//
-
-				ItemStateUtils
-						.viewToNormal(getApplicationContext(), activeView);
-				activeView = startSearchBtn;
-				
-				helpForSearch.setVisibility(View.GONE);
-
-				if (searchStr != null && !searchStr.equals("")) {
-					resetGvActive();
-					showDialog(DIALOG_WAITING);
-					search = searchStr;
-					StatisticsUtils.clearList(lists[SEARCH]);
-					currentListIndex = SEARCH;
-					String url = StatisticsUtils.getSearch_FirstURL(searchStr);
-					getFilterData(url);
-				}
-
+				searchPlay();
 			}
 		});
 		
@@ -509,6 +489,30 @@ public class ShowSearchActivity extends AbstractShowActivity {
 			}
 		});
 		startSearchBtn.setOnFocusChangeListener(this);
+	}
+	
+	private void searchPlay() {
+		
+		Editable editable = searchEt.getText();
+		String searchStr = editable.toString();
+		// searchEt.setText("");
+		playGv.setNextFocusForwardId(startSearchBtn.getId());//
+
+		ItemStateUtils
+				.viewToNormal(getApplicationContext(), activeView);
+//		activeView = startSearchBtn;
+		
+		helpForSearch.setVisibility(View.GONE);
+
+		if (searchStr != null && !searchStr.equals("")) {
+			resetGvActive();
+			showDialog(DIALOG_WAITING);
+			search = searchStr;
+			StatisticsUtils.clearList(lists[SEARCH]);
+			currentListIndex = SEARCH;
+			String url = StatisticsUtils.getSearch_FirstURL(searchStr);
+			getFilterData(url);
+		}
 	}
 
 	@Override
@@ -824,6 +828,8 @@ public class ShowSearchActivity extends AbstractShowActivity {
 				if(keyBoardWindow!=null&&keyBoardWindow.isShowing()){
 					keyBoardWindow.dismiss();
 				}
+				
+				searchPlay();
 			}
 		});
 
