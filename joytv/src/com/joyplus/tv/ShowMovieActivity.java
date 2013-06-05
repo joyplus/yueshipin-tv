@@ -101,6 +101,7 @@ public class ShowMovieActivity extends AbstractShowActivity {
 	private boolean isLeft = false;
 	
 	private KeyBoardView keyBoardView;
+	private LinearLayout searchLL;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -515,31 +516,13 @@ public class ShowMovieActivity extends AbstractShowActivity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-
-				Editable editable = searchEt.getText();
-				String searchStr = editable.toString();
-				// searchEt.setText("");
-				playGv.setNextFocusLeftId(startSearchBtn.getId());//
-
-				ItemStateUtils
-						.viewToNormal(getApplicationContext(), activeView);
-				activeView = startSearchBtn;
-
-				if (searchStr != null && !searchStr.equals("")) {
-					resetGvActive();
-					showDialog(DIALOG_WAITING);
-					search = searchStr;
-					StatisticsUtils.clearList(lists[SEARCH]);
-					currentListIndex = SEARCH;
-//					String url = StatisticsUtils.getSearch_FirstURL(searchStr);
-					String url = StatisticsUtils.getSearch_Movie_FirstURL(searchStr);
-					getFilterData(url);
-				}
+				
+				searchPlay();
 
 			}
 		});
 		
-		searchEt.setOnClickListener(new View.OnClickListener() {
+		searchLL.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
@@ -559,6 +542,29 @@ public class ShowMovieActivity extends AbstractShowActivity {
 			}
 		});
 		startSearchBtn.setOnFocusChangeListener(this);
+	}
+	
+	private void searchPlay() {
+		
+		Editable editable = searchEt.getText();
+		String searchStr = editable.toString();
+		// searchEt.setText("");
+		playGv.setNextFocusLeftId(startSearchBtn.getId());//
+
+		ItemStateUtils
+				.viewToNormal(getApplicationContext(), activeView);
+		activeView = null;
+
+		if (searchStr != null && !searchStr.equals("")) {
+			resetGvActive();
+			showDialog(DIALOG_WAITING);
+			search = searchStr;
+			StatisticsUtils.clearList(lists[SEARCH]);
+			currentListIndex = SEARCH;
+//			String url = StatisticsUtils.getSearch_FirstURL(searchStr);
+			String url = StatisticsUtils.getSearch_Movie_FirstURL(searchStr);
+			getFilterData(url);
+		}
 	}
 
 	@Override
@@ -1237,6 +1243,7 @@ public class ShowMovieActivity extends AbstractShowActivity {
 
 		searchEt = (EditText) findViewById(R.id.et_search);
 		startSearchBtn = (Button) findViewById(R.id.bt_search_click);
+		searchLL = (LinearLayout) findViewById(R.id.ll_search);
 		mFenLeiBtn = (Button) findViewById(R.id.bt_quanbufenlei);
 		playGv = (MyMovieGridView) findViewById(R.id.gv_movie_show);
 
@@ -1262,6 +1269,11 @@ public class ShowMovieActivity extends AbstractShowActivity {
 				if(keyBoardWindow!=null&&keyBoardWindow.isShowing()){
 					keyBoardWindow.dismiss();
 				}
+				
+				if(isSearch) {
+					
+					searchPlay();
+				}
 			}
 		});
 
@@ -1275,13 +1287,8 @@ public class ShowMovieActivity extends AbstractShowActivity {
 		// TODO Auto-generated method stub
 		Log.i("Yangzhg", "onClick");
 
-		if (activeView == null) {
-
-			activeView = mFenLeiBtn;
-		}
-
 		if (v.getId() == R.id.bt_quanbufenlei
-				&& activeView.getId() == R.id.bt_quanbufenlei) {
+				&& activeView != null && activeView.getId() == R.id.bt_quanbufenlei) {
 
 			filterPopWindowShow();
 		}
@@ -1297,7 +1304,7 @@ public class ShowMovieActivity extends AbstractShowActivity {
 			return;
 		}
 
-		if (activeView.getId() == v.getId()) {
+		if ( activeView != null && activeView.getId() == v.getId()) {
 
 			return;
 		}

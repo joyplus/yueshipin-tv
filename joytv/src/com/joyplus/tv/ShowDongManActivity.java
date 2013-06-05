@@ -7,7 +7,6 @@ import java.util.List;
 import org.json.JSONObject;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
@@ -18,7 +17,6 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -106,6 +104,7 @@ public class ShowDongManActivity extends AbstractShowActivity {
 	private boolean isLeft = false;
 	
 	private KeyBoardView keyBoardView;
+	private LinearLayout searchLL;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -683,31 +682,12 @@ public class ShowDongManActivity extends AbstractShowActivity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-
-				Editable editable = searchEt.getText();
-				String searchStr = editable.toString();
-				// searchEt.setText("");
-				playGv.setNextFocusLeftId(startSearchBtn.getId());//
-
-				ItemStateUtils
-						.viewToNormal(getApplicationContext(), activeView);
-				activeView = startSearchBtn;
-
-				if (searchStr != null && !searchStr.equals("")) {
-					resetGvActive();
-					showDialog(DIALOG_WAITING);
-					search = searchStr;
-					StatisticsUtils.clearList(lists[SEARCH]);
-					currentListIndex = SEARCH;
-//					String url = StatisticsUtils.getSearch_FirstURL(searchStr);
-					String url = StatisticsUtils.getSearch_Dongman_FirstURL(searchStr);
-					getFilterData(url);
-				}
-
+				
+				searchPlay();
 			}
 		});
 		
-		searchEt.setOnClickListener(new View.OnClickListener() {
+		searchLL.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
@@ -727,6 +707,29 @@ public class ShowDongManActivity extends AbstractShowActivity {
 			}
 		});
 		startSearchBtn.setOnFocusChangeListener(this);
+	}
+	
+	private void searchPlay() {
+		
+		Editable editable = searchEt.getText();
+		String searchStr = editable.toString();
+		// searchEt.setText("");
+		playGv.setNextFocusLeftId(startSearchBtn.getId());//
+
+		ItemStateUtils
+				.viewToNormal(getApplicationContext(), activeView);
+		activeView = null;
+
+		if (searchStr != null && !searchStr.equals("")) {
+			resetGvActive();
+			showDialog(DIALOG_WAITING);
+			search = searchStr;
+			StatisticsUtils.clearList(lists[SEARCH]);
+			currentListIndex = SEARCH;
+//			String url = StatisticsUtils.getSearch_FirstURL(searchStr);
+			String url = StatisticsUtils.getSearch_Dongman_FirstURL(searchStr);
+			getFilterData(url);
+		}
 	}
 
 	@Override
@@ -1422,6 +1425,7 @@ public class ShowDongManActivity extends AbstractShowActivity {
 
 		searchEt = (EditText) findViewById(R.id.et_search);
 		startSearchBtn = (Button) findViewById(R.id.bt_search_click);
+		searchLL = (LinearLayout) findViewById(R.id.ll_search);
 		mFenLeiBtn = (Button) findViewById(R.id.bt_quanbufenlei);
 		playGv = (MyMovieGridView) findViewById(R.id.gv_movie_show);
 
@@ -1448,6 +1452,11 @@ public class ShowDongManActivity extends AbstractShowActivity {
 				if(keyBoardWindow!=null&&keyBoardWindow.isShowing()){
 					keyBoardWindow.dismiss();
 				}
+				
+				if(isSearch) {
+					
+					searchPlay();
+				}
 			}
 		});
 
@@ -1461,7 +1470,7 @@ public class ShowDongManActivity extends AbstractShowActivity {
 		// TODO Auto-generated method stub
 
 		if (v.getId() == R.id.bt_quanbufenlei
-				&& activeView.getId() == R.id.bt_quanbufenlei) {
+				&& activeView != null && activeView.getId() == R.id.bt_quanbufenlei) {
 
 			filterPopWindowShow();
 		}
@@ -1477,7 +1486,7 @@ public class ShowDongManActivity extends AbstractShowActivity {
 			return;
 		}
 
-		if (activeView.getId() == v.getId()) {
+		if ( activeView != null && activeView.getId() == v.getId()) {
 
 			return;
 		}
