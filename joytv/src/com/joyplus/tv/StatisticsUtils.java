@@ -1091,15 +1091,17 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 		return translateAnimation;
 	}
 
-	public static String getMacAdd(Context c) {
-		String macAddress = null;
-		WifiManager wifiMgr = (WifiManager) c
-				.getSystemService(Context.WIFI_SERVICE);
-		WifiInfo info = (null == wifiMgr ? null : wifiMgr.getConnectionInfo());
-		if (info != null) {
-			macAddress = info.getMacAddress();
-		}
-		return macAddress;
+	public static String getUserId(Context c) {
+		SharedPreferences sharedata = c.getSharedPreferences("userData", 0);
+		return sharedata.getString("userId", null);
+//		String macAddress = null;
+//		WifiManager wifiMgr = (WifiManager) c
+//				.getSystemService(Context.WIFI_SERVICE);
+//		WifiInfo info = (null == wifiMgr ? null : wifiMgr.getConnectionInfo());
+//		if (info != null) {
+//			macAddress = info.getMacAddress();
+//		}
+//		return macAddress;
 //		return null;
 	}
 
