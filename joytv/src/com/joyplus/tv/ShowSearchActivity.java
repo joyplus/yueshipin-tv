@@ -7,7 +7,6 @@ import java.util.List;
 import org.json.JSONObject;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
@@ -17,10 +16,7 @@ import android.text.Editable;
 import android.util.SparseArray;
 import android.view.Gravity;
 import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnTouchListener;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -828,8 +824,11 @@ public class ShowSearchActivity extends AbstractShowActivity {
 				if(keyBoardWindow!=null&&keyBoardWindow.isShowing()){
 					keyBoardWindow.dismiss();
 				}
+				if(isSearch) {
+					
+					searchPlay();
+				}
 				
-				searchPlay();
 			}
 		});
 
