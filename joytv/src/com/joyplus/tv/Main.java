@@ -30,6 +30,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -884,13 +885,18 @@ public class Main extends Activity implements OnItemSelectedListener,
 					+ (Constant.FAYECHANNEL_TV_BASE + StatisticsUtils
 							.MD5(macAddress)).replace(
 							Constant.FAYECHANNEL_TV_HEAD, "")
-							+"&app_key=" + Constant.APPKEY;
+							+"&app_key=ijoyplus_android_0001bj";
 			// String url = Constant.BASE_URL;
 			Log.d(TAG, url);
 			AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
 			cb.url(url).type(JSONObject.class)
 					.weakHandler(this, "CheckBandResult");
-			cb.SetHeader(app.getHeaders());
+			Map header = new HashMap<String, String>();
+			header.put("app_key", "ijoyplus_android_0001bj");
+			header.put("client", "tv");
+			header.put("device", new Build().MODEL);
+			cb.SetHeader(header);
+//			Log.d(TAG, "app_key-------------------->" + app.getHeaders().get("app_key"));
 			aq.ajax(cb);
 		}
 	}
