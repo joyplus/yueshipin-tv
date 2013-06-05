@@ -523,7 +523,7 @@ public class ShowMovieActivity extends AbstractShowActivity {
 
 				ItemStateUtils
 						.viewToNormal(getApplicationContext(), activeView);
-				activeView = searchEt;
+				activeView = startSearchBtn;
 
 				if (searchStr != null && !searchStr.equals("")) {
 					resetGvActive();

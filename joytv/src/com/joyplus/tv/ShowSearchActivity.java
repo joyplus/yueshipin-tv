@@ -83,6 +83,8 @@ public class ShowSearchActivity extends AbstractShowActivity {
 	
 	private KeyBoardView keyBoardView;
 	
+	private LinearLayout searchLL;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -275,6 +277,7 @@ public class ShowSearchActivity extends AbstractShowActivity {
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
+				searchLL.requestFocus();
 				if(keyBoardWindow == null) {
 					
 					keyBoardWindow = new PopupWindow(keyBoardView, searchEt.getRootView().getWidth(),
@@ -486,7 +489,7 @@ public class ShowSearchActivity extends AbstractShowActivity {
 			}
 		});
 		
-		searchEt.setOnClickListener(new View.OnClickListener() {
+		searchLL.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
@@ -809,6 +812,7 @@ public class ShowSearchActivity extends AbstractShowActivity {
 		
 		searchEt = (EditText) findViewById(R.id.et_search);
 		startSearchBtn = (Button) findViewById(R.id.bt_search_click);
+		searchLL = (LinearLayout) findViewById(R.id.ll_search);
 		playGv = (MyMovieGridView) findViewById(R.id.gv_movie_show);
 		helpForSearch = (ImageView) findViewById(R.id.iv_help_for_search);
 		
