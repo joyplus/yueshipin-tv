@@ -17,8 +17,8 @@ public class ReturnFilterMovieSearch {
 
 		public String prod_id;
 		public String prod_name;
-		public String definition;
 		public String prod_type;
+		public String definition;
 		public String prod_pic_url;
 		public String big_prod_pic_url;
 		public String prod_sumary;

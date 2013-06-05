@@ -40,7 +40,19 @@ import com.joyplus.tv.utils.Log;
 public class ShowSearchActivity extends AbstractShowActivity {
 
 	public static  String TAG = "ShowSearchActivity";
+	
+	private static final int MOVIE_LIST_INDEX = 4;
+	private static final int TV_LIST_INDEX = 5;
+	private static final int DONGMAN_LIST_INDEX = 6;
+	private static final int ZONGYI_LIST_INDEX = 7;
+	
 	private static final int DIALOG_WAITING = 0;
+	
+	private static final int MOVIE_BUTTON_INDEX = 0;
+	private static final int TV_BUTTON_INDEX = 1;
+	private static final int DONGMAN_BUTTON_INDEX = 2;
+	private static final int ZONGYI_BUTTON_INDEX = 3;
+	
 	
 	private AQuery aq;
 	private App app;
@@ -62,9 +74,9 @@ public class ShowSearchActivity extends AbstractShowActivity {
 	
 	private int activeRecordIndex = -1;
 	
-	private List<MovieItemData>[] lists = new List[4];
-	private boolean[] isNextPagePossibles = new boolean[4];
-	private int[] pageNums = new int[4];
+	private List<MovieItemData>[] lists = new List[8];
+	private boolean[] isNextPagePossibles = new boolean[8];
+	private int[] pageNums = new int[8];
 
 	private boolean isCurrentKeyVertical = false;//水平方向移动
 	private boolean isFirstActive = true;//是否界面初始化
@@ -80,6 +92,11 @@ public class ShowSearchActivity extends AbstractShowActivity {
 	private KeyBoardView keyBoardView;
 	
 	private LinearLayout searchLL;
+	
+	private Button play1Button,play2Button,play3Button,play4Button;
+	private Button[] playButtons = new Button[4];
+	
+	private int[] showButtonCount = {0,0,0,0};//分别记录电影，电视剧，动漫，综艺
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -487,6 +504,9 @@ public class ShowSearchActivity extends AbstractShowActivity {
 		startSearchBtn.setOnFocusChangeListener(this);
 	}
 	
+	/**
+	 * 搜索过后，之前数据全部清空，内容重新显示
+	 */
 	private void searchPlay() {
 		
 		Editable editable = searchEt.getText();
@@ -496,18 +516,34 @@ public class ShowSearchActivity extends AbstractShowActivity {
 
 		ItemStateUtils
 				.viewToNormal(getApplicationContext(), activeView);
-//		activeView = startSearchBtn;
+		activeView = null;
 		
 		helpForSearch.setVisibility(View.GONE);
 
 		if (searchStr != null && !searchStr.equals("")) {
 			resetGvActive();
+			isFirstActive = true;
 			showDialog(DIALOG_WAITING);
 			search = searchStr;
-			StatisticsUtils.clearList(lists[SEARCH]);
-			currentListIndex = SEARCH;
-			String url = StatisticsUtils.getSearch_FirstURL(searchStr);
+			clearLists();//清楚之前数据
+			initLists();//重新初始化数据
+			initButtons();//初始化buttons
+//			currentListIndex = SEARCH;
+			String url = StatisticsUtils.getSearch_200URL(searchStr);
 			getFilterData(url);
+		}
+	}
+	
+	private void initButtons() {
+		
+		play1Button.setVisibility(View.INVISIBLE);
+		play2Button.setVisibility(View.INVISIBLE);
+		play3Button.setVisibility(View.INVISIBLE);
+		play4Button.setVisibility(View.INVISIBLE);
+		
+		for(int i=0;i<showButtonCount.length;i++) {
+			
+			showButtonCount[i] = 0;
 		}
 	}
 
@@ -570,17 +606,17 @@ public class ShowSearchActivity extends AbstractShowActivity {
 					getString(R.string.toast_no_play));
 		}
 
-		if (list != null && !list.isEmpty()&&QUANBUFENLEI != currentListIndex) {// 判断其能否向获取更多数据
-
-			if (list.size() == StatisticsUtils.FIRST_NUM) {
-
-				isNextPagePossibles[currentListIndex] = true;
-			} else if (list.size() < StatisticsUtils.FIRST_NUM) {
-
-				isNextPagePossibles[currentListIndex] = false;
-			}
-		}
-		lists[currentListIndex] = list;
+//		if (list != null && !list.isEmpty()&&QUANBUFENLEI != currentListIndex) {// 判断其能否向获取更多数据
+//
+//			if (list.size() == StatisticsUtils.FIRST_NUM) {
+//
+//				isNextPagePossibles[currentListIndex] = true;
+//			} else if (list.size() < StatisticsUtils.FIRST_NUM) {
+//
+//				isNextPagePossibles[currentListIndex] = false;
+//			}
+//		}
+//		lists[currentListIndex] = list;
 
 		playGv.setSelection(0);
 		searchAdapter.notifyDataSetChanged();
@@ -739,7 +775,8 @@ public class ShowSearchActivity extends AbstractShowActivity {
 			break;
 		case SEARCH:
 
-			getMoreFilterData(StatisticsUtils.getSearch_CacheURL(pageNum, search));
+			//因为获取200条数据，不进行下拉
+//			getMoreFilterData(StatisticsUtils.getSearch_CacheURL(pageNum, search));
 			break;
 
 		default:
@@ -779,8 +816,158 @@ public class ShowSearchActivity extends AbstractShowActivity {
 				return;
 			
 			Log.d(TAG, json.toString());
-			notifyAdapter(StatisticsUtils.returnFilterMovieSearch_TVJson(json
-					.toString()));
+			List<MovieItemData> tempList = StatisticsUtils.returnFilterMovieSearch_TVJson(json
+					.toString());
+			
+			if(tempList != null && tempList.size() > 0) {//把第一次获取到的list分配到各个集合中
+				
+				Log.i(TAG, "tempList size--->" + tempList.size());
+				
+				for(MovieItemData movieItemData:tempList) {
+					
+					String type = movieItemData.getMovieProType();
+					
+					if(type != null && !type.equals("")) {
+						
+						if(type.equals(MOVIE_TYPE)) {
+							
+							lists[MOVIE_LIST_INDEX].add(movieItemData);
+						} else if(type.equals(TV_TYPE)) {
+							
+							lists[TV_LIST_INDEX].add(movieItemData);
+						} else if(type.equals(DONGMAN_TYPE)) {
+							
+							lists[DONGMAN_LIST_INDEX].add(movieItemData);
+						} else if(type.equals(ZONGYI_TYPE)) {
+							
+							lists[ZONGYI_LIST_INDEX].add(movieItemData);
+						}
+					}
+				}
+			}
+			
+			
+			if(lists[MOVIE_LIST_INDEX]!= null && lists[MOVIE_LIST_INDEX].size() >0) {
+				
+				Log.i(TAG, "lists[MOVIE_LIST_INDEX].size()--->" + lists[MOVIE_LIST_INDEX].size());
+				showButtonCount[MOVIE_BUTTON_INDEX] = 1;
+			}
+			
+			if(lists[TV_LIST_INDEX]!= null && lists[TV_LIST_INDEX].size() >0) {
+				
+				Log.i(TAG, "lists[TV_LIST_INDEX].size()--->" + lists[TV_LIST_INDEX].size());
+				showButtonCount[TV_BUTTON_INDEX] = 1;
+			}
+			
+			if(lists[DONGMAN_LIST_INDEX]!= null && lists[DONGMAN_LIST_INDEX].size() >0) {
+				
+				Log.i(TAG, "lists[DONGMAN_LIST_INDEX].size()--->" + lists[DONGMAN_LIST_INDEX].size());
+				showButtonCount[DONGMAN_BUTTON_INDEX] = 1;
+			}
+			
+			if(lists[ZONGYI_LIST_INDEX]!= null && lists[ZONGYI_LIST_INDEX].size() >0) {
+				
+				Log.i(TAG, "lists[ZONGYI_LIST_INDEX].size()--->" + lists[ZONGYI_LIST_INDEX].size());
+				showButtonCount[ZONGYI_BUTTON_INDEX] = 1;
+			}
+			
+			int index = 0;
+			
+			for(int i=0;i<showButtonCount.length;i++) {
+				
+				if(showButtonCount[i] == 1) {
+					
+					Button button = playButtons[index];
+					String str = null;
+					int listIndex = -1;
+					
+					if(i == MOVIE_BUTTON_INDEX) {
+						
+						str = getString(R.string.dianying_name) + 
+								"(" + lists[MOVIE_LIST_INDEX].size()+ ")"; 
+						listIndex = MOVIE_LIST_INDEX;
+								
+					} else if(i == TV_BUTTON_INDEX) {
+						
+						str = getString(R.string.tv_play_name) + 
+								"(" + lists[TV_LIST_INDEX].size()+ ")"; 
+						listIndex = TV_LIST_INDEX;
+					} else if(i == DONGMAN_BUTTON_INDEX) {
+						
+						str = getString(R.string.dongman_play_name) + 
+								"(" + lists[DONGMAN_LIST_INDEX].size()+ ")"; 
+						listIndex = DONGMAN_LIST_INDEX;
+					} else if(i == ZONGYI_BUTTON_INDEX) {
+						
+						str = getString(R.string.zongyi_name) + 
+								"(" + lists[ZONGYI_LIST_INDEX].size()+ ")"; 
+						listIndex = ZONGYI_LIST_INDEX;
+					}
+					
+					if(index == 0) {
+						
+						activeView = button;
+						ItemStateUtils.buttonToActiveState(getApplicationContext(), button);
+						playGv.setNextFocusLeftId(button.getId());
+						if(listIndex != -1) {
+							
+							notifyAdapter(lists[listIndex]);
+						}
+						
+					}
+					
+					button.setText(str);
+					button.setVisibility(View.VISIBLE);
+					ItemStateUtils.setItemPadding(button);
+					button.setOnClickListener(new View.OnClickListener() {
+						
+						@Override
+						public void onClick(View v) {
+							// TODO Auto-generated method stub
+							
+							if ( activeView != null && activeView.getId() == v.getId()) {
+
+								return;
+							}
+							
+							String str = ((Button)v).getText().toString();
+							
+							if(str.contains(getString(R.string.dianying_name))) {
+								
+								notifyAdapter(lists[MOVIE_LIST_INDEX]);
+							} else if(str.contains(getString(R.string.tv_play_name))){
+								
+								notifyAdapter(lists[TV_LIST_INDEX]);
+							} else if(str.contains(getString(R.string.dongman_play_name))) {
+								
+								notifyAdapter(lists[DONGMAN_LIST_INDEX]);
+							} else if(str.contains(getString(R.string.zongyi_name))) {
+								
+								notifyAdapter(lists[ZONGYI_LIST_INDEX]);
+							}
+							
+							View tempView = ItemStateUtils.viewToActive(getApplicationContext(), v,
+									activeView);
+
+							if (tempView != null) {
+
+								activeView = tempView;
+							}
+
+							playGv.setNextFocusLeftId(v.getId());
+							activeView = v;
+							
+						}
+					});
+					button.setOnFocusChangeListener(this);
+					
+					index ++;//
+				}
+			}
+			
+//			notifyAdapter(tempList);
+			
+			playGv.requestFocus();
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -831,6 +1018,16 @@ public class ShowSearchActivity extends AbstractShowActivity {
 				
 			}
 		});
+		
+		play1Button = (Button) findViewById(R.id.bt_play_1);
+		play2Button = (Button) findViewById(R.id.bt_play_2);
+		play3Button = (Button) findViewById(R.id.bt_play_3);
+		play4Button = (Button) findViewById(R.id.bt_play_4);
+		
+		playButtons[0] = play1Button;
+		playButtons[1] = play2Button;
+		playButtons[2] = play3Button;
+		playButtons[3] = play4Button;
 
 	}
 	

@@ -72,7 +72,7 @@
                 android:layout_height="@dimen/layout_zero"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:orientation="horizontal" 
+                android:orientation="horizontal"
                 android:paddingBottom="@dimen/edit_vertical_margin"
                 android:paddingTop="@dimen/edit_vertical_margin" >
 
@@ -81,21 +81,21 @@
                     android:layout_width="@dimen/layout_zero"
                     android:layout_height="match_parent"
                     android:layout_weight="19"
+                    android:background="@drawable/search_selector"
                     android:clickable="true"
-                    android:focusable="true"
-                    android:background="@drawable/search_selector">
+                    android:focusable="true" >
 
                     <EditText
                         android:id="@+id/et_search"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_gravity="center_vertical" 
-                        android:background="@android:color/transparent"  
+                        android:layout_gravity="center_vertical"
+                        android:background="@android:color/transparent"
+                        android:focusable="false"
                         android:hint="支持首字母搜索"
                         android:paddingRight="5dp"
                         android:singleLine="true"
-                        android:textSize="15dp"
-                        android:focusable="false" >
+                        android:textSize="15dp" >
                     </EditText>
                 </LinearLayout>
 
@@ -103,7 +103,7 @@
                     android:layout_width="@dimen/layout_zero"
                     android:layout_height="match_parent"
                     android:layout_weight="5"
-                    android:gravity="center">
+                    android:gravity="center" >
 
                     <Button
                         android:id="@+id/bt_search_click"
@@ -118,6 +118,61 @@
                 android:layout_height="@dimen/layout_zero"
                 android:layout_weight="15"
                 android:orientation="vertical" >
+
+                <Button
+                    android:id="@+id/bt_play_1"
+                    style="@style/style_4"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/layout_zero"
+                    android:layout_weight="1"
+                    android:background="@drawable/text_drawable_selector"
+                    android:gravity="right|center_vertical"
+                    android:text="button_1"
+                    android:textColor="@color/text_color_selector" 
+                    android:visibility="invisible"/>
+
+                <Button
+                    android:id="@+id/bt_play_2"
+                    style="@style/style_4"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/layout_zero"
+                    android:layout_weight="1"
+                    android:background="@drawable/text_drawable_selector"
+                    android:gravity="right|center_vertical"
+                    android:text="button_2"
+                    android:textColor="@color/text_color_selector" 
+                    android:visibility="invisible"/>
+
+                <Button
+                    android:id="@+id/bt_play_3"
+                    style="@style/style_4"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/layout_zero"
+                    android:layout_weight="1"
+                    android:background="@drawable/text_drawable_selector"
+                    android:gravity="right|center_vertical"
+                    android:text="button_3"
+                    android:textColor="@color/text_color_selector"
+                    android:visibility="invisible" />
+
+                <Button
+                    android:id="@+id/bt_play_4"
+                    style="@style/style_4"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/layout_zero"
+                    android:layout_weight="1"
+                    android:background="@drawable/text_drawable_selector"
+                    android:gravity="right|center_vertical"
+                    android:text="button_4"
+                    android:textColor="@color/text_color_selector"
+                    android:visibility="invisible" />
+
+                <TextView
+                    style="@style/style_4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/layout_zero"
+                    android:layout_weight="11.5"
+                    android:gravity="right|center_vertical" />
             </LinearLayout>
         </LinearLayout>
 

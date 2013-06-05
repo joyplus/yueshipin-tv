@@ -857,6 +857,15 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 				CACHE_NUM + "", search);
 	}
 	
+	//获取200条数据
+	public static String getSearch_200URL(String search) {
+//		Log.i(TAG, "getSearch_FirstURL-->" + StatisticsUtils.getSearchURL(SEARCH_URL, 1 + "", FIRST_NUM + "",
+//				search));
+
+		return StatisticsUtils.getSearchURL(SEARCH_CAPITAL_URL, 1 + "", 200 + "",
+				search);
+	}
+	
 	//电影搜索 search
 	public static String getSearch_Movie_FirstURL(String search) {
 //		Log.i(TAG, "getSearch_FirstURL-->" + StatisticsUtils.getSearchURL(SEARCH_URL, 1 + "", FIRST_NUM + "",
@@ -1297,6 +1306,8 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 				ReturnFilterMovieSearch.class);
 
 		List<MovieItemData> list = new ArrayList<MovieItemData>();
+		
+//		Log.i(TAG, "returnFilterMovieSearch_TVJson-->" + result.results.length + json.indexOf("战友"));
 
 		for (int i = 0; i < result.results.length; i++) {
 
