@@ -2216,7 +2216,7 @@ public class Main extends Activity implements OnItemSelectedListener,
 	private Bitmap CreateBarCode() {
 		// 根据字符串生成二维码图片并显示在界面上，第二个参数为图片的大小（350*350）
 		Bitmap b = null;
-		String macAddress = StatisticsUtils.getMacAdd(this);
+		String macAddress = StatisticsUtils.getUserId(this);
 		String date = null;
 
 		if (macAddress == null) {
