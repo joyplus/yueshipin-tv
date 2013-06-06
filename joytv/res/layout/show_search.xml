@@ -81,21 +81,23 @@
                     android:layout_width="@dimen/layout_zero"
                     android:layout_height="match_parent"
                     android:layout_weight="19"
-                    android:background="@drawable/search_selector"
                     android:clickable="true"
-                    android:focusable="true" >
+                    android:focusable="true"
+                    android:background="@drawable/search_selector"
+                    android:paddingLeft="@dimen/search_padding_left">
 
                     <EditText
                         android:id="@+id/et_search"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_gravity="center_vertical"
-                        android:background="@android:color/transparent"
-                        android:focusable="false"
-                        android:hint="支持首字母搜索"
+                        android:layout_gravity="center_vertical" 
+                        android:background="@android:color/transparent"  
+                        android:hint="@string/search_hint"
                         android:paddingRight="5dp"
                         android:singleLine="true"
-                        android:textSize="15dp" >
+                        android:textSize="@dimen/search_text_size"
+                        android:focusable="false"
+                        android:textColorHighlight="#404040" >
                     </EditText>
                 </LinearLayout>
 

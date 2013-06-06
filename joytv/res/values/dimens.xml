@@ -18,6 +18,9 @@
     <dimen name="menu_up_text_size">20dp</dimen>
     <dimen name="xiangqing_ding_padding_right">0dp</dimen>
     
+    <dimen name="search_padding_left">6dp</dimen>
+    <dimen name="search_text_size">16dp</dimen>
+    
     <!--Yangzhg  -->
     
     

@@ -706,6 +706,22 @@ public class ShowDongManActivity extends AbstractShowActivity {
 				
 			}
 		});
+		
+		searchLL.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+			
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				// TODO Auto-generated method stub
+				
+				if(hasFocus) {
+					
+					searchEt.setTextColor(getResources().getColor(R.color.black));
+				} else {
+					
+					searchEt.setTextColor(getResources().getColor(R.color.white));
+				}
+			}
+		});
 		startSearchBtn.setOnFocusChangeListener(this);
 	}
 	
