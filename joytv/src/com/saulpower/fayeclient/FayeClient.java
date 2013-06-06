@@ -274,8 +274,12 @@ public class FayeClient implements Listener {
             JSONObject json = new JSONObject();
             json.put(KEY_CHANNEL, DISCONNECT_CHANNEL);
             json.put(KEY_CLIENT_ID, mFayeClientId);
-
-            mClient.send(json.toString());
+            if(mClient!=null){
+            	mClient.send(json.toString());
+            }else{
+            	mFayeListener.disconnectedFromServer();
+            }
+            
 
         } catch (JSONException ex) {
             Log.e(TAG, "Handshake Failed", ex);
@@ -440,13 +444,15 @@ public class FayeClient implements Listener {
 
         Log.w(TAG, "resetWebSocketConnection " + error.getMessage(), error);
 
-        if (!mReconnecting) {
-
-            mReconnecting = true;
-            mConnected = false;
-
-            resetWebSocketConnection();
-        }
+        mConnected = false;
+        mFayeListener.disconnectedFromServer();
+//        if (!mReconnecting) {
+//
+//            mReconnecting = true;
+//            mConnected = false;
+//
+//            resetWebSocketConnection();
+//        }
     }
 
     /**
