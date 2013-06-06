@@ -44,12 +44,9 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.webkit.URLUtil;
-import android.widget.ImageButton;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.androidquery.AQuery;
@@ -58,20 +55,19 @@ import com.androidquery.callback.AjaxStatus;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.joyplus.tv.Service.Return.ReturnProgramView.DOWN_URLS;
-import com.joyplus.tv.database.TvDatabaseHelper;
-import com.joyplus.tv.entity.HotItemInfo;
-import com.joyplus.tv.entity.YueDanInfo;
 import com.joyplus.tv.App;
 import com.joyplus.tv.Constant;
 import com.joyplus.tv.R;
 import com.joyplus.tv.StatisticsUtils;
 import com.joyplus.tv.Adapters.CurrentPlayData;
 import com.joyplus.tv.Service.Return.ReturnProgramView;
+import com.joyplus.tv.Service.Return.ReturnProgramView.DOWN_URLS;
+import com.joyplus.tv.database.TvDatabaseHelper;
+import com.joyplus.tv.entity.HotItemInfo;
 import com.joyplus.tv.utils.BangDanKey;
 import com.joyplus.tv.utils.DataBaseItems.UserHistory;
-import com.joyplus.tv.utils.Log;
 import com.joyplus.tv.utils.DataBaseItems.UserShouCang;
+import com.joyplus.tv.utils.Log;
 import com.umeng.analytics.MobclickAgent;
 
 /**
