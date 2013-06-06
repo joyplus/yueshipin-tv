@@ -82,7 +82,7 @@
     <string name="xiangqing_zongyi_jianjie">简介:&#160;</string>
     <string name="xiangqing_yingping_no">没有影评</string>
     <string name="movie_fenzhong">分钟</string>
-    <string name="toast_no_play">此分类中找不到影片哦, 试试其他分类吧</string>
+    <string name="toast_no_play">哎呦，找不到影片</string>
     <string name="toast_no_network">请检查网络设置</string>
     <string name="toast_no_retry">重试</string>
     <string name="toast_no_exit">退出悦视频</string>

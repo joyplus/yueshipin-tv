@@ -812,8 +812,12 @@ public class ShowSearchActivity extends AbstractShowActivity {
 		
 		try {
 			
-			if(json == null || json.equals("")) 
+			if(json == null || json.equals("")) {
+				
+				resetData();
 				return;
+			}
+				
 			
 			Log.d(TAG, json.toString());
 			List<MovieItemData> tempList = StatisticsUtils.returnFilterMovieSearch_TVJson(json
@@ -844,6 +848,10 @@ public class ShowSearchActivity extends AbstractShowActivity {
 						}
 					}
 				}
+			} else {//如果没有获取任何数据
+				
+				resetData();
+				return;
 			}
 			
 			
@@ -978,6 +986,20 @@ public class ShowSearchActivity extends AbstractShowActivity {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	//没有搜索到任何结果
+	private void resetData() {
+		
+		app.MyToast(getApplicationContext(),
+				getString(R.string.toast_no_play));
+		
+		resetGvActive();
+		removeDialog(DIALOG_WAITING);
+		clearLists();//清楚之前数据
+		initLists();//重新初始化数据
+		initButtons();//初始化buttons
+		
+		helpForSearch.setVisibility(View.VISIBLE);
 	}
 	
 	@Override
