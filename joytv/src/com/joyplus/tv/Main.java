@@ -195,7 +195,7 @@ public class Main extends Activity implements OnItemSelectedListener,
 	private TranslateAnimation rightTranslateAnimationStep2;
 
 	// private FayeClient mClient;
-	private String macAddress;
+//	private String macAddress;
 
 	private static final int DIALOG_NETWORK_ERROR = DIALOG_WAITING + 1;
 	private static final int DIALOG_NETWORK_SLOW = DIALOG_NETWORK_ERROR + 1;
@@ -833,30 +833,30 @@ public class Main extends Activity implements OnItemSelectedListener,
 
 	public boolean checkLogin() {
 		String usr_id = null;
-		usr_id = app.GetServiceData("userId");
+		usr_id = app.getUserData("userId");
 		if (usr_id == null) {
-			macAddress = null;
+			String macAddress = null;
 			WifiManager wifiMgr = (WifiManager) getSystemService(Context.WIFI_SERVICE);
 			WifiInfo info = (null == wifiMgr ? null : wifiMgr
 					.getConnectionInfo());
 			if (info != null) {
-				macAddress = info.getMacAddress();
-				// 2. 通过调用 service account/generateUIID把UUID传递到服务器
-				String url = Constant.BASE_URL + "account/generateUIID";
-
-				Map<String, Object> params = new HashMap<String, Object>();
-				params.put("uiid", macAddress);
-				params.put("device_type", "Android");
-
-				AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
-				cb.header("User-Agent",
-						"Mozilla/5.0 (Windows NT 6.1; WOW64; rv:6.0.2) Gecko/20100101 Firefox/6.0.2");
-				cb.header("app_key", Constant.APPKEY);
-
-				cb.params(params).url(url).type(JSONObject.class)
-						.weakHandler(this, "CallServiceResult");
-				aq.ajax(cb);
+//				macAddress = info.getMacAddress();
 			}
+			// 2. 通过调用 service account/generateUIID把UUID传递到服务器
+			String url = Constant.BASE_URL + "account/generateUIID";
+
+			Map<String, Object> params = new HashMap<String, Object>();
+			params.put("uiid", macAddress);
+			params.put("device_type", "Android");
+
+			AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
+			cb.header("User-Agent",
+					"Mozilla/5.0 (Windows NT 6.1; WOW64; rv:6.0.2) Gecko/20100101 Firefox/6.0.2");
+			cb.header("app_key", Constant.APPKEY);
+
+			cb.params(params).url(url).type(JSONObject.class)
+					.weakHandler(this, "CallServiceResult");
+			aq.ajax(cb);
 		} else {
 			UserInfo currentUserInfo = new UserInfo();
 			currentUserInfo.setUserId(app.getUserData("userId"));
@@ -883,7 +883,7 @@ public class Main extends Activity implements OnItemSelectedListener,
 					+ app.getUserData("phoneID")
 					+ "&tv_channel="
 					+ (Constant.FAYECHANNEL_TV_BASE + StatisticsUtils
-							.MD5(macAddress)).replace(
+							.MD5(StatisticsUtils.getUserId(this))).replace(
 							Constant.FAYECHANNEL_TV_HEAD, "")
 							+"&app_key=ijoyplus_android_0001bj";
 			// String url = Constant.BASE_URL;
