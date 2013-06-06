@@ -743,15 +743,19 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 					getString(R.string.toast_no_play));
 		}
 
-		if (list != null && !list.isEmpty() && currentListIndex != QUANBUFENLEI) {// 判断其能否向获取更多数据
+		if (list != null && !list.isEmpty() && QUANBUFENLEI != currentListIndex) {// 判断其能否向获取更多数据
 
-			if (list.size() == StatisticsUtils.FIRST_NUM) {
+			if(SEARCH == currentListIndex || QUAN_FILTER == currentListIndex) {//只有搜索和连续两次点击出现筛界面下拉才在这判断
+				
+				if (list.size() == StatisticsUtils.FIRST_NUM) {
 
-				isNextPagePossibles[currentListIndex] = true;
-			} else if (list.size() < StatisticsUtils.FIRST_NUM) {
+					isNextPagePossibles[currentListIndex] = true;
+				} else if (list.size() < StatisticsUtils.FIRST_NUM) {
 
-				isNextPagePossibles[currentListIndex] = false;
+					isNextPagePossibles[currentListIndex] = false;
+				}
 			}
+
 		}
 		lists[currentListIndex] = list;
 
@@ -759,10 +763,11 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 		searchAdapter.notifyDataSetChanged();
 		removeDialog(DIALOG_WAITING);
 		
-//		if(isFirstActive) {
-//			
-//			playGv.requestFocus();
-//		}
+		if(currentListIndex == SEARCH) {//搜索高亮在gridview第一个元素
+			
+			isFirstActive = true;
+			playGv.requestFocus();
+		}
 
 	}
 

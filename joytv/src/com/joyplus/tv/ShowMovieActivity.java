@@ -671,10 +671,12 @@ public class ShowMovieActivity extends AbstractShowActivity {
 		searchAdapter.notifyDataSetChanged();
 		
 		removeDialog(DIALOG_WAITING);
-//		if(isFirstActive) {
-//			
-//			playGv.requestFocus();
-//		}
+		
+		if(currentListIndex == SEARCH) {//搜索高亮在gridview第一个元素
+			
+			isFirstActive = true;
+			playGv.requestFocus();
+		}
 
 	}
 
