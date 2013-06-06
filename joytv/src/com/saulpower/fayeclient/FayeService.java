@@ -48,9 +48,9 @@ public class FayeService extends Service implements FayeListener{
 		// TODO Auto-generated method stub
 		super.onCreate();
 		serverUrl = Constant.FAYESERVERURL;
-		String macAdd = StatisticsUtils.getMacAdd(this);
-		if(macAdd !=null){
-			channel = Constant.FAYECHANNEL_TV_BASE + StatisticsUtils.MD5(macAdd);
+		String userid = StatisticsUtils.getUserId(this);
+		if(userid !=null){
+			channel = Constant.FAYECHANNEL_TV_BASE + StatisticsUtils.MD5(userid);
 		}else{
 			channel = null;
 		}

@@ -33,6 +33,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.joyplus.tv.Adapters.ZongYiAdapter;
 import com.joyplus.tv.entity.MovieItemData;
+import com.joyplus.tv.ui.KeyBoardView;
 import com.joyplus.tv.ui.MyMovieGridView;
 import com.joyplus.tv.ui.NavigateView;
 import com.joyplus.tv.ui.NavigateView.OnResultListener;
@@ -50,6 +51,13 @@ public class ShowTVActivity extends AbstractShowActivity {
 	private static final int HANJU = 7;
 	private static final int MEIJU = 8;
 	private static final int RIJU = 9;
+	
+	private static final int DALUJU_QUAN = 10;
+	private static final int GANGJU_QUAN = 11;
+	private static final int TAIJU_QUAN = 12;
+	private static final int HANJU_QUAN = 13;
+	private static final int MEIJU_QUAN = 14;
+	private static final int RIJU_QUAN = 15;
 
 	private static final int DIALOG_WAITING = 0;
 
@@ -76,9 +84,9 @@ public class ShowTVActivity extends AbstractShowActivity {
 	private LinearLayout dalujuLL, ganjuLL, taijuLL, hanjuLL, meijuLL, rijuLL;
 
 	private Button zuijinguankanBtn, zhuijushoucangBtn, mFenLeiBtn;
-	private List<MovieItemData>[] lists = new List[10];
-	private boolean[] isNextPagePossibles = new boolean[10];
-	private int[] pageNums = new int[10];
+	private List<MovieItemData>[] lists = new List[16];
+	private boolean[] isNextPagePossibles = new boolean[16];
+	private int[] pageNums = new int[16];
 	
 	private boolean isCurrentKeyVertical = false;//水平方向移动
 	private boolean isFirstActive = true;//是否界面初始化
@@ -90,6 +98,14 @@ public class ShowTVActivity extends AbstractShowActivity {
 	private LinearLayout shoucangTitlleLL;
 	private int qitaNextPoistion = -1;
 	private TextView shoucangTv;
+	
+	private PopupWindow keyBoardWindow = null;
+	private Button startSearchBtn;
+	
+	private boolean isLeft = false;
+	
+	private KeyBoardView keyBoardView;
+	private LinearLayout searchLL;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -154,17 +170,52 @@ public class ShowTVActivity extends AbstractShowActivity {
 	public void onFocusChange(View v, boolean hasFocus) {
 		// TODO Auto-generated method stub
 		
-		if(v.getId() == R.id.et_search) {
+		if(mSparseArray == null || mSparseArray.size() <= 0) {
 			
-			if (hasFocus == true) {
-				((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
-						.showSoftInput(v, InputMethodManager.SHOW_FORCED);
-
-			} else { // ie searchBoxEditText doesn't have focus
-				((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
-						.hideSoftInputFromWindow(v.getWindowToken(), 0);
-
+			return ;
+		}
+		
+		if(v.getId() == R.id.bt_search_click) {
+			
+//			if (hasFocus == true) {
+//				Log.i(TAG, "et_search_onFocusChange--->hasFocus:" + hasFocus);
+//				((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
+//				.hideSoftInputFromWindow(v.getWindowToken(), 0);
+//				KeyBoardView view = new KeyBoardView(ShowSearchActivity.this, searchEt, new KeyBoardView.OnKeyBoardResultListener() {
+//					
+//					@Override
+//					public void onResult(boolean isSearch) {
+//						// TODO Auto-generated method stub
+//						if(keyBoardWindow!=null&&keyBoardWindow.isShowing()){
+//							keyBoardWindow.dismiss();
+//						}
+//					}
+//				});
+//				
+//				keyBoardWindow = new PopupWindow(view, searchEt.getRootView().getWidth(),
+//						searchEt.getRootView().getHeight(), true);
+//				keyBoardWindow.showAtLocation(searchEt.getRootView(), Gravity.BOTTOM, 0, 0);
+//
+//			} 
+//			else { // ie searchBoxEditText doesn't have focus
+//				((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
+//						.hideSoftInputFromWindow(v.getWindowToken(), 0);
+//
+//			}
+			if(!hasFocus) {
+				
+				if(isLeft) {//如果是在搜索button上，并且向左移动，就当成垂直方向移动
+					
+					isCurrentKeyVertical = true;
+				}
+			} else {
+				
+				if(!isLeft) {//如果是从搜索button上，并且是从左边移动到button上，当成垂直方向移动
+					
+					isCurrentKeyVertical = true;
+				}
 			}
+
 		} else {
 			
 			if (hasFocus) {
@@ -218,19 +269,23 @@ public class ShowTVActivity extends AbstractShowActivity {
 
 //				isGridViewUp = true;
 				isCurrentKeyVertical = true;
+				isLeft = false;
 				break;
 			case KEY_DOWN:
 
 //				isGridViewUp = false;
 				isCurrentKeyVertical = true;
+				isLeft = false;
 				break;
 			case KEY_LEFT:
 
 				isCurrentKeyVertical = false;
+				isLeft = true;
 				break;
 			case KEY_RIGHT:
 
 				isCurrentKeyVertical = false;
+				isLeft = false;
 				break;
 
 			default:
@@ -296,7 +351,7 @@ public class ShowTVActivity extends AbstractShowActivity {
 		hanjuLL.setOnKeyListener(this);
 		meijuLL.setOnKeyListener(this);
 		rijuLL.setOnKeyListener(this);
-		searchEt.setOnKeyListener(this);
+//		searchEt.setOnKeyListener(this);
 		
 		playGv.setOnKeyListener(new View.OnKeyListener() {
 			
@@ -362,7 +417,7 @@ public class ShowTVActivity extends AbstractShowActivity {
 		hanjuLL.setOnFocusChangeListener(this);
 		meijuLL.setOnFocusChangeListener(this);
 		rijuLL.setOnFocusChangeListener(this);
-		searchEt.setOnFocusChangeListener(this);
+//		searchEt.setOnFocusChangeListener(this);
 
 		zuijinguankanBtn.setOnFocusChangeListener(this);
 		zhuijushoucangBtn.setOnFocusChangeListener(this);
@@ -600,33 +655,77 @@ public class ShowTVActivity extends AbstractShowActivity {
 			}
 		});
 
-		searchEt.setOnClickListener(new View.OnClickListener() {
+		startSearchBtn.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-
-				Editable editable = searchEt.getText();
-				String searchStr = editable.toString();
-				// searchEt.setText("");
-				playGv.setNextFocusForwardId(searchEt.getId());//
-
-				ItemStateUtils
-						.viewToNormal(getApplicationContext(), activeView);
-				activeView = searchEt;
-
-				if (searchStr != null && !searchStr.equals("")) {
-					resetGvActive();
-					showDialog(DIALOG_WAITING);
-					search = searchStr;
-					StatisticsUtils.clearList(lists[SEARCH]);
-					currentListIndex = SEARCH;
-					String url = StatisticsUtils.getSearch_FirstURL(searchStr);
-					getFilterData(url);
-				}
+				
+				searchPlay();
 
 			}
 		});
+		
+		searchLL.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				
+				if(keyBoardWindow == null) {
+					
+					keyBoardWindow = new PopupWindow(keyBoardView, searchEt.getRootView().getWidth(),
+							searchEt.getRootView().getHeight(), true);
+				}
+
+				if(keyBoardWindow != null && !keyBoardWindow.isShowing()){
+					
+					keyBoardWindow.showAtLocation(searchEt.getRootView(), Gravity.BOTTOM, 0, 0);
+				}
+				
+			}
+		});
+		
+		searchLL.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+			
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				// TODO Auto-generated method stub
+				
+				if(hasFocus) {
+					
+					searchEt.setTextColor(getResources().getColor(R.color.black));
+				} else {
+					
+					searchEt.setTextColor(getResources().getColor(R.color.white));
+				}
+			}
+		});
+		
+		startSearchBtn.setOnFocusChangeListener(this);
+	}
+	
+	private void searchPlay() {
+		
+		Editable editable = searchEt.getText();
+		String searchStr = editable.toString();
+		// searchEt.setText("");
+		playGv.setNextFocusLeftId(startSearchBtn.getId());//
+
+		ItemStateUtils
+				.viewToNormal(getApplicationContext(), activeView);
+		activeView = null;
+
+		if (searchStr != null && !searchStr.equals("")) {
+			resetGvActive();
+			showDialog(DIALOG_WAITING);
+			search = searchStr;
+			StatisticsUtils.clearList(lists[SEARCH]);
+			currentListIndex = SEARCH;
+//			String url = StatisticsUtils.getSearch_FirstURL(searchStr);
+			String url = StatisticsUtils.getSearch_TV_FirstURL(searchStr);
+			getFilterData(url);
+		}
 	}
 
 	@Override
@@ -690,13 +789,17 @@ public class ShowTVActivity extends AbstractShowActivity {
 
 		if (list != null && !list.isEmpty() && QUANBUFENLEI != currentListIndex) {// 判断其能否向获取更多数据
 
-			if (list.size() == StatisticsUtils.FIRST_NUM) {
+			if(SEARCH == currentListIndex || QUAN_FILTER == currentListIndex) {//只有搜索和连续两次点击出现筛界面下拉才在这判断
+				
+				if (list.size() == StatisticsUtils.FIRST_NUM) {
 
-				isNextPagePossibles[currentListIndex] = true;
-			} else if (list.size() < StatisticsUtils.FIRST_NUM) {
+					isNextPagePossibles[currentListIndex] = true;
+				} else if (list.size() < StatisticsUtils.FIRST_NUM) {
 
-				isNextPagePossibles[currentListIndex] = false;
+					isNextPagePossibles[currentListIndex] = false;
+				}
 			}
+
 		}
 		lists[currentListIndex] = list;
 
@@ -704,10 +807,12 @@ public class ShowTVActivity extends AbstractShowActivity {
 		searchAdapter.notifyDataSetChanged();
 		
 		removeDialog(DIALOG_WAITING);
-//		if(isFirstActive) {
-//			
-//			playGv.requestFocus();
-//		}
+		
+		if(currentListIndex == SEARCH) {//搜索高亮在gridview第一个元素
+			
+			isFirstActive = true;
+			playGv.requestFocus();
+		}
 
 	}
 
@@ -954,26 +1059,33 @@ public class ShowTVActivity extends AbstractShowActivity {
 					pageNum, filterSource));
 			break;
 		case SEARCH:
-			getMoreFilterData(StatisticsUtils.getSearch_CacheURL(pageNum,
-					search) + "&type=" + TV_TYPE);
+//			getMoreFilterData(StatisticsUtils.getSearch_CacheURL(pageNum,
+//					search) + "&type=" + TV_TYPE);
+			getMoreFilterData(StatisticsUtils.getSearch_TV_CacheURL(pageNum, search));
 			break;
-		case DALUJU:
-			getMoreBangDanData(StatisticsUtils.getTV_DalujuCacheURL(pageNum));
+		case DALUJU_QUAN:
+//			getMoreBangDanData(StatisticsUtils.getTV_DalujuCacheURL(pageNum));
+			getMoreFilterData(StatisticsUtils.getTV_Daluju_Quan_AllCacheURL(pageNum));
 			break;
-		case GANGJU:
-			getMoreBangDanData(StatisticsUtils.getTV_GangjuCacheURL(pageNum));
+		case GANGJU_QUAN:
+//			getMoreBangDanData(StatisticsUtils.getTV_GangjuCacheURL(pageNum));
+			getMoreFilterData(StatisticsUtils.getTV_Gangju_Quan_AllCacheURL(pageNum));
 			break;
-		case TAIJU:
-			getMoreBangDanData(StatisticsUtils.getTV_TaijuCacheURL(pageNum));
+		case TAIJU_QUAN:
+//			getMoreBangDanData(StatisticsUtils.getTV_TaijuCacheURL(pageNum));
+			getMoreFilterData(StatisticsUtils.getTV_Taiju_Quan_AllCacheURL(pageNum));
 			break;
-		case HANJU:
-			getMoreBangDanData(StatisticsUtils.getTV_HanjuCacheURL(pageNum));
+		case HANJU_QUAN:
+//			getMoreBangDanData(StatisticsUtils.getTV_HanjuCacheURL(pageNum));
+			getMoreFilterData(StatisticsUtils.getTV_Hanju_Quan_AllCacheURL(pageNum));
 			break;
-		case MEIJU:
-			getMoreBangDanData(StatisticsUtils.getTV_MeijuCacheURL(pageNum));
+		case MEIJU_QUAN:
+//			getMoreBangDanData(StatisticsUtils.getTV_MeijuCacheURL(pageNum));
+			getMoreFilterData(StatisticsUtils.getTV_Meiju_Quan_AllCacheURL(pageNum));
 			break;
-		case RIJU:
-			getMoreBangDanData(StatisticsUtils.getTV_RijuCacheURL(pageNum));
+		case RIJU_QUAN:
+//			getMoreBangDanData(StatisticsUtils.getTV_RijuCacheURL(pageNum));
+			getMoreFilterData(StatisticsUtils.getTV_Riju_Quan_AllCacheURL(pageNum));
 			break;
 
 		default:
@@ -1091,7 +1203,10 @@ public class ShowTVActivity extends AbstractShowActivity {
 			
 			Log.d(TAG, json.toString());
 
-			notifyAdapter(StatisticsUtils
+//			notifyAdapter(StatisticsUtils
+//					.returnTVBangDanList_YueDanListJson(json.toString()));
+			
+			getUnQuanBuFirstSrviceData(StatisticsUtils
 					.returnTVBangDanList_YueDanListJson(json.toString()));
 
 		} catch (JsonParseException e) {
@@ -1103,6 +1218,47 @@ public class ShowTVActivity extends AbstractShowActivity {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+	}
+	
+	protected void getUnQuanBuFirstSrviceData(List<MovieItemData> list) {
+		
+		lists[currentListIndex] = list;
+		
+		String url = null;
+		
+		switch (currentListIndex) {
+		case DALUJU:
+			url = StatisticsUtils.getTV_Daluju_Quan_FirstURL();
+			currentListIndex = DALUJU_QUAN;
+			break;
+		case GANGJU:
+			url = StatisticsUtils.getTV_Gangju_Quan_FirstURL();
+			currentListIndex = GANGJU_QUAN;
+			break;
+		case TAIJU:
+			url = StatisticsUtils.getTV_Taiju_Quan_FirstURL();
+			currentListIndex = TAIJU_QUAN;
+			break;
+		case HANJU:
+			url = StatisticsUtils.getTV_Hanju_Quan_FirstURL();
+			currentListIndex = HANJU_QUAN;
+			break;
+		case MEIJU:
+			url = StatisticsUtils.getTV_Meiju_Quan_FirstURL();
+			currentListIndex = MEIJU_QUAN;
+			break;
+		case RIJU:
+			url = StatisticsUtils.getTV_Riju_Quan_FirstURL();
+			currentListIndex = RIJU_QUAN;
+			break;
+		default:
+			break;
+		}
+		
+		if(url != null) {
+			
+			getFilterData(url);
 		}
 	}
 	
@@ -1124,9 +1280,55 @@ public class ShowTVActivity extends AbstractShowActivity {
 				return;
 			
 			Log.d(TAG, json.toString());
-
-			notifyAdapter(StatisticsUtils.returnFilterMovieSearch_TVJson(json
-					.toString()));
+			
+			List<MovieItemData> tempList = StatisticsUtils.returnFilterMovieSearch_TVJson(json
+					.toString());
+			
+			if(currentListIndex == QUAN_FILTER || 
+					currentListIndex == SEARCH) {
+				
+				notifyAdapter(tempList);
+			} else {
+				
+				List<MovieItemData> tempList2 = new ArrayList<MovieItemData>();
+				
+				boolean isCache = false;
+				if(tempList.size() == StatisticsUtils.CACHE_NUM ) {
+					
+					isCache = true;
+				}
+				
+				switch (currentListIndex) {
+				case DALUJU_QUAN:
+					tempList2 = StatisticsUtils.getLists4TwoList(lists[DALUJU],tempList );
+					isNextPagePossibles[DALUJU_QUAN] = isCache;
+					break;
+				case GANGJU_QUAN:
+					tempList2 = StatisticsUtils.getLists4TwoList(lists[GANGJU],tempList );
+					isNextPagePossibles[GANGJU_QUAN] = isCache;
+					break;
+				case TAIJU_QUAN:
+					tempList2 = StatisticsUtils.getLists4TwoList(lists[TAIJU],tempList );
+					isNextPagePossibles[TAIJU_QUAN] = isCache;
+					break;
+				case HANJU_QUAN:
+					tempList2 = StatisticsUtils.getLists4TwoList(lists[HANJU],tempList );
+					isNextPagePossibles[HANJU_QUAN] = isCache;
+					break;
+				case MEIJU_QUAN:
+					tempList2 = StatisticsUtils.getLists4TwoList(lists[MEIJU],tempList );
+					isNextPagePossibles[MEIJU_QUAN] = isCache;
+					break;
+				case RIJU_QUAN:
+					tempList2 = StatisticsUtils.getLists4TwoList(lists[RIJU],tempList );
+					isNextPagePossibles[RIJU_QUAN] = isCache;
+					break;
+				default:
+					break;
+				}
+				
+				notifyAdapter(tempList2);
+			}
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -1205,6 +1407,8 @@ public class ShowTVActivity extends AbstractShowActivity {
 		// TODO Auto-generated method stub
 
 		searchEt = (EditText) findViewById(R.id.et_search);
+		startSearchBtn = (Button) findViewById(R.id.bt_search_click);
+		searchLL = (LinearLayout) findViewById(R.id.ll_search);
 		mFenLeiBtn = (Button) findViewById(R.id.bt_quanbufenlei);
 		playGv = (MyMovieGridView) findViewById(R.id.gv_movie_show);
 
@@ -1222,6 +1426,22 @@ public class ShowTVActivity extends AbstractShowActivity {
 
 		shoucangTitlleLL = (LinearLayout) findViewById(R.id.ll_shoucanggengxin);
 		shoucangTv = (TextView) findViewById(R.id.tv_shoucanggengxin_name);
+		
+		keyBoardView = new KeyBoardView(this, searchEt, new KeyBoardView.OnKeyBoardResultListener() {
+			
+			@Override
+			public void onResult(boolean isSearch) {
+				// TODO Auto-generated method stub
+				if(keyBoardWindow!=null&&keyBoardWindow.isShowing()){
+					keyBoardWindow.dismiss();
+				}
+				
+				if(isSearch) {
+					
+					searchPlay();
+				}
+			}
+		});
 
 		playGv.setNextFocusLeftId(R.id.bt_quanbufenlei);
 		playGv.setNextFocusUpId(R.id.gv_movie_show);
@@ -1233,13 +1453,8 @@ public class ShowTVActivity extends AbstractShowActivity {
 		// TODO Auto-generated method stub
 		Log.i("Yangzhg", "onClick");
 
-		if (activeView == null) {
-
-			activeView = mFenLeiBtn;
-		}
-
 		if (v.getId() == R.id.bt_quanbufenlei
-				&& activeView.getId() == R.id.bt_quanbufenlei) {
+				&& activeView != null && activeView.getId() == R.id.bt_quanbufenlei) {
 
 			filterPopWindowShow();
 		}
@@ -1255,7 +1470,7 @@ public class ShowTVActivity extends AbstractShowActivity {
 			return;
 		}
 
-		if (activeView.getId() == v.getId()) {
+		if ( activeView != null && activeView.getId() == v.getId()) {
 
 			return;
 		}
@@ -1269,7 +1484,8 @@ public class ShowTVActivity extends AbstractShowActivity {
 			if (lists[currentListIndex] != null
 					&& !lists[currentListIndex].isEmpty()) {
 
-				notifyAdapter(lists[currentListIndex]);
+				currentListIndex = DALUJU_QUAN;
+				notifyAdapter(lists[DALUJU_QUAN]);
 			} else {
 				showDialog(DIALOG_WAITING);
 				getUnQuanbuData(url1);
@@ -1283,7 +1499,8 @@ public class ShowTVActivity extends AbstractShowActivity {
 			if (lists[currentListIndex] != null
 					&& !lists[currentListIndex].isEmpty()) {
 
-				notifyAdapter(lists[currentListIndex]);
+				currentListIndex = GANGJU_QUAN;
+				notifyAdapter(lists[GANGJU_QUAN]);
 			} else {
 				showDialog(DIALOG_WAITING);
 				getUnQuanbuData(url2);
@@ -1297,7 +1514,8 @@ public class ShowTVActivity extends AbstractShowActivity {
 			if (lists[currentListIndex] != null
 					&& !lists[currentListIndex].isEmpty()) {
 
-				notifyAdapter(lists[currentListIndex]);
+				currentListIndex = TAIJU_QUAN;
+				notifyAdapter(lists[TAIJU_QUAN]);
 			} else {
 				showDialog(DIALOG_WAITING);
 				getUnQuanbuData(url3);
@@ -1311,7 +1529,8 @@ public class ShowTVActivity extends AbstractShowActivity {
 			if (lists[currentListIndex] != null
 					&& !lists[currentListIndex].isEmpty()) {
 
-				notifyAdapter(lists[currentListIndex]);
+				currentListIndex = HANJU_QUAN;
+				notifyAdapter(lists[HANJU_QUAN]);
 			} else {
 				showDialog(DIALOG_WAITING);
 				getUnQuanbuData(url4);
@@ -1325,7 +1544,8 @@ public class ShowTVActivity extends AbstractShowActivity {
 			if (lists[currentListIndex] != null
 					&& !lists[currentListIndex].isEmpty()) {
 
-				notifyAdapter(lists[currentListIndex]);
+				currentListIndex = MEIJU_QUAN;
+				notifyAdapter(lists[MEIJU_QUAN]);
 			} else {
 				showDialog(DIALOG_WAITING);
 				getUnQuanbuData(url5);
@@ -1339,7 +1559,8 @@ public class ShowTVActivity extends AbstractShowActivity {
 			if (lists[currentListIndex] != null
 					&& !lists[currentListIndex].isEmpty()) {
 
-				notifyAdapter(lists[currentListIndex]);
+				currentListIndex = RIJU_QUAN;
+				notifyAdapter(lists[RIJU_QUAN]);
 			} else {
 				showDialog(DIALOG_WAITING);
 				getUnQuanbuData(url6);

@@ -807,6 +807,11 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 				Log.e(TAG, "tv date error---->date == null");
 				return;
 			}
+			
+			if(date.show == null) {
+				
+				return;
+			}
 //			if("".equals(date.tv.cur_episode)||"0".equals(date.tv.cur_episode)
 //					||date.tv.cur_episode.equals(date.tv.max_episode)){
 //				isOver = true;

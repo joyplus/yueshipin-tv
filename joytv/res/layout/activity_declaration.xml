@@ -27,7 +27,7 @@
 		        android:paddingLeft="15dp"
 			    android:layout_height="wrap_content"
 			    android:gravity="center_vertical"
-			    android:textSize="30sp"
+			    android:textSize="30dp"
 			    android:layout_gravity="bottom"
 			    android:text="免责声明"
 			    android:textColor="@color/common_title_selected"
@@ -49,7 +49,7 @@
 	                    <TextView android:layout_width="fill_parent"
 	                    android:layout_height="wrap_content"
 	                    android:textColor="@color/hot_content_notice"
-	                    android:textSize="18sp"
+	                    android:textSize="18dp"
 	                    android:lineSpacingExtra="3dp"
 	                    android:text="@string/setting_declaration"/>
 	                </ScrollView>

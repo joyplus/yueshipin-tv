@@ -34,6 +34,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.PixelFormat;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -43,12 +44,9 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.webkit.URLUtil;
-import android.widget.ImageButton;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.androidquery.AQuery;
@@ -57,20 +55,19 @@ import com.androidquery.callback.AjaxStatus;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.joyplus.tv.Service.Return.ReturnProgramView.DOWN_URLS;
-import com.joyplus.tv.database.TvDatabaseHelper;
-import com.joyplus.tv.entity.HotItemInfo;
-import com.joyplus.tv.entity.YueDanInfo;
 import com.joyplus.tv.App;
 import com.joyplus.tv.Constant;
 import com.joyplus.tv.R;
 import com.joyplus.tv.StatisticsUtils;
 import com.joyplus.tv.Adapters.CurrentPlayData;
 import com.joyplus.tv.Service.Return.ReturnProgramView;
+import com.joyplus.tv.Service.Return.ReturnProgramView.DOWN_URLS;
+import com.joyplus.tv.database.TvDatabaseHelper;
+import com.joyplus.tv.entity.HotItemInfo;
 import com.joyplus.tv.utils.BangDanKey;
 import com.joyplus.tv.utils.DataBaseItems.UserHistory;
-import com.joyplus.tv.utils.Log;
 import com.joyplus.tv.utils.DataBaseItems.UserShouCang;
+import com.joyplus.tv.utils.Log;
 import com.umeng.analytics.MobclickAgent;
 
 /**
@@ -109,6 +106,8 @@ public class VideoPlayerActivity extends Activity {
 		app = (App) getApplication();
 		aq = new AQuery(this);
 
+		getWindow().setFormat(PixelFormat.RGBA_8888);
+		
 		setContentView(R.layout.video_player);
 		View rootView = findViewById(R.id.root);
 
@@ -607,7 +606,13 @@ public class VideoPlayerActivity extends Activity {
 
 	public void OnClickFav(View v) {
 		Log.i(TAG, "OnClickFav---->");
-		mPlayer.exitReturnMode();
+//		mPlayer.exitReturnMode();
+		
+		if (mPlayer.isPause()) {//收藏或者取消收藏后
+			mPlayer.exitReturnMode();
+			mPlayer.playTVVideo();
+		}
+		
 		if (!mCurrentPlayData.prod_favority) {
 			String url = Constant.BASE_URL + "program/favority";
 

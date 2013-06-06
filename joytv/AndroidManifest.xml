@@ -88,7 +88,7 @@
             android:name="ShowMovieActivity"
             android:label="@string/app_name"
             android:theme="@android:style/Theme.Black.NoTitleBar"
-            android:windowSoftInputMode="adjustPan" >
+            android:windowSoftInputMode="stateAlwaysHidden" >
 
             <!--
                  <intent-filter>
@@ -102,7 +102,7 @@
             android:name="ShowDongManActivity"
             android:label="@string/app_name"
             android:theme="@android:style/Theme.Black.NoTitleBar"
-            android:windowSoftInputMode="adjustPan" >
+            android:windowSoftInputMode="stateAlwaysHidden" >
 
             <!--
                  <intent-filter>
@@ -116,7 +116,7 @@
             android:name="ShowSearchActivity"
             android:label="@string/app_name"
             android:theme="@android:style/Theme.Black.NoTitleBar"
-            android:windowSoftInputMode="adjustPan" >
+            android:windowSoftInputMode="stateAlwaysHidden" >
 
             <!--
                  <intent-filter>
@@ -130,7 +130,7 @@
             android:name="ShowTVActivity"
             android:label="@string/app_name"
             android:theme="@android:style/Theme.Black.NoTitleBar"
-            android:windowSoftInputMode="adjustPan" >
+            android:windowSoftInputMode="stateAlwaysHidden" >
 
             <!--
                  <intent-filter>
@@ -143,8 +143,7 @@
         <activity
             android:name="ShowYueDanActivity"
             android:label="@string/app_name"
-            android:theme="@android:style/Theme.Black.NoTitleBar"
-            android:windowSoftInputMode="adjustPan" >
+            android:theme="@android:style/Theme.Black.NoTitleBar">
 
             <!--
                  <intent-filter>
@@ -157,8 +156,7 @@
         <activity
             android:name="ShowYueDanListActivity"
             android:label="@string/app_name"
-            android:theme="@android:style/Theme.Black.NoTitleBar"
-            android:windowSoftInputMode="adjustPan" >
+            android:theme="@android:style/Theme.Black.NoTitleBar" >
 
             <!--
                  <intent-filter>
@@ -172,7 +170,7 @@
             android:name="ShowZongYiActivity"
             android:label="@string/app_name"
             android:theme="@android:style/Theme.Black.NoTitleBar"
-            android:windowSoftInputMode="adjustPan" >
+            android:windowSoftInputMode="stateAlwaysHidden" >
 
             <!--
                  <intent-filter>
@@ -185,8 +183,7 @@
         <activity
             android:name="ShowXiangqingTv"
             android:label="@string/app_name"
-            android:theme="@android:style/Theme.Black.NoTitleBar"
-            android:windowSoftInputMode="adjustPan" >
+            android:theme="@android:style/Theme.Black.NoTitleBar" >
 
             <!--
                  <intent-filter>
@@ -199,8 +196,7 @@
         <activity
             android:name="ShowXiangqingMovie"
             android:label="@string/app_name"
-            android:theme="@android:style/Theme.Black.NoTitleBar"
-            android:windowSoftInputMode="adjustPan" >
+            android:theme="@android:style/Theme.Black.NoTitleBar" >
 
             <!--
             <intent-filter>
@@ -214,8 +210,7 @@
         <activity
             android:name="ShowXiangqingZongYi"
             android:label="@string/app_name"
-            android:theme="@android:style/Theme.Black.NoTitleBar"
-            android:windowSoftInputMode="adjustPan" >
+            android:theme="@android:style/Theme.Black.NoTitleBar" >
 
             <!--
             <intent-filter>
@@ -229,8 +224,7 @@
         <activity
             android:name="ShowXiangqingDongman"
             android:label="@string/app_name"
-            android:theme="@android:style/Theme.Black.NoTitleBar"
-            android:windowSoftInputMode="adjustPan" >
+            android:theme="@android:style/Theme.Black.NoTitleBar" >
 
             <!--
             <intent-filter>
@@ -244,8 +238,7 @@
         <activity
             android:name="SettingActivity"
             android:label="@string/app_name"
-            android:theme="@android:style/Theme.Black.NoTitleBar"
-            android:windowSoftInputMode="adjustPan" >
+            android:theme="@android:style/Theme.Black.NoTitleBar" >
 
             
             <!-- <intent-filter>

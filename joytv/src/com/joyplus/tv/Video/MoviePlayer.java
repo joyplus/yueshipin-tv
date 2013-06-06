@@ -160,6 +160,9 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 	private String PROD_SOURCE = null;
 
 	private View mLayoutBottomTime2;// x 几倍显示组件
+	
+	private int beforeVolume = -1;//静音切换的时候，能够记录前一次的声音和静音
+	private boolean isSlient = false;//默认不是静音
 
 	// private final Runnable mPlayingChecker = new Runnable() {
 	// public void run() {
@@ -680,7 +683,17 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 			OnVolumeDown();
 			return true;
 		case KeyEvent.KEYCODE_VOLUME_MUTE:
-			mController.showVolume(0);
+			if(!isSlient) {
+				
+				beforeVolume = mVolume;
+				mController.showVolume(0);
+				isSlient = true;
+			} else {
+				
+				mController.showVolume(beforeVolume);
+				isSlient = false;
+			}
+			
 			return true;
 		case KeyEvent.KEYCODE_HEADSETHOOK:
 		case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:

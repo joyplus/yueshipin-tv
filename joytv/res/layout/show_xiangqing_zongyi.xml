@@ -65,7 +65,7 @@
                             android:layout_gravity="left|center_vertical"
                             android:textColor="@color/text_bg_foucs"
                             android:singleLine="true"
-                            android:textSize="25sp" />
+                            android:textSize="25dp" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -93,7 +93,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/xiangqing_zongyi_zhuchi"
                         android:textColor="@color/hot_content_notice"
-                        android:textSize="20sp" />
+                        android:textSize="20dp" />
 
                     <TextView
                         android:id="@+id/text_directors"
@@ -101,7 +101,7 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/hot_content_content"
                         android:singleLine="true"
-                        android:textSize="20sp" />
+                        android:textSize="20dp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -115,7 +115,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/xiangqing_zongyi_shoubo"
                         android:textColor="@color/hot_content_notice"
-                        android:textSize="20sp" />
+                        android:textSize="20dp" />
 
                     <TextView
                         android:id="@+id/text_starts"
@@ -123,7 +123,7 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/hot_content_content"
                         android:singleLine="true"
-                        android:textSize="20sp" />
+                        android:textSize="20dp" />
                 </LinearLayout>
                 <TextView
                     android:id="@+id/textView6"
@@ -132,12 +132,12 @@
                     android:layout_height="wrap_content"
                     android:text="@string/xiangqing_zongyi_jianjie"
                     android:textColor="@color/hot_content_notice"
-                    android:textSize="20sp" />
+                    android:textSize="20dp" />
 
                 <TextView android:layout_width="fill_parent"
 			        android:layout_height="fill_parent"
 			        android:layout_marginTop="10dp"
-			        android:textSize="20sp"
+			        android:textSize="20dp"
 			        android:maxLines="4"
 			        android:ellipsize="end"
 			       	android:lineSpacingExtra="5dip"
@@ -176,7 +176,7 @@
                         android:gravity="right|center_vertical"
                         android:text="8888"
                         android:textColor="@color/ding_selector"
-                        android:textSize="17sp" 
+                        android:textSize="17dp" 
                         android:paddingRight="8dp"
                         android:paddingLeft="8dp"/>
                 </LinearLayout>
@@ -201,7 +201,7 @@
                         android:gravity="right|center_vertical"
                         android:text="8888"
                         android:textColor="@color/ding_selector"
-                        android:textSize="17sp"
+                        android:textSize="17dp"
                         android:paddingRight="8dp"
                         android:paddingLeft="8dp" />
                 </LinearLayout>
@@ -241,7 +241,7 @@
                             android:gravity="left|center_vertical"
                             android:text="@string/xiangqing_bofang"
                             android:textColor="@color/text_foucs"
-                            android:textSize="17sp"
+                            android:textSize="17dp"
                             android:paddingLeft="3dp" />
 
                         <Button
@@ -256,7 +256,7 @@
                             android:paddingRight="4dp"
                             android:text="@string/gaoqing_chaogaoqing"
                             android:textColor="@color/text_foucs"
-                            android:textSize="17sp" />
+                            android:textSize="17dp" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -277,7 +277,7 @@
                         android:gravity="center"
                         android:visibility="invisible"
                         android:text="@string/xiangqing_xiazai"
-                        android:textSize="17sp" />
+                        android:textSize="17dp" />
 
                     <Button
                         android:layout_width="wrap_content"
@@ -313,7 +313,7 @@
                         android:gravity="center"
                         android:text="@string/xiangqing_yingping"
                         android:textColor="@color/text_foucs"
-                        android:textSize="17sp" 
+                        android:textSize="17dp" 
                         android:visibility="invisible"/>
                 </LinearLayout>
             </LinearLayout>
