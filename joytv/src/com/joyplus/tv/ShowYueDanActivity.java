@@ -53,7 +53,7 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 	private AQuery aq;
 	private App app;
 
-	private EditText searchEt;
+//	private EditText searchEt;
 	private MyMovieGridView playGv;
 	private LinearLayout topLinearLayout;
 	private View activeView;
@@ -270,7 +270,7 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 		zhuijushoucangBtn.setOnKeyListener(this);
 		dianyingyuedanBtn.setOnKeyListener(this);
 		dianshijuyuedanBtn.setOnKeyListener(this);
-		searchEt.setOnKeyListener(this);
+//		searchEt.setOnKeyListener(this);
 
 		zuijinguankanBtn.setOnClickListener(this);
 		zhuijushoucangBtn.setOnClickListener(this);
@@ -281,7 +281,7 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 		zhuijushoucangBtn.setOnFocusChangeListener(this);
 		dianyingyuedanBtn.setOnFocusChangeListener(this);
 		dianshijuyuedanBtn.setOnFocusChangeListener(this);
-		searchEt.setOnFocusChangeListener(this);
+//		searchEt.setOnFocusChangeListener(this);
 
 		playGv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -470,33 +470,33 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 			}
 		});
 
-		searchEt.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-
-				Editable editable = searchEt.getText();
-				String searchStr = editable.toString();
-				// searchEt.setText("");
-				playGv.setNextFocusForwardId(searchEt.getId());//
-
-				ItemStateUtils
-						.viewToNormal(getApplicationContext(), activeView);
-				activeView = searchEt;
-
-				if (searchStr != null && !searchStr.equals("")) {
-					resetGvActive();
-					showDialog(DIALOG_WAITING);
-					search = searchStr;
-					StatisticsUtils.clearList(lists[SEARCH]);
-					currentListIndex = SEARCH;
-					String url = StatisticsUtils.getSearch_FirstURL(searchStr);
-					getFilterData(url);
-				}
-
-			}
-		});
+//		searchEt.setOnClickListener(new View.OnClickListener() {
+//
+//			@Override
+//			public void onClick(View v) {
+//				// TODO Auto-generated method stub
+//
+//				Editable editable = searchEt.getText();
+//				String searchStr = editable.toString();
+//				// searchEt.setText("");
+//				playGv.setNextFocusForwardId(searchEt.getId());//
+//
+//				ItemStateUtils
+//						.viewToNormal(getApplicationContext(), activeView);
+//				activeView = searchEt;
+//
+//				if (searchStr != null && !searchStr.equals("")) {
+//					resetGvActive();
+//					showDialog(DIALOG_WAITING);
+//					search = searchStr;
+//					StatisticsUtils.clearList(lists[SEARCH]);
+//					currentListIndex = SEARCH;
+//					String url = StatisticsUtils.getSearch_FirstURL(searchStr);
+//					getFilterData(url);
+//				}
+//
+//			}
+//		});
 	}
 
 	@Override
@@ -899,7 +899,7 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 	protected void initView() {
 		// TODO Auto-generated method stub
 
-		searchEt = (EditText) findViewById(R.id.et_search);
+//		searchEt = (EditText) findViewById(R.id.et_search);
 		dianyingyuedanBtn = (Button) findViewById(R.id.bt_dianyingyuedan);
 		dianshijuyuedanBtn = (Button) findViewById(R.id.bt_dianshijuyuedan);
 		playGv = (MyMovieGridView) findViewById(R.id.gv_movie_show);

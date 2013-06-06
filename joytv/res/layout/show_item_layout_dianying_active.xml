@@ -55,7 +55,7 @@
                 android:layout_height="wrap_content"
                 android:text="更新至第13集"
                 android:textColor="@color/time_color"
-                android:textSize="16sp" />
+                android:textSize="16dp" />
         </LinearLayout>
 
         <LinearLayout
@@ -73,7 +73,7 @@
                 android:layout_weight="0.8"
                 android:gravity="center_vertical|left"
                 android:textColor="@color/daoyan_name_color"
-                android:textSize="20sp" />
+                android:textSize="20dp" />
 
             <TextView
                 android:id="@+id/tv_item_active_layout_other_info"
@@ -82,7 +82,7 @@
                 android:layout_weight="1"
                 android:gravity="left|center_vertical"
                 android:textColor="@color/daoyan_names_name_color"
-                android:textSize="16sp" />
+                android:textSize="16dp" />
         </LinearLayout>
     </LinearLayout>
 
@@ -99,7 +99,7 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
             android:textColor="@color/daoyan_name_color"
-            android:textSize="16sp" />
+            android:textSize="16dp" />
     </RelativeLayout>
 
 </FrameLayout>

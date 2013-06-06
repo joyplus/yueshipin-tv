@@ -211,6 +211,22 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL, REBO_QINZI_DONGMAN,
 				(pageNum + 1) + "", CACHE_NUM + "");
 	}
+	
+	//获取内地电视剧filter first
+	public static String getTV_Daluju_Quan_FirstURL() {
+
+		return StatisticsUtils.getFilterURL(FILTER_URL, 1 + "",
+				(FIRST_NUM - 10) + "", TV_TYPE) + AREA 
+				+ URLEncoder.encode("内地");
+	}
+	
+	//获取内地电视剧filter cache
+	public static String getTV_Daluju_Quan_AllCacheURL(int pageNum) {
+
+		return StatisticsUtils.getFilterURL(FILTER_URL, (pageNum + 1) + "",
+				CACHE_NUM + "", TV_TYPE)+ AREA 
+				+ URLEncoder.encode("内地");
+	}
 
 	// 港剧
 	public static String getTV_GangjuFirstURL() {
@@ -225,6 +241,22 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL, REBO_GANGJU_DIANSHI,
 				(pageNum + 1) + "", CACHE_NUM + "");
 	}
+	
+	//获取香港电视剧filter first
+	public static String getTV_Gangju_Quan_FirstURL() {
+
+		return StatisticsUtils.getFilterURL(FILTER_URL, 1 + "",
+				(FIRST_NUM - 10) + "", TV_TYPE) + AREA 
+				+ URLEncoder.encode("香港");
+	}
+	
+	//获取香港电视剧filter cache
+	public static String getTV_Gangju_Quan_AllCacheURL(int pageNum) {
+
+		return StatisticsUtils.getFilterURL(FILTER_URL, (pageNum + 1) + "",
+				CACHE_NUM + "", TV_TYPE)+ AREA 
+				+ URLEncoder.encode("香港");
+	}
 
 	public static String getTV_TaijuFirstURL() {
 
@@ -236,6 +268,22 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 
 		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL, REBO_TAIJU_DIANSHI,
 				(pageNum + 1) + "", CACHE_NUM + "");
+	}
+	
+	//获取台湾电视剧filter first
+	public static String getTV_Taiju_Quan_FirstURL() {
+
+		return StatisticsUtils.getFilterURL(FILTER_URL, 1 + "",
+				(FIRST_NUM - 10) + "", TV_TYPE) + AREA 
+				+ URLEncoder.encode("台湾");
+	}
+	
+	//获取台湾电视剧filter cache
+	public static String getTV_Taiju_Quan_AllCacheURL(int pageNum) {
+
+		return StatisticsUtils.getFilterURL(FILTER_URL, (pageNum + 1) + "",
+				CACHE_NUM + "", TV_TYPE)+ AREA 
+				+ URLEncoder.encode("台湾");
 	}
 
 	public static String getTV_HanjuFirstURL() {
@@ -249,6 +297,22 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL, REBO_HANJU_DIANSHI,
 				(pageNum + 1) + "", CACHE_NUM + "");
 	}
+	
+	//获取韩国电视剧filter first
+	public static String getTV_Hanju_Quan_FirstURL() {
+
+		return StatisticsUtils.getFilterURL(FILTER_URL, 1 + "",
+				(FIRST_NUM - 10) + "", TV_TYPE) + AREA 
+				+ URLEncoder.encode("韩国");
+	}
+	
+	//获取韩国电视剧filter cache
+	public static String getTV_Hanju_Quan_AllCacheURL(int pageNum) {
+
+		return StatisticsUtils.getFilterURL(FILTER_URL, (pageNum + 1) + "",
+				CACHE_NUM + "", TV_TYPE)+ AREA 
+				+ URLEncoder.encode("韩国");
+	}
 
 	public static String getTV_MeijuFirstURL() {
 
@@ -261,6 +325,22 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL, REBO_OUMEI_DIANSHI,
 				(pageNum + 1) + "", CACHE_NUM + "");
 	}
+	
+	//获取美国电视剧filter first
+	public static String getTV_Meiju_Quan_FirstURL() {
+
+		return StatisticsUtils.getFilterURL(FILTER_URL, 1 + "",
+				(FIRST_NUM - 10) + "", TV_TYPE) + AREA 
+				+ URLEncoder.encode("美国");
+	}
+	
+	//获取美国电视剧filter cache
+	public static String getTV_Meiju_Quan_AllCacheURL(int pageNum) {
+
+		return StatisticsUtils.getFilterURL(FILTER_URL, (pageNum + 1) + "",
+				CACHE_NUM + "", TV_TYPE)+ AREA 
+				+ URLEncoder.encode("美国");
+	}
 
 	public static String getTV_RijuFirstURL() {
 
@@ -272,6 +352,22 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 
 		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL, REBO_RIJU_DIANSHI,
 				(pageNum + 1) + "", CACHE_NUM + "");
+	}
+	
+	//获取日本电视剧filter first
+	public static String getTV_Riju_Quan_FirstURL() {
+
+		return StatisticsUtils.getFilterURL(FILTER_URL, 1 + "",
+				(FIRST_NUM - 10) + "", TV_TYPE) + AREA 
+				+ URLEncoder.encode("日本");
+	}
+	
+	//获取日本电视剧filter cache
+	public static String getTV_Riju_Quan_AllCacheURL(int pageNum) {
+
+		return StatisticsUtils.getFilterURL(FILTER_URL, (pageNum + 1) + "",
+				CACHE_NUM + "", TV_TYPE)+ AREA 
+				+ URLEncoder.encode("日本");
 	}
 
 	// Movie
@@ -305,6 +401,22 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL, REBO_DONGZUO_MOVIE,
 				(pageNum + 1) + "", CACHE_NUM + "");
 	}
+	
+	//获取动作电影filter first
+	public static String getMovie_Dongzuo_Quan_FirstURL() {
+
+		return StatisticsUtils.getFilterURL(FILTER_URL, 1 + "",
+				(FIRST_NUM - 10) + "", MOVIE_TYPE) + SUB_TYPE 
+				+ URLEncoder.encode("动作");
+	}
+	
+	//获取动作电影filter cache
+	public static String getMovie_Dongzuo_Quan_AllCacheURL(int pageNum) {
+
+		return StatisticsUtils.getFilterURL(FILTER_URL, (pageNum + 1) + "",
+				CACHE_NUM + "", MOVIE_TYPE)+ SUB_TYPE 
+				+ URLEncoder.encode("动作");
+	}
 
 	public static String getMovie_KehuanFirstURL() {
 
@@ -316,6 +428,22 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 
 		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL, REBO_KEHUAN_MOVIE,
 				(pageNum + 1) + "", CACHE_NUM + "");
+	}
+	
+	//获取科幻电影filter first
+	public static String gettMovie_Kehuan_Quan_FirstURL() {
+
+		return StatisticsUtils.getFilterURL(FILTER_URL, 1 + "",
+				(FIRST_NUM - 10) + "", MOVIE_TYPE) + SUB_TYPE 
+				+ URLEncoder.encode("科幻");
+	}
+	
+	//获取科幻电影filter cache
+	public static String gettMovie_Kehuan_Quan_AllCacheURL(int pageNum) {
+
+		return StatisticsUtils.getFilterURL(FILTER_URL, (pageNum + 1) + "",
+				CACHE_NUM + "", MOVIE_TYPE)+ SUB_TYPE 
+				+ URLEncoder.encode("科幻");
 	}
 
 	public static String getMovie_LunliFirstURL() {
@@ -329,6 +457,22 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL, REBO_LUNLI_MOVIE,
 				(pageNum + 1) + "", CACHE_NUM + "");
 	}
+	
+	//获取伦理电影filter first
+	public static String gettMovie_Lunli_Quan_FirstURL() {
+
+		return StatisticsUtils.getFilterURL(FILTER_URL, 1 + "",
+				(FIRST_NUM - 10) + "", MOVIE_TYPE) + SUB_TYPE 
+				+ URLEncoder.encode("伦理");
+	}
+	
+	//获取伦理电影filter cache
+	public static String gettMovie_Lunli_Quan_AllCacheURL(int pageNum) {
+
+		return StatisticsUtils.getFilterURL(FILTER_URL, (pageNum + 1) + "",
+				CACHE_NUM + "", MOVIE_TYPE)+ SUB_TYPE 
+				+ URLEncoder.encode("伦理");
+	}
 
 	public static String getMovie_XijuFirstURL() {
 
@@ -340,6 +484,22 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 
 		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL, REBO_XIJU_MOVIE,
 				(pageNum + 1) + "", CACHE_NUM + "");
+	}
+	
+	//获取喜剧电影filter first
+	public static String gettMovie_Xiju_Quan_FirstURL() {
+
+		return StatisticsUtils.getFilterURL(FILTER_URL, 1 + "",
+				(FIRST_NUM - 10) + "", MOVIE_TYPE) + SUB_TYPE 
+				+ URLEncoder.encode("喜剧");
+	}
+	
+	//获取喜剧电影filter cache
+	public static String gettMovie_Xiju_Quan_AllCacheURL(int pageNum) {
+
+		return StatisticsUtils.getFilterURL(FILTER_URL, (pageNum + 1) + "",
+				CACHE_NUM + "", MOVIE_TYPE)+ SUB_TYPE 
+				+ URLEncoder.encode("喜剧");
 	}
 
 	public static String getMovie_AiqingFirstURL() {
@@ -353,6 +513,22 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL, REBO_AIQING_MOVIE,
 				(pageNum + 1) + "", CACHE_NUM + "");
 	}
+	
+	//获取爱情电影filter first
+	public static String gettMovie_Aiqing_Quan_FirstURL() {
+
+		return StatisticsUtils.getFilterURL(FILTER_URL, 1 + "",
+				(FIRST_NUM - 10) + "", MOVIE_TYPE) + SUB_TYPE 
+				+ URLEncoder.encode("爱情");
+	}
+	
+	//获取爱情电影filter cache
+	public static String gettMovie_Aiqing_Quan_AllCacheURL(int pageNum) {
+
+		return StatisticsUtils.getFilterURL(FILTER_URL, (pageNum + 1) + "",
+				CACHE_NUM + "", MOVIE_TYPE)+ SUB_TYPE 
+				+ URLEncoder.encode("爱情");
+	}
 
 	public static String getMovie_XuanyiFirstURL() {
 
@@ -364,6 +540,22 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 
 		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL, REBO_XUANYI_MOVIE,
 				(pageNum + 1) + "", CACHE_NUM + "");
+	}
+	
+	//获取悬疑电影filter first
+	public static String gettMovie_Xuanyi_Quan_FirstURL() {
+
+		return StatisticsUtils.getFilterURL(FILTER_URL, 1 + "",
+				(FIRST_NUM - 10) + "", MOVIE_TYPE) + SUB_TYPE 
+				+ URLEncoder.encode("悬疑");
+	}
+	
+	//获取悬疑电影filter cache
+	public static String gettMovie_Xuanyi_Quan_AllCacheURL(int pageNum) {
+
+		return StatisticsUtils.getFilterURL(FILTER_URL, (pageNum + 1) + "",
+				CACHE_NUM + "", MOVIE_TYPE)+ SUB_TYPE 
+				+ URLEncoder.encode("悬疑");
 	}
 
 	public static String getMovie_KongbuFirstURL() {
@@ -377,6 +569,22 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL, REBO_KONGBU_MOVIE,
 				(pageNum + 1) + "", CACHE_NUM + "");
 	}
+	
+	//获取恐怖电影filter first
+	public static String gettMovie_Kongbu_Quan_FirstURL() {
+
+		return StatisticsUtils.getFilterURL(FILTER_URL, 1 + "",
+				(FIRST_NUM - 10) + "", MOVIE_TYPE) + SUB_TYPE 
+				+ URLEncoder.encode("恐怖");
+	}
+	
+	//获取恐怖电影filter cache
+	public static String gettMovie_Kongbu_Quan_AllCacheURL(int pageNum) {
+
+		return StatisticsUtils.getFilterURL(FILTER_URL, (pageNum + 1) + "",
+				CACHE_NUM + "", MOVIE_TYPE)+ SUB_TYPE 
+				+ URLEncoder.encode("恐怖");
+	}
 
 	public static String getMovie_DonghuaFirstURL() {
 
@@ -388,6 +596,22 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 
 		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL, REBO_DONGHUA_MOVIE,
 				(pageNum + 1) + "", CACHE_NUM + "");
+	}
+	
+	//获取动画电影filter first
+	public static String gettMovie_Donghua_Quan_FirstURL() {
+
+		return StatisticsUtils.getFilterURL(FILTER_URL, 1 + "",
+				(FIRST_NUM - 10) + "", MOVIE_TYPE) + SUB_TYPE 
+				+ URLEncoder.encode("动画");
+	}
+	
+	//获取动画电影filter cache
+	public static String gettMovie_Donghua_Quan_AllCacheURL(int pageNum) {
+
+		return StatisticsUtils.getFilterURL(FILTER_URL, (pageNum + 1) + "",
+				CACHE_NUM + "", MOVIE_TYPE)+ SUB_TYPE 
+				+ URLEncoder.encode("动画");
 	}
 
 	// 动漫
@@ -414,11 +638,28 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL, REBO_QINZI_DONGMAN,
 				1 + "", FIRST_NUM + "");
 	}
+	
 
 	public static String getDongman_QinziCacheURL(int pageNum) {
 
 		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL, REBO_QINZI_DONGMAN,
 				(pageNum + 1) + "", CACHE_NUM + "");
+	}
+	
+	//获取亲子动漫filter first
+	public static String getDongman_Qinzi_Quan_FirstURL() {
+
+		return StatisticsUtils.getFilterURL(FILTER_URL, 1 + "",
+				(FIRST_NUM - 10) + "", DONGMAN_TYPE) + SUB_TYPE 
+				+ URLEncoder.encode("亲子");
+	}
+	
+	//获取亲子动漫filter cache
+	public static String getDongman_Qinzi_Quan_AllCacheURL(int pageNum) {
+
+		return StatisticsUtils.getFilterURL(FILTER_URL, (pageNum + 1) + "",
+				CACHE_NUM + "", DONGMAN_TYPE)+ SUB_TYPE 
+				+ URLEncoder.encode("亲子");
 	}
 
 	public static String getDongman_RexueFirstURL() {
@@ -426,11 +667,28 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL, REBO_REXUE_DONGMAN,
 				1 + "", FIRST_NUM + "");
 	}
+	
 
 	public static String getDongman_RexueCacheURL(int pageNum) {
 
 		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL, REBO_REXUE_DONGMAN,
 				(pageNum + 1) + "", CACHE_NUM + "");
+	}
+	
+	//获取热血动漫filter first
+	public static String getDongman_Rexue_Quan_FirstURL() {
+
+		return StatisticsUtils.getFilterURL(FILTER_URL, 1 + "",
+				(FIRST_NUM - 10) + "", DONGMAN_TYPE) + SUB_TYPE 
+				+ URLEncoder.encode("热血");
+	}
+	
+	//获取热血动漫filter cache
+	public static String getDongman_Rexue_Quan_AllCacheURL(int pageNum) {
+
+		return StatisticsUtils.getFilterURL(FILTER_URL, (pageNum + 1) + "",
+				CACHE_NUM + "", DONGMAN_TYPE)+ SUB_TYPE 
+				+ URLEncoder.encode("热血");
 	}
 
 	public static String getDongman_HougongFirstURL() {
@@ -444,6 +702,22 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL,
 				REBO_HOUGONG_DONGMAN, (pageNum + 1) + "", CACHE_NUM + "");
 	}
+	
+	//获取校园动漫filter first
+	public static String getDongman_Hougong_Quan_FirstURL() {
+
+		return StatisticsUtils.getFilterURL(FILTER_URL, 1 + "",
+				(FIRST_NUM - 10) + "", DONGMAN_TYPE) + SUB_TYPE 
+				+ URLEncoder.encode("校园");
+	}
+	
+	//获取校园动漫filter cache
+	public static String getDongman_Hougong_Quan_AllCacheURL(int pageNum) {
+
+		return StatisticsUtils.getFilterURL(FILTER_URL, (pageNum + 1) + "",
+				CACHE_NUM + "", DONGMAN_TYPE)+ SUB_TYPE 
+				+ URLEncoder.encode("校园");
+	}
 
 	public static String getDongman_TuiliFirstURL() {
 
@@ -455,6 +729,22 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 
 		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL, REBO_TUILI_DONGMAN,
 				(pageNum + 1) + "", CACHE_NUM + "");
+	}
+	
+	//获取推理动漫filter first
+	public static String getDongman_Tuili_Quan_FirstURL() {
+
+		return StatisticsUtils.getFilterURL(FILTER_URL, 1 + "",
+				(FIRST_NUM - 10) + "", DONGMAN_TYPE) + SUB_TYPE 
+				+ URLEncoder.encode("推理");
+	}
+	
+	//获取推理动漫filter cache
+	public static String getDongman_Tuili_Quan_AllCacheURL(int pageNum) {
+
+		return StatisticsUtils.getFilterURL(FILTER_URL, (pageNum + 1) + "",
+				CACHE_NUM + "", DONGMAN_TYPE)+ SUB_TYPE 
+				+ URLEncoder.encode("推理");
 	}
 
 	public static String getDongman_JizhanFirstURL() {
@@ -468,6 +758,22 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL, REBO_JIZHAN_DONGMAN,
 				(pageNum + 1) + "", CACHE_NUM + "");
 	}
+	
+	//获取机战动漫filter first
+	public static String getDongman_Jizhan_Quan_FirstURL() {
+
+		return StatisticsUtils.getFilterURL(FILTER_URL, 1 + "",
+				(FIRST_NUM - 10) + "", DONGMAN_TYPE) + SUB_TYPE 
+				+ URLEncoder.encode("机战");
+	}
+	
+	//获取机战动漫filter cache
+	public static String getDongman_Jizhan_Quan_AllCacheURL(int pageNum) {
+
+		return StatisticsUtils.getFilterURL(FILTER_URL, (pageNum + 1) + "",
+				CACHE_NUM + "", DONGMAN_TYPE)+ SUB_TYPE 
+				+ URLEncoder.encode("机战");
+	}
 
 	public static String getDongman_GaoxiaoFirstURL() {
 
@@ -479,6 +785,22 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 
 		return StatisticsUtils.getTopItemURL(TOP_ITEM_URL,
 				REBO_GAOXIAO_DONGMAN, (pageNum + 1) + "", CACHE_NUM + "");
+	}
+	
+	//获取搞笑动漫filter first
+	public static String getDongman_Gaoxiao_Quan_FirstURL() {
+
+		return StatisticsUtils.getFilterURL(FILTER_URL, 1 + "",
+				(FIRST_NUM - 10) + "", DONGMAN_TYPE) + SUB_TYPE 
+				+ URLEncoder.encode("搞笑");
+	}
+	
+	//获取搞笑动漫filter cache
+	public static String getDongman_Gaoxiao_AllCacheURL(int pageNum) {
+
+		return StatisticsUtils.getFilterURL(FILTER_URL, (pageNum + 1) + "",
+				CACHE_NUM + "", DONGMAN_TYPE)+ SUB_TYPE 
+				+ URLEncoder.encode("搞笑");
 	}
 
 	// 悦单
@@ -522,17 +844,86 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 	// search
 
 	public static String getSearch_FirstURL(String search) {
-		Log.i(TAG, "getSearch_FirstURL-->" + StatisticsUtils.getSearchURL(SEARCH_URL, 1 + "", FIRST_NUM + "",
-				search));
+//		Log.i(TAG, "getSearch_FirstURL-->" + StatisticsUtils.getSearchURL(SEARCH_URL, 1 + "", FIRST_NUM + "",
+//				search));
 
-		return StatisticsUtils.getSearchURL(SEARCH_URL, 1 + "", FIRST_NUM + "",
+		return StatisticsUtils.getSearchURL(SEARCH_CAPITAL_URL, 1 + "", FIRST_NUM + "",
 				search);
 	}
 
 	public static String getSearch_CacheURL(int pageNum, String search) {
 
-		return StatisticsUtils.getSearchURL(SEARCH_URL, (pageNum + 1) + "",
+		return StatisticsUtils.getSearchURL(SEARCH_CAPITAL_URL, (pageNum + 1) + "",
 				CACHE_NUM + "", search);
+	}
+	
+	//获取200条数据
+	public static String getSearch_200URL(String search) {
+//		Log.i(TAG, "getSearch_FirstURL-->" + StatisticsUtils.getSearchURL(SEARCH_URL, 1 + "", FIRST_NUM + "",
+//				search));
+
+		return StatisticsUtils.getSearchURL(SEARCH_CAPITAL_URL, 1 + "", 200 + "",
+				search);
+	}
+	
+	//电影搜索 search
+	public static String getSearch_Movie_FirstURL(String search) {
+//		Log.i(TAG, "getSearch_FirstURL-->" + StatisticsUtils.getSearchURL(SEARCH_URL, 1 + "", FIRST_NUM + "",
+//				search));
+
+		return StatisticsUtils.getSearchURL(SEARCH_CAPITAL_URL, 1 + "", FIRST_NUM + "",
+				search) + "&type=" + MOVIE_TYPE;
+	}
+
+	public static String getSearch_Movie_CacheURL(int pageNum, String search) {
+
+		return StatisticsUtils.getSearchURL(SEARCH_CAPITAL_URL, (pageNum + 1) + "",
+				CACHE_NUM + "", search) + "&type=" + MOVIE_TYPE;
+	}
+	
+	//电视剧搜索 search
+	public static String getSearch_TV_FirstURL(String search) {
+//		Log.i(TAG, "getSearch_FirstURL-->" + StatisticsUtils.getSearchURL(SEARCH_URL, 1 + "", FIRST_NUM + "",
+//				search));
+
+		return StatisticsUtils.getSearchURL(SEARCH_CAPITAL_URL, 1 + "", FIRST_NUM + "",
+				search) + "&type=" + TV_TYPE;
+	}
+
+	public static String getSearch_TV_CacheURL(int pageNum, String search) {
+
+		return StatisticsUtils.getSearchURL(SEARCH_CAPITAL_URL, (pageNum + 1) + "",
+				CACHE_NUM + "", search) + "&type=" + TV_TYPE;
+	}
+	
+	//综艺搜索 search
+	public static String getSearch_Zongyi_FirstURL(String search) {
+//		Log.i(TAG, "getSearch_FirstURL-->" + StatisticsUtils.getSearchURL(SEARCH_URL, 1 + "", FIRST_NUM + "",
+//				search));
+
+		return StatisticsUtils.getSearchURL(SEARCH_CAPITAL_URL, 1 + "", FIRST_NUM + "",
+				search) + "&type=" + ZONGYI_TYPE;
+	}
+
+	public static String getSearch_Zongyi_CacheURL(int pageNum, String search) {
+
+		return StatisticsUtils.getSearchURL(SEARCH_CAPITAL_URL, (pageNum + 1) + "",
+				CACHE_NUM + "", search) + "&type=" + ZONGYI_TYPE;
+	}
+	
+	//动漫搜索 search
+	public static String getSearch_Dongman_FirstURL(String search) {
+//		Log.i(TAG, "getSearch_FirstURL-->" + StatisticsUtils.getSearchURL(SEARCH_URL, 1 + "", FIRST_NUM + "",
+//				search));
+
+		return StatisticsUtils.getSearchURL(SEARCH_CAPITAL_URL, 1 + "", FIRST_NUM + "",
+				search) + "&type=" + DONGMAN_TYPE;
+	}
+
+	public static String getSearch_Dongman_CacheURL(int pageNum, String search) {
+
+		return StatisticsUtils.getSearchURL(SEARCH_CAPITAL_URL, (pageNum + 1) + "",
+				CACHE_NUM + "", search) + "&type=" + DONGMAN_TYPE;
 	}
 
 	// 动漫filter
@@ -709,15 +1100,17 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 		return translateAnimation;
 	}
 
-	public static String getMacAdd(Context c) {
-		String macAddress = null;
-		WifiManager wifiMgr = (WifiManager) c
-				.getSystemService(Context.WIFI_SERVICE);
-		WifiInfo info = (null == wifiMgr ? null : wifiMgr.getConnectionInfo());
-		if (info != null) {
-			macAddress = info.getMacAddress();
-		}
-		return macAddress;
+	public static String getUserId(Context c) {
+		SharedPreferences sharedata = c.getSharedPreferences("userData", 0);
+		return sharedata.getString("userId", null);
+//		String macAddress = null;
+//		WifiManager wifiMgr = (WifiManager) c
+//				.getSystemService(Context.WIFI_SERVICE);
+//		WifiInfo info = (null == wifiMgr ? null : wifiMgr.getConnectionInfo());
+//		if (info != null) {
+//			macAddress = info.getMacAddress();
+//		}
+//		return macAddress;
 //		return null;
 	}
 
@@ -915,6 +1308,8 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 				ReturnFilterMovieSearch.class);
 
 		List<MovieItemData> list = new ArrayList<MovieItemData>();
+		
+//		Log.i(TAG, "returnFilterMovieSearch_TVJson-->" + result.results.length + json.indexOf("战友"));
 
 		for (int i = 0; i < result.results.length; i++) {
 
@@ -1587,6 +1982,9 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 			}
 		}
 		
+		cursor.close();
+		helper.close();
+		
 		return info;
 	}
 	
@@ -1720,6 +2118,29 @@ public class StatisticsUtils implements JieMianConstant, BangDanKey {
 		SharedPreferences sp = context.getSharedPreferences(TV_SETTING_XML, Context.MODE_PRIVATE);
 
 		return sp.getString("cancelShoucangProId", "");
+	}
+	
+	public static List<MovieItemData> getLists4TwoList(List<MovieItemData> list1,List<MovieItemData> list2) {
+		
+		List<MovieItemData> list = new ArrayList<MovieItemData>();
+		
+		if(list1 != null) {
+			
+			list.addAll(list1);
+			
+			if(list2 != null) {
+				
+				Log.i(TAG, "getLists4TwoList--> list1-size:" + list1.size() + 
+						" list2-size:" + list2.size());
+				
+				for(MovieItemData movieItemData:list2) {
+					
+					list.add(movieItemData);
+				}
+			}
+		}
+		
+		return list;
 	}
 
 }

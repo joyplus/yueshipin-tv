@@ -7,7 +7,6 @@ import java.util.List;
 import org.json.JSONObject;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
@@ -18,7 +17,6 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -33,6 +31,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.joyplus.tv.Adapters.ZongYiAdapter;
 import com.joyplus.tv.entity.MovieItemData;
+import com.joyplus.tv.ui.KeyBoardView;
 import com.joyplus.tv.ui.MyMovieGridView;
 import com.joyplus.tv.ui.NavigateView;
 import com.joyplus.tv.ui.NavigateView.OnResultListener;
@@ -46,10 +45,17 @@ public class ShowDongManActivity extends AbstractShowActivity {
 
 	private static final int QINZI = 4;
 	private static final int REXUE = 5;
-	private static final int HOUGONG = 6;
+	private static final int HOUGONG_XIAOYUAN = 6;//后宫改为校园动漫
 	private static final int TUILI = 7;
 	private static final int JIZHAN = 8;
 	private static final int GAOXIAO = 9;
+	
+	private static final int QINZI_QUAN = 10;
+	private static final int REXUE_QUAN = 11;
+	private static final int HOUGONG_XIAOYUAN_QUAN = 12;
+	private static final int TUILI_QUAN = 13;
+	private static final int JIZHAN_QUAN = 14;
+	private static final int GAOXIAO_QUAN = 15;
 
 	private static final int DIALOG_WAITING = 0;
 
@@ -76,9 +82,9 @@ public class ShowDongManActivity extends AbstractShowActivity {
 	private LinearLayout qinziLL, rexueLL, hougongLL, tuiliLL, jizhanLL,
 			gaoxiaoLL;
 	private Button zuijinguankanBtn, zhuijushoucangBtn, mFenLeiBtn;
-	private List<MovieItemData>[] lists = new List[10];
-	private boolean[] isNextPagePossibles = new boolean[10];
-	private int[] pageNums = new int[10];
+	private List<MovieItemData>[] lists = new List[16];
+	private boolean[] isNextPagePossibles = new boolean[16];
+	private int[] pageNums = new int[16];
 	
 	private boolean isCurrentKeyVertical = false;//水平方向移动
 	private boolean isFirstActive = true;//是否界面初始化
@@ -91,6 +97,14 @@ public class ShowDongManActivity extends AbstractShowActivity {
 	private LinearLayout shoucangTitlleLL;
 	private int qitaNextPoistion = -1;
 	private TextView shoucangTv;
+	
+	private PopupWindow keyBoardWindow = null;
+	private Button startSearchBtn;
+	
+	private boolean isLeft = false;
+	
+	private KeyBoardView keyBoardView;
+	private LinearLayout searchLL;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -165,17 +179,52 @@ public class ShowDongManActivity extends AbstractShowActivity {
 	public void onFocusChange(View v, boolean hasFocus) {
 		// TODO Auto-generated method stub
 		
-		if(v.getId() == R.id.et_search) {
+		if(mSparseArray == null || mSparseArray.size() <= 0) {
 			
-			if (hasFocus == true) {
-				((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
-						.showSoftInput(v, InputMethodManager.SHOW_FORCED);
-
-			} else { // ie searchBoxEditText doesn't have focus
-				((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
-						.hideSoftInputFromWindow(v.getWindowToken(), 0);
-
+			return ;
+		}
+		
+		if(v.getId() == R.id.bt_search_click) {
+			
+//			if (hasFocus == true) {
+//				Log.i(TAG, "et_search_onFocusChange--->hasFocus:" + hasFocus);
+//				((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
+//				.hideSoftInputFromWindow(v.getWindowToken(), 0);
+//				KeyBoardView view = new KeyBoardView(ShowSearchActivity.this, searchEt, new KeyBoardView.OnKeyBoardResultListener() {
+//					
+//					@Override
+//					public void onResult(boolean isSearch) {
+//						// TODO Auto-generated method stub
+//						if(keyBoardWindow!=null&&keyBoardWindow.isShowing()){
+//							keyBoardWindow.dismiss();
+//						}
+//					}
+//				});
+//				
+//				keyBoardWindow = new PopupWindow(view, searchEt.getRootView().getWidth(),
+//						searchEt.getRootView().getHeight(), true);
+//				keyBoardWindow.showAtLocation(searchEt.getRootView(), Gravity.BOTTOM, 0, 0);
+//
+//			} 
+//			else { // ie searchBoxEditText doesn't have focus
+//				((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
+//						.hideSoftInputFromWindow(v.getWindowToken(), 0);
+//
+//			}
+			if(!hasFocus) {
+				
+				if(isLeft) {//如果是在搜索button上，并且向左移动，就当成垂直方向移动
+					
+					isCurrentKeyVertical = true;
+				}
+			} else {
+				
+				if(!isLeft) {//如果是从搜索button上，并且是从左边移动到button上，当成垂直方向移动
+					
+					isCurrentKeyVertical = true;
+				}
 			}
+
 		} else {
 			
 			if (hasFocus) {
@@ -223,28 +272,29 @@ public class ShowDongManActivity extends AbstractShowActivity {
 		int action = event.getAction();
 
 		if (action == KeyEvent.ACTION_DOWN) {
-//			Log.i(TAG, "onKeyDown--->" + keyCode);
 
 			switch (keyCode) {
 			case KEY_UP:
 
 //				isGridViewUp = true;
 				isCurrentKeyVertical = true;
-//				Log.i(TAG, "onKeyDown--->KEY_UP" + keyCode + " "+isGridViewUp);
+				isLeft = false;
 				break;
 			case KEY_DOWN:
 
 //				isGridViewUp = false;
 				isCurrentKeyVertical = true;
-//				Log.i(TAG, "onKeyDown--->KEY_DOWN" + keyCode + " "+isGridViewUp);
+				isLeft = false;
 				break;
 			case KEY_LEFT:
 
 				isCurrentKeyVertical = false;
+				isLeft = true;
 				break;
 			case KEY_RIGHT:
 
 				isCurrentKeyVertical = false;
+				isLeft = false;
 				break;
 
 			default:
@@ -327,7 +377,7 @@ public class ShowDongManActivity extends AbstractShowActivity {
 		zuijinguankanBtn.setOnKeyListener(this);
 		zhuijushoucangBtn.setOnKeyListener(this);
 		mFenLeiBtn.setOnKeyListener(this);
-		searchEt.setOnKeyListener(this);
+//		searchEt.setOnKeyListener(this);
 		
 		playGv.setOnKeyListener(new View.OnKeyListener() {
 			
@@ -393,7 +443,7 @@ public class ShowDongManActivity extends AbstractShowActivity {
 		zuijinguankanBtn.setOnFocusChangeListener(this);
 		zhuijushoucangBtn.setOnFocusChangeListener(this);
 		mFenLeiBtn.setOnFocusChangeListener(this);
-		searchEt.setOnFocusChangeListener(this);
+//		searchEt.setOnFocusChangeListener(this);
 
 		playGv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -627,33 +677,75 @@ public class ShowDongManActivity extends AbstractShowActivity {
 			}
 		});
 
-		searchEt.setOnClickListener(new View.OnClickListener() {
+		startSearchBtn.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-
-				Editable editable = searchEt.getText();
-				String searchStr = editable.toString();
-				// searchEt.setText("");
-				playGv.setNextFocusForwardId(searchEt.getId());//
-
-				ItemStateUtils
-						.viewToNormal(getApplicationContext(), activeView);
-				activeView = searchEt;
-
-				if (searchStr != null && !searchStr.equals("")) {
-					resetGvActive();
-					showDialog(DIALOG_WAITING);
-					search = searchStr;
-					StatisticsUtils.clearList(lists[SEARCH]);
-					currentListIndex = SEARCH;
-					String url = StatisticsUtils.getSearch_FirstURL(searchStr);
-					getFilterData(url);
-				}
-
+				
+				searchPlay();
 			}
 		});
+		
+		searchLL.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				
+				if(keyBoardWindow == null) {
+					
+					keyBoardWindow = new PopupWindow(keyBoardView, searchEt.getRootView().getWidth(),
+							searchEt.getRootView().getHeight(), true);
+				}
+
+				if(keyBoardWindow != null && !keyBoardWindow.isShowing()){
+					
+					keyBoardWindow.showAtLocation(searchEt.getRootView(), Gravity.BOTTOM, 0, 0);
+				}
+				
+			}
+		});
+		
+		searchLL.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+			
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				// TODO Auto-generated method stub
+				
+				if(hasFocus) {
+					
+					searchEt.setTextColor(getResources().getColor(R.color.black));
+				} else {
+					
+					searchEt.setTextColor(getResources().getColor(R.color.white));
+				}
+			}
+		});
+		startSearchBtn.setOnFocusChangeListener(this);
+	}
+	
+	private void searchPlay() {
+		
+		Editable editable = searchEt.getText();
+		String searchStr = editable.toString();
+		// searchEt.setText("");
+		playGv.setNextFocusLeftId(startSearchBtn.getId());//
+
+		ItemStateUtils
+				.viewToNormal(getApplicationContext(), activeView);
+		activeView = null;
+
+		if (searchStr != null && !searchStr.equals("")) {
+			resetGvActive();
+			showDialog(DIALOG_WAITING);
+			search = searchStr;
+			StatisticsUtils.clearList(lists[SEARCH]);
+			currentListIndex = SEARCH;
+//			String url = StatisticsUtils.getSearch_FirstURL(searchStr);
+			String url = StatisticsUtils.getSearch_Dongman_FirstURL(searchStr);
+			getFilterData(url);
+		}
 	}
 
 	@Override
@@ -714,16 +806,24 @@ public class ShowDongManActivity extends AbstractShowActivity {
 			app.MyToast(getApplicationContext(),
 					getString(R.string.toast_no_play));
 		}
+		
+		Log.i(TAG, "list.size()-->" + list.size() + 
+				" currentListIndex--->" + currentListIndex + 
+				" isCache--->" + isNextPagePossibles[currentListIndex]);
 
 		if (list != null && !list.isEmpty() && QUANBUFENLEI != currentListIndex) {// 判断其能否向获取更多数据
 
-			if (list.size() == StatisticsUtils.FIRST_NUM) {
+			if(SEARCH == currentListIndex || QUAN_FILTER == currentListIndex) {//只有搜索和连续两次点击出现筛界面下拉才在这判断
+				
+				if (list.size() == StatisticsUtils.FIRST_NUM) {
 
-				isNextPagePossibles[currentListIndex] = true;
-			} else if (list.size() < StatisticsUtils.FIRST_NUM) {
+					isNextPagePossibles[currentListIndex] = true;
+				} else if (list.size() < StatisticsUtils.FIRST_NUM) {
 
-				isNextPagePossibles[currentListIndex] = false;
+					isNextPagePossibles[currentListIndex] = false;
+				}
 			}
+
 		}
 		lists[currentListIndex] = list;
 
@@ -731,10 +831,11 @@ public class ShowDongManActivity extends AbstractShowActivity {
 		searchAdapter.notifyDataSetChanged();
 		
 		removeDialog(DIALOG_WAITING);
-//		if(isFirstActive) {
-//			
-//			playGv.requestFocus();
-//		}
+		if(currentListIndex == SEARCH) {//搜索高亮在gridview第一个元素
+			
+			isFirstActive = true;
+			playGv.requestFocus();
+		}
 
 	}
 
@@ -988,32 +1089,39 @@ public class ShowDongManActivity extends AbstractShowActivity {
 			break;
 		case SEARCH:
 
-			getMoreFilterData(StatisticsUtils.getSearch_CacheURL(pageNum,
-					search) + "&type=" + DONGMAN_TYPE);
+//			getMoreFilterData(StatisticsUtils.getSearch_CacheURL(pageNum,
+//					search) + "&type=" + DONGMAN_TYPE);
+			getMoreFilterData(StatisticsUtils.getSearch_Dongman_CacheURL(pageNum, search));
 			break;
-		case QINZI:
-			getMoreBangDanData(StatisticsUtils
-					.getDongman_QinziCacheURL(pageNum));
+		case QINZI_QUAN:
+//			getMoreBangDanData(StatisticsUtils
+//					.getDongman_QinziCacheURL(pageNum));
+			getMoreFilterData(StatisticsUtils.getDongman_Qinzi_Quan_AllCacheURL(pageNum));
 			break;
-		case REXUE:
-			getMoreBangDanData(StatisticsUtils
-					.getDongman_RexueCacheURL(pageNum));
+		case REXUE_QUAN:
+//			getMoreBangDanData(StatisticsUtils
+//					.getDongman_RexueCacheURL(pageNum));
+			getMoreFilterData(StatisticsUtils.getDongman_Rexue_Quan_AllCacheURL(pageNum));
 			break;
-		case HOUGONG:
-			getMoreBangDanData(StatisticsUtils
-					.getDongman_HougongCacheURL(pageNum));
+		case HOUGONG_XIAOYUAN_QUAN:
+//			getMoreBangDanData(StatisticsUtils
+//					.getDongman_HougongCacheURL(pageNum));
+			getMoreFilterData(StatisticsUtils.getDongman_Hougong_Quan_AllCacheURL(pageNum));
 			break;
-		case TUILI:
-			getMoreBangDanData(StatisticsUtils
-					.getDongman_TuiliCacheURL(pageNum));
+		case TUILI_QUAN:
+//			getMoreBangDanData(StatisticsUtils
+//					.getDongman_TuiliCacheURL(pageNum));
+			getMoreFilterData(StatisticsUtils.getDongman_Tuili_Quan_AllCacheURL(pageNum));
 			break;
-		case JIZHAN:
-			getMoreBangDanData(StatisticsUtils
-					.getDongman_JizhanCacheURL(pageNum));
+		case JIZHAN_QUAN:
+//			getMoreBangDanData(StatisticsUtils
+//					.getDongman_JizhanCacheURL(pageNum));
+			getMoreFilterData(StatisticsUtils.getDongman_Jizhan_Quan_AllCacheURL(pageNum));
 			break;
-		case GAOXIAO:
-			getMoreBangDanData(StatisticsUtils
-					.getDongman_GaoxiaoCacheURL(pageNum));
+		case GAOXIAO_QUAN:
+//			getMoreBangDanData(StatisticsUtils
+//					.getDongman_GaoxiaoCacheURL(pageNum));
+			getMoreFilterData(StatisticsUtils.getDongman_Gaoxiao_AllCacheURL(pageNum));
 			break;
 
 		default:
@@ -1130,7 +1238,10 @@ public class ShowDongManActivity extends AbstractShowActivity {
 				return;
 			
 			Log.d(TAG, json.toString());
-			notifyAdapter(StatisticsUtils
+//			notifyAdapter(StatisticsUtils
+//					.returnTVBangDanList_YueDanListJson(json.toString()));
+			
+			getUnQuanBuFirstSrviceData(StatisticsUtils
 					.returnTVBangDanList_YueDanListJson(json.toString()));
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
@@ -1141,6 +1252,47 @@ public class ShowDongManActivity extends AbstractShowActivity {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+	}
+	
+	protected void getUnQuanBuFirstSrviceData(List<MovieItemData> list) {
+		
+		lists[currentListIndex] = list;
+		
+		String url = null;
+		
+		switch (currentListIndex) {
+		case QINZI:
+			url = StatisticsUtils.getDongman_Qinzi_Quan_FirstURL();
+			currentListIndex = QINZI_QUAN;
+			break;
+		case REXUE:
+			url = StatisticsUtils.getDongman_Rexue_Quan_FirstURL();
+			currentListIndex = REXUE_QUAN;
+			break;
+		case HOUGONG_XIAOYUAN:
+			url = StatisticsUtils.getDongman_Hougong_Quan_FirstURL();
+			currentListIndex = HOUGONG_XIAOYUAN_QUAN;
+			break;
+		case TUILI:
+			url = StatisticsUtils.getDongman_Tuili_Quan_FirstURL();
+			currentListIndex = TUILI_QUAN;
+			break;
+		case JIZHAN:
+			url = StatisticsUtils.getDongman_Jizhan_Quan_FirstURL();
+			currentListIndex = JIZHAN_QUAN;
+			break;
+		case GAOXIAO:
+			url = StatisticsUtils.getDongman_Gaoxiao_Quan_FirstURL();
+			currentListIndex = GAOXIAO_QUAN;
+			break;
+		default:
+			break;
+		}
+		
+		if(url != null) {
+			
+			getFilterData(url);
 		}
 	}
 
@@ -1161,8 +1313,56 @@ public class ShowDongManActivity extends AbstractShowActivity {
 				return;
 			
 			Log.d(TAG, json.toString());
-			notifyAdapter(StatisticsUtils.returnFilterMovieSearch_TVJson(json
-					.toString()));
+			
+			List<MovieItemData> tempList = StatisticsUtils.returnFilterMovieSearch_TVJson(json
+					.toString());
+			
+			if(currentListIndex == QUAN_FILTER || 
+					currentListIndex == SEARCH) {
+				
+				notifyAdapter(tempList);
+			} else {
+				
+				List<MovieItemData> tempList2 = new ArrayList<MovieItemData>();
+				
+				boolean isCache = false;
+				if(tempList.size() == StatisticsUtils.CACHE_NUM ) {
+					
+					isCache = true;
+				}
+				
+				switch (currentListIndex) {
+				case QINZI_QUAN:
+					tempList2 = StatisticsUtils.getLists4TwoList(lists[QINZI],tempList );
+					isNextPagePossibles[QINZI_QUAN] = isCache;
+					break;
+				case REXUE_QUAN:
+					tempList2 = StatisticsUtils.getLists4TwoList(lists[REXUE],tempList );
+					isNextPagePossibles[REXUE_QUAN] = isCache;
+					break;
+				case HOUGONG_XIAOYUAN_QUAN:
+					tempList2 = StatisticsUtils.getLists4TwoList(lists[HOUGONG_XIAOYUAN],tempList );
+					isNextPagePossibles[HOUGONG_XIAOYUAN_QUAN] = isCache;
+					break;
+				case TUILI_QUAN:
+					tempList2 = StatisticsUtils.getLists4TwoList(lists[TUILI],tempList );
+					isNextPagePossibles[TUILI_QUAN] = isCache;
+					break;
+				case JIZHAN_QUAN:
+					tempList2 = StatisticsUtils.getLists4TwoList(lists[JIZHAN],tempList );
+					isNextPagePossibles[JIZHAN_QUAN] = isCache;
+					break;
+				case GAOXIAO_QUAN:
+					tempList2 = StatisticsUtils.getLists4TwoList(lists[GAOXIAO],tempList );
+					isNextPagePossibles[GAOXIAO_QUAN] = isCache;
+					break;
+				default:
+					break;
+				}
+				
+				notifyAdapter(tempList2);
+			}
+			
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -1241,6 +1441,8 @@ public class ShowDongManActivity extends AbstractShowActivity {
 		// TODO Auto-generated method stub
 
 		searchEt = (EditText) findViewById(R.id.et_search);
+		startSearchBtn = (Button) findViewById(R.id.bt_search_click);
+		searchLL = (LinearLayout) findViewById(R.id.ll_search);
 		mFenLeiBtn = (Button) findViewById(R.id.bt_quanbufenlei);
 		playGv = (MyMovieGridView) findViewById(R.id.gv_movie_show);
 
@@ -1258,6 +1460,22 @@ public class ShowDongManActivity extends AbstractShowActivity {
 		
 		shoucangTitlleLL = (LinearLayout) findViewById(R.id.ll_shoucanggengxin);
 		shoucangTv = (TextView) findViewById(R.id.tv_shoucanggengxin_name);
+		
+		keyBoardView = new KeyBoardView(this, searchEt, new KeyBoardView.OnKeyBoardResultListener() {
+			
+			@Override
+			public void onResult(boolean isSearch) {
+				// TODO Auto-generated method stub
+				if(keyBoardWindow!=null&&keyBoardWindow.isShowing()){
+					keyBoardWindow.dismiss();
+				}
+				
+				if(isSearch) {
+					
+					searchPlay();
+				}
+			}
+		});
 
 		playGv.setNextFocusLeftId(R.id.bt_quanbufenlei);
 		playGv.setNextFocusUpId(R.id.gv_movie_show);
@@ -1269,7 +1487,7 @@ public class ShowDongManActivity extends AbstractShowActivity {
 		// TODO Auto-generated method stub
 
 		if (v.getId() == R.id.bt_quanbufenlei
-				&& activeView.getId() == R.id.bt_quanbufenlei) {
+				&& activeView != null && activeView.getId() == R.id.bt_quanbufenlei) {
 
 			filterPopWindowShow();
 		}
@@ -1285,7 +1503,7 @@ public class ShowDongManActivity extends AbstractShowActivity {
 			return;
 		}
 
-		if (activeView.getId() == v.getId()) {
+		if ( activeView != null && activeView.getId() == v.getId()) {
 
 			return;
 		}
@@ -1298,7 +1516,8 @@ public class ShowDongManActivity extends AbstractShowActivity {
 			if (lists[currentListIndex] != null
 					&& !lists[currentListIndex].isEmpty()) {
 
-				notifyAdapter(lists[currentListIndex]);
+				currentListIndex = QINZI_QUAN;
+				notifyAdapter(lists[QINZI_QUAN]);
 			} else {
 
 				showDialog(DIALOG_WAITING);
@@ -1312,7 +1531,8 @@ public class ShowDongManActivity extends AbstractShowActivity {
 			if (lists[currentListIndex] != null
 					&& !lists[currentListIndex].isEmpty()) {
 
-				notifyAdapter(lists[currentListIndex]);
+				currentListIndex = REXUE_QUAN;
+				notifyAdapter(lists[REXUE_QUAN]);
 			} else {
 
 				showDialog(DIALOG_WAITING);
@@ -1320,14 +1540,15 @@ public class ShowDongManActivity extends AbstractShowActivity {
 			}
 			break;
 		case R.id.ll_hougongdongman:
-			currentListIndex = HOUGONG;
+			currentListIndex = HOUGONG_XIAOYUAN;
 			resetGvActive();
 			String url3 = StatisticsUtils.getDongman_HougongFirstURL();
 
 			if (lists[currentListIndex] != null
 					&& !lists[currentListIndex].isEmpty()) {
 
-				notifyAdapter(lists[currentListIndex]);
+				currentListIndex = HOUGONG_XIAOYUAN_QUAN;
+				notifyAdapter(lists[HOUGONG_XIAOYUAN]);
 			} else {
 
 				showDialog(DIALOG_WAITING);
@@ -1341,7 +1562,8 @@ public class ShowDongManActivity extends AbstractShowActivity {
 			if (lists[currentListIndex] != null
 					&& !lists[currentListIndex].isEmpty()) {
 
-				notifyAdapter(lists[currentListIndex]);
+				currentListIndex = TUILI_QUAN;
+				notifyAdapter(lists[TUILI_QUAN]);
 			} else {
 
 				showDialog(DIALOG_WAITING);
@@ -1355,7 +1577,8 @@ public class ShowDongManActivity extends AbstractShowActivity {
 			if (lists[currentListIndex] != null
 					&& !lists[currentListIndex].isEmpty()) {
 
-				notifyAdapter(lists[currentListIndex]);
+				currentListIndex = JIZHAN_QUAN;
+				notifyAdapter(lists[JIZHAN_QUAN]);
 			} else {
 
 				showDialog(DIALOG_WAITING);
@@ -1369,7 +1592,8 @@ public class ShowDongManActivity extends AbstractShowActivity {
 			if (lists[currentListIndex] != null
 					&& !lists[currentListIndex].isEmpty()) {
 
-				notifyAdapter(lists[currentListIndex]);
+				currentListIndex = GAOXIAO_QUAN;
+				notifyAdapter(lists[GAOXIAO_QUAN]);
 			} else {
 
 				showDialog(DIALOG_WAITING);

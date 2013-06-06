@@ -52,6 +52,11 @@ public class ItemStateUtils implements JieMianConstant{
 	}
 	
 	public static void beforeViewActiveStateBack(Context context,View activeView) {
+		if(activeView == null) {
+			
+			return;
+		}
+		
 		if (activeView instanceof LinearLayout) {
 
 			LinearLayout tempLinearLayout = (LinearLayout) activeView;
@@ -98,7 +103,7 @@ public class ItemStateUtils implements JieMianConstant{
 		if (v instanceof LinearLayout) {
 
 			LinearLayout tempLinearLayout = (LinearLayout) v;
-			if (v.getId() == activeView.getId()) {
+			if (activeView!= null && v.getId() == activeView.getId()) {
 				ItemStateUtils.linearLayoutToActiveState(context,tempLinearLayout);
 			} else {
 				ItemStateUtils.linearLayoutToPTState(context,tempLinearLayout);
@@ -106,7 +111,7 @@ public class ItemStateUtils implements JieMianConstant{
 		} else if (v instanceof Button) {
 
 			Button tempButton = (Button) v;
-			if (v.getId() == activeView.getId()) {
+			if (activeView!= null && v.getId() == activeView.getId()) {
 				ItemStateUtils.buttonToActiveState(context,tempButton);
 			} else {
 				ItemStateUtils.buttonToPTState(context,tempButton);
@@ -118,14 +123,14 @@ public class ItemStateUtils implements JieMianConstant{
 		
 		if (v instanceof LinearLayout) {
 			LinearLayout linearLayout = (LinearLayout) v;
-			if (v.getId() != activeView.getId()) {
+			if ( activeView == null || v.getId() != activeView.getId()) {
 				ItemStateUtils.beforeViewActiveStateBack(context,activeView);
 //				ItemStateUtils.linearLayoutToActiveState(context,linearLayout);
 				return v;
 			}
 		} else if (v instanceof Button) {
 			Button button = (Button) v;
-			if (v.getId() != activeView.getId()) {
+			if ( activeView == null || v.getId() != activeView.getId()) {
 				ItemStateUtils.beforeViewActiveStateBack(context,activeView);
 //				ItemStateUtils.buttonToActiveState(context,button);
 				return v;
@@ -136,6 +141,11 @@ public class ItemStateUtils implements JieMianConstant{
 	}
 	
 	public static void viewToNormal(Context context, View v) {
+		
+		if(v == null) {
+			
+			return;
+		}
 		
 		if (v instanceof LinearLayout) {
 			LinearLayout linearLayout = (LinearLayout) v;

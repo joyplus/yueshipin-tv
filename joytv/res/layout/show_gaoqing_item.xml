@@ -24,7 +24,7 @@
             android:gravity="left|center_vertical"
             android:text="@string/xiangqing_bofang"
             android:textColor="@color/text_foucs"
-            android:textSize="17sp"
+            android:textSize="17dp"
             android:visibility="invisible" />
 
         <Button
@@ -38,7 +38,7 @@
             android:paddingRight="4dp"
             android:text="@string/gaoqing_chaogaoqing"
             android:textColor="@color/text_foucs"
-            android:textSize="17sp" />
+            android:textSize="17dp" />
     </LinearLayout>
 
     <LinearLayout
@@ -60,7 +60,7 @@
             android:gravity="left|center_vertical"
             android:text="@string/xiangqing_bofang"
             android:textColor="@color/text_foucs"
-            android:textSize="17sp"
+            android:textSize="17dp"
             android:visibility="invisible" />
 
         <Button
@@ -74,7 +74,7 @@
             android:paddingRight="4dp"
             android:text="@string/gaoqing_gaoqing"
             android:textColor="@color/text_foucs"
-            android:textSize="17sp" />
+            android:textSize="17dp" />
     </LinearLayout>
 
     <LinearLayout
@@ -96,7 +96,7 @@
             android:gravity="left|center_vertical"
             android:text="@string/xiangqing_bofang"
             android:textColor="@color/text_foucs"
-            android:textSize="17sp"
+            android:textSize="17dp"
             android:visibility="invisible" />
 
         <Button
@@ -110,7 +110,7 @@
             android:paddingRight="4dp"
             android:text="@string/gaoqing_biaoqing"
             android:textColor="@color/text_foucs"
-            android:textSize="17sp" />
+            android:textSize="17dp" />
     </LinearLayout>
 
 </LinearLayout>
