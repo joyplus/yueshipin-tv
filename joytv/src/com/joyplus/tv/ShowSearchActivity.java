@@ -1028,6 +1028,9 @@ public class ShowSearchActivity extends AbstractShowActivity {
 		initLists();//重新初始化数据
 		initButtons();//初始化buttons
 		
+		
+		searchAdapter.setList(new ArrayList<MovieItemData>(), false);
+		
 		helpForSearch.setVisibility(View.VISIBLE);
 	}
 	
