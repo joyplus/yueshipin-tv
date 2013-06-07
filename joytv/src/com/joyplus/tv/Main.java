@@ -929,6 +929,7 @@ public class Main extends Activity implements OnItemSelectedListener,
 			}
 
 		} else {
+			app.SaveUserData("isBand", "0");
 			handler.sendEmptyMessage(MESSAGE_UPDATEUSER);
 		}
 	}

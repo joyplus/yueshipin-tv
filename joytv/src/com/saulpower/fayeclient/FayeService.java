@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Handler;
 import android.os.IBinder;
+import android.widget.Toast;
 
 import com.joyplus.tv.App;
 import com.joyplus.tv.Constant;
@@ -39,7 +40,7 @@ public class FayeService extends Service implements FayeListener{
 //	private FayeClient phoneClient;
 	private BroadcastReceiver receiver;
 	private Handler handler = new Handler();
-	private boolean isConnected = false;
+//	private boolean isConnected = false;
 	private boolean isErweimaAppear = false;
 	private App app;
 
@@ -77,19 +78,22 @@ public class FayeService extends Service implements FayeListener{
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
+						Toast.makeText(FayeService.this, "解绑遇到问题，再试一次哦", Toast.LENGTH_LONG).show();
 					}
 	        	}else if(ACTION_M_APPEAR.equals(intent.getAction())){
 	        		//二维码出现啦
 //	        		if(app.getUserData("isBand")!=null&&"1".equals(app.getUserData("isBand"))){
 //	        			Log.d(TAG, "band =  true connect------------"+app.getUserData("isBand"));
 	        		isErweimaAppear = true;	
-	        		myClient.connectToServer(null);
+	        		if(!myClient.isConnect()){
+	        			myClient.connectToServer(null);
+	        		}
 //	        		}
 	        	}else if(ACTION_M_DISAPPEAR.equals(intent.getAction())){
 	        		//二维码消失啦
 	        		isErweimaAppear = false;
-	        		if(app.getUserData("isBand")!=null||"0".equals(app.getUserData("isBand"))){
-	        			if(isConnected){
+	        		if(app.getUserData("isBand")==null||"0".equals(app.getUserData("isBand"))){
+	        			if(myClient.isConnect()){
 	        				myClient.disconnectFromServer();
 	        			}
 	        		}
@@ -143,7 +147,7 @@ public class FayeService extends Service implements FayeListener{
 	public void connectedToServer() {
 		// TODO Auto-generated method stub
 		Log.d(TAG, "server connected----->");
-		isConnected = true;
+//		isConnected = true;
 //		if(app.getUserData("isBand")==null||"0".equals(app.getUserData("isBand"))){
 //			myClient.disconnectFromServer();
 //		}
@@ -153,7 +157,7 @@ public class FayeService extends Service implements FayeListener{
 	public void disconnectedFromServer() {
 		// TODO Auto-generated method stub
 		Log.w(TAG, "server disconnected!----->");
-		isConnected = false;
+//		isConnected = false;
 		if((app.getUserData("isBand")!=null&&"1".equals(app.getUserData("isBand")))||isErweimaAppear){
 			myClient.connectToServer(null);
 		}
@@ -208,38 +212,73 @@ public class FayeService extends Service implements FayeListener{
 				phoneID = json.getString("user_id");
 				if(app.getUserData("isBand") == null||"0".equals(app.getUserData("isBand"))){
 					Log.d(TAG, "phone id = " + phoneID);
-					app.SaveUserData("isBand", "1");
-					app.SaveUserData("phoneID", phoneID);
-					JSONObject bandSuccessObj = new JSONObject();
-					bandSuccessObj.put("tv_channel", channel.replace(Constant.FAYECHANNEL_TV_HEAD, ""));
-					bandSuccessObj.put("push_type","32");
-					bandSuccessObj.put("user_id", phoneID);
-					bandSuccessObj.put("result", "success");
-					myClient.sendMessage(bandSuccessObj);
-				}else{
-					
-					String lastPhoneId = app.getUserData("phoneID");
-					
-					app.SaveUserData("isBand", "1");
-					app.SaveUserData("phoneID", phoneID);
-					if(!lastPhoneId.equals(phoneID)){
-						JSONObject unBandObj = new JSONObject();
-						unBandObj.put("tv_channel", channel.replace(Constant.FAYECHANNEL_TV_HEAD, ""));
-						unBandObj.put("push_type","33");
-						unBandObj.put("user_id", lastPhoneId);
-						myClient.sendMessage(unBandObj);
+					try{
+						JSONObject bandSuccessObj = new JSONObject();
+						bandSuccessObj.put("tv_channel", channel.replace(Constant.FAYECHANNEL_TV_HEAD, ""));
+						bandSuccessObj.put("push_type","32");
+						bandSuccessObj.put("user_id", phoneID);
+						bandSuccessObj.put("result", "success");
+						myClient.sendMessage(bandSuccessObj);
+						app.SaveUserData("isBand", "1");
+						app.SaveUserData("phoneID", phoneID);
+						app.SaveUserData("lastTime", System.currentTimeMillis()+"");
+						Intent bandIntent = new Intent(ACTION_RECIVEACTION_BAND);
+						sendBroadcast(bandIntent);
+					}catch (Exception e) {
+						// TODO: handle exception
+						Log.e(TAG, e.getMessage());
+						handler.post(new Runnable() {
+							
+							@Override
+							public void run() {
+								// TODO Auto-generated method stub
+								Toast.makeText(FayeService.this, "绑定在路上, 再试一次哦", Toast.LENGTH_LONG).show();
+								myClient.connectToServer(null);
+							}
+						});
 					}
 					
-					JSONObject bandSuccessObj = new JSONObject();
-					bandSuccessObj.put("tv_channel", channel.replace(Constant.FAYECHANNEL_TV_HEAD, ""));
-					bandSuccessObj.put("push_type","32");
-					bandSuccessObj.put("user_id", phoneID);
-					bandSuccessObj.put("result", "success");
-					myClient.sendMessage(bandSuccessObj);
+				}else{
+					
+					final String lastPhoneId = app.getUserData("phoneID");
+					try{
+						if(!lastPhoneId.equals(phoneID)){
+							JSONObject unBandObj = new JSONObject();
+							unBandObj.put("tv_channel", channel.replace(Constant.FAYECHANNEL_TV_HEAD, ""));
+							unBandObj.put("push_type","33");
+							unBandObj.put("user_id", lastPhoneId);
+							myClient.sendMessage(unBandObj);
+						}
+						
+						JSONObject bandSuccessObj = new JSONObject();
+						bandSuccessObj.put("tv_channel", channel.replace(Constant.FAYECHANNEL_TV_HEAD, ""));
+						bandSuccessObj.put("push_type","32");
+						bandSuccessObj.put("user_id", phoneID);
+						bandSuccessObj.put("result", "success");
+						myClient.sendMessage(bandSuccessObj);
+						app.SaveUserData("isBand", "1");
+						app.SaveUserData("phoneID", phoneID);
+						app.SaveUserData("lastTime", System.currentTimeMillis()+"");
+						Intent bandIntent = new Intent(ACTION_RECIVEACTION_BAND);
+						sendBroadcast(bandIntent);
+					}catch (Exception e) {
+						// TODO: handle exception
+//						Toast.makeText(FayeService.this, "绑定在路上, 再试一次哦", Toast.LENGTH_LONG).show();
+						Log.e(TAG, e.getMessage());
+						handler.post(new Runnable() {
+							
+							@Override
+							public void run() {
+								// TODO Auto-generated method stub
+								app.SaveUserData("isBand", "1");
+								app.SaveUserData("phoneID", lastPhoneId);
+								Toast.makeText(FayeService.this, "绑定在路上, 再试一次哦", Toast.LENGTH_LONG).show();
+								myClient.connectToServer(null);
+							}
+						});
+					}
 				}
-				app.SaveUserData("lastTime", System.currentTimeMillis()+"");
-				Intent bandIntent = new Intent(ACTION_RECIVEACTION_BAND);
-				sendBroadcast(bandIntent);
+				
 				break;
 //			case 32://取消绑定
 //				phoneID = json.getString("user_id");
@@ -301,7 +340,12 @@ public class FayeService extends Service implements FayeListener{
 					responseObj.put("tv_channel", channel.replace(Constant.FAYECHANNEL_TV_HEAD, ""));
 					responseObj.put("prod_id", playDate.prod_id);
 					responseObj.put("prod_url", playDate.prod_url);
-					myClient.sendMessage(responseObj);
+					try {
+						myClient.sendMessage(responseObj);
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 				break;
 			case 403://视频推送后，手机发送播放指令消息
