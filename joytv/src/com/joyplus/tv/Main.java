@@ -422,7 +422,7 @@ public class Main extends Activity implements OnItemSelectedListener,
 									highlightImageView_2.setImageDrawable(img2
 											.getDrawable());
 								} else {
-									highlightImageView_1.setImageDrawable(null);
+									highlightImageView_2.setImageDrawable(null);
 									aq.id(highlightImageView_2)
 											.image(yuedan_list.get(gallery1
 													.getSelectedItemPosition()).pic_url,
@@ -1030,6 +1030,7 @@ public class Main extends Activity implements OnItemSelectedListener,
 						highlightImageView_1
 								.setImageDrawable(img.getDrawable());
 					} else {
+						highlightImageView_1.setImageDrawable(null);
 						aq.id(highlightImageView_1).image(
 								hot_list.get(arg2).prod_pic_url, true, true);
 					}
@@ -1139,6 +1140,7 @@ public class Main extends Activity implements OnItemSelectedListener,
 								highlightImageView_2.setImageDrawable(img2
 										.getDrawable());
 							} else {
+								highlightImageView_2.setImageDrawable(null);
 								aq.id(highlightImageView_2)
 										.image(yuedan_list.get(gallery1
 												.getSelectedItemPosition()).pic_url,

@@ -55,7 +55,12 @@ public class FayeService extends Service implements FayeListener{
 		}else{
 			channel = null;
 		}
-		
+		if(channel!=null){
+			URI url = URI.create(serverUrl);
+			myClient = new FayeClient(handler, url, channel);
+			myClient.setFayeListener(this);
+			
+		}
 //		preferences = getSharedPreferences("userIdDate",0);
 		app = (App) getApplication();
 		IntentFilter filter = new IntentFilter(ACTION_SEND_UNBAND);
@@ -121,13 +126,8 @@ public class FayeService extends Service implements FayeListener{
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		// TODO Auto-generated method stub
-		if(channel!=null){
-			URI url = URI.create(serverUrl);
-			myClient = new FayeClient(handler, url, channel);
-			myClient.setFayeListener(this);
-			if(app.getUserData("isBand")!=null&&"1".equals(app.getUserData("isBand"))){
-				myClient.connectToServer(null);
-			}
+		if(app.getUserData("isBand")!=null&&"1".equals(app.getUserData("isBand"))){
+			myClient.connectToServer(null);
 		}
 		
 		return super.onStartCommand(intent, START_STICKY, startId); 
@@ -234,6 +234,12 @@ public class FayeService extends Service implements FayeListener{
 								// TODO Auto-generated method stub
 								Toast.makeText(FayeService.this, "绑定在路上, 再试一次哦", Toast.LENGTH_LONG).show();
 								myClient.connectToServer(null);
+//								myClient = null;
+//								System.gc();
+//								URI url = URI.create(serverUrl);
+//								myClient = new FayeClient(handler, url, channel);
+//								myClient.setFayeListener(FayeService.this);
+//								myClient.connectToServer(null);
 							}
 						});
 					}
@@ -272,6 +278,12 @@ public class FayeService extends Service implements FayeListener{
 								// TODO Auto-generated method stub
 								app.SaveUserData("isBand", "1");
 								app.SaveUserData("phoneID", lastPhoneId);
+//								myClient = null;
+//								System.gc();
+//								URI url = URI.create(serverUrl);
+//								myClient = new FayeClient(handler, url, channel);
+//								myClient.setFayeListener(FayeService.this);
+//								myClient.connectToServer(null);
 								Toast.makeText(FayeService.this, "绑定在路上, 再试一次哦", Toast.LENGTH_LONG).show();
 								myClient.connectToServer(null);
 							}

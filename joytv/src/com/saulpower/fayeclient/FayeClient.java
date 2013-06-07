@@ -64,7 +64,7 @@ public class FayeClient implements Listener {
     private static final String VALUE_MIN_VERSION       = "1.0beta";
     private static final String VALUE_CONN_TYPE         = "websocket";
 
-    private static final long RECONNECT_WAIT            = 10000;
+    private static final long RECONNECT_WAIT            = 2000;
     private static final int MAX_CONNECTION_ATTEMPTS    = 0;
 
     private WebSocketClient mClient;
@@ -171,6 +171,7 @@ public class FayeClient implements Listener {
         }
 
         mClient = new WebSocketClient(getHandler(), mFayeUrl, this, null);
+        Log.d(TAG, mClient.toString());
         mClient.connect();
     }
 
@@ -381,6 +382,7 @@ public class FayeClient implements Listener {
         }
         if(mClient==null){
         	mConnected = false;
+//        	onError(null);
         	throw new NullPointerException("mClient is null");
         }else{
         	mClient.send(json.toString());
