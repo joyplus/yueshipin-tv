@@ -52,6 +52,7 @@ import com.joyplus.tv.utils.Log;
 import com.joyplus.tv.utils.MyKeyEventKey;
 import com.joyplus.tv.utils.SouceComparatorIndex1;
 import com.joyplus.tv.utils.URLS_INDEX;
+import com.umeng.analytics.MobclickAgent;
 
 public class ShowXiangqingZongYi extends Activity implements View.OnClickListener,
 		View.OnKeyListener, MyKeyEventKey {
@@ -1001,14 +1002,23 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
+		
+		MobclickAgent.onResume(this);
+		
 		if(app.getUserInfo()!=null){
 			aq.id(R.id.iv_head_user_icon).image(
 					app.getUserInfo().getUserAvatarUrl(), false, true, 0,
 					R.drawable.avatar_defult);
 			aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
-			
-//			showHistorySelect();
 		}
+	}
+	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		
+		MobclickAgent.onPause(this);
 	}
 	
 //	private synchronized void  showHistorySelect() {

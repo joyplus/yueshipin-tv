@@ -99,6 +99,7 @@ public class HybiParser {
 
     public HybiParser(WebSocketClient client) {
         mClient = client;
+        Log.d(TAG, mClient.toString());
     }
 
     private static byte[] mask(byte[] payload, byte[] mask, int offset) {
@@ -295,8 +296,10 @@ public class HybiParser {
 
                 if (mMode == MODE_TEXT) {
                     mClient.getListener().onMessage(encode(message));
+                    Log.d(TAG, mClient.toString() + message);
                 } else {
                     mClient.getListener().onMessage(message);
+                    Log.d(TAG, mClient.toString() + message);
                 }
 
                 reset();
@@ -307,6 +310,7 @@ public class HybiParser {
             if (mFinal) {
                 String messageText = encode(payload);
                 mClient.getListener().onMessage(messageText);
+                Log.d(TAG, mClient.toString() + messageText);
             } else {
                 mMode = MODE_TEXT;
                 mBuffer.write(payload);
@@ -316,6 +320,7 @@ public class HybiParser {
 
             if (mFinal) {
                 mClient.getListener().onMessage(payload);
+                Log.d(TAG, mClient.toString() + payload);
             } else {
                 mMode = MODE_BINARY;
                 mBuffer.write(payload);

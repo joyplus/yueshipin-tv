@@ -685,8 +685,9 @@ public class VideoPlayerActivity extends Activity {
 	public void onPause() {
 		mPlayer.onPause();
 
-
 		super.onPause();
+		
+		MobclickAgent.onPause(this);
 	}
 
 	public void SaveToServer(CurrentPlayData tempCurrentPlayData,int playback_time, int duration) {
@@ -796,6 +797,8 @@ public class VideoPlayerActivity extends Activity {
 	public void onResume() {
 		mPlayer.onResume();
 		super.onResume();
+		
+		MobclickAgent.onResume(this);
 	}
 
 	@Override
