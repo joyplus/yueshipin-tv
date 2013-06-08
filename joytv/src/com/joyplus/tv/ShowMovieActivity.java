@@ -39,6 +39,7 @@ import com.joyplus.tv.ui.NavigateView.OnResultListener;
 import com.joyplus.tv.ui.WaitingDialog;
 import com.joyplus.tv.utils.ItemStateUtils;
 import com.joyplus.tv.utils.Log;
+import com.umeng.analytics.MobclickAgent;
 
 public class ShowMovieActivity extends AbstractShowActivity {
 
@@ -268,12 +269,23 @@ public class ShowMovieActivity extends AbstractShowActivity {
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
+		
+		MobclickAgent.onResume(this);
+		
 		if(app.getUserInfo()!=null){
 			aq.id(R.id.iv_head_user_icon).image(
 					app.getUserInfo().getUserAvatarUrl(), false, true, 0,
 					R.drawable.avatar_defult);
 			aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
 		}
+	}
+	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		
+		MobclickAgent.onPause(this);
 	}
 
 	@Override
