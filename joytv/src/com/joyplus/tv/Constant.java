@@ -5,12 +5,12 @@ import android.os.Environment;
 public class Constant {
 	
 //	// 正式环境
-	public static boolean TestEnv = false;
-	public static final String BASE_URL = "http://api.joyplus.tv/joyplus-service/index.php/";
-	public static String DEFAULT_APPKEY = "ijoyplus_android_0001";
-	public static String APPKEY = "ijoyplus_android_0001";
-	public static final String FAYESERVERURL = "http://comet.joyplus.tv:8080/bindtv";
-	public static final String FAYESERVERURL_CHECKBAND = "http://comet.joyplus.tv:8080/api/check_binding";
+//	public static boolean TestEnv = false;
+//	public static final String BASE_URL = "http://api.joyplus.tv/joyplus-service/index.php/";
+//	public static String DEFAULT_APPKEY = "ijoyplus_android_0001";
+//	public static String APPKEY = "ijoyplus_android_0001";
+//	public static final String FAYESERVERURL = "http://comet.joyplus.tv:8080/bindtv";
+//	public static final String FAYESERVERURL_CHECKBAND = "http://comet.joyplus.tv:8080/api/check_binding";
 //	
 	
 	/*
@@ -29,18 +29,18 @@ public class Constant {
 	 */
 	
 //	//测试环境控制
-//	public static boolean TestEnv = true;
+	public static boolean TestEnv = true;
 ////	
 ////	//测试环境
-//	 public static final String BASE_URL =
-//	 "http://apitest.yue001.com/joyplus-service/index.php/";
-//	 public static String DEFAULT_APPKEY = "ijoyplus_android_0001bj";
-//	 public static String APPKEY = "ijoyplus_android_0001bj";
-//
-//	 public static final String FAYESERVERURL =
-//	 "http://comettest.joyplus.tv:8000/bindtv";//测试
-//	 public static final String FAYESERVERURL_CHECKBAND =
-//	 "http://comettest.joyplus.tv:8000/api/check_binding";//测试
+	 public static final String BASE_URL =
+	 "http://apitest.yue001.com/joyplus-service/index.php/";
+	 public static String DEFAULT_APPKEY = "ijoyplus_android_0001bj";
+	 public static String APPKEY = "ijoyplus_android_0001bj";
+
+	 public static final String FAYESERVERURL =
+	 "http://comettest.joyplus.tv:8000/bindtv";//测试
+	 public static final String FAYESERVERURL_CHECKBAND =
+	 "http://comettest.joyplus.tv:8000/api/check_binding";//测试
 
 	
 	// 我们的sina账号
