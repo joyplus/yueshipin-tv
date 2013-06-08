@@ -64,7 +64,7 @@ public class FayeClient implements Listener {
     private static final String VALUE_MIN_VERSION       = "1.0beta";
     private static final String VALUE_CONN_TYPE         = "websocket";
 
-    private static final long RECONNECT_WAIT            = 10000;
+    private static final long RECONNECT_WAIT            = 2000;
     private static final int MAX_CONNECTION_ATTEMPTS    = 0;
 
     private WebSocketClient mClient;
@@ -159,7 +159,7 @@ public class FayeClient implements Listener {
      * @param json
      *            JSON object containing message to be sent to server
      */
-    public void sendMessage(JSONObject json) {
+    public void sendMessage(JSONObject json) throws Exception{
         publish(json, mConnectionExtension);
     }
 
@@ -167,10 +167,11 @@ public class FayeClient implements Listener {
 
         if (mClient != null) {
             mClient.disconnect();
-            mClient = null;
+//            mClient = null;
         }
 
         mClient = new WebSocketClient(getHandler(), mFayeUrl, this, null);
+        Log.d(TAG, mClient.toString());
         mClient.connect();
     }
 
@@ -274,8 +275,8 @@ public class FayeClient implements Listener {
             JSONObject json = new JSONObject();
             json.put(KEY_CHANNEL, DISCONNECT_CHANNEL);
             json.put(KEY_CLIENT_ID, mFayeClientId);
-
-            mClient.send(json.toString());
+        	mClient.send(json.toString());
+            
 
         } catch (JSONException ex) {
             Log.e(TAG, "Handshake Failed", ex);
@@ -361,15 +362,13 @@ public class FayeClient implements Listener {
      *            Bayeux extension authentication that exchanges authentication
      *            credentials and tokens within Bayeux messages ext fields
      */
-    public void publish(JSONObject message, JSONObject extension) {
+    public void publish(JSONObject message, JSONObject extension) throws Exception{
 
         String channel        = mActiveSubChannel;
         long number            = (new Date()).getTime();
         String messageId    = String.format("msg_%d_%d", number, 1);
-
+        JSONObject json = new JSONObject();
         try {
-
-            JSONObject json = new JSONObject();
             json.put(KEY_CHANNEL, channel);
             json.put(KEY_CLIENT_ID, mFayeClientId);
             json.put(KEY_DATA, message);
@@ -378,11 +377,15 @@ public class FayeClient implements Listener {
             if (null != extension) {
                 json.put(KEY_EXT, extension);
             }
-
-            mClient.send(json.toString());
-
-        } catch (JSONException ex) {
-            Log.e(TAG, "Handshake Failed", ex);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        if(mClient==null){
+        	mConnected = false;
+//        	onError(null);
+        	throw new NullPointerException("mClient is null");
+        }else{
+        	mClient.send(json.toString());
         }
     }
 
@@ -438,8 +441,10 @@ public class FayeClient implements Listener {
     @Override
     public void onError(Exception error) {
 
-        Log.w(TAG, "resetWebSocketConnection " + error.getMessage(), error);
+        Log.w(TAG, "resetWebSocketConnection -------------->");
 
+        mConnected = false;
+//        mFayeListener.disconnectedFromServer();
         if (!mReconnecting) {
 
             mReconnecting = true;
@@ -610,6 +615,10 @@ public class FayeClient implements Listener {
         }
 
         return isSubscribed;
+    }
+    
+    public boolean isConnect(){
+    	return mConnected;
     }
 
     public interface FayeListener {

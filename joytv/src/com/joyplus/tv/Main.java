@@ -313,6 +313,7 @@ public class Main extends Activity implements OnItemSelectedListener,
 								highlightImageView_1.setImageDrawable(img
 										.getDrawable());
 							} else {
+								highlightImageView_1.setImageDrawable(null);
 								aq.id(highlightImageView_1)
 										.image(hot_list.get(gallery1
 												.getSelectedItemPosition()).prod_pic_url,
@@ -421,6 +422,7 @@ public class Main extends Activity implements OnItemSelectedListener,
 									highlightImageView_2.setImageDrawable(img2
 											.getDrawable());
 								} else {
+									highlightImageView_2.setImageDrawable(null);
 									aq.id(highlightImageView_2)
 											.image(yuedan_list.get(gallery1
 													.getSelectedItemPosition()).pic_url,
@@ -640,6 +642,23 @@ public class Main extends Activity implements OnItemSelectedListener,
 						R.drawable.avatar_defult);
 				aq.id(R.id.tv_head_user_name).text(
 						app.getUserInfo().getUserName());
+				
+				
+				// 需要网络连接
+				Bitmap tempBitmap = CreateBarCode();
+				if(tempBitmap == null) {//如果返回的Bitmap为空，那就隐藏二维码扫描功能，并且不开启service
+					
+					myView.setVisibility(View.INVISIBLE);
+				} else {//如果不为空，照常开启
+					
+					erweimaImage.setImageBitmap(tempBitmap);
+					
+					IntentFilter filter = new IntentFilter();
+					filter.addAction(FayeService.ACTION_RECIVEACTION_BAND);
+					filter.addAction(FayeService.ACTION_RECIVEACTION_UNBAND);
+					registerReceiver(receiver, filter);
+				}
+				
 				getHistoryServiceData();
 				break;
 			case MESSAGE_STEP1_SUCESS:// 热播列表加载完成
@@ -727,21 +746,6 @@ public class Main extends Activity implements OnItemSelectedListener,
 	// 数据初始化
 
 	private void initNetWorkData() {
-
-		// 需要网络连接
-		Bitmap tempBitmap = CreateBarCode();
-		if(tempBitmap == null) {//如果返回的Bitmap为空，那就隐藏二维码扫描功能，并且不开启service
-			
-			myView.setVisibility(View.INVISIBLE);
-		} else {//如果不为空，照常开启
-			
-			erweimaImage.setImageBitmap(tempBitmap);
-			
-			IntentFilter filter = new IntentFilter();
-			filter.addAction(FayeService.ACTION_RECIVEACTION_BAND);
-			filter.addAction(FayeService.ACTION_RECIVEACTION_UNBAND);
-			registerReceiver(receiver, filter);
-		}
 
 		headers.put("app_key", Constant.APPKEY);
 		headers.put("client", "tv");
@@ -927,6 +931,7 @@ public class Main extends Activity implements OnItemSelectedListener,
 			}
 
 		} else {
+			app.SaveUserData("isBand", "0");
 			handler.sendEmptyMessage(MESSAGE_UPDATEUSER);
 		}
 	}
@@ -1025,6 +1030,7 @@ public class Main extends Activity implements OnItemSelectedListener,
 						highlightImageView_1
 								.setImageDrawable(img.getDrawable());
 					} else {
+						highlightImageView_1.setImageDrawable(null);
 						aq.id(highlightImageView_1).image(
 								hot_list.get(arg2).prod_pic_url, true, true);
 					}
@@ -1134,6 +1140,7 @@ public class Main extends Activity implements OnItemSelectedListener,
 								highlightImageView_2.setImageDrawable(img2
 										.getDrawable());
 							} else {
+								highlightImageView_2.setImageDrawable(null);
 								aq.id(highlightImageView_2)
 										.image(yuedan_list.get(gallery1
 												.getSelectedItemPosition()).pic_url,
