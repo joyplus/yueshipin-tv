@@ -1,6 +1,7 @@
 package com.joyplus.tv;
 
 import com.androidquery.AQuery;
+import com.umeng.analytics.MobclickAgent;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -22,9 +23,22 @@ public class AboutActivity extends Activity {
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		aq.id(R.id.iv_head_user_icon).image(
-				app.getUserInfo().getUserAvatarUrl(), false, true, 0,
-				R.drawable.avatar_defult);
-		aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
+		
+		MobclickAgent.onResume(this);
+		
+		if(app.getUserInfo()!=null){
+			aq.id(R.id.iv_head_user_icon).image(
+					app.getUserInfo().getUserAvatarUrl(), false, true, 0,
+					R.drawable.avatar_defult);
+			aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
+		}
+	}
+	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		
+		MobclickAgent.onPause(this);
 	}
 }

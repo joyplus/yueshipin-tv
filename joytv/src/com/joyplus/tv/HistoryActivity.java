@@ -39,6 +39,7 @@ import com.joyplus.tv.Video.VideoPlayerActivity;
 import com.joyplus.tv.entity.HotItemInfo;
 import com.joyplus.tv.utils.ItemStateUtils;
 import com.joyplus.tv.utils.Log;
+import com.umeng.analytics.MobclickAgent;
 
 public class HistoryActivity extends Activity implements OnClickListener, OnItemSelectedListener,OnFocusChangeListener {
 	private static final String TAG = "HistoryActivity";
@@ -757,12 +758,23 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
+		
+		MobclickAgent.onResume(this);
+		
 		if(app.getUserInfo()!=null){
 			aq.id(R.id.iv_head_user_icon).image(
 					app.getUserInfo().getUserAvatarUrl(), false, true, 0,
 					R.drawable.avatar_defult);
 			aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
 		}
+	}
+	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		
+		MobclickAgent.onPause(this);
 	}
 	
 	
