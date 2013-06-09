@@ -68,7 +68,6 @@ import com.joyplus.tv.Adapters.CurrentPlayData;
 import com.joyplus.tv.Adapters.MainHotItemAdapter;
 import com.joyplus.tv.Adapters.MainLibAdapter;
 import com.joyplus.tv.Adapters.MainYueDanItemAdapter;
-import com.joyplus.tv.HistoryActivity.HistortyAdapter;
 import com.joyplus.tv.Service.Return.ReturnMainHot;
 import com.joyplus.tv.Service.Return.ReturnTops;
 import com.joyplus.tv.Service.Return.ReturnUserPlayHistories;
@@ -204,6 +203,8 @@ public class Main extends Activity implements OnItemSelectedListener,
 	private boolean isWifiReset = false;// wifi网络是否重新设置
 
 	private ImageView erweimaImage;//二维码显示
+	
+	private boolean isRegesterService = false;
 
 	// private Handler mHandler = new Handler();
 
@@ -657,6 +658,8 @@ public class Main extends Activity implements OnItemSelectedListener,
 					filter.addAction(FayeService.ACTION_RECIVEACTION_BAND);
 					filter.addAction(FayeService.ACTION_RECIVEACTION_UNBAND);
 					registerReceiver(receiver, filter);
+					
+					isRegesterService = true;
 				}
 				
 				getHistoryServiceData();
@@ -815,7 +818,7 @@ public class Main extends Activity implements OnItemSelectedListener,
 		if (aq != null)
 			aq.dismiss();
 
-		if (isNetWorkFine) {
+		if (isNetWorkFine && isRegesterService) {
 
 			unregisterReceiver(receiver);
 		}
@@ -2276,8 +2279,15 @@ public class Main extends Activity implements OnItemSelectedListener,
 									// TODO Auto-generated method stub
 									// wifi设置
 									isWifiReset = true;
-									startActivity(new Intent(
-											Settings.ACTION_SETTINGS));
+									try {
+										startActivity(new Intent(
+												Settings.ACTION_SETTINGS));
+									} catch (Exception e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+										
+										app.MyToast(getApplicationContext(), "自行进入系统网络设置界面");
+									}
 
 								}
 							})
