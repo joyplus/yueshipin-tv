@@ -1202,6 +1202,11 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 	private List<URLS_INDEX> getBofangList(int index){
 		List<URLS_INDEX> list = new ArrayList<URLS_INDEX>();
 		
+		if(index >= date.tv.episodes.length) {
+			
+			return null;
+		}
+		
 		DOWN_URLS[] urls = date.tv.episodes[index].down_urls;
 		if(urls==null){
 			return null;
