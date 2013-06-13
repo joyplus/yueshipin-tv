@@ -56,7 +56,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joyplus.tv.App;
 import com.joyplus.tv.Constant;
 import com.joyplus.tv.R;
-import com.joyplus.tv.StatisticsUtils;
 import com.joyplus.tv.Adapters.CurrentPlayData;
 import com.joyplus.tv.Service.Return.ReturnProgramView;
 import com.joyplus.tv.Service.Return.ReturnProgramView.DOWN_URLS;
@@ -65,7 +64,9 @@ import com.joyplus.tv.entity.HotItemInfo;
 import com.joyplus.tv.utils.BangDanKey;
 import com.joyplus.tv.utils.DataBaseItems.UserHistory;
 import com.joyplus.tv.utils.DataBaseItems.UserShouCang;
+import com.joyplus.tv.utils.DBUtils;
 import com.joyplus.tv.utils.Log;
+import com.joyplus.tv.utils.UtilTools;
 import com.umeng.analytics.MobclickAgent;
 
 /**
@@ -166,14 +167,14 @@ public class VideoPlayerActivity extends Activity {
 					||prod_type == Integer.valueOf(BangDanKey.TV_TYPE)
 					||prod_type == Integer.valueOf(BangDanKey.ZONGYI_TYPE)) {
 				
-				dbCurEpisode = StatisticsUtils.getTopPlayerCurEpisode(getApplicationContext(),
-						StatisticsUtils.getCurrentUserId(getApplicationContext()), prod_id);
+				dbCurEpisode = DBUtils.getTopPlayerCurEpisode(getApplicationContext(),
+						UtilTools.getCurrentUserId(getApplicationContext()), prod_id);
 				if(dbCurEpisode != null && !dbCurEpisode.equals("")) {
 					
 					if(prod_name.contains(dbCurEpisode)) {//如果名字中含有当前集数，那就播放过 取消置顶状态
 						
-						StatisticsUtils.cancelAPlayTopState(getApplicationContext(),
-								StatisticsUtils.getCurrentUserId(getApplicationContext()), prod_id);
+						DBUtils.cancelAPlayTopState(getApplicationContext(),
+								UtilTools.getCurrentUserId(getApplicationContext()), prod_id);
 					}
 				}
 				
@@ -519,8 +520,8 @@ public class VideoPlayerActivity extends Activity {
 					
 					if(tempProName.contains(dbCurEpisode)) {//如果名字中含有当前集数，那就播放过 取消置顶状态
 						
-						StatisticsUtils.cancelAPlayTopState(getApplicationContext(),
-								StatisticsUtils.getCurrentUserId(getApplicationContext()), prod_id);
+						DBUtils.cancelAPlayTopState(getApplicationContext(),
+								UtilTools.getCurrentUserId(getApplicationContext()), prod_id);
 					}
 				}
 				
@@ -761,7 +762,7 @@ public class VideoPlayerActivity extends Activity {
 		SQLiteDatabase database = helper.getWritableDatabase();// 获取写db
 		
 		String selection = UserShouCang.USER_ID + "=? and " + UserHistory.PRO_ID + "=?";// 通过用户id，找到相应信息
-		String[] selectionArgs = { StatisticsUtils.getCurrentUserId(getApplicationContext()),prod_id };
+		String[] selectionArgs = { UtilTools.getCurrentUserId(getApplicationContext()),prod_id };
 		
 		database.delete(TvDatabaseHelper.HISTORY_TABLE_NAME, selection,
 				selectionArgs);
@@ -779,8 +780,8 @@ public class VideoPlayerActivity extends Activity {
 		info.video_url = tempCurrentPlayData.prod_url;
 		info.duration = duration + "";
 				
-		StatisticsUtils.insertHotItemInfo2DB_History(getApplicationContext(), info,
-				StatisticsUtils.getCurrentUserId(getApplicationContext()), database);
+		DBUtils.insertHotItemInfo2DB_History(getApplicationContext(), info,
+				UtilTools.getCurrentUserId(getApplicationContext()), database);
 		
 		helper.closeDatabase();
 
@@ -873,24 +874,24 @@ public class VideoPlayerActivity extends Activity {
 		if (tempCurrentPlayData != null) {
 			switch (tempCurrentPlayData.prod_type) {
 			case 1:
-				StatisticsUtils.StatisticsClicksShow(new AQuery(this), app,
+				UtilTools.StatisticsClicksShow(new AQuery(this), app,
 						prod_id, prod_name, "", 1);
 				break;
 			case 131:
-				StatisticsUtils.StatisticsClicksShow(new AQuery(this), app,
+				UtilTools.StatisticsClicksShow(new AQuery(this), app,
 						prod_id, prod_name, tempCurrentPlayData.CurrentIndex + "",
 						131);
 				break;
 			case 2:
 
-				StatisticsUtils.StatisticsClicksShow(new AQuery(this), app,
+				UtilTools.StatisticsClicksShow(new AQuery(this), app,
 						prod_id, prod_name, tempCurrentPlayData.CurrentIndex + "",
 						2);
 
 				break;
 			case 3:
 
-				StatisticsUtils.StatisticsClicksShow(new AQuery(this), app,
+				UtilTools.StatisticsClicksShow(new AQuery(this), app,
 						prod_id, prod_name, tempCurrentPlayData.CurrentIndex + "",
 						3);
 

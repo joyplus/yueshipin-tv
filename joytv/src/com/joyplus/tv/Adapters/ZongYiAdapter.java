@@ -19,7 +19,6 @@ import android.widget.TextView;
 
 import com.androidquery.AQuery;
 import com.joyplus.tv.R;
-import com.joyplus.tv.StatisticsUtils;
 import com.joyplus.tv.entity.GridViewItemHodler;
 import com.joyplus.tv.entity.MovieItemData;
 import com.joyplus.tv.utils.AsyncImageLoader;
@@ -27,6 +26,7 @@ import com.joyplus.tv.utils.BangDanKey;
 import com.joyplus.tv.utils.JieMianConstant;
 import com.joyplus.tv.utils.Log;
 import com.joyplus.tv.utils.OnImageLoadListener;
+import com.joyplus.tv.utils.UtilTools;
 
 public class ZongYiAdapter extends BaseAdapter implements JieMianConstant{
 	private static final String TAG = "ZongYiAdapter";
@@ -179,7 +179,7 @@ public class ZongYiAdapter extends BaseAdapter implements JieMianConstant{
 		if(isShoucangShow) {
 			
 			//首先拿到收藏数 如果收藏数不能被5整除，凑满，整除
-			if(StatisticsUtils.isPostionEmpty(position, shouCangCount)) {
+			if(UtilTools.isPostionEmpty(position, shouCangCount)) {
 				
 				convertView.setVisibility(View.INVISIBLE);
 				
@@ -189,7 +189,7 @@ public class ZongYiAdapter extends BaseAdapter implements JieMianConstant{
 			}
 			
 			//显示其他
-			if(StatisticsUtils.isPositionShowQitaTitle(position, shouCangCount)) {
+			if(UtilTools.isPositionShowQitaTitle(position, shouCangCount)) {
 				
 				AbsListView.LayoutParams paramsTv = new AbsListView.LayoutParams(
 						width, 31);
@@ -197,7 +197,7 @@ public class ZongYiAdapter extends BaseAdapter implements JieMianConstant{
 				tv.setBackgroundColor(context.getResources().getColor(R.color.menu_bg));
 				
 				//显示文字
-				if(StatisticsUtils.isPostionShowText(position, shouCangCount)) {
+				if(UtilTools.isPostionShowText(position, shouCangCount)) {
 					
 					tv.setText(qita_name);
 					
@@ -257,16 +257,16 @@ public class ZongYiAdapter extends BaseAdapter implements JieMianConstant{
 			
 			if(proType.equals("1")) {
 				
-				viewItemHodler.scoreTv.setText(StatisticsUtils.formateScore(movieList.get(position).getMovieScore()));
+				viewItemHodler.scoreTv.setText(UtilTools.formateScore(movieList.get(position).getMovieScore()));
 				String duration = movieList.get(position).getMovieDuration();
 				if(duration != null && !duration.equals("")) {
 					
-					viewItemHodler.otherInfo.setText(StatisticsUtils.formatMovieDuration(duration));
+					viewItemHodler.otherInfo.setText(UtilTools.formatMovieDuration(duration));
 				}
 				
 			} else if(proType.equals("2") || proType.equals("131")){
 				
-				viewItemHodler.scoreTv.setText(StatisticsUtils.formateScore(movieList.get(position).getMovieScore()));
+				viewItemHodler.scoreTv.setText(UtilTools.formateScore(movieList.get(position).getMovieScore()));
 				String curEpisode = movieList.get(position).getMovieCurEpisode();
 				String maxEpisode = movieList.get(position).getMovieMaxEpisode();
 				
@@ -299,7 +299,7 @@ public class ZongYiAdapter extends BaseAdapter implements JieMianConstant{
 				String curEpisode = movieList.get(position).getMovieCurEpisode();
 				if(curEpisode != null && !curEpisode.equals("")) {
 					
-					viewItemHodler.otherInfo.setText(StatisticsUtils.formateZongyi(curEpisode, context));
+					viewItemHodler.otherInfo.setText(UtilTools.formateZongyi(curEpisode, context));
 				}
 			}
 		}

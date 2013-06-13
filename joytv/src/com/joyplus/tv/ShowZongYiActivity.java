@@ -36,8 +36,11 @@ import com.joyplus.tv.ui.MyMovieGridView;
 import com.joyplus.tv.ui.NavigateView;
 import com.joyplus.tv.ui.NavigateView.OnResultListener;
 import com.joyplus.tv.ui.WaitingDialog;
+import com.joyplus.tv.utils.DBUtils;
 import com.joyplus.tv.utils.ItemStateUtils;
 import com.joyplus.tv.utils.Log;
+import com.joyplus.tv.utils.UtilTools;
+import com.joyplus.tv.utils.URLUtils;
 import com.umeng.analytics.MobclickAgent;
 
 public class ShowZongYiActivity extends AbstractShowActivity {
@@ -110,13 +113,13 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 			}
 		} else {
 			
-			userId = StatisticsUtils.getCurrentUserId(getApplicationContext());
+			userId = UtilTools.getCurrentUserId(getApplicationContext());
 		}
 		
 		if(userId != null) {
 			
-			shoucangList = StatisticsUtils.getList4DB(getApplicationContext(), 
-					StatisticsUtils.getCurrentUserId(getApplicationContext()), ZONGYI_TYPE);
+			shoucangList = DBUtils.getList4DB(getApplicationContext(), 
+					UtilTools.getCurrentUserId(getApplicationContext()), ZONGYI_TYPE);
 		}
 		
 		if(shoucangList != null && !shoucangList.isEmpty()) {
@@ -144,7 +147,7 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 		playGv.requestFocus();
 		playGv.setSelection(-1);
 		showDialog(DIALOG_WAITING);
-		getQuanbuData(StatisticsUtils.getZongyi_QuanAllFirstURL());
+		getQuanbuData(URLUtils.getZongyi_QuanAllFirstURL());
 	}
 
 	@Override
@@ -506,9 +509,9 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 				if(isShowShoucang) {
 					
 					int shoucangNum = shoucangList.size();
-					if(!StatisticsUtils.isPostionEmpty(position, shoucangNum)) {
+					if(!UtilTools.isPostionEmpty(position, shoucangNum)) {
 						
-						if(StatisticsUtils.isPositionShowQitaTitle(position, shoucangNum)) {
+						if(UtilTools.isPositionShowQitaTitle(position, shoucangNum)) {
 							Log.i(TAG, "Position:--->" + position + " isGridViewUp--->" + isGridViewUp);
 							if(isGridViewUp) {
 								
@@ -554,10 +557,10 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 						//当前位置为空的组件
 						if(isGridViewUp) {//向上
 							
-							playGv.setSelection(StatisticsUtils.stepToFirstInThisRow(position));
+							playGv.setSelection(UtilTools.stepToFirstInThisRow(position));
 						} else {//向下
 							
-							playGv.setSelection(StatisticsUtils.stepToFirstInThisRow(position));
+							playGv.setSelection(UtilTools.stepToFirstInThisRow(position));
 						}
 						
 					}
@@ -606,7 +609,7 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 
 				// 缓存
 				int size = searchAdapter.getMovieList().size();
-				if (size - 1 - firstAndLastVisible[1] < StatisticsUtils.CACHE_NUM) {
+				if (size - 1 - firstAndLastVisible[1] < URLUtils.CACHE_NUM) {
 
 					if (isNextPagePossibles[currentListIndex]) {
 
@@ -688,10 +691,10 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 			resetGvActive();
 			showDialog(DIALOG_WAITING);
 			search = searchStr;
-			StatisticsUtils.clearList(lists[SEARCH]);
+			UtilTools.clearList(lists[SEARCH]);
 			currentListIndex = SEARCH;
 //			String url = StatisticsUtils.getSearch_FirstURL(searchStr);
-			String url = StatisticsUtils.getSearch_Zongyi_FirstURL(searchStr);
+			String url = URLUtils.getSearch_Zongyi_FirstURL(searchStr);
 			getFilterData(url);
 		}
 	}
@@ -702,7 +705,7 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 
 		for (int i = 0; i < lists.length; i++) {
 
-			StatisticsUtils.clearList(lists[i]);
+			UtilTools.clearList(lists[i]);
 		}
 	}
 
@@ -759,10 +762,10 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 
 			if(SEARCH == currentListIndex || QUAN_FILTER == currentListIndex) {//只有搜索和连续两次点击出现筛界面下拉才在这判断
 				
-				if (list.size() == StatisticsUtils.FIRST_NUM) {
+				if (list.size() == URLUtils.FIRST_NUM) {
 
 					isNextPagePossibles[currentListIndex] = true;
-				} else if (list.size() < StatisticsUtils.FIRST_NUM) {
+				} else if (list.size() < URLUtils.FIRST_NUM) {
 
 					isNextPagePossibles[currentListIndex] = false;
 				}
@@ -789,7 +792,7 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 
 		String quanbu = getString(R.string.quanbu_name);
 		String quanbufenlei = getString(R.string.quanbufenlei_name);
-		String tempStr = StatisticsUtils.getQuanBuFenLeiName(choice,
+		String tempStr = URLUtils.getQuanBuFenLeiName(choice,
 				quanbufenlei, quanbu);
 		mFenLeiBtn.setText(tempStr);
 
@@ -805,11 +808,11 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 		}
 
 		showDialog(DIALOG_WAITING);
-		StatisticsUtils.clearList(lists[QUAN_FILTER]);
+		UtilTools.clearList(lists[QUAN_FILTER]);
 		currentListIndex = QUAN_FILTER;
 		resetGvActive();
-		filterSource = StatisticsUtils.getFileterURL3Param(choice, quanbu);
-		String url = StatisticsUtils.getFilter_ZongyiFirstURL(filterSource);
+		filterSource = URLUtils.getFileterURL3Param(choice, quanbu);
+		String url = URLUtils.getFilter_ZongyiFirstURL(filterSource);
 		getFilterData(url);
 	}
 
@@ -867,7 +870,7 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 			}
 		}
 
-		if (list.size() == StatisticsUtils.CACHE_NUM) {
+		if (list.size() == URLUtils.CACHE_NUM) {
 
 			isNextPagePossibles[currentListIndex] = true;
 		} else {
@@ -966,7 +969,7 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 			
 			Log.d(TAG, json.toString());
 
-			refreshAdpter(StatisticsUtils.returnFilterMovieSearch_TVJson(json
+			refreshAdpter(UtilTools.returnFilterMovieSearch_TVJson(json
 					.toString()));
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
@@ -987,20 +990,20 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 		switch (index) {
 		case QUANBUFENLEI:
 			// getFilterData(StatisticsUtils.getTV_QuanAllCacheURL(pageNum));
-			getMoreFilterData(StatisticsUtils
+			getMoreFilterData(URLUtils
 					.getZongyi_QuanAllCacheURL(pageNum));
 			break;
 		case QUAN_TEN:
 
 			break;
 		case QUAN_FILTER:
-			getMoreFilterData(StatisticsUtils.getFilter_ZongyiCacheURL(
+			getMoreFilterData(URLUtils.getFilter_ZongyiCacheURL(
 					pageNum, filterSource));
 			break;
 		case SEARCH:
 //			getMoreFilterData(StatisticsUtils.getSearch_CacheURL(pageNum,
 //					search));
-			getMoreFilterData(StatisticsUtils.getSearch_Zongyi_CacheURL(pageNum, search));
+			getMoreFilterData(URLUtils.getSearch_Zongyi_CacheURL(pageNum, search));
 			break;
 
 		default:
@@ -1027,17 +1030,17 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 			
 			Log.d(TAG, json.toString());
 			
-			List<MovieItemData> temp10List = StatisticsUtils.returnFilterMovieSearch_TVJson(json
+			List<MovieItemData> temp10List = UtilTools.returnFilterMovieSearch_TVJson(json
 					.toString());
 			
-			if (temp10List.size() == StatisticsUtils.FIRST_NUM) {
+			if (temp10List.size() == URLUtils.FIRST_NUM) {
 
 				isNextPagePossibles[currentListIndex] = true;
 			}
 			
 			if(isShowShoucang) {
 				
-				int tianchongEmpty = StatisticsUtils.tianchongEmptyItem(shoucangList.size());
+				int tianchongEmpty = UtilTools.tianchongEmptyItem(shoucangList.size());
 				
 				Log.i(TAG, "tianchongEmpty--->" + tianchongEmpty + " temp10List" + temp10List.size());
 				
@@ -1101,7 +1104,7 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 				return;
 			
 			Log.d(TAG, json.toString());
-			notifyAdapter(StatisticsUtils.returnFilterMovieSearch_TVJson(json
+			notifyAdapter(UtilTools.returnFilterMovieSearch_TVJson(json
 					.toString()));
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block

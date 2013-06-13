@@ -36,8 +36,11 @@ import com.joyplus.tv.ui.MyMovieGridView;
 import com.joyplus.tv.ui.NavigateView;
 import com.joyplus.tv.ui.NavigateView.OnResultListener;
 import com.joyplus.tv.ui.WaitingDialog;
+import com.joyplus.tv.utils.DBUtils;
 import com.joyplus.tv.utils.ItemStateUtils;
 import com.joyplus.tv.utils.Log;
+import com.joyplus.tv.utils.UtilTools;
+import com.joyplus.tv.utils.URLUtils;
 import com.umeng.analytics.MobclickAgent;
 
 public class ShowDongManActivity extends AbstractShowActivity {
@@ -126,12 +129,12 @@ public class ShowDongManActivity extends AbstractShowActivity {
 			}
 		} else {
 			
-			userId = StatisticsUtils.getCurrentUserId(getApplicationContext());
+			userId = UtilTools.getCurrentUserId(getApplicationContext());
 		}
 		
 		if(userId != null) {
 			
-			shoucangList = StatisticsUtils.getList4DB(getApplicationContext(), userId, DONGMAN_TYPE);
+			shoucangList = DBUtils.getList4DB(getApplicationContext(), userId, DONGMAN_TYPE);
 		}
 		
 		
@@ -161,7 +164,7 @@ public class ShowDongManActivity extends AbstractShowActivity {
 
 		playGv.requestFocus();
 		playGv.setSelection(-1);
-		getQuan10Data(StatisticsUtils.getDongman_Quan10URL());
+		getQuan10Data(URLUtils.getDongman_Quan10URL());
 
 		/**
 		 * 因技术问题，不能解决
@@ -571,9 +574,9 @@ public class ShowDongManActivity extends AbstractShowActivity {
 				if(isShowShoucang) {
 					
 					int shoucangNum = shoucangList.size();
-					if(!StatisticsUtils.isPostionEmpty(position, shoucangNum)) {
+					if(!UtilTools.isPostionEmpty(position, shoucangNum)) {
 						
-						if(StatisticsUtils.isPositionShowQitaTitle(position, shoucangNum)) {
+						if(UtilTools.isPositionShowQitaTitle(position, shoucangNum)) {
 							Log.i(TAG, "Position:--->" + position + " isGridViewUp--->" + isGridViewUp);
 							if(isGridViewUp) {
 								
@@ -619,10 +622,10 @@ public class ShowDongManActivity extends AbstractShowActivity {
 						//当前位置为空的组件
 						if(isGridViewUp) {//向上
 							
-							playGv.setSelection(StatisticsUtils.stepToFirstInThisRow(position));
+							playGv.setSelection(UtilTools.stepToFirstInThisRow(position));
 						} else {//向下
 							
-							playGv.setSelection(StatisticsUtils.stepToFirstInThisRow(position));
+							playGv.setSelection(UtilTools.stepToFirstInThisRow(position));
 						}
 						
 					}
@@ -671,7 +674,7 @@ public class ShowDongManActivity extends AbstractShowActivity {
 
 				// 缓存
 				int size = searchAdapter.getMovieList().size();
-				if (size - 1 - firstAndLastVisible[1] < StatisticsUtils.CACHE_NUM) {
+				if (size - 1 - firstAndLastVisible[1] < URLUtils.CACHE_NUM) {
 
 					if (isNextPagePossibles[currentListIndex]) {
 
@@ -752,10 +755,10 @@ public class ShowDongManActivity extends AbstractShowActivity {
 			resetGvActive();
 			showDialog(DIALOG_WAITING);
 			search = searchStr;
-			StatisticsUtils.clearList(lists[SEARCH]);
+			UtilTools.clearList(lists[SEARCH]);
 			currentListIndex = SEARCH;
 //			String url = StatisticsUtils.getSearch_FirstURL(searchStr);
-			String url = StatisticsUtils.getSearch_Dongman_FirstURL(searchStr);
+			String url = URLUtils.getSearch_Dongman_FirstURL(searchStr);
 			getFilterData(url);
 		}
 	}
@@ -766,7 +769,7 @@ public class ShowDongManActivity extends AbstractShowActivity {
 
 		for (int i = 0; i < lists.length; i++) {
 
-			StatisticsUtils.clearList(lists[i]);
+			UtilTools.clearList(lists[i]);
 		}
 	}
 
@@ -827,10 +830,10 @@ public class ShowDongManActivity extends AbstractShowActivity {
 
 			if(SEARCH == currentListIndex || QUAN_FILTER == currentListIndex) {//只有搜索和连续两次点击出现筛界面下拉才在这判断
 				
-				if (list.size() == StatisticsUtils.FIRST_NUM) {
+				if (list.size() == URLUtils.FIRST_NUM) {
 
 					isNextPagePossibles[currentListIndex] = true;
-				} else if (list.size() < StatisticsUtils.FIRST_NUM) {
+				} else if (list.size() < URLUtils.FIRST_NUM) {
 
 					isNextPagePossibles[currentListIndex] = false;
 				}
@@ -857,7 +860,7 @@ public class ShowDongManActivity extends AbstractShowActivity {
 
 		String quanbu = getString(R.string.quanbu_name);
 		String quanbufenlei = getString(R.string.quanbufenlei_name);
-		String tempStr = StatisticsUtils.getQuanBuFenLeiName(choice,
+		String tempStr = URLUtils.getQuanBuFenLeiName(choice,
 				quanbufenlei, quanbu);
 		mFenLeiBtn.setText(tempStr);
 
@@ -873,11 +876,11 @@ public class ShowDongManActivity extends AbstractShowActivity {
 		}
 
 		showDialog(DIALOG_WAITING);
-		StatisticsUtils.clearList(lists[QUAN_FILTER]);
+		UtilTools.clearList(lists[QUAN_FILTER]);
 		currentListIndex = QUAN_FILTER;
 		resetGvActive();
-		filterSource = StatisticsUtils.getFileterURL3Param(choice, quanbu);
-		String url = StatisticsUtils.getFilter_DongmanFirstURL(filterSource);
+		filterSource = URLUtils.getFileterURL3Param(choice, quanbu);
+		String url = URLUtils.getFilter_DongmanFirstURL(filterSource);
 		Log.i(TAG, "POP--->URL:" + url);
 		getFilterData(url);
 	}
@@ -937,7 +940,7 @@ public class ShowDongManActivity extends AbstractShowActivity {
 			}
 		}
 
-		if (list.size() == StatisticsUtils.CACHE_NUM) {
+		if (list.size() == URLUtils.CACHE_NUM) {
 
 			isNextPagePossibles[currentListIndex] = true;
 		} else {
@@ -1035,7 +1038,7 @@ public class ShowDongManActivity extends AbstractShowActivity {
 			
 			Log.d(TAG, json.toString());
 
-			refreshAdpter(StatisticsUtils
+			refreshAdpter(UtilTools
 					.returnTVBangDanList_YueDanListJson(json.toString()));
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
@@ -1067,7 +1070,7 @@ public class ShowDongManActivity extends AbstractShowActivity {
 			
 			Log.d(TAG, json.toString());
 
-			refreshAdpter(StatisticsUtils.returnFilterMovieSearch_TVJson(json
+			refreshAdpter(UtilTools.returnFilterMovieSearch_TVJson(json
 					.toString()));
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
@@ -1088,7 +1091,7 @@ public class ShowDongManActivity extends AbstractShowActivity {
 		switch (index) {
 		case QUANBUFENLEI:
 			// getFilterData(StatisticsUtils.getTV_QuanAllCacheURL(pageNum));
-			getMoreFilterData(StatisticsUtils
+			getMoreFilterData(URLUtils
 					.getDongman_QuanAllCacheURL(pageNum));
 			break;
 		case QUAN_TEN:
@@ -1096,44 +1099,44 @@ public class ShowDongManActivity extends AbstractShowActivity {
 			break;
 		case QUAN_FILTER:
 
-			getMoreFilterData(StatisticsUtils.getFilter_DongmanCacheURL(
+			getMoreFilterData(URLUtils.getFilter_DongmanCacheURL(
 					pageNum, filterSource));
 			break;
 		case SEARCH:
 
 //			getMoreFilterData(StatisticsUtils.getSearch_CacheURL(pageNum,
 //					search) + "&type=" + DONGMAN_TYPE);
-			getMoreFilterData(StatisticsUtils.getSearch_Dongman_CacheURL(pageNum, search));
+			getMoreFilterData(URLUtils.getSearch_Dongman_CacheURL(pageNum, search));
 			break;
 		case QINZI_QUAN:
 //			getMoreBangDanData(StatisticsUtils
 //					.getDongman_QinziCacheURL(pageNum));
-			getMoreFilterData(StatisticsUtils.getDongman_Qinzi_Quan_AllCacheURL(pageNum));
+			getMoreFilterData(URLUtils.getDongman_Qinzi_Quan_AllCacheURL(pageNum));
 			break;
 		case REXUE_QUAN:
 //			getMoreBangDanData(StatisticsUtils
 //					.getDongman_RexueCacheURL(pageNum));
-			getMoreFilterData(StatisticsUtils.getDongman_Rexue_Quan_AllCacheURL(pageNum));
+			getMoreFilterData(URLUtils.getDongman_Rexue_Quan_AllCacheURL(pageNum));
 			break;
 		case HOUGONG_XIAOYUAN_QUAN:
 //			getMoreBangDanData(StatisticsUtils
 //					.getDongman_HougongCacheURL(pageNum));
-			getMoreFilterData(StatisticsUtils.getDongman_Hougong_Quan_AllCacheURL(pageNum));
+			getMoreFilterData(URLUtils.getDongman_Hougong_Quan_AllCacheURL(pageNum));
 			break;
 		case TUILI_QUAN:
 //			getMoreBangDanData(StatisticsUtils
 //					.getDongman_TuiliCacheURL(pageNum));
-			getMoreFilterData(StatisticsUtils.getDongman_Tuili_Quan_AllCacheURL(pageNum));
+			getMoreFilterData(URLUtils.getDongman_Tuili_Quan_AllCacheURL(pageNum));
 			break;
 		case JIZHAN_QUAN:
 //			getMoreBangDanData(StatisticsUtils
 //					.getDongman_JizhanCacheURL(pageNum));
-			getMoreFilterData(StatisticsUtils.getDongman_Jizhan_Quan_AllCacheURL(pageNum));
+			getMoreFilterData(URLUtils.getDongman_Jizhan_Quan_AllCacheURL(pageNum));
 			break;
 		case GAOXIAO_QUAN:
 //			getMoreBangDanData(StatisticsUtils
 //					.getDongman_GaoxiaoCacheURL(pageNum));
-			getMoreFilterData(StatisticsUtils.getDongman_Gaoxiao_AllCacheURL(pageNum));
+			getMoreFilterData(URLUtils.getDongman_Gaoxiao_AllCacheURL(pageNum));
 			break;
 
 		default:
@@ -1163,7 +1166,7 @@ public class ShowDongManActivity extends AbstractShowActivity {
 				List<MovieItemData> temp10List = new ArrayList<MovieItemData>(
 						lists[QUAN_TEN]);
 				List<MovieItemData> tempList = new ArrayList<MovieItemData>();
-				tempList = StatisticsUtils.returnFilterMovieSearch_TVJson(json
+				tempList = UtilTools.returnFilterMovieSearch_TVJson(json
 						.toString());
 
 				for (MovieItemData movieItemData : tempList) {
@@ -1186,14 +1189,14 @@ public class ShowDongManActivity extends AbstractShowActivity {
 				}
 
 				Log.i(TAG, "Temp size:" + tempList.size());
-				if (tempList.size() == StatisticsUtils.CACHE_NUM) {
+				if (tempList.size() == URLUtils.CACHE_NUM) {
 
 					isNextPagePossibles[currentListIndex] = true;
 				}
 				
 				if(isShowShoucang) {
 					
-					int tianchongEmpty = StatisticsUtils.tianchongEmptyItem(shoucangList.size());
+					int tianchongEmpty = UtilTools.tianchongEmptyItem(shoucangList.size());
 					
 					Log.i(TAG, "tianchongEmpty--->" + tianchongEmpty + " temp10List" + temp10List.size());
 					
@@ -1253,7 +1256,7 @@ public class ShowDongManActivity extends AbstractShowActivity {
 //			notifyAdapter(StatisticsUtils
 //					.returnTVBangDanList_YueDanListJson(json.toString()));
 			
-			getUnQuanBuFirstSrviceData(StatisticsUtils
+			getUnQuanBuFirstSrviceData(UtilTools
 					.returnTVBangDanList_YueDanListJson(json.toString()));
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
@@ -1275,27 +1278,27 @@ public class ShowDongManActivity extends AbstractShowActivity {
 		
 		switch (currentListIndex) {
 		case QINZI:
-			url = StatisticsUtils.getDongman_Qinzi_Quan_FirstURL();
+			url = URLUtils.getDongman_Qinzi_Quan_FirstURL();
 			currentListIndex = QINZI_QUAN;
 			break;
 		case REXUE:
-			url = StatisticsUtils.getDongman_Rexue_Quan_FirstURL();
+			url = URLUtils.getDongman_Rexue_Quan_FirstURL();
 			currentListIndex = REXUE_QUAN;
 			break;
 		case HOUGONG_XIAOYUAN:
-			url = StatisticsUtils.getDongman_Hougong_Quan_FirstURL();
+			url = URLUtils.getDongman_Hougong_Quan_FirstURL();
 			currentListIndex = HOUGONG_XIAOYUAN_QUAN;
 			break;
 		case TUILI:
-			url = StatisticsUtils.getDongman_Tuili_Quan_FirstURL();
+			url = URLUtils.getDongman_Tuili_Quan_FirstURL();
 			currentListIndex = TUILI_QUAN;
 			break;
 		case JIZHAN:
-			url = StatisticsUtils.getDongman_Jizhan_Quan_FirstURL();
+			url = URLUtils.getDongman_Jizhan_Quan_FirstURL();
 			currentListIndex = JIZHAN_QUAN;
 			break;
 		case GAOXIAO:
-			url = StatisticsUtils.getDongman_Gaoxiao_Quan_FirstURL();
+			url = URLUtils.getDongman_Gaoxiao_Quan_FirstURL();
 			currentListIndex = GAOXIAO_QUAN;
 			break;
 		default:
@@ -1326,7 +1329,7 @@ public class ShowDongManActivity extends AbstractShowActivity {
 			
 			Log.d(TAG, json.toString());
 			
-			List<MovieItemData> tempList = StatisticsUtils.returnFilterMovieSearch_TVJson(json
+			List<MovieItemData> tempList = UtilTools.returnFilterMovieSearch_TVJson(json
 					.toString());
 			
 			if(currentListIndex == QUAN_FILTER || 
@@ -1338,34 +1341,34 @@ public class ShowDongManActivity extends AbstractShowActivity {
 				List<MovieItemData> tempList2 = new ArrayList<MovieItemData>();
 				
 				boolean isCache = false;
-				if(tempList.size() == StatisticsUtils.CACHE_NUM ) {
+				if(tempList.size() == URLUtils.CACHE_NUM ) {
 					
 					isCache = true;
 				}
 				
 				switch (currentListIndex) {
 				case QINZI_QUAN:
-					tempList2 = StatisticsUtils.getLists4TwoList(lists[QINZI],tempList );
+					tempList2 = UtilTools.getLists4TwoList(lists[QINZI],tempList );
 					isNextPagePossibles[QINZI_QUAN] = isCache;
 					break;
 				case REXUE_QUAN:
-					tempList2 = StatisticsUtils.getLists4TwoList(lists[REXUE],tempList );
+					tempList2 = UtilTools.getLists4TwoList(lists[REXUE],tempList );
 					isNextPagePossibles[REXUE_QUAN] = isCache;
 					break;
 				case HOUGONG_XIAOYUAN_QUAN:
-					tempList2 = StatisticsUtils.getLists4TwoList(lists[HOUGONG_XIAOYUAN],tempList );
+					tempList2 = UtilTools.getLists4TwoList(lists[HOUGONG_XIAOYUAN],tempList );
 					isNextPagePossibles[HOUGONG_XIAOYUAN_QUAN] = isCache;
 					break;
 				case TUILI_QUAN:
-					tempList2 = StatisticsUtils.getLists4TwoList(lists[TUILI],tempList );
+					tempList2 = UtilTools.getLists4TwoList(lists[TUILI],tempList );
 					isNextPagePossibles[TUILI_QUAN] = isCache;
 					break;
 				case JIZHAN_QUAN:
-					tempList2 = StatisticsUtils.getLists4TwoList(lists[JIZHAN],tempList );
+					tempList2 = UtilTools.getLists4TwoList(lists[JIZHAN],tempList );
 					isNextPagePossibles[JIZHAN_QUAN] = isCache;
 					break;
 				case GAOXIAO_QUAN:
-					tempList2 = StatisticsUtils.getLists4TwoList(lists[GAOXIAO],tempList );
+					tempList2 = UtilTools.getLists4TwoList(lists[GAOXIAO],tempList );
 					isNextPagePossibles[GAOXIAO_QUAN] = isCache;
 					break;
 				default:
@@ -1404,9 +1407,9 @@ public class ShowDongManActivity extends AbstractShowActivity {
 				return;
 			
 			Log.d(TAG, json.toString());
-			lists[QUAN_TEN] = StatisticsUtils
+			lists[QUAN_TEN] = UtilTools
 					.returnTVBangDanList_YueDanListJson(json.toString());
-			String urlNormal = StatisticsUtils.getDongman_QuanAllFirstURL();
+			String urlNormal = URLUtils.getDongman_QuanAllFirstURL();
 			currentListIndex = QUANBUFENLEI;
 			getQuanbuData(urlNormal);
 		} catch (JsonParseException e) {
@@ -1524,7 +1527,7 @@ public class ShowDongManActivity extends AbstractShowActivity {
 		case R.id.ll_qinzidongman:
 			currentListIndex = QINZI;
 			resetGvActive();
-			String url1 = StatisticsUtils.getDongman_QinziFirstURL();
+			String url1 = URLUtils.getDongman_QinziFirstURL();
 			if (lists[currentListIndex] != null
 					&& !lists[currentListIndex].isEmpty()) {
 
@@ -1539,7 +1542,7 @@ public class ShowDongManActivity extends AbstractShowActivity {
 		case R.id.ll_rexuedongman:
 			currentListIndex = REXUE;
 			resetGvActive();
-			String url2 = StatisticsUtils.getDongman_RexueFirstURL();
+			String url2 = URLUtils.getDongman_RexueFirstURL();
 			if (lists[currentListIndex] != null
 					&& !lists[currentListIndex].isEmpty()) {
 
@@ -1554,7 +1557,7 @@ public class ShowDongManActivity extends AbstractShowActivity {
 		case R.id.ll_hougongdongman:
 			currentListIndex = HOUGONG_XIAOYUAN;
 			resetGvActive();
-			String url3 = StatisticsUtils.getDongman_HougongFirstURL();
+			String url3 = URLUtils.getDongman_HougongFirstURL();
 
 			if (lists[currentListIndex] != null
 					&& !lists[currentListIndex].isEmpty()) {
@@ -1570,7 +1573,7 @@ public class ShowDongManActivity extends AbstractShowActivity {
 		case R.id.ll_tuilidongman:
 			currentListIndex = TUILI;
 			resetGvActive();
-			String url4 = StatisticsUtils.getDongman_TuiliFirstURL();
+			String url4 = URLUtils.getDongman_TuiliFirstURL();
 			if (lists[currentListIndex] != null
 					&& !lists[currentListIndex].isEmpty()) {
 
@@ -1585,7 +1588,7 @@ public class ShowDongManActivity extends AbstractShowActivity {
 		case R.id.ll_jizhandongman:
 			currentListIndex = JIZHAN;
 			resetGvActive();
-			String url5 = StatisticsUtils.getDongman_JizhanFirstURL();
+			String url5 = URLUtils.getDongman_JizhanFirstURL();
 			if (lists[currentListIndex] != null
 					&& !lists[currentListIndex].isEmpty()) {
 
@@ -1600,7 +1603,7 @@ public class ShowDongManActivity extends AbstractShowActivity {
 		case R.id.ll_gaoxiaodongman:
 			currentListIndex = GAOXIAO;
 			resetGvActive();
-			String url6 = StatisticsUtils.getDongman_GaoxiaoFirstURL();
+			String url6 = URLUtils.getDongman_GaoxiaoFirstURL();
 			if (lists[currentListIndex] != null
 					&& !lists[currentListIndex].isEmpty()) {
 

@@ -46,12 +46,14 @@ import com.joyplus.tv.entity.HotItemInfo;
 import com.joyplus.tv.entity.URLS_INDEX;
 import com.joyplus.tv.ui.WaitingDialog;
 import com.joyplus.tv.utils.BangDanKey;
+import com.joyplus.tv.utils.DBUtils;
 import com.joyplus.tv.utils.DefinationComparatorIndex;
 import com.joyplus.tv.utils.ItemStateUtils;
 import com.joyplus.tv.utils.JieMianConstant;
 import com.joyplus.tv.utils.Log;
 import com.joyplus.tv.utils.MyKeyEventKey;
 import com.joyplus.tv.utils.SouceComparatorIndex1;
+import com.joyplus.tv.utils.UtilTools;
 import com.umeng.analytics.MobclickAgent;
 
 public class ShowXiangqingZongYi extends Activity implements View.OnClickListener,
@@ -118,9 +120,9 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 		showDialog(DIALOG_WAITING);
 		
 		//从DB文件中获取历史播放集数
-		HotItemInfo info = StatisticsUtils.
+		HotItemInfo info = DBUtils.
 				getHotItemInfo4DB_History(getApplicationContext(),
-						StatisticsUtils.getCurrentUserId(getApplicationContext()), prod_id);
+						UtilTools.getCurrentUserId(getApplicationContext()), prod_id);
 		historyPlayProdSubName = info.prod_subname;
 		Log.i(TAG, "onCreate--->historyPlayIndex4DB:" + historyPlayIndex4DB);
 		
@@ -428,9 +430,9 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 				}
 				
 				//从DB文件中获取历史播放集数
-				HotItemInfo info = StatisticsUtils.
+				HotItemInfo info = DBUtils.
 						getHotItemInfo4DB_History(getApplicationContext(),
-								StatisticsUtils.getCurrentUserId(getApplicationContext()), prod_id);
+								UtilTools.getCurrentUserId(getApplicationContext()), prod_id);
 				if(info != null) {
 					
 //					int index = playData.CurrentIndex;
@@ -826,7 +828,7 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 //			}
 			String bigPicUrl = date.show.ipad_poster;
 			if(bigPicUrl == null || bigPicUrl.equals("")
-					||bigPicUrl.equals(StatisticsUtils.EMPTY)) {
+					||bigPicUrl.equals(UtilTools.EMPTY)) {
 				
 				bigPicUrl = date.show.poster;
 			}
@@ -1280,9 +1282,9 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 	public void cancelshoucangResult(String url, JSONObject json, AjaxStatus status){
 		
 		//闹钟开启的情况下，取消收藏删除数据库中相关数据
-		if(StatisticsUtils.is48TimeClock(getApplicationContext()))
-		StatisticsUtils.deleteData4ProId(getApplicationContext(), 
-				StatisticsUtils.getCurrentUserId(getApplicationContext()), prod_id);
+		if(UtilTools.is48TimeClock(getApplicationContext()))
+			DBUtils.deleteData4ProId(getApplicationContext(), 
+				UtilTools.getCurrentUserId(getApplicationContext()), prod_id);
 		
 		xiaiBt.setEnabled(true);
 		

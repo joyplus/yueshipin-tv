@@ -83,12 +83,15 @@ import com.joyplus.tv.ui.MyScrollLayout.OnViewChangeListener;
 import com.joyplus.tv.ui.UserInfo;
 import com.joyplus.tv.ui.WaitingDialog;
 import com.joyplus.tv.utils.BangDanKey;
+import com.joyplus.tv.utils.DBUtils;
 import com.joyplus.tv.utils.DataBaseItems;
 import com.joyplus.tv.utils.DataBaseItems.UserHistory;
 import com.joyplus.tv.utils.DataBaseItems.UserShouCang;
 import com.joyplus.tv.utils.DefinationComparatorIndex;
 import com.joyplus.tv.utils.Log;
 import com.joyplus.tv.utils.SouceComparatorIndex1;
+import com.joyplus.tv.utils.UtilTools;
+import com.joyplus.tv.utils.URLUtils;
 import com.saulpower.fayeclient.FayeService;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.update.UmengUpdateAgent;
@@ -694,7 +697,7 @@ public class Main extends Activity implements OnItemSelectedListener,
 				}
 
 				// 当悦单加载完成时，开始下载用户收藏数据，并插入到数据库
-				getShouCangData(StatisticsUtils.getShoucangURL(app
+				getShouCangData(URLUtils.getShoucangURL(app
 						.getUserInfo().getUserId()));
 
 				break;
@@ -889,8 +892,8 @@ public class Main extends Activity implements OnItemSelectedListener,
 					+ "?user_id="
 					+ app.getUserData("phoneID")
 					+ "&tv_channel="
-					+ (Constant.FAYECHANNEL_TV_BASE + StatisticsUtils
-							.MD5(StatisticsUtils.getUserId(this))).replace(
+					+ (Constant.FAYECHANNEL_TV_BASE + UtilTools
+							.MD5(UtilTools.getUserId(this))).replace(
 							Constant.FAYECHANNEL_TV_HEAD, "")
 							+"&app_key=ijoyplus_android_0001bj";
 			// String url = Constant.BASE_URL;
@@ -1401,7 +1404,7 @@ public class Main extends Activity implements OnItemSelectedListener,
 				playDate.prod_url = info.video_url;
 
 				// 清晰度
-				playDate.prod_qua = StatisticsUtils.string2Int(info.definition);
+				playDate.prod_qua = UtilTools.string2Int(info.definition);
 
 				Log.d(TAG, "url" + playDate.prod_url);
 				playDate.prod_src = info.source;
@@ -1445,7 +1448,7 @@ public class Main extends Activity implements OnItemSelectedListener,
 					playDate.prod_src = info.source;
 
 					// 清晰度
-					playDate.prod_qua = StatisticsUtils
+					playDate.prod_qua = UtilTools
 							.string2Int(info.definition);
 
 					if (!"".equals(info.playback_time)) {
@@ -1865,7 +1868,7 @@ public class Main extends Activity implements OnItemSelectedListener,
 			// item.prod_pic_url = result.histories[0].big_prod_pic_url;
 			String bigPicUrl = result.histories[0].big_prod_pic_url;
 			if (bigPicUrl == null || bigPicUrl.equals("")
-					|| bigPicUrl.equals(StatisticsUtils.EMPTY)) {
+					|| bigPicUrl.equals(UtilTools.EMPTY)) {
 
 				bigPicUrl = result.histories[0].prod_pic_url;
 			}
@@ -1915,7 +1918,7 @@ public class Main extends Activity implements OnItemSelectedListener,
 			}
 
 			hot_name_tv.setText(item.prod_name);
-			hot_score_tv.setText(StatisticsUtils.formateScore(item.score));
+			hot_score_tv.setText(UtilTools.formateScore(item.score));
 			hot_introduce_tv.setText(item.prod_summary);
 			hot_list.add(0, item);
 			hot_contentViews.add(0, hotView);
@@ -2038,7 +2041,7 @@ public class Main extends Activity implements OnItemSelectedListener,
 				}
 
 				hot_name_tv.setText(item.prod_name);
-				hot_score_tv.setText(StatisticsUtils.formateScore(item.score));
+				hot_score_tv.setText(UtilTools.formateScore(item.score));
 				hot_introduce_tv.setText(item.prod_summary);
 				hot_contentViews.add(hotView);
 			}
@@ -2226,7 +2229,7 @@ public class Main extends Activity implements OnItemSelectedListener,
 	private Bitmap CreateBarCode() {
 		// 根据字符串生成二维码图片并显示在界面上，第二个参数为图片的大小（350*350）
 		Bitmap b = null;
-		String macAddress = StatisticsUtils.getUserId(this);
+		String macAddress = UtilTools.getUserId(this);
 		String date = null;
 
 		if (macAddress == null) {
@@ -2236,7 +2239,7 @@ public class Main extends Activity implements OnItemSelectedListener,
 			return null;//如果不能获取无线网卡Mac地址，返回空的Bitmap
 		} else {
 
-			date = Constant.CHANNELHEADER + StatisticsUtils.MD5(macAddress);
+			date = Constant.CHANNELHEADER + UtilTools.MD5(macAddress);
 		}
 		// String
 		try {
@@ -2359,7 +2362,7 @@ public class Main extends Activity implements OnItemSelectedListener,
 			lastBandTimeView.setText("您还没有同步过哟~");
 		} else {
 			lastBandTimeView.setText("上次同步于:\t"
-					+ StatisticsUtils.getLastBandNotice(app
+					+ UtilTools.getLastBandNotice(app
 							.getUserData("lastTime")));
 		}
 	}
@@ -2431,12 +2434,12 @@ public class Main extends Activity implements OnItemSelectedListener,
 
 			Log.d(TAG, json.toString());
 			compareUsrFav4DB(
-					StatisticsUtils.returnUserFavoritiesJson(json.toString()),
+					UtilTools.returnUserFavoritiesJson(json.toString()),
 					app.getUserInfo().getUserId());
 			
 			//获取历史播放记录数据
-			getHistoryData(StatisticsUtils.
-					getHistoryURL(StatisticsUtils.getCurrentUserId(getApplicationContext())));
+			getHistoryData(URLUtils.
+					getHistoryURL(UtilTools.getCurrentUserId(getApplicationContext())));
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -2467,7 +2470,7 @@ public class Main extends Activity implements OnItemSelectedListener,
 
 			Log.d(TAG, json.toString());
 			compareUsrHis4DB(
-					StatisticsUtils.returnUserHistoryJson(json.toString()),
+					UtilTools.returnUserHistoryJson(json.toString()),
 					app.getUserInfo().getUserId());
 			
 		} catch (JsonParseException e) {
@@ -2515,7 +2518,7 @@ public class Main extends Activity implements OnItemSelectedListener,
 			
 			for(HotItemInfo info:list) {
 				
-				StatisticsUtils.insertHotItemInfo2DB_History(getApplicationContext(),
+				DBUtils.insertHotItemInfo2DB_History(getApplicationContext(),
 						info, userId, database);
 			}
 			
@@ -2597,13 +2600,13 @@ public class Main extends Activity implements OnItemSelectedListener,
 
 				// 以网络的数据为标准 A 数据库为B
 				// 相同list集合 network
-				List<HotItemInfo> sameList4NetWork = StatisticsUtils
+				List<HotItemInfo> sameList4NetWork = UtilTools
 						.sameList4NetWork(list, dbList);
 				// 相同list集合 network
-				List<HotItemInfo> sameList4DB = StatisticsUtils.sameList4DB(
+				List<HotItemInfo> sameList4DB = UtilTools.sameList4DB(
 						list, dbList);
 				// 不同数据集合 network
-				List<HotItemInfo> differentList = StatisticsUtils
+				List<HotItemInfo> differentList = UtilTools
 						.differentList4NetWork(list, dbList);
 				Log.i(TAG, "differentList---->" + differentList.size());
 
@@ -2633,7 +2636,7 @@ public class Main extends Activity implements OnItemSelectedListener,
 							if (!sameList4NetWork.get(i).cur_episode
 									.equals(sameList4DB.get(i).cur_episode)) {
 
-								StatisticsUtils.updateHotItemInfo2DB(
+								DBUtils.updateHotItemInfo2DB(
 										getApplicationContext(),
 										sameList4NetWork.get(i), userId,
 										database);
@@ -2651,7 +2654,7 @@ public class Main extends Activity implements OnItemSelectedListener,
 
 					HotItemInfo info = differentList.get(i);
 
-					StatisticsUtils.insertHotItemInfo2DB(
+					DBUtils.insertHotItemInfo2DB(
 							getApplicationContext(), info, userId, database);
 				}
 
@@ -2666,7 +2669,7 @@ public class Main extends Activity implements OnItemSelectedListener,
 				// 把下载的数据插入到数据库
 				for (HotItemInfo info : list) {
 
-					StatisticsUtils.insertHotItemInfo2DB(
+					DBUtils.insertHotItemInfo2DB(
 							getApplicationContext(), info, userId, database);
 				}
 			}
@@ -2688,7 +2691,7 @@ public class Main extends Activity implements OnItemSelectedListener,
 		// 本次是否有收藏更新成功
 		if (isUpdateThisTime) {// 如果成功更新
 
-			boolean is48TimeClock = StatisticsUtils
+			boolean is48TimeClock = UtilTools
 					.is48TimeClock(getApplicationContext());// 是否开启闹钟
 
 			AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
@@ -2701,11 +2704,11 @@ public class Main extends Activity implements OnItemSelectedListener,
 			am.set(AlarmManager.RTC_WAKEUP, time, pi);
 			if (!is48TimeClock) {// 如果闹钟没有开启，存储开启状态
 
-				StatisticsUtils.set48TimeClock(getApplicationContext(), true);
+				UtilTools.set48TimeClock(getApplicationContext(), true);
 			}
 		}
 
-		StatisticsUtils.setCurrentUserId(getApplicationContext(), userId);
+		UtilTools.setCurrentUserId(getApplicationContext(), userId);
 
 	}
 

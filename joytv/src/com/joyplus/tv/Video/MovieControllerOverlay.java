@@ -37,10 +37,10 @@ import android.widget.TextView;
 
 import com.joyplus.tv.App;
 import com.joyplus.tv.R;
-import com.joyplus.tv.StatisticsUtils;
 import com.joyplus.tv.Adapters.CurrentPlayData;
 import com.joyplus.tv.Service.Return.ReturnProgramView;
 import com.joyplus.tv.ui.ArcView;
+import com.joyplus.tv.utils.UtilTools;
 
 /**
  * The playback controller for the Movie Player.
@@ -227,10 +227,10 @@ public class MovieControllerOverlay extends FrameLayout implements
 					.findViewById(R.id.textView7);
 			if (mCurrentPlayData.prod_time != 0L) {
 
-				mViewTime.setText(StatisticsUtils
+				mViewTime.setText(UtilTools
 						.formatDuration(mCurrentPlayData.prod_time));
 			} else if (bookmark != null) {
-				mViewTime.setText(StatisticsUtils.formatDuration(bookmark));
+				mViewTime.setText(UtilTools.formatDuration(bookmark));
 
 			}
 			if (mCurrentPlayData.prod_time == 0 && bookmark == null) {

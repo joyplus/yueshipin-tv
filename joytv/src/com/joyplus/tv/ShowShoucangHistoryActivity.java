@@ -47,6 +47,7 @@ import com.joyplus.tv.ui.NavigateView;
 import com.joyplus.tv.ui.NavigateView.OnResultListener;
 import com.joyplus.tv.utils.ItemStateUtils;
 import com.joyplus.tv.utils.Log;
+import com.joyplus.tv.utils.UtilTools;
 import com.umeng.analytics.MobclickAgent;
 
 public class ShowShoucangHistoryActivity extends Activity implements OnClickListener, OnItemSelectedListener,OnFocusChangeListener {
@@ -603,7 +604,7 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 //				item.prod_pic_url = result.favorities[i].big_content_pic_url;
 				String bigPicUrl = result.favorities[i].big_content_pic_url;
 				if(bigPicUrl == null || bigPicUrl.equals("")
-						||bigPicUrl.equals(StatisticsUtils.EMPTY)) {
+						||bigPicUrl.equals(UtilTools.EMPTY)) {
 					
 					bigPicUrl = result.favorities[i].content_pic_url;
 				}

@@ -44,12 +44,15 @@ import com.joyplus.tv.entity.HotItemInfo;
 import com.joyplus.tv.entity.URLS_INDEX;
 import com.joyplus.tv.ui.WaitingDialog;
 import com.joyplus.tv.utils.BangDanKey;
+import com.joyplus.tv.utils.DBUtils;
 import com.joyplus.tv.utils.DefinationComparatorIndex;
 import com.joyplus.tv.utils.ItemStateUtils;
 import com.joyplus.tv.utils.JieMianConstant;
 import com.joyplus.tv.utils.Log;
 import com.joyplus.tv.utils.MyKeyEventKey;
 import com.joyplus.tv.utils.SouceComparatorIndex1;
+import com.joyplus.tv.utils.UtilTools;
+import com.joyplus.tv.utils.URLUtils;
 import com.umeng.analytics.MobclickAgent;
 
 public class ShowXiangqingTv extends Activity implements View.OnClickListener,
@@ -116,7 +119,7 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 		showDialog(DIALOG_WAITING);
 		
 		//从DB文件中获取历史播放集数
-		historyPlayIndex4DB = StatisticsUtils.
+		historyPlayIndex4DB = DBUtils.
 				getHistoryPlayIndex4DB(getApplicationContext(),prod_id,BangDanKey.TV_TYPE);
 		seletedButtonIndex = historyPlayIndex4DB;
 		Log.i(TAG, "onCreate--->historyPlayIndex4DB:" + historyPlayIndex4DB);
@@ -424,9 +427,9 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 					b.setPadding(8, 0, 0, 0);
 				}
 				//从DB文件中获取历史播放集数
-				HotItemInfo info = StatisticsUtils.
+				HotItemInfo info = DBUtils.
 						getHotItemInfo4DB_History(getApplicationContext(),
-								StatisticsUtils.getCurrentUserId(getApplicationContext()), prod_id);
+								UtilTools.getCurrentUserId(getApplicationContext()), prod_id);
 				if(info != null) {
 					
 //					int index = playData.CurrentIndex;
@@ -800,7 +803,7 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 			}
 			String bigPicUrl = date.tv.ipad_poster;
 			if(bigPicUrl == null || bigPicUrl.equals("")
-					||bigPicUrl.equals(StatisticsUtils.EMPTY)) {
+					||bigPicUrl.equals(UtilTools.EMPTY)) {
 				
 				bigPicUrl = date.tv.poster;
 			}
@@ -809,7 +812,7 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 			updateView();
 			
 //			showHistorySelect();
-			getYingpingData(StatisticsUtils.getYingPin_1_URL(prod_id));
+			getYingpingData(URLUtils.getYingPin_1_URL(prod_id));
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -1148,7 +1151,7 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 		playDate.prod_name = date.tv.name+" 第" + (index+1) +"集";
 		
 		//清晰度
-		playDate.prod_qua = StatisticsUtils.string2Int(date.tv.definition);
+		playDate.prod_qua = UtilTools.string2Int(date.tv.definition);
 		
 //		playDate.prod_url = date.tv.episodes[0].down_urls[0].urls[0].url;
 //		playDate.prod_src = date.tv.episodes[0].down_urls[0].source;
@@ -1283,9 +1286,9 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 	public void cancelshoucangResult(String url, JSONObject json, AjaxStatus status){
 		
 		//闹钟开启的情况下，取消收藏删除数据库中相关数据
-		if(StatisticsUtils.is48TimeClock(getApplicationContext()))
-		StatisticsUtils.deleteData4ProId(getApplicationContext(), 
-				StatisticsUtils.getCurrentUserId(getApplicationContext()), prod_id);
+		if(UtilTools.is48TimeClock(getApplicationContext()))
+			DBUtils.deleteData4ProId(getApplicationContext(), 
+				UtilTools.getCurrentUserId(getApplicationContext()), prod_id);
 		
 		xiaiBt.setEnabled(true);
 		

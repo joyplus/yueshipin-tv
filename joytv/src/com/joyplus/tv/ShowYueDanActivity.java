@@ -12,20 +12,14 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.text.Editable;
 import android.util.SparseArray;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.PopupWindow;
-import android.widget.TextView;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
@@ -38,6 +32,8 @@ import com.joyplus.tv.ui.MyMovieGridView;
 import com.joyplus.tv.ui.WaitingDialog;
 import com.joyplus.tv.utils.ItemStateUtils;
 import com.joyplus.tv.utils.Log;
+import com.joyplus.tv.utils.UtilTools;
+import com.joyplus.tv.utils.URLUtils;
 import com.umeng.analytics.MobclickAgent;
 
 public class ShowYueDanActivity extends AbstractShowActivity {
@@ -114,13 +110,13 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 		
 		if (defalutYuedan == DIANYING_YUEDAN) {
 
-			String url = StatisticsUtils.getYueDan_DianyingFirstURL();
+			String url = URLUtils.getYueDan_DianyingFirstURL();
 			Log.i(TAG, "URL--->" + url);
 			showDialog(DIALOG_WAITING);
 			getUnQuanbuData(url);// 进入电影界面时，全部分类电影显示获取焦点，并且显示数据
 		} else if (defalutYuedan == DIANSHIJU_YUEDAN) {
 			showDialog(DIALOG_WAITING);
-			String url = StatisticsUtils.getYueDan_DianshiFirstURL();
+			String url = URLUtils.getYueDan_DianshiFirstURL();
 			getUnQuanbuData(url);// 进入电影界面时，全部分类电影显示获取焦点，并且显示数据
 		}
 
@@ -464,7 +460,7 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 
 				// 缓存
 				int size = searchAdapter.getMovieList().size();
-				if (size - 1 - firstAndLastVisible[1] < StatisticsUtils.CACHE_NUM) {
+				if (size - 1 - firstAndLastVisible[1] < URLUtils.CACHE_NUM) {
 
 					if (isNextPagePossibles[currentListIndex]) {
 
@@ -517,7 +513,7 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 
 		for (int i = 0; i < lists.length; i++) {
 
-			StatisticsUtils.clearList(lists[i]);
+			UtilTools.clearList(lists[i]);
 		}
 	}
 
@@ -572,10 +568,10 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 
 		if (list != null && !list.isEmpty() && QUANBUFENLEI != currentListIndex) {// 判断其能否向获取更多数据
 
-			if (list.size() == StatisticsUtils.FIRST_NUM) {
+			if (list.size() == URLUtils.FIRST_NUM) {
 
 				isNextPagePossibles[currentListIndex] = true;
-			} else if (list.size() < StatisticsUtils.FIRST_NUM) {
+			} else if (list.size() < URLUtils.FIRST_NUM) {
 
 				isNextPagePossibles[currentListIndex] = false;
 			}
@@ -599,7 +595,7 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 
 		String quanbu = getString(R.string.quanbu_name);
 		String quanbufenlei = getString(R.string.quanbufenlei_name);
-		String tempStr = StatisticsUtils.getQuanBuFenLeiName(choice,
+		String tempStr = URLUtils.getQuanBuFenLeiName(choice,
 				quanbufenlei, quanbu);
 
 		if (tempStr.equals(quanbufenlei)) {
@@ -614,10 +610,10 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 		}
 
 		showDialog(DIALOG_WAITING);
-		StatisticsUtils.clearList(lists[QUAN_FILTER]);
+		UtilTools.clearList(lists[QUAN_FILTER]);
 		currentListIndex = QUAN_FILTER;
-		filterSource = StatisticsUtils.getFileterURL3Param(choice, quanbu);
-		String url = StatisticsUtils.getFilter_DongmanFirstURL(filterSource);
+		filterSource = URLUtils.getFileterURL3Param(choice, quanbu);
+		String url = URLUtils.getFilter_DongmanFirstURL(filterSource);
 		Log.i(TAG, "POP--->URL:" + url);
 		getFilterData(url);
 	}
@@ -676,7 +672,7 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 			}
 		}
 
-		if (list.size() == StatisticsUtils.CACHE_NUM) {
+		if (list.size() == URLUtils.CACHE_NUM) {
 
 			isNextPagePossibles[currentListIndex] = true;
 		} else {
@@ -730,7 +726,7 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 				return;
 			
 			Log.d(TAG, json.toString());
-			refreshAdpter(StatisticsUtils.returnFilterMovieSearch_TVJson(json
+			refreshAdpter(UtilTools.returnFilterMovieSearch_TVJson(json
 					.toString()));
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
@@ -760,7 +756,7 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 				return;
 			
 			Log.d(TAG, json.toString());
-			refreshAdpter(StatisticsUtils.returnTopsJson(json.toString()));
+			refreshAdpter(UtilTools.returnTopsJson(json.toString()));
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -795,14 +791,14 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 
 			break;
 		case SEARCH:
-			getMoreFilterData(StatisticsUtils.getSearch_CacheURL(pageNum,
+			getMoreFilterData(URLUtils.getSearch_CacheURL(pageNum,
 					search)+ "&type=" + TV_TYPE +","+MOVIE_TYPE);
 			break;
 		case DIANYING:
-			getMoreTopData(StatisticsUtils.getYueDan_DianyingCacheURL(pageNum));
+			getMoreTopData(URLUtils.getYueDan_DianyingCacheURL(pageNum));
 			break;
 		case DIANSHI:
-			getMoreTopData(StatisticsUtils.getYueDan_DianshiCacheURL(pageNum));
+			getMoreTopData(URLUtils.getYueDan_DianshiCacheURL(pageNum));
 			break;
 
 		default:
@@ -833,7 +829,7 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 				return;
 			
 			Log.d(TAG, json.toString());
-			notifyAdapter(StatisticsUtils.returnTopsJson(json.toString()));
+			notifyAdapter(UtilTools.returnTopsJson(json.toString()));
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -864,7 +860,7 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 				return;
 			
 			Log.d(TAG, json.toString());
-			notifyAdapter(StatisticsUtils.returnFilterMovieSearch_TVJson(json
+			notifyAdapter(UtilTools.returnFilterMovieSearch_TVJson(json
 					.toString()));
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
@@ -960,7 +956,7 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 		case R.id.bt_dianyingyuedan:
 			currentListIndex = DIANYING;
 			resetGvActive();
-			String url1 = StatisticsUtils.getYueDan_DianyingFirstURL();
+			String url1 = URLUtils.getYueDan_DianyingFirstURL();
 //			app.MyToast(aq.getContext(), "ll_daluju");
 			if (lists[currentListIndex] != null
 					&& !lists[currentListIndex].isEmpty()) {
@@ -975,7 +971,7 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 			currentListIndex = DIANSHI;
 
 			resetGvActive();
-			String url2 = StatisticsUtils.getYueDan_DianshiFirstURL();
+			String url2 = URLUtils.getYueDan_DianshiFirstURL();
 //			app.MyToast(aq.getContext(), "ll_gangju");
 			if (lists[currentListIndex] != null
 					&& !lists[currentListIndex].isEmpty()) {

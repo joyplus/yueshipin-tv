@@ -16,10 +16,10 @@ import android.widget.Toast;
 
 import com.joyplus.tv.App;
 import com.joyplus.tv.Constant;
-import com.joyplus.tv.StatisticsUtils;
 import com.joyplus.tv.Adapters.CurrentPlayData;
 import com.joyplus.tv.Video.VideoPlayerActivity;
 import com.joyplus.tv.utils.Log;
+import com.joyplus.tv.utils.UtilTools;
 import com.saulpower.fayeclient.FayeClient.FayeListener;
 
 public class FayeService extends Service implements FayeListener{
@@ -49,9 +49,9 @@ public class FayeService extends Service implements FayeListener{
 		// TODO Auto-generated method stub
 		super.onCreate();
 		serverUrl = Constant.FAYESERVERURL;
-		String userid = StatisticsUtils.getUserId(this);
+		String userid = UtilTools.getUserId(this);
 		if(userid !=null){
-			channel = Constant.FAYECHANNEL_TV_BASE + StatisticsUtils.MD5(userid);
+			channel = Constant.FAYECHANNEL_TV_BASE + UtilTools.MD5(userid);
 		}else{
 			channel = null;
 		}

@@ -39,6 +39,7 @@ import com.joyplus.tv.Video.VideoPlayerActivity;
 import com.joyplus.tv.entity.HotItemInfo;
 import com.joyplus.tv.utils.ItemStateUtils;
 import com.joyplus.tv.utils.Log;
+import com.joyplus.tv.utils.UtilTools;
 import com.umeng.analytics.MobclickAgent;
 
 public class HistoryActivity extends Activity implements OnClickListener, OnItemSelectedListener,OnFocusChangeListener {
@@ -136,7 +137,7 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 						//清晰度
 						String definition = ((HistortyAdapter)listView.getAdapter()).data.get(arg2).definition;
 						
-						playDate.prod_qua = StatisticsUtils.string2Int(definition);
+						playDate.prod_qua = UtilTools.string2Int(definition);
 						
 						if(playDate.prod_type!=1){
 							
@@ -306,7 +307,7 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 					holder.stars_notice.setText(R.string.xiangqing_zhuyan_name);
 				}
 				int prod_type = Integer.valueOf(data.get(position).prod_type);
-				String playBack_time = StatisticsUtils.formatDuration1(Integer.valueOf(data.get(position).playback_time));
+				String playBack_time = UtilTools.formatDuration1(Integer.valueOf(data.get(position).playback_time));
 				switch (prod_type) {
 				case 1:
 					holder.content.setText("上次观看到：" + playBack_time);
@@ -598,7 +599,7 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 				item.prod_type = result.histories[i].prod_type;
 				String bigPicUrl = result.histories[i].big_prod_pic_url;
 				if(bigPicUrl == null || bigPicUrl.equals("")
-						||bigPicUrl.equals(StatisticsUtils.EMPTY)) {
+						||bigPicUrl.equals(UtilTools.EMPTY)) {
 					
 					bigPicUrl = result.histories[i].prod_pic_url;
 				}

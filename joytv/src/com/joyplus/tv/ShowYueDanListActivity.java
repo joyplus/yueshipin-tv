@@ -33,6 +33,8 @@ import com.joyplus.tv.entity.MovieItemData;
 import com.joyplus.tv.ui.MyMovieGridView;
 import com.joyplus.tv.utils.ItemStateUtils;
 import com.joyplus.tv.utils.Log;
+import com.joyplus.tv.utils.UtilTools;
+import com.joyplus.tv.utils.URLUtils;
 import com.umeng.analytics.MobclickAgent;
 
 public class ShowYueDanListActivity extends AbstractShowActivity{
@@ -102,7 +104,7 @@ public class ShowYueDanListActivity extends AbstractShowActivity{
 			
 			playGv.requestFocus();
 			playGv.setSelection(-1);
-			getUnQuanbuData(StatisticsUtils.getTopItemURL(TOP_ITEM_URL, id, 1 + "", 100 + ""));
+			getUnQuanbuData(URLUtils.getTopItemURL(TOP_ITEM_URL, id, 1 + "", 100 + ""));
 			
 		} else {
 			
@@ -401,7 +403,7 @@ public class ShowYueDanListActivity extends AbstractShowActivity{
 
 				// 缓存
 				int size = searchAdapter.getMovieList().size();
-				if (size - 1 - firstAndLastVisible[1] < StatisticsUtils.CACHE_NUM) {
+				if (size - 1 - firstAndLastVisible[1] < URLUtils.CACHE_NUM) {
 
 					if (isNextPagePossibles[currentListIndex]) {
 
@@ -454,7 +456,7 @@ public class ShowYueDanListActivity extends AbstractShowActivity{
 
 		for (int i = 0; i < lists.length; i++) {
 
-			StatisticsUtils.clearList(lists[i]);
+			UtilTools.clearList(lists[i]);
 		}
 	}
 
@@ -509,10 +511,10 @@ public class ShowYueDanListActivity extends AbstractShowActivity{
 
 		if (list != null && !list.isEmpty() && QUANBUFENLEI != currentListIndex) {// 判断其能否向获取更多数据
 
-			if (list.size() == StatisticsUtils.FIRST_NUM) {
+			if (list.size() == URLUtils.FIRST_NUM) {
 
 				isNextPagePossibles[currentListIndex] = true;
-			} else if (list.size() < StatisticsUtils.FIRST_NUM) {
+			} else if (list.size() < URLUtils.FIRST_NUM) {
 
 				isNextPagePossibles[currentListIndex] = false;
 			}
@@ -536,7 +538,7 @@ public class ShowYueDanListActivity extends AbstractShowActivity{
 
 		String quanbu = getString(R.string.quanbu_name);
 		String quanbufenlei = getString(R.string.quanbufenlei_name);
-		String tempStr = StatisticsUtils.getQuanBuFenLeiName(choice,
+		String tempStr = URLUtils.getQuanBuFenLeiName(choice,
 				quanbufenlei, quanbu);
 
 		if (tempStr.equals(quanbufenlei)) {
@@ -551,10 +553,10 @@ public class ShowYueDanListActivity extends AbstractShowActivity{
 		}
 
 		showDialog(DIALOG_WAITING);
-		StatisticsUtils.clearList(lists[QUAN_FILTER]);
+		UtilTools.clearList(lists[QUAN_FILTER]);
 		currentListIndex = QUAN_FILTER;
-		filterSource = StatisticsUtils.getFileterURL3Param(choice, quanbu);
-		String url = StatisticsUtils.getFilter_DongmanFirstURL(filterSource);
+		filterSource = URLUtils.getFileterURL3Param(choice, quanbu);
+		String url = URLUtils.getFilter_DongmanFirstURL(filterSource);
 		Log.i(TAG, "POP--->URL:" + url);
 		getFilterData(url);
 	}
@@ -613,7 +615,7 @@ public class ShowYueDanListActivity extends AbstractShowActivity{
 			}
 		}
 
-		if (list.size() == StatisticsUtils.CACHE_NUM) {
+		if (list.size() == URLUtils.CACHE_NUM) {
 
 			isNextPagePossibles[currentListIndex] = true;
 		} else {
@@ -673,7 +675,7 @@ public class ShowYueDanListActivity extends AbstractShowActivity{
 			
 			Log.d(TAG, json.toString());
 
-			refreshAdpter(StatisticsUtils.returnFilterMovieSearch_TVJson(json
+			refreshAdpter(UtilTools.returnFilterMovieSearch_TVJson(json
 					.toString()));
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
@@ -703,7 +705,7 @@ public class ShowYueDanListActivity extends AbstractShowActivity{
 			break;
 		case SEARCH:
 
-			getMoreFilterData(StatisticsUtils.getSearch_CacheURL(pageNum,
+			getMoreFilterData(URLUtils.getSearch_CacheURL(pageNum,
 					search));
 			break;
 		default:
@@ -736,7 +738,7 @@ public class ShowYueDanListActivity extends AbstractShowActivity{
 			
 			Log.d(TAG, json.toString());
 				
-			notifyAdapter(StatisticsUtils
+			notifyAdapter(UtilTools
 					.returnTVBangDanList_YueDanListJson(json.toString()));
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
@@ -768,7 +770,7 @@ public class ShowYueDanListActivity extends AbstractShowActivity{
 				return;
 			
 			Log.d(TAG, json.toString());
-			notifyAdapter(StatisticsUtils.returnFilterMovieSearch_TVJson(json
+			notifyAdapter(UtilTools.returnFilterMovieSearch_TVJson(json
 					.toString()));
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block

@@ -75,10 +75,10 @@ import com.joyplus.tv.BuildConfig;
 import com.joyplus.tv.Constant;
 import com.joyplus.tv.HistoryActivity;
 import com.joyplus.tv.R;
-import com.joyplus.tv.StatisticsUtils;
 import com.joyplus.tv.Adapters.CurrentPlayData;
 import com.joyplus.tv.Service.Return.ReturnProgramView;
 import com.joyplus.tv.Service.Return.ReturnProgramView.DOWN_URLS;
+import com.joyplus.tv.utils.UtilTools;
 
 public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		MediaPlayer.OnCompletionListener, MediaPlayer.OnPreparedListener,
@@ -269,7 +269,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 			} else
 				bookmark = mBookmarker.getBookmark(mUri);
 			if (bookmark != null) {
-				saveTime.setText(StatisticsUtils.formatDuration(bookmark));
+				saveTime.setText(UtilTools.formatDuration(bookmark));
 				mVideoView.seekTo(bookmark);
 				// showResumeDialog(mContext, bookmark);
 			}
@@ -318,7 +318,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		builder.setTitle(R.string.resume_playing_title);
 		builder.setMessage(String.format(
 				context.getString(R.string.resume_playing_message),
-				StatisticsUtils.formatDuration(bookmark)));
+				UtilTools.formatDuration(bookmark)));
 		builder.setOnCancelListener(new OnCancelListener() {
 			public void onCancel(DialogInterface dialog) {
 				onCompletion();
@@ -409,7 +409,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 				mLayoutBottomTime.setLayoutParams(parms);
 
 				textView1
-						.setText(StatisticsUtils.formatDuration(firstJumpTime));
+						.setText(UtilTools.formatDuration(firstJumpTime));
 				textView1.setVisibility(View.VISIBLE);
 				// mHandler.removeCallbacks(mPreparedProgress);
 				mController.showPlayingAtFirstTime();
@@ -443,7 +443,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		}
 		this.totalTime = totalTime;
 		sb.setMax(totalTime);
-		textView2.setText(StatisticsUtils.formatDuration(totalTime));
+		textView2.setText(UtilTools.formatDuration(totalTime));
 
 	}
 
@@ -965,7 +965,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 
 			mLayoutBottomTime.setLayoutParams(parms);
 
-			textView1.setText(StatisticsUtils.formatDuration(JUMP_TIME));
+			textView1.setText(UtilTools.formatDuration(JUMP_TIME));
 			textView1.setVisibility(View.VISIBLE);
 
 			sb.setMax(totalTime);
@@ -1071,7 +1071,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 				parms.bottomMargin = 20 + 10;
 				mLayoutBottomTime.setLayoutParams(parms);
 
-				textView1.setText(StatisticsUtils.formatDuration(progress));
+				textView1.setText(UtilTools.formatDuration(progress));
 				textView1.setVisibility(View.VISIBLE);
 				if (totalTime > 0 && totalTime - progress <= 5000
 						&& (prod_type == 2 || prod_type == 3)) {
@@ -1217,7 +1217,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 										mCurrentPlayData.prod_type, index, i);
 
 								// yangzhg
-								StatisticsUtils
+								UtilTools
 										.StatisticsClicksShow(
 												new AQuery(mContext),
 												app,
@@ -1259,7 +1259,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 										mCurrentPlayData.prod_type, index, i);
 
 								// yangzhg
-								StatisticsUtils
+								UtilTools
 										.StatisticsClicksShow(
 												new AQuery(mContext),
 												app,
@@ -1326,7 +1326,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 										mCurrentPlayData.prod_type, index, i);
 
 								// yangzhg
-								StatisticsUtils
+								UtilTools
 										.StatisticsClicksShow(
 												new AQuery(mContext),
 												app,
@@ -1369,7 +1369,7 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 										mCurrentPlayData.prod_type, index, i);
 
 								// yangzhg
-								StatisticsUtils
+								UtilTools
 										.StatisticsClicksShow(
 												new AQuery(mContext),
 												app,

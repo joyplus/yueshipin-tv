@@ -52,6 +52,8 @@ import com.joyplus.tv.utils.ItemStateUtils;
 import com.joyplus.tv.utils.Log;
 import com.joyplus.tv.utils.MyKeyEventKey;
 import com.joyplus.tv.utils.SouceComparatorIndex1;
+import com.joyplus.tv.utils.UtilTools;
+import com.joyplus.tv.utils.URLUtils;
 import com.umeng.analytics.MobclickAgent;
 
 public class ShowXiangqingMovie extends Activity implements View.OnClickListener,
@@ -343,7 +345,7 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 			playDate.prod_name = movieData.movie.name;
 			
 			//清晰度
-			playDate.prod_qua = StatisticsUtils.string2Int(movieData.movie.definition);
+			playDate.prod_qua = UtilTools.string2Int(movieData.movie.definition);
 			
 			if(gaoqing_url!=null){
 				playDate.prod_url = gaoqing_url;
@@ -478,7 +480,7 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 				playDate.prod_name = movieData.movie.name;
 				
 				//清晰度
-				playDate.prod_qua = StatisticsUtils.string2Int(movieData.movie.definition);
+				playDate.prod_qua = UtilTools.string2Int(movieData.movie.definition);
 				
 				playDate.prod_favority = isXiai;
 //				if(gaoqing_url!=null){
@@ -616,7 +618,7 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 				
 				String bigPicUrl = movieData.movie.ipad_poster;
 				if(bigPicUrl == null || bigPicUrl.equals("")
-						||bigPicUrl.equals(StatisticsUtils.EMPTY)) {
+						||bigPicUrl.equals(UtilTools.EMPTY)) {
 					
 					bigPicUrl = movieData.movie.poster;
 				}
@@ -624,7 +626,7 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 				updateView();
 			}
 			
-			getYingpingData(StatisticsUtils.getYingPin_1_URL(prod_id));
+			getYingpingData(URLUtils.getYingPin_1_URL(prod_id));
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -992,7 +994,7 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 //			holder.image.setImageResource(R.drawable.test1);
 			String bigPicUrl = recommendMoviesData.items[position].big_prod_pic_url;
 			if(bigPicUrl == null || bigPicUrl.equals("")
-					||bigPicUrl.equals(StatisticsUtils.EMPTY)) {
+					||bigPicUrl.equals(UtilTools.EMPTY)) {
 				bigPicUrl = recommendMoviesData.items[position].prod_pic_url;
 			}
 			aq.id(holder.image).image(bigPicUrl,true,true,0,R.drawable.post_normal);
@@ -1005,7 +1007,7 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 			}else{
 //				holder.content.setText("时长："+hot_list.get(position).duration);
 //				holder.content.setText("时长:"+recommendMoviesData.items[position].duration.replace("：00", "分钟"));
-				holder.content.setText(StatisticsUtils.formatMovieDuration(recommendMoviesData.items[position].duration ));
+				holder.content.setText(UtilTools.formatMovieDuration(recommendMoviesData.items[position].duration ));
 			}
 			holder.score.setText(recommendMoviesData.items[position].score);
 			switch (Integer.valueOf(recommendMoviesData.items[position].definition)) {
