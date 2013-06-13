@@ -220,6 +220,21 @@ public class DBUtils {
 		database.insert(TvDatabaseHelper.HISTORY_TABLE_NAME, null, tempContentValues);
 	}
 	
+	//删除单条数据
+	public static void deleteOneHotItemInfo2DB_History(Context context,String userId,String prod_id) {
+		
+		TvDatabaseHelper helper = TvDatabaseHelper.newTvDatabaseHelper(context);
+		SQLiteDatabase database = helper.getWritableDatabase();//获取写db
+		
+		String deleteSelection = UserHistory.PRO_ID  + " = ? and " + UserHistory.USER_ID + " = ?";
+		String[] deleteselectionArgs = {prod_id,userId};
+		int dele = database.delete(TvDatabaseHelper.HISTORY_TABLE_NAME, deleteSelection, deleteselectionArgs);
+		
+		Log.i(TAG, "deleteData4ProId--->" + dele + " PROD_ID--->" + prod_id);
+		
+		helper.closeDatabase();
+	}
+	
 	//当前影片是否是置顶影片，并且返回当前更新集数
 	public static String getTopPlayerCurEpisode(Context context, String userId,String proId) {
 		

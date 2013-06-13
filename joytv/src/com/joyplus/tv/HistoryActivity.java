@@ -37,6 +37,7 @@ import com.joyplus.tv.Adapters.CurrentPlayData;
 import com.joyplus.tv.Service.Return.ReturnUserPlayHistories;
 import com.joyplus.tv.Video.VideoPlayerActivity;
 import com.joyplus.tv.entity.HotItemInfo;
+import com.joyplus.tv.utils.DBUtils;
 import com.joyplus.tv.utils.ItemStateUtils;
 import com.joyplus.tv.utils.Log;
 import com.joyplus.tv.utils.UtilTools;
@@ -213,7 +214,17 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 					@Override
 					public void onClick(View v) {
 						// TODO Auto-generated method stub
+						
+						String prod_id = ((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_id;
+						
+						Log.i(TAG, "delButton.setOnClickListener--->" + prod_id);
+						
 						deleteHistory(true, ((HistortyAdapter)listView.getAdapter()).data.get(arg2).id);
+						
+						DBUtils.deleteOneHotItemInfo2DB_History(getApplicationContext(),
+								UtilTools.getCurrentUserId(getApplicationContext()),prod_id 
+								);
+						
 						((HistortyAdapter)listView.getAdapter()).data.remove(arg2);
 						((BaseAdapter)listView.getAdapter()).notifyDataSetChanged();
 						dialog.dismiss();
@@ -468,6 +479,16 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 					// TODO Auto-generated method stub
 					dialog.dismiss();
 					deleteHistory(false, "");
+					
+					List<HotItemInfo> list = ((HistortyAdapter)listView.getAdapter()).data;
+					
+					for(int i=0;i<list.size();i++) {
+						
+						DBUtils.deleteOneHotItemInfo2DB_History(getApplicationContext(),
+								UtilTools.getCurrentUserId(getApplicationContext()),list.get(i).prod_id );
+					}
+					
+					
 					((HistortyAdapter)listView.getAdapter()).data.clear();
 					((HistortyAdapter)listView.getAdapter()).notifyDataSetChanged();
 				}
