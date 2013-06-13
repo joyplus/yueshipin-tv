@@ -1,4 +1,4 @@
-package com.joyplus.tv.utils;
+package com.joyplus.tv.entity;
 public class URLS_INDEX{
 		public int souces;
 		public int defination;

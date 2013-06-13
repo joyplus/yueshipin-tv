@@ -3,7 +3,6 @@ package com.joyplus.tv.utils;
 import android.content.Context;
 import android.view.View;
 import android.view.animation.Animation;
-import android.view.animation.Animation.AnimationListener;
 import android.view.animation.ScaleAnimation;
 import android.widget.Button;
 import android.widget.GridView;

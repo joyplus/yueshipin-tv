@@ -43,6 +43,7 @@ import com.joyplus.tv.Service.Return.ReturnProgramView;
 import com.joyplus.tv.Service.Return.ReturnProgramView.DOWN_URLS;
 import com.joyplus.tv.Video.VideoPlayerActivity;
 import com.joyplus.tv.entity.HotItemInfo;
+import com.joyplus.tv.entity.URLS_INDEX;
 import com.joyplus.tv.ui.WaitingDialog;
 import com.joyplus.tv.utils.BangDanKey;
 import com.joyplus.tv.utils.DefinationComparatorIndex;
@@ -51,7 +52,6 @@ import com.joyplus.tv.utils.JieMianConstant;
 import com.joyplus.tv.utils.Log;
 import com.joyplus.tv.utils.MyKeyEventKey;
 import com.joyplus.tv.utils.SouceComparatorIndex1;
-import com.joyplus.tv.utils.URLS_INDEX;
 import com.umeng.analytics.MobclickAgent;
 
 public class ShowXiangqingZongYi extends Activity implements View.OnClickListener,
