@@ -30,7 +30,8 @@ public class DBUtils {
 		TvDatabaseHelper helper = TvDatabaseHelper.newTvDatabaseHelper(context);
 		SQLiteDatabase database = helper.getWritableDatabase();//获取写db
 		
-		Cursor cursor = database.query(TvDatabaseHelper.ZHUIJU_TABLE_NAME, null, selection, selectionArgs, null, null, null);
+		Cursor cursor = database.query(TvDatabaseHelper.ZHUIJU_TABLE_NAME, null, selection, 
+				selectionArgs, null, null, DataBaseItems.ORDER_BY_TIME_DESC);
 		
 		Log.i(TAG, "getList4DB----> userId--->>" + userId + " type--->>" + type 
 				+ " count--->" + cursor.getCount());
@@ -159,6 +160,7 @@ public class DBUtils {
 		tempContentValues.put(UserShouCang.IS_NEW, DataBaseItems.NEW);
 //		tempContentValues.put(UserShouCang.IS_UPDATE, DataBaseItems.OLD);
 		tempContentValues.put(UserShouCang.IS_UPDATE, DataBaseItems.NEW);//测试
+		tempContentValues.put(UserShouCang.INTEGER_1, System.currentTimeMillis());//插入当前时间
 		
 		String updateSelection = UserShouCang.PRO_ID  + "=? and " + UserShouCang.USER_ID + "=?";
 		String[] updateselectionArgs = {info.prod_id,userId};

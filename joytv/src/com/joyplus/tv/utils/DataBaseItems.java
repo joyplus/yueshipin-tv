@@ -2,6 +2,9 @@ package com.joyplus.tv.utils;
 
 public class DataBaseItems {
 	
+	public static final String ORDER_BY_TIME_DESC = "integer_1 desc";
+	public static final String ORDER_BY_TIME_ASC = "integer_1 asc";
+	
 	public static interface SQLite3_DataType {
 		
 		
@@ -52,7 +55,7 @@ public class DataBaseItems {
 		String TEXT_3 = "text_3";
 		String TEXT_4 = "text_4";
 		
-		String INTEGER_1 = "integer_1";
+		String INTEGER_1 = "integer_1";//用来存储当前插入的时间
 		String INTEGER_2 = "integer_2";
 		String INTEGER_3 = "integer_3";
 		String INTEGER_4 = "integer_4";
@@ -94,7 +97,7 @@ public class DataBaseItems {
 		String TEXT_3 = "text_3";
 		String TEXT_4 = "text_4";
 		
-		String INTEGER_1 = "integer_1";
+		String INTEGER_1 = "integer_1";//用来存储当前插入的时间
 		String INTEGER_2 = "integer_2";
 		String INTEGER_3 = "integer_3";
 		String INTEGER_4 = "integer_4";
