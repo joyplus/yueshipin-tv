@@ -1330,6 +1330,18 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 			return;
 		
 		Log.d(TAG, "shoucangResult:----->" + json.toString());
+		
+		HotItemInfo info = new HotItemInfo();
+		info.prod_id = prod_id;
+		info.prod_name = date.show.name;
+		info.score = date.show.score;
+		info.prod_pic_url = pic_url;
+		info.cur_episode = date.show.cur_episode;
+		info.max_episode = date.show.max_episode;
+		info.prod_type = BangDanConstant.ZONGYI_TYPE;
+		
+		DBUtils.insertOneHotItemInfo2DB(getApplicationContext(),
+				UtilTools.getCurrentUserId(getApplicationContext()), prod_id, info);
 	}
 	
 	private void dingService(){

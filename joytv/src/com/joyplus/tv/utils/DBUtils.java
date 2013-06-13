@@ -170,6 +170,19 @@ public class DBUtils {
 	    Log.i(TAG, "info.prod_id--->" + info.prod_id + " updateInt--->" + updateInt);
 	}
 	
+	//HotItemInfo 只插入一条数据
+	public static void insertOneHotItemInfo2DB(Context context,String userId,String proId,HotItemInfo info) {
+		
+		deleteData4ProId(context, userId, proId);
+		
+		TvDatabaseHelper helper = TvDatabaseHelper.newTvDatabaseHelper(context);
+		SQLiteDatabase database = helper.getWritableDatabase();//获取写db
+		
+		insertHotItemInfo2DB(context, info, userId, database);
+		
+		helper.closeDatabase();
+	}
+	
 	//HotItemInfo 插入数据 History
 	public static void insertHotItemInfo2DB_History(Context context,HotItemInfo info,String userId,SQLiteDatabase database) {
 		

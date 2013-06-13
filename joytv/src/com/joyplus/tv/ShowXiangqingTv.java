@@ -1334,6 +1334,18 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 			return;
 		
 		Log.d(TAG, "shoucangResult:----->" + json.toString());
+		
+		HotItemInfo info = new HotItemInfo();
+		info.prod_id = prod_id;
+		info.prod_name = date.tv.name;
+		info.score = date.tv.score;
+		info.prod_pic_url = pic_url;
+		info.cur_episode = date.tv.cur_episode;
+		info.max_episode = date.tv.max_episode;
+		info.prod_type = BangDanConstant.TV_TYPE;
+		
+		DBUtils.insertOneHotItemInfo2DB(getApplicationContext(),
+				UtilTools.getCurrentUserId(getApplicationContext()), prod_id, info);
 	}
 	
 	private void dingService(){
