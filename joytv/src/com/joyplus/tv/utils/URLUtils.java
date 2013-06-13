@@ -2,7 +2,7 @@ package com.joyplus.tv.utils;
 
 import java.net.URLEncoder;
 
-public class URLUtils implements JieMianConstant, BangDanKey{
+public class URLUtils implements JieMianConstant, BangDanConstant{
 	
 	private static final String TAG = "URLUtils";
 	

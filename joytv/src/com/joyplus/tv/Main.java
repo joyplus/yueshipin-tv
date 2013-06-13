@@ -82,7 +82,7 @@ import com.joyplus.tv.ui.MyScrollLayout;
 import com.joyplus.tv.ui.MyScrollLayout.OnViewChangeListener;
 import com.joyplus.tv.ui.UserInfo;
 import com.joyplus.tv.ui.WaitingDialog;
-import com.joyplus.tv.utils.BangDanKey;
+import com.joyplus.tv.utils.BangDanConstant;
 import com.joyplus.tv.utils.DBUtils;
 import com.joyplus.tv.utils.DataBaseItems;
 import com.joyplus.tv.utils.DataBaseItems.UserHistory;
@@ -2629,9 +2629,9 @@ public class Main extends Activity implements OnItemSelectedListener,
 					String type = sameList4NetWork.get(i).prod_type;
 					if (type != null) {
 						// 如果相同数据有电视剧、动漫和综艺类型
-						if (type.equals(BangDanKey.TV_TYPE)
-								|| type.equals(BangDanKey.DONGMAN_TYPE)
-								|| type.equals(BangDanKey.ZONGYI_TYPE)) {
+						if (type.equals(BangDanConstant.TV_TYPE)
+								|| type.equals(BangDanConstant.DONGMAN_TYPE)
+								|| type.equals(BangDanConstant.ZONGYI_TYPE)) {
 
 							if (!sameList4NetWork.get(i).cur_episode
 									.equals(sameList4DB.get(i).cur_episode)) {

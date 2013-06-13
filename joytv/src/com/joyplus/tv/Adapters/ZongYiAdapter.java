@@ -22,7 +22,7 @@ import com.joyplus.tv.R;
 import com.joyplus.tv.entity.GridViewItemHodler;
 import com.joyplus.tv.entity.MovieItemData;
 import com.joyplus.tv.utils.AsyncImageLoader;
-import com.joyplus.tv.utils.BangDanKey;
+import com.joyplus.tv.utils.BangDanConstant;
 import com.joyplus.tv.utils.JieMianConstant;
 import com.joyplus.tv.utils.Log;
 import com.joyplus.tv.utils.OnImageLoadListener;

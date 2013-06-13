@@ -36,7 +36,7 @@ import com.joyplus.tv.entity.HotItemInfo;
 import com.joyplus.tv.entity.MovieItemData;
 import com.joyplus.tv.entity.ReturnFilterMovieSearch;
 
-public class UtilTools implements JieMianConstant, BangDanKey {
+public class UtilTools implements JieMianConstant, BangDanConstant {
 
 	private static final String TAG = "StatisticsUtils";
 

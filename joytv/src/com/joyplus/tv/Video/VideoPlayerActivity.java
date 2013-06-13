@@ -61,7 +61,7 @@ import com.joyplus.tv.Service.Return.ReturnProgramView;
 import com.joyplus.tv.Service.Return.ReturnProgramView.DOWN_URLS;
 import com.joyplus.tv.database.TvDatabaseHelper;
 import com.joyplus.tv.entity.HotItemInfo;
-import com.joyplus.tv.utils.BangDanKey;
+import com.joyplus.tv.utils.BangDanConstant;
 import com.joyplus.tv.utils.DataBaseItems.UserHistory;
 import com.joyplus.tv.utils.DataBaseItems.UserShouCang;
 import com.joyplus.tv.utils.DBUtils;
@@ -163,9 +163,9 @@ public class VideoPlayerActivity extends Activity {
 //			}
 			
 			//判断当前影片是否为置顶影片，获取数据库中当前更新集数
-			if(prod_type == Integer.valueOf(BangDanKey.DONGMAN_TYPE) 
-					||prod_type == Integer.valueOf(BangDanKey.TV_TYPE)
-					||prod_type == Integer.valueOf(BangDanKey.ZONGYI_TYPE)) {
+			if(prod_type == Integer.valueOf(BangDanConstant.DONGMAN_TYPE) 
+					||prod_type == Integer.valueOf(BangDanConstant.TV_TYPE)
+					||prod_type == Integer.valueOf(BangDanConstant.ZONGYI_TYPE)) {
 				
 				dbCurEpisode = DBUtils.getTopPlayerCurEpisode(getApplicationContext(),
 						UtilTools.getCurrentUserId(getApplicationContext()), prod_id);
@@ -510,9 +510,9 @@ public class VideoPlayerActivity extends Activity {
 			String tempProName = currentPlayData.prod_name;
 			
 			//判断当前影片是否为置顶影片，获取数据库中当前更新集数
-			if(tempType == Integer.valueOf(BangDanKey.DONGMAN_TYPE) 
-					||tempType == Integer.valueOf(BangDanKey.TV_TYPE)
-					||tempType == Integer.valueOf(BangDanKey.ZONGYI_TYPE)) {
+			if(tempType == Integer.valueOf(BangDanConstant.DONGMAN_TYPE) 
+					||tempType == Integer.valueOf(BangDanConstant.TV_TYPE)
+					||tempType == Integer.valueOf(BangDanConstant.ZONGYI_TYPE)) {
 				
 //				dbCurEpisode = StatisticsUtils.getTopPlayerCurEpisode(getApplicationContext(),
 //						StatisticsUtils.getCurrentUserId(getApplicationContext()), prod_id);

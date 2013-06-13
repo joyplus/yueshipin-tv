@@ -45,7 +45,7 @@ import com.joyplus.tv.Video.VideoPlayerActivity;
 import com.joyplus.tv.entity.HotItemInfo;
 import com.joyplus.tv.entity.URLS_INDEX;
 import com.joyplus.tv.ui.WaitingDialog;
-import com.joyplus.tv.utils.BangDanKey;
+import com.joyplus.tv.utils.BangDanConstant;
 import com.joyplus.tv.utils.DBUtils;
 import com.joyplus.tv.utils.DefinationComparatorIndex;
 import com.joyplus.tv.utils.ItemStateUtils;

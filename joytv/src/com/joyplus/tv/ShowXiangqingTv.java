@@ -43,7 +43,7 @@ import com.joyplus.tv.Video.VideoPlayerActivity;
 import com.joyplus.tv.entity.HotItemInfo;
 import com.joyplus.tv.entity.URLS_INDEX;
 import com.joyplus.tv.ui.WaitingDialog;
-import com.joyplus.tv.utils.BangDanKey;
+import com.joyplus.tv.utils.BangDanConstant;
 import com.joyplus.tv.utils.DBUtils;
 import com.joyplus.tv.utils.DefinationComparatorIndex;
 import com.joyplus.tv.utils.ItemStateUtils;
@@ -120,7 +120,7 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 		
 		//从DB文件中获取历史播放集数
 		historyPlayIndex4DB = DBUtils.
-				getHistoryPlayIndex4DB(getApplicationContext(),prod_id,BangDanKey.TV_TYPE);
+				getHistoryPlayIndex4DB(getApplicationContext(),prod_id,BangDanConstant.TV_TYPE);
 		seletedButtonIndex = historyPlayIndex4DB;
 		Log.i(TAG, "onCreate--->historyPlayIndex4DB:" + historyPlayIndex4DB);
 		

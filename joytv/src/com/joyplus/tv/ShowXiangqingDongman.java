@@ -43,7 +43,7 @@ import com.joyplus.tv.Video.VideoPlayerActivity;
 import com.joyplus.tv.entity.HotItemInfo;
 import com.joyplus.tv.entity.URLS_INDEX;
 import com.joyplus.tv.ui.WaitingDialog;
-import com.joyplus.tv.utils.BangDanKey;
+import com.joyplus.tv.utils.BangDanConstant;
 import com.joyplus.tv.utils.DBUtils;
 import com.joyplus.tv.utils.DefinationComparatorIndex;
 import com.joyplus.tv.utils.ItemStateUtils;
@@ -122,7 +122,7 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 		
 		//从DB文件中获取历史播放集数
 		historyPlayIndex4DB = DBUtils.
-				getHistoryPlayIndex4DB(getApplicationContext(),prod_id,BangDanKey.DONGMAN_TYPE);
+				getHistoryPlayIndex4DB(getApplicationContext(),prod_id,BangDanConstant.DONGMAN_TYPE);
 		Log.i(TAG, "onCreate--->historyPlayIndex4DB:" + historyPlayIndex4DB);
 		seletedButtonIndex = historyPlayIndex4DB;
 		

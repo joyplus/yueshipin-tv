@@ -2,7 +2,7 @@ package com.joyplus.tv.utils;
 
 import com.joyplus.tv.Constant;
 
-public interface BangDanKey {
+public interface BangDanConstant {
 
 	/**
 	 * 
