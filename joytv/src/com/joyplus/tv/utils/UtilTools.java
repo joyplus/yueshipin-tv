@@ -307,7 +307,7 @@ public class UtilTools implements JieMianConstant, BangDanConstant {
 		return "";
 	}
 
-	public static String formateZongyi(String curEpisode, Context context) {
+	public static String formateZongyi(String curEpisode,Context context) {
 
 		if (curEpisode != null && !curEpisode.equals("")
 				&& !curEpisode.equals("0")) {
@@ -316,8 +316,7 @@ public class UtilTools implements JieMianConstant, BangDanConstant {
 
 				if (curEpisode.length() > 2 && curEpisode.length() <= 9) {
 
-					return context.getString(R.string.zongyi_gengxinzhi)
-							+ curEpisode;
+					return "更新至"+ curEpisode;
 				}
 			}
 		}

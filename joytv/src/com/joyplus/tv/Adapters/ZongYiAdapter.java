@@ -287,8 +287,8 @@ public class ZongYiAdapter extends BaseAdapter implements JieMianConstant{
 										maxEpisode + context.getString(R.string.dianshiju_jiquan));
 							} else {
 								
-								viewItemHodler.otherInfo.setText(context.getString(R.string.zongyi_gengxinzhi) + 
-										curEpisode);
+								viewItemHodler.otherInfo.setText( "更新至第" + 
+										curEpisode + "集");
 							}
 
 					}
@@ -299,7 +299,7 @@ public class ZongYiAdapter extends BaseAdapter implements JieMianConstant{
 				String curEpisode = movieList.get(position).getMovieCurEpisode();
 				if(curEpisode != null && !curEpisode.equals("")) {
 					
-					viewItemHodler.otherInfo.setText(UtilTools.formateZongyi(curEpisode, context));
+					viewItemHodler.otherInfo.setText(UtilTools.formateZongyi(curEpisode,context));
 				}
 			}
 		}

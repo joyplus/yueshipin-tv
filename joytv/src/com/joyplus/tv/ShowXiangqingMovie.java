@@ -112,40 +112,58 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 		public void handleMessage(Message msg) {
 			// TODO Auto-generated method stub
 			initPopWindowData();
-			int sign = -1;
-			LinearLayout[] linLayouts = {chaoqingLL,gaoqingLL,biaoqingLL};
-			int[] strIds = {R.string.gaoqing_chaogaoqing,R.string.gaoqing_gaoqing,R.string.gaoqing_biaoqing};
-			if(gaoqing_url==null){
-				supportDefination-=1;
-				gaoqingLL.setVisibility(View.GONE);
-				sign = 1;
-			}
+//			int sign = -1;
+//			LinearLayout[] linLayouts = {chaoqingLL,gaoqingLL,biaoqingLL};
+//			int[] strIds = {R.string.gaoqing_chaogaoqing,R.string.gaoqing_gaoqing,R.string.gaoqing_biaoqing};
+			
 			if(chaoqing_url==null){
 				supportDefination-=1;
 				chaoqingLL.setVisibility(View.GONE);
-				sign = 0;
+//				sign = 0;
+			} else {
+				
+				gaoqingBt.setText(R.string.gaoqing_chaogaoqing);
 			}
+			
+			if(gaoqing_url==null){
+				supportDefination-=1;
+				gaoqingLL.setVisibility(View.GONE);
+//				sign = 1;
+			} else {
+				
+				if(gaoqing_url==null) {
+					
+					gaoqingBt.setText(R.string.gaoqing_gaoqing);
+				}
+			}
+
 			if(puqing_url==null){
 				supportDefination-=1;
 				biaoqingLL.setVisibility(View.GONE);
-				sign =2;
+//				sign =2;
+			} else {
+				
+				if(gaoqing_url==null && chaoqing_url == null) {
+					
+					gaoqingBt.setText(R.string.gaoqing_biaoqing);
+				}
 			}
-			Log.d(TAG, "sign = " + sign);
+//			Log.d(TAG, "sign = " + sign);
 			
 			if(supportDefination == 0) {
 				
 				bofangLL.setEnabled(false);
 			} else if(supportDefination == 1) {
 				
-				for (int i = 0; i < linLayouts.length; i++) {
-					if(sign == i) {
-						
-						LinearLayout ll = linLayouts[i];
-						Button button1= (Button) ll.getChildAt(0);
-						Button button2= (Button) ll.getChildAt(1);
-						button2.setText(strIds[i]);
-					}
-				}
+//				for (int i = 0; i < linLayouts.length; i++) {
+//					if(sign == i) {
+//						
+//						LinearLayout ll = linLayouts[i];
+//						Button button1= (Button) ll.getChildAt(0);
+//						Button button2= (Button) ll.getChildAt(1);
+//						button2.setText(strIds[i]);
+//					}
+//				}
 			}
 			removeDialog(DIALOG_WAITING);
 		}
