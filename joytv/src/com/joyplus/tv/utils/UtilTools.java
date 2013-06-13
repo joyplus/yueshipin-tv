@@ -15,6 +15,7 @@ import android.app.Instrumentation;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.text.format.DateFormat;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
@@ -38,7 +39,7 @@ import com.joyplus.tv.entity.ReturnFilterMovieSearch;
 
 public class UtilTools implements JieMianConstant, BangDanConstant {
 
-	private static final String TAG = "StatisticsUtils";
+	private static final String TAG = "UtilTools";
 
 	/**
 	 * 用来统计用户点击播放视屏后正常跳转的次数 有可能跳转到播放器，也有可能跳转到浏览器
@@ -294,6 +295,47 @@ public class UtilTools implements JieMianConstant, BangDanConstant {
 
 		return "";
 
+	}
+	
+	public static long formateTimeLong(String timeStr) {
+		
+		if(timeStr != null && !timeStr.equals("")) {
+			
+			int index = timeStr.indexOf("分钟");
+			
+			if(index != -1) {
+				
+				String tempStr = timeStr.substring(0, index);
+				
+				try {
+					int minute = Integer.valueOf(tempStr);//分钟
+					
+					return minute * 60 * 1000;
+				} catch (NumberFormatException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		return 0l;
+	}
+	
+	public static String movieOverTime(String duration) {
+		
+		String minuteStr = formatMovieDuration(duration);
+		long movieTime = formateTimeLong(minuteStr);
+		
+		long currentTime = System.currentTimeMillis();
+		
+		long overTime = currentTime + movieTime;
+		
+		String dateFormat = DateFormat.format("hh:mm", overTime).toString();
+		
+		Log.i(TAG, "overTime--->" + overTime + " minuteStr--->" + minuteStr + " duration--->" + duration
+				 + " dateFormat-->" + dateFormat);
+		
+		return dateFormat;
 	}
 
 	public static String formateScore(String score) {

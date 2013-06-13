@@ -320,6 +320,7 @@ public class ReturnProgramView {
 		public String area;
 		public String total_comment_number;
 		public String definition;
+		public String duration;
 		public EPISODES[] episodes;
 
 	}

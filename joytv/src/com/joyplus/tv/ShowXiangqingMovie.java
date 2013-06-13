@@ -106,6 +106,8 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 	
 	private boolean isYingPing = false;
 	
+	private LinearLayout overTimeLL;//看完时间
+	
 	private Handler handler = new Handler(){
 
 		@Override
@@ -222,6 +224,8 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 		
 		tuijianGv = (GridView) findViewById(R.id.gv_xiangqing_tuijian);
 		tuijianGv.setNextFocusRightId(R.id.gv_xiangqing_tuijian);
+		
+		overTimeLL = (LinearLayout) findViewById(R.id.ll_over_time);
 		
 		bofangLL.requestFocus();
 
@@ -736,7 +740,29 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 			aq.id(R.id.img_definition).gone();
 			break;
 		}
+		
+		initOverTime();
+		
 		updateScore(movieData.movie.score);
+	}
+	
+	private void initOverTime() {
+		
+		TextView tv = (TextView) overTimeLL.findViewById(R.id.tv_over_time);
+		
+		String overTime = UtilTools.movieOverTime(movieData.movie.duration);
+//		String overTime = UtilTools.movieOverTime("90分钟");
+		
+		if(overTime != null && !overTime.equals("")) {
+			
+			int index = overTime.indexOf(":");
+			
+			if(index != -1) {
+				
+				tv.setText(overTime);
+				overTimeLL.setVisibility(View.VISIBLE);
+			}
+		}
 	}
 	
 	public void initRecommendMovieDate(String url, JSONObject json, AjaxStatus status){

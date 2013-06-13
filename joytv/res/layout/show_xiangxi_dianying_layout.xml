@@ -67,10 +67,14 @@
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/ll_over_time"
                         android:layout_width="@dimen/layout_zero"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:gravity="right|bottom" >
+                        android:gravity="right|bottom"
+                        android:visibility="invisible" 
+                        android:focusable="false"
+                        android:paddingRight="8dp">
 
                         <include
                             android:layout_width="wrap_content"
