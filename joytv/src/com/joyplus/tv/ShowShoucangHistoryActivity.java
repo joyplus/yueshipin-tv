@@ -45,6 +45,7 @@ import com.joyplus.tv.Video.VideoPlayerActivity;
 import com.joyplus.tv.entity.HotItemInfo;
 import com.joyplus.tv.ui.NavigateView;
 import com.joyplus.tv.ui.NavigateView.OnResultListener;
+import com.joyplus.tv.utils.DBUtils;
 import com.joyplus.tv.utils.ItemStateUtils;
 import com.joyplus.tv.utils.Log;
 import com.joyplus.tv.utils.UtilTools;
@@ -200,10 +201,19 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 					@Override
 					public void onClick(View v) {
 						// TODO Auto-generated method stub
+						
+						Log.i(TAG, "delButton.setOnClickListener--->" + ((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_id);
+						
+						String prod_id = ((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_id;
 						deleteShoucang(true, ((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_id);
 						((HistortyAdapter)listView.getAdapter()).data.remove(arg2);
 						((BaseAdapter)listView.getAdapter()).notifyDataSetChanged();
 						dialog.dismiss();
+
+						//删除逐条数据时，同时删除数据库里面的数据
+						DBUtils.deleteData4ProId(getApplicationContext(),
+								UtilTools.getCurrentUserId(getApplicationContext()), 
+								prod_id);
 					}
 				});
 				nameText.setText(((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_name);

@@ -109,12 +109,15 @@ public class DBUtils {
 	//取消收藏，删除prodId影片数据
 	public static void deleteData4ProId(Context context,String userId,String proId) {
 		
+		
 		TvDatabaseHelper helper = TvDatabaseHelper.newTvDatabaseHelper(context);
 		SQLiteDatabase database = helper.getWritableDatabase();//获取写db
 		
-		String deleteSelection = UserShouCang.PRO_ID  + "=? and " + UserShouCang.USER_ID + "=?";
+		String deleteSelection = UserShouCang.PRO_ID  + " = ? and " + UserShouCang.USER_ID + " = ?";
 		String[] deleteselectionArgs = {proId,userId};
-		database.delete(TvDatabaseHelper.ZHUIJU_TABLE_NAME, deleteSelection, deleteselectionArgs);
+		int dele = database.delete(TvDatabaseHelper.ZHUIJU_TABLE_NAME, deleteSelection, deleteselectionArgs);
+		
+		Log.i(TAG, "deleteData4ProId--->" + dele + " PROD_ID--->" + proId);
 		
 		helper.closeDatabase();
 		

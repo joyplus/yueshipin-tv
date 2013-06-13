@@ -221,6 +221,10 @@ public class FayeService extends Service implements FayeListener{
 						myClient.sendMessage(bandSuccessObj);
 						app.SaveUserData("isBand", "1");
 						app.SaveUserData("phoneID", phoneID);
+						
+						//
+						UtilTools.setCurrentUserId(getApplicationContext(), phoneID);
+						
 						app.SaveUserData("lastTime", System.currentTimeMillis()+"");
 						Intent bandIntent = new Intent(ACTION_RECIVEACTION_BAND);
 						sendBroadcast(bandIntent);
