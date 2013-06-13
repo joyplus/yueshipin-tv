@@ -485,7 +485,16 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 					// TODO Auto-generated method stub
 					dialog.dismiss();
 					deleteShoucang(false, "");
+					
+					List<HotItemInfo> list = ((HistortyAdapter)listView.getAdapter()).data;
+					for(int i=0;i< list.size();i++) {
+						
+						DBUtils.deleteData4ProId(getApplicationContext(),
+								UtilTools.getCurrentUserId(getApplicationContext()), list.get(i).prod_id);
+					}
+					
 					((HistortyAdapter)listView.getAdapter()).data.clear();
+					
 					((HistortyAdapter)listView.getAdapter()).notifyDataSetChanged();
 				}
 			});
