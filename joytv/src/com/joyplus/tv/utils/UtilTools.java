@@ -326,11 +326,17 @@ public class UtilTools implements JieMianConstant, BangDanConstant {
 		String minuteStr = formatMovieDuration(duration);
 		long movieTime = formateTimeLong(minuteStr);
 		
+		if(movieTime == 0) {
+			
+			return "";
+		}
+		
 		long currentTime = System.currentTimeMillis();
 		
 		long overTime = currentTime + movieTime;
 		
-		String dateFormat = DateFormat.format("hh:mm", overTime).toString();
+//		String dateFormat = DateFormat.format("hh:mm", overTime).toString();//12小时制
+		String dateFormat = DateFormat.format("kk:mm", overTime).toString();//24小时制
 		
 		Log.i(TAG, "overTime--->" + overTime + " minuteStr--->" + minuteStr + " duration--->" + duration
 				 + " dateFormat-->" + dateFormat);

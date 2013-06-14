@@ -751,7 +751,7 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 		TextView tv = (TextView) overTimeLL.findViewById(R.id.tv_over_time);
 		
 		String overTime = UtilTools.movieOverTime(movieData.movie.duration);
-//		String overTime = UtilTools.movieOverTime("90分钟");
+//		String overTime = UtilTools.movieOverTime("300分钟");
 		
 		if(overTime != null && !overTime.equals("")) {
 			
