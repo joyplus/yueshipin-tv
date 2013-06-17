@@ -905,16 +905,8 @@ public class ShowTVActivity extends AbstractShowActivity {
 		// TODO Auto-generated method stub
 
 		List<MovieItemData> srcList = searchAdapter.getMovieList();
-
-		if (list != null && !list.isEmpty()) {
-
-			for (MovieItemData movieItemData : list) {
-
-				srcList.add(movieItemData);
-			}
-		}
-
-		if (list.size() == URLUtils.CACHE_NUM) {
+		
+		if (list != null && list.size() == URLUtils.CACHE_NUM) {
 
 			isNextPagePossibles[currentListIndex] = true;
 		} else {
@@ -922,10 +914,122 @@ public class ShowTVActivity extends AbstractShowActivity {
 			isNextPagePossibles[currentListIndex] = false;
 		}
 
+		if (list != null && !list.isEmpty()) {
+
+//			for (MovieItemData movieItemData : list) {
+//
+//				srcList.add(movieItemData);
+//			}
+			
+			srcList = getRemoveDuplicateList(srcList,list);
+		}
+
 		searchAdapter.setList(srcList,true);
 		lists[currentListIndex] = srcList;
 
 		searchAdapter.notifyDataSetChanged();
+	}
+	
+	/**
+	 * 获取去重后的list
+	 */
+	private List<MovieItemData> getRemoveDuplicateList(List<MovieItemData> srcList,List<MovieItemData> list){
+		
+		int tempIndex = -1;
+		
+		switch (currentListIndex) {
+		case QUANBUFENLEI://榜单10-12个，及收藏置顶
+			if(lists[QUAN_TEN] != null && !lists[QUAN_TEN].isEmpty()) {
+				
+				for(MovieItemData movieItemData_QuanCache:list) {
+					
+					boolean isSame = false;
+					
+					for(MovieItemData movieItemData_QuanTen :lists[QUAN_TEN]) {
+						
+						if(movieItemData_QuanCache.getMovieID().
+								equals(movieItemData_QuanTen.getMovieID())) {
+							
+							isSame = true;
+							break;
+						}
+					}
+					
+					if(shoucangList != null && shoucangList.size() > 0) {
+						
+						for(MovieItemData movieItemData2:shoucangList) {
+							
+							if(movieItemData2.getMovieID().
+									equals(movieItemData_QuanCache.getMovieID())) {
+								
+								isSame = true;
+								break;//// 符合条件跳出本次循环
+							}
+						}
+					}
+					
+					if(!isSame) {
+						
+						srcList.add(movieItemData_QuanCache);
+					}
+				}
+			}
+			return srcList;
+		case DALUJU_QUAN:
+
+			tempIndex = DALUJU;
+			break;
+		case GANGJU_QUAN:
+			
+			tempIndex = GANGJU;
+			break;
+		case TAIJU_QUAN:
+			
+			tempIndex = TAIJU;
+			break;
+		case HANJU_QUAN:
+			
+			tempIndex = HANJU;
+			break;
+		case MEIJU_QUAN:
+			
+			tempIndex = MEIJU;
+			break;
+		case RIJU_QUAN:
+			
+			tempIndex = RIJU;
+			break;
+
+		default:
+			break;
+		}
+		
+		if(tempIndex != -1) {
+			
+			if(lists[tempIndex] != null && !lists[tempIndex].isEmpty()) {
+				
+				for(MovieItemData movieItemData_QinziCache:list) {
+					
+					boolean isSame = false;
+					for(MovieItemData movieItemData_Qinzi :lists[tempIndex]) {
+						
+						if(movieItemData_QinziCache.getMovieID().
+								equals(movieItemData_Qinzi.getMovieID())) {
+							
+							isSame = true;
+							break;
+						}
+					}
+					
+					if(!isSame) {
+						
+						srcList.add(movieItemData_QinziCache);
+					}
+				}
+			}
+		}
+		
+		return srcList;
 	}
 
 
@@ -1144,6 +1248,19 @@ public class ShowTVActivity extends AbstractShowActivity {
 
 						}
 					}
+					
+					if(shoucangList != null && shoucangList.size() > 0) {
+						
+						for(MovieItemData movieItemData2:shoucangList) {
+							
+							if(movieItemData2.getMovieID().equals(proId)) {
+								
+								isSame = true;
+								break;//// 符合条件跳出本次循环
+							}
+						}
+					}
+					
 					if (!isSame) {
 
 						temp10List.add(movieItemData);
