@@ -363,6 +363,7 @@ public class Main extends Activity implements OnItemSelectedListener,
 						hot_contentViews.clear();
 						gallery1.setAdapter(null);
 						contentLayout.removeAllViews();
+						Log.i(TAG, "SetOnViewChangeListener--->isHotLoadedFlag != 2");
 						getHistoryServiceData();
 						getHotServiceData();
 					}
@@ -669,6 +670,7 @@ public class Main extends Activity implements OnItemSelectedListener,
 				aq.id(R.id.tv_head_user_name).text(
 						app.getUserInfo().getUserName());
 				
+				Log.i(TAG, "getHistoryServiceData-->MESSAGE_UPDATEUSER");
 				getHistoryServiceData();
 				break;
 			case MESSAGE_STEP1_SUCESS:// 热播列表加载完成
@@ -924,7 +926,7 @@ public class Main extends Activity implements OnItemSelectedListener,
 				return;
 			}
 
-			Log.d(TAG, json.toString());
+			Log.d(TAG, "CheckBandResult" + json.toString());
 			try {
 				String result = json.getString("status");
 				if ("1".equals(result)) {
@@ -953,7 +955,7 @@ public class Main extends Activity implements OnItemSelectedListener,
 			if (json == null || json.equals(""))
 				return;
 
-			Log.d(TAG, json.toString());
+			Log.d(TAG, "CallServiceResult" + json.toString());
 			try {
 				UserInfo currentUserInfo = new UserInfo();
 				if (json.has("user_id")) {
@@ -1645,7 +1647,7 @@ public class Main extends Activity implements OnItemSelectedListener,
 		if (json == null || json.equals(""))
 			return;
 
-		Log.d(TAG, "history data = " + json.toString());
+		Log.d(TAG, "initYueDanData data = " + json.toString());
 		try {
 			ReturnTops result = mapper.readValue(json.toString(),
 					ReturnTops.class);
@@ -1830,7 +1832,8 @@ public class Main extends Activity implements OnItemSelectedListener,
 		if (json == null || json.equals(""))
 			return;
 
-		Log.d(TAG, "history data = " + json.toString());
+		Log.d(TAG, "initHistoryData data = " + json.toString());
+		Log.i(TAG, "hot_list.size()-->" + hot_list.size());
 		try {
 			ReturnUserPlayHistories result = mapper.readValue(json.toString(),
 					ReturnUserPlayHistories.class);
@@ -1926,6 +1929,30 @@ public class Main extends Activity implements OnItemSelectedListener,
 			hot_introduce_tv.setText(item.prod_summary);
 //			hot_list.add(0, item);
 			
+			Log.i(TAG, "item--->" + item.prod_id);
+			
+			if(netWorkHotList != null && netWorkHotList.size() > 0) {
+				
+				//重新设置hot_list
+				if(hot_list != null && !hot_list.isEmpty()) {
+					
+					hot_list.clear();
+					
+				}
+			}
+			
+			hot_list.add(item);
+			
+			for(HotItemInfo tempHotItemInfo:netWorkHotList) {
+				
+				Log.i(TAG, "tempHotItemInfo--->" + tempHotItemInfo.prod_id);
+				
+				if(!tempHotItemInfo.prod_id.equals(item.prod_id)) {
+					
+					hot_list.add(tempHotItemInfo);
+				}
+			}
+			
 			hot_contentViews.add(0, hotView);
 			
 			Log.d(TAG, "lengh = " + hot_contentViews.size());
@@ -1934,24 +1961,24 @@ public class Main extends Activity implements OnItemSelectedListener,
 					itemFram.setVisibility(View.VISIBLE);
 					// removeSameInHotList();
 					
-					//重新设置hot_list
-					if(!hot_list.isEmpty()) {
-						
-						hot_list.clear();
-					}
-					
-					hot_list.add(item);
-					Log.i(TAG, "tempHotItemInfo--->" + item.prod_id);
-					
-					for(HotItemInfo tempHotItemInfo:netWorkHotList) {
-						
-						Log.i(TAG, "tempHotItemInfo--->" + tempHotItemInfo.prod_id);
-						
-						if(!tempHotItemInfo.prod_id.equals(item.prod_id)) {
-							
-							hot_list.add(tempHotItemInfo);
-						}
-					}
+//					//重新设置hot_list
+//					if(!hot_list.isEmpty()) {
+//						
+//						hot_list.clear();
+//					}
+//					
+//					hot_list.add(item);
+//					Log.i(TAG, "item--->" + item.prod_id);
+//					
+//					for(HotItemInfo tempHotItemInfo:netWorkHotList) {
+//						
+//						Log.i(TAG, "tempHotItemInfo--->" + tempHotItemInfo.prod_id);
+//						
+//						if(!tempHotItemInfo.prod_id.equals(item.prod_id)) {
+//							
+//							hot_list.add(tempHotItemInfo);
+//						}
+//					}
 					
 					gallery1.setAdapter(new MainHotItemAdapter(Main.this,
 							hot_list));
@@ -1973,24 +2000,24 @@ public class Main extends Activity implements OnItemSelectedListener,
 					itemFram.setVisibility(View.VISIBLE);
 					// removeSameInHotList();
 					
-					//重新设置hot_list
-					if(!hot_list.isEmpty()) {
-						
-						hot_list.clear();
-					}
-					
-					hot_list.add(item);
-					Log.i(TAG, "tempHotItemInfo--->" + item.prod_id);
-					
-					for(HotItemInfo tempHotItemInfo:netWorkHotList) {
-						
-						Log.i(TAG, "tempHotItemInfo--->" + tempHotItemInfo.prod_id);
-						
-						if(!tempHotItemInfo.prod_id.equals(item.prod_id)) {
-							
-							hot_list.add(tempHotItemInfo);
-						}
-					}
+//					//重新设置hot_list
+//					if(!hot_list.isEmpty()) {
+//						
+//						hot_list.clear();
+//					}
+//					
+//					hot_list.add(item);
+//					Log.i(TAG, "tempHotItemInfo--->" + item.prod_id);
+//					
+//					for(HotItemInfo tempHotItemInfo:netWorkHotList) {
+//						
+//						Log.i(TAG, "tempHotItemInfo--->" + tempHotItemInfo.prod_id);
+//						
+//						if(!tempHotItemInfo.prod_id.equals(item.prod_id)) {
+//							
+//							hot_list.add(tempHotItemInfo);
+//						}
+//					}
 					
 					gallery1.setAdapter(new MainHotItemAdapter(Main.this,
 							hot_list));
@@ -2029,7 +2056,7 @@ public class Main extends Activity implements OnItemSelectedListener,
 			if (json == null || json.equals(""))
 				return;
 
-			Log.d(TAG, json.toString());
+			Log.d(TAG, "initHotData" + json.toString());
 			ReturnMainHot result = mapper.readValue(json.toString(),
 					ReturnMainHot.class);
 			// hot_list.clear();
@@ -2250,7 +2277,7 @@ public class Main extends Activity implements OnItemSelectedListener,
 			if (json == null || json.equals(""))
 				return;
 
-			Log.d(TAG, json.toString());
+			Log.d(TAG, "getBandUserInfoResult" + json.toString());
 			try {
 				UserInfo currentUserInfo = new UserInfo();
 				if (json.has("user_id")) {
@@ -2479,7 +2506,7 @@ public class Main extends Activity implements OnItemSelectedListener,
 			if (json == null || json.equals(""))
 				return;
 
-			Log.d(TAG, json.toString());
+			Log.d(TAG, "initShouCangServiceData" + json.toString());
 			compareUsrFav4DB(
 					UtilTools.returnUserFavoritiesJson(json.toString()),
 					app.getUserInfo().getUserId());
@@ -2515,7 +2542,7 @@ public class Main extends Activity implements OnItemSelectedListener,
 			if (json == null || json.equals(""))
 				return;
 
-			Log.d(TAG, json.toString());
+			Log.d(TAG, "initHistoryServiceData" + json.toString());
 			compareUsrHis4DB(
 					UtilTools.returnUserHistoryJson(json.toString()),
 					app.getUserInfo().getUserId());

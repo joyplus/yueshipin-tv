@@ -56,7 +56,7 @@ public interface BangDanConstant {
 	String REBO_GANGJU_DIANSHI = "2250";//2250 热播港剧
 	String REBO_TAIJU_DIANSHI = "150";//150 热播台剧 
 	String REBO_HANJU_DIANSHI = "918";//918 热播韩剧 
-	String REBO_RIJU_DIANSHI = "49";//49 热播日剧
+	String REBO_RIJU_DIANSHI = "149";//149 热播日剧
 	
 	String REBO_ZONGYI = "152";//152 热播综艺
 	
