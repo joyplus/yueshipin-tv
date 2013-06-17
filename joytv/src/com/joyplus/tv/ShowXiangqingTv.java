@@ -38,6 +38,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joyplus.tv.Adapters.CurrentPlayData;
 import com.joyplus.tv.Service.Return.ReturnProgramView;
+import com.joyplus.tv.Service.Return.ReturnRelatedGroup;
 import com.joyplus.tv.Service.Return.ReturnProgramView.DOWN_URLS;
 import com.joyplus.tv.Video.VideoPlayerActivity;
 import com.joyplus.tv.entity.HotItemInfo;
@@ -99,6 +100,8 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 	private int historyPlayIndex4DB = -1;//当前数据库中播放的集数
 	
 	private boolean isYingPing = false;
+	
+	private Button groupSeriesBt;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -291,6 +294,8 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 		
 		layout = (LinearLayout) findViewById(R.id.layout);
 		table  = (TableLayout) findViewById(R.id.table);
+		
+		groupSeriesBt = (Button) findViewById(R.id.bt_group_series);
 
 		bofangLL.requestFocus();
 		
@@ -871,6 +876,80 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 			yingpingBt.setTextColor(getResources().getColor(R.color.unuse_color));
 //			yingpingBt.setFocusable(false);
 		}
+		
+		getGroupSeries(URLUtils.getGroupSeries(prod_id));
+	}
+	
+	protected void getGroupSeries(String url) {
+		// TODO Auto-generated method stub
+
+		Log.i(TAG, "getYingpingData--->");
+		getServiceData(url, "initGroupSeriesServiceData");
+	}
+	
+	public void initGroupSeriesServiceData(String url, JSONObject json,
+			AjaxStatus status) {
+		// TODO Auto-generated method stub
+
+		if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
+
+			app.MyToast(aq.getContext(),
+					getResources().getString(R.string.networknotwork));
+			return;
+		}
+		
+		if (json == null || json.equals(""))
+			return;
+		
+		String str = json.toString();
+		
+		Log.i(TAG, "isYingPing--->" + isYingPing + "   --->" + str);
+		
+		ObjectMapper mapper = new ObjectMapper();
+		
+		try {
+			ReturnRelatedGroup group  = mapper.readValue(json.toString(), ReturnRelatedGroup.class);
+			
+			if(group != null) {
+				
+				final String topId = group.top_id;
+				final String topName = group.top_name;
+				
+				if(topId != null && !topId.equals("") 
+						&& topName != null && !topName.equals("")
+						&& !topName.equals("false") && !topId.equals("false") ) {
+					groupSeriesBt.setVisibility(View.VISIBLE);
+					
+					groupSeriesBt.setOnClickListener(new View.OnClickListener() {
+						
+						@Override
+						public void onClick(View v) {
+							// TODO Auto-generated method stub
+							
+							Intent intent = new Intent(ShowXiangqingTv.this,
+									ShowYueDanListActivity.class);
+							Bundle bundle = new Bundle();
+
+							bundle.putString("NAME", topName);
+							bundle.putString("ID", topId);
+							intent.putExtras(bundle);
+
+							startActivity(intent);
+						}
+					});
+				}
+			}
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 	
 	private void updateView(){

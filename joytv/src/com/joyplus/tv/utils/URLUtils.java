@@ -24,6 +24,11 @@ public class URLUtils implements JieMianConstant, BangDanConstant{
 		
 		return url + "?prod_id=" + prod_id;
 	}
+	
+	public static String getGroupSeries(String prod_id) {
+		
+		return getGroupURL(BangDanConstant.SERISE_ALL_GROUP_URL, prod_id);
+	}
 
 	/**
 	 * type required 视频的类别，节目类型，1：电影，2：电视剧，3：综艺节目，131：动漫
