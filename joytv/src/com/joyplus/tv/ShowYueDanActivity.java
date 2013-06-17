@@ -113,9 +113,11 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 			String url = URLUtils.getYueDan_DianyingFirstURL();
 			Log.i(TAG, "URL--->" + url);
 			showDialog(DIALOG_WAITING);
+			currentListIndex = DIANYING;
 			getUnQuanbuData(url);// 进入电影界面时，全部分类电影显示获取焦点，并且显示数据
 		} else if (defalutYuedan == DIANSHIJU_YUEDAN) {
 			showDialog(DIALOG_WAITING);
+			currentListIndex = DIANSHI;
 			String url = URLUtils.getYueDan_DianshiFirstURL();
 			getUnQuanbuData(url);// 进入电影界面时，全部分类电影显示获取焦点，并且显示数据
 		}

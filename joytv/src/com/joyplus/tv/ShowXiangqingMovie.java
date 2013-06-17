@@ -122,6 +122,8 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 				supportDefination-=1;
 				chaoqingLL.setVisibility(View.GONE);
 //				sign = 0;
+				
+				Log.i(TAG, "chaoqing_url--->");
 			} else {
 				
 				gaoqingBt.setText(R.string.gaoqing_chaogaoqing);
@@ -131,6 +133,8 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 				supportDefination-=1;
 				gaoqingLL.setVisibility(View.GONE);
 //				sign = 1;
+				
+				Log.i(TAG, "gaoqing_url--->");
 			} else {
 				
 				if(gaoqing_url==null) {
@@ -143,6 +147,8 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 				supportDefination-=1;
 				biaoqingLL.setVisibility(View.GONE);
 //				sign =2;
+				
+				Log.i(TAG, "puqing_url--->");
 			} else {
 				
 				if(gaoqing_url==null && chaoqing_url == null) {

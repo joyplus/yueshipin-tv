@@ -79,6 +79,7 @@ public interface BangDanConstant {
 	String HISTORY_URL = Constant.BASE_URL + "/user/playHistories";
 	String YINGPING_URL = Constant.BASE_URL + "program/reviews";
 	String SEARCH_CAPITAL_URL = Constant.BASE_URL + "search_capital";
+	String SERISE_ALL_GROUP_URL = Constant.BASE_URL + "/program/RelatedGroup";
 	
 	String MOVIE_TYPE = "1";
 	String TV_TYPE = "2";

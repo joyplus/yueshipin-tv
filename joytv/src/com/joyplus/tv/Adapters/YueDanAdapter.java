@@ -129,10 +129,12 @@ public class YueDanAdapter extends BaseAdapter implements JieMianConstant{
 				
 				if(proType.equals("1")) {
 					
-					viewItemHodler.otherInfo.setText(movieList.get(position).getNum() + context.getString(R.string.yingpianshu));
+					viewItemHodler.otherInfo.setText(context.getString(R.string.before_num_text) + 
+							movieList.get(position).getNum() + context.getString(R.string.after_num_text));
 				} else if(proType.equals("2")) {
 					
-					viewItemHodler.otherInfo.setText(movieList.get(position).getNum() + "部电视剧");
+					viewItemHodler.otherInfo.setText(context.getString(R.string.before_num_text) + 
+							movieList.get(position).getNum() + context.getString(R.string.after_num_text));
 				}
 			}
 			

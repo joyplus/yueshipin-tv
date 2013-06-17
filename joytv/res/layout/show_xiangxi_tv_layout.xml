@@ -266,25 +266,30 @@
                         android:layout_width="@dimen/layout_zero"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
+                        android:background="@drawable/xiangqing_button_selector"
+                        android:clickable="true"
+                        android:focusable="true"
                         android:gravity="center_vertical"
-                        android:paddingLeft="10dp"
-                        android:visibility="invisible" >
+                        android:paddingLeft="10dp">
 
                         <Button
                             android:id="@+id/bt_xiangqing_xiazai"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:background="@drawable/btn_unuse"
+                            android:background="@android:color/transparent"
                             android:gravity="center"
-                            android:text="@string/xiangqing_xiazai"
+                            android:text="@string/group_series_tv_dongman"
+                            android:textColor="@color/text_foucs"
                             android:textSize="17dp"
-                            android:visibility="invisible" />
+                            android:visibility="visible" />
 
-                        <Button
+                        <!--
+                             <Button
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1.5" />
+                        -->
                     </LinearLayout>
 
                     <LinearLayout
