@@ -768,16 +768,8 @@ public class ShowMovieActivity extends AbstractShowActivity {
 		// TODO Auto-generated method stub
 
 		List<MovieItemData> srcList = searchAdapter.getMovieList();
-
-		if (list != null && !list.isEmpty()) {
-
-			for (MovieItemData movieItemData : list) {
-
-				srcList.add(movieItemData);
-			}
-		}
-
-		if (list.size() == URLUtils.CACHE_NUM) {
+		
+		if (list != null && list.size() == URLUtils.CACHE_NUM) {
 
 			isNextPagePossibles[currentListIndex] = true;
 		} else {
@@ -785,10 +777,97 @@ public class ShowMovieActivity extends AbstractShowActivity {
 			isNextPagePossibles[currentListIndex] = false;
 		}
 
+		if (list != null && !list.isEmpty()) {
+
+//			for (MovieItemData movieItemData : list) {
+//
+//				srcList.add(movieItemData);
+//			}
+			
+			srcList = getRemoveDuplicateList(srcList,list);
+		}
+
 		searchAdapter.setList(srcList,true);
 		lists[currentListIndex] = srcList;
 
 		searchAdapter.notifyDataSetChanged();
+	}
+	
+	/**
+	 * 获取去重后的list
+	 */
+	private List<MovieItemData> getRemoveDuplicateList(List<MovieItemData> srcList,List<MovieItemData> list){
+		
+		int tempIndex = -1;
+		
+		switch (currentListIndex) {
+		case QUANBUFENLEI:
+
+			tempIndex = QUAN_TEN;
+			break;
+		case DONGZUOPIAN_QUAN:
+
+			tempIndex = DONGZUOPIAN;
+			break;
+		case KEHUANPIAN_QUAN:
+			
+			tempIndex = KEHUANPIAN;
+			break;
+		case LUNLIPIAN_QUAN:
+			
+			tempIndex = LUNLIPIAN;
+			break;
+		case XIJUPIAN_QUAN:
+			
+			tempIndex = XIJUPIAN;
+			break;
+		case AIQINGPIAN_QUAN:
+			
+			tempIndex = AIQINGPIAN;
+			break;
+		case XUANYIPIAN_QUAN:
+			
+			tempIndex = XUANYIPIAN;
+			break;
+		case KONGBUPIAN_QUAN:
+			
+			tempIndex = KONGBUPIAN;
+			break;
+		case DONGHUAPIAN_QUAN:
+			
+			tempIndex = DONGHUAPIAN;
+			break;
+
+		default:
+			break;
+		}
+		
+		if(tempIndex != -1) {
+			
+			if(lists[tempIndex] != null && !lists[tempIndex].isEmpty()) {
+				
+				for(MovieItemData movieItemData_QinziCache:list) {
+					
+					boolean isSame = false;
+					for(MovieItemData movieItemData_Qinzi :lists[tempIndex]) {
+						
+						if(movieItemData_QinziCache.getMovieID().
+								equals(movieItemData_Qinzi.getMovieID())) {
+							
+							isSame = true;
+							break;
+						}
+					}
+					
+					if(!isSame) {
+						
+						srcList.add(movieItemData_QinziCache);
+					}
+				}
+			}
+		}
+		
+		return srcList;
 	}
 
 

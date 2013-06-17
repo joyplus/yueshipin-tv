@@ -760,9 +760,25 @@ public class UtilTools implements JieMianConstant, BangDanConstant {
 				Log.i(TAG, "getLists4TwoList--> list1-size:" + list1.size()
 						+ " list2-size:" + list2.size());
 
-				for (MovieItemData movieItemData : list2) {
+				for (MovieItemData movieItemData2 : list2) {
 
-					list.add(movieItemData);
+//					list.add(movieItemData);
+					boolean isSame = false;
+					
+					for(MovieItemData movieItemData : list1) {
+						
+						if(movieItemData.getMovieID().
+								equals(movieItemData2.getMovieID())) {
+							
+							isSame = true;
+							break;
+						}
+					}
+					
+					if(!isSame) {
+						
+						list.add(movieItemData2);
+					}
 				}
 			}
 		}
