@@ -100,12 +100,7 @@ public class Main extends Activity implements OnItemSelectedListener,
 		OnItemClickListener {
 	private String TAG = "Main";
 	public static final String ACTION_USERUPDATE = "user_update";
-	private App app;
-	private AQuery aq; 
-
-	private int initStep = 0;
-	private long exitTime = 0;
-
+	
 	private static final int DIALOG_WAITING = 0;
 
 	private static final int MESSAGE_STEP1_SUCESS = 100;
@@ -119,19 +114,7 @@ public class Main extends Activity implements OnItemSelectedListener,
 
 	private static final long LOADING_PIC_TIME = 10 * 1000;
 	private static final long LOADING_TIME_OUT = 30 * 1000;
-
-	private ImageView startingImageView;
-	private RelativeLayout rootLayout;
-	private Map<String, String> headers;
-
-	ObjectMapper mapper = new ObjectMapper();
-	private List<View> hot_contentViews = new ArrayList<View>();
-	private List<View> yuedan_contentViews = new ArrayList<View>();
-	private List<HotItemInfo> hot_list = new ArrayList<HotItemInfo>();
-	private List<YueDanInfo> yuedan_list = new ArrayList<YueDanInfo>();
-	private int isHotLoadedFlag = 0;
-	private int isYueDanLoadedFlag = 0;
-
+	
 	private int[] resouces_lib_nomal = { R.drawable.movie_normal,
 			R.drawable.episode_normal, R.drawable.cartoon_normal,
 			R.drawable.variety_normal, R.drawable.search_normal };
@@ -155,6 +138,22 @@ public class Main extends Activity implements OnItemSelectedListener,
 	// };
 	private int[] resouces_my_active = { R.drawable.follow_active,
 			R.drawable.recent_active, R.drawable.system_active, };
+
+	
+	private App app;
+	private AQuery aq; 
+	ObjectMapper mapper = new ObjectMapper();
+
+	private int initStep = 0;
+	private long exitTime = 0;
+
+	private ImageView startingImageView;
+	private RelativeLayout rootLayout;
+	private Map<String, String> headers;
+
+
+	private List<View> hot_contentViews = new ArrayList<View>();
+	private List<View> yuedan_contentViews = new ArrayList<View>();
 
 	private CustomGallery gallery1;
 	private float density;
@@ -208,6 +207,12 @@ public class Main extends Activity implements OnItemSelectedListener,
 	private ImageView erweimaImage;//二维码显示
 	
 	private boolean isRegesterService = false;
+	
+	private List<HotItemInfo> hot_list = new ArrayList<HotItemInfo>();//用户数据，有可能去过重
+	private List<HotItemInfo> netWorkHotList = new ArrayList<HotItemInfo>();//网络获取数据，不改变
+	private List<YueDanInfo> yuedan_list = new ArrayList<YueDanInfo>();
+	private int isHotLoadedFlag = 0;
+	private int isYueDanLoadedFlag = 0;
 
 	// private Handler mHandler = new Handler();
 
@@ -639,6 +644,23 @@ public class Main extends Activity implements OnItemSelectedListener,
 				if (initStep == 0) {
 					initStep += 1;
 					getHotServiceData();
+					
+					// 需要网络连接
+					Bitmap tempBitmap = CreateBarCode();
+					if(tempBitmap == null) {//如果返回的Bitmap为空，那就隐藏二维码扫描功能，并且不开启service
+						
+						myView.setVisibility(View.INVISIBLE);
+					} else {//如果不为空，照常开启
+						
+						erweimaImage.setImageBitmap(tempBitmap);
+						
+						IntentFilter filter = new IntentFilter();
+						filter.addAction(FayeService.ACTION_RECIVEACTION_BAND);
+						filter.addAction(FayeService.ACTION_RECIVEACTION_UNBAND);
+						registerReceiver(receiver, filter);
+						
+						isRegesterService = true;
+					}
 				}
 				Log.d(TAG, "MESSAGE_UPDATEUSER --- >Initstep = " + initStep);
 				aq.id(R.id.iv_head_user_icon).image(
@@ -646,24 +668,6 @@ public class Main extends Activity implements OnItemSelectedListener,
 						R.drawable.avatar_defult);
 				aq.id(R.id.tv_head_user_name).text(
 						app.getUserInfo().getUserName());
-				
-				
-				// 需要网络连接
-				Bitmap tempBitmap = CreateBarCode();
-				if(tempBitmap == null) {//如果返回的Bitmap为空，那就隐藏二维码扫描功能，并且不开启service
-					
-					myView.setVisibility(View.INVISIBLE);
-				} else {//如果不为空，照常开启
-					
-					erweimaImage.setImageBitmap(tempBitmap);
-					
-					IntentFilter filter = new IntentFilter();
-					filter.addAction(FayeService.ACTION_RECIVEACTION_BAND);
-					filter.addAction(FayeService.ACTION_RECIVEACTION_UNBAND);
-					registerReceiver(receiver, filter);
-					
-					isRegesterService = true;
-				}
 				
 				getHistoryServiceData();
 				break;
@@ -1831,13 +1835,13 @@ public class Main extends Activity implements OnItemSelectedListener,
 			ReturnUserPlayHistories result = mapper.readValue(json.toString(),
 					ReturnUserPlayHistories.class);
 			HotItemInfo item = new HotItemInfo();
-			if (hot_list.size() > 0) {
-				if (hot_list.get(0).type == 0) {
+			if (hot_list.size() > 0) {//第一个存储的是历史记录，因此type是0
+				if (hot_list.get(0).type == 0) {//重新loading历史数据时，删除原先的view和数据
 					hot_list.remove(0);
 					hot_contentViews.remove(0);
 				}
 			}
-			if (result.histories.length == 0) {
+			if (result.histories.length == 0) {//历史记录为空，loading最原始数据即可 总共11个
 				if (isHotLoadedFlag == 1) {
 					if (titleGroup.getSelectedTitleIndex() == 1) {
 						itemFram.setVisibility(View.VISIBLE);
@@ -1920,8 +1924,26 @@ public class Main extends Activity implements OnItemSelectedListener,
 			hot_name_tv.setText(item.prod_name);
 			hot_score_tv.setText(UtilTools.formateScore(item.score));
 			hot_introduce_tv.setText(item.prod_summary);
-			hot_list.add(0, item);
+//			hot_list.add(0, item);
+			
+			//重新设置hot_list
+			if(!hot_list.isEmpty()) {
+				
+				hot_list.clear();
+			}
+			
+			hot_list.add(item);
+			
+			for(HotItemInfo tempHotItemInfo:netWorkHotList) {
+				
+				if(!tempHotItemInfo.prod_id.equals(item.prod_id)) {
+					
+					hot_list.add(tempHotItemInfo);
+				}
+			}
+			
 			hot_contentViews.add(0, hotView);
+			
 			Log.d(TAG, "lengh = " + hot_contentViews.size());
 			if (isHotLoadedFlag == 1) {
 				if (titleGroup.getSelectedTitleIndex() == 1) {
@@ -2010,6 +2032,7 @@ public class Main extends Activity implements OnItemSelectedListener,
 				item.play_urls = result.items[i].play_urls;
 				item.playback_time = "";
 				hot_list.add(item);
+				netWorkHotList.add(item);//网络数据
 				View hotView = LayoutInflater.from(Main.this).inflate(
 						R.layout.layout_hot, null);
 				TextView hot_name_tv = (TextView) hotView
@@ -2184,7 +2207,7 @@ public class Main extends Activity implements OnItemSelectedListener,
 			headers.put("user_id", currentUserInfo.getUserId());
 			app.setUser(currentUserInfo);
 			sendBroadcast(new Intent(ACTION_USERUPDATE));
-			handler.sendEmptyMessage(MESSAGE_UPDATEUSER);
+			handler.sendEmptyMessage(MESSAGE_UPDATEUSER);//当切换用户id时，重新加载页面
 		} else {
 			String url = Constant.BASE_URL + "user/view?userid=" + userId;
 			AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
