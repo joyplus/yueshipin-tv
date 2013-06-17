@@ -1926,22 +1926,6 @@ public class Main extends Activity implements OnItemSelectedListener,
 			hot_introduce_tv.setText(item.prod_summary);
 //			hot_list.add(0, item);
 			
-			//重新设置hot_list
-			if(!hot_list.isEmpty()) {
-				
-				hot_list.clear();
-			}
-			
-			hot_list.add(item);
-			
-			for(HotItemInfo tempHotItemInfo:netWorkHotList) {
-				
-				if(!tempHotItemInfo.prod_id.equals(item.prod_id)) {
-					
-					hot_list.add(tempHotItemInfo);
-				}
-			}
-			
 			hot_contentViews.add(0, hotView);
 			
 			Log.d(TAG, "lengh = " + hot_contentViews.size());
@@ -1949,6 +1933,26 @@ public class Main extends Activity implements OnItemSelectedListener,
 				if (titleGroup.getSelectedTitleIndex() == 1) {
 					itemFram.setVisibility(View.VISIBLE);
 					// removeSameInHotList();
+					
+					//重新设置hot_list
+					if(!hot_list.isEmpty()) {
+						
+						hot_list.clear();
+					}
+					
+					hot_list.add(item);
+					Log.i(TAG, "tempHotItemInfo--->" + item.prod_id);
+					
+					for(HotItemInfo tempHotItemInfo:netWorkHotList) {
+						
+						Log.i(TAG, "tempHotItemInfo--->" + tempHotItemInfo.prod_id);
+						
+						if(!tempHotItemInfo.prod_id.equals(item.prod_id)) {
+							
+							hot_list.add(tempHotItemInfo);
+						}
+					}
+					
 					gallery1.setAdapter(new MainHotItemAdapter(Main.this,
 							hot_list));
 					if (hot_list.size() > 0) {
@@ -1968,6 +1972,26 @@ public class Main extends Activity implements OnItemSelectedListener,
 				if (titleGroup.getSelectedTitleIndex() == 1) {
 					itemFram.setVisibility(View.VISIBLE);
 					// removeSameInHotList();
+					
+					//重新设置hot_list
+					if(!hot_list.isEmpty()) {
+						
+						hot_list.clear();
+					}
+					
+					hot_list.add(item);
+					Log.i(TAG, "tempHotItemInfo--->" + item.prod_id);
+					
+					for(HotItemInfo tempHotItemInfo:netWorkHotList) {
+						
+						Log.i(TAG, "tempHotItemInfo--->" + tempHotItemInfo.prod_id);
+						
+						if(!tempHotItemInfo.prod_id.equals(item.prod_id)) {
+							
+							hot_list.add(tempHotItemInfo);
+						}
+					}
+					
 					gallery1.setAdapter(new MainHotItemAdapter(Main.this,
 							hot_list));
 					if (hot_list.size() > 0) {
