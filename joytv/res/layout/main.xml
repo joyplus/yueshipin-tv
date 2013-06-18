@@ -208,6 +208,6 @@
 	    android:layout_height="fill_parent"
 	    android:scaleType="fitXY"
 	    android:id="@+id/image_starting"
-	    android:src="@drawable/starting"/>
+	    android:src="@android:color/transparent"/>
 </RelativeLayout>
 

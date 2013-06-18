@@ -686,7 +686,7 @@ public class Main extends Activity implements OnItemSelectedListener,
 						gallery1.requestFocus();
 						new Thread(new CheckPlayUrl()).start();
 					}
-
+					
 					handler.removeMessages(MESSAGE_30S_TIMEOUT);
 				}
 
