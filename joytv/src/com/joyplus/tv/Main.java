@@ -213,6 +213,9 @@ public class Main extends Activity implements OnItemSelectedListener,
 	private List<YueDanInfo> yuedan_list = new ArrayList<YueDanInfo>();
 	private int isHotLoadedFlag = 0;
 	private int isYueDanLoadedFlag = 0;
+	
+	private Button upScrollBt,downScrollBt;
+	private ImageView leftCustomIv,rightCustomIv;
 
 	// private Handler mHandler = new Handler();
 
@@ -242,6 +245,53 @@ public class Main extends Activity implements OnItemSelectedListener,
 		image_bar1.setVisibility(View.INVISIBLE);
 		image_bar2.setVisibility(View.INVISIBLE);
 		image_bar3.setVisibility(View.INVISIBLE);
+		
+		upScrollBt = (Button) findViewById(R.id.bt_up_scrolllayout);
+		
+		upScrollBt.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Log.i(TAG, "upScrollBt-->setOnClickListener");
+				titleGroup.selectPreTitle();
+			}
+		});
+		
+		downScrollBt = (Button) findViewById(R.id.bt_down_scrolllayout);
+		
+		downScrollBt.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Log.i(TAG, "downScrollBt-->setOnClickListener");
+				titleGroup.selectNextTitle();
+			}
+		});
+		
+		leftCustomIv = (ImageView) findViewById(R.id.icon_arrow_left);
+		rightCustomIv = (ImageView) findViewById(R.id.icon_arrow_right);
+		
+		leftCustomIv.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				
+				gallery1.showPre();
+			}
+		});
+		
+		rightCustomIv.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				
+				gallery1.showNext();
+			}
+		});
 
 		kuView = LayoutInflater.from(Main.this).inflate(R.layout.layout_lib,
 				null);
