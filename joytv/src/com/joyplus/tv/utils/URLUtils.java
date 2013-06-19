@@ -835,6 +835,9 @@ public class URLUtils implements JieMianConstant, BangDanConstant{
 
 	// 电影filter
 	public static String getFilter_DianyingFirstURL(String filterSource) {
+		
+		Log.i(TAG, "getFilter_DianyingFirstURL--->" + getFilterURL(FILTER_URL, 1 + "", FIRST_NUM + "",
+				MOVIE_TYPE) + filterSource);
 
 		return getFilterURL(FILTER_URL, 1 + "", FIRST_NUM + "",
 				MOVIE_TYPE) + filterSource;
@@ -842,6 +845,9 @@ public class URLUtils implements JieMianConstant, BangDanConstant{
 
 	public static String getFilter_DianyingCacheURL(int pageNum,
 			String filterSource) {
+		
+		Log.i(TAG, "getFilter_DianyingFirstURL--->" + getFilterURL(FILTER_URL, (pageNum + 1) + "",
+				CACHE_NUM + "", MOVIE_TYPE) + filterSource);
 
 		return getFilterURL(FILTER_URL, (pageNum + 1) + "",
 				CACHE_NUM + "", MOVIE_TYPE) + filterSource;

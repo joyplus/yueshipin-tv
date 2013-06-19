@@ -1200,7 +1200,7 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 	private List<URLS_INDEX> getBofangList(int index){
 		List<URLS_INDEX> list = new ArrayList<URLS_INDEX>();
 		
-		if(index >= date.tv.episodes.length) {
+		if(index >= date.show.episodes.length) {
 			
 			return null;
 		}

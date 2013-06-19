@@ -921,7 +921,17 @@ public class ShowTVActivity extends AbstractShowActivity {
 //				srcList.add(movieItemData);
 //			}
 			
-			srcList = getRemoveDuplicateList(srcList,list);
+			if(currentListIndex == QUAN_FILTER || currentListIndex == SEARCH) {
+				
+				for (MovieItemData movieItemData : list) {
+				
+								srcList.add(movieItemData);
+							}
+			} else {
+				
+				srcList = getRemoveDuplicateList(srcList,list);
+			}
+			
 		}
 
 		searchAdapter.setList(srcList,true);

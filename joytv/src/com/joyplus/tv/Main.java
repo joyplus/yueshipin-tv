@@ -1943,13 +1943,17 @@ public class Main extends Activity implements OnItemSelectedListener,
 			
 			hot_list.add(item);
 			
-			for(HotItemInfo tempHotItemInfo:netWorkHotList) {
+			for(int i=0;i<netWorkHotList.size();i++) {
+				HotItemInfo tempHotItemInfo = netWorkHotList.get(i);
 				
 				Log.i(TAG, "tempHotItemInfo--->" + tempHotItemInfo.prod_id);
 				
 				if(!tempHotItemInfo.prod_id.equals(item.prod_id)) {
 					
 					hot_list.add(tempHotItemInfo);
+				}else {
+					
+					hot_contentViews.remove(i);
 				}
 			}
 			
@@ -2060,6 +2064,19 @@ public class Main extends Activity implements OnItemSelectedListener,
 			ReturnMainHot result = mapper.readValue(json.toString(),
 					ReturnMainHot.class);
 			// hot_list.clear();
+			
+			//当历史加载完成，hot数据后加载
+			
+			String tempProdId = null;
+			
+			if(hot_list != null && hot_list.size() > 0 && netWorkHotList.size() <= 0 ) {
+				
+				HotItemInfo tempInfo = hot_list.get(0);
+				if(tempInfo != null) {
+					
+					tempProdId = tempInfo.prod_id;
+				}
+			}
 			for (int i = 0; i < result.items.length; i++) {
 				HotItemInfo item = new HotItemInfo();
 				item.type = 1;
@@ -2082,8 +2099,6 @@ public class Main extends Activity implements OnItemSelectedListener,
 				item.duration = result.items[i].duration;
 				item.play_urls = result.items[i].play_urls;
 				item.playback_time = "";
-				hot_list.add(item);
-				netWorkHotList.add(item);//网络数据
 				View hotView = LayoutInflater.from(Main.this).inflate(
 						R.layout.layout_hot, null);
 				TextView hot_name_tv = (TextView) hotView
@@ -2117,7 +2132,16 @@ public class Main extends Activity implements OnItemSelectedListener,
 				hot_name_tv.setText(item.prod_name);
 				hot_score_tv.setText(UtilTools.formateScore(item.score));
 				hot_introduce_tv.setText(item.prod_summary);
-				hot_contentViews.add(hotView);
+				
+				if(tempProdId != null && tempProdId.endsWith(item.prod_id)) {
+					
+					//说明历史加载先完成
+				} else {
+					
+					hot_list.add(item);
+					netWorkHotList.add(item);//网络数据
+					hot_contentViews.add(hotView);
+				}
 			}
 			// Log.d
 

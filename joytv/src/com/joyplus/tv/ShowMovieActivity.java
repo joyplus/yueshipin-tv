@@ -659,9 +659,9 @@ public class ShowMovieActivity extends AbstractShowActivity {
 					getString(R.string.toast_no_play));
 		}
 		
-		Log.i(TAG, "list.size()-->" + list.size() + 
-				" currentListIndex--->" + currentListIndex + 
-				" isCache--->" + isNextPagePossibles[currentListIndex]);
+//		Log.i(TAG, "list.size()-->" + list.size() + 
+//				" currentListIndex--->" + currentListIndex + 
+//				" isCache--->" + isNextPagePossibles[currentListIndex]);
 
 		if (list != null && !list.isEmpty() && QUANBUFENLEI != currentListIndex) {// 判断其能否向获取更多数据
 
@@ -677,6 +677,10 @@ public class ShowMovieActivity extends AbstractShowActivity {
 			}
 
 		}
+		
+		Log.i(TAG, "list.size()-->" + list.size() + 
+				" currentListIndex--->" + currentListIndex + 
+				" isCache--->" + isNextPagePossibles[currentListIndex]);
 		lists[currentListIndex] = list;
 
 		playGv.setSelection(0);
@@ -784,8 +788,22 @@ public class ShowMovieActivity extends AbstractShowActivity {
 //				srcList.add(movieItemData);
 //			}
 			
-			srcList = getRemoveDuplicateList(srcList,list);
+			if(currentListIndex == QUAN_FILTER || currentListIndex == SEARCH) {
+				
+				for (MovieItemData movieItemData : list) {
+				
+								srcList.add(movieItemData);
+							}
+			} else {
+				
+				srcList = getRemoveDuplicateList(srcList,list);
+			}
+			
 		}
+		
+		Log.i(TAG, "refreshAdpter list.size()-->" + list.size() + 
+				" currentListIndex--->" + currentListIndex + 
+				" isCache--->" + isNextPagePossibles[currentListIndex]);
 
 		searchAdapter.setList(srcList,true);
 		lists[currentListIndex] = srcList;
