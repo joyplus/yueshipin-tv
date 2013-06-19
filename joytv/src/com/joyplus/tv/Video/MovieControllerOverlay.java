@@ -648,6 +648,11 @@ public class MovieControllerOverlay extends FrameLayout implements
 
 	private void maybeStartHiding() {
 		Log.i(TAG, "maybeStartHiding--->" + state);
+		if(state == State.PLAYING){
+			layout.setVisibility(View.GONE);
+		}else{
+			layout.setVisibility(View.VISIBLE);
+		}
 		cancelHiding();
 		if (state == State.PLAYING) {
 			handler.postDelayed(startHidingRunnable, 800);
@@ -789,11 +794,6 @@ public class MovieControllerOverlay extends FrameLayout implements
 				case MotionEvent.ACTION_DOWN:
 					cancelHiding();
 					if (state == State.PLAYING || state == State.PAUSED) {
-						if(state == State.PLAYING){
-							layout.setVisibility(View.VISIBLE);
-						}else{
-							layout.setVisibility(View.GONE);
-						}
 						listener.onPlayPause();
 					}
 					break;

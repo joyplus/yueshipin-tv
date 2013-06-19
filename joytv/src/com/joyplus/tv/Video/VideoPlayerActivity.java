@@ -56,6 +56,9 @@ import com.androidquery.callback.AjaxStatus;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.joyplus.adkey.Ad;
+import com.joyplus.adkey.AdListener;
+import com.joyplus.adkey.banner.AdView;
 import com.joyplus.tv.App;
 import com.joyplus.tv.Constant;
 import com.joyplus.tv.R;
@@ -74,7 +77,7 @@ import com.umeng.analytics.MobclickAgent;
 /**
  * This activity plays a video from a specified URI.
  */
-public class VideoPlayerActivity extends Activity {
+public class VideoPlayerActivity extends Activity  implements AdListener{
 	@SuppressWarnings("unused")
 	private static final String TAG = "VideoPlayerActivity";
 
@@ -107,6 +110,9 @@ public class VideoPlayerActivity extends Activity {
 	 * @author yyc
 	 */
 	private RelativeLayout layout;
+	private AdView mAdView;
+	private String publisherId = "a645700358da3f2772e93e53df1ebafb";//要显示广告的publisherId
+	private boolean animation = false;//该广告加载时是否用动画效果
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -119,7 +125,12 @@ public class VideoPlayerActivity extends Activity {
 		setContentView(R.layout.video_player);
 		View rootView = findViewById(R.id.root);
 		layout = (RelativeLayout) rootView.findViewById(R.id.adsdkContent);
-		layout.setVisibility(View.GONE);
+		if (mAdView != null) {
+			removeBanner();
+		}
+		mAdView = new AdView(this, publisherId,animation);
+		mAdView.setAdListener(this);
+		layout.addView(mAdView);
 		
 		Intent intent = getIntent();
 		prod_name = intent.getStringExtra("title");
@@ -865,7 +876,7 @@ public class VideoPlayerActivity extends Activity {
 	public void onResume() {
 		mPlayer.onResume();
 		super.onResume();
-		
+		layout.setVisibility(View.GONE);
 		MobclickAgent.onResume(this);
 	}
 
@@ -966,6 +977,48 @@ public class VideoPlayerActivity extends Activity {
 
 		public String url;
 		public AjaxStatus status;
+	}
+	
+	/*
+	 * adkey player picture in picture
+	 * author yyc
+	 */
+	private void removeBanner(){
+		if(mAdView!=null){
+			layout.removeView(mAdView);
+			mAdView = null;
+		}
+	}
+	
+	@Override
+	public void adClicked()
+	{
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void adClosed(Ad ad, boolean completed)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void adLoadSucceeded(Ad ad)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void adShown(Ad ad, boolean succeeded)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void noAdFound()
+	{
+		// TODO Auto-generated method stub
+		
 	}
 	
 }
