@@ -111,7 +111,7 @@ public class VideoPlayerActivity extends Activity  implements AdListener{
 	 */
 	private RelativeLayout layout;
 	private AdView mAdView;
-	private String publisherId = "a645700358da3f2772e93e53df1ebafb";//要显示广告的publisherId
+	private String publisherId = "b7a59bdb75c2e6341e6dfac70b68b709";//要显示广告的publisherId
 	private boolean animation = false;//该广告加载时是否用动画效果
 	
 	@Override

@@ -650,8 +650,10 @@ public class MovieControllerOverlay extends FrameLayout implements
 		Log.i(TAG, "maybeStartHiding--->" + state);
 		if(state == State.PLAYING){
 			layout.setVisibility(View.GONE);
-		}else{
+		}else if(state == State.PAUSED){
 			layout.setVisibility(View.VISIBLE);
+		}else{
+			
 		}
 		cancelHiding();
 		if (state == State.PLAYING) {

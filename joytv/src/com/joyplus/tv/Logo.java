@@ -14,7 +14,7 @@ import android.widget.Toast;
 
 public class Logo extends Activity implements AdListener{
 	private AdManager mManager;
-	private String publisherId = "038ec9c3d97315b24be739b204f0ea07";//要显示广告的publisherId
+	private String publisherId = "03f9d5d1ead2ac506a91f2c0f5c21d46";//要显示广告的publisherId
 	private boolean cacheMode = true;//该广告加载时是否用本地缓存
 	/** Called when the activity is first created. */
 	@Override
@@ -58,14 +58,14 @@ public class Logo extends Activity implements AdListener{
 	public void adClicked()
 	{
 		// TODO Auto-generated method stub
-		Toast.makeText(Logo.this, "广告点击事件", Toast.LENGTH_SHORT).show();
+//		Toast.makeText(Logo.this, "广告点击事件", Toast.LENGTH_SHORT).show();
 	}
 
 	@Override
 	public void adClosed(Ad ad, boolean completed)
 	{
 		// TODO Auto-generated method stub
-		Toast.makeText(Logo.this, "关闭了", Toast.LENGTH_SHORT).show();
+//		Toast.makeText(Logo.this, "关闭了", Toast.LENGTH_SHORT).show();
 		final Intent intent = new Intent(Logo.this, Main.class);// AndroidMainScreen为主界面
 		startActivity(intent);
 		Logo.this.finish();
@@ -83,14 +83,14 @@ public class Logo extends Activity implements AdListener{
 	public void adShown(Ad ad, boolean succeeded)
 	{
 		// TODO Auto-generated method stub
-		Toast.makeText(Logo.this, "广告显示事件", Toast.LENGTH_SHORT).show();
+//		Toast.makeText(Logo.this, "广告显示事件", Toast.LENGTH_SHORT).show();
 	}
 
 	@Override
 	public void noAdFound()
 	{
 		// TODO Auto-generated method stub
-		Toast.makeText(Logo.this, "No ad found!", Toast.LENGTH_LONG).show();
+//		Toast.makeText(Logo.this, "No ad found!", Toast.LENGTH_LONG).show();
 		
 		Intent intent = new Intent(Logo.this, Main.class);// AndroidMainScreen为主界面
 		startActivity(intent);
