@@ -64,11 +64,14 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.zxing.WriterException;
+import com.joyplus.adkey.Ad;
+import com.joyplus.adkey.AdListener;
+import com.joyplus.adkey.Const;
+import com.joyplus.adkey.banner.AdView;
 import com.joyplus.tv.Adapters.CurrentPlayData;
 import com.joyplus.tv.Adapters.MainHotItemAdapter;
 import com.joyplus.tv.Adapters.MainLibAdapter;
 import com.joyplus.tv.Adapters.MainYueDanItemAdapter;
-import com.joyplus.tv.HistoryActivity.HistortyAdapter;
 import com.joyplus.tv.Service.Return.ReturnMainHot;
 import com.joyplus.tv.Service.Return.ReturnTops;
 import com.joyplus.tv.Service.Return.ReturnUserPlayHistories;
@@ -95,7 +98,7 @@ import com.umeng.analytics.MobclickAgent;
 import com.umeng.update.UmengUpdateAgent;
 
 public class Main extends Activity implements OnItemSelectedListener,
-		OnItemClickListener {
+		OnItemClickListener , AdListener{
 	private String TAG = "Main";
 	public static final String ACTION_USERUPDATE = "user_update";
 	private App app;
@@ -204,6 +207,14 @@ public class Main extends Activity implements OnItemSelectedListener,
 	private boolean isWifiReset = false;// wifi网络是否重新设置
 
 	private ImageView erweimaImage;//二维码显示
+	/*
+	 * adkey varies
+	 * @author
+	 */
+	private RelativeLayout layout;
+	private AdView mAdView;
+	private String publisherId = "00b2797f8c089f226c40149b2a346b8d";//要显示广告的publisherId
+	private boolean animation = false;//该广告加载时是否用动画效果
 
 	// private Handler mHandler = new Handler();
 
@@ -240,7 +251,18 @@ public class Main extends Activity implements OnItemSelectedListener,
 				null);
 		lastBandTimeView = (TextView) myView.findViewById(R.id.lastBandTime);
 		erweimaImage = (ImageView) myView.findViewById(R.id.img_erweima);
-
+		
+		/*
+		 * banner ad
+		 */
+		layout = (RelativeLayout) findViewById(R.id.adsdkContent);
+		if (mAdView != null) {
+			removeBanner();
+		}
+		mAdView = new AdView(this, publisherId,animation);
+		mAdView.setAdListener(this);
+		layout.addView(mAdView);
+		
 		// 一开始判断有没有网络
 		if (!app.isNetworkAvailable()) {// 如果没有网络，弹出提示dialog
 
@@ -2797,6 +2819,78 @@ public class Main extends Activity implements OnItemSelectedListener,
 			}
 		}
 
+	}
+	
+	
+	/*
+	 * @remove banner
+	 */
+	private void removeBanner(){
+		if(mAdView!=null){
+			layout.removeView(mAdView);
+			mAdView = null;
+		}
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.joyplus.adkey.AdListener#adClicked()
+	 * @author yyc
+	 */
+	@Override
+	public void adClicked()
+	{
+		// TODO Auto-generated method stub
+		Log.i(Const.TAG,"AdViewActivity--->adClicked");
+	}
+	
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.joyplus.adkey.AdListener#adClosed(com.joyplus.adkey.Ad, boolean)
+	 * @author yyc
+	 */
+	@Override
+	public void adClosed(Ad ad, boolean completed)
+	{
+		// TODO Auto-generated method stub
+		Log.i(Const.TAG,"AdViewActivity--->adClosed");
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.joyplus.adkey.AdListener#adLoadSucceeded(com.joyplus.adkey.Ad)
+	 * @author yyc
+	 */
+	@Override
+	public void adLoadSucceeded(Ad ad)
+	{
+		// TODO Auto-generated method stub
+		Log.i(Const.TAG,"AdViewActivity--->adLoadSucceeded");
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.joyplus.adkey.AdListener#adShown(com.joyplus.adkey.Ad, boolean)
+	 * @author yyc
+	 */
+	@Override
+	public void adShown(Ad ad, boolean succeeded)
+	{
+		// TODO Auto-generated method stub
+		Log.i(Const.TAG,"AdViewActivity--->adShown");
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.joyplus.adkey.AdListener#noAdFound()
+	 * @author yyc
+	 */
+	@Override
+	public void noAdFound()
+	{
+		// TODO Auto-generated method stub
+		Log.i(Const.TAG,"AdViewActivity--->noAdFound");
 	}
 
 }

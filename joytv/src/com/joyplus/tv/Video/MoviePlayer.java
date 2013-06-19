@@ -213,7 +213,6 @@ public class MoviePlayer implements MediaPlayer.OnErrorListener,
 		textView2 = (TextView) rootView.findViewById(R.id.textViewTime2);
 		mTextViewTime2 = (TextView) rootView.findViewById(R.id.textViewTimes);
 		saveTime = (TextView) rootView.findViewById(R.id.textView7);
-
 		mLayoutBottomTime = (View) rootView.findViewById(R.id.LayoutBottomTime);
 
 		mController = new MovieControllerOverlay(mContext, rootView,

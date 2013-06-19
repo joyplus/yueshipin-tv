@@ -47,6 +47,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.webkit.URLUtil;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.androidquery.AQuery;
@@ -99,7 +100,14 @@ public class VideoPlayerActivity extends Activity {
 	private List<Result> Result_list = new ArrayList<Result>();
 	
 	private String dbCurEpisode = "";//数据库中当前影片的更新集数
-
+	/*
+	 * (non-Javadoc)
+	 * @see android.app.Activity#onCreate(android.os.Bundle)
+	 * blew is adkey varies
+	 * @author yyc
+	 */
+	private RelativeLayout layout;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -110,7 +118,9 @@ public class VideoPlayerActivity extends Activity {
 		
 		setContentView(R.layout.video_player);
 		View rootView = findViewById(R.id.root);
-
+		layout = (RelativeLayout) rootView.findViewById(R.id.adsdkContent);
+		layout.setVisibility(View.GONE);
+		
 		Intent intent = getIntent();
 		prod_name = intent.getStringExtra("title");
 		prod_url = intent.getStringExtra("prod_url");
@@ -957,5 +967,5 @@ public class VideoPlayerActivity extends Activity {
 		public String url;
 		public AjaxStatus status;
 	}
-
+	
 }

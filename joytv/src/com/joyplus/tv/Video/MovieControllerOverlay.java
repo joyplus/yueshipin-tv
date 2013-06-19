@@ -122,6 +122,7 @@ public class MovieControllerOverlay extends FrameLayout implements
 	private View mLayoutControl;// 5个控制组件
 
 	private ImageButton playPauseReplayView;// 暂停或者播放组件
+	private RelativeLayout layout;//广告组件
 
 	private ImageButton playContinueView;
 	private ImageButton playFavView;
@@ -177,6 +178,7 @@ public class MovieControllerOverlay extends FrameLayout implements
 
 		playPauseReplayView = (ImageButton) rootView
 				.findViewById(R.id.imageControl_c);
+		layout = (RelativeLayout) rootView.findViewById(R.id.adsdkContent);
 		playPauseReplayView.setOnTouchListener(this);
 
 		playContinueView = (ImageButton) rootView
@@ -787,6 +789,11 @@ public class MovieControllerOverlay extends FrameLayout implements
 				case MotionEvent.ACTION_DOWN:
 					cancelHiding();
 					if (state == State.PLAYING || state == State.PAUSED) {
+						if(state == State.PLAYING){
+							layout.setVisibility(View.VISIBLE);
+						}else{
+							layout.setVisibility(View.GONE);
+						}
 						listener.onPlayPause();
 					}
 					break;
