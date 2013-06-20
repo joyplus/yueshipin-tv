@@ -6,6 +6,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup.MarginLayoutParams;
 import android.view.animation.Animation;
@@ -77,9 +78,20 @@ public class CustomGallery extends HorizontalScrollView {
 					if (itmeClickListener != null) {
 						itmeClickListener.onItemClick(null, v, index, 0);
 					}
-					if (itmeSelectedListener != null) {
-						itmeSelectedListener.onItemSelected(null, v, index, 0);
-					}
+					//鼠标点击view，高亮不切换
+//					if (itmeSelectedListener != null) {
+//						itmeSelectedListener.onItemSelected(null, v, index, 0);
+//					}
+				}
+			});
+			view.setOnTouchListener(new View.OnTouchListener() {
+				
+				@Override
+				public boolean onTouch(View v, MotionEvent event) {
+					// TODO Auto-generated method stub
+					
+					requestDisallowInterceptTouchEvent(true);
+					return false;
 				}
 			});
 			layout.setOrientation(LinearLayout.HORIZONTAL);
@@ -106,6 +118,24 @@ public class CustomGallery extends HorizontalScrollView {
 		// layout.getChildAt((selectedIndex+1)), (selectedIndex+1), 0);
 		// }
 
+	}
+	
+	@Override
+	public boolean onTouchEvent(MotionEvent ev) {
+		// TODO Auto-generated method stub
+		
+//		switch (ev.getAction()) {
+//		case MotionEvent.ACTION_DOWN:
+//			
+//			break;
+//		case MotionEvent.ACTION_MOVE:
+//			
+//			return true;
+//		default:
+//			break;
+//		}
+		
+		return super.onTouchEvent(ev);
 	}
 
 	public void setOnItemClickListener(OnItemClickListener listener) {

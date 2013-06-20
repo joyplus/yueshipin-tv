@@ -358,6 +358,8 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 
 			break;
 		case R.id.ll_xiangqing_bofang_gaoqing:
+			
+			Log.i(TAG, "R.id.ll_xiangqing_bofang_gaoqing--->start");
 			// bofangLL.setN
 			// xiaiIv.setImageResource(R.drawable.icon_fav_active);
 			// xiaiTv.setTextColor(getResources().getColor(R.color.text_foucs));
@@ -365,9 +367,9 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 //			String str1 = "西游降魔篇";
 //			String str2 = "http://221.130.179.66/25/36/53/kingsoft/movie/47978987920B0079FF686B6370B4E039-xiyoupian.mp4?crypt=61740d1aa7f2e300&b=800&gn=132&nc=1&bf=30&p2p=1&video_type=mp4&check=0&tm=1364191200&key=af7b9ad0697560c682a0070cf225e65e&opck=1&lgn=letv&proxy=3702889363&cipi=2026698610&tsnp=1&tag=ios&tag=kingsoft&sign=coopdown&realext=.mp4test=m3u8";
 
-			Intent intent = new Intent(this, VideoPlayerActivity.class);
+//			Intent intent = new Intent(this, VideoPlayerActivity.class);
 			CurrentPlayData playDate = new CurrentPlayData();
-			intent = new Intent(this,VideoPlayerActivity.class);
+			Intent intent = new Intent(this,VideoPlayerActivity.class);
 			playDate.prod_id = movieData.movie.id;
 			playDate.prod_type = 1;
 			playDate.prod_name = movieData.movie.name;
@@ -500,6 +502,10 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
+				
+				//禁掉播放按钮，避免多次播放
+				bofangLL.setEnabled(false);
+				
 				int id = v.getId();
 				Intent intent = new Intent(ShowXiangqingMovie.this, VideoPlayerActivity.class);
 				CurrentPlayData playDate = new CurrentPlayData();
@@ -547,6 +553,16 @@ public class ShowXiangqingMovie extends Activity implements View.OnClickListener
 					popupWindow.dismiss();
 				}
 				startActivity(intent);
+				
+				handler.postDelayed(new Runnable() {
+					
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						bofangLL.setEnabled(true);
+					}
+				}, 1*1000);
+//				bofangLL.setEnabled(true);
 			}
 		};
 		chaoqingLL.setOnClickListener(gaoqingListener);

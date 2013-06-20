@@ -111,6 +111,8 @@ public class VideoPlayerActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		app = (App) getApplication();
 		aq = new AQuery(this);
+		
+		Log.i(TAG, "VideoPlayerActivity--->onCreate");
 
 		getWindow().setFormat(PixelFormat.RGBA_8888);
 		
