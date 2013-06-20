@@ -44,6 +44,8 @@
     <!-- ZhangQibo -->
     <color name="common_title_selected">#f18c21</color>
     <color name="common_title_unselected">#999999</color>
+    <color name="common_title_bar_selected">#55f18c21</color>
+    <color name="common_title_bar_unselected">#55999999</color>
     <color name="hot_line">#804306</color>
     <color name="clock_green">#acbf0a</color>
     <color name="blue_content_title">#00aeff</color>

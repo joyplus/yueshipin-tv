@@ -51,6 +51,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -215,7 +216,7 @@ public class Main extends Activity implements OnItemSelectedListener,
 	private int isYueDanLoadedFlag = 0;
 	
 	private Button upScrollBt,downScrollBt;
-	private ImageView leftCustomIv,rightCustomIv;
+	private ImageButton leftCustomIv,rightCustomIv;
 
 	// private Handler mHandler = new Handler();
 
@@ -270,8 +271,8 @@ public class Main extends Activity implements OnItemSelectedListener,
 			}
 		});
 		
-		leftCustomIv = (ImageView) findViewById(R.id.icon_arrow_left);
-		rightCustomIv = (ImageView) findViewById(R.id.icon_arrow_right);
+		leftCustomIv = (ImageButton) findViewById(R.id.icon_arrow_left);
+		rightCustomIv = (ImageButton) findViewById(R.id.icon_arrow_right);
 		
 		leftCustomIv.setOnClickListener(new View.OnClickListener() {
 			

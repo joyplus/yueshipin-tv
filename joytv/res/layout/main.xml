@@ -17,13 +17,25 @@
 
         <Button
             android:id="@+id/bt_up_scrolllayout"
-            android:layout_width="80dp"
-            android:layout_height="50dp"
-            android:layout_marginLeft="122dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_marginLeft="110dp"
             android:layout_marginTop="105dp"
             android:focusable="false"
             android:focusableInTouchMode="false"
-            android:gravity="center_vertical|right" />
+            android:gravity="center_vertical|right"
+            android:background="@drawable/bg_button_up_scroll" />
+        
+      <Button
+        android:id="@+id/bt_down_scrolllayout"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:gravity="center_vertical|right"
+        android:layout_marginTop="105dp"
+        android:layout_marginLeft="165dp"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:background="@drawable/bg_button_down_scroll" />
 
         <TextView
             android:id="@+id/notice_text"
@@ -134,16 +146,17 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:orientation="horizontal"
-                    android:paddingLeft="2dp"
-                    android:paddingRight="2dp" >
+                    android:orientation="horizontal" >
 
-                    <ImageView
+                    <ImageButton
                         android:id="@+id/icon_arrow_left"
-                        android:layout_width="18dp"
+                        android:layout_width="26dp"
                         android:layout_height="fill_parent"
-                        android:src="@drawable/arrow_left"
-                        android:visibility="invisible" />
+                        android:src="@drawable/bg_button_arrow_left"
+                        android:visibility="invisible" 
+                        android:background="@android:color/transparent"
+                        android:paddingBottom="20dp"
+                        android:paddingTop="3dp"/>
 
                     <com.joyplus.tv.ui.CustomGallery
                         android:id="@+id/gallery"
@@ -155,12 +168,15 @@
                         android:focusableInTouchMode="false"
                         android:spacing="1dp" />
 
-                    <ImageView
+                    <ImageButton
                         android:id="@+id/icon_arrow_right"
-                        android:layout_width="18dp"
+                        android:layout_width="26dp"
                         android:layout_height="fill_parent"
-                        android:src="@drawable/arrow_right"
-                        android:visibility="invisible" />
+                        android:src="@drawable/bg_button_arrow_right"
+                        android:visibility="invisible"
+                        android:background="@android:color/transparent"
+                        android:paddingBottom="20dp" 
+                        android:paddingTop="3dp"/>
                 </LinearLayout>
             </LinearLayout>
         </FrameLayout>
@@ -237,21 +253,21 @@
                     android:id="@+id/img_navagatorbar1"
                     android:layout_width="3dp"
                     android:layout_height="40dp"
-                    android:background="@drawable/bg_gallery_highlight" />
+                    android:background="@drawable/bg_bar_highlight" />
 
                 <ImageView
                     android:id="@+id/img_navagatorbar2"
                     android:layout_width="3dp"
                     android:layout_height="40dp"
                     android:layout_marginTop="10dp"
-                    android:background="@drawable/bg_gallery_highlight" />
+                    android:background="@drawable/bg_bar_highlight" />
 
                 <ImageView
                     android:id="@+id/img_navagatorbar3"
                     android:layout_width="3dp"
                     android:layout_height="40dp"
                     android:layout_marginTop="10dp"
-                    android:background="@drawable/bg_gallery_highlight" />
+                    android:background="@drawable/bg_bar_highlight" />
             </LinearLayout>
 
             <LinearLayout
@@ -265,16 +281,6 @@
             </LinearLayout>
         </LinearLayout>
     </RelativeLayout>
-
-    <Button
-        android:id="@+id/bt_down_scrolllayout"
-        android:layout_width="80dp"
-        android:layout_height="50dp"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="186dp"
-        android:layout_marginLeft="122dp"
-        android:focusable="false"
-        android:focusableInTouchMode="false" />
 
     <ImageView
         android:id="@+id/image_starting"
