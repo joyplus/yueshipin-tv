@@ -273,7 +273,10 @@ public class Main extends Activity implements OnItemSelectedListener,
 		
 		leftCustomIv = (ImageButton) findViewById(R.id.icon_arrow_left);
 		rightCustomIv = (ImageButton) findViewById(R.id.icon_arrow_right);
-		
+		leftCustomIv.setFocusable(false);
+		leftCustomIv.setFocusableInTouchMode(false);
+		rightCustomIv.setFocusable(false);
+		rightCustomIv.setFocusableInTouchMode(false);
 		leftCustomIv.setOnClickListener(new View.OnClickListener() {
 			
 			@Override

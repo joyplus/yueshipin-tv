@@ -156,7 +156,9 @@
                         android:visibility="invisible" 
                         android:background="@android:color/transparent"
                         android:paddingBottom="20dp"
-                        android:paddingTop="3dp"/>
+                        android:paddingTop="3dp"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"/>
 
                     <com.joyplus.tv.ui.CustomGallery
                         android:id="@+id/gallery"
@@ -176,7 +178,9 @@
                         android:visibility="invisible"
                         android:background="@android:color/transparent"
                         android:paddingBottom="20dp" 
-                        android:paddingTop="3dp"/>
+                        android:paddingTop="3dp"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"/>
                 </LinearLayout>
             </LinearLayout>
         </FrameLayout>
