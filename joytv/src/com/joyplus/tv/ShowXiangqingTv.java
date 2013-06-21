@@ -28,7 +28,6 @@ import android.widget.PopupWindow;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
@@ -36,11 +35,10 @@ import com.androidquery.callback.AjaxStatus;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.joyplus.tv.Adapters.CurrentPlayData;
 import com.joyplus.tv.Service.Return.ReturnProgramView;
-import com.joyplus.tv.Service.Return.ReturnRelatedGroup;
 import com.joyplus.tv.Service.Return.ReturnProgramView.DOWN_URLS;
-import com.joyplus.tv.Video.VideoPlayerActivity;
+import com.joyplus.tv.Service.Return.ReturnRelatedGroup;
+import com.joyplus.tv.entity.CurrentPlayDetailData;
 import com.joyplus.tv.entity.HotItemInfo;
 import com.joyplus.tv.entity.URLS_INDEX;
 import com.joyplus.tv.ui.WaitingDialog;
@@ -52,8 +50,8 @@ import com.joyplus.tv.utils.JieMianConstant;
 import com.joyplus.tv.utils.Log;
 import com.joyplus.tv.utils.MyKeyEventKey;
 import com.joyplus.tv.utils.SouceComparatorIndex1;
-import com.joyplus.tv.utils.UtilTools;
 import com.joyplus.tv.utils.URLUtils;
+import com.joyplus.tv.utils.UtilTools;
 import com.umeng.analytics.MobclickAgent;
 
 public class ShowXiangqingTv extends Activity implements View.OnClickListener,
@@ -1223,8 +1221,8 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 		if(num<=index){
 			return;
 		}
-		CurrentPlayData playDate = new CurrentPlayData();
-		Intent intent = new Intent(this,VideoPlayerActivity.class);
+		CurrentPlayDetailData playDate = new CurrentPlayDetailData();
+		Intent intent = new Intent(this,VideoPlayerJPActivity.class);
 		playDate.prod_id = prod_id;
 		playDate.prod_type = 2;
 		playDate.prod_name = date.tv.name+" 第" + (index+1) +"集";
@@ -1234,14 +1232,14 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 		
 //		playDate.prod_url = date.tv.episodes[0].down_urls[0].urls[0].url;
 //		playDate.prod_src = date.tv.episodes[0].down_urls[0].source;
-		List<URLS_INDEX> urls = getBofangList(index);
-		if(urls == null||urls.size()==0){
-			Toast.makeText(this, "没有可以播放的地址", Toast.LENGTH_SHORT).show();
-			return;
-		}
-		playDate.CurrentIndex = index;
-		playDate.prod_url = urls.get(0).url;
-		playDate.prod_src = urls.get(0).source_from;
+//		List<URLS_INDEX> urls = getBofangList(index);
+//		if(urls == null||urls.size()==0){
+//			Toast.makeText(this, "没有可以播放的地址", Toast.LENGTH_SHORT).show();
+//			return;
+//		}
+		playDate.prod_sub_name = date.tv.episodes[index].name;
+//		playDate.prod_url = urls.get(0).url;
+//		playDate.prod_src = urls.get(0).source_from;
 		playDate.prod_favority = isXiai;
 //		if(Constant.player_quality_index[0].equals(date.tv.episodes[0].down_urls[0].urls[0].type)){
 //			//mp4
@@ -1253,7 +1251,7 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 //		playDate.prod_qua = Integer.valueOf(info.definition);
 //		playDate.CurrentIndex = index;
 		app.set_ReturnProgramView(date);
-		app.setCurrentPlayData(playDate);
+		app.setmCurrentPlayDetailData(playDate);
 		startActivityForResult(intent, 0);
 	}
 	

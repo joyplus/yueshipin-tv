@@ -1,16 +1,7 @@
 package com.joyplus.tv;
 
 import java.io.File;
-import java.net.URI;
-import java.net.URL;
 import java.util.Map;
-
-import org.apache.http.Header;
-import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
 
 import android.app.Application;
 import android.content.Context;
@@ -18,14 +9,12 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.http.AndroidHttpClient;
 import android.view.Gravity;
 import android.webkit.URLUtil;
 import android.widget.Toast;
 
 import com.androidquery.callback.BitmapAjaxCallback;
 import com.androidquery.util.AQUtility;
-import com.joyplus.tv.Adapters.CurrentPlayData;
 import com.joyplus.tv.Service.Return.ReturnProgramView;
 import com.joyplus.tv.entity.CurrentPlayDetailData;
 import com.joyplus.tv.ui.UserInfo;
@@ -41,7 +30,7 @@ public class App extends Application {
 	private UserInfo user;
 	
 	private Map<String, String> headers;
-	private CurrentPlayData mCurrentPlayData;
+//	private CurrentPlayData mCurrentPlayData;
 	private ReturnProgramView m_ReturnProgramView = null;
 	
 	private CurrentPlayDetailData mCurrentPlayDetailData;
@@ -62,14 +51,14 @@ public class App extends Application {
 		this.m_ReturnProgramView = m_ReturnProgramView;
 	}
 
-	public CurrentPlayData getCurrentPlayData() {
-		return mCurrentPlayData;
-	}
-
-	public void setCurrentPlayData(CurrentPlayData mCurrentPlayData) {
-		this.mCurrentPlayData = mCurrentPlayData;
-	}
-	
+//	public CurrentPlayData getCurrentPlayData() {
+//		return mCurrentPlayData;
+//	}
+//
+//	public void setCurrentPlayData(CurrentPlayData mCurrentPlayData) {
+//		this.mCurrentPlayData = mCurrentPlayData;
+//	}
+//	
 	/**
 	 * 播放时详细的基本参数
 	 * @return

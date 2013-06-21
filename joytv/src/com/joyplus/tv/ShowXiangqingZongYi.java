@@ -37,10 +37,9 @@ import com.androidquery.callback.AjaxStatus;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.joyplus.tv.Adapters.CurrentPlayData;
 import com.joyplus.tv.Service.Return.ReturnProgramView;
 import com.joyplus.tv.Service.Return.ReturnProgramView.DOWN_URLS;
-import com.joyplus.tv.Video.VideoPlayerActivity;
+import com.joyplus.tv.entity.CurrentPlayDetailData;
 import com.joyplus.tv.entity.HotItemInfo;
 import com.joyplus.tv.entity.URLS_INDEX;
 import com.joyplus.tv.ui.WaitingDialog;
@@ -1142,22 +1141,22 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 		if(num<=index){
 			return;
 		}
-		CurrentPlayData playDate = new CurrentPlayData();
-		Intent intent = new Intent(this,VideoPlayerActivity.class);
+		CurrentPlayDetailData playDate = new CurrentPlayDetailData();
+		Intent intent = new Intent(this,VideoPlayerJPActivity.class);
 		playDate.prod_id = prod_id;
 		playDate.prod_type = 3;
 		playDate.prod_name = date.show.name+" " + date.show.episodes[index].name;
 //		playDate.prod_url = date.show.episodes[0].down_urls[0].urls[0].url;
 //		playDate.prod_src = date.show.episodes[0].down_urls[0].source;
-		List<URLS_INDEX> urls = getBofangList(index);
-		if(urls == null||urls.size()==0){
-			Toast.makeText(this, "没有可以播放的地址", Toast.LENGTH_SHORT).show();
-			return;
-		}
-		playDate.CurrentIndex = index;
+//		List<URLS_INDEX> urls = getBofangList(index);
+//		if(urls == null||urls.size()==0){
+//			Toast.makeText(this, "没有可以播放的地址", Toast.LENGTH_SHORT).show();
+//			return;
+//		}
+		playDate.prod_sub_name = date.show.episodes[index].name;
 //		playDate.CurrentIndex = date.show.episodes.length -1 - index;
-		playDate.prod_url = urls.get(0).url;
-		playDate.prod_src = urls.get(0).source_from;
+//		playDate.prod_url = urls.get(0).url;
+//		playDate.prod_src = urls.get(0).source_from;
 		playDate.prod_favority = isXiai;
 //		if(Constant.player_quality_index[0].equals(date.show.episodes[0].down_urls[0].urls[0].type)){
 //			//mp4
@@ -1169,7 +1168,7 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 //		playDate.prod_qua = Integer.valueOf(info.definition);
 //		playDate.CurrentIndex = index;
 		app.set_ReturnProgramView(date);
-		app.setCurrentPlayData(playDate);
+		app.setmCurrentPlayDetailData(playDate);
 		startActivityForResult(intent, 0);
 	}
 	

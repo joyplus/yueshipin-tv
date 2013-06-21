@@ -16,8 +16,8 @@ import android.widget.Toast;
 
 import com.joyplus.tv.App;
 import com.joyplus.tv.Constant;
-import com.joyplus.tv.Adapters.CurrentPlayData;
-import com.joyplus.tv.Video.VideoPlayerActivity;
+import com.joyplus.tv.VideoPlayerJPActivity;
+import com.joyplus.tv.entity.CurrentPlayDetailData;
 import com.joyplus.tv.utils.Log;
 import com.joyplus.tv.utils.UtilTools;
 import com.saulpower.fayeclient.FayeClient.FayeListener;
@@ -334,8 +334,8 @@ public class FayeService extends Service implements FayeListener{
 					return;
 				}
 				if(app.getUserData("isBand") != null&&"1".equals(app.getUserData("isBand"))&&phoneID.equals(json.get("user_id"))){
-					CurrentPlayData playDate = new CurrentPlayData();
-					Intent intent = new Intent(this,VideoPlayerActivity.class);
+					CurrentPlayDetailData playDate = new CurrentPlayDetailData();
+					Intent intent = new Intent(this,VideoPlayerJPActivity.class);
 //					intent.putExtra("ID", json.getString("prod_id"));
 					intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 					playDate.prod_id = json.getString("prod_id");
@@ -345,7 +345,14 @@ public class FayeService extends Service implements FayeListener{
 					playDate.prod_src = json.getString("prod_src");
 					playDate.prod_time = Math.round(Float.valueOf(json.getString("prod_time"))*1000);
 					playDate.prod_qua = Integer.valueOf(json.getString("prod_qua"));
-					app.setCurrentPlayData(playDate);
+					if(playDate.prod_type==2||playDate.prod_type==3||playDate.prod_type==131){
+						if(json.has("prod_sub_name")){//旧版android 没有传递该参数
+							playDate.prod_sub_name = json.getString("prod_sub_name");
+						}else{
+							playDate.prod_type = -1;
+						}
+					}
+					app.setmCurrentPlayDetailData(playDate);
 					app.set_ReturnProgramView(null);
 					startActivity(intent);
 					

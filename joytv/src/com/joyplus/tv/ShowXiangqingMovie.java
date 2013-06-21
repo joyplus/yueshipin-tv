@@ -40,10 +40,8 @@ import com.androidquery.callback.AjaxStatus;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.joyplus.tv.Adapters.CurrentPlayData;
 import com.joyplus.tv.Service.Return.ReturnProgramRelatedVideos;
 import com.joyplus.tv.Service.Return.ReturnProgramView;
-import com.joyplus.tv.Video.VideoPlayerActivity;
 import com.joyplus.tv.entity.CurrentPlayDetailData;
 import com.joyplus.tv.entity.URLS_INDEX;
 import com.joyplus.tv.ui.WaitingDialog;
@@ -551,8 +549,8 @@ public class ShowXiangqingMovie extends Activity implements
 
 				int id = v.getId();
 				Intent intent = new Intent(ShowXiangqingMovie.this,
-						VideoPlayerActivity.class);
-				CurrentPlayData playDate = new CurrentPlayData();
+						VideoPlayerJPActivity.class);
+				CurrentPlayDetailData playDate = new CurrentPlayDetailData();
 				playDate.prod_id = movieData.movie.id;
 				playDate.prod_type = 1;
 				playDate.prod_name = movieData.movie.name;
@@ -571,7 +569,7 @@ public class ShowXiangqingMovie extends Activity implements
 				// }
 				// playDate.prod_src = "";
 				// playDate.prod_qua = Integer.valueOf(info.definition);
-				app.setCurrentPlayData(playDate);
+				app.setmCurrentPlayDetailData(playDate);
 				app.set_ReturnProgramView(null);
 				startActivity(intent);
 				switch (id) {

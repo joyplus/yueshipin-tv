@@ -2,7 +2,6 @@ package com.joyplus.tv;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -65,18 +64,16 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.zxing.WriterException;
-import com.joyplus.tv.Adapters.CurrentPlayData;
 import com.joyplus.tv.Adapters.MainHotItemAdapter;
 import com.joyplus.tv.Adapters.MainLibAdapter;
 import com.joyplus.tv.Adapters.MainYueDanItemAdapter;
 import com.joyplus.tv.Service.Return.ReturnMainHot;
 import com.joyplus.tv.Service.Return.ReturnTops;
 import com.joyplus.tv.Service.Return.ReturnUserPlayHistories;
-import com.joyplus.tv.Video.VideoPlayerActivity;
 import com.joyplus.tv.database.TvDatabaseHelper;
+import com.joyplus.tv.entity.CurrentPlayDetailData;
 import com.joyplus.tv.entity.HotItemInfo;
 import com.joyplus.tv.entity.ShiPinInfoParcelable;
-import com.joyplus.tv.entity.URLS_INDEX;
 import com.joyplus.tv.entity.YueDanInfo;
 import com.joyplus.tv.ui.CustomGallery;
 import com.joyplus.tv.ui.MyScrollLayout;
@@ -88,11 +85,9 @@ import com.joyplus.tv.utils.DBUtils;
 import com.joyplus.tv.utils.DataBaseItems;
 import com.joyplus.tv.utils.DataBaseItems.UserHistory;
 import com.joyplus.tv.utils.DataBaseItems.UserShouCang;
-import com.joyplus.tv.utils.DefinationComparatorIndex;
 import com.joyplus.tv.utils.Log;
-import com.joyplus.tv.utils.SouceComparatorIndex1;
-import com.joyplus.tv.utils.UtilTools;
 import com.joyplus.tv.utils.URLUtils;
+import com.joyplus.tv.utils.UtilTools;
 import com.saulpower.fayeclient.FayeService;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.update.UmengUpdateAgent;
@@ -745,12 +740,12 @@ public class Main extends Activity implements OnItemSelectedListener,
 						rootLayout.setVisibility(View.VISIBLE);
 						gallery1.requestFocus();
 						handler.removeMessages(MESSAGE_START_TIMEOUT);
-						new Thread(new CheckPlayUrl()).start();
+//						new Thread(new CheckPlayUrl()).start();
 					} else {
 						removeDialog(DIALOG_WAITING);
 						contentLayout.setVisibility(View.VISIBLE);
 						gallery1.requestFocus();
-						new Thread(new CheckPlayUrl()).start();
+//						new Thread(new CheckPlayUrl()).start();
 					}
 
 					handler.removeMessages(MESSAGE_30S_TIMEOUT);
@@ -1456,8 +1451,8 @@ public class Main extends Activity implements OnItemSelectedListener,
 			Intent intent;
 			if (info.type == 0) {
 				// 历史
-				CurrentPlayData playDate = new CurrentPlayData();
-				intent = new Intent(this, VideoPlayerActivity.class);
+				CurrentPlayDetailData playDate = new CurrentPlayDetailData();
+				intent = new Intent(this, VideoPlayerJPActivity.class);
 				playDate.prod_id = info.prod_id;
 				playDate.prod_type = Integer.valueOf(info.prod_type);
 				playDate.prod_name = info.prod_name;
@@ -1471,27 +1466,27 @@ public class Main extends Activity implements OnItemSelectedListener,
 				if (!"".equals(info.playback_time)) {
 					playDate.prod_time = Long.valueOf(info.playback_time) * 1000;
 				}
-				String currentIndex = info.prod_subname;
-				if(playDate.prod_type!=1){
-					
-					if(playDate.prod_type == 3) {
-						
-						playDate.CurrentIndex = - 1;
-					} else {
-						
-//						String  currentIndex = ((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_subname;
-						if(currentIndex!=null&&!"".equals(currentIndex)){
-							int current = Integer.valueOf(currentIndex);
-							if(current>0){
-								current = current-1;
-							}
-							playDate.CurrentIndex = current;
-						}
-					}
-					
-				}
+				playDate.prod_sub_name = info.prod_subname;
+//				if(playDate.prod_type!=1){
+//					
+//					if(playDate.prod_type == 3) {
+//						
+//						playDate.CurrentIndex = - 1;
+//					} else {
+//						
+////						String  currentIndex = ((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_subname;
+//						if(currentIndex!=null&&!"".equals(currentIndex)){
+//							int current = Integer.valueOf(currentIndex);
+//							if(current>0){
+//								current = current-1;
+//							}
+//							playDate.CurrentIndex = current;
+//						}
+//					}
+//					
+//				}
 				// playDate.prod_qua = Integer.valueOf(info.definition);
-				app.setCurrentPlayData(playDate);
+				app.setmCurrentPlayDetailData(playDate);
 				app.set_ReturnProgramView(null);
 				startActivity(intent);
 			} else if (info.type == 1) {
@@ -1499,14 +1494,13 @@ public class Main extends Activity implements OnItemSelectedListener,
 				switch (prod_type) {
 				case 1:
 					Log.d(TAG, "name---->" + info.prod_name);
-					CurrentPlayData playDate = new CurrentPlayData();
-					intent = new Intent(this, VideoPlayerActivity.class);
+					CurrentPlayDetailData playDate = new CurrentPlayDetailData();
+					intent = new Intent(this, VideoPlayerJPActivity.class);
 					playDate.prod_id = info.prod_id;
 					playDate.prod_type = Integer.valueOf(info.prod_type);
 					playDate.prod_name = info.prod_name;
-					playDate.prod_url = info.video_url;
+//					playDate.prod_url = info.video_url;
 					playDate.prod_src = info.source;
-
 					// 清晰度
 					playDate.prod_qua = UtilTools
 							.string2Int(info.definition);
@@ -1515,7 +1509,7 @@ public class Main extends Activity implements OnItemSelectedListener,
 						playDate.prod_time = Long.valueOf(info.playback_time);
 					}
 					// playDate.prod_qua = Integer.valueOf(info.definition);
-					app.setCurrentPlayData(playDate);
+					app.setmCurrentPlayDetailData(playDate);
 					app.set_ReturnProgramView(null);
 					startActivity(intent);
 					break;
@@ -2864,104 +2858,104 @@ public class Main extends Activity implements OnItemSelectedListener,
 
 	}
 
-	class CheckPlayUrl implements Runnable {
-
-		@Override
-		public void run() {
-			// TODO Auto-generated method stub
-
-			for (int i = 0; i < hot_list.size(); i++) {
-				HotItemInfo info = hot_list.get(i);
-				if (info.type > 0) {
-					List<URLS_INDEX> playUrls = new ArrayList<URLS_INDEX>();
-					for (int j = 0; j < info.play_urls.length; j++) {
-						for (int k = 0; k < info.play_urls[j].urls.length; k++) {
-							URLS_INDEX url_index = new URLS_INDEX();
-							url_index.url = info.play_urls[j].urls[k].url;
-							url_index.source_from = info.play_urls[j].source;
-							if (info.play_urls[j].source.trim()
-									.equalsIgnoreCase(Constant.video_index[0])) {
-								url_index.souces = 0;
-							} else if (info.play_urls[j].source.trim()
-									.equalsIgnoreCase(Constant.video_index[1])) {
-								url_index.souces = 1;
-							} else if (info.play_urls[j].source.trim()
-									.equalsIgnoreCase(Constant.video_index[2])) {
-								url_index.souces = 2;
-							} else if (info.play_urls[j].source.trim()
-									.equalsIgnoreCase(Constant.video_index[3])) {
-								url_index.souces = 3;
-							} else if (info.play_urls[j].source.trim()
-									.equalsIgnoreCase(Constant.video_index[4])) {
-								url_index.souces = 4;
-							} else if (info.play_urls[j].source.trim()
-									.equalsIgnoreCase(Constant.video_index[5])) {
-								url_index.souces = 5;
-							} else if (info.play_urls[j].source.trim()
-									.equalsIgnoreCase(Constant.video_index[6])) {
-								url_index.souces = 6;
-							} else if (info.play_urls[j].source.trim()
-									.equalsIgnoreCase(Constant.video_index[7])) {
-								url_index.souces = 7;
-							} else if (info.play_urls[j].source.trim()
-									.equalsIgnoreCase(Constant.video_index[8])) {
-								url_index.souces = 8;
-							} else if (info.play_urls[j].source.trim()
-									.equalsIgnoreCase(Constant.video_index[9])) {
-								url_index.souces = 9;
-							} else if (info.play_urls[j].source.trim()
-									.equalsIgnoreCase(Constant.video_index[10])) {
-								url_index.souces = 10;
-							} else if (info.play_urls[j].source.trim()
-									.equalsIgnoreCase(Constant.video_index[11])) {
-								url_index.souces = 11;
-							} else {
-								url_index.souces = 12;
-							}
-							if (info.play_urls[j].urls[k].type.trim()
-									.equalsIgnoreCase(
-											Constant.player_quality_index[1])) {
-								url_index.defination = 1;
-							} else if (info.play_urls[j].urls[k].type.trim()
-									.equalsIgnoreCase(
-											Constant.player_quality_index[0])) {
-								url_index.defination = 2;
-							} else if (info.play_urls[j].urls[k].type.trim()
-									.equalsIgnoreCase(
-											Constant.player_quality_index[2])) {
-								url_index.defination = 3;
-							} else if (info.play_urls[j].urls[k].type.trim()
-									.equalsIgnoreCase(
-											Constant.player_quality_index[3])) {
-								url_index.defination = 4;
-							} else {
-								url_index.defination = 5;
-							}
-							playUrls.add(url_index);
-						}
-					}
-
-					if (playUrls.size() > 1) {
-						Collections.sort(playUrls,
-								new DefinationComparatorIndex());
-						Collections.sort(playUrls, new SouceComparatorIndex1());
-					}
-					Log.d(TAG, "test------------------" + i
-							+ "playUrls size = " + playUrls.size() + "name = "
-							+ info.prod_name);
-					for (int n = 0; info.video_url == null
-							&& n < playUrls.size(); n++) {
-						String url = playUrls.get(n).url;
-						if (app.CheckUrl(url)) {
-							Log.d(TAG, "url-------ok----->" + url);
-							hot_list.get(i).video_url = url;
-							hot_list.get(i).source = playUrls.get(n).source_from;
-						}
-					}
-				}
-			}
-		}
-
-	}
+//	class CheckPlayUrl implements Runnable {
+//
+//		@Override
+//		public void run() {
+//			// TODO Auto-generated method stub
+//
+//			for (int i = 0; i < hot_list.size(); i++) {
+//				HotItemInfo info = hot_list.get(i);
+//				if (info.type > 0) {
+//					List<URLS_INDEX> playUrls = new ArrayList<URLS_INDEX>();
+//					for (int j = 0; j < info.play_urls.length; j++) {
+//						for (int k = 0; k < info.play_urls[j].urls.length; k++) {
+//							URLS_INDEX url_index = new URLS_INDEX();
+//							url_index.url = info.play_urls[j].urls[k].url;
+//							url_index.source_from = info.play_urls[j].source;
+//							if (info.play_urls[j].source.trim()
+//									.equalsIgnoreCase(Constant.video_index[0])) {
+//								url_index.souces = 0;
+//							} else if (info.play_urls[j].source.trim()
+//									.equalsIgnoreCase(Constant.video_index[1])) {
+//								url_index.souces = 1;
+//							} else if (info.play_urls[j].source.trim()
+//									.equalsIgnoreCase(Constant.video_index[2])) {
+//								url_index.souces = 2;
+//							} else if (info.play_urls[j].source.trim()
+//									.equalsIgnoreCase(Constant.video_index[3])) {
+//								url_index.souces = 3;
+//							} else if (info.play_urls[j].source.trim()
+//									.equalsIgnoreCase(Constant.video_index[4])) {
+//								url_index.souces = 4;
+//							} else if (info.play_urls[j].source.trim()
+//									.equalsIgnoreCase(Constant.video_index[5])) {
+//								url_index.souces = 5;
+//							} else if (info.play_urls[j].source.trim()
+//									.equalsIgnoreCase(Constant.video_index[6])) {
+//								url_index.souces = 6;
+//							} else if (info.play_urls[j].source.trim()
+//									.equalsIgnoreCase(Constant.video_index[7])) {
+//								url_index.souces = 7;
+//							} else if (info.play_urls[j].source.trim()
+//									.equalsIgnoreCase(Constant.video_index[8])) {
+//								url_index.souces = 8;
+//							} else if (info.play_urls[j].source.trim()
+//									.equalsIgnoreCase(Constant.video_index[9])) {
+//								url_index.souces = 9;
+//							} else if (info.play_urls[j].source.trim()
+//									.equalsIgnoreCase(Constant.video_index[10])) {
+//								url_index.souces = 10;
+//							} else if (info.play_urls[j].source.trim()
+//									.equalsIgnoreCase(Constant.video_index[11])) {
+//								url_index.souces = 11;
+//							} else {
+//								url_index.souces = 12;
+//							}
+//							if (info.play_urls[j].urls[k].type.trim()
+//									.equalsIgnoreCase(
+//											Constant.player_quality_index[1])) {
+//								url_index.defination = 1;
+//							} else if (info.play_urls[j].urls[k].type.trim()
+//									.equalsIgnoreCase(
+//											Constant.player_quality_index[0])) {
+//								url_index.defination = 2;
+//							} else if (info.play_urls[j].urls[k].type.trim()
+//									.equalsIgnoreCase(
+//											Constant.player_quality_index[2])) {
+//								url_index.defination = 3;
+//							} else if (info.play_urls[j].urls[k].type.trim()
+//									.equalsIgnoreCase(
+//											Constant.player_quality_index[3])) {
+//								url_index.defination = 4;
+//							} else {
+//								url_index.defination = 5;
+//							}
+//							playUrls.add(url_index);
+//						}
+//					}
+//
+//					if (playUrls.size() > 1) {
+//						Collections.sort(playUrls,
+//								new DefinationComparatorIndex());
+//						Collections.sort(playUrls, new SouceComparatorIndex1());
+//					}
+//					Log.d(TAG, "test------------------" + i
+//							+ "playUrls size = " + playUrls.size() + "name = "
+//							+ info.prod_name);
+//					for (int n = 0; info.video_url == null
+//							&& n < playUrls.size(); n++) {
+//						String url = playUrls.get(n).url;
+//						if (app.CheckUrl(url)) {
+//							Log.d(TAG, "url-------ok----->" + url);
+//							hot_list.get(i).video_url = url;
+//							hot_list.get(i).source = playUrls.get(n).source_from;
+//						}
+//					}
+//				}
+//			}
+//		}
+//
+//	}
 
 }

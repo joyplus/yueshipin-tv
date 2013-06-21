@@ -33,9 +33,8 @@ import com.androidquery.callback.AjaxStatus;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.joyplus.tv.Adapters.CurrentPlayData;
 import com.joyplus.tv.Service.Return.ReturnUserPlayHistories;
-import com.joyplus.tv.Video.VideoPlayerActivity;
+import com.joyplus.tv.entity.CurrentPlayDetailData;
 import com.joyplus.tv.entity.HotItemInfo;
 import com.joyplus.tv.utils.DBUtils;
 import com.joyplus.tv.utils.ItemStateUtils;
@@ -128,8 +127,8 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 					public void onClick(View v) {
 						// TODO Auto-generated method stub
 						dialog.dismiss();
-						CurrentPlayData playDate = new CurrentPlayData();
-						Intent intent = new Intent(HistoryActivity.this,VideoPlayerActivity.class);
+						CurrentPlayDetailData playDate = new CurrentPlayDetailData();
+						Intent intent = new Intent(HistoryActivity.this,VideoPlayerJPActivity.class);
 						playDate.prod_id = ((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_id;
 						playDate.prod_type = Integer.valueOf(((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_type);
 						playDate.prod_name = ((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_name;
@@ -139,31 +138,31 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 						String definition = ((HistortyAdapter)listView.getAdapter()).data.get(arg2).definition;
 						
 						playDate.prod_qua = UtilTools.string2Int(definition);
-						
-						if(playDate.prod_type!=1){
-							
-							if(playDate.prod_type == 3) {
-								
-								playDate.CurrentIndex = - 1;
-							} else {
-								
-								String  currentIndex = ((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_subname;
-								if(currentIndex!=null&&!"".equals(currentIndex)){
-									int current = Integer.valueOf(currentIndex);
-									if(current>0){
-										current = current-1;
-									}
-									playDate.CurrentIndex = current;
-								}
-							}
-							
-						}
+						playDate.prod_sub_name = ((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_subname;
+//						if(playDate.prod_type!=1){
+//							
+//							if(playDate.prod_type == 3) {
+//								
+//								playDate.CurrentIndex = - 1;
+//							} else {
+//								
+//								String  currentIndex = ((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_subname;
+//								if(currentIndex!=null&&!"".equals(currentIndex)){
+//									int current = Integer.valueOf(currentIndex);
+//									if(current>0){
+//										current = current-1;
+//									}
+//									playDate.CurrentIndex = current;
+//								}
+//							}
+//							
+//						}
 //						playDate.prod_src = "";
 						if(!"".equals(((HistortyAdapter)listView.getAdapter()).data.get(arg2).playback_time)){
 							playDate.prod_time = Long.valueOf(((HistortyAdapter)listView.getAdapter()).data.get(arg2).playback_time)*1000;
 						}
 //						playDate.prod_qua = Integer.valueOf(info.definition);
-						app.setCurrentPlayData(playDate);
+						app.setmCurrentPlayDetailData(playDate);
 						app.set_ReturnProgramView(null);
 						startActivity(intent);
 					}

@@ -1,10 +1,7 @@
 package com.joyplus.tv;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.json.JSONObject;
@@ -28,7 +25,6 @@ import android.widget.PopupWindow;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
@@ -36,24 +32,19 @@ import com.androidquery.callback.AjaxStatus;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.joyplus.tv.Adapters.CurrentPlayData;
 import com.joyplus.tv.Service.Return.ReturnProgramView;
 import com.joyplus.tv.Service.Return.ReturnRelatedGroup;
-import com.joyplus.tv.Service.Return.ReturnProgramView.DOWN_URLS;
-import com.joyplus.tv.Video.VideoPlayerActivity;
+import com.joyplus.tv.entity.CurrentPlayDetailData;
 import com.joyplus.tv.entity.HotItemInfo;
-import com.joyplus.tv.entity.URLS_INDEX;
 import com.joyplus.tv.ui.WaitingDialog;
 import com.joyplus.tv.utils.BangDanConstant;
 import com.joyplus.tv.utils.DBUtils;
-import com.joyplus.tv.utils.DefinationComparatorIndex;
 import com.joyplus.tv.utils.ItemStateUtils;
 import com.joyplus.tv.utils.JieMianConstant;
 import com.joyplus.tv.utils.Log;
 import com.joyplus.tv.utils.MyKeyEventKey;
-import com.joyplus.tv.utils.SouceComparatorIndex1;
-import com.joyplus.tv.utils.UtilTools;
 import com.joyplus.tv.utils.URLUtils;
+import com.joyplus.tv.utils.UtilTools;
 import com.umeng.analytics.MobclickAgent;
 
 public class ShowXiangqingDongman extends Activity implements View.OnClickListener,
@@ -1235,25 +1226,25 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 		if(num<=index){
 			return;
 		}
-		CurrentPlayData playDate = new CurrentPlayData();
-		Intent intent = new Intent(this,VideoPlayerActivity.class);
+		CurrentPlayDetailData playDate = new CurrentPlayDetailData();
+		Intent intent = new Intent(this,VideoPlayerJPActivity.class);
 		playDate.prod_id = prod_id;
 		playDate.prod_type = 131;
-		playDate.CurrentIndex = index;
-		playDate.prod_name = date.tv.name+" 第" + (index+1) +"集";
+		playDate.prod_sub_name = date.tv.episodes[index].name;
+		playDate.prod_name = date.tv.name;
 		
 		//清晰度
 		playDate.prod_qua = UtilTools.string2Int(date.tv.definition);
 		
 //		playDate.prod_url = date.tv.episodes[0].down_urls[0].urls[0].url;
 //		playDate.prod_src = date.tv.episodes[0].down_urls[0].source;
-		List<URLS_INDEX> urls = getBofangList(index);
-		if(urls == null||urls.size()==0){
-			Toast.makeText(this, "没有可以播放的地址", Toast.LENGTH_SHORT).show();
-			return;
-		}
-		playDate.prod_url = urls.get(0).url;
-		playDate.prod_src = urls.get(0).source_from;
+//		List<URLS_INDEX> urls = getBofangList(index);
+//		if(urls == null||urls.size()==0){
+//			Toast.makeText(this, "没有可以播放的地址", Toast.LENGTH_SHORT).show();
+//			return;
+//		}
+//		playDate.prod_url = urls.get(0).url;
+//		playDate.prod_src = date.tv.;
 		playDate.prod_favority = isXiai;
 //		if(Constant.player_quality_index[0].equals(date.tv.episodes[0].down_urls[0].urls[0].type)){
 //			//mp4
@@ -1265,7 +1256,7 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 //		playDate.prod_qua = Integer.valueOf(info.definition);
 //		playDate.CurrentIndex = index;
 		app.set_ReturnProgramView(date);
-		app.setCurrentPlayData(playDate);
+		app.setmCurrentPlayDetailData(playDate);
 		startActivityForResult(intent, 0);
 	}
 	
@@ -1294,70 +1285,70 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 		}
 	}
 
-	private List<URLS_INDEX> getBofangList(int index){
-		List<URLS_INDEX> list = new ArrayList<URLS_INDEX>();
-		
-		if(index >= date.tv.episodes.length) {
-			
-			return null;
-		}
-		
-		DOWN_URLS[] urls = date.tv.episodes[index].down_urls;
-		if(urls == null){
-			return null;
-		}
-		for(int i=0;i<urls.length; i++){
-			for(int j=0; j<urls[i].urls.length; j++){
-				URLS_INDEX url_index = new URLS_INDEX();
-				url_index.source_from = urls[i].source;
-				url_index.url = urls[i].urls[j].url;
-				if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[0])) {
-					url_index.souces = 0;
-				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[1])) {
-					url_index.souces = 1;
-				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[2])) {
-					url_index.souces = 2;
-				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[3])) {
-					url_index.souces = 3;
-				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[4])) {
-					url_index.souces = 4;
-				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[5])) {
-					url_index.souces = 5;
-				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[6])) {
-					url_index.souces = 6;
-				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[7])) {
-					url_index.souces = 7;
-				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[8])) {
-					url_index.souces = 8;
-				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[9])) {
-					url_index.souces = 9;
-				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[10])) {
-					url_index.souces = 10;
-				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[11])) {
-					url_index.souces = 11;
-				} else {
-					url_index.souces = 12;
-				}
-				if(urls[i].urls[j].type.trim().equalsIgnoreCase(Constant.player_quality_index[1])){
-					url_index.defination = 1;
-				}else if(urls[i].urls[j].type.trim().equalsIgnoreCase(Constant.player_quality_index[0])){
-					url_index.defination = 2;
-				}else if(urls[i].urls[j].type.trim().equalsIgnoreCase(Constant.player_quality_index[2])){
-					url_index.defination = 3;
-				}else if(urls[i].urls[j].type.trim().equalsIgnoreCase(Constant.player_quality_index[3])){
-					url_index.defination = 4;
-				} else {
-					url_index.defination = 5;
-				}
-				list.add(url_index);
-			}
-		}
-		if(list.size()>1){
-			Collections.sort(list, new DefinationComparatorIndex());
-			Collections.sort(list, new SouceComparatorIndex1());
-		}
-		return list;
-	}
+//	private List<URLS_INDEX> getBofangList(int index){
+//		List<URLS_INDEX> list = new ArrayList<URLS_INDEX>();
+//		
+//		if(index >= date.tv.episodes.length) {
+//			
+//			return null;
+//		}
+//		
+//		DOWN_URLS[] urls = date.tv.episodes[index].down_urls;
+//		if(urls == null){
+//			return null;
+//		}
+//		for(int i=0;i<urls.length; i++){
+//			for(int j=0; j<urls[i].urls.length; j++){
+//				URLS_INDEX url_index = new URLS_INDEX();
+//				url_index.source_from = urls[i].source;
+//				url_index.url = urls[i].urls[j].url;
+//				if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[0])) {
+//					url_index.souces = 0;
+//				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[1])) {
+//					url_index.souces = 1;
+//				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[2])) {
+//					url_index.souces = 2;
+//				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[3])) {
+//					url_index.souces = 3;
+//				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[4])) {
+//					url_index.souces = 4;
+//				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[5])) {
+//					url_index.souces = 5;
+//				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[6])) {
+//					url_index.souces = 6;
+//				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[7])) {
+//					url_index.souces = 7;
+//				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[8])) {
+//					url_index.souces = 8;
+//				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[9])) {
+//					url_index.souces = 9;
+//				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[10])) {
+//					url_index.souces = 10;
+//				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[11])) {
+//					url_index.souces = 11;
+//				} else {
+//					url_index.souces = 12;
+//				}
+//				if(urls[i].urls[j].type.trim().equalsIgnoreCase(Constant.player_quality_index[1])){
+//					url_index.defination = 1;
+//				}else if(urls[i].urls[j].type.trim().equalsIgnoreCase(Constant.player_quality_index[0])){
+//					url_index.defination = 2;
+//				}else if(urls[i].urls[j].type.trim().equalsIgnoreCase(Constant.player_quality_index[2])){
+//					url_index.defination = 3;
+//				}else if(urls[i].urls[j].type.trim().equalsIgnoreCase(Constant.player_quality_index[3])){
+//					url_index.defination = 4;
+//				} else {
+//					url_index.defination = 5;
+//				}
+//				list.add(url_index);
+//			}
+//		}
+//		if(list.size()>1){
+//			Collections.sort(list, new DefinationComparatorIndex());
+//			Collections.sort(list, new SouceComparatorIndex1());
+//		}
+//		return list;
+//	}
 	
 	private void cancelshoucang(){
 		

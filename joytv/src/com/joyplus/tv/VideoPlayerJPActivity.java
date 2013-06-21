@@ -3,7 +3,9 @@ package com.joyplus.tv;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
@@ -38,11 +40,11 @@ import com.androidquery.callback.AjaxStatus;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.joyplus.tv.Adapters.CurrentPlayData;
 import com.joyplus.tv.Service.Return.ReturnProgramView;
 import com.joyplus.tv.entity.CurrentPlayDetailData;
 import com.joyplus.tv.entity.URLS_INDEX;
 import com.joyplus.tv.ui.ArcView;
+import com.joyplus.tv.utils.BangDanConstant;
 import com.joyplus.tv.utils.DefinationComparatorIndex;
 import com.joyplus.tv.utils.Log;
 import com.joyplus.tv.utils.SouceComparatorIndex1;
@@ -138,7 +140,7 @@ public class VideoPlayerJPActivity extends Activity implements
 	private String mProd_name;
 	private int mProd_type;
 	private String mProd_src;// 来源
-	private int mDefination = 0; // 0.超清； 1.高清；2.标清
+	private int mDefination = 0; // 清晰度 6为尝鲜，7为普清，8为高清
 	private String mProd_sub_name = null;
 	private int mEpisodeIndex = -1; // 当前集数对应的index
 	private long lastTime = 0;
@@ -267,7 +269,9 @@ public class VideoPlayerJPActivity extends Activity implements
 						m_ReturnProgramView = app.get_ReturnProgramView();
 						mHandler.sendEmptyMessage(MESSAGE_RETURN_DATE_OK);
 					} else {
-						getProgramViewDetailServiceData();
+						if(mProd_type>0&&!"-1".equals(mProd_id)&&mProd_id!=null){
+							getProgramViewDetailServiceData();
+						}
 					}
 				} else {
 					if (currentPlayIndex < playUrls.size() - 1) {
@@ -452,7 +456,9 @@ public class VideoPlayerJPActivity extends Activity implements
 				mContinueButton.requestFocus();
 				break;
 			case STATUE_FAST_DRAG:
-				mVideoView.seekTo(mFastJumpTime);
+				if(mFastJumpTime<mVideoView.getDuration()){
+					mVideoView.seekTo(mFastJumpTime);
+				}
 				mTimeJumpSpeed = 0;
 				upDateFastTimeBar();
 				mHandler.removeMessages(MESSAGE_UPDATE_PROGRESS);
@@ -1042,7 +1048,7 @@ public class VideoPlayerJPActivity extends Activity implements
 					url_index.souces = 12;
 				}
 				switch (mDefination) {
-				case 0:// 超清
+				case BangDanConstant.CHAOQING:// 超清
 					if (url_index.defination_from_server.trim()
 							.equalsIgnoreCase(Constant.player_quality_index[1])) {
 						url_index.defination = 1;
@@ -1059,7 +1065,7 @@ public class VideoPlayerJPActivity extends Activity implements
 						url_index.defination = 5;
 					}
 					break;
-				case 1:// 高清
+				case BangDanConstant.GAOQING:// 高清
 					if (url_index.defination_from_server.trim()
 							.equalsIgnoreCase(Constant.player_quality_index[0])) {
 						url_index.defination = 1;
@@ -1076,7 +1082,7 @@ public class VideoPlayerJPActivity extends Activity implements
 						url_index.defination = 5;
 					}
 					break;
-				case 2:// 标清
+				case BangDanConstant.CHANGXIAN:// 标清
 					if (url_index.defination_from_server.trim()
 							.equalsIgnoreCase(Constant.player_quality_index[2])) {
 						url_index.defination = 1;
@@ -1123,5 +1129,109 @@ public class VideoPlayerJPActivity extends Activity implements
 			// url list 准备完成
 			mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
 		}
+	}
+	
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		if(mStatue != STATUE_LOADING){
+			SaveToServer();
+		}
+		super.onDestroy();
+	}
+	
+	public void SaveToServer() {
+		String url = Constant.BASE_URL + "program/play";
+
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("app_key", Constant.APPKEY);// required string
+												// 申请应用时分配的AppKey。
+		params.put("prod_id", mProd_id);// required string
+										// 视频id
+										// prod_name
+		// String titleName = " 第"
+		// + (mCurrentPlayData.CurrentIndex + 1)
+		// + "集";
+		// mCurrentPlayData.prod_name= name + title;
+		params.put("prod_name", mProd_name);// required
+		params.put("prod_subname", mProd_name);
+		// string 视频名字
+//		switch (mProd_type) {
+//		case 1: {
+////			params.put(
+////					"prod_subname",
+////					m_ReturnProgramView.movie.episodes[mCurrentPlayData.CurrentIndex].name);
+//			params.put(
+//			"prod_subname",
+//			"");
+//		}
+//			break;
+//		case 131:
+//		case 2: {
+//			params.put(
+//					"prod_subname",
+//					mProd_name);
+//		}
+//			break;
+//		case 3: {
+//			params.put(
+//					"prod_subname",
+//					m_ReturnProgramView.show.episodes[tempCurrentPlayData.CurrentIndex].name);
+//
+//		}
+//			break;
+//		}
+//		if (mCurrentPlayData != null && mCurrentPlayData.prod_type != 1) {
+//			params.put("prod_subname",
+//					Integer.toString(mCurrentPlayData.CurrentIndex + 1));// required
+//		}
+
+		// string
+		// 视频的集数
+		params.put("prod_type", mProd_type);// required int 视频类别
+		// 1：电影，2：电视剧，3：综艺，4：视频
+		params.put("playback_time", mVideoView.getCurrentPosition());// _time required int
+													// 上次播放时间，单位：秒
+		params.put("duration", mVideoView.getDuration());// required int 视频时长， 单位：秒
+		params.put("play_type", "1");// required string
+		// 播放的类别 1: 视频地址播放
+		// 2:webview播放
+		params.put("video_url", currentPlayUrl);// required
+		// string
+		// 视频url
+		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
+		cb.SetHeader(app.getHeaders());
+		cb.params(params).url(url).type(JSONObject.class)
+				.weakHandler(this, "CallProgramPlayResult");
+		aq.ajax(cb);
+		
+		//DB操作，把存储到服务器的数据保存到数据库
+//		TvDatabaseHelper helper = TvDatabaseHelper
+//				.newTvDatabaseHelper(getApplicationContext());
+//		SQLiteDatabase database = helper.getWritableDatabase();// 获取写db
+//		
+//		String selection = UserShouCang.USER_ID + "=? and " + UserHistory.PRO_ID + "=?";// 通过用户id，找到相应信息
+//		String[] selectionArgs = { UtilTools.getCurrentUserId(getApplicationContext()),prod_id };
+//		
+//		database.delete(TvDatabaseHelper.HISTORY_TABLE_NAME, selection,
+//				selectionArgs);
+//		
+//		HotItemInfo info = new HotItemInfo();
+//		info.prod_type = mProd_type + "";
+//		info.prod_name = mProd_name;
+//		if (tempCurrentPlayData != null) {
+//			
+//			info.prod_subname = (tempCurrentPlayData.CurrentIndex + 1) + "";
+//		}
+//		info.prod_id = mProd_type;
+//		info.play_type = "1";
+//		info.playback_time = playback_time + "";
+//		info.video_url = tempCurrentPlayData.prod_url;
+//		info.duration = duration + "";
+//				
+//		DBUtils.insertHotItemInfo2DB_History(getApplicationContext(), info,
+//				UtilTools.getCurrentUserId(getApplicationContext()), database);
+//		
+//		helper.closeDatabase();
 	}
 }
