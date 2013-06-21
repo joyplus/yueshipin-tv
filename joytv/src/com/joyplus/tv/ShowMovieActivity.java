@@ -17,11 +17,13 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.AbsListView.OnScrollListener;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
@@ -103,6 +105,8 @@ public class ShowMovieActivity extends AbstractShowActivity {
 	
 	private KeyBoardView keyBoardView;
 	private LinearLayout searchLL;
+	
+	private boolean isDragGridView = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -220,6 +224,8 @@ public class ShowMovieActivity extends AbstractShowActivity {
 		
 		int action = event.getAction();
 
+		isDragGridView = false;//不是拖动
+		
 		if (action == KeyEvent.ACTION_DOWN) {
 
 			switch (keyCode) {
@@ -327,6 +333,51 @@ public class ShowMovieActivity extends AbstractShowActivity {
 		zuijinguankanBtn.setOnKeyListener(this);
 		zhuijushoucangBtn.setOnKeyListener(this);
 		mFenLeiBtn.setOnKeyListener(this);
+		
+		playGv.setOnKeyListener(new View.OnKeyListener() {
+
+			@Override
+			public boolean onKey(View v, int keyCode, KeyEvent event) {
+				// TODO Auto-generated method stub
+
+				int action = event.getAction();
+				isDragGridView = false;//不是拖动
+				if (action == KeyEvent.ACTION_DOWN) {
+					Log.i(TAG, "onKeyDown--->" + keyCode);
+
+					switch (keyCode) {
+					case KEY_UP:
+
+						isGridViewUp = true;
+						// isCurrentKeyVertical = true;
+						Log.i(TAG, "onKeyDown--->KEY_UP" + keyCode + " "
+								+ isGridViewUp);
+						break;
+					case KEY_DOWN:
+
+						isGridViewUp = false;
+						// isCurrentKeyVertical = true;
+						Log.i(TAG, "onKeyDown--->KEY_DOWN" + keyCode + " "
+								+ isGridViewUp);
+						break;
+					case KEY_LEFT:
+
+						// isCurrentKeyVertical = false;
+						break;
+					case KEY_RIGHT:
+
+						// isCurrentKeyVertical = false;
+						break;
+
+					default:
+						break;
+					}
+
+				}
+
+				return false;
+			}
+		});
 
 		dongzuoLL.setOnClickListener(this);
 		kehuanLL.setOnClickListener(this);
@@ -463,13 +514,13 @@ public class ShowMovieActivity extends AbstractShowActivity {
 //
 //				}
 
-				if (mSparseArray.get(activeRecordIndex) != null && activeRecordIndex != position) {
+				if (mSparseArray.get(activeRecordIndex) != null && activeRecordIndex != position && !isDragGridView) {
 
 					ItemStateUtils.viewOutAnimation(getApplicationContext(),
 							mSparseArray.get(activeRecordIndex));
 				}
 
-				if (position != activeRecordIndex && isFirstActive) {
+				if (position != activeRecordIndex && isFirstActive && !isDragGridView) {
 
 					ItemStateUtils.viewInAnimation(getApplicationContext(),
 							view);
@@ -520,6 +571,73 @@ public class ShowMovieActivity extends AbstractShowActivity {
 			public void onNothingSelected(AdapterView<?> parent) {
 				// TODO Auto-generated method stub
 
+			}
+		});
+		
+		playGv.setOnScrollListener(new AbsListView.OnScrollListener() {
+			
+			int tempfirstVisibleItem;
+			
+			@Override
+			public void onScrollStateChanged(AbsListView view, int scrollState) {
+				// TODO Auto-generated method stub
+				isDragGridView = true;
+				switch (scrollState) {
+				case OnScrollListener.SCROLL_STATE_IDLE:
+					Log.i(TAG, "playGv--->SCROLL_STATE_IDLE" + " tempfirstVisibleItem--->" + tempfirstVisibleItem);
+					
+					// 缓存
+//					playGv.setSelection(tempfirstVisibleItem);
+					if (searchAdapter != null) {
+			
+						if (searchAdapter.getMovieList() != null) {
+			
+							int size = searchAdapter.getMovieList().size();
+			
+							if (size > 0) {
+			
+								if (size - 1 - (tempfirstVisibleItem + 9) < URLUtils.CACHE_NUM) {
+			
+									if (isNextPagePossibles[currentListIndex]) {
+			
+										pageNums[currentListIndex]++;
+										cachePlay(currentListIndex,
+												pageNums[currentListIndex]);
+									}
+								}
+							}
+						}
+					}
+					break;
+				case OnScrollListener.SCROLL_STATE_TOUCH_SCROLL:
+					Log.i(TAG, "playGv--->SCROLL_STATE_TOUCH_SCROLL");
+					
+					if(activeRecordIndex >= 0 && mSparseArray.get(activeRecordIndex)!= null) {
+						
+						ItemStateUtils.viewOutAnimation(
+								getApplicationContext(),
+								mSparseArray.get(activeRecordIndex));
+						
+						activeRecordIndex = -1;
+					}
+					
+					break;
+				case OnScrollListener.SCROLL_STATE_FLING:
+					Log.i(TAG, "playGv--->SCROLL_STATE_FLING");
+					
+//					isDragGridView = false;
+					break;
+				default:
+					break;
+				}
+			}
+			
+			@Override
+			public void onScroll(AbsListView view, int firstVisibleItem,
+					int visibleItemCount, int totalItemCount) {
+				// TODO Auto-generated method stub
+				
+				tempfirstVisibleItem = firstVisibleItem;
 			}
 		});
 

@@ -17,12 +17,14 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.AbsListView.OnScrollListener;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
@@ -108,6 +110,8 @@ public class ShowTVActivity extends AbstractShowActivity {
 	
 	private KeyBoardView keyBoardView;
 	private LinearLayout searchLL;
+	
+	private boolean isDragGridView = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -264,6 +268,8 @@ public class ShowTVActivity extends AbstractShowActivity {
 		
 		int action = event.getAction();
 
+		isDragGridView = false;//不是拖动
+		
 		if (action == KeyEvent.ACTION_DOWN) {
 
 			switch (keyCode) {
@@ -374,6 +380,8 @@ public class ShowTVActivity extends AbstractShowActivity {
 				
 				int action = event.getAction();
 
+				isDragGridView = false;//不是拖动
+				
 				if (action == KeyEvent.ACTION_DOWN) {
 					Log.i(TAG, "onKeyDown--->" + keyCode);
 
@@ -501,20 +509,21 @@ public class ShowTVActivity extends AbstractShowActivity {
 					int position, long id) {
 				// TODO Auto-generated method stub
 				// if (BuildConfig.DEBUG)
-				Log.i(TAG, "Positon:" + position + " View:" + view + 
-						" before: " + activeRecordIndex);
+				Log.i(TAG, "Positon:" + position + " View:" + view
+						+ " before: " + activeRecordIndex);
 
 				if (view == null) {
 
 					return;
-				}else {
-					
-//					Log.i(TAG, "mSparseArray: " + mSparseArray.get(position));
-					if(view.getTag() != null){
-						
-						mSparseArray.put(position,view);
+				} else {
+
+					// Log.i(TAG, "mSparseArray: " +
+					// mSparseArray.get(position));
+					if (view.getTag() != null) {
+
+						mSparseArray.put(position, view);
 					} else {
-						
+
 						mSparseArray.delete(position);
 					}
 				}
@@ -525,103 +534,117 @@ public class ShowTVActivity extends AbstractShowActivity {
 
 				boolean isSameContent = position >= beforeFirstAndLastVible[0]
 						&& position <= beforeFirstAndLastVible[1];
-//				if (position >= 5 && !isSameContent) {
-//
-//					if (beforepostion >= beforeFirstAndLastVible[0]
-//							&& beforepostion <= beforeFirstAndLastVible[0] + 4) {
-//
-//						if (isGridViewUp) {
-//
-//							playGv.smoothScrollBy(-popHeight, 1000);
-//							isSmoonthScroll = true;
-//						}
-//					} else {
-//
-//						if (!isGridViewUp) {
-//
-//							playGv.smoothScrollBy(popHeight, 1000 * 2);
-//							isSmoonthScroll = true;
-//
-//						}
-//					}
-//
-//				}
-				
-				if(isShowShoucang) {
-					
+				// if (position >= 5 && !isSameContent) {
+				//
+				// if (beforepostion >= beforeFirstAndLastVible[0]
+				// && beforepostion <= beforeFirstAndLastVible[0] + 4) {
+				//
+				// if (isGridViewUp) {
+				//
+				// playGv.smoothScrollBy(-popHeight, 1000);
+				// isSmoonthScroll = true;
+				// }
+				// } else {
+				//
+				// if (!isGridViewUp) {
+				//
+				// playGv.smoothScrollBy(popHeight, 1000 * 2);
+				// isSmoonthScroll = true;
+				//
+				// }
+				// }
+				//
+				// }
+
+				if (isShowShoucang) {
+
 					int shoucangNum = shoucangList.size();
-					if(!UtilTools.isPostionEmpty(position, shoucangNum)) {
-						
-						if(UtilTools.isPositionShowQitaTitle(position, shoucangNum)) {
-							Log.i(TAG, "Position:--->" + position + " isGridViewUp--->" + isGridViewUp);
-							if(isGridViewUp) {
-								
+					if (!UtilTools.isPostionEmpty(position, shoucangNum)) {
+
+						if (UtilTools.isPositionShowQitaTitle(position,
+								shoucangNum)) {
+							Log.i(TAG, "Position:--->" + position
+									+ " isGridViewUp--->" + isGridViewUp);
+							if (isGridViewUp) {
+
 								playGv.setSelection(position - 5);
 							} else {
-								
+
 								playGv.setSelection(position + 5);
 								qitaNextPoistion = position + 5;
 							}
 						} else {
-							
-							if(!isGridViewUp && qitaNextPoistion + 5 == position) {
-								
+
+							if (!isGridViewUp
+									&& qitaNextPoistion + 5 == position) {
+
 								playGv.smoothScrollBy(35, -1);
-//								int scrolly = playGv.getScrollY();
+								// int scrolly = playGv.getScrollY();
 
-								shoucangTv.setText(R.string.qitadongman_play_name);
-								
-							} else if(isGridViewUp && qitaNextPoistion - 10  == position) {
-								
-								shoucangTv.setText(R.string.shoucang_update_name);
+								shoucangTv
+										.setText(R.string.qitadongman_play_name);
+
+							} else if (isGridViewUp
+									&& qitaNextPoistion - 10 == position) {
+
+								shoucangTv
+										.setText(R.string.shoucang_update_name);
 							}
-							
-							if (mSparseArray.get(activeRecordIndex) != null && activeRecordIndex != position) {
 
-								ItemStateUtils.viewOutAnimation(getApplicationContext(),
+							if (mSparseArray.get(activeRecordIndex) != null
+									&& activeRecordIndex != position && !isDragGridView) {
+								Log.i(TAG, "setOnItemSelectedListener position != activeRecordIndex--->viewOutAnimation");
+								ItemStateUtils.viewOutAnimation(
+										getApplicationContext(),
 										mSparseArray.get(activeRecordIndex));
 							}
 
-							if (position != activeRecordIndex && isFirstActive) {
+							if (position != activeRecordIndex && isFirstActive && !isDragGridView) {
 
-								ItemStateUtils.viewInAnimation(getApplicationContext(),
-										view);
+								Log.i(TAG, "setOnItemSelectedListener position != activeRecordIndex--->viewInAnimation");
+								ItemStateUtils.viewInAnimation(
+										getApplicationContext(), view);
 								activeRecordIndex = position;
 							}
-							
-							if(!isFirstActive) {//如果不是初始化，那就设为true
-								
+
+							if (!isFirstActive) {// 如果不是初始化，那就设为true
+
 								isFirstActive = true;
 							}
 						}
 					} else {
-						//当前位置为空的组件
-						if(isGridViewUp) {//向上
-							
-							playGv.setSelection(UtilTools.stepToFirstInThisRow(position));
-						} else {//向下
-							
-							playGv.setSelection(UtilTools.stepToFirstInThisRow(position));
+						// 当前位置为空的组件
+						if (isGridViewUp) {// 向上
+
+							playGv.setSelection(UtilTools
+									.stepToFirstInThisRow(position));
+						} else {// 向下
+
+							playGv.setSelection(UtilTools
+									.stepToFirstInThisRow(position));
 						}
-						
+
 					}
 				} else {
-					
-					if (mSparseArray.get(activeRecordIndex) != null && activeRecordIndex != position) {
 
-						ItemStateUtils.viewOutAnimation(getApplicationContext(),
+					if (mSparseArray.get(activeRecordIndex) != null
+							&& activeRecordIndex != position && !isDragGridView) {
+						Log.i(TAG, "setOnItemSelectedListener position != activeRecordIndex--->viewOutAnimation");
+						ItemStateUtils.viewOutAnimation(
+								getApplicationContext(),
 								mSparseArray.get(activeRecordIndex));
 					}
 
-					if (position != activeRecordIndex && isFirstActive) {
+					if (position != activeRecordIndex && isFirstActive && !isDragGridView) {
+						Log.i(TAG, "setOnItemSelectedListener position != activeRecordIndex--->viewOutAnimation");
 
 						ItemStateUtils.viewInAnimation(getApplicationContext(),
 								view);
 						activeRecordIndex = position;
 					}
-					
-					if(!isFirstActive) {//如果不是初始化，那就设为true
-						
+
+					if (!isFirstActive) {// 如果不是初始化，那就设为true
+
 						isFirstActive = true;
 					}
 				}
@@ -646,7 +669,7 @@ public class ShowTVActivity extends AbstractShowActivity {
 
 				}
 
-//				beforepostion = position;
+				// beforepostion = position;
 
 				// 缓存
 				int size = searchAdapter.getMovieList().size();
@@ -665,6 +688,73 @@ public class ShowTVActivity extends AbstractShowActivity {
 			public void onNothingSelected(AdapterView<?> parent) {
 				// TODO Auto-generated method stub
 
+			}
+		});
+
+		playGv.setOnScrollListener(new AbsListView.OnScrollListener() {
+			
+			int tempfirstVisibleItem;
+			
+			@Override
+			public void onScrollStateChanged(AbsListView view, int scrollState) {
+				// TODO Auto-generated method stub
+				isDragGridView = true;
+				switch (scrollState) {
+				case OnScrollListener.SCROLL_STATE_IDLE:
+					Log.i(TAG, "playGv--->SCROLL_STATE_IDLE" + " tempfirstVisibleItem--->" + tempfirstVisibleItem);
+					
+					// 缓存
+//					playGv.setSelection(tempfirstVisibleItem);
+					if (searchAdapter != null) {
+			
+						if (searchAdapter.getMovieList() != null) {
+			
+							int size = searchAdapter.getMovieList().size();
+			
+							if (size > 0) {
+			
+								if (size - 1 - (tempfirstVisibleItem + 9) < URLUtils.CACHE_NUM) {
+			
+									if (isNextPagePossibles[currentListIndex]) {
+			
+										pageNums[currentListIndex]++;
+										cachePlay(currentListIndex,
+												pageNums[currentListIndex]);
+									}
+								}
+							}
+						}
+					}
+					break;
+				case OnScrollListener.SCROLL_STATE_TOUCH_SCROLL:
+					Log.i(TAG, "playGv--->SCROLL_STATE_TOUCH_SCROLL");
+					
+					if(activeRecordIndex >= 0 && mSparseArray.get(activeRecordIndex)!= null) {
+						
+						ItemStateUtils.viewOutAnimation(
+								getApplicationContext(),
+								mSparseArray.get(activeRecordIndex));
+						
+						activeRecordIndex = -1;
+					}
+					
+					break;
+				case OnScrollListener.SCROLL_STATE_FLING:
+					Log.i(TAG, "playGv--->SCROLL_STATE_FLING");
+					
+//					isDragGridView = false;
+					break;
+				default:
+					break;
+				}
+			}
+			
+			@Override
+			public void onScroll(AbsListView view, int firstVisibleItem,
+					int visibleItemCount, int totalItemCount) {
+				// TODO Auto-generated method stub
+				
+				tempfirstVisibleItem = firstVisibleItem;
 			}
 		});
 
