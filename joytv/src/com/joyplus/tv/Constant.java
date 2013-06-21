@@ -75,7 +75,7 @@ public class Constant {
 	public static final String[] video_dont_support_extensions = { ".m3u",".m3u8" };//不支持的格式
 	public static final String[] video_index = { "wangpan", "le_tv_fee",
 			"letv", "fengxing", "qiyi", "youku", "sinahd", "sohu", "56", "qq","pptv", "m1905" };//来源
-	
+	public static final String BADDU_WANGPAN = "baidu_wangpan";
 	/*
 	 * "type": flv,3gp：标清 (普清就是标清) ,"mp4", mp4:高清，hd2：超清
 	 */

@@ -27,6 +27,7 @@ import com.androidquery.callback.BitmapAjaxCallback;
 import com.androidquery.util.AQUtility;
 import com.joyplus.tv.Adapters.CurrentPlayData;
 import com.joyplus.tv.Service.Return.ReturnProgramView;
+import com.joyplus.tv.entity.CurrentPlayDetailData;
 import com.joyplus.tv.ui.UserInfo;
 import com.joyplus.tv.utils.Log;
 import com.parse.Parse;
@@ -42,6 +43,8 @@ public class App extends Application {
 	private Map<String, String> headers;
 	private CurrentPlayData mCurrentPlayData;
 	private ReturnProgramView m_ReturnProgramView = null;
+	
+	private CurrentPlayDetailData mCurrentPlayDetailData;
 
 	public void setUser(UserInfo user){
 		this.user = user;
@@ -65,6 +68,23 @@ public class App extends Application {
 
 	public void setCurrentPlayData(CurrentPlayData mCurrentPlayData) {
 		this.mCurrentPlayData = mCurrentPlayData;
+	}
+	
+	/**
+	 * 播放时详细的基本参数
+	 * @return
+	 */
+	public CurrentPlayDetailData getmCurrentPlayDetailData() {
+		return mCurrentPlayDetailData;
+	}
+
+	/**
+	 * 播放时详细的基本参数
+	 * @return
+	 */
+	public void setmCurrentPlayDetailData(
+			CurrentPlayDetailData mCurrentPlayDetailData) {
+		this.mCurrentPlayDetailData = mCurrentPlayDetailData;
 	}
 
 	public Map<String, String> getHeaders() {

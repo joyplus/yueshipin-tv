@@ -57,6 +57,12 @@
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
         </activity>
         <activity
+            android:name="VideoPlayerJPActivity"
+            android:configChanges="orientation|keyboardHidden|navigation"
+            android:launchMode="singleTop"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
+        </activity>
+        <activity
             android:name="com.umeng.fb.ui.SendFeedback"
             android:windowSoftInputMode="adjustResize" />
         <activity android:name="com.umeng.fb.ui.FeedbackConversations" />
@@ -76,13 +82,13 @@
             android:process=":DownloadingService" >
         </service>
 
-<!--         <meta-data -->
-<!--             android:name="UMENG_APPKEY" -->
-<!--             android:value="50937e6c5270151fc8000003" > -->
-<!--         </meta-data> -->
-<!--         <meta-data -->
-<!--             android:name="UMENG_CHANNEL" -->
-<!--             android:value="a002001" /> -->
+        <!-- <meta-data -->
+        <!-- android:name="UMENG_APPKEY" -->
+        <!-- android:value="50937e6c5270151fc8000003" > -->
+        <!-- </meta-data> -->
+        <!-- <meta-data -->
+        <!-- android:name="UMENG_CHANNEL" -->
+        <!-- android:value="a002001" /> -->
 
         <activity
             android:name="ShowMovieActivity"
@@ -143,7 +149,7 @@
         <activity
             android:name="ShowYueDanActivity"
             android:label="@string/app_name"
-            android:theme="@android:style/Theme.Black.NoTitleBar">
+            android:theme="@android:style/Theme.Black.NoTitleBar" >
 
             <!--
                  <intent-filter>
@@ -240,13 +246,13 @@
             android:label="@string/app_name"
             android:theme="@android:style/Theme.Black.NoTitleBar" >
 
-            
-            <!-- <intent-filter>
+            <!--
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter> -->
-           
+            </intent-filter>
+            -->
 
         </activity>
         <activity
@@ -267,7 +273,6 @@
             android:theme="@android:style/Theme.Black.NoTitleBar"
             android:windowSoftInputMode="adjustPan" >
         </activity>
-        
         <activity
             android:name=".HistoryActivity"
             android:screenOrientation="landscape"
@@ -299,9 +304,10 @@
             android:name="UMENG_APPKEY"
             android:value="5160f44856240b223800369a" >
         </meta-data>
-	        <meta-data
+        <meta-data
             android:name="UMENG_CHANNEL"
             android:value="j001" />
+
         <service android:name="com.parse.PushService" />
 
         <receiver android:name="com.parse.ParseBroadcastReceiver" >
@@ -315,7 +321,8 @@
                 <action android:name="com.example.UPDATE_STATUS" />
             </intent-filter>
         </receiver>
-        <receiver android:name="AlarmBroadcastReceiver"></receiver>
+        <receiver android:name="AlarmBroadcastReceiver" >
+        </receiver>
     </application>
 
 </manifest>

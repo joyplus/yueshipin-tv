@@ -86,4 +86,7 @@ public interface BangDanConstant {
 	String ZONGYI_TYPE = "3";
 	String DONGMAN_TYPE = "131";
 
+	int CHANGXIAN = 6;//尝鲜
+	int GAOQING = 7;//高清 普清
+	int CHAOQING = 8;//超清
 }
