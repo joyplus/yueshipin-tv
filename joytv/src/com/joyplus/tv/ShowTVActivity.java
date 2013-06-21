@@ -769,11 +769,35 @@ public class ShowTVActivity extends AbstractShowActivity {
 			}
 		});
 		
+		searchEt.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				
+				Log.i(TAG, "searchLL.setOnClickListener");
+				
+				if(keyBoardWindow == null) {
+					
+					keyBoardWindow = new PopupWindow(keyBoardView, searchEt.getRootView().getWidth(),
+							searchEt.getRootView().getHeight(), true);
+				}
+
+				if(keyBoardWindow != null && !keyBoardWindow.isShowing()){
+					
+					keyBoardWindow.showAtLocation(searchEt.getRootView(), Gravity.BOTTOM, 0, 0);
+				}
+				
+			}
+		});
+		
 		searchLL.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
+				
+				Log.i(TAG, "searchLL.setOnClickListener");
 				
 				if(keyBoardWindow == null) {
 					
@@ -874,6 +898,8 @@ public class ShowTVActivity extends AbstractShowActivity {
 			
 			searchAdapter.setList(list,false);
 		}
+		
+		playGv.setAdapter(searchAdapter);
 		
 		if(searchAdapter.getItemId() == list.size()) {
 			

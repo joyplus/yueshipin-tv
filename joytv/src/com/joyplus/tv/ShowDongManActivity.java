@@ -799,25 +799,47 @@ public class ShowDongManActivity extends AbstractShowActivity {
 			}
 		});
 
-		searchLL.setOnClickListener(new View.OnClickListener() {
-
+		searchEt.setOnClickListener(new View.OnClickListener() {
+			
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-
-				if (keyBoardWindow == null) {
-
-					keyBoardWindow = new PopupWindow(keyBoardView, searchEt
-							.getRootView().getWidth(), searchEt.getRootView()
-							.getHeight(), true);
+				
+				Log.i(TAG, "searchLL.setOnClickListener");
+				
+				if(keyBoardWindow == null) {
+					
+					keyBoardWindow = new PopupWindow(keyBoardView, searchEt.getRootView().getWidth(),
+							searchEt.getRootView().getHeight(), true);
 				}
 
-				if (keyBoardWindow != null && !keyBoardWindow.isShowing()) {
-
-					keyBoardWindow.showAtLocation(searchEt.getRootView(),
-							Gravity.BOTTOM, 0, 0);
+				if(keyBoardWindow != null && !keyBoardWindow.isShowing()){
+					
+					keyBoardWindow.showAtLocation(searchEt.getRootView(), Gravity.BOTTOM, 0, 0);
+				}
+				
+			}
+		});
+		
+		searchLL.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				
+				Log.i(TAG, "searchLL.setOnClickListener");
+				
+				if(keyBoardWindow == null) {
+					
+					keyBoardWindow = new PopupWindow(keyBoardView, searchEt.getRootView().getWidth(),
+							searchEt.getRootView().getHeight(), true);
 				}
 
+				if(keyBoardWindow != null && !keyBoardWindow.isShowing()){
+					
+					keyBoardWindow.showAtLocation(searchEt.getRootView(), Gravity.BOTTOM, 0, 0);
+				}
+				
 			}
 		});
 
@@ -905,6 +927,8 @@ public class ShowDongManActivity extends AbstractShowActivity {
 
 			searchAdapter.setList(list, false);
 		}
+		
+		playGv.setAdapter(searchAdapter);
 
 		if (searchAdapter.getItemId() == list.size()) {
 
@@ -1913,6 +1937,8 @@ public class ShowDongManActivity extends AbstractShowActivity {
 		activeRecordIndex = -1;
 		isCurrentKeyVertical = false;
 		isFirstActive = false;
+		
+//		playGv.setSelection(0);
 	}
 
 	protected void initFirstFloatView(int position, View view) {
