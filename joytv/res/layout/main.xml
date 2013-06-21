@@ -15,33 +15,12 @@
             android:layout_marginLeft="30dp"
             layout="@layout/show_head" />
 
-        <Button
-            android:id="@+id/bt_up_scrolllayout"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:layout_marginLeft="110dp"
-            android:layout_marginTop="105dp"
-            android:focusable="false"
-            android:focusableInTouchMode="false"
-            android:gravity="center_vertical|right"
-            android:background="@drawable/bg_button_up_scroll" />
-        
-      <Button
-        android:id="@+id/bt_down_scrolllayout"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:gravity="center_vertical|right"
-        android:layout_marginTop="105dp"
-        android:layout_marginLeft="165dp"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
-        android:background="@drawable/bg_button_down_scroll" />
-
         <TextView
             android:id="@+id/notice_text"
             android:layout_width="fill_parent"
             android:layout_height="45dp"
             android:layout_marginLeft="212dp"
+            android:layout_marginRight="143dp"
             android:layout_marginTop="105dp"
             android:background="@drawable/menubg"
             android:gravity="center_vertical|right"
@@ -152,13 +131,13 @@
                         android:id="@+id/icon_arrow_left"
                         android:layout_width="26dp"
                         android:layout_height="fill_parent"
-                        android:src="@drawable/bg_button_arrow_left"
-                        android:visibility="invisible" 
                         android:background="@android:color/transparent"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
                         android:paddingBottom="20dp"
                         android:paddingTop="3dp"
-                        android:focusable="false"
-                        android:focusableInTouchMode="false"/>
+                        android:src="@drawable/bg_button_arrow_left"
+                        android:visibility="invisible" />
 
                     <com.joyplus.tv.ui.CustomGallery
                         android:id="@+id/gallery"
@@ -174,13 +153,13 @@
                         android:id="@+id/icon_arrow_right"
                         android:layout_width="26dp"
                         android:layout_height="fill_parent"
-                        android:src="@drawable/bg_button_arrow_right"
-                        android:visibility="invisible"
                         android:background="@android:color/transparent"
-                        android:paddingBottom="20dp" 
-                        android:paddingTop="3dp"
                         android:focusable="false"
-                        android:focusableInTouchMode="false"/>
+                        android:focusableInTouchMode="false"
+                        android:paddingBottom="20dp"
+                        android:paddingTop="3dp"
+                        android:src="@drawable/bg_button_arrow_right"
+                        android:visibility="invisible" />
                 </LinearLayout>
             </LinearLayout>
         </FrameLayout>
@@ -285,6 +264,30 @@
             </LinearLayout>
         </LinearLayout>
     </RelativeLayout>
+
+    <Button
+        android:id="@+id/bt_up_scrolllayout"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="88dp"
+        android:layout_marginTop="105dp"
+        android:background="@drawable/bg_button_up_scroll"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:gravity="center_vertical|right" />
+
+    <Button
+        android:id="@+id/bt_down_scrolllayout"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="105dp"
+        android:layout_marginRight="33dp"
+        android:background="@drawable/bg_button_down_scroll"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:gravity="center_vertical|right" />
 
     <ImageView
         android:id="@+id/image_starting"
