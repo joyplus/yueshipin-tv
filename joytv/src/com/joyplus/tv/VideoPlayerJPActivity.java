@@ -17,6 +17,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.sqlite.SQLiteDatabase;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.TrafficStats;
@@ -27,9 +28,9 @@ import android.os.Message;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.View.OnClickListener;
 import android.webkit.URLUtil;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -47,10 +48,15 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joyplus.tv.Service.Return.ReturnProgramView;
+import com.joyplus.tv.database.TvDatabaseHelper;
 import com.joyplus.tv.entity.CurrentPlayDetailData;
+import com.joyplus.tv.entity.HotItemInfo;
 import com.joyplus.tv.entity.URLS_INDEX;
 import com.joyplus.tv.ui.ArcView;
 import com.joyplus.tv.utils.BangDanConstant;
+import com.joyplus.tv.utils.DBUtils;
+import com.joyplus.tv.utils.DataBaseItems.UserHistory;
+import com.joyplus.tv.utils.DataBaseItems.UserShouCang;
 import com.joyplus.tv.utils.DefinationComparatorIndex;
 import com.joyplus.tv.utils.Log;
 import com.joyplus.tv.utils.SouceComparatorIndex1;
@@ -253,7 +259,29 @@ public class VideoPlayerJPActivity extends Activity implements
 		aq = new AQuery(this);
 		app = (App) getApplication();
 		initViews();
+		
 		initVedioDate();
+		
+		String lastTimeStr = DBUtils.getDuartion4HistoryDB(getApplicationContext(),
+				UtilTools.getCurrentUserId(getApplicationContext()), mProd_id);
+		Log.i(TAG, "DBUtils.getDuartion4HistoryDB-->lastTimeStr:" + lastTimeStr);
+		
+		if(lastTimeStr != null && !lastTimeStr.equals("")) {
+			
+			try {
+				long tempTime = Integer.valueOf(lastTimeStr);
+				Log.i(TAG, "DBUtils.getDuartion4HistoryDB-->time:" + tempTime);
+				if(tempTime != 0 ) {
+					
+					lastTime = tempTime * 1000;
+				}
+			} catch (NumberFormatException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		
 		Window win = getWindow();
 		WindowManager.LayoutParams winParams = win.getAttributes();
 		winParams.buttonBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_OFF;
@@ -1294,13 +1322,13 @@ public class VideoPlayerJPActivity extends Activity implements
 	@Override
 	protected void onPause() {
 		// TODO Auto-generated method stub
-		if(mStatue != STATUE_LOADING&&mProd_type>0){
+		if(mProd_type>0){
 //			SaveToServer(mVideoView.getDuration(), mVideoView.getCurrentPosition());
 			long duration = mVideoView.getDuration();
 			long curretnPosition = mVideoView.getCurrentPosition();
 			Log.d(TAG, "duration ->" + duration);
 			Log.d(TAG, "curretnPosition ->" + curretnPosition);
-			SaveToServer(duration/1000, curretnPosition/1000);
+			saveToServer(duration/1000, curretnPosition/1000);
 		}
 		super.onPause();
 	}
@@ -1319,7 +1347,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		super.onStop();
 	}
 	
-	public void SaveToServer(long duration, long playBackTime) {
+	public void saveToServer(long duration, long playBackTime) {
 		String url = Constant.BASE_URL + "program/play";
 
 		Map<String, Object> params = new HashMap<String, Object>();
@@ -1339,33 +1367,31 @@ public class VideoPlayerJPActivity extends Activity implements
 		aq.ajax(cb);
 		
 		//DB操作，把存储到服务器的数据保存到数据库
-//		TvDatabaseHelper helper = TvDatabaseHelper
-//				.newTvDatabaseHelper(getApplicationContext());
-//		SQLiteDatabase database = helper.getWritableDatabase();// 获取写db
-//		
-//		String selection = UserShouCang.USER_ID + "=? and " + UserHistory.PRO_ID + "=?";// 通过用户id，找到相应信息
-//		String[] selectionArgs = { UtilTools.getCurrentUserId(getApplicationContext()),prod_id };
-//		
-//		database.delete(TvDatabaseHelper.HISTORY_TABLE_NAME, selection,
-//				selectionArgs);
-//		
-//		HotItemInfo info = new HotItemInfo();
-//		info.prod_type = mProd_type + "";
-//		info.prod_name = mProd_name;
-//		if (tempCurrentPlayData != null) {
-//			
-//			info.prod_subname = (tempCurrentPlayData.CurrentIndex + 1) + "";
-//		}
-//		info.prod_id = mProd_type;
-//		info.play_type = "1";
-//		info.playback_time = playback_time + "";
-//		info.video_url = tempCurrentPlayData.prod_url;
-//		info.duration = duration + "";
-//				
-//		DBUtils.insertHotItemInfo2DB_History(getApplicationContext(), info,
-//				UtilTools.getCurrentUserId(getApplicationContext()), database);
-//		
-//		helper.closeDatabase();
+		TvDatabaseHelper helper = TvDatabaseHelper
+				.newTvDatabaseHelper(getApplicationContext());
+		SQLiteDatabase database = helper.getWritableDatabase();// 获取写db
+		
+		String selection = UserShouCang.USER_ID + "=? and " + UserHistory.PRO_ID + "=?";// 通过用户id，找到相应信息
+		String[] selectionArgs = { UtilTools.getCurrentUserId(getApplicationContext()),mProd_id };
+		
+		database.delete(TvDatabaseHelper.HISTORY_TABLE_NAME, selection,
+				selectionArgs);
+		
+		HotItemInfo info = new HotItemInfo();
+		info.prod_type = mProd_type + "";
+		info.prod_name = mProd_name;
+			
+		info.prod_subname = mProd_sub_name;
+		info.prod_id = mProd_id;
+		info.play_type = "1";
+		info.playback_time = playBackTime + "";
+		info.video_url = currentPlayUrl;
+		info.duration = duration + "";
+				
+		DBUtils.insertHotItemInfo2DB_History(getApplicationContext(), info,
+				UtilTools.getCurrentUserId(getApplicationContext()), database);
+		
+		helper.closeDatabase();
 	}
 	
 	public void CallProgramPlayResult(String url, JSONObject json, AjaxStatus status) {

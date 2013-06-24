@@ -220,6 +220,36 @@ public class DBUtils {
 		database.insert(TvDatabaseHelper.HISTORY_TABLE_NAME, null, tempContentValues);
 	}
 	
+	public static String getDuartion4HistoryDB(Context context,String userId,String prod_id) {
+		
+		TvDatabaseHelper helper = TvDatabaseHelper.newTvDatabaseHelper(context);
+		SQLiteDatabase database = helper.getWritableDatabase();//获取写db
+		
+		String selection = UserHistory.PRO_ID  + " = ? and " + UserHistory.USER_ID + " = ?";
+		String[] selectionArgs = {prod_id,userId};
+		
+		String[] columns = { UserHistory.PLAYBACK_TIME };// 返回当前更新集数
+		
+		Cursor cursor = database.query(TvDatabaseHelper.HISTORY_TABLE_NAME, columns, selection, selectionArgs, null, null, null);
+		
+		if(cursor != null && cursor.getCount() > 0 ) {
+			
+			while(cursor.moveToNext()) {
+				
+				int indexPlaybackTime = cursor
+						.getColumnIndex(UserHistory.PLAYBACK_TIME);
+				
+				if(indexPlaybackTime != -1) {
+					
+					String curEpisode = cursor.getString(indexPlaybackTime);
+					return curEpisode;
+				}
+			}
+		}
+		
+		return "";
+	}
+	
 	//删除单条数据
 	public static void deleteOneHotItemInfo2DB_History(Context context,String userId,String prod_id) {
 		
