@@ -79,9 +79,9 @@ public class Constant {
 	/*
 	 * "type": flv,3gp：标清 (普清就是标清) ,"mp4", mp4:高清，hd2：超清
 	 */
-	public static final String[] quality_index = { "hd2", "mp4", "flv", "3gp" }; // 播放器用
+//	public static final String[] quality_index = { "hd2", "mp4", "flv", "3gp" }; // 播放器用
 
-	public static final String[] player_quality_index = { "mp4", "hd2", "3gp","flv" };//格式
+	public static final String[] player_quality_index = { "hd2", "mp4", "3gp","flv" };//格式
 	
 	//模拟firefox发送请求
 	public static final String USER_AGENT_IOS = "Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_0 like Mac OS X; en-us) AppleWebKit/532.9 (KHTML, like Gecko) Version/4.0.5 Mobile/8A293 Safari/6531.22.7";

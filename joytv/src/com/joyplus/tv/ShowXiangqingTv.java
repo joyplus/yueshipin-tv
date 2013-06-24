@@ -1323,9 +1323,9 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 				} else {
 					url_index.souces = 12;
 				}
-				if(urls[i].urls[j].type.trim().equalsIgnoreCase(Constant.player_quality_index[1])){
+				if(urls[i].urls[j].type.trim().equalsIgnoreCase(Constant.player_quality_index[0])){
 					url_index.defination = 1;
-				}else if(urls[i].urls[j].type.trim().equalsIgnoreCase(Constant.player_quality_index[0])){
+				}else if(urls[i].urls[j].type.trim().equalsIgnoreCase(Constant.player_quality_index[1])){
 					url_index.defination = 2;
 				}else if(urls[i].urls[j].type.trim().equalsIgnoreCase(Constant.player_quality_index[2])){
 					url_index.defination = 3;

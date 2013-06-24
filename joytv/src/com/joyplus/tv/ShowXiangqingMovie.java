@@ -93,6 +93,7 @@ public class ShowXiangqingMovie extends Activity implements
 	 */
 	private String puqing_url;
 	private String puqing_url_souce;
+
 	private ReturnProgramView movieData;
 	private ReturnProgramRelatedVideos recommendMoviesData;
 
@@ -160,7 +161,7 @@ public class ShowXiangqingMovie extends Activity implements
 				Log.i(TAG, "gaoqing_url--->");
 			} else {
 
-				if (gaoqing_url == null) {
+				if (chaoqing_url == null) {
 
 					gaoqingBt.setText(R.string.gaoqing_gaoqing);
 				}
@@ -413,21 +414,21 @@ public class ShowXiangqingMovie extends Activity implements
 			playData.prod_favority = isXiai;
 
 			if (gaoqing_url != null) {
-				
+
 				playData.prod_qua = BangDanConstant.GAOQING;
 			} else if (chaoqing_url != null) {
-				
+
 				playData.prod_qua = BangDanConstant.CHAOQING;
 			} else if (puqing_url != null) {
 
 				playData.prod_qua = BangDanConstant.GAOQING;
 			}
-			
+
 			playData.prod_type = 1;
-			
+
 			app.setmCurrentPlayDetailData(playData);
 			app.set_ReturnProgramView(movieData);
-			
+
 			startActivity(intent);
 
 			break;
@@ -1363,11 +1364,11 @@ public class ShowXiangqingMovie extends Activity implements
 					}
 					if (movieData.movie.episodes[0].down_urls[i].urls[j].type
 							.trim().equalsIgnoreCase(
-									Constant.player_quality_index[1])) {
+									Constant.player_quality_index[0])) {
 						url_index.defination = 1;
 					} else if (movieData.movie.episodes[0].down_urls[i].urls[j].type
 							.trim().equalsIgnoreCase(
-									Constant.player_quality_index[0])) {
+									Constant.player_quality_index[1])) {
 						url_index.defination = 2;
 					} else if (movieData.movie.episodes[0].down_urls[i].urls[j].type
 							.trim().equalsIgnoreCase(
@@ -1391,16 +1392,6 @@ public class ShowXiangqingMovie extends Activity implements
 
 				switch (playUrls.get(n).defination) {
 				case 1:
-					if (gaoqing_url == null
-							&& app.CheckUrl(playUrls.get(n).url)) {
-						Log.d(TAG,
-								"gaoqing_url-------ok----->"
-										+ playUrls.get(n).url);
-						gaoqing_url = playUrls.get(n).url;
-						gaoqing_url_souce = playUrls.get(n).source_from;
-					}
-					break;
-				case 2:
 					if (chaoqing_url == null
 							&& app.CheckUrl(playUrls.get(n).url)) {
 						Log.d(TAG,
@@ -1410,6 +1401,17 @@ public class ShowXiangqingMovie extends Activity implements
 						chaoqing_url_souce = playUrls.get(n).source_from;
 					}
 					break;
+				case 2:
+					if (gaoqing_url == null
+							&& app.CheckUrl(playUrls.get(n).url)) {
+						Log.d(TAG,
+								"gaoqing_url-------ok----->"
+										+ playUrls.get(n).url);
+						gaoqing_url = playUrls.get(n).url;
+						gaoqing_url_souce = playUrls.get(n).source_from;
+					}
+					break;
+
 				case 3:
 					if (puqing_url == null && app.CheckUrl(playUrls.get(n).url)) {
 						Log.d(TAG,
