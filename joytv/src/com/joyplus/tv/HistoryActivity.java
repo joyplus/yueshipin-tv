@@ -18,7 +18,9 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.BaseAdapter;
@@ -167,6 +169,53 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 						startActivity(intent);
 					}
 				});
+				
+				
+				listView.setOnScrollListener(new AbsListView.OnScrollListener() {
+					
+					int tempfirstVisibleItem;
+					
+					@Override
+					public void onScrollStateChanged(AbsListView view, int scrollState) {
+						// TODO Auto-generated method stub
+						
+						Log.i(TAG, "onScrollStateChanged");
+						
+						switch (scrollState) {
+						case OnScrollListener.SCROLL_STATE_IDLE:
+							
+							Log.i(TAG, "playGv--->SCROLL_STATE_IDLE" + " tempfirstVisibleItem--->" + tempfirstVisibleItem);
+							
+							if(((HistortyAdapter)listView.getAdapter()).data.size()-listView.getLastVisiblePosition()==3){
+								
+								Log.d(TAG, "onItemSelected-->getMore");
+								getHistoryData(index);
+							}
+							
+							break;
+						case OnScrollListener.SCROLL_STATE_TOUCH_SCROLL:
+							Log.i(TAG, "playGv--->SCROLL_STATE_TOUCH_SCROLL");
+							
+							break;
+						case OnScrollListener.SCROLL_STATE_FLING:
+							Log.i(TAG, "playGv--->SCROLL_STATE_FLING");
+							
+							break;
+
+						default:
+							break;
+						}
+					}
+					
+					@Override
+					public void onScroll(AbsListView view, int firstVisibleItem,
+							int visibleItemCount, int totalItemCount) {
+						// TODO Auto-generated method stub
+						
+						tempfirstVisibleItem = firstVisibleItem;
+					}
+				});
+				
 				Button viewDetailButton = (Button) view.findViewById(R.id.history_view);
 				viewDetailButton.setOnClickListener(new OnClickListener() {
 					
@@ -525,8 +574,10 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 		// TODO Auto-generated method stub
 		selectedView = arg1;
 //		if(data.size()-arg2==3&&data.size()>=5){
-//			Log.d(TAG, "data.size()"+data.size()+"---------------------"+position);
+//			Log.d(TAG, "onItemSelected-->data.size()"+"---------------------"+arg2);
 		if(((HistortyAdapter)listView.getAdapter()).data.size()-listView.getLastVisiblePosition()==3){
+			
+			Log.d(TAG, "onItemSelected-->getMore");
 			getHistoryData(index);
 		}
 	}
