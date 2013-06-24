@@ -244,7 +244,7 @@ public class ShowXiangqingMovie extends Activity implements
 		xiaiBt.setNextFocusUpId(R.id.bt_xiangqing_xiai);
 		yingpingBt.setNextFocusUpId(R.id.bt_xiangqing_yingping);
 
-		beforeView = dingBt;
+		beforeView = bofangLL;
 
 	}
 
@@ -596,7 +596,6 @@ public class ShowXiangqingMovie extends Activity implements
 				if (popupWindow.isShowing()) {
 					popupWindow.dismiss();
 				}
-				startActivity(intent);
 
 				handler.postDelayed(new Runnable() {
 
