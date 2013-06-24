@@ -1225,7 +1225,7 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 		Intent intent = new Intent(this,VideoPlayerJPActivity.class);
 		playDate.prod_id = prod_id;
 		playDate.prod_type = 2;
-		playDate.prod_name = date.tv.name+" 第" + (index+1) +"集";
+		playDate.prod_name = date.tv.name;
 		
 		//清晰度
 		playDate.prod_qua = UtilTools.string2Int(date.tv.definition);

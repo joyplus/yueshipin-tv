@@ -1145,7 +1145,7 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 		Intent intent = new Intent(this,VideoPlayerJPActivity.class);
 		playDate.prod_id = prod_id;
 		playDate.prod_type = 3;
-		playDate.prod_name = date.show.name+" " + date.show.episodes[index].name;
+		playDate.prod_name = date.show.name;
 //		playDate.prod_url = date.show.episodes[0].down_urls[0].urls[0].url;
 //		playDate.prod_src = date.show.episodes[0].down_urls[0].source;
 //		List<URLS_INDEX> urls = getBofangList(index);

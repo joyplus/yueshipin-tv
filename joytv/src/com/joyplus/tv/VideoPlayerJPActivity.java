@@ -228,7 +228,6 @@ public class VideoPlayerJPActivity extends Activity implements
 
 		if (currentPlayUrl != null && URLUtil.isNetworkUrl(currentPlayUrl)
 				&& mProd_type != 2 && mProd_type != 3 && mProd_type != 131) {// 如果是电影，地址正确就直接播放
-
 			mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
 		} else {// 如果不是电影
 
@@ -259,8 +258,7 @@ public class VideoPlayerJPActivity extends Activity implements
 						&& URLUtil.isNetworkUrl(currentPlayUrl)) {
 					// 地址跳转相关。。。
 					mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
-					mVideoNameText.setText(mProd_name + (mEpisodeIndex + 1));// 这句话不对，
-																				// 要根据不同的节目做相应的处理。这里仅仅是为了验证上下集
+																		// 要根据不同的节目做相应的处理。这里仅仅是为了验证上下集
 				}
 				break;
 			case MESSAGE_URL_NEXT:
@@ -290,6 +288,7 @@ public class VideoPlayerJPActivity extends Activity implements
 				}
 				break;
 			case MESSAGE_PALY_URL_OK:
+				updateName();
 				updateSourceAndTime();
 				mVideoView.setVideoURI(Uri.parse(currentPlayUrl));
 				mVideoView.seekTo((int) lastTime);
@@ -309,6 +308,22 @@ public class VideoPlayerJPActivity extends Activity implements
 			}
 		}
 	};
+	
+	private void updateName(){
+		switch (mProd_type) {
+		case -1:
+		case 1:
+			mVideoNameText.setText(mProd_name);
+			break;
+		case 2:
+		case 131:
+			mVideoNameText.setText(mProd_name+" 第" + mProd_sub_name + "集");
+			break;
+		case 3:
+			mVideoNameText.setText(mProd_name+" " + mProd_sub_name);
+			break;
+		}
+	}
 
 	@Override
 	protected void onStart() {
@@ -432,7 +447,7 @@ public class VideoPlayerJPActivity extends Activity implements
 					// }, 200);
 					return true;
 				} else {
-					mVideoView.stopPlayback();
+//					mVideoView.stopPlayback();
 					finish();
 				}
 				break;
@@ -458,6 +473,9 @@ public class VideoPlayerJPActivity extends Activity implements
 			case STATUE_FAST_DRAG:
 				if(mFastJumpTime<mVideoView.getDuration()){
 					mVideoView.seekTo(mFastJumpTime);
+					mSeekBar.setProgress(mFastJumpTime);
+				}else{
+					mSeekBar.setProgress(mVideoView.getCurrentPosition());
 				}
 				mTimeJumpSpeed = 0;
 				upDateFastTimeBar();
@@ -725,7 +743,7 @@ public class VideoPlayerJPActivity extends Activity implements
 			mSpeedTextView.setText("（" + Long.toString(m_bitrate) + "kb/s");
 			mLoadingPreparedPercent = mLoadingPreparedPercent + m_bitrate;
 			if (mLoadingPreparedPercent >= 100
-					&& mLoadingPreparedPercent / 100 <= 100)
+					&& mLoadingPreparedPercent / 100 < 100)
 				mPercentTextView.setText("）,已完成"
 						+ Long.toString(mLoadingPreparedPercent / 100) + "%");
 
@@ -772,6 +790,7 @@ public class VideoPlayerJPActivity extends Activity implements
 			mVideoView.start();
 			break;
 		case R.id.ib_control_center:
+			mVideoView.stopPlayback();
 			finish();
 			break;
 		case R.id.ib_control_left:
@@ -811,6 +830,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		// TODO Auto-generated method stub
 		lastTime = 0;
 		mVideoView.stopPlayback();
+		showLoading();
 		mEpisodeIndex += 1;
 		mHandler.sendEmptyMessage(MESSAGE_RETURN_DATE_OK);
 	}
@@ -1132,73 +1152,46 @@ public class VideoPlayerJPActivity extends Activity implements
 	}
 	
 	@Override
-	protected void onDestroy() {
+	protected void onPause() {
 		// TODO Auto-generated method stub
-		if(mStatue != STATUE_LOADING){
-			SaveToServer();
+		if(mStatue != STATUE_LOADING&&mProd_type>0){
+//			SaveToServer(mVideoView.getDuration(), mVideoView.getCurrentPosition());
+			long duration = mVideoView.getDuration();
+			long curretnPosition = mVideoView.getCurrentPosition();
+			Log.d(TAG, "duration ->" + duration);
+			Log.d(TAG, "curretnPosition ->" + curretnPosition);
+			SaveToServer(duration/1000, curretnPosition/1000);
 		}
-		super.onDestroy();
+		super.onPause();
 	}
 	
-	public void SaveToServer() {
+	@Override
+	protected void onStop() {
+		// TODO Auto-generated method stub
+//		if(mStatue != STATUE_LOADING&&mProd_type>0){
+////			SaveToServer(mVideoView.getDuration(), mVideoView.getCurrentPosition());
+//			long duration = mVideoView.getDuration();
+//			long curretnPosition = mVideoView.getCurrentPosition();
+//			Log.d(TAG, "duration ->" + duration);
+//			Log.d(TAG, "curretnPosition ->" + curretnPosition);
+//			SaveToServer(duration/1000, curretnPosition/1000);
+//		}
+		super.onStop();
+	}
+	
+	public void SaveToServer(long duration, long playBackTime) {
 		String url = Constant.BASE_URL + "program/play";
 
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("app_key", Constant.APPKEY);// required string
-												// 申请应用时分配的AppKey。
-		params.put("prod_id", mProd_id);// required string
-										// 视频id
-										// prod_name
-		// String titleName = " 第"
-		// + (mCurrentPlayData.CurrentIndex + 1)
-		// + "集";
-		// mCurrentPlayData.prod_name= name + title;
+		params.put("prod_id", mProd_id);
 		params.put("prod_name", mProd_name);// required
-		params.put("prod_subname", mProd_name);
-		// string 视频名字
-//		switch (mProd_type) {
-//		case 1: {
-////			params.put(
-////					"prod_subname",
-////					m_ReturnProgramView.movie.episodes[mCurrentPlayData.CurrentIndex].name);
-//			params.put(
-//			"prod_subname",
-//			"");
-//		}
-//			break;
-//		case 131:
-//		case 2: {
-//			params.put(
-//					"prod_subname",
-//					mProd_name);
-//		}
-//			break;
-//		case 3: {
-//			params.put(
-//					"prod_subname",
-//					m_ReturnProgramView.show.episodes[tempCurrentPlayData.CurrentIndex].name);
-//
-//		}
-//			break;
-//		}
-//		if (mCurrentPlayData != null && mCurrentPlayData.prod_type != 1) {
-//			params.put("prod_subname",
-//					Integer.toString(mCurrentPlayData.CurrentIndex + 1));// required
-//		}
-
-		// string
-		// 视频的集数
+		params.put("prod_subname", mProd_sub_name);
 		params.put("prod_type", mProd_type);// required int 视频类别
-		// 1：电影，2：电视剧，3：综艺，4：视频
-		params.put("playback_time", mVideoView.getCurrentPosition());// _time required int
-													// 上次播放时间，单位：秒
-		params.put("duration", mVideoView.getDuration());// required int 视频时长， 单位：秒
-		params.put("play_type", "1");// required string
-		// 播放的类别 1: 视频地址播放
-		// 2:webview播放
+		params.put("play_type", "1");
+		params.put("playback_time", playBackTime);// _time required int
+		params.put("duration", duration);// required int 视频时长， 单位：秒
 		params.put("video_url", currentPlayUrl);// required
-		// string
-		// 视频url
 		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
 		cb.SetHeader(app.getHeaders());
 		cb.params(params).url(url).type(JSONObject.class)
@@ -1233,5 +1226,11 @@ public class VideoPlayerJPActivity extends Activity implements
 //				UtilTools.getCurrentUserId(getApplicationContext()), database);
 //		
 //		helper.closeDatabase();
+	}
+	
+	public void CallProgramPlayResult(String url, JSONObject json, AjaxStatus status) {
+		if(json!=null){
+			Log.d(TAG, json.toString());
+		}
 	}
 }
