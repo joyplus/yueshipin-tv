@@ -232,6 +232,7 @@
                             android:background="@drawable/xiangqing_button_selector"
                             android:clickable="true"
                             android:focusable="true"
+                            android:longClickable="true"
                             android:paddingLeft="4dp" >
 
                             <Button
@@ -244,7 +245,9 @@
                                 android:paddingLeft="3dp"
                                 android:text="@string/xiangqing_bofang"
                                 android:textColor="@color/text_foucs"
-                                android:textSize="17dp" />
+                                android:textSize="17dp"
+                                android:clickable="false"
+                                android:longClickable="false" />
 
                             <Button
                                 android:id="@+id/bt_xiangqing_gaoqing"
@@ -258,7 +261,9 @@
                                 android:paddingRight="4dp"
                                 android:text="@string/gaoqing_chaogaoqing"
                                 android:textColor="@color/text_foucs"
-                                android:textSize="17dp" />
+                                android:textSize="17dp" 
+                                android:clickable="false"
+                                android:longClickable="false"/>
                         </LinearLayout>
                     </LinearLayout>
 

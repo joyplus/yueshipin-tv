@@ -337,6 +337,43 @@ public class ShowXiangqingMovie extends Activity implements
 				}
 			}
 		});
+		
+		bofangLL.setOnLongClickListener(new View.OnLongClickListener() {
+			
+			@Override
+			public boolean onLongClick(View v) {
+				// TODO Auto-generated method stub
+				Log.i(TAG, "bofangLL.setOnLongClickListener---->");
+				if (supportDefination == 3) {
+
+					int width = v.getWidth();
+					int height = v.getHeight() * 3;
+					int locationY = v.getHeight() * 2;
+					int[] location = new int[2];
+					v.getLocationOnScreen(location);
+					popupWindow.setFocusable(true);
+					popupWindow.setWidth(width + 10);
+					popupWindow.setHeight(height + 40);
+					popupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
+							location[0] - 6, location[1] - locationY
+									- 40);
+				} else if (supportDefination == 2) {
+
+					int width = v.getWidth();
+					int height = v.getHeight() * 2;
+					int locationY = v.getHeight() * 1;
+					int[] location = new int[2];
+					v.getLocationOnScreen(location);
+					popupWindow.setFocusable(true);
+					popupWindow.setWidth(width + 10);
+					popupWindow.setHeight(height + 40);
+					popupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
+							location[0] - 6, location[1] - locationY
+									- 40);
+				}
+				return false;
+			}
+		});
 	}
 
 	@Override
