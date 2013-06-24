@@ -13,6 +13,10 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.TrafficStats;
@@ -23,6 +27,8 @@ import android.os.Message;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.webkit.URLUtil;
 import android.widget.ImageButton;
@@ -144,6 +150,7 @@ public class VideoPlayerJPActivity extends Activity implements
 	private String mProd_sub_name = null;
 	private int mEpisodeIndex = -1; // 当前集数对应的index
 	private long lastTime = 0;
+	
 
 	/**
 	 * 网络数据
@@ -177,25 +184,92 @@ public class VideoPlayerJPActivity extends Activity implements
 	private int mMaxVolume;
 	/** 当前声音 */
 	private int mVolume = -1;
+	
+	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			String action = intent.getAction();
+
+			if (action.equals(Constant.VIDEOPLAYERCMD)) {
+				int mCMD = intent.getIntExtra("cmd", 0);
+				String mContent = intent.getStringExtra("content");
+				String mProd_url = intent.getStringExtra("prod_url");
+				if (!mProd_url.equalsIgnoreCase(currentPlayUrl))
+					return;
+				/*
+				 * “403”：视频推送后，手机发送播放指令。 “405”：视频推送后，手机发送暂停指令。
+				 * “407”：视频推送后，手机发送快进指令。 “409”：视频推送后，手机发送后退指令。
+				 */
+				switch (mCMD) {
+				case 403:
+					if (!mVideoView.isPlaying()){
+						mStatue = STATUE_PLAYING;
+						mVideoView.start();
+						mContinueLayout.setVisibility(View.GONE);
+						mControlLayout.setVisibility(View.GONE);
+						mHandler.sendEmptyMessageDelayed(MESSAGE_HIDE_PROGRESSBAR, 2500);
+					}
+					break;
+				case 405:
+					if (mVideoView.isPlaying()){
+						mVideoView.pause();
+						mStatue = STATUE_PAUSE;
+						mNoticeLayout.setVisibility(View.VISIBLE);
+						mContinueLayout.setVisibility(View.VISIBLE);
+						mContinueButton.requestFocus();
+					}
+					break;
+				case 407:
+					if (Integer.parseInt(mContent) <= mVideoView.getDuration()) {
+						int destination = Integer.parseInt(mContent);
+						if(destination<mVideoView.getDuration()){
+							mVideoView.seekTo(destination);
+						}
+						mNoticeLayout.setVisibility(View.VISIBLE);
+						mHandler.sendEmptyMessageDelayed(MESSAGE_HIDE_PROGRESSBAR, 2500);
+//						mVideoView.seekTo(c)
+//						if (mPlayer.getDuration() - Integer.parseInt(mContent) < 10000
+//								&& mCurrentPlayData.prod_type != 1)// 下一集
+//							mPlayer.OnContinueVideoPlay();
+//						else
+//							mPlayer.onSeekMove(Integer.parseInt(mContent));
+					}
+					break;
+				case 409:
+					finish();
+					break;
+				}
+
+			} else {
+			}
+		}
+	};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-
 		setContentView(R.layout.video_player_main);
-
 		aq = new AQuery(this);
 		app = (App) getApplication();
-
-		mStatue = STATUE_LOADING;// 进入播放器为加载状态
-
 		initViews();
+		initVedioDate();
+		Window win = getWindow();
+		WindowManager.LayoutParams winParams = win.getAttributes();
+		winParams.buttonBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_OFF;
+		// winParams.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
+		win.setAttributes(winParams);
 
-		// mProd_id = getIntent().getIntExtra("prod_id", 0);
-		// mProd_type = getIntent().getIntExtra("prod_type", 0);
-		// mCurrentEpisodeIndex = getIntent().getStringExtra("sub_name");
-
+		IntentFilter intentFilter = new IntentFilter();
+		intentFilter.addAction(Constant.VIDEOPLAYERCMD);
+		registerReceiver(mReceiver, intentFilter);
+	}
+	
+	private void initVedioDate(){
+		mStatue = STATUE_LOADING;
+		mPreLoadLayout.setVisibility(View.VISIBLE);
+		mContinueLayout.setVisibility(View.GONE);
+		mControlLayout.setVisibility(View.GONE);
 		mStartRX = TrafficStats.getTotalRxBytes();// 获取网络速度
 		if (mStartRX == TrafficStats.UNSUPPORTED) {
 
@@ -205,41 +279,49 @@ public class VideoPlayerJPActivity extends Activity implements
 
 			mHandler.postDelayed(mLoadingRunnable, 500);
 		}
-
 		// 点击某部影片播放时，会全局设置CurrentPlayData
-		CurrentPlayDetailData playDate = app.getmCurrentPlayDetailData();
-		if (playDate == null) {// 如果不设置就不播放
-			finish();
-			return;
-		}
+				CurrentPlayDetailData playDate = app.getmCurrentPlayDetailData();
+				if (playDate == null) {// 如果不设置就不播放
+					finish();
+					return;
+				}
 
-		// 初始化基本播放数据
-		mProd_id = playDate.prod_id;
-		mProd_type = playDate.prod_type;
-		mProd_name = playDate.prod_name;
-		mProd_sub_name = playDate.prod_sub_name;
-		currentPlayUrl = playDate.prod_url;
-		mDefination = playDate.prod_qua;
-		lastTime = (int) playDate.prod_time;
-		mProd_src = playDate.prod_src;
+				// 初始化基本播放数据
+				mProd_id = playDate.prod_id;
+				mProd_type = playDate.prod_type;
+				mProd_name = playDate.prod_name;
+				mProd_sub_name = playDate.prod_sub_name;
+				currentPlayUrl = playDate.prod_url;
+				mDefination = playDate.prod_qua;
+				lastTime = (int) playDate.prod_time;
+				mProd_src = playDate.prod_src;
 
-		// 更新播放来源和上次播放时间
-		updateSourceAndTime();
+				// 更新播放来源和上次播放时间
+				updateSourceAndTime();
 
-		if (currentPlayUrl != null && URLUtil.isNetworkUrl(currentPlayUrl)
-				&& mProd_type != 2 && mProd_type != 3 && mProd_type != 131) {// 如果是电影，地址正确就直接播放
-			mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
-		} else {// 如果不是电影
+				if (currentPlayUrl != null && URLUtil.isNetworkUrl(currentPlayUrl)){
+					if(mProd_type!=2 && mProd_type!=3 && mProd_type!=131){
+						mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
+					}else{
+						if (app.get_ReturnProgramView() != null) {// 如果不为空，获取服务器返回的详细数据
 
-			if (app.get_ReturnProgramView() != null) {// 如果不为空，获取服务器返回的详细数据
+							m_ReturnProgramView = app.get_ReturnProgramView();
+							mHandler.sendEmptyMessage(MESSAGE_RETURN_DATE_OK);
+						} else {// 如果为空，就重新获取
 
-				m_ReturnProgramView = app.get_ReturnProgramView();
-				mHandler.sendEmptyMessage(MESSAGE_RETURN_DATE_OK);
-			} else {// 如果为空，就重新获取
+							getProgramViewDetailServiceData();
+						}
+					}
+				}else{
+					if (app.get_ReturnProgramView() != null) {// 如果不为空，获取服务器返回的详细数据
 
-				getProgramViewDetailServiceData();
-			}
-		}
+						m_ReturnProgramView = app.get_ReturnProgramView();
+						mHandler.sendEmptyMessage(MESSAGE_RETURN_DATE_OK);
+					} else {// 如果为空，就重新获取
+
+						getProgramViewDetailServiceData();
+					}
+				}
 	}
 
 	private Handler mHandler = new Handler() {
@@ -291,7 +373,9 @@ public class VideoPlayerJPActivity extends Activity implements
 				updateName();
 				updateSourceAndTime();
 				mVideoView.setVideoURI(Uri.parse(currentPlayUrl));
-				mVideoView.seekTo((int) lastTime);
+				if(lastTime>0){
+					mVideoView.seekTo((int) lastTime);
+				}
 				mVideoView.start();
 				break;
 			case MESSAGE_UPDATE_PROGRESS:
@@ -423,28 +507,7 @@ public class VideoPlayerJPActivity extends Activity implements
 				return true;
 			case STATUE_PLAYING:
 				if (mProd_type == 2 || mProd_type == 131 || mProd_type == 3) {
-					mVocieLayout.setVisibility(View.GONE);
-					mHandler.removeMessages(MESSAGE_HIDE_VOICE);
-					mStatue = STATUE_PAUSE;
-					mVideoView.pause();
-					mHandler.removeMessages(MESSAGE_HIDE_PROGRESSBAR);
-					mControlLayout.setVisibility(View.VISIBLE);
-					mNoticeLayout.setVisibility(View.VISIBLE);
-					mTopButton.requestFocus();
-					// if( getCurrentFocus().getId() != mSeekBar.getId()) {
-					//
-					// mSeekBar.requestFocus();
-					// }
-					//
-					// Log.d(TAG,"FOUCED ID -->" + getCurrentFocus().getId());
-					// mHandler.postDelayed(new Runnable() {
-					//
-					// @Override
-					// public void run() {
-					// // TODO Auto-generated method stub
-					// mTopButton.requestFocus();
-					// }
-					// }, 200);
+					showControlLayout();
 					return true;
 				} else {
 //					mVideoView.stopPlayback();
@@ -596,6 +659,67 @@ public class VideoPlayerJPActivity extends Activity implements
 		}
 		return super.onKeyDown(keyCode, event);
 	}
+	
+	private void showControlLayout(){
+		//判断上下集能不能用
+		if(mProd_type == 3){
+			if(mEpisodeIndex > 0){
+				mNextButton.setEnabled(true);
+				mNextButton.setFocusable(true);
+			}else{
+				mNextButton.setEnabled(false);
+				mNextButton.setFocusable(false);
+			}
+			
+			if(mEpisodeIndex<m_ReturnProgramView.show.episodes.length-1){
+				mPreButton.setEnabled(true);
+				mPreButton.setFocusable(true);
+			}else{
+				mPreButton.setEnabled(false);
+				mPreButton.setFocusable(false);
+			}
+			
+		}else{
+			if(mEpisodeIndex > 0){
+				mPreButton.setEnabled(true);
+				mPreButton.setFocusable(true);
+			}else{
+				mPreButton.setEnabled(false);
+				mPreButton.setFocusable(false);
+			}
+			
+			if(mEpisodeIndex<m_ReturnProgramView.tv.episodes.length-1){
+				mNextButton.setEnabled(true);
+				mNextButton.setFocusable(true);
+			}else{
+				mNextButton.setEnabled(false);
+				mNextButton.setFocusable(false);
+			}
+		}
+		
+		mVocieLayout.setVisibility(View.GONE);
+		mHandler.removeMessages(MESSAGE_HIDE_VOICE);
+		mStatue = STATUE_PAUSE;
+		mVideoView.pause();
+		mHandler.removeMessages(MESSAGE_HIDE_PROGRESSBAR);
+		mControlLayout.setVisibility(View.VISIBLE);
+		mNoticeLayout.setVisibility(View.VISIBLE);
+		mTopButton.requestFocus();
+		// if( getCurrentFocus().getId() != mSeekBar.getId()) {
+		//
+		// mSeekBar.requestFocus();
+		// }
+		//
+		// Log.d(TAG,"FOUCED ID -->" + getCurrentFocus().getId());
+		// mHandler.postDelayed(new Runnable() {
+		//
+		// @Override
+		// public void run() {
+		// // TODO Auto-generated method stub
+		// mTopButton.requestFocus();
+		// }
+		// }, 200);
+	}
 
 	private void upDateFastTimeBar() {
 		if (mTimeJumpSpeed > 0) {
@@ -616,6 +740,8 @@ public class VideoPlayerJPActivity extends Activity implements
 			mHandler.removeMessages(MESSAGE_HIDE_PROGRESSBAR);
 			mHandler.sendEmptyMessageDelayed(MESSAGE_HIDE_PROGRESSBAR, 2500);
 		}
+//		mHandler.removeMessages(MESSAGE_UPDATE_PROGRESS);
+//		mHandler.sendEmptyMessageDelayed(MESSAGE_UPDATE_PROGRESS, 500);
 	}
 
 	@Override
@@ -636,15 +762,21 @@ public class VideoPlayerJPActivity extends Activity implements
 	public void onPrepared(MediaPlayer mp) {
 		// TODO Auto-generated method stub
 		// 准备好了
-		mPreLoadLayout.setVisibility(View.GONE);
-		mHandler.removeCallbacks(mLoadingRunnable);
-		mTotalTimeTextView.setText(UtilTools.formatDuration(mVideoView
-				.getDuration()));
-		mSeekBar.setMax((int) mVideoView.getDuration());
-		mSeekBar.setOnSeekBarChangeListener(this);
-		mStatue = STATUE_PLAYING;
-		mHandler.sendEmptyMessageDelayed(MESSAGE_UPDATE_PROGRESS, 1000);
-		mHandler.sendEmptyMessageDelayed(MESSAGE_HIDE_PROGRESSBAR, 5000);
+		mHandler.postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				mPreLoadLayout.setVisibility(View.GONE);
+				mHandler.removeCallbacks(mLoadingRunnable);
+				mTotalTimeTextView.setText(UtilTools.formatDuration(mVideoView
+						.getDuration()));
+				mSeekBar.setMax((int) mVideoView.getDuration());
+				mSeekBar.setOnSeekBarChangeListener(VideoPlayerJPActivity.this);
+				mStatue = STATUE_PLAYING;
+				mHandler.sendEmptyMessageDelayed(MESSAGE_UPDATE_PROGRESS, 1000);
+				mHandler.sendEmptyMessageDelayed(MESSAGE_HIDE_PROGRESSBAR, 5000);
+			}
+		}, 500);
 	}
 
 	@Override
@@ -656,7 +788,7 @@ public class VideoPlayerJPActivity extends Activity implements
 	@Override
 	public void onSeekComplete(MediaPlayer mp) {
 		// TODO Auto-generated method stub
-		// 快进好了（拖动）
+		// 快进好了（拖动） 系统不支持？
 	}
 
 	@Override
@@ -777,20 +909,20 @@ public class VideoPlayerJPActivity extends Activity implements
 		switch (v.getId()) {
 		case R.id.ib_control_top:
 			mControlLayout.setVisibility(View.GONE);
-			mNoticeLayout.setVisibility(View.GONE);
+			mHandler.sendEmptyMessageDelayed(MESSAGE_HIDE_PROGRESSBAR, 2500);
 			mStatue = STATUE_PLAYING;
 			mVideoView.requestFocus();
 			mVideoView.start();
 			break;
 		case R.id.btn_continue:
 			mContinueLayout.setVisibility(View.GONE);
-			mNoticeLayout.setVisibility(View.GONE);
+			mHandler.sendEmptyMessageDelayed(MESSAGE_HIDE_PROGRESSBAR, 2500);
 			mStatue = STATUE_PLAYING;
 			mVideoView.requestFocus();
 			mVideoView.start();
 			break;
 		case R.id.ib_control_center:
-			mVideoView.stopPlayback();
+//			mVideoView.stopPlayback();
 			finish();
 			break;
 		case R.id.ib_control_left:
@@ -831,7 +963,11 @@ public class VideoPlayerJPActivity extends Activity implements
 		lastTime = 0;
 		mVideoView.stopPlayback();
 		showLoading();
-		mEpisodeIndex += 1;
+		if(mProd_type==3){
+			mEpisodeIndex -= 1;
+		}else{
+			mEpisodeIndex += 1;
+		}
 		mHandler.sendEmptyMessage(MESSAGE_RETURN_DATE_OK);
 	}
 
@@ -840,7 +976,11 @@ public class VideoPlayerJPActivity extends Activity implements
 		lastTime = 0;
 		mVideoView.stopPlayback();
 		showLoading();
-		mEpisodeIndex -= 1;
+		if(mProd_type==3){
+			mEpisodeIndex += 1;
+		}else{
+			mEpisodeIndex -= 1;
+		}
 		mHandler.sendEmptyMessage(MESSAGE_RETURN_DATE_OK);
 	}
 
@@ -1068,7 +1208,7 @@ public class VideoPlayerJPActivity extends Activity implements
 					url_index.souces = 12;
 				}
 				switch (mDefination) {
-				case BangDanConstant.CHAOQING:// 超清
+				case BangDanConstant.GAOQING:// 高清
 					if (url_index.defination_from_server.trim()
 							.equalsIgnoreCase(Constant.player_quality_index[1])) {
 						url_index.defination = 1;
@@ -1085,7 +1225,7 @@ public class VideoPlayerJPActivity extends Activity implements
 						url_index.defination = 5;
 					}
 					break;
-				case BangDanConstant.GAOQING:// 高清
+				case BangDanConstant.CHAOQING:// 超清
 					if (url_index.defination_from_server.trim()
 							.equalsIgnoreCase(Constant.player_quality_index[0])) {
 						url_index.defination = 1;
@@ -1232,5 +1372,27 @@ public class VideoPlayerJPActivity extends Activity implements
 		if(json!=null){
 			Log.d(TAG, json.toString());
 		}
+	}
+	 @Override
+	protected void onNewIntent(Intent intent) {
+		// TODO Auto-generated method stub
+		Log.d(TAG, "--------on new Intent--------------");
+		super.onNewIntent(intent);
+		mHandler.removeCallbacksAndMessages(this);
+		if(mVideoView.isPlaying()){
+			mVideoView.stopPlayback();
+//			mVideoView.resume();
+		}
+		initVedioDate();
+	}
+	 
+	 @Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		unregisterReceiver(mReceiver);
+		if(mVideoView!=null){
+			mVideoView.stopPlayback();
+		}
+		super.onDestroy();
 	}
 }
