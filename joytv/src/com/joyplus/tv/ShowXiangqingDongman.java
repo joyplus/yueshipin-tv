@@ -729,8 +729,6 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 				// 禁掉播放按钮，避免多次播放
 				bofangLL.setEnabled(false);
 				
-				clickBofang();
-				
 				int id = v.getId();
 				switch (id) {
 				case R.id.ll_gaoqing_chaoqing:
@@ -748,6 +746,8 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 				default:
 					break;
 				}
+				
+				clickBofang();
 				
 				backToNormalPopView();
 				setLinearLayoutVisible(v);
