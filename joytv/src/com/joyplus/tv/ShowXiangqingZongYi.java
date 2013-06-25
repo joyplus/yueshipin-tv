@@ -1571,25 +1571,71 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 	
 	private void updateURLBoolean() {
 		
-		if (date.show.episodes[0].down_urls == null) {
-			handler.sendEmptyMessage(0);
-			return;
-		}
-		
-		for(int i = 0; i < date.show.episodes[0].down_urls.length; i++){
-			for (int j = 0; j < date.show.episodes[0].down_urls[i].urls.length; j++){
-				if(Constant.player_quality_index[0].equalsIgnoreCase(date.show.episodes[0].down_urls[i].urls[j].type)){
-					hasChaoqing = true;
-				}else if(Constant.player_quality_index[1].equalsIgnoreCase(date.show.episodes[0].down_urls[i].urls[j].type)){
-					hasGaoqing = true;
-				}else if(Constant.player_quality_index[2].equalsIgnoreCase(date.show.episodes[0].down_urls[i].urls[j].type)){
-					haspuqing = true;
-				}else if(Constant.player_quality_index[3].equalsIgnoreCase(date.show.episodes[0].down_urls[i].urls[j].type)){
-					haspuqing = true;
+		if(date != null) {
+			
+			if(date.show != null && date.show.episodes != null) {
+				
+				if(date.show.episodes.length > 0) {
+					
+					boolean isUrlUnEmpty = false;
+					
+					for(int tempI = 0;tempI< date.show.episodes.length;tempI++) {
+						
+						if(date.show.episodes[tempI].down_urls != null) {
+							
+							isUrlUnEmpty = true;
+							
+							for(int i = 0; i < date.show.episodes[tempI].down_urls.length; i++){
+								for (int j = 0; j < date.show.episodes[tempI].down_urls[i].urls.length; j++){
+									if(Constant.player_quality_index[0].equalsIgnoreCase(date.show.episodes[tempI].down_urls[i].urls[j].type)){
+										hasChaoqing = true;
+									}else if(Constant.player_quality_index[1].equalsIgnoreCase(date.show.episodes[tempI].down_urls[i].urls[j].type)){
+										hasGaoqing = true;
+									}else if(Constant.player_quality_index[2].equalsIgnoreCase(date.show.episodes[tempI].down_urls[i].urls[j].type)){
+										haspuqing = true;
+									}else if(Constant.player_quality_index[3].equalsIgnoreCase(date.show.episodes[tempI].down_urls[i].urls[j].type)){
+										haspuqing = true;
+									}
+								}
+							}
+							
+							handler.sendEmptyMessage(0);
+							
+							return;
+						}
+					}
+					
+					if(isUrlUnEmpty) {
+						
+						handler.sendEmptyMessage(0);
+						return;
+					}
 				}
 			}
 		}
 		
 		handler.sendEmptyMessage(0);
+		return;
+		
+//		if (date.tv.episodes[0].down_urls == null) {
+//			handler.sendEmptyMessage(0);
+//			return;
+//		}
+//		
+//		for(int i = 0; i < date.tv.episodes[0].down_urls.length; i++){
+//			for (int j = 0; j < date.tv.episodes[0].down_urls[i].urls.length; j++){
+//				if(Constant.player_quality_index[0].equalsIgnoreCase(date.tv.episodes[0].down_urls[i].urls[j].type)){
+//					hasChaoqing = true;
+//				}else if(Constant.player_quality_index[1].equalsIgnoreCase(date.tv.episodes[0].down_urls[i].urls[j].type)){
+//					hasGaoqing = true;
+//				}else if(Constant.player_quality_index[2].equalsIgnoreCase(date.tv.episodes[0].down_urls[i].urls[j].type)){
+//					haspuqing = true;
+//				}else if(Constant.player_quality_index[3].equalsIgnoreCase(date.tv.episodes[0].down_urls[i].urls[j].type)){
+//					haspuqing = true;
+//				}
+//			}
+//		}
+//		
+//		handler.sendEmptyMessage(0);
 	}
 }

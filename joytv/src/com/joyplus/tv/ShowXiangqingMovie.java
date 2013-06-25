@@ -1344,7 +1344,11 @@ public class ShowXiangqingMovie extends Activity implements
 		@Override
 		public void run() {
 			// TODO Auto-generated method stub
-			
+			if(movieData.movie.episodes.length <= 0) {
+				
+				handler.sendEmptyMessage(0);
+				return;
+			}
 			if (movieData.movie.episodes[0].down_urls == null) {
 				handler.sendEmptyMessage(0);
 				return;
