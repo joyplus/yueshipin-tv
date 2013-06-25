@@ -989,7 +989,7 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 		
 		initButton();
 		aq.id(R.id.image).image(pic_url, false, true,0, R.drawable.post_normal);
-		aq.id(R.id.image).image(date.show.poster, false, true,0, R.drawable.post_normal);
+//		aq.id(R.id.image).image(date.show.poster, false, true,0, R.drawable.post_normal);
 		aq.id(R.id.text_name).text(date.show.name);
 		aq.id(R.id.text_directors).text(date.show.stars);
 		aq.id(R.id.text_starts).text(date.show.directors);
