@@ -1160,38 +1160,39 @@ public class VideoPlayerJPActivity extends Activity implements
 	private void updateSourceAndTime() {
 		if (mProd_src == null || mProd_src.length() == 1
 				|| "null".equals(mProd_src)) {
-			mResourceTextView.setText("PPTV");
+			mResourceTextView.setText("");
 		} else {
 			String strSrc = "";
 			if (mProd_src.equalsIgnoreCase("wangpan")) {
 				strSrc = "PPTV";
 			} else if (mProd_src.equalsIgnoreCase("le_tv_fee")) {
-				strSrc = "乐视";
+				strSrc = "乐  视";
 			} else if (mProd_src.equalsIgnoreCase("letv")) {
-				strSrc = "乐视";
+				strSrc = "乐  视";
 			} else if (mProd_src.equalsIgnoreCase("fengxing")) {
-				strSrc = "风行";
+				strSrc = "风  行";
 			} else if (mProd_src.equalsIgnoreCase("qiyi")) {
-				strSrc = "爱奇艺";
+				strSrc = "爱  奇  艺";
 			} else if (mProd_src.equalsIgnoreCase("youku")) {
-				strSrc = "优酷";
+				strSrc = "优  酷";
 			} else if (mProd_src.equalsIgnoreCase("sinahd")) {
-				strSrc = "新浪视频";
+				strSrc = "新  浪  视  频";
 			} else if (mProd_src.equalsIgnoreCase("sohu")) {
-				strSrc = "搜狐视频";
+				strSrc = "搜  狐  视  频";
 			} else if (mProd_src.equalsIgnoreCase("qq")) {
-				strSrc = "腾讯视频";
+				strSrc = "腾  讯  视  频";
 			} else if (mProd_src.equalsIgnoreCase("pptv")) {
 				strSrc = "PPTV";
 			} else if (mProd_src.equalsIgnoreCase("m1905")) {
-				strSrc = "电影网";
+				strSrc = "电  影  网";
 			} else {
 				strSrc = "PPTV";
 			}
 			mResourceTextView.setText(strSrc);
 		}
-		mLastTimeTextView.setText(UtilTools.formatDuration(lastTime));
+		mLastTimeTextView.setText("上次播放: " + UtilTools.formatDuration(lastTime));
 		if(playUrls.size()>0&&currentPlayIndex<=playUrls.size()-1){
+			Log.d(TAG, "type---->" + playUrls.get(currentPlayIndex).defination_from_server);
 			mDefinationIcon.setVisibility(View.VISIBLE);
 			if(Constant.player_quality_index[0].equalsIgnoreCase(playUrls.get(currentPlayIndex).defination_from_server)){
 				mDefinationIcon.setImageResource(R.drawable.player_1080p);
@@ -1411,7 +1412,7 @@ public class VideoPlayerJPActivity extends Activity implements
 					}
 				}
 			}
-			if (playUrls.size() > 2) {
+			if (playUrls.size() > 1) {
 				Collections.sort(playUrls, new SouceComparatorIndex1());
 				Collections.sort(playUrls, new DefinationComparatorIndex());
 			}
