@@ -15,6 +15,8 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils.TruncateAt;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -29,7 +31,6 @@ import android.widget.PopupWindow;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
@@ -99,6 +100,12 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 	private int historyPlayIndex4DB = -1;//当前数据库中播放的集数
 	private String historyPlayProdSubName;
 	
+	private boolean hasChaoqing = false;
+	private boolean hasGaoqing= false;
+	private boolean haspuqing = false;
+	
+	private int supportDefination;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -111,6 +118,9 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 			Log.e(TAG, "pram error");
 			finish();
 		}
+		
+		supportDefination = 3;
+		
 		aq = new AQuery(this);
 		app = (App) getApplication();
 		showDefultDate();
@@ -126,6 +136,60 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 		
 		getIsShoucangData();
 		getServiceDate();
+	}
+	
+	private Handler handler = new Handler() {
+
+		@Override
+		public void handleMessage(Message msg) {
+			// TODO Auto-generated method stub
+			updatePopButton();
+			removeDialog(DIALOG_WAITING);
+		}
+
+	};
+	
+	private void updatePopButton(){
+
+		if (!hasChaoqing) {
+			supportDefination -= 1;
+			chaoqingLL.setVisibility(View.GONE);
+			Log.i(TAG, "chaoqing_url--->");
+		} else {
+			gaoqingBt.setText(R.string.gaoqing_chaogaoqing);
+			currentBofangViewPop = chaoqingLL;
+			beforeTempPop = chaoqingLL;
+		}
+		
+		if (!hasGaoqing) {
+			supportDefination -= 1;
+			gaoqingLL.setVisibility(View.GONE);
+			Log.i(TAG, "gaoqing_url--->");
+		} else {
+			if (!hasChaoqing) {
+				gaoqingBt.setText(R.string.gaoqing_gaoqing);
+				currentBofangViewPop = gaoqingLL;
+				beforeTempPop = gaoqingLL;
+			}
+		}
+
+		if (!haspuqing) {
+			supportDefination -= 1;
+			biaoqingLL.setVisibility(View.GONE);
+			Log.i(TAG, "puqing_url--->");
+		} else {
+			if (!hasChaoqing && !hasGaoqing) {
+				gaoqingBt.setText(R.string.gaoqing_biaoqing);
+				currentBofangViewPop = biaoqingLL;
+				beforeTempPop = biaoqingLL;
+			}
+		}
+		if (supportDefination == 0) {
+
+			bofangLL.setEnabled(false);
+		}
+		
+		initPopWindowData();
 	}
 	
 	private void setTitleButtonEnable(int index , int tempStartTag,int tempEndTag,Button button) {
@@ -304,7 +368,7 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 		dingBt.setNextFocusUpId(R.id.bt_xiangqingding);
 		xiaiBt.setNextFocusUpId(R.id.bt_xiangqing_xiai);
 
-		beforeView = dingBt;
+		beforeView = bofangLL;
 
 	}
 
@@ -374,6 +438,43 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 				}
 			}
 		});
+		
+		bofangLL.setOnLongClickListener(new View.OnLongClickListener() {
+			
+			@Override
+			public boolean onLongClick(View v) {
+				// TODO Auto-generated method stub
+				Log.i(TAG, "bofangLL.setOnLongClickListener---->");
+				if (supportDefination == 3) {
+
+					int width = v.getWidth();
+					int height = v.getHeight() * 3;
+					int locationY = v.getHeight() * 2;
+					int[] location = new int[2];
+					v.getLocationOnScreen(location);
+					popupWindow.setFocusable(true);
+					popupWindow.setWidth(width + 10);
+					popupWindow.setHeight(height + 40);
+					popupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
+							location[0] - 6, location[1] - locationY
+									- 40);
+				} else if (supportDefination == 2) {
+
+					int width = v.getWidth();
+					int height = v.getHeight() * 2;
+					int locationY = v.getHeight() * 1;
+					int[] location = new int[2];
+					v.getLocationOnScreen(location);
+					popupWindow.setFocusable(true);
+					popupWindow.setWidth(width + 10);
+					popupWindow.setHeight(height + 40);
+					popupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
+							location[0] - 6, location[1] - locationY
+									- 40);
+				}
+				return false;
+			}
+		});
 	}
 
 	@Override
@@ -405,99 +506,10 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 
 			break;
 		case R.id.ll_xiangqing_bofang_gaoqing:
-			// bofangLL.setN
-			// xiaiIv.setImageResource(R.drawable.icon_fav_active);
-			// xiaiTv.setTextColor(getResources().getColor(R.color.text_foucs));
-//			String str0 = "984192";
-//			String str1 = "西游降魔篇";
-//			String str2 = "http://221.130.179.66/25/36/53/kingsoft/movie/47978987920B0079FF686B6370B4E039-xiyoupian.mp4?crypt=61740d1aa7f2e300&b=800&gn=132&nc=1&bf=30&p2p=1&video_type=mp4&check=0&tm=1364191200&key=af7b9ad0697560c682a0070cf225e65e&opck=1&lgn=letv&proxy=3702889363&cipi=2026698610&tsnp=1&tag=ios&tag=kingsoft&sign=coopdown&realext=.mp4test=m3u8";
-//
-//			Intent intent = new Intent(this, VideoPlayerActivity.class);
-//			intent.putExtra("prod_url", str2);
-//			intent.putExtra("title", str1);
-//			startActivity(intent);
-			Log.i(TAG, "ll_xiangqing_bofang_gaoqing--->" +seletedButtonIndex );
-			if(seletedButtonIndex<=0){
-				seletedButtonIndex = 1;
-				Button b = (Button) table.findViewById(1);
-				seletedIndexButton = b;
-				if(b!=null){
-					b.setBackgroundResource(R.drawable.bg_button_tv_selector_1);
-					b.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector_1));
-					b.setPadding(8, 0, 0, 0);
-				}
-				
-				//从DB文件中获取历史播放集数
-				HotItemInfo info = DBUtils.
-						getHotItemInfo4DB_History(getApplicationContext(),
-								UtilTools.getCurrentUserId(getApplicationContext()), prod_id);
-				if(info != null) {
-					
-//					int index = playData.CurrentIndex;
-					String prod_subName = info.prod_subname;
-					
-					if(prod_subName != null && !prod_subName.equals("")) {
-						
-						if(date != null) {
-							
-							if(date.show.episodes != null) {
-								
-								boolean isPiPei = false;
-								Log.i(TAG, "date.show.episodes.length--->" + date.show.episodes.length);
-								for(int i=0;i< date.show.episodes.length;i++) {
-									
-									if(prod_subName.equals(date.show.episodes[i].name) ) {
-										
-										Log.i(TAG, "date.show.episodes.length--->" + date.show.episodes.length + 
-												" i--->" + i);
-										isPiPei = true;
-										play(i);
-									}
-								}
-								
-								if(!isPiPei) {
-									
-									play(0);
-								}
-							} else {
-								
-								play(0);
-							}
-						}
-					}else {
-						
-						play(0);
-					}
-
-				} else {
-					
-					play(0);
-				}
-				
-			}else{
-				play(seletedButtonIndex-1);
-			}
+			
+			clickBofang();
 			break;
-//		case R.id.bt_xiangqing_yingping:
-//			Intent yingpingIntent = new Intent(this, DetailComment.class);
-////			yingpingIntent.putExtra("ID", prod_id);
-//			int yingpingSize = date.comments.length;
-//			
-//			if(yingpingSize >0) {
-//				
-//				Bundle bundle = new Bundle();
-//				bundle.putString("prod_id", prod_id);
-//				bundle.putString("prod_name", date.tv.name);
-//				bundle.putString("prod_dou", date.tv.score);
-//				bundle.putString("prod_url", date.tv.poster);
-//				yingpingIntent.putExtras(bundle);
-//				startActivity(yingpingIntent);
-//			} else {
-//				
-//				Toast.makeText(this, getString(R.string.xiangqing_yingping_no),
-//						Toast.LENGTH_SHORT).show();
-//			}
-//			break;
+			
 		default:
 			
 			if(v.getId()>=10000){
@@ -534,6 +546,70 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 		}
 
 	}
+	
+	private void clickBofang() {
+		
+		if(seletedButtonIndex<=0){
+			seletedButtonIndex = 1;
+			Button b = (Button) table.findViewById(1);
+			seletedIndexButton = b;
+			if(b!=null){
+				b.setBackgroundResource(R.drawable.bg_button_tv_selector_1);
+				b.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector_1));
+				b.setPadding(8, 0, 0, 0);
+			}
+			
+			//从DB文件中获取历史播放集数
+			HotItemInfo info = DBUtils.
+					getHotItemInfo4DB_History(getApplicationContext(),
+							UtilTools.getCurrentUserId(getApplicationContext()), prod_id);
+			if(info != null) {
+				
+//				int index = playData.CurrentIndex;
+				String prod_subName = info.prod_subname;
+				
+				if(prod_subName != null && !prod_subName.equals("")) {
+					
+					if(date != null) {
+						
+						if(date.show.episodes != null) {
+							
+							boolean isPiPei = false;
+							Log.i(TAG, "date.show.episodes.length--->" + date.show.episodes.length);
+							for(int i=0;i< date.show.episodes.length;i++) {
+								
+								if(prod_subName.equals(date.show.episodes[i].name) ) {
+									
+									Log.i(TAG, "date.show.episodes.length--->" + date.show.episodes.length + 
+											" i--->" + i);
+									isPiPei = true;
+									play(i);
+								}
+							}
+							
+							if(!isPiPei) {
+								
+								play(0);
+							}
+						} else {
+							
+							play(0);
+						}
+					}
+				}else {
+					
+					play(0);
+				}
+
+			} else {
+				
+				play(0);
+			}
+			
+		}else{
+			play(seletedButtonIndex-1);
+		}
+	}
 
 	@Override
 	public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -549,23 +625,36 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 
 					if (keyCode == KEY_UP && beforeView.getId() == v.getId()
 							&& !isPopupWindowShow) {
-						initPopWindowData();
-						int width = v.getWidth();
-						int height = v.getHeight() * 3;
-						int locationY = v.getHeight() * 2;
-						int[] location = new int[2];
-						v.getLocationOnScreen(location);
-						popupWindow.setFocusable(true);
-						popupWindow.setWidth(width + 10);
-						popupWindow.setHeight(height + 40);
-						popupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
-								location[0] - 6, location[1] - locationY -40);
+						if (supportDefination == 3) {
+
+							int width = v.getWidth();
+							int height = v.getHeight() * 3;
+							int locationY = v.getHeight() * 2;
+							int[] location = new int[2];
+							v.getLocationOnScreen(location);
+							popupWindow.setFocusable(true);
+							popupWindow.setWidth(width + 10);
+							popupWindow.setHeight(height + 40);
+							popupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
+									location[0] - 6, location[1] - locationY
+											- 40);
+						} else if (supportDefination == 2) {
+
+							int width = v.getWidth();
+							int height = v.getHeight() * 2;
+							int locationY = v.getHeight() * 1;
+							int[] location = new int[2];
+							v.getLocationOnScreen(location);
+							popupWindow.setFocusable(true);
+							popupWindow.setWidth(width + 10);
+							popupWindow.setHeight(height + 40);
+							popupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
+									location[0] - 6, location[1] - locationY
+											- 40);
+						}
 
 					}
-					// Log.i("Yangzhg", "UPUP!!!!!!");
-					// bofangLL.setN
-					// xiaiIv.setImageResource(R.drawable.icon_fav_active);
-					// xiaiTv.setTextColor(getResources().getColor(R.color.text_foucs));
+
 				}
 				break;
 			default:
@@ -603,6 +692,12 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
+				
+				// 禁掉播放按钮，避免多次播放
+				bofangLL.setEnabled(false);
+				
+				clickBofang();
+				
 				int id = v.getId();
 				switch (id) {
 				case R.id.ll_gaoqing_chaoqing:
@@ -624,6 +719,15 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 				if (popupWindow.isShowing()) {
 					popupWindow.dismiss();
 				}
+				
+				handler.postDelayed(new Runnable() {
+
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						bofangLL.setEnabled(true);
+					}
+				}, 1 * 1000);
 			}
 		};
 		chaoqingLL.setOnClickListener(gaoqingListener);
@@ -831,7 +935,7 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 				bigPicUrl = date.show.poster;
 			}
 			pic_url = bigPicUrl;
-			removeDialog(DIALOG_WAITING);
+//			removeDialog(DIALOG_WAITING);
 			if(date.show.episodes.length <= 0) {
 				
 				return;
@@ -853,6 +957,8 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 			}
 			
 			updateView();
+			
+			updateURLBoolean();
 			
 //			showHistorySelect();
 		} catch (JsonParseException e) {
@@ -1146,27 +1252,20 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 		playDate.prod_id = prod_id;
 		playDate.prod_type = 3;
 		playDate.prod_name = date.show.name;
-//		playDate.prod_url = date.show.episodes[0].down_urls[0].urls[0].url;
-//		playDate.prod_src = date.show.episodes[0].down_urls[0].source;
-//		List<URLS_INDEX> urls = getBofangList(index);
-//		if(urls == null||urls.size()==0){
-//			Toast.makeText(this, "没有可以播放的地址", Toast.LENGTH_SHORT).show();
-//			return;
-//		}
 		playDate.prod_sub_name = date.show.episodes[index].name;
-//		playDate.CurrentIndex = date.show.episodes.length -1 - index;
-//		playDate.prod_url = urls.get(0).url;
-//		playDate.prod_src = urls.get(0).source_from;
 		playDate.prod_favority = isXiai;
-//		if(Constant.player_quality_index[0].equals(date.show.episodes[0].down_urls[0].urls[0].type)){
-//			//mp4
-//		}else if(Constant.player_quality_index[1].equals(date.show.episodes[0].down_urls[0].urls[0].type)){
-//			//hd2
-//		}else {
-//			//other
-//		}
-//		playDate.prod_qua = Integer.valueOf(info.definition);
-//		playDate.CurrentIndex = index;
+		
+		if (getResources().getString(R.string.gaoqing_gaoqing).equals(gaoqingBt.getText())) {
+
+			playDate.prod_qua = BangDanConstant.GAOQING;
+		} else if (getResources().getString(R.string.gaoqing_chaogaoqing).equals(gaoqingBt.getText())) {
+
+			playDate.prod_qua = BangDanConstant.CHAOQING;
+		} else if (getResources().getString(R.string.gaoqing_biaoqing).equals(gaoqingBt.getText())) {
+
+			playDate.prod_qua = BangDanConstant.CHANGXIAN;
+		}
+		
 		app.set_ReturnProgramView(date);
 		app.setmCurrentPlayDetailData(playDate);
 		startActivityForResult(intent, 0);
@@ -1463,5 +1562,29 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 				updateScore(intent.getStringExtra("score"));
 			}
 		}
+	}
+	
+	private void updateURLBoolean() {
+		
+		if (date.show.episodes[0].down_urls == null) {
+			handler.sendEmptyMessage(0);
+			return;
+		}
+		
+		for(int i = 0; i < date.show.episodes[0].down_urls.length; i++){
+			for (int j = 0; j < date.show.episodes[0].down_urls[i].urls.length; j++){
+				if(Constant.player_quality_index[0].equalsIgnoreCase(date.show.episodes[0].down_urls[i].urls[j].type)){
+					hasChaoqing = true;
+				}else if(Constant.player_quality_index[1].equalsIgnoreCase(date.show.episodes[0].down_urls[i].urls[j].type)){
+					hasGaoqing = true;
+				}else if(Constant.player_quality_index[2].equalsIgnoreCase(date.show.episodes[0].down_urls[i].urls[j].type)){
+					haspuqing = true;
+				}else if(Constant.player_quality_index[3].equalsIgnoreCase(date.show.episodes[0].down_urls[i].urls[j].type)){
+					haspuqing = true;
+				}
+			}
+		}
+		
+		handler.sendEmptyMessage(0);
 	}
 }

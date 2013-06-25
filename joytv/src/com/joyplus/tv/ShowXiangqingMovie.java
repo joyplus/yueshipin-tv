@@ -147,7 +147,6 @@ public class ShowXiangqingMovie extends Activity implements
 	};
 	
 	private void updatePopButton(){
-		initPopWindowData();
 
 		if (!hasChaoqing) {
 			supportDefination -= 1;
@@ -155,6 +154,8 @@ public class ShowXiangqingMovie extends Activity implements
 			Log.i(TAG, "chaoqing_url--->");
 		} else {
 			gaoqingBt.setText(R.string.gaoqing_chaogaoqing);
+			currentBofangViewPop = chaoqingLL;
+			beforeTempPop = chaoqingLL;
 		}
 		
 		if (!hasGaoqing) {
@@ -164,6 +165,8 @@ public class ShowXiangqingMovie extends Activity implements
 		} else {
 			if (!hasChaoqing) {
 				gaoqingBt.setText(R.string.gaoqing_gaoqing);
+				currentBofangViewPop = gaoqingLL;
+				beforeTempPop = gaoqingLL;
 			}
 		}
 
@@ -174,12 +177,16 @@ public class ShowXiangqingMovie extends Activity implements
 		} else {
 			if (!hasChaoqing && !hasGaoqing) {
 				gaoqingBt.setText(R.string.gaoqing_biaoqing);
+				currentBofangViewPop = biaoqingLL;
+				beforeTempPop = biaoqingLL;
 			}
 		}
 		if (supportDefination == 0) {
 
 			bofangLL.setEnabled(false);
-		} 
+		}
+		
+		initPopWindowData();
 	}
 
 	private void initPopWindow() {
@@ -1332,125 +1339,11 @@ public class ShowXiangqingMovie extends Activity implements
 		@Override
 		public void run() {
 			// TODO Auto-generated method stub
-//			List<URLS_INDEX> playUrls = new ArrayList<URLS_INDEX>();
+			
 			if (movieData.movie.episodes[0].down_urls == null) {
 				handler.sendEmptyMessage(0);
 				return;
 			}
-//			for (int i = 0; i < movieData.movie.episodes[0].down_urls.length; i++) {
-//				for (int j = 0; j < movieData.movie.episodes[0].down_urls[i].urls.length; j++) {
-//					URLS_INDEX url_index = new URLS_INDEX();
-//					url_index.source_from = movieData.movie.episodes[0].down_urls[i].source;
-//					url_index.url = movieData.movie.episodes[0].down_urls[i].urls[j].url;
-//					if (movieData.movie.episodes[0].down_urls[i].source.trim()
-//							.equalsIgnoreCase(Constant.video_index[0])) {
-//						url_index.souces = 0;
-//					} else if (movieData.movie.episodes[0].down_urls[i].source
-//							.trim().equalsIgnoreCase(Constant.video_index[1])) {
-//						url_index.souces = 1;
-//					} else if (movieData.movie.episodes[0].down_urls[i].source
-//							.trim().equalsIgnoreCase(Constant.video_index[2])) {
-//						url_index.souces = 2;
-//					} else if (movieData.movie.episodes[0].down_urls[i].source
-//							.trim().equalsIgnoreCase(Constant.video_index[3])) {
-//						url_index.souces = 3;
-//					} else if (movieData.movie.episodes[0].down_urls[i].source
-//							.trim().equalsIgnoreCase(Constant.video_index[4])) {
-//						url_index.souces = 4;
-//					} else if (movieData.movie.episodes[0].down_urls[i].source
-//							.trim().equalsIgnoreCase(Constant.video_index[5])) {
-//						url_index.souces = 5;
-//					} else if (movieData.movie.episodes[0].down_urls[i].source
-//							.trim().equalsIgnoreCase(Constant.video_index[6])) {
-//						url_index.souces = 6;
-//					} else if (movieData.movie.episodes[0].down_urls[i].source
-//							.trim().equalsIgnoreCase(Constant.video_index[7])) {
-//						url_index.souces = 7;
-//					} else if (movieData.movie.episodes[0].down_urls[i].source
-//							.trim().equalsIgnoreCase(Constant.video_index[8])) {
-//						url_index.souces = 8;
-//					} else if (movieData.movie.episodes[0].down_urls[i].source
-//							.trim().equalsIgnoreCase(Constant.video_index[9])) {
-//						url_index.souces = 9;
-//					} else if (movieData.movie.episodes[0].down_urls[i].source
-//							.trim().equalsIgnoreCase(Constant.video_index[10])) {
-//						url_index.souces = 10;
-//					} else if (movieData.movie.episodes[0].down_urls[i].source
-//							.trim().equalsIgnoreCase(Constant.video_index[11])) {
-//						url_index.souces = 11;
-//					} else {
-//						url_index.souces = 12;
-//					}
-//					if (movieData.movie.episodes[0].down_urls[i].urls[j].type
-//							.trim().equalsIgnoreCase(
-//									Constant.player_quality_index[0])) {
-//						url_index.defination = 1;
-//					} else if (movieData.movie.episodes[0].down_urls[i].urls[j].type
-//							.trim().equalsIgnoreCase(
-//									Constant.player_quality_index[1])) {
-//						url_index.defination = 2;
-//					} else if (movieData.movie.episodes[0].down_urls[i].urls[j].type
-//							.trim().equalsIgnoreCase(
-//									Constant.player_quality_index[2])) {
-//						url_index.defination = 3;
-//					} else if (movieData.movie.episodes[0].down_urls[i].urls[j].type
-//							.trim().equalsIgnoreCase(
-//									Constant.player_quality_index[3])) {
-//						url_index.defination = 4;
-//					}
-//					playUrls.add(url_index);
-//				}
-//			}
-
-//			if (playUrls.size() > 1) {
-//				Collections.sort(playUrls, new DefinationComparatorIndex());
-//				Collections.sort(playUrls, new SouceComparatorIndex1());
-//			}
-//			Log.d(TAG, "test----------------playUrls size = " + playUrls.size());
-//			for (int n = 0; n < playUrls.size(); n++) {
-//
-//				switch (playUrls.get(n).defination) {
-//				case 1:
-//					if (chaoqing_url == null
-//							&& app.CheckUrl(playUrls.get(n).url)) {
-//						Log.d(TAG,
-//								"chaoqing_url-------ok----->"
-//										+ playUrls.get(n).url);
-//						chaoqing_url = playUrls.get(n).url;
-//						chaoqing_url_souce = playUrls.get(n).source_from;
-//					}
-//					break;
-//				case 2:
-//					if (gaoqing_url == null
-//							&& app.CheckUrl(playUrls.get(n).url)) {
-//						Log.d(TAG,
-//								"gaoqing_url-------ok----->"
-//										+ playUrls.get(n).url);
-//						gaoqing_url = playUrls.get(n).url;
-//						gaoqing_url_souce = playUrls.get(n).source_from;
-//					}
-//					break;
-//
-//				case 3:
-//					if (puqing_url == null && app.CheckUrl(playUrls.get(n).url)) {
-//						Log.d(TAG,
-//								"puqing_url-------ok----->"
-//										+ playUrls.get(n).url);
-//						puqing_url = playUrls.get(n).url;
-//						puqing_url_souce = playUrls.get(n).source_from;
-//					}
-//					break;
-//				case 4:
-//					if (puqing_url == null && app.CheckUrl(playUrls.get(n).url)) {
-//						Log.d(TAG,
-//								"puqing_url-------ok----->"
-//										+ playUrls.get(n).url);
-//						puqing_url = playUrls.get(n).url;
-//						puqing_url_souce = playUrls.get(n).source_from;
-//					}
-//					break;
-//				}
-//			}
 			
 			for(int i = 0; i < movieData.movie.episodes[0].down_urls.length; i++){
 				for (int j = 0; j < movieData.movie.episodes[0].down_urls[i].urls.length; j++){
