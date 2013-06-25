@@ -748,6 +748,9 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 				default:
 					break;
 				}
+				
+				backToNormalPopView();
+				setLinearLayoutVisible(v);
 
 				if (popupWindow.isShowing()) {
 					popupWindow.dismiss();
@@ -761,6 +764,8 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 						bofangLL.setEnabled(true);
 					}
 				}, 1 * 1000);
+				
+				beforeTempPop = v;
 			}
 		};
 		chaoqingLL.setOnClickListener(gaoqingListener);

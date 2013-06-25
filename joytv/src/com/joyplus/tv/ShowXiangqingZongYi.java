@@ -715,6 +715,9 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 				default:
 					break;
 				}
+				
+				backToNormalPopView();
+				setLinearLayoutVisible(v);
 
 				if (popupWindow.isShowing()) {
 					popupWindow.dismiss();
@@ -728,6 +731,8 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 						bofangLL.setEnabled(true);
 					}
 				}, 1 * 1000);
+				
+				beforeTempPop = v;
 			}
 		};
 		chaoqingLL.setOnClickListener(gaoqingListener);

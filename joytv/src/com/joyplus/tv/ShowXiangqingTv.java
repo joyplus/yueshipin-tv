@@ -723,6 +723,9 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 				default:
 					break;
 				}
+				
+				backToNormalPopView();
+				setLinearLayoutVisible(v);
 
 				if (popupWindow.isShowing()) {
 					popupWindow.dismiss();
@@ -736,6 +739,8 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 						bofangLL.setEnabled(true);
 					}
 				}, 1 * 1000);
+				
+				beforeTempPop = v;
 			}
 		};
 		chaoqingLL.setOnClickListener(gaoqingListener);

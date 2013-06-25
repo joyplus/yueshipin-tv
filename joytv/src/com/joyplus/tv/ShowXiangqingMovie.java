@@ -619,6 +619,9 @@ public class ShowXiangqingMovie extends Activity implements
 				default:
 					break;
 				}
+				
+				backToNormalPopView();
+				setLinearLayoutVisible(v);
 
 				if (popupWindow.isShowing()) {
 					popupWindow.dismiss();
@@ -633,6 +636,8 @@ public class ShowXiangqingMovie extends Activity implements
 					}
 				}, 1 * 1000);
 				// bofangLL.setEnabled(true);
+				
+				beforeTempPop = v;
 			}
 		};
 		chaoqingLL.setOnClickListener(gaoqingListener);
