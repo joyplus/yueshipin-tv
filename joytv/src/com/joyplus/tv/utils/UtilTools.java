@@ -40,6 +40,9 @@ import com.joyplus.tv.entity.ReturnFilterMovieSearch;
 public class UtilTools implements JieMianConstant, BangDanConstant {
 
 	private static final String TAG = "UtilTools";
+	
+	public static final String ACTION_PLAY_END_MAIN = "action_play_end_main";
+	public static final String ACTION_PLAY_END_HISTORY = "action_play_end_history";
 
 	/**
 	 * 用来统计用户点击播放视屏后正常跳转的次数 有可能跳转到播放器，也有可能跳转到浏览器

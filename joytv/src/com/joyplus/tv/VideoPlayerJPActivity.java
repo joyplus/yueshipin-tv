@@ -14,8 +14,11 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.sqlite.SQLiteDatabase;
@@ -59,7 +62,6 @@ import com.joyplus.tv.utils.DBUtils;
 import com.joyplus.tv.utils.DataBaseItems.UserHistory;
 import com.joyplus.tv.utils.DataBaseItems.UserShouCang;
 import com.joyplus.tv.utils.DefinationComparatorIndex;
-import com.joyplus.tv.utils.ItemStateUtils;
 import com.joyplus.tv.utils.Log;
 import com.joyplus.tv.utils.SouceComparatorIndex1;
 import com.joyplus.tv.utils.UtilTools;
@@ -313,7 +315,6 @@ public class VideoPlayerJPActivity extends Activity implements
 		mControlLayout.setVisibility(View.GONE);
 		mStartRX = TrafficStats.getTotalRxBytes();// 获取网络速度
 		if (mStartRX == TrafficStats.UNSUPPORTED) {
-
 			mSpeedTextView
 					.setText("Your device does not support traffic stat monitoring.");
 		} else {
@@ -326,7 +327,6 @@ public class VideoPlayerJPActivity extends Activity implements
 			finish();
 			return;
 		}
-
 		// 初始化基本播放数据
 		mProd_id = playDate.prod_id;
 		mProd_type = playDate.prod_type;
@@ -337,11 +337,15 @@ public class VideoPlayerJPActivity extends Activity implements
 		lastTime = (int) playDate.prod_time;
 		mProd_src = playDate.prod_src;
 
+		if(mDefination == 0){
+			mDefination = 8;
+		}
+		
 		// 更新播放来源和上次播放时间
 		updateSourceAndTime();
-
+		updateName();
 		if (currentPlayUrl != null && URLUtil.isNetworkUrl(currentPlayUrl)) {
-			if (mProd_type != 2 && mProd_type != 3 && mProd_type != 131) {
+			if (mProd_type<0) {
 				mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
 			} else {
 				if (app.get_ReturnProgramView() != null) {// 如果不为空，获取服务器返回的详细数据
@@ -374,6 +378,10 @@ public class VideoPlayerJPActivity extends Activity implements
 				new Thread(new PrepareTask()).start();
 				break;
 			case MESSAGE_URLS_READY:// url 准备好了
+				if(playUrls.size()<=0){
+					showDialog(0);
+					return;
+				}
 				currentPlayIndex = 0;
 				currentPlayUrl = playUrls.get(currentPlayIndex).url;
 				mProd_src = playUrls.get(currentPlayIndex).source_from;
@@ -410,6 +418,7 @@ public class VideoPlayerJPActivity extends Activity implements
 					} else {
 						// 所有的片源都不能播放
 						Log.e(TAG, "no url can play!");
+						showDialog(0);
 					}
 				}
 				break;
@@ -581,7 +590,7 @@ public class VideoPlayerJPActivity extends Activity implements
 				if (mFastJumpTime < mVideoView.getDuration()) {
 					mVideoView.seekTo(mFastJumpTime);
 					mSeekBar.setProgress(mFastJumpTime);
-				} else {
+				}else{
 					mSeekBar.setProgress(mVideoView.getCurrentPosition());
 				}
 				mTimeJumpSpeed = 0;
@@ -756,7 +765,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		mHandler.removeMessages(MESSAGE_HIDE_PROGRESSBAR);
 		mControlLayout.setVisibility(View.VISIBLE);
 		mNoticeLayout.setVisibility(View.VISIBLE);
-		mTopButton.requestFocus();
+		mCenterButton.requestFocus();
 		// if( getCurrentFocus().getId() != mSeekBar.getId()) {
 		//
 		// mSeekBar.requestFocus();
@@ -808,6 +817,33 @@ public class VideoPlayerJPActivity extends Activity implements
 	public void onCompletion(MediaPlayer mp) {
 		// TODO Auto-generated method stub
 		// 播放完成
+		autoPlayNext();
+	}
+	
+	private void autoPlayNext(){
+		switch (mProd_type) {
+		case 1:
+			finish();
+			break;
+		case 2:
+		case 131:
+			if(mEpisodeIndex<m_ReturnProgramView.tv.episodes.length-1){
+				playNext();
+			}else{
+				finish();
+			}
+			break;
+		case 3:
+			if(mEpisodeIndex>0){
+				playNext();
+			}else{
+				finish();
+			}
+			break;
+		default:
+			finish();
+			break;
+		}
 	}
 
 	@Override
@@ -980,17 +1016,9 @@ public class VideoPlayerJPActivity extends Activity implements
 			break;
 		case R.id.ib_control_left:
 			playPrevious();
-			mStatue = STATUE_LOADING;
-			mSeekBar.setProgress(0);
-			mHandler.removeCallbacksAndMessages(this);
-			mControlLayout.setVisibility(View.GONE);
 			break;
 		case R.id.ib_control_right:
 			playNext();
-			mStatue = STATUE_LOADING;
-			mSeekBar.setProgress(0);
-			mHandler.removeCallbacksAndMessages(this);
-			mControlLayout.setVisibility(View.GONE);
 			break;
 		case R.id.ib_control_bottom:
 			if (!isShoucang) {
@@ -1037,10 +1065,16 @@ public class VideoPlayerJPActivity extends Activity implements
 		}
 		mPercentTextView.setText("已完成0%");
 		mPreLoadLayout.setVisibility(View.VISIBLE);
+		mNoticeLayout.setVisibility(View.VISIBLE);
+//		mHandler.sendEmptyMessageDelayed(MESSAGE_HIDE_PROGRESSBAR, 2500);
 	}
 
 	private void playNext() {
 		// TODO Auto-generated method stub
+		mStatue = STATUE_LOADING;
+		mSeekBar.setProgress(0);
+		mHandler.removeCallbacksAndMessages(this);
+		mControlLayout.setVisibility(View.GONE);
 		lastTime = 0;
 		mVideoView.stopPlayback();
 		showLoading();
@@ -1054,6 +1088,10 @@ public class VideoPlayerJPActivity extends Activity implements
 
 	private void playPrevious() {
 		// TODO Auto-generated method stub
+		mStatue = STATUE_LOADING;
+		mSeekBar.setProgress(0);
+		mHandler.removeCallbacksAndMessages(this);
+		mControlLayout.setVisibility(View.GONE);
 		lastTime = 0;
 		mVideoView.stopPlayback();
 		showLoading();
@@ -1153,6 +1191,16 @@ public class VideoPlayerJPActivity extends Activity implements
 			mResourceTextView.setText(strSrc);
 		}
 		mLastTimeTextView.setText(UtilTools.formatDuration(lastTime));
+		if(playUrls.size()>0&&currentPlayIndex<=playUrls.size()-1){
+			mDefinationIcon.setVisibility(View.VISIBLE);
+			if(Constant.player_quality_index[0].equalsIgnoreCase(playUrls.get(currentPlayIndex).defination_from_server)){
+				mDefinationIcon.setImageResource(R.drawable.player_1080p);
+			}else if(Constant.player_quality_index[1].equalsIgnoreCase(playUrls.get(currentPlayIndex).defination_from_server)){
+				mDefinationIcon.setImageResource(R.drawable.player_720p);
+			}else{
+				mDefinationIcon.setVisibility(View.INVISIBLE);
+			}
+		}
 	}
 
 	/**
@@ -1342,10 +1390,10 @@ public class VideoPlayerJPActivity extends Activity implements
 					break;
 				}
 				if (url_index.source_from
-						.equalsIgnoreCase(Constant.BADDU_WANGPAN)) {
+						.equalsIgnoreCase(Constant.BAIDU_WANGPAN)) {
 					Document doc = null;
 					try {
-						doc = Jsoup.connect(url_index.url).timeout(3000).get();
+						doc = Jsoup.connect(url_index.url).timeout(10000).get();
 						// doc = Jsoup.connect(htmlStr).timeout(10000).get();
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
@@ -1375,7 +1423,7 @@ public class VideoPlayerJPActivity extends Activity implements
 	@Override
 	protected void onPause() {
 		// TODO Auto-generated method stub
-		if (mProd_type > 0) {
+		if (mProd_type > 0&&mStatue!=STATUE_LOADING) {
 			// SaveToServer(mVideoView.getDuration(),
 			// mVideoView.getCurrentPosition());
 			long duration = mVideoView.getDuration();
@@ -1583,4 +1631,33 @@ public class VideoPlayerJPActivity extends Activity implements
 						getResources().getString(R.string.networknotwork));
 		}
 	}
+	
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		// TODO Auto-generated method stub
+		 Dialog alertDialog = new AlertDialog.Builder(this). 
+	                setTitle("提示"). 
+	                setMessage("该视频无法播放"). 
+	                setPositiveButton("确定", new DialogInterface.OnClickListener() {
+
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							// TODO Auto-generated method stub
+							finish();
+						}
+
+					}).
+	                create();
+		 	alertDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+				
+				@Override
+				public void onCancel(DialogInterface dialog) {
+					// TODO Auto-generated method stub
+					finish();
+				}
+			});
+	        alertDialog.show(); 
+		return super.onCreateDialog(id);
+	}
+	
 }

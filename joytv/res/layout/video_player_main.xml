@@ -338,7 +338,12 @@
         <ImageButton android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/player_btn_play_play"
-            android:id="@+id/btn_continue"/>
+            android:id="@+id/btn_continue"
+            android:nextFocusDown="@id/btn_continue"
+            android:nextFocusLeft="@id/btn_continue"
+            android:nextFocusRight="@id/btn_continue"
+            android:nextFocusUp="@id/btn_continue"
+            />
     </LinearLayout>
 
 </RelativeLayout>
