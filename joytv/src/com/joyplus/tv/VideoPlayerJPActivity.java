@@ -62,6 +62,7 @@ import com.joyplus.tv.utils.DBUtils;
 import com.joyplus.tv.utils.DataBaseItems.UserHistory;
 import com.joyplus.tv.utils.DataBaseItems.UserShouCang;
 import com.joyplus.tv.utils.DefinationComparatorIndex;
+import com.joyplus.tv.utils.JieMianConstant;
 import com.joyplus.tv.utils.Log;
 import com.joyplus.tv.utils.SouceComparatorIndex1;
 import com.joyplus.tv.utils.UtilTools;
@@ -1584,6 +1585,8 @@ public class VideoPlayerJPActivity extends Activity implements
 					
 					isShoucang = true;
 					mBottomButton.setBackgroundResource(R.drawable.player_btn_fav);
+					
+					setResult(JieMianConstant.SHOUCANG_ADD);
 				} else {
 					
 					isShoucang = true;
@@ -1613,6 +1616,7 @@ public class VideoPlayerJPActivity extends Activity implements
 					mBottomButton
 					.setBackgroundResource(R.drawable.player_btn_unfav);
 					isShoucang = false;
+					setResult(JieMianConstant.SHOUCANG_CANCEL);
 				} else {
 					
 					app.MyToast(this, "取消收藏失败!");
