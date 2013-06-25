@@ -101,6 +101,10 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 	
 	private Button groupSeriesBt;
 	
+	private boolean hasChaoqing = false;
+	private boolean hasGaoqing= false;
+	private boolean haspuqing = false;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -1543,6 +1547,23 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 			}
 			if(intent.getStringExtra("score")!=null&&!"".equals(intent.getStringExtra("score"))){
 				updateScore(intent.getStringExtra("score"));
+			}
+		}
+	}
+	
+	private void updateURLBoolean() {
+		
+		for(int i = 0; i < date.tv.episodes[0].down_urls.length; i++){
+			for (int j = 0; j < date.tv.episodes[0].down_urls[i].urls.length; j++){
+				if(Constant.player_quality_index[0].equalsIgnoreCase(date.tv.episodes[0].down_urls[i].urls[j].type)){
+					hasChaoqing = true;
+				}else if(Constant.player_quality_index[1].equalsIgnoreCase(date.tv.episodes[0].down_urls[i].urls[j].type)){
+					hasGaoqing = true;
+				}else if(Constant.player_quality_index[2].equalsIgnoreCase(date.tv.episodes[0].down_urls[i].urls[j].type)){
+					haspuqing = true;
+				}else if(Constant.player_quality_index[3].equalsIgnoreCase(date.tv.episodes[0].down_urls[i].urls[j].type)){
+					haspuqing = true;
+				}
 			}
 		}
 	}

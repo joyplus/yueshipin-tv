@@ -78,21 +78,25 @@ public class ShowXiangqingMovie extends Activity implements
 	private LinearLayout chaoqingLL, gaoqingLL, biaoqingLL;
 
 	private GridView tuijianGv;
-	/**
-	 * 高清地址
-	 */
-	private String gaoqing_url;
-	private String gaoqing_url_souce;
-	/**
-	 * 超清地址
-	 */
-	private String chaoqing_url;
-	private String chaoqing_url_souce;
-	/**
-	 * 标清地址
-	 */
-	private String puqing_url;
-	private String puqing_url_souce;
+//	/**
+//	 * 高清地址
+//	 */
+//	private String gaoqing_url;
+//	private String gaoqing_url_souce;
+//	/**
+//	 * 超清地址
+//	 */
+//	private String chaoqing_url;
+//	private String chaoqing_url_souce;
+//	/**
+//	 * 标清地址
+//	 */
+//	private String puqing_url;
+//	private String puqing_url_souce;
+	
+	private boolean hasChaoqing = false;
+	private boolean hasGaoqing= false;
+	private boolean haspuqing = false;
 
 	private ReturnProgramView movieData;
 	private ReturnProgramRelatedVideos recommendMoviesData;
@@ -136,71 +140,47 @@ public class ShowXiangqingMovie extends Activity implements
 		@Override
 		public void handleMessage(Message msg) {
 			// TODO Auto-generated method stub
-			initPopWindowData();
-			// int sign = -1;
-			// LinearLayout[] linLayouts = {chaoqingLL,gaoqingLL,biaoqingLL};
-			// int[] strIds =
-			// {R.string.gaoqing_chaogaoqing,R.string.gaoqing_gaoqing,R.string.gaoqing_biaoqing};
-
-			if (chaoqing_url == null) {
-				supportDefination -= 1;
-				chaoqingLL.setVisibility(View.GONE);
-				// sign = 0;
-
-				Log.i(TAG, "chaoqing_url--->");
-			} else {
-
-				gaoqingBt.setText(R.string.gaoqing_chaogaoqing);
-			}
-
-			if (gaoqing_url == null) {
-				supportDefination -= 1;
-				gaoqingLL.setVisibility(View.GONE);
-				// sign = 1;
-
-				Log.i(TAG, "gaoqing_url--->");
-			} else {
-
-				if (chaoqing_url == null) {
-
-					gaoqingBt.setText(R.string.gaoqing_gaoqing);
-				}
-			}
-
-			if (puqing_url == null) {
-				supportDefination -= 1;
-				biaoqingLL.setVisibility(View.GONE);
-				// sign =2;
-
-				Log.i(TAG, "puqing_url--->");
-			} else {
-
-				if (gaoqing_url == null && chaoqing_url == null) {
-
-					gaoqingBt.setText(R.string.gaoqing_biaoqing);
-				}
-			}
-			// Log.d(TAG, "sign = " + sign);
-
-			if (supportDefination == 0) {
-
-				bofangLL.setEnabled(false);
-			} else if (supportDefination == 1) {
-
-				// for (int i = 0; i < linLayouts.length; i++) {
-				// if(sign == i) {
-				//
-				// LinearLayout ll = linLayouts[i];
-				// Button button1= (Button) ll.getChildAt(0);
-				// Button button2= (Button) ll.getChildAt(1);
-				// button2.setText(strIds[i]);
-				// }
-				// }
-			}
+			updatePopButton();
 			removeDialog(DIALOG_WAITING);
 		}
 
 	};
+	
+	private void updatePopButton(){
+		initPopWindowData();
+
+		if (!hasChaoqing) {
+			supportDefination -= 1;
+			chaoqingLL.setVisibility(View.GONE);
+			Log.i(TAG, "chaoqing_url--->");
+		} else {
+			gaoqingBt.setText(R.string.gaoqing_chaogaoqing);
+		}
+		
+		if (!hasGaoqing) {
+			supportDefination -= 1;
+			gaoqingLL.setVisibility(View.GONE);
+			Log.i(TAG, "gaoqing_url--->");
+		} else {
+			if (!hasChaoqing) {
+				gaoqingBt.setText(R.string.gaoqing_gaoqing);
+			}
+		}
+
+		if (!haspuqing) {
+			supportDefination -= 1;
+			biaoqingLL.setVisibility(View.GONE);
+			Log.i(TAG, "puqing_url--->");
+		} else {
+			if (!hasChaoqing && !hasGaoqing) {
+				gaoqingBt.setText(R.string.gaoqing_biaoqing);
+			}
+		}
+		if (supportDefination == 0) {
+
+			bofangLL.setEnabled(false);
+		} 
+	}
 
 	private void initPopWindow() {
 		LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
@@ -449,18 +429,18 @@ public class ShowXiangqingMovie extends Activity implements
 			playData.prod_id = movieData.movie.id;
 			playData.prod_name = movieData.movie.name;
 			playData.prod_favority = isXiai;
-
-			if (gaoqing_url != null) {
+			if (getResources().getString(R.string.gaoqing_gaoqing).equals(gaoqingBt.getText())) {
 
 				playData.prod_qua = BangDanConstant.GAOQING;
-			} else if (chaoqing_url != null) {
+			} else if (getResources().getString(R.string.gaoqing_chaogaoqing).equals(gaoqingBt.getText())) {
 
 				playData.prod_qua = BangDanConstant.CHAOQING;
-			} else if (puqing_url != null) {
+			} else if (getResources().getString(R.string.gaoqing_biaoqing).equals(gaoqingBt.getText())) {
 
-				playData.prod_qua = BangDanConstant.GAOQING;
+				playData.prod_qua = BangDanConstant.CHANGXIAN;
 			}
 
+			Log.i(TAG, "playData.prod_qua--->" + playData.prod_qua + " text--->" + gaoqingBt.getText());
 			playData.prod_type = 1;
 
 			app.setmCurrentPlayDetailData(playData);
@@ -614,17 +594,20 @@ public class ShowXiangqingMovie extends Activity implements
 				case R.id.ll_gaoqing_chaoqing:
 					gaoqingBt.setText(R.string.gaoqing_chaogaoqing);
 					currentBofangViewPop = v;
-					playDate.prod_url = chaoqing_url;
+//					playDate.prod_url = chaoqing_url;
+					playDate.prod_qua = 8;
 					break;
 				case R.id.ll_gaoqing_gaoqing:
 					gaoqingBt.setText(R.string.gaoqing_gaoqing);
 					currentBofangViewPop = v;
-					playDate.prod_url = gaoqing_url;
+//					playDate.prod_url = gaoqing_url;
+					playDate.prod_qua = 7;
 					break;
 				case R.id.ll_gaoqing_biaoqing:
 					gaoqingBt.setText(R.string.gaoqing_biaoqing);
 					currentBofangViewPop = v;
-					playDate.prod_url = puqing_url;
+					playDate.prod_qua = 6;
+//					playDate.prod_url = puqing_url;
 					break;
 				default:
 					break;
@@ -1349,123 +1332,137 @@ public class ShowXiangqingMovie extends Activity implements
 		@Override
 		public void run() {
 			// TODO Auto-generated method stub
-			List<URLS_INDEX> playUrls = new ArrayList<URLS_INDEX>();
+//			List<URLS_INDEX> playUrls = new ArrayList<URLS_INDEX>();
 			if (movieData.movie.episodes[0].down_urls == null) {
 				handler.sendEmptyMessage(0);
 				return;
 			}
-			for (int i = 0; i < movieData.movie.episodes[0].down_urls.length; i++) {
-				for (int j = 0; j < movieData.movie.episodes[0].down_urls[i].urls.length; j++) {
-					URLS_INDEX url_index = new URLS_INDEX();
-					url_index.source_from = movieData.movie.episodes[0].down_urls[i].source;
-					url_index.url = movieData.movie.episodes[0].down_urls[i].urls[j].url;
-					if (movieData.movie.episodes[0].down_urls[i].source.trim()
-							.equalsIgnoreCase(Constant.video_index[0])) {
-						url_index.souces = 0;
-					} else if (movieData.movie.episodes[0].down_urls[i].source
-							.trim().equalsIgnoreCase(Constant.video_index[1])) {
-						url_index.souces = 1;
-					} else if (movieData.movie.episodes[0].down_urls[i].source
-							.trim().equalsIgnoreCase(Constant.video_index[2])) {
-						url_index.souces = 2;
-					} else if (movieData.movie.episodes[0].down_urls[i].source
-							.trim().equalsIgnoreCase(Constant.video_index[3])) {
-						url_index.souces = 3;
-					} else if (movieData.movie.episodes[0].down_urls[i].source
-							.trim().equalsIgnoreCase(Constant.video_index[4])) {
-						url_index.souces = 4;
-					} else if (movieData.movie.episodes[0].down_urls[i].source
-							.trim().equalsIgnoreCase(Constant.video_index[5])) {
-						url_index.souces = 5;
-					} else if (movieData.movie.episodes[0].down_urls[i].source
-							.trim().equalsIgnoreCase(Constant.video_index[6])) {
-						url_index.souces = 6;
-					} else if (movieData.movie.episodes[0].down_urls[i].source
-							.trim().equalsIgnoreCase(Constant.video_index[7])) {
-						url_index.souces = 7;
-					} else if (movieData.movie.episodes[0].down_urls[i].source
-							.trim().equalsIgnoreCase(Constant.video_index[8])) {
-						url_index.souces = 8;
-					} else if (movieData.movie.episodes[0].down_urls[i].source
-							.trim().equalsIgnoreCase(Constant.video_index[9])) {
-						url_index.souces = 9;
-					} else if (movieData.movie.episodes[0].down_urls[i].source
-							.trim().equalsIgnoreCase(Constant.video_index[10])) {
-						url_index.souces = 10;
-					} else if (movieData.movie.episodes[0].down_urls[i].source
-							.trim().equalsIgnoreCase(Constant.video_index[11])) {
-						url_index.souces = 11;
-					} else {
-						url_index.souces = 12;
-					}
-					if (movieData.movie.episodes[0].down_urls[i].urls[j].type
-							.trim().equalsIgnoreCase(
-									Constant.player_quality_index[0])) {
-						url_index.defination = 1;
-					} else if (movieData.movie.episodes[0].down_urls[i].urls[j].type
-							.trim().equalsIgnoreCase(
-									Constant.player_quality_index[1])) {
-						url_index.defination = 2;
-					} else if (movieData.movie.episodes[0].down_urls[i].urls[j].type
-							.trim().equalsIgnoreCase(
-									Constant.player_quality_index[2])) {
-						url_index.defination = 3;
-					} else if (movieData.movie.episodes[0].down_urls[i].urls[j].type
-							.trim().equalsIgnoreCase(
-									Constant.player_quality_index[3])) {
-						url_index.defination = 4;
-					}
-					playUrls.add(url_index);
-				}
-			}
+//			for (int i = 0; i < movieData.movie.episodes[0].down_urls.length; i++) {
+//				for (int j = 0; j < movieData.movie.episodes[0].down_urls[i].urls.length; j++) {
+//					URLS_INDEX url_index = new URLS_INDEX();
+//					url_index.source_from = movieData.movie.episodes[0].down_urls[i].source;
+//					url_index.url = movieData.movie.episodes[0].down_urls[i].urls[j].url;
+//					if (movieData.movie.episodes[0].down_urls[i].source.trim()
+//							.equalsIgnoreCase(Constant.video_index[0])) {
+//						url_index.souces = 0;
+//					} else if (movieData.movie.episodes[0].down_urls[i].source
+//							.trim().equalsIgnoreCase(Constant.video_index[1])) {
+//						url_index.souces = 1;
+//					} else if (movieData.movie.episodes[0].down_urls[i].source
+//							.trim().equalsIgnoreCase(Constant.video_index[2])) {
+//						url_index.souces = 2;
+//					} else if (movieData.movie.episodes[0].down_urls[i].source
+//							.trim().equalsIgnoreCase(Constant.video_index[3])) {
+//						url_index.souces = 3;
+//					} else if (movieData.movie.episodes[0].down_urls[i].source
+//							.trim().equalsIgnoreCase(Constant.video_index[4])) {
+//						url_index.souces = 4;
+//					} else if (movieData.movie.episodes[0].down_urls[i].source
+//							.trim().equalsIgnoreCase(Constant.video_index[5])) {
+//						url_index.souces = 5;
+//					} else if (movieData.movie.episodes[0].down_urls[i].source
+//							.trim().equalsIgnoreCase(Constant.video_index[6])) {
+//						url_index.souces = 6;
+//					} else if (movieData.movie.episodes[0].down_urls[i].source
+//							.trim().equalsIgnoreCase(Constant.video_index[7])) {
+//						url_index.souces = 7;
+//					} else if (movieData.movie.episodes[0].down_urls[i].source
+//							.trim().equalsIgnoreCase(Constant.video_index[8])) {
+//						url_index.souces = 8;
+//					} else if (movieData.movie.episodes[0].down_urls[i].source
+//							.trim().equalsIgnoreCase(Constant.video_index[9])) {
+//						url_index.souces = 9;
+//					} else if (movieData.movie.episodes[0].down_urls[i].source
+//							.trim().equalsIgnoreCase(Constant.video_index[10])) {
+//						url_index.souces = 10;
+//					} else if (movieData.movie.episodes[0].down_urls[i].source
+//							.trim().equalsIgnoreCase(Constant.video_index[11])) {
+//						url_index.souces = 11;
+//					} else {
+//						url_index.souces = 12;
+//					}
+//					if (movieData.movie.episodes[0].down_urls[i].urls[j].type
+//							.trim().equalsIgnoreCase(
+//									Constant.player_quality_index[0])) {
+//						url_index.defination = 1;
+//					} else if (movieData.movie.episodes[0].down_urls[i].urls[j].type
+//							.trim().equalsIgnoreCase(
+//									Constant.player_quality_index[1])) {
+//						url_index.defination = 2;
+//					} else if (movieData.movie.episodes[0].down_urls[i].urls[j].type
+//							.trim().equalsIgnoreCase(
+//									Constant.player_quality_index[2])) {
+//						url_index.defination = 3;
+//					} else if (movieData.movie.episodes[0].down_urls[i].urls[j].type
+//							.trim().equalsIgnoreCase(
+//									Constant.player_quality_index[3])) {
+//						url_index.defination = 4;
+//					}
+//					playUrls.add(url_index);
+//				}
+//			}
 
-			if (playUrls.size() > 1) {
-				Collections.sort(playUrls, new DefinationComparatorIndex());
-				Collections.sort(playUrls, new SouceComparatorIndex1());
-			}
-			Log.d(TAG, "test----------------playUrls size = " + playUrls.size());
-			for (int n = 0; n < playUrls.size(); n++) {
-
-				switch (playUrls.get(n).defination) {
-				case 1:
-					if (chaoqing_url == null
-							&& app.CheckUrl(playUrls.get(n).url)) {
-						Log.d(TAG,
-								"chaoqing_url-------ok----->"
-										+ playUrls.get(n).url);
-						chaoqing_url = playUrls.get(n).url;
-						chaoqing_url_souce = playUrls.get(n).source_from;
+//			if (playUrls.size() > 1) {
+//				Collections.sort(playUrls, new DefinationComparatorIndex());
+//				Collections.sort(playUrls, new SouceComparatorIndex1());
+//			}
+//			Log.d(TAG, "test----------------playUrls size = " + playUrls.size());
+//			for (int n = 0; n < playUrls.size(); n++) {
+//
+//				switch (playUrls.get(n).defination) {
+//				case 1:
+//					if (chaoqing_url == null
+//							&& app.CheckUrl(playUrls.get(n).url)) {
+//						Log.d(TAG,
+//								"chaoqing_url-------ok----->"
+//										+ playUrls.get(n).url);
+//						chaoqing_url = playUrls.get(n).url;
+//						chaoqing_url_souce = playUrls.get(n).source_from;
+//					}
+//					break;
+//				case 2:
+//					if (gaoqing_url == null
+//							&& app.CheckUrl(playUrls.get(n).url)) {
+//						Log.d(TAG,
+//								"gaoqing_url-------ok----->"
+//										+ playUrls.get(n).url);
+//						gaoqing_url = playUrls.get(n).url;
+//						gaoqing_url_souce = playUrls.get(n).source_from;
+//					}
+//					break;
+//
+//				case 3:
+//					if (puqing_url == null && app.CheckUrl(playUrls.get(n).url)) {
+//						Log.d(TAG,
+//								"puqing_url-------ok----->"
+//										+ playUrls.get(n).url);
+//						puqing_url = playUrls.get(n).url;
+//						puqing_url_souce = playUrls.get(n).source_from;
+//					}
+//					break;
+//				case 4:
+//					if (puqing_url == null && app.CheckUrl(playUrls.get(n).url)) {
+//						Log.d(TAG,
+//								"puqing_url-------ok----->"
+//										+ playUrls.get(n).url);
+//						puqing_url = playUrls.get(n).url;
+//						puqing_url_souce = playUrls.get(n).source_from;
+//					}
+//					break;
+//				}
+//			}
+			
+			for(int i = 0; i < movieData.movie.episodes[0].down_urls.length; i++){
+				for (int j = 0; j < movieData.movie.episodes[0].down_urls[i].urls.length; j++){
+					if(Constant.player_quality_index[0].equalsIgnoreCase(movieData.movie.episodes[0].down_urls[i].urls[j].type)){
+						hasChaoqing = true;
+					}else if(Constant.player_quality_index[1].equalsIgnoreCase(movieData.movie.episodes[0].down_urls[i].urls[j].type)){
+						hasGaoqing = true;
+					}else if(Constant.player_quality_index[2].equalsIgnoreCase(movieData.movie.episodes[0].down_urls[i].urls[j].type)){
+						haspuqing = true;
+					}else if(Constant.player_quality_index[3].equalsIgnoreCase(movieData.movie.episodes[0].down_urls[i].urls[j].type)){
+						haspuqing = true;
 					}
-					break;
-				case 2:
-					if (gaoqing_url == null
-							&& app.CheckUrl(playUrls.get(n).url)) {
-						Log.d(TAG,
-								"gaoqing_url-------ok----->"
-										+ playUrls.get(n).url);
-						gaoqing_url = playUrls.get(n).url;
-						gaoqing_url_souce = playUrls.get(n).source_from;
-					}
-					break;
-
-				case 3:
-					if (puqing_url == null && app.CheckUrl(playUrls.get(n).url)) {
-						Log.d(TAG,
-								"puqing_url-------ok----->"
-										+ playUrls.get(n).url);
-						puqing_url = playUrls.get(n).url;
-						puqing_url_souce = playUrls.get(n).source_from;
-					}
-					break;
-				case 4:
-					if (puqing_url == null && app.CheckUrl(playUrls.get(n).url)) {
-						Log.d(TAG,
-								"puqing_url-------ok----->"
-										+ playUrls.get(n).url);
-						puqing_url = playUrls.get(n).url;
-						puqing_url_souce = playUrls.get(n).source_from;
-					}
-					break;
 				}
 			}
 			handler.sendEmptyMessage(0);

@@ -242,10 +242,16 @@ public class DBUtils {
 				if(indexPlaybackTime != -1) {
 					
 					String curEpisode = cursor.getString(indexPlaybackTime);
+					
+					cursor.close();
+					helper.closeDatabase();
 					return curEpisode;
 				}
 			}
 		}
+		
+		cursor.close();
+		helper.closeDatabase();
 		
 		return "";
 	}

@@ -270,7 +270,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		initViews();
 
 		initVedioDate();
-
+		Log.d(TAG, "defination----->" + mDefination);
 		String lastTimeStr = DBUtils.getDuartion4HistoryDB(
 				getApplicationContext(),
 				UtilTools.getCurrentUserId(getApplicationContext()), mProd_id);
@@ -403,6 +403,8 @@ public class VideoPlayerJPActivity extends Activity implements
 						if (currentPlayUrl != null
 								&& URLUtil.isNetworkUrl(currentPlayUrl)) {
 							// 地址跳转相关。。。
+							Log.d(TAG, currentPlayUrl);
+							Log.d(TAG, mProd_src);
 							mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
 						}
 					} else {
@@ -918,18 +920,19 @@ public class VideoPlayerJPActivity extends Activity implements
 
 			timeTakenMillis = System.currentTimeMillis() - beginTimeMillis;
 			beginTimeMillis = System.currentTimeMillis();
-			// check how long there is until we reach the desired refresh rate
-			m_bitrate = ((rxBytes - rxByteslast) * 8 * 1000 / timeTakenMillis) / 8000;
-			rxByteslast = rxBytes;
+			if(timeTakenMillis!=0){
+				m_bitrate = ((rxBytes - rxByteslast) * 8 * 1000 / timeTakenMillis) / 8000;
+				rxByteslast = rxBytes;
 
-			mSpeedTextView.setText("（" + Long.toString(m_bitrate) + "kb/s");
-			mLoadingPreparedPercent = mLoadingPreparedPercent + m_bitrate;
-			if (mLoadingPreparedPercent >= 100
-					&& mLoadingPreparedPercent / 100 < 100)
-				mPercentTextView.setText("）,已完成"
-						+ Long.toString(mLoadingPreparedPercent / 100) + "%");
+				mSpeedTextView.setText("（" + Long.toString(m_bitrate) + "kb/s");
+				mLoadingPreparedPercent = mLoadingPreparedPercent + m_bitrate;
+				if (mLoadingPreparedPercent >= 100
+						&& mLoadingPreparedPercent / 100 < 100)
+					mPercentTextView.setText("）,已完成"
+							+ Long.toString(mLoadingPreparedPercent / 100) + "%");
 
-			// Fun_downloadrate();
+				// Fun_downloadrate();
+			}
 			mHandler.postDelayed(mLoadingRunnable, 500);
 		}
 	};
