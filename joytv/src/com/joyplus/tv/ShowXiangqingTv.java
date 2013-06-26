@@ -237,6 +237,12 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 		}
 		
 		isShowHeadTable = true;
+		
+		if(layout.getChildCount() > 0 ) {
+			
+			layout.removeAllViews();
+		}
+		
 		for(int i=0; i<totle_pagecount; i++){
 			Button b = new Button(this);
 //			b.setWidth(table.getWidth()/5);
@@ -1291,6 +1297,8 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 		// TODO Auto-generated method stub
 //		super.onActivityResult(requestCode, resultCode, data);
 		
+		Log.i(TAG, "onActivityResult-->" + resultCode);
+		
 		if(resultCode == JieMianConstant.SHOUCANG_ADD) {
 			
 			favNum ++;
@@ -1308,6 +1316,83 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 			}
 			isXiai = false;
 		}
+		
+		if(data != null) {
+			
+			String prodSubName = data.getStringExtra("prod_subname");
+			Log.i(TAG, "onActivityResult--->" + prodSubName 
+					+ " seletedIndexButton.getText()-->" + seletedIndexButton.getText());
+			
+			if(prodSubName != null && !prodSubName.equals("")
+					&& !prodSubName.equals(seletedIndexButton.getText())) {//播放器中集数与一开始所选集数不同
+				
+				int tempId = -1;
+				
+				try {
+					tempId = Integer.valueOf(prodSubName);
+				} catch (NumberFormatException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				if(tempId != -1) {
+					
+					if(isShowHeadTable) {//如果显示表头
+						
+						if(seletedTitleButton != null) {
+							
+							seletedTitleButton.setEnabled(true);
+						}
+						
+						if(seletedIndexButton != null){
+							
+							seletedIndexButton.setBackgroundResource(R.drawable.bg_button_tv_selector);
+							seletedIndexButton.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector));
+							seletedIndexButton.setPadding(8, 0, 0, 0);
+						}
+						
+						seletedButtonIndex = -1;
+						seletedIndexButton = null;
+						
+						historyPlayIndex4DB = tempId;
+						seletedTitleButton.setEnabled(true);
+						initButton();
+					}else {//如果只有一页
+						
+						if(seletedIndexButton == null){
+							seletedIndexButton = (Button) findViewById(tempId);
+							
+							if(seletedIndexButton != null) {
+								
+								seletedIndexButton.setBackgroundResource(R.drawable.bg_button_tv_selector_1);
+								seletedIndexButton.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector_1));
+//								seletedIndexButton.setEnabled(false);
+								seletedIndexButton.setPadding(8, 0, 0, 0);
+							}
+
+						}else{
+//							seletedIndexButton.setEnabled(true);
+							seletedIndexButton.setBackgroundResource(R.drawable.bg_button_tv_selector);
+							seletedIndexButton.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector));
+							seletedIndexButton.setPadding(8, 0, 0, 0);
+							
+							seletedIndexButton = (Button) findViewById(tempId);
+							if(seletedIndexButton != null) {
+								
+								seletedIndexButton.setBackgroundResource(R.drawable.bg_button_tv_selector_1);
+								seletedIndexButton.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector_1));
+//								seletedIndexButton.setEnabled(false);
+								seletedIndexButton.setPadding(8, 0, 0, 0);
+							}
+						}
+						seletedButtonIndex = tempId;
+					}
+				}
+			}
+			
+			
+		}
+		
 	}
 	
 	private void cancelshoucang(){

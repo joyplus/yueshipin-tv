@@ -243,6 +243,11 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 		
 		isShowHeadTable = true;
 		
+		if(layout.getChildCount() > 0 ) {
+			
+			layout.removeAllViews();
+		}
+		
 		for(int i=0; i<totle_pagecount; i++){
 			Button b = new Button(this);
 //			b.setWidth(table.getWidth()/5);
@@ -1306,6 +1311,8 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 		// TODO Auto-generated method stub
 //		super.onActivityResult(requestCode, resultCode, data);
 		
+		Log.i(TAG, "onActivityResult-->" + resultCode);
+		
 		if(resultCode == JieMianConstant.SHOUCANG_ADD) {
 			
 			favNum ++;
@@ -1323,6 +1330,101 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 			}
 			isXiai = false;
 		}
+		
+		if(data != null) {
+			
+			String prodSubName = data.getStringExtra("prod_subname");
+			Log.i(TAG, "onActivityResult--->" + prodSubName 
+					+ " seletedIndexButton.getText()-->" + seletedIndexButton.getText());
+			
+			if(prodSubName != null && !prodSubName.equals("")
+					&& !prodSubName.equals(seletedIndexButton.getText())) {//播放器中集数与一开始所选集数不同
+				
+				historyPlayProdSubName = prodSubName;
+				
+				for(int i=0;i<date.show.episodes.length;i++) {
+					
+					if(historyPlayProdSubName != null && !historyPlayProdSubName.equals("")) {
+						
+						if(historyPlayProdSubName.equals(date.show.episodes[i].name)) {
+							
+							historyPlayIndex4DB = date.show.episodes.length - i;
+							Log.i(TAG, "historyPlayIndex4DB:" + historyPlayIndex4DB);
+						}
+						
+						Log.i(TAG, "date.show.episodes[i].name-->:" + date.show.episodes[i].name);
+					}
+				}
+				
+				if(historyPlayIndex4DB != -1) {
+					
+					if(isShowHeadTable) {//如果显示表头
+						
+						if(seletedTitleButton != null) {
+							
+							seletedTitleButton.setEnabled(true);
+						}
+						
+						if(seletedIndexButton != null){
+							
+							seletedIndexButton.setBackgroundResource(R.drawable.bg_button_tv_selector);
+							seletedIndexButton.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector));
+							seletedIndexButton.setPadding(8, 0, 0, 0);
+						}
+						
+						seletedButtonIndex = -1;
+						seletedIndexButton = null;
+						
+						seletedTitleButton.setEnabled(true);
+						initButton();
+					}else {//如果只有一页
+						
+						int tempId = -1;
+						
+						if(date.show.episodes.length > 0) {
+							
+							tempId = date.show.episodes.length - historyPlayIndex4DB + 1;
+						}
+						
+						if(tempId > 0) {
+							
+							if(seletedIndexButton == null){
+								seletedIndexButton = (Button) findViewById(tempId);
+								
+								if(seletedIndexButton != null) {
+									
+									seletedIndexButton.setBackgroundResource(R.drawable.bg_button_tv_selector_1);
+									seletedIndexButton.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector_1));
+//									seletedIndexButton.setEnabled(false);
+									seletedIndexButton.setPadding(8, 0, 0, 0);
+								}
+
+							}else{
+//								seletedIndexButton.setEnabled(true);
+								seletedIndexButton.setBackgroundResource(R.drawable.bg_button_tv_selector);
+								seletedIndexButton.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector));
+								seletedIndexButton.setPadding(8, 0, 0, 0);
+								
+								seletedIndexButton = (Button) findViewById(tempId);
+								if(seletedIndexButton != null) {
+									
+									seletedIndexButton.setBackgroundResource(R.drawable.bg_button_tv_selector_1);
+									seletedIndexButton.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector_1));
+//									seletedIndexButton.setEnabled(false);
+									seletedIndexButton.setPadding(8, 0, 0, 0);
+								}
+							}
+						}
+						
+
+						seletedButtonIndex = historyPlayIndex4DB;
+					}
+				}
+			}
+			
+			
+		}
+		
 	}
 	
 	private List<URLS_INDEX> getBofangList(int index){

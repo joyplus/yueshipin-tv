@@ -104,6 +104,8 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 	
 	private int supportDefination;
 	
+	private boolean isShowHeadTable = false;//判断是否显示表头
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -219,8 +221,6 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 			selectedIndex = 1;//默认选择
 		}
 	}
-	
-	private boolean isShowHeadTable = false;
 
 	private void initButton() {
 		// TODO Auto-generated method stub
@@ -240,6 +240,11 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 		}
 		
 		isShowHeadTable = true;
+		
+		if(layout.getChildCount() > 0 ) {
+			
+			layout.removeAllViews();
+		}
 		
 		for(int i=0; i<totle_pagecount; i++){
 			Button b = new Button(this);
@@ -1337,7 +1342,77 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 		if(data != null) {
 			
 			String prodSubName = data.getStringExtra("prod_subname");
-			Log.i(TAG, "onActivityResult--->" + prodSubName);
+			Log.i(TAG, "onActivityResult--->" + prodSubName 
+					+ " seletedIndexButton.getText()-->" + seletedIndexButton.getText());
+			
+			if(prodSubName != null && !prodSubName.equals("")
+					&& !prodSubName.equals(seletedIndexButton.getText())) {//播放器中集数与一开始所选集数不同
+				
+				int tempId = -1;
+				
+				try {
+					tempId = Integer.valueOf(prodSubName);
+				} catch (NumberFormatException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				if(tempId != -1) {
+					
+					if(isShowHeadTable) {//如果显示表头
+						
+						if(seletedTitleButton != null) {
+							
+							seletedTitleButton.setEnabled(true);
+						}
+						
+						if(seletedIndexButton != null){
+							
+							seletedIndexButton.setBackgroundResource(R.drawable.bg_button_tv_selector);
+							seletedIndexButton.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector));
+							seletedIndexButton.setPadding(8, 0, 0, 0);
+						}
+						
+						seletedButtonIndex = -1;
+						seletedIndexButton = null;
+						
+						historyPlayIndex4DB = tempId;
+						seletedTitleButton.setEnabled(true);
+						initButton();
+					}else {//如果只有一页
+						
+						if(seletedIndexButton == null){
+							seletedIndexButton = (Button) findViewById(tempId);
+							
+							if(seletedIndexButton != null) {
+								
+								seletedIndexButton.setBackgroundResource(R.drawable.bg_button_tv_selector_1);
+								seletedIndexButton.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector_1));
+//								seletedIndexButton.setEnabled(false);
+								seletedIndexButton.setPadding(8, 0, 0, 0);
+							}
+
+						}else{
+//							seletedIndexButton.setEnabled(true);
+							seletedIndexButton.setBackgroundResource(R.drawable.bg_button_tv_selector);
+							seletedIndexButton.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector));
+							seletedIndexButton.setPadding(8, 0, 0, 0);
+							
+							seletedIndexButton = (Button) findViewById(tempId);
+							if(seletedIndexButton != null) {
+								
+								seletedIndexButton.setBackgroundResource(R.drawable.bg_button_tv_selector_1);
+								seletedIndexButton.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector_1));
+//								seletedIndexButton.setEnabled(false);
+								seletedIndexButton.setPadding(8, 0, 0, 0);
+							}
+						}
+						seletedButtonIndex = tempId;
+					}
+				}
+			}
+			
+			
 		}
 		
 	}
