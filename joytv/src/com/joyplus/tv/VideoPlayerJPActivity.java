@@ -1236,6 +1236,10 @@ public class VideoPlayerJPActivity extends Activity implements
 						if (mProd_sub_name
 								.equals(m_ReturnProgramView.tv.episodes[i].name)) {
 							mEpisodeIndex = i;
+							if(m_ReturnProgramView.tv.episodes[i].down_urls == null){
+								mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
+								return; 
+							}
 							for (int j = 0; j < m_ReturnProgramView.tv.episodes[i].down_urls.length; j++) {
 								String souces = m_ReturnProgramView.tv.episodes[i].down_urls[j].source;
 								for (int k = 0; k < m_ReturnProgramView.tv.episodes[i].down_urls[j].urls.length; k++) {
