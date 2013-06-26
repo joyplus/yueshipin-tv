@@ -1196,7 +1196,11 @@ public class VideoPlayerJPActivity extends Activity implements
 			}
 			mResourceTextView.setText(strSrc);
 		}
-		mLastTimeTextView.setText("上次播放: " + UtilTools.formatDuration(lastTime));
+		if(lastTime>0){
+			mLastTimeTextView.setText("上次播放: " + UtilTools.formatDuration(lastTime));
+		}else{
+			mLastTimeTextView.setVisibility(View.GONE);
+		}
 		if(playUrls.size()>0&&currentPlayIndex<=playUrls.size()-1){
 			Log.d(TAG, "type---->" + playUrls.get(currentPlayIndex).defination_from_server);
 			mDefinationIcon.setVisibility(View.VISIBLE);
@@ -1275,9 +1279,13 @@ public class VideoPlayerJPActivity extends Activity implements
 			case 3:
 				if (mEpisodeIndex == -1) {
 					for (int i = 0; i < m_ReturnProgramView.show.episodes.length; i++) {
-						if (mProd_sub_name
-								.equals(m_ReturnProgramView.show.episodes[i].name)) {
+						if (isSame(mProd_sub_name, m_ReturnProgramView.show.episodes[i].name)) {
 							mEpisodeIndex = i;
+							mProd_sub_name = m_ReturnProgramView.show.episodes[i].name;
+							if(m_ReturnProgramView.show.episodes[i].down_urls==null){
+								mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
+								return ;
+							}
 							for (int j = 0; j < m_ReturnProgramView.show.episodes[i].down_urls.length; j++) {
 								String souces = m_ReturnProgramView.show.episodes[i].down_urls[j].source;
 								for (int k = 0; k < m_ReturnProgramView.show.episodes[i].down_urls[j].urls.length; k++) {
@@ -1689,6 +1697,33 @@ public class VideoPlayerJPActivity extends Activity implements
 			});
 	        alertDialog.show(); 
 		return super.onCreateDialog(id);
+	}
+	
+	private boolean isSame(String str1, String str2){
+		if(str1==null||str2==null){
+			return false;
+		}
+		if(str1.equalsIgnoreCase(str2)){
+			return true;
+		}else{
+			if(str1.trim().equalsIgnoreCase(str2.trim())){
+				return true;
+			}else{
+				if(str1.length()>=str2.length()){
+					if(str1.startsWith(str2)){
+						return true;
+					}else{
+						return false;
+					}
+				}else{
+					if(str2.startsWith(str1)){
+						return true;
+					}else{
+						return false;
+					}
+				}
+			}
+		}
 	}
 	
 }
