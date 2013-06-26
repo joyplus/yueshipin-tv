@@ -599,18 +599,23 @@ public class ShowDongManActivity extends AbstractShowActivity {
 							if (isGridViewUp) {
 
 								playGv.setSelection(position - 5);
+//								playGv.smoothScrollBy(35, -1);
 							} else {
 
-								playGv.setSelection(position + 5);
+//								playGv.setSelection(position + 5);
 								qitaNextPoistion = position + 5;
+								playGv.smoothScrollBy(35 + popHeight, -1);
+								playGv.setSelection(position + 5);
 							}
 						} else {
 
 							if (!isGridViewUp
 									&& qitaNextPoistion + 5 == position) {
 
-								playGv.smoothScrollBy(35, -1);
+//								playGv.smoothScrollBy(35, -1);
 								// int scrolly = playGv.getScrollY();
+								
+//								playGv.scrollTo(0, (int)view.getY());
 
 								shoucangTv
 										.setText(R.string.qitadongman_play_name);
@@ -629,6 +634,9 @@ public class ShowDongManActivity extends AbstractShowActivity {
 										getApplicationContext(),
 										mSparseArray.get(activeRecordIndex));
 							}
+							
+							Log.i(TAG, "position-->" + position + " activeRecordIndex--->" + activeRecordIndex
+									+ " isFirstActive--->" + isFirstActive + "isDragGridView" + isDragGridView);
 
 							if (position != activeRecordIndex && isFirstActive && !isDragGridView) {
 
@@ -729,7 +737,7 @@ public class ShowDongManActivity extends AbstractShowActivity {
 			@Override
 			public void onScrollStateChanged(AbsListView view, int scrollState) {
 				// TODO Auto-generated method stub
-				isDragGridView = true;
+
 				switch (scrollState) {
 				case OnScrollListener.SCROLL_STATE_IDLE:
 					Log.i(TAG, "playGv--->SCROLL_STATE_IDLE" + " tempfirstVisibleItem--->" + tempfirstVisibleItem);
@@ -759,6 +767,7 @@ public class ShowDongManActivity extends AbstractShowActivity {
 					break;
 				case OnScrollListener.SCROLL_STATE_TOUCH_SCROLL:
 					Log.i(TAG, "playGv--->SCROLL_STATE_TOUCH_SCROLL");
+					isDragGridView = true;
 					
 					if(activeRecordIndex >= 0 && mSparseArray.get(activeRecordIndex)!= null) {
 						
@@ -1402,19 +1411,39 @@ public class ShowDongManActivity extends AbstractShowActivity {
 			Log.d(TAG, json.toString());
 			if (lists[QUAN_TEN] != null && !lists[QUAN_TEN].isEmpty()) {
 
-				List<MovieItemData> temp10List = new ArrayList<MovieItemData>(
-						lists[QUAN_TEN]);
+				List<MovieItemData> temp10List = new ArrayList<MovieItemData>();
 				List<MovieItemData> tempList = new ArrayList<MovieItemData>();
 				tempList = UtilTools.returnFilterMovieSearch_TVJson(json
 						.toString());
+				
+				for(MovieItemData quanTenData:lists[QUAN_TEN]) {
+					
+					boolean isSame = false;
+					
+					if (shoucangList != null && shoucangList.size() > 0) {
+
+						for (MovieItemData movieItemData2 : shoucangList) {
+
+							if (movieItemData2.getMovieID().equals(quanTenData.getMovieID())) {
+
+								isSame = true;
+								break;// // 符合条件跳出本次循环
+							}
+						}
+					}
+					if (!isSame) {
+
+						temp10List.add(quanTenData);
+					}
+				}
 
 				for (MovieItemData movieItemData : tempList) {
 
 					boolean isSame = false;
 					String proId = movieItemData.getMovieID();
-					for (int i = 0; i < temp10List.size(); i++) {
+					for (int i = 0; i < lists[QUAN_TEN].size(); i++) {
 
-						if (proId.equals(temp10List.get(i).getMovieID())) {
+						if (proId.equals(lists[QUAN_TEN].get(i).getMovieID())) {
 
 							isSame = true;
 							break;// 符合条件跳出本次循环

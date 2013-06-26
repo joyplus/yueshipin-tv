@@ -64,9 +64,9 @@
                         android:layout_weight="1"
                         android:background="@drawable/historty_listitem_drawable_selector"
                         android:focusable="true"
-                        android:focusableInTouchMode="true"
                         android:gravity="center_vertical"
-                        android:orientation="horizontal" >
+                        android:orientation="horizontal"
+                        android:clickable="true" >
 
                         <ImageView
                             android:id="@+id/user_avatar"
@@ -111,7 +111,6 @@
                         android:layout_weight="1"
                         android:background="@drawable/historty_listitem_drawable_selector"
                         android:focusable="true"
-                        android:focusableInTouchMode="true"
                         android:gravity="center_vertical"
                         android:paddingLeft="15dp"
                         android:text="常见问题"
@@ -130,7 +129,6 @@
                         android:layout_weight="1"
                         android:background="@drawable/historty_listitem_drawable_selector"
                         android:focusable="true"
-                        android:focusableInTouchMode="true"
                         android:gravity="center_vertical"
                         android:paddingLeft="15dp"
                         android:text="免责声明"
@@ -149,7 +147,6 @@
                         android:layout_weight="1"
                         android:background="@drawable/historty_listitem_drawable_selector"
                         android:focusable="true"
-                        android:focusableInTouchMode="true"
                         android:gravity="center_vertical"
                         android:paddingLeft="15dp"
                         android:text="关于我们"
@@ -167,7 +164,6 @@
                         android:layout_weight="1"
                         android:background="@drawable/historty_listitem_drawable_selector"
                         android:focusable="true"
-                        android:focusableInTouchMode="true"
                         android:orientation="vertical" >
 
                         <LinearLayout

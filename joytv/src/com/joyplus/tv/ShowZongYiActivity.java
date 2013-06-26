@@ -527,18 +527,23 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 							if (isGridViewUp) {
 
 								playGv.setSelection(position - 5);
+//								playGv.smoothScrollBy(35, -1);
 							} else {
 
-								playGv.setSelection(position + 5);
+//								playGv.setSelection(position + 5);
 								qitaNextPoistion = position + 5;
+								playGv.smoothScrollBy(35 + popHeight, -1);
+								playGv.setSelection(position + 5);
 							}
 						} else {
 
 							if (!isGridViewUp
 									&& qitaNextPoistion + 5 == position) {
 
-								playGv.smoothScrollBy(35, -1);
+//								playGv.smoothScrollBy(35, -1);
 								// int scrolly = playGv.getScrollY();
+								
+//								playGv.scrollTo(0, (int)view.getY());
 
 								shoucangTv
 										.setText(R.string.qitadongman_play_name);
@@ -557,6 +562,9 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 										getApplicationContext(),
 										mSparseArray.get(activeRecordIndex));
 							}
+							
+							Log.i(TAG, "position-->" + position + " activeRecordIndex--->" + activeRecordIndex
+									+ " isFirstActive--->" + isFirstActive + "isDragGridView" + isDragGridView);
 
 							if (position != activeRecordIndex && isFirstActive && !isDragGridView) {
 
@@ -649,7 +657,7 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 
 			}
 		});
-		
+
 		playGv.setOnScrollListener(new AbsListView.OnScrollListener() {
 			
 			int tempfirstVisibleItem;
@@ -657,7 +665,7 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 			@Override
 			public void onScrollStateChanged(AbsListView view, int scrollState) {
 				// TODO Auto-generated method stub
-				isDragGridView = true;
+
 				switch (scrollState) {
 				case OnScrollListener.SCROLL_STATE_IDLE:
 					Log.i(TAG, "playGv--->SCROLL_STATE_IDLE" + " tempfirstVisibleItem--->" + tempfirstVisibleItem);
@@ -687,6 +695,7 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 					break;
 				case OnScrollListener.SCROLL_STATE_TOUCH_SCROLL:
 					Log.i(TAG, "playGv--->SCROLL_STATE_TOUCH_SCROLL");
+					isDragGridView = true;
 					
 					if(activeRecordIndex >= 0 && mSparseArray.get(activeRecordIndex)!= null) {
 						
@@ -1138,51 +1147,108 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 					getResources().getString(R.string.networknotwork));
 			return;
 		}
-
 		try {
-			
-			if(json == null || json.equals("")) 
-				return;
-			
-			Log.d(TAG, json.toString());
-			
-			List<MovieItemData> temp10List = UtilTools.returnFilterMovieSearch_TVJson(json
-					.toString());
-			
-			if (temp10List.size() == URLUtils.FIRST_NUM) {
 
-				isNextPagePossibles[currentListIndex] = true;
-			}
-			
-			if(isShowShoucang) {
+			if (json == null || json.equals(""))
+				return;
+
+			Log.d(TAG, json.toString());
+			if (lists[QUAN_TEN] != null && !lists[QUAN_TEN].isEmpty()) {
+
+				List<MovieItemData> temp10List = new ArrayList<MovieItemData>();
+				List<MovieItemData> tempList = new ArrayList<MovieItemData>();
+				tempList = UtilTools.returnFilterMovieSearch_TVJson(json
+						.toString());
 				
-				int tianchongEmpty = UtilTools.tianchongEmptyItem(shoucangList.size());
-				
-				Log.i(TAG, "tianchongEmpty--->" + tianchongEmpty + " temp10List" + temp10List.size());
-				
-				List<MovieItemData> tempList2 = new ArrayList<MovieItemData>(
-						shoucangList);
-				
-				for(int i=0;i<tianchongEmpty;i++) {
+				for(MovieItemData quanTenData:lists[QUAN_TEN]) {
 					
-					MovieItemData item = new MovieItemData();
-					tempList2.add(item);
+					boolean isSame = false;
 					
+					if (shoucangList != null && shoucangList.size() > 0) {
+
+						for (MovieItemData movieItemData2 : shoucangList) {
+
+							if (movieItemData2.getMovieID().equals(quanTenData.getMovieID())) {
+
+								isSame = true;
+								break;// // 符合条件跳出本次循环
+							}
+						}
+					}
+					if (!isSame) {
+
+						temp10List.add(quanTenData);
+					}
 				}
-				
-				Log.i(TAG, "tempList2 start--->" + tempList2.size());
-				
-				tempList2.addAll(temp10List);
-				
-				Log.i(TAG, "tempList2 end--->" + tempList2.size());
-				
-				notifyAdapter(tempList2);
-			} else {
-				
-				notifyAdapter(temp10List);
+
+				for (MovieItemData movieItemData : tempList) {
+
+					boolean isSame = false;
+					String proId = movieItemData.getMovieID();
+					for (int i = 0; i < lists[QUAN_TEN].size(); i++) {
+
+						if (proId.equals(lists[QUAN_TEN].get(i).getMovieID())) {
+
+							isSame = true;
+							break;// 符合条件跳出本次循环
+
+						}
+					}
+
+					if (shoucangList != null && shoucangList.size() > 0) {
+
+						for (MovieItemData movieItemData2 : shoucangList) {
+
+							if (movieItemData2.getMovieID().equals(proId)) {
+
+								isSame = true;
+								break;// // 符合条件跳出本次循环
+							}
+						}
+					}
+					if (!isSame) {
+
+						temp10List.add(movieItemData);
+					}
+				}
+
+				Log.i(TAG, "Temp size:" + tempList.size());
+				if (tempList.size() == URLUtils.CACHE_NUM) {
+
+					isNextPagePossibles[currentListIndex] = true;
+				}
+
+				if (isShowShoucang) {
+
+					int tianchongEmpty = UtilTools
+							.tianchongEmptyItem(shoucangList.size());
+
+					Log.i(TAG, "tianchongEmpty--->" + tianchongEmpty
+							+ " temp10List" + temp10List.size());
+
+					List<MovieItemData> tempList2 = new ArrayList<MovieItemData>(
+							shoucangList);
+
+					for (int i = 0; i < tianchongEmpty; i++) {
+
+						MovieItemData item = new MovieItemData();
+						tempList2.add(item);
+
+					}
+
+					Log.i(TAG, "tempList2 start--->" + tempList2.size());
+
+					tempList2.addAll(temp10List);
+
+					Log.i(TAG, "tempList2 end--->" + tempList2.size());
+
+					notifyAdapter(tempList2);
+				} else {
+
+					notifyAdapter(temp10List);
+				}
+
 			}
-			
-//			notifyAdapter();
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
