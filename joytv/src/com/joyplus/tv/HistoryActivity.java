@@ -273,7 +273,44 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 								UtilTools.getCurrentUserId(getApplicationContext()),prod_id 
 								);
 						
-						((HistortyAdapter)listView.getAdapter()).data.remove(arg2);
+//						((HistortyAdapter)listView.getAdapter()).data.remove(arg2);
+						if(allHistoryList!=null){
+							for(int i=0; i<allHistoryList.size(); i++){
+								if(allHistoryList.get(i).prod_id.equals(prod_id)){
+									allHistoryList.remove(i);
+								}
+							}
+						}
+						
+						if(movieHistoryList!=null){
+							for(int i=0; i<movieHistoryList.size(); i++){
+								if(movieHistoryList.get(i).prod_id.equals(prod_id)){
+									movieHistoryList.remove(i);
+								}
+							}
+						}
+						
+						if(tvHistoryList!=null){
+							for(int i=0; i<tvHistoryList.size(); i++){
+								if(tvHistoryList.get(i).prod_id.equals(prod_id)){
+									tvHistoryList.remove(i);
+								}
+							}
+						}
+						if(zongyiHistoryList!=null){
+							for(int i=0; i<zongyiHistoryList.size(); i++){
+								if(zongyiHistoryList.get(i).prod_id.equals(prod_id)){
+									zongyiHistoryList.remove(i);
+								}
+							}
+						}
+						if(dongmanHistoryList!=null){
+							for(int i=0; i<dongmanHistoryList.size(); i++){
+								if(dongmanHistoryList.get(i).prod_id.equals(prod_id)){
+									dongmanHistoryList.remove(i);
+								}
+							}
+						}
 						((BaseAdapter)listView.getAdapter()).notifyDataSetChanged();
 						dialog.dismiss();
 					}
@@ -372,11 +409,10 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 					holder.content.setText("上次观看到：" + playBack_time);
 					break;
 				case 2:
-					
 					holder.content.setText("上次观看到：第" + data.get(position).prod_subname +"集 "+playBack_time);
 					break;
 				case 3:
-					holder.content.setText("上次观看到：第" + data.get(position).prod_subname+"期 "+playBack_time);
+					holder.content.setText("上次观看到：" + data.get(position).prod_subname+" "+playBack_time);
 					break;
 				case 131:
 					holder.content.setText("上次观看到：第" + data.get(position).prod_subname+"集 "+playBack_time);
@@ -538,6 +574,26 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 					
 					
 					((HistortyAdapter)listView.getAdapter()).data.clear();
+					if(allHistoryList!=null&&allHistoryList.size()>0){
+						allHistoryList.clear();
+						allHistoryList = null;
+					}
+					if(movieHistoryList!=null&&movieHistoryList.size()>0){
+						movieHistoryList.clear();
+						movieHistoryList = null;
+					}
+					if(tvHistoryList!=null&&tvHistoryList.size()>0){
+						tvHistoryList.clear();
+						tvHistoryList = null;
+					}
+					if(zongyiHistoryList!=null&&zongyiHistoryList.size()>0){
+						zongyiHistoryList.clear();
+						zongyiHistoryList = null;
+					}
+					if(dongmanHistoryList!=null&&dongmanHistoryList.size()>0){
+						dongmanHistoryList.clear();
+						dongmanHistoryList = null;
+					}
 					((HistortyAdapter)listView.getAdapter()).notifyDataSetChanged();
 				}
 			});
