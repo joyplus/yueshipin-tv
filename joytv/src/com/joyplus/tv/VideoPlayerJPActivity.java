@@ -338,7 +338,8 @@ public class VideoPlayerJPActivity extends Activity implements
 		updateName();
 		if (currentPlayUrl != null && URLUtil.isNetworkUrl(currentPlayUrl)) {
 			if (mProd_type<0) {
-				mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
+//				mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
+				new Thread(new urlRedirectTask()).start();
 			} else {
 				if (app.get_ReturnProgramView() != null) {// 如果不为空，获取服务器返回的详细数据
 
@@ -402,7 +403,8 @@ public class VideoPlayerJPActivity extends Activity implements
 				if (currentPlayUrl != null
 						&& URLUtil.isNetworkUrl(currentPlayUrl)) {
 					// 地址跳转相关。。。
-					mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
+					new Thread(new urlRedirectTask()).start();
+//					mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
 					// 要根据不同的节目做相应的处理。这里仅仅是为了验证上下集
 				}
 				break;
@@ -427,7 +429,8 @@ public class VideoPlayerJPActivity extends Activity implements
 							// 地址跳转相关。。。
 							Log.d(TAG, currentPlayUrl);
 							Log.d(TAG, mProd_src);
-							mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
+							new Thread(new urlRedirectTask()).start();
+//							mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
 						}
 					} else {
 						// 所有的片源都不能播放
@@ -1530,6 +1533,19 @@ public class VideoPlayerJPActivity extends Activity implements
 
 		helper.closeDatabase();
 		
+		//发送更新最新记录广播
+		Intent historyIntent  = new Intent(UtilTools.ACTION_PLAY_END_HISTORY);
+		historyIntent.putExtra("prod_id", mProd_id);
+		historyIntent.putExtra("prod_sub_name", mProd_sub_name);
+		historyIntent.putExtra("time", playBackTime*1000);
+		sendBroadcast(historyIntent);
+		
+		Intent mainIntent  = new Intent(UtilTools.ACTION_PLAY_END_MAIN);
+		mainIntent.putExtra("prod_id", mProd_id);
+		mainIntent.putExtra("prod_sub_name", mProd_sub_name);
+		mainIntent.putExtra("time", playBackTime*1000);
+		sendBroadcast(mainIntent);
+		
 	}
 	
 	private void setResult2Xiangqing() {
@@ -1743,44 +1759,40 @@ public class VideoPlayerJPActivity extends Activity implements
 	 * 地址跳转
 	 */
 	
-	private void urlRedirectTask() {
-		
-		new AsyncTask<Void, Void, Void>() {
+	class  urlRedirectTask implements Runnable{
 
-			@Override
-			protected Void doInBackground(Void... params) {
-				// TODO Auto-generated method stub
-				
-				String urlStr = null;
-				while(urlStr == null) {
-					
-					List<String> list = new ArrayList<String>();
-					
-					try {
-						urlRedirect(currentPlayUrl,list);
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-						//超时异常
-					}
-					
-					if(list.size() > 0) {
-						
-						 urlStr = list.get(list.size() -1);
-						if(urlStr != null) {
-							
-							if(URLUtil.isHttpUrl(urlStr)) {
-								
-								
-								break;
-							}
-						}
-					}
-				}
-
-				return null;
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			String str = getRedirectUrl();
+			if(str!=null){
+				currentPlayUrl = str;
+				mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
+			}else{
+				mHandler.sendEmptyMessage(MESSAGE_URL_NEXT);
 			}
-		}.equals(null);
+		}
+		
+	}
+	
+	private String getRedirectUrl(){
+		String urlStr = null;
+//		while(urlStr == null) {
+			
+		List<String> list = new ArrayList<String>();
+		
+		try {
+			urlRedirect(currentPlayUrl,list);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			//超时异常
+		}
+		if(list.size() > 0) {
+			 urlStr = list.get(list.size() -1);
+		}
+//		}
+		return urlStr;
 	}
 	
 	private void urlRedirect(String urlStr,List<String> list) {

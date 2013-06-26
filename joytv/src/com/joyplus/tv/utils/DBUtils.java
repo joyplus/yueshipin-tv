@@ -225,12 +225,24 @@ public class DBUtils {
 		TvDatabaseHelper helper = TvDatabaseHelper.newTvDatabaseHelper(context);
 		SQLiteDatabase database = helper.getWritableDatabase();//获取写db
 		
-		String selection = UserHistory.PRO_ID  + " = ? and " + UserHistory.USER_ID  + " = ? and " + UserHistory.PROD_SUBNAME+" = ?";
-		String[] selectionArgs = {prod_id,userId,prodSubName};
+		Cursor cursor = null;
 		
 		String[] columns = { UserHistory.PLAYBACK_TIME };// 返回当前更新集数
 		
-		Cursor cursor = database.query(TvDatabaseHelper.HISTORY_TABLE_NAME, columns, selection, selectionArgs, null, null, null);
+		if(prodSubName != null && !prodSubName.equalsIgnoreCase("")) {
+			
+			String selection = UserHistory.PRO_ID  + " = ? and " + UserHistory.USER_ID  + " = ? and " + UserHistory.PROD_SUBNAME+" = ?";
+			String[] selectionArgs = {prod_id,userId,prodSubName};
+			
+			cursor = database.query(TvDatabaseHelper.HISTORY_TABLE_NAME, columns, selection, selectionArgs, null, null, null);
+		} else {
+			
+			String selection = UserHistory.PRO_ID  + " = ? and " + UserHistory.USER_ID  + " = ?";
+			String[] selectionArgs = {prod_id,userId};
+			
+			cursor = database.query(TvDatabaseHelper.HISTORY_TABLE_NAME, columns, selection, selectionArgs, null, null, null);
+		}
+
 		
 		if(cursor != null && cursor.getCount() > 0 ) {
 			
