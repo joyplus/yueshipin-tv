@@ -33,6 +33,7 @@ import com.androidquery.callback.AjaxStatus;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.joyplus.tv.HistoryActivity.HistortyAdapter;
 import com.joyplus.tv.Service.Return.ReturnUserFavorities;
 import com.joyplus.tv.entity.HotItemInfo;
 import com.joyplus.tv.utils.DBUtils;
@@ -196,7 +197,44 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 						
 						String prod_id = ((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_id;
 						deleteShoucang(true, ((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_id);
-						((HistortyAdapter)listView.getAdapter()).data.remove(arg2);
+//						((HistortyAdapter)listView.getAdapter()).data.remove(arg2);
+						if(allHistoryList!=null){
+							for(int i=0; i<allHistoryList.size(); i++){
+								if(allHistoryList.get(i).prod_id.equals(prod_id)){
+									allHistoryList.remove(i);
+								}
+							}
+						}
+						
+						if(movieHistoryList!=null){
+							for(int i=0; i<movieHistoryList.size(); i++){
+								if(movieHistoryList.get(i).prod_id.equals(prod_id)){
+									movieHistoryList.remove(i);
+								}
+							}
+						}
+						
+						if(tvHistoryList!=null){
+							for(int i=0; i<tvHistoryList.size(); i++){
+								if(tvHistoryList.get(i).prod_id.equals(prod_id)){
+									tvHistoryList.remove(i);
+								}
+							}
+						}
+						if(zongyiHistoryList!=null){
+							for(int i=0; i<zongyiHistoryList.size(); i++){
+								if(zongyiHistoryList.get(i).prod_id.equals(prod_id)){
+									zongyiHistoryList.remove(i);
+								}
+							}
+						}
+						if(dongmanHistoryList!=null){
+							for(int i=0; i<dongmanHistoryList.size(); i++){
+								if(dongmanHistoryList.get(i).prod_id.equals(prod_id)){
+									dongmanHistoryList.remove(i);
+								}
+							}
+						}
 						((BaseAdapter)listView.getAdapter()).notifyDataSetChanged();
 						dialog.dismiss();
 
@@ -483,7 +521,28 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 								UtilTools.getCurrentUserId(getApplicationContext()), list.get(i).prod_id);
 					}
 					
+//					((HistortyAdapter)listView.getAdapter()).data.clear();
 					((HistortyAdapter)listView.getAdapter()).data.clear();
+					if(allHistoryList!=null&&allHistoryList.size()>0){
+						allHistoryList.clear();
+						allHistoryList = null;
+					}
+					if(movieHistoryList!=null&&movieHistoryList.size()>0){
+						movieHistoryList.clear();
+						movieHistoryList = null;
+					}
+					if(tvHistoryList!=null&&tvHistoryList.size()>0){
+						tvHistoryList.clear();
+						tvHistoryList = null;
+					}
+					if(zongyiHistoryList!=null&&zongyiHistoryList.size()>0){
+						zongyiHistoryList.clear();
+						zongyiHistoryList = null;
+					}
+					if(dongmanHistoryList!=null&&dongmanHistoryList.size()>0){
+						dongmanHistoryList.clear();
+						dongmanHistoryList = null;
+					}
 					
 					((HistortyAdapter)listView.getAdapter()).notifyDataSetChanged();
 				}
