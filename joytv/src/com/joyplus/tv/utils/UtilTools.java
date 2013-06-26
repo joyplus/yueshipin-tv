@@ -840,6 +840,15 @@ public class UtilTools implements JieMianConstant, BangDanConstant {
 
 		return false;
 	}
+	
+	public static int getFirstPositionQitaTitle(int shoucangNum) {
+		
+		int chu = shoucangNum / 5;
+
+		int max = (chu + 1) * 5;
+		
+		return max;
+	}
 
 	public static int stepToFirstInThisRow(int position) {
 

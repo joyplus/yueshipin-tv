@@ -767,10 +767,10 @@ public class VideoPlayerJPActivity extends Activity implements
 
 		if (isShoucang) {
 
-			mBottomButton.setBackgroundResource(R.drawable.player_btn_fav);
+			mBottomButton.setBackgroundResource(R.drawable.player_btn_unfav);
 		} else {
 
-			mBottomButton.setBackgroundResource(R.drawable.player_btn_unfav);
+			mBottomButton.setBackgroundResource(R.drawable.player_btn_fav);
 		}
 
 		mVocieLayout.setVisibility(View.GONE);

@@ -767,6 +767,19 @@ public class ShowDongManActivity extends AbstractShowActivity {
 							}
 						}
 					}
+					if(shoucangList != null && shoucangList.size() > 0) {
+						
+						if(tempfirstVisibleItem > UtilTools.getFirstPositionQitaTitle(shoucangList.size())) {
+							
+							shoucangTv
+							.setText(R.string.qitadongman_play_name);
+						} else {
+							
+							shoucangTv
+							.setText(R.string.shoucang_update_name);
+						}
+					}
+					
 					break;
 				case OnScrollListener.SCROLL_STATE_TOUCH_SCROLL:
 					Log.i(TAG, "playGv--->SCROLL_STATE_TOUCH_SCROLL");
