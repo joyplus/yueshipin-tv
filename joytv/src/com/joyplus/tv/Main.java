@@ -640,11 +640,11 @@ public class Main extends Activity implements OnItemSelectedListener,
 
 		MarginLayoutParams mlp2 = (MarginLayoutParams) titleGroup
 				.getLayoutParams();
-		mlp2.setMargins((displayWith - 40) / 6 + 20, mlp2.topMargin,
+		mlp2.setMargins((displayWith - 40) / 6 + 21, mlp2.topMargin,
 				mlp2.rightMargin, mlp2.bottomMargin);
 		MarginLayoutParams mlp3 = (MarginLayoutParams) noticeView
 				.getLayoutParams();
-		mlp3.setMargins((displayWith - 40) / 6 + 20, mlp3.topMargin,
+		mlp3.setMargins((displayWith - 40) / 6 + 21, mlp3.topMargin,
 				mlp3.rightMargin, mlp3.bottomMargin);
 		// MarginLayoutParams mlp4 = (MarginLayoutParams)
 		// contentLayout.getLayoutParams();

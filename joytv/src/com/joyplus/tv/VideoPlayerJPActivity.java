@@ -273,27 +273,6 @@ public class VideoPlayerJPActivity extends Activity implements
 		initViews();
 
 		initVedioDate();
-		Log.d(TAG, "defination----->" + mDefination);
-		String lastTimeStr = DBUtils.getDuartion4HistoryDB(
-				getApplicationContext(),
-				UtilTools.getCurrentUserId(getApplicationContext()), mProd_id);
-		Log.i(TAG, "DBUtils.getDuartion4HistoryDB-->lastTimeStr:" + lastTimeStr);
-
-		if (lastTimeStr != null && !lastTimeStr.equals("")) {
-
-			try {
-				long tempTime = Integer.valueOf(lastTimeStr);
-				Log.i(TAG, "DBUtils.getDuartion4HistoryDB-->time:" + tempTime);
-				if (tempTime != 0) {
-
-					lastTime = tempTime * 1000;
-				}
-			} catch (NumberFormatException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-		}
 
 		Window win = getWindow();
 		WindowManager.LayoutParams winParams = win.getAttributes();
@@ -367,6 +346,28 @@ public class VideoPlayerJPActivity extends Activity implements
 
 				getProgramViewDetailServiceData();
 			}
+		}
+		
+		Log.d(TAG, "defination----->" + mDefination);
+		String lastTimeStr = DBUtils.getDuartion4HistoryDB(
+				getApplicationContext(),
+				UtilTools.getCurrentUserId(getApplicationContext()), mProd_id);
+		Log.i(TAG, "DBUtils.getDuartion4HistoryDB-->lastTimeStr:" + lastTimeStr);
+
+		if (lastTimeStr != null && !lastTimeStr.equals("")) {
+
+			try {
+				long tempTime = Integer.valueOf(lastTimeStr);
+				Log.i(TAG, "DBUtils.getDuartion4HistoryDB-->time:" + tempTime);
+				if (tempTime != 0) {
+
+					lastTime = tempTime * 1000;
+				}
+			} catch (NumberFormatException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
 		}
 	}
 
@@ -565,6 +566,7 @@ public class VideoPlayerJPActivity extends Activity implements
 					return true;
 				} else {
 					// mVideoView.stopPlayback();
+					setResult2Xiangqing();
 					finish();
 				}
 				break;
@@ -831,6 +833,7 @@ public class VideoPlayerJPActivity extends Activity implements
 			if(mEpisodeIndex<m_ReturnProgramView.tv.episodes.length-1){
 				playNext();
 			}else{
+				setResult2Xiangqing();//返回集数和是否收藏
 				finish();
 			}
 			break;
@@ -838,6 +841,7 @@ public class VideoPlayerJPActivity extends Activity implements
 			if(mEpisodeIndex>0){
 				playNext();
 			}else{
+				setResult2Xiangqing();//返回集数和是否收藏
 				finish();
 			}
 			break;
@@ -1013,6 +1017,7 @@ public class VideoPlayerJPActivity extends Activity implements
 			break;
 		case R.id.ib_control_center:
 			// mVideoView.stopPlayback();
+			setResult2Xiangqing();
 			finish();
 			break;
 		case R.id.ib_control_left:
@@ -1499,6 +1504,21 @@ public class VideoPlayerJPActivity extends Activity implements
 				UtilTools.getCurrentUserId(getApplicationContext()), database);
 
 		helper.closeDatabase();
+		
+	}
+	
+	private void setResult2Xiangqing() {
+		
+		Intent dataIntent = getIntent();
+		dataIntent.putExtra("prod_subname", mProd_sub_name);
+		
+		if(isShoucang) {
+			
+			setResult(JieMianConstant.SHOUCANG_ADD,dataIntent);
+		} else {
+			
+			setResult(JieMianConstant.SHOUCANG_CANCEL,dataIntent);
+		}
 	}
 
 	public void CallProgramPlayResult(String url, JSONObject json,
@@ -1524,10 +1544,12 @@ public class VideoPlayerJPActivity extends Activity implements
 	@Override
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
+		
 		unregisterReceiver(mReceiver);
 		if (mVideoView != null) {
 			mVideoView.stopPlayback();
 		}
+		
 		super.onDestroy();
 	}
 
@@ -1584,13 +1606,13 @@ public class VideoPlayerJPActivity extends Activity implements
 					app.MyToast(this, "收藏成功!");
 					
 					isShoucang = true;
-					mBottomButton.setBackgroundResource(R.drawable.player_btn_fav);
+					mBottomButton.setBackgroundResource(R.drawable.player_btn_unfav);
 					
-					setResult(JieMianConstant.SHOUCANG_ADD);
+					
 				} else {
 					
 					isShoucang = true;
-					mBottomButton.setBackgroundResource(R.drawable.player_btn_fav);
+					mBottomButton.setBackgroundResource(R.drawable.player_btn_unfav);
 					app.MyToast(this, "已收藏!");
 				}
 					
@@ -1614,9 +1636,9 @@ public class VideoPlayerJPActivity extends Activity implements
 					app.MyToast(this, "取消收藏成功!");
 
 					mBottomButton
-					.setBackgroundResource(R.drawable.player_btn_unfav);
+					.setBackgroundResource(R.drawable.player_btn_fav);
 					isShoucang = false;
-					setResult(JieMianConstant.SHOUCANG_CANCEL);
+//					setResult(JieMianConstant.SHOUCANG_CANCEL);
 				} else {
 					
 					app.MyToast(this, "取消收藏失败!");

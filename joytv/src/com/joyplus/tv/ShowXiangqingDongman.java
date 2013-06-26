@@ -1289,6 +1289,8 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 		// TODO Auto-generated method stub
 //		super.onActivityResult(requestCode, resultCode, data);
 		
+		Log.i(TAG, "onActivityResult-->" + resultCode);
+		
 		if(resultCode == JieMianConstant.SHOUCANG_ADD) {
 			
 			favNum ++;
@@ -1306,6 +1308,17 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 			}
 			isXiai = false;
 		}
+		
+//		Intent tempIntent = getIntent();
+//		if(tempIntent != null) {
+//			
+//			String prodSubName = tempIntent.getStringExtra("prod_subname");
+//			Log.i(TAG, "onActivityResult--->" + prodSubName);
+//		}
+		
+		
+		
+		
 	}
 
 //	private List<URLS_INDEX> getBofangList(int index){
