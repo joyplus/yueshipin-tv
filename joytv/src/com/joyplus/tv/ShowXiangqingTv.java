@@ -594,16 +594,27 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 					}
 					
 				}else {
-					
-					play(0);
+					playFirst(0);
 				}
 			} else {
-				
-				play(0);
+				playFirst(0);
 			}
 
 		}else{
 			play(seletedButtonIndex-1);
+		}
+	}
+	/**
+	 * 递归需找前面能放的集（第一集没地址就放第二集）
+	 * @param i
+	 */
+	private void playFirst(int i){
+		if(i<date.tv.episodes.length){
+			if(date.tv.episodes[i].down_urls!=null){
+				play(i);
+			}else{
+				playFirst(i+1);
+			}
 		}
 	}
 
@@ -829,6 +840,15 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 					btn.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector)) ;
 				}
 				btn.setPadding(8, 0, 0, 0);
+				int btnIndex = btn.getId()-1;
+				//没有地址的的时候按钮置黑
+				if(btnIndex>=0&&btnIndex<date.tv.episodes.length){
+					if(date.tv.episodes[btnIndex].down_urls == null){
+						btn.setEnabled(false);
+						Log.d(TAG, "id --------->" + btn.getId());
+						Log.d(TAG, "label --------->" + btn.getText());
+					}
+				}
 //				btn.setBackgroundResource(R.drawable.bg_button_tv_selector);
 //				btn.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector)) ;
 //				btn.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_play, 0);
