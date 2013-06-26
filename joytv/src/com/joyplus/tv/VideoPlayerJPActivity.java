@@ -351,7 +351,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		Log.d(TAG, "defination----->" + mDefination);
 		String lastTimeStr = DBUtils.getDuartion4HistoryDB(
 				getApplicationContext(),
-				UtilTools.getCurrentUserId(getApplicationContext()), mProd_id);
+				UtilTools.getCurrentUserId(getApplicationContext()), mProd_id,mProd_sub_name);
 		Log.i(TAG, "DBUtils.getDuartion4HistoryDB-->lastTimeStr:" + lastTimeStr);
 
 		if (lastTimeStr != null && !lastTimeStr.equals("")) {
@@ -1197,6 +1197,7 @@ public class VideoPlayerJPActivity extends Activity implements
 			mResourceTextView.setText(strSrc);
 		}
 		if(lastTime>0){
+			mLastTimeTextView.setVisibility(View.VISIBLE);
 			mLastTimeTextView.setText("上次播放: " + UtilTools.formatDuration(lastTime));
 		}else{
 			mLastTimeTextView.setVisibility(View.GONE);

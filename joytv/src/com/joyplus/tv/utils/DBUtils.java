@@ -220,13 +220,13 @@ public class DBUtils {
 		database.insert(TvDatabaseHelper.HISTORY_TABLE_NAME, null, tempContentValues);
 	}
 	
-	public static String getDuartion4HistoryDB(Context context,String userId,String prod_id) {
+	public static String getDuartion4HistoryDB(Context context,String userId,String prod_id,String prodSubName) {
 		
 		TvDatabaseHelper helper = TvDatabaseHelper.newTvDatabaseHelper(context);
 		SQLiteDatabase database = helper.getWritableDatabase();//获取写db
 		
-		String selection = UserHistory.PRO_ID  + " = ? and " + UserHistory.USER_ID + " = ?";
-		String[] selectionArgs = {prod_id,userId};
+		String selection = UserHistory.PRO_ID  + " = ? and " + UserHistory.USER_ID  + " = ? and " + UserHistory.PROD_SUBNAME+" = ?";
+		String[] selectionArgs = {prod_id,userId,prodSubName};
 		
 		String[] columns = { UserHistory.PLAYBACK_TIME };// 返回当前更新集数
 		
