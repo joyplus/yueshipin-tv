@@ -589,25 +589,39 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 							
 							if(!isPiPei) {
 								
-								play(0);
+								playFirst(0);
 							}
 						} else {
 							
-							play(0);
+							playFirst(0);
 						}
 					}
 				}else {
 					
-					play(0);
+					playFirst(0);
 				}
 
 			} else {
 				
-				play(0);
+				playFirst(0);
 			}
 			
 		}else{
 			play(seletedButtonIndex-1);
+		}
+	}
+	
+	/**
+	 * 递归需找前面能放的集（第一集没地址就放第二集）
+	 * @param i
+	 */
+	private void playFirst(int i){
+		if(i<date.show.episodes.length){
+			if(date.show.episodes[i].down_urls!=null){
+				play(i);
+			}else{
+				playFirst(i+1);
+			}
 		}
 	}
 
@@ -833,6 +847,17 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 					btn.setBackgroundResource(R.drawable.bg_button_tv_selector);
 					btn.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector)) ;
 				}
+				
+				int btnIndex = btn.getId()-1;
+				//没有地址的的时候按钮置黑
+				if(btnIndex>=0&&btnIndex<date.show.episodes.length){
+					if(date.show.episodes[btnIndex].down_urls == null){
+						btn.setEnabled(false);
+						Log.d(TAG, "id --------->" + btn.getId());
+						Log.d(TAG, "label --------->" + btn.getText());
+					}
+				}
+				
 				if(j*5+i+1>count){
 					btn.setVisibility(View.INVISIBLE);
 				}

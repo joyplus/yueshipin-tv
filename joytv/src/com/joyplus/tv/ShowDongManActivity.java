@@ -606,6 +606,9 @@ public class ShowDongManActivity extends AbstractShowActivity {
 								qitaNextPoistion = position + 5;
 								playGv.smoothScrollBy(35 + popHeight, -1);
 								playGv.setSelection(position + 5);
+								
+								shoucangTv
+								.setText(R.string.qitadongman_play_name);
 							}
 						} else {
 
@@ -617,8 +620,8 @@ public class ShowDongManActivity extends AbstractShowActivity {
 								
 //								playGv.scrollTo(0, (int)view.getY());
 
-								shoucangTv
-										.setText(R.string.qitadongman_play_name);
+//								shoucangTv
+//										.setText(R.string.qitadongman_play_name);
 
 							} else if (isGridViewUp
 									&& qitaNextPoistion - 10 == position) {

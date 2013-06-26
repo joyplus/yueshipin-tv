@@ -575,6 +575,9 @@ public class ShowTVActivity extends AbstractShowActivity {
 								qitaNextPoistion = position + 5;
 								playGv.smoothScrollBy(35 + popHeight, -1);
 								playGv.setSelection(position + 5);
+								
+								shoucangTv
+								.setText(R.string.qitadongman_play_name);
 							}
 						} else {
 
