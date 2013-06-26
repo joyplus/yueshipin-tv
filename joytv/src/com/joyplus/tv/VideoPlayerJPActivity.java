@@ -1179,6 +1179,7 @@ public class VideoPlayerJPActivity extends Activity implements
 	}
 
 	private void updateSourceAndTime() {
+		Log.d(TAG, " ---- sre = " + mProd_src);
 		if (mProd_src == null || mProd_src.length() == 1
 				|| "null".equals(mProd_src)) {
 			mResourceTextView.setText("");
@@ -1837,7 +1838,7 @@ public class VideoPlayerJPActivity extends Activity implements
 						
 						String location = header.getValue();// 从header重新取出信息
 						Log.i(TAG, "Location: " + location);
-						if(location != null && location.equals("")) {
+						if(location != null && !location.equals("")) {
 							
 							urlRedirect(location, list);
 							

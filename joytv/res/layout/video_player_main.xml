@@ -72,7 +72,7 @@
                 android:id="@+id/tv_preload_source_laizi"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="来自:乐视"
+                android:text=""
                 android:gravity="center_horizontal"
                 android:layout_below="@id/tv_preload_bofang_record"
                 android:textAppearance="?android:attr/textAppearanceMedium"
