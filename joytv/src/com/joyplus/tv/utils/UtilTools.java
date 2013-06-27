@@ -961,5 +961,32 @@ public class UtilTools implements JieMianConstant, BangDanConstant {
 
 		return sp.getString("cancelShoucangProId", "");
 	}
+	
+	public  static boolean isSame4Str(String str1, String str2){
+		if(str1==null||str2==null){
+			return false;
+		}
+		if(str1.equalsIgnoreCase(str2)){
+			return true;
+		}else{
+			if(str1.trim().equalsIgnoreCase(str2.trim())){
+				return true;
+			}else{
+				if(str1.length()>=str2.length()){
+					if(str1.startsWith(str2)){
+						return true;
+					}else{
+						return false;
+					}
+				}else{
+					if(str2.startsWith(str1)){
+						return true;
+					}else{
+						return false;
+					}
+				}
+			}
+		}
+	}
 
 }
