@@ -63,11 +63,14 @@ import com.androidquery.callback.AjaxStatus;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.deser.std.UntypedObjectDeserializer;
 import com.google.zxing.WriterException;
 import com.joyplus.tv.Adapters.MainHotItemAdapter;
 import com.joyplus.tv.Adapters.MainLibAdapter;
 import com.joyplus.tv.Adapters.MainYueDanItemAdapter;
 import com.joyplus.tv.Service.Return.ReturnMainHot;
+import com.joyplus.tv.Service.Return.ReturnProgramReviews;
+import com.joyplus.tv.Service.Return.ReturnProgramView;
 import com.joyplus.tv.Service.Return.ReturnTops;
 import com.joyplus.tv.Service.Return.ReturnUserPlayHistories;
 import com.joyplus.tv.database.TvDatabaseHelper;
@@ -707,6 +710,7 @@ public class Main extends Activity implements OnItemSelectedListener,
 						IntentFilter filter = new IntentFilter();
 						filter.addAction(FayeService.ACTION_RECIVEACTION_BAND);
 						filter.addAction(FayeService.ACTION_RECIVEACTION_UNBAND);
+						filter.addAction(UtilTools.ACTION_PLAY_END_MAIN);
 						registerReceiver(receiver, filter);
 						
 						isRegesterService = true;
@@ -799,10 +803,166 @@ public class Main extends Activity implements OnItemSelectedListener,
 				// unband by mobile
 				Log.d(TAG, "unband userId = " + app.getUserData("userId"));
 				updateUser(app.getUserData("userId"));
+			} else if(UtilTools.ACTION_PLAY_END_MAIN.equals(action)){
+				Log.d(TAG, "receiver---->"+action);
+				ReturnProgramView date = app.get_ReturnProgramView();
+				if(date==null){
+					return;
+				}
+				hot_list.clear();
+				HotItemInfo item = new HotItemInfo();
+				item.type = 0;
+//				item.id = result.histories[0].id;
+				item.prod_id = intent.getStringExtra("prod_id");
+				item.prod_type = intent.getIntExtra("prod_type",-1) + "";
+				if("-1".equals(item.prod_type)){
+					return ;
+				}
+				switch (Integer.valueOf(item.prod_type)) {
+				case 1:
+					String bigPicUrl = date.movie.ipad_poster;
+					if (bigPicUrl == null || bigPicUrl.equals("")
+							|| bigPicUrl.equals(UtilTools.EMPTY)) {
+
+						bigPicUrl = date.movie.poster;
+					}
+					item.prod_name = date.movie.name;
+					item.prod_pic_url = bigPicUrl;
+					item.stars = date.movie.stars;
+					item.directors = date.movie.directors;
+					item.favority_num = date.movie.favority_num;
+					item.support_num = date.movie.support_num;
+					item.publish_date = date.movie.publish_date;
+					item.score = date.movie.score;
+					item.area = date.movie.area;
+//					item.cur_episode = date.movie.
+					item.definition = date.movie.definition;
+					item.prod_summary = date.movie.summary;
+//					item.prod_subname = result.histories[0].prod_subname;
+					item.duration = date.movie.duration;
+					item.playback_time = intent.getLongExtra("time", 0)+"";
+//					item.video_url = result.histories[0].video_url;
+					break;
+				case 2:
+				case 131:
+					String bigPicUrl1 = date.tv.ipad_poster;
+					if (bigPicUrl1 == null || bigPicUrl1.equals("")
+							|| bigPicUrl1.equals(UtilTools.EMPTY)) {
+
+						bigPicUrl1 = date.tv.poster;
+					}
+					item.prod_name = date.tv.name;
+					item.prod_pic_url = bigPicUrl1;
+					item.stars = date.tv.stars;
+					item.directors = date.tv.directors;
+					item.favority_num = date.tv.favority_num;
+					item.support_num = date.tv.support_num;
+					item.publish_date = date.tv.publish_date;
+					item.score = date.tv.score;
+					item.area = date.tv.area;
+					item.cur_episode = date.tv.cur_episode;
+					item.definition = date.tv.definition;
+					item.prod_summary = date.tv.summary;
+					item.prod_subname = intent.getStringExtra("prod_sub_name");
+//					item.duration = date.tv.d;
+					item.playback_time = intent.getLongExtra("time", 0)+"";
+//					item.video_url = result.histories[0].video_url;
+					break;
+				case 3:
+					String bigPicUrl3 = date.show.ipad_poster;
+					if (bigPicUrl3 == null || bigPicUrl3.equals("")
+							|| bigPicUrl3.equals(UtilTools.EMPTY)) {
+
+						bigPicUrl3 = date.show.poster;
+					}
+					item.prod_pic_url = bigPicUrl3;
+					item.prod_name = date.show.name;
+					item.stars = date.show.stars;
+					item.directors = date.show.directors;
+					item.favority_num = date.show.favority_num;
+					item.support_num = date.show.support_num;
+					item.publish_date = date.show.publish_date;
+					item.score = date.show.score;
+					item.area = date.show.area;
+					item.cur_episode = date.show.cur_episode;
+					item.definition = date.show.definition;
+					item.prod_summary = date.show.summary;
+					item.prod_subname = intent.getStringExtra("prod_sub_name");
+//					item.duration = date.tv.d;
+					item.playback_time = intent.getLongExtra("time", 0)+"";
+//					item.video_url = result.histories[0].video_url;
+				}
+//				item.prod_name = date.
+				// item.prod_pic_url = result.histories[0].big_prod_pic_url;
+				
+				hot_list.add(item);
+				for(int i=0; i<netWorkHotList.size(); i++){
+					hot_list.add(netWorkHotList.get(i));
+				}
+				//去重
+				updateHotDate();
+				updateHotContentLayoue();
+				if(titleGroup.getSelectedTitleIndex()==1){
+					int seleted = gallery1.getSelectedItemPosition();
+					gallery1.setAdapter(new MainHotItemAdapter(Main.this, hot_list));
+					gallery1.setSelection(seleted);
+				}
 			}
 		}
 
 	};
+	
+	private void updateHotDate(){
+		HotItemInfo firstInfo = hot_list.get(0);
+		if(firstInfo!=null&&firstInfo.type==0){
+			for(int i=1; i<hot_list.size(); i++){
+				if(firstInfo.prod_id.equals(hot_list.get(i).prod_id)){
+					hot_list.remove(i);
+				}
+			}
+		}
+	}
+	
+	private void updateHotContentLayoue(){
+		hot_contentViews.clear();
+		for(int i=0; i<hot_list.size(); i++){
+			HotItemInfo item = hot_list.get(i);
+			View hotView = LayoutInflater.from(Main.this).inflate(
+					R.layout.layout_hot, null);
+			TextView hot_name_tv = (TextView) hotView
+					.findViewById(R.id.hot_content_name);
+			TextView hot_score_tv = (TextView) hotView
+					.findViewById(R.id.hot_content_score);
+			TextView hot_directors_tv = (TextView) hotView
+					.findViewById(R.id.hot_content_directors);
+			TextView hot_starts_tv = (TextView) hotView
+					.findViewById(R.id.hot_content_stars);
+			TextView hot_introduce_tv = (TextView) hotView
+					.findViewById(R.id.hot_content_introduce);
+			ImageView icon_douban = (ImageView) hotView
+					.findViewById(R.id.icon_douban);
+			if ("3".equals(item.prod_type.trim())) {
+				TextView hot_title_director = (TextView) hotView
+						.findViewById(R.id.title_directors);
+				TextView hot_title_stars = (TextView) hotView
+						.findViewById(R.id.title_stars);
+				hot_title_director
+						.setText(R.string.xiangqing_zongyi_zhuchi);
+				hot_title_stars.setText(R.string.xiangqing_zongyi_shoubo);
+				hot_starts_tv.setText(item.directors);
+				hot_directors_tv.setText(item.stars);
+				icon_douban.setVisibility(View.INVISIBLE);
+			} else {
+				hot_directors_tv.setText(item.directors);
+				hot_starts_tv.setText(item.stars);
+			}
+			Log.d(TAG, item.prod_name);
+			hot_name_tv.setText(item.prod_name);
+			hot_score_tv.setText(UtilTools.formateScore(item.score));
+			hot_introduce_tv.setText(item.prod_summary);
+			hot_contentViews.add(hotView);
+		}
+	}
 
 	// 数据初始化
 

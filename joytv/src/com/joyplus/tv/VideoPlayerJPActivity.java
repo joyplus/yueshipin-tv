@@ -996,11 +996,11 @@ public class VideoPlayerJPActivity extends Activity implements
 				m_bitrate = ((rxBytes - rxByteslast) * 8 * 1000 / timeTakenMillis) / 8000;
 				rxByteslast = rxBytes;
 
-				mSpeedTextView.setText("（" + Long.toString(m_bitrate) + "kb/s");
+				mSpeedTextView.setText("（" + Long.toString(m_bitrate) + "kb/s）");
 				mLoadingPreparedPercent = mLoadingPreparedPercent + m_bitrate;
 				if (mLoadingPreparedPercent >= 100
 						&& mLoadingPreparedPercent / 100 < 100)
-					mPercentTextView.setText("）,已完成"
+					mPercentTextView.setText(",已完成"
 							+ Long.toString(mLoadingPreparedPercent / 100) + "%");
 
 				// Fun_downloadrate();
@@ -1553,6 +1553,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		helper.closeDatabase();
 		
 		//发送更新最新记录广播
+		app.set_ReturnProgramView(m_ReturnProgramView);
 		Intent historyIntent  = new Intent(UtilTools.ACTION_PLAY_END_HISTORY);
 		historyIntent.putExtra("prod_id", mProd_id);
 		historyIntent.putExtra("prod_sub_name", mProd_sub_name);
@@ -1563,8 +1564,8 @@ public class VideoPlayerJPActivity extends Activity implements
 		Intent mainIntent  = new Intent(UtilTools.ACTION_PLAY_END_MAIN);
 		mainIntent.putExtra("prod_id", mProd_id);
 		mainIntent.putExtra("prod_sub_name", mProd_sub_name);
-		historyIntent.putExtra("prod_type", mProd_type);
-		mainIntent.putExtra("time", playBackTime*1000);
+		mainIntent.putExtra("prod_type", mProd_type);
+		mainIntent.putExtra("time", playBackTime);
 		sendBroadcast(mainIntent);
 		
 	}
