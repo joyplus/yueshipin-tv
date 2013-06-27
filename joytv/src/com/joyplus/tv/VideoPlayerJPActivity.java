@@ -47,6 +47,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.webkit.URLUtil;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -211,6 +213,8 @@ public class VideoPlayerJPActivity extends Activity implements
 	private int mMaxVolume;
 	/** 当前声音 */
 	private int mVolume = -1;
+	
+	private Animation mAlphaDispear;
 
 	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
 		@Override
@@ -282,6 +286,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		setContentView(R.layout.video_player_main);
 		aq = new AQuery(this);
 		app = (App) getApplication();
+		mAlphaDispear = AnimationUtils.loadAnimation(this, R.anim.alpha_disappear);
 		initViews();
 
 		initVedioDate();
@@ -298,6 +303,11 @@ public class VideoPlayerJPActivity extends Activity implements
 
 		// 获取是否收藏
 		getIsShoucangData();
+	}
+	
+	private void dismissView(View v){
+		v.setVisibility(View.GONE);
+		v.startAnimation(mAlphaDispear);
 	}
 
 	private void initVedioDate() {
@@ -456,10 +466,12 @@ public class VideoPlayerJPActivity extends Activity implements
 				updateSeekBar();
 				break;
 			case MESSAGE_HIDE_PROGRESSBAR:
-				mNoticeLayout.setVisibility(View.GONE);
+				dismissView(mNoticeLayout);
+//				mNoticeLayout.setVisibility(View.GONE);
 				break;
 			case MESSAGE_HIDE_VOICE:
-				mVocieLayout.setVisibility(View.GONE);
+				dismissView(mVocieLayout);
+//				mVocieLayout.setVisibility(View.GONE);
 				break;
 			default:
 				break;
@@ -984,11 +996,11 @@ public class VideoPlayerJPActivity extends Activity implements
 				m_bitrate = ((rxBytes - rxByteslast) * 8 * 1000 / timeTakenMillis) / 8000;
 				rxByteslast = rxBytes;
 
-				mSpeedTextView.setText("（" + Long.toString(m_bitrate) + "kb/s");
+				mSpeedTextView.setText("（" + Long.toString(m_bitrate) + "kb/s）");
 				mLoadingPreparedPercent = mLoadingPreparedPercent + m_bitrate;
 				if (mLoadingPreparedPercent >= 100
 						&& mLoadingPreparedPercent / 100 < 100)
-					mPercentTextView.setText("）,已完成"
+					mPercentTextView.setText(",已完成"
 							+ Long.toString(mLoadingPreparedPercent / 100) + "%");
 
 				// Fun_downloadrate();
@@ -1021,14 +1033,16 @@ public class VideoPlayerJPActivity extends Activity implements
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
 		case R.id.ib_control_top:
-			mControlLayout.setVisibility(View.GONE);
+//			mControlLayout.setVisibility(View.GONE);
+			dismissView(mControlLayout);
 			mHandler.sendEmptyMessageDelayed(MESSAGE_HIDE_PROGRESSBAR, 2500);
 			mStatue = STATUE_PLAYING;
 			mVideoView.requestFocus();
 			mVideoView.start();
 			break;
 		case R.id.btn_continue:
-			mContinueLayout.setVisibility(View.GONE);
+//			mContinueLayout.setVisibility(View.GONE);
+			dismissView(mContinueLayout);
 			mHandler.sendEmptyMessageDelayed(MESSAGE_HIDE_PROGRESSBAR, 2500);
 			mStatue = STATUE_PLAYING;
 			mVideoView.requestFocus();
@@ -1539,6 +1553,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		helper.closeDatabase();
 		
 		//发送更新最新记录广播
+		app.set_ReturnProgramView(m_ReturnProgramView);
 		Intent historyIntent  = new Intent(UtilTools.ACTION_PLAY_END_HISTORY);
 		historyIntent.putExtra("prod_id", mProd_id);
 		historyIntent.putExtra("prod_sub_name", mProd_sub_name);
@@ -1549,8 +1564,8 @@ public class VideoPlayerJPActivity extends Activity implements
 		Intent mainIntent  = new Intent(UtilTools.ACTION_PLAY_END_MAIN);
 		mainIntent.putExtra("prod_id", mProd_id);
 		mainIntent.putExtra("prod_sub_name", mProd_sub_name);
-		historyIntent.putExtra("prod_type", mProd_type);
-		mainIntent.putExtra("time", playBackTime*1000);
+		mainIntent.putExtra("prod_type", mProd_type);
+		mainIntent.putExtra("time", playBackTime);
 		sendBroadcast(mainIntent);
 		
 	}

@@ -48,7 +48,7 @@
                 android:layout_marginLeft="2dp"
                 android:gravity="right"
                 android:minEms="4"
-                android:text="（0kb/s"
+                android:text="(0kb/s)"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <TextView
@@ -123,8 +123,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="20dp"
-                android:layout_toRightOf="@+id/tv_play_name"
-                android:src="@drawable/player_1080p" />
+                android:layout_toRightOf="@+id/tv_play_name"/>
         </RelativeLayout>
 
         <TextView
