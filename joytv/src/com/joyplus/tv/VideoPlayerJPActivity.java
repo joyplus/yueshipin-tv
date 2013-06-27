@@ -215,6 +215,7 @@ public class VideoPlayerJPActivity extends Activity implements
 	private int mVolume = -1;
 	
 	private Animation mAlphaDispear;
+	private boolean isSeekBarIntoch = false;
 
 	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
 		@Override
@@ -235,6 +236,7 @@ public class VideoPlayerJPActivity extends Activity implements
 				case 403:
 					if (!mVideoView.isPlaying()) {
 						mStatue = STATUE_PLAYING;
+						mSeekBar.setEnabled(true);
 						mVideoView.start();
 						mContinueLayout.setVisibility(View.GONE);
 						mControlLayout.setVisibility(View.GONE);
@@ -246,6 +248,7 @@ public class VideoPlayerJPActivity extends Activity implements
 					if (mVideoView.isPlaying()) {
 						mVideoView.pause();
 						mStatue = STATUE_PAUSE;
+						mSeekBar.setEnabled(false);
 						mNoticeLayout.setVisibility(View.VISIBLE);
 						mContinueLayout.setVisibility(View.VISIBLE);
 						mContinueButton.requestFocus();
@@ -288,6 +291,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		app = (App) getApplication();
 		mAlphaDispear = AnimationUtils.loadAnimation(this, R.anim.alpha_disappear);
 		initViews();
+		mSeekBar.setEnabled(false);
 
 		initVedioDate();
 
@@ -312,6 +316,7 @@ public class VideoPlayerJPActivity extends Activity implements
 
 	private void initVedioDate() {
 		mStatue = STATUE_LOADING;
+		mSeekBar.setEnabled(false);
 		mPreLoadLayout.setVisibility(View.VISIBLE);
 		mContinueLayout.setVisibility(View.GONE);
 		mControlLayout.setVisibility(View.GONE);
@@ -571,9 +576,11 @@ public class VideoPlayerJPActivity extends Activity implements
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
 				// TODO Auto-generated method stub
-				mHandler.removeMessages(MESSAGE_HIDE_PROGRESSBAR);
-				mNoticeLayout.setVisibility(View.VISIBLE);
-				mHandler.sendEmptyMessageDelayed(MESSAGE_HIDE_PROGRESSBAR, 2500);
+				if(mStatue == STATUE_PLAYING){
+					mHandler.removeMessages(MESSAGE_HIDE_PROGRESSBAR);
+					mNoticeLayout.setVisibility(View.VISIBLE);
+					mHandler.sendEmptyMessageDelayed(MESSAGE_HIDE_PROGRESSBAR, 2500);	
+				}
 				return false;
 			}
 		});
@@ -614,6 +621,7 @@ public class VideoPlayerJPActivity extends Activity implements
 				mVocieLayout.setVisibility(View.GONE);
 				mHandler.removeMessages(MESSAGE_HIDE_VOICE);
 				mStatue = STATUE_PAUSE;
+				mSeekBar.setEnabled(false);
 				mVideoView.pause();
 				mHandler.removeMessages(MESSAGE_HIDE_PROGRESSBAR);
 				mContinueLayout.setVisibility(View.VISIBLE);
@@ -632,6 +640,7 @@ public class VideoPlayerJPActivity extends Activity implements
 				mHandler.removeMessages(MESSAGE_UPDATE_PROGRESS);
 				mHandler.sendEmptyMessageDelayed(MESSAGE_UPDATE_PROGRESS, 1000);
 				mStatue = STATUE_PLAYING;
+				mSeekBar.setEnabled(true);
 				break;
 			}
 			break;
@@ -696,6 +705,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		case KeyEvent.KEYCODE_DPAD_LEFT:
 			if (mStatue == STATUE_PLAYING) {
 				mStatue = STATUE_FAST_DRAG;
+				mSeekBar.setEnabled(false);
 				mTimeJumpSpeed = -1;
 				mFastJumpTime = (int) mVideoView.getCurrentPosition();
 				upDateFastTimeBar();
@@ -720,6 +730,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		case KeyEvent.KEYCODE_DPAD_RIGHT:
 			if (mStatue == STATUE_PLAYING) {
 				mStatue = STATUE_FAST_DRAG;
+				mSeekBar.setEnabled(false);
 				mTimeJumpSpeed = 1;
 				mFastJumpTime = (int) mVideoView.getCurrentPosition();
 				upDateFastTimeBar();
@@ -750,7 +761,7 @@ public class VideoPlayerJPActivity extends Activity implements
 	private void showControlLayout() {
 		// 判断上下集能不能用
 		if (mProd_type == 3) {
-			if (mEpisodeIndex > 0) {
+			if (mEpisodeIndex > 0&&m_ReturnProgramView.show.episodes[mEpisodeIndex-1].down_urls!=null) {
 				mNextButton.setEnabled(true);
 				mNextButton.setFocusable(true);
 			} else {
@@ -758,7 +769,7 @@ public class VideoPlayerJPActivity extends Activity implements
 				mNextButton.setFocusable(false);
 			}
 
-			if (mEpisodeIndex < m_ReturnProgramView.show.episodes.length - 1) {
+			if (mEpisodeIndex < (m_ReturnProgramView.show.episodes.length - 1)&&m_ReturnProgramView.show.episodes[mEpisodeIndex+1].down_urls!=null) {
 				mPreButton.setEnabled(true);
 				mPreButton.setFocusable(true);
 			} else {
@@ -767,7 +778,7 @@ public class VideoPlayerJPActivity extends Activity implements
 			}
 
 		} else {
-			if (mEpisodeIndex > 0) {
+			if (mEpisodeIndex > 0&&m_ReturnProgramView.tv.episodes[mEpisodeIndex-1].down_urls!=null) {
 				mPreButton.setEnabled(true);
 				mPreButton.setFocusable(true);
 			} else {
@@ -775,7 +786,7 @@ public class VideoPlayerJPActivity extends Activity implements
 				mPreButton.setFocusable(false);
 			}
 
-			if (mEpisodeIndex < m_ReturnProgramView.tv.episodes.length - 1) {
+			if (mEpisodeIndex < (m_ReturnProgramView.tv.episodes.length - 1)&&m_ReturnProgramView.tv.episodes[mEpisodeIndex+1].down_urls!=null) {
 				mNextButton.setEnabled(true);
 				mNextButton.setFocusable(true);
 			} else {
@@ -795,6 +806,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		mVocieLayout.setVisibility(View.GONE);
 		mHandler.removeMessages(MESSAGE_HIDE_VOICE);
 		mStatue = STATUE_PAUSE;
+		mSeekBar.setEnabled(false);
 		mVideoView.pause();
 		mHandler.removeMessages(MESSAGE_HIDE_PROGRESSBAR);
 		mControlLayout.setVisibility(View.VISIBLE);
@@ -886,21 +898,19 @@ public class VideoPlayerJPActivity extends Activity implements
 	public void onPrepared(MediaPlayer mp) {
 		// TODO Auto-generated method stub
 		// 准备好了
-		mHandler.postDelayed(new Runnable() {
-			@Override
-			public void run() {
-				// TODO Auto-generated method stub
-				mPreLoadLayout.setVisibility(View.GONE);
-				mHandler.removeCallbacks(mLoadingRunnable);
-				mTotalTimeTextView.setText(UtilTools.formatDuration(mVideoView
-						.getDuration()));
-				mSeekBar.setMax((int) mVideoView.getDuration());
-				mSeekBar.setOnSeekBarChangeListener(VideoPlayerJPActivity.this);
-				mStatue = STATUE_PLAYING;
-				mHandler.sendEmptyMessageDelayed(MESSAGE_UPDATE_PROGRESS, 1000);
-				mHandler.sendEmptyMessageDelayed(MESSAGE_HIDE_PROGRESSBAR, 5000);
-			}
-		}, 500);
+		mTotalTimeTextView.setText(UtilTools.formatDuration(mVideoView
+				.getDuration()));
+		mSeekBar.setMax((int) mVideoView.getDuration());
+		mSeekBar.setOnSeekBarChangeListener(VideoPlayerJPActivity.this);
+		mSeekBar.setProgress((int) lastTime);
+		mHandler.sendEmptyMessageDelayed(MESSAGE_UPDATE_PROGRESS, 1000);
+//		mHandler.postDelayed(new Runnable() {
+//			@Override
+//			public void run() {
+//				// TODO Auto-generated method stub
+//				
+//			}
+//		}, 500);
 	}
 
 	@Override
@@ -929,10 +939,24 @@ public class VideoPlayerJPActivity extends Activity implements
 
 	private void updateSeekBar() {
 		switch (mStatue) {
-		case STATUE_PLAYING:
+		case STATUE_LOADING:
 			long current = mVideoView.getCurrentPosition();// 当前进度
-			mSeekBar.setProgress((int) current);
+			long lastProgress = mSeekBar.getProgress();
+			Log.d(TAG, "loading --->" + current);
 			// updateTimeNoticeView(mSeekBar.getProgress());
+			if(current>lastProgress){
+				hidePreLoad(); 
+			}else{
+				mSeekBar.setProgress((int) current);
+				mHandler.sendEmptyMessageDelayed(MESSAGE_UPDATE_PROGRESS, 1000);
+			}
+			break;
+		case STATUE_PLAYING:
+			if(!isSeekBarIntoch){
+				long current1 = mVideoView.getCurrentPosition();// 当前进度
+				mSeekBar.setProgress((int) current1);
+				// updateTimeNoticeView(mSeekBar.getProgress());
+			}
 			mHandler.sendEmptyMessageDelayed(MESSAGE_UPDATE_PROGRESS, 1000);
 			break;
 		case STATUE_FAST_DRAG:
@@ -1019,13 +1043,17 @@ public class VideoPlayerJPActivity extends Activity implements
 	@Override
 	public void onStartTrackingTouch(SeekBar seekBar) {
 		// TODO Auto-generated method stub
-
+		isSeekBarIntoch = true;
+		mHandler.removeMessages(MESSAGE_HIDE_PROGRESSBAR);
 	}
 
 	@Override
 	public void onStopTrackingTouch(SeekBar seekBar) {
 		// TODO Auto-generated method stub
-
+		isSeekBarIntoch = false;
+		mVideoView.seekTo(mSeekBar.getProgress());
+		mHandler.sendEmptyMessageDelayed(MESSAGE_HIDE_PROGRESSBAR, 2500);
+//		mHandler.re
 	}
 
 	@Override
@@ -1037,6 +1065,7 @@ public class VideoPlayerJPActivity extends Activity implements
 			dismissView(mControlLayout);
 			mHandler.sendEmptyMessageDelayed(MESSAGE_HIDE_PROGRESSBAR, 2500);
 			mStatue = STATUE_PLAYING;
+			mSeekBar.setEnabled(true);
 			mVideoView.requestFocus();
 			mVideoView.start();
 			break;
@@ -1045,6 +1074,7 @@ public class VideoPlayerJPActivity extends Activity implements
 			dismissView(mContinueLayout);
 			mHandler.sendEmptyMessageDelayed(MESSAGE_HIDE_PROGRESSBAR, 2500);
 			mStatue = STATUE_PLAYING;
+			mSeekBar.setEnabled(true);
 			mVideoView.requestFocus();
 			mVideoView.start();
 			break;
@@ -1112,6 +1142,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		// TODO Auto-generated method stub
 		mStatue = STATUE_LOADING;
 		mSeekBar.setProgress(0);
+		mSeekBar.setEnabled(false);
 		mHandler.removeCallbacksAndMessages(this);
 		mControlLayout.setVisibility(View.GONE);
 		lastTime = 0;
@@ -1129,6 +1160,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		// TODO Auto-generated method stub
 		mStatue = STATUE_LOADING;
 		mSeekBar.setProgress(0);
+		mSeekBar.setEnabled(false);
 		mHandler.removeCallbacksAndMessages(this);
 		mControlLayout.setVisibility(View.GONE);
 		lastTime = 0;
@@ -1263,6 +1295,7 @@ public class VideoPlayerJPActivity extends Activity implements
 			playUrls.clear();
 			switch (mProd_type) {
 			case 1:
+				mProd_name = m_ReturnProgramView.movie.name;
 				for (int i = 0; i < m_ReturnProgramView.movie.episodes[0].down_urls.length; i++) {
 					String souces = m_ReturnProgramView.movie.episodes[0].down_urls[i].source;
 					for (int j = 0; j < m_ReturnProgramView.movie.episodes[0].down_urls[i].urls.length; j++) {
@@ -1276,6 +1309,7 @@ public class VideoPlayerJPActivity extends Activity implements
 				break;
 			case 2:
 			case 131:
+				mProd_name = m_ReturnProgramView.tv.name;
 				if (mEpisodeIndex == -1) {
 					for (int i = 0; i < m_ReturnProgramView.tv.episodes.length; i++) {
 						if (mProd_sub_name
@@ -1312,6 +1346,7 @@ public class VideoPlayerJPActivity extends Activity implements
 				}
 				break;
 			case 3:
+				mProd_name = m_ReturnProgramView.show.name;
 				if (mEpisodeIndex == -1) {
 					for (int i = 0; i < m_ReturnProgramView.show.episodes.length; i++) {
 						if (UtilTools.isSame4Str(mProd_sub_name, m_ReturnProgramView.show.episodes[i].name)) {
@@ -1868,4 +1903,14 @@ public class VideoPlayerJPActivity extends Activity implements
 		
 	}
 	
+	
+	private void hidePreLoad(){
+		Log.d(TAG, "hidePreLoad----------->");
+		mPreLoadLayout.setVisibility(View.GONE);
+		mHandler.removeCallbacks(mLoadingRunnable);
+		mStatue = STATUE_PLAYING;
+		mSeekBar.setEnabled(true);
+		mHandler.sendEmptyMessageDelayed(MESSAGE_UPDATE_PROGRESS, 1000);
+		mHandler.sendEmptyMessageDelayed(MESSAGE_HIDE_PROGRESSBAR, 5000);
+	}
 }
