@@ -1000,7 +1000,7 @@ public class VideoPlayerJPActivity extends Activity implements
 				mLoadingPreparedPercent = mLoadingPreparedPercent + m_bitrate;
 				if (mLoadingPreparedPercent >= 100
 						&& mLoadingPreparedPercent / 100 < 100)
-					mPercentTextView.setText(",已完成"
+					mPercentTextView.setText(", 已完成"
 							+ Long.toString(mLoadingPreparedPercent / 100) + "%");
 
 				// Fun_downloadrate();
