@@ -394,7 +394,9 @@ public class VideoPlayerJPActivity extends Activity implements
 				break;
 			case MESSAGE_URLS_READY:// url 准备好了
 				if(playUrls.size()<=0){
-					showDialog(0);
+					if(!VideoPlayerJPActivity.this.isFinishing()){
+						showDialog(0);
+					}
 					return;
 				}
 				currentPlayIndex = 0;
@@ -435,7 +437,9 @@ public class VideoPlayerJPActivity extends Activity implements
 					} else {
 						// 所有的片源都不能播放
 						Log.e(TAG, "no url can play!");
-						showDialog(0);
+						if(!VideoPlayerJPActivity.this.isFinishing()){
+							showDialog(0);
+						}
 					}
 				}
 				break;
@@ -1537,12 +1541,14 @@ public class VideoPlayerJPActivity extends Activity implements
 		Intent historyIntent  = new Intent(UtilTools.ACTION_PLAY_END_HISTORY);
 		historyIntent.putExtra("prod_id", mProd_id);
 		historyIntent.putExtra("prod_sub_name", mProd_sub_name);
+		historyIntent.putExtra("prod_type", mProd_type);
 		historyIntent.putExtra("time", playBackTime*1000);
 		sendBroadcast(historyIntent);
 		
 		Intent mainIntent  = new Intent(UtilTools.ACTION_PLAY_END_MAIN);
 		mainIntent.putExtra("prod_id", mProd_id);
 		mainIntent.putExtra("prod_sub_name", mProd_sub_name);
+		historyIntent.putExtra("prod_type", mProd_type);
 		mainIntent.putExtra("time", playBackTime*1000);
 		sendBroadcast(mainIntent);
 		
