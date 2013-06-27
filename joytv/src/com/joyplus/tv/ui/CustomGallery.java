@@ -31,6 +31,7 @@ public class CustomGallery extends HorizontalScrollView {
 	private LinearLayout layout;
 	private TranslateAnimation leftAnim;
 	private TranslateAnimation rightAnim;
+	private int itemWidth = 0;
 	private Handler handler = new Handler();
 
 	// public CustomGallery(Context context, AttributeSet attrs, int defStyle) {
@@ -95,6 +96,9 @@ public class CustomGallery extends HorizontalScrollView {
 				}
 			});
 			layout.setOrientation(LinearLayout.HORIZONTAL);
+			if(itemWidth ==0 &&view.getLayoutParams().width!=0){
+				itemWidth = view.getLayoutParams().width;
+			}
 			layout.addView(view, view.getLayoutParams());
 		}
 		if (layout.getChildAt(0) != null) {
@@ -154,16 +158,11 @@ public class CustomGallery extends HorizontalScrollView {
 		this.selectedIndex = index - 1;
 		layout.setVisibility(View.INVISIBLE);
 		if (layout.getChildAt(0) != null) {
-			handler.postDelayed(new Runnable() {
-
-				@Override
-				public void run() {
 					// TODO Auto-generated method stub
-					layout.scrollTo(layout.getChildAt(0).getWidth()
-							* (selectedIndex + 1), 0);
-					layout.setVisibility(View.VISIBLE);
-				}
-			}, 100);
+			Log.d(TAG, "selectedIndex ------>" + selectedIndex);
+			Log.d(TAG, "getWidth ------>" + itemWidth);
+			layout.scrollTo(itemWidth*(selectedIndex + 1), 0);
+			layout.setVisibility(View.VISIBLE);
 			// currentLeft = layout.getChildAt(0).getWidth()*(selectedIndex+1);
 			if (itmeSelectedListener != null) {
 				itmeSelectedListener.onItemSelected(null,

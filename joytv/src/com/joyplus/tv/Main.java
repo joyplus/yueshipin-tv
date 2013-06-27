@@ -63,13 +63,11 @@ import com.androidquery.callback.AjaxStatus;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.deser.std.UntypedObjectDeserializer;
 import com.google.zxing.WriterException;
 import com.joyplus.tv.Adapters.MainHotItemAdapter;
 import com.joyplus.tv.Adapters.MainLibAdapter;
 import com.joyplus.tv.Adapters.MainYueDanItemAdapter;
 import com.joyplus.tv.Service.Return.ReturnMainHot;
-import com.joyplus.tv.Service.Return.ReturnProgramReviews;
 import com.joyplus.tv.Service.Return.ReturnProgramView;
 import com.joyplus.tv.Service.Return.ReturnTops;
 import com.joyplus.tv.Service.Return.ReturnUserPlayHistories;
@@ -407,6 +405,13 @@ public class Main extends Activity implements OnItemSelectedListener,
 						// aq.id(highlightImageView).image(hot_list.get(gallery1.getSelectedItemPosition()).prod_pic_url);
 						// noticeView.setText(gallery1.getSelectedItemPosition()+1
 						// + "/" + hot_list.size());
+//						gallery1.setAdapter(new MainHotItemAdapter(Main.this,
+//								hot_list));
+//						if (indexCaces.get(index) == null) {
+//							gallery1.setSelection(0);
+//						} else {
+//							gallery1.setSelection(indexCaces.get(index));
+//						}
 
 					} else {
 						definitionIcon.setImageDrawable(null);
@@ -508,6 +513,14 @@ public class Main extends Activity implements OnItemSelectedListener,
 						}
 						noticeView.setText(gallery1.getSelectedItemPosition()
 								+ 1 + "/" + yuedan_list.size());
+						
+//						gallery1.setAdapter(new MainYueDanItemAdapter(Main.this,
+//								yuedan_list));
+//						if (indexCaces.get(index) == null) {
+//							gallery1.setSelection(0);
+//						} else {
+//							gallery1.setSelection(indexCaces.get(index));
+//						}
 					} else {
 						yuedan_list.clear();
 						yuedan_contentViews.clear();
@@ -602,6 +615,8 @@ public class Main extends Activity implements OnItemSelectedListener,
 						&& !gallery1.getAnimation().hasEnded()) {
 
 				} else {
+					Log.d(TAG, "startAnimation---------------------->");
+					gallery1.clearAnimation();
 					gallery1.startAnimation(alpha_appear);
 				}
 
@@ -686,7 +701,6 @@ public class Main extends Activity implements OnItemSelectedListener,
 		UmengUpdateAgent.update(this);
 
 	}
-
 	private Handler handler = new Handler() {
 
 		@Override
@@ -906,6 +920,14 @@ public class Main extends Activity implements OnItemSelectedListener,
 					int seleted = gallery1.getSelectedItemPosition();
 					gallery1.setAdapter(new MainHotItemAdapter(Main.this, hot_list));
 					gallery1.setSelection(seleted);
+//					handler.postDelayed(new Runnable() {
+//						
+//						@Override
+//						public void run() {
+//							// TODO Auto-generated method stub
+//							gallery1.adjust();
+//						}
+//					},2000);
 				}
 			}
 		}
