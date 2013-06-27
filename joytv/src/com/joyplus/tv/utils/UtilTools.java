@@ -840,6 +840,15 @@ public class UtilTools implements JieMianConstant, BangDanConstant {
 
 		return false;
 	}
+	
+	public static int getFirstPositionQitaTitle(int shoucangNum) {
+		
+		int chu = shoucangNum / 5;
+
+		int max = (chu + 1) * 5;
+		
+		return max;
+	}
 
 	public static int stepToFirstInThisRow(int position) {
 
@@ -951,6 +960,33 @@ public class UtilTools implements JieMianConstant, BangDanConstant {
 				Context.MODE_PRIVATE);
 
 		return sp.getString("cancelShoucangProId", "");
+	}
+	
+	public  static boolean isSame4Str(String str1, String str2){
+		if(str1==null||str2==null){
+			return false;
+		}
+		if(str1.equalsIgnoreCase(str2)){
+			return true;
+		}else{
+			if(str1.trim().equalsIgnoreCase(str2.trim())){
+				return true;
+			}else{
+				if(str1.length()>=str2.length()){
+					if(str1.startsWith(str2)){
+						return true;
+					}else{
+						return false;
+					}
+				}else{
+					if(str2.startsWith(str1)){
+						return true;
+					}else{
+						return false;
+					}
+				}
+			}
+		}
 	}
 
 }

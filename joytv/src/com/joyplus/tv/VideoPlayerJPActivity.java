@@ -339,7 +339,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		if (currentPlayUrl != null && URLUtil.isNetworkUrl(currentPlayUrl)) {
 			if (mProd_type<0) {
 //				mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
-				new Thread(new urlRedirectTask()).start();
+				new Thread(new UrlRedirectTask()).start();
 			} else {
 				if (app.get_ReturnProgramView() != null) {// 如果不为空，获取服务器返回的详细数据
 
@@ -405,7 +405,7 @@ public class VideoPlayerJPActivity extends Activity implements
 				if (currentPlayUrl != null
 						&& URLUtil.isNetworkUrl(currentPlayUrl)) {
 					// 地址跳转相关。。。
-					new Thread(new urlRedirectTask()).start();
+					new Thread(new UrlRedirectTask()).start();
 //					mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
 					// 要根据不同的节目做相应的处理。这里仅仅是为了验证上下集
 				}
@@ -431,7 +431,7 @@ public class VideoPlayerJPActivity extends Activity implements
 							// 地址跳转相关。。。
 							Log.d(TAG, currentPlayUrl);
 							Log.d(TAG, mProd_src);
-							new Thread(new urlRedirectTask()).start();
+							new Thread(new UrlRedirectTask()).start();
 //							mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
 						}
 					} else {
@@ -774,10 +774,10 @@ public class VideoPlayerJPActivity extends Activity implements
 
 		if (isShoucang) {
 
-			mBottomButton.setBackgroundResource(R.drawable.player_btn_fav);
+			mBottomButton.setBackgroundResource(R.drawable.player_btn_unfav);
 		} else {
 
-			mBottomButton.setBackgroundResource(R.drawable.player_btn_unfav);
+			mBottomButton.setBackgroundResource(R.drawable.player_btn_fav);
 		}
 
 		mVocieLayout.setVisibility(View.GONE);
@@ -1183,6 +1183,7 @@ public class VideoPlayerJPActivity extends Activity implements
 	}
 
 	private void updateSourceAndTime() {
+		Log.d(TAG, " ---- sre = " + mProd_src);
 		if (mProd_src == null || mProd_src.length() == 1
 				|| "null".equals(mProd_src)) {
 			mResourceTextView.setText("");
@@ -1299,7 +1300,7 @@ public class VideoPlayerJPActivity extends Activity implements
 			case 3:
 				if (mEpisodeIndex == -1) {
 					for (int i = 0; i < m_ReturnProgramView.show.episodes.length; i++) {
-						if (isSame(mProd_sub_name, m_ReturnProgramView.show.episodes[i].name)) {
+						if (UtilTools.isSame4Str(mProd_sub_name, m_ReturnProgramView.show.episodes[i].name)) {
 							mEpisodeIndex = i;
 							mProd_sub_name = m_ReturnProgramView.show.episodes[i].name;
 							if(m_ReturnProgramView.show.episodes[i].down_urls==null){
@@ -1734,38 +1735,11 @@ public class VideoPlayerJPActivity extends Activity implements
 		return super.onCreateDialog(id);
 	}
 	
-	private boolean isSame(String str1, String str2){
-		if(str1==null||str2==null){
-			return false;
-		}
-		if(str1.equalsIgnoreCase(str2)){
-			return true;
-		}else{
-			if(str1.trim().equalsIgnoreCase(str2.trim())){
-				return true;
-			}else{
-				if(str1.length()>=str2.length()){
-					if(str1.startsWith(str2)){
-						return true;
-					}else{
-						return false;
-					}
-				}else{
-					if(str2.startsWith(str1)){
-						return true;
-					}else{
-						return false;
-					}
-				}
-			}
-		}
-	}
-	
 	/**
 	 * 地址跳转
 	 */
 	
-	class  urlRedirectTask implements Runnable{
+	class  UrlRedirectTask implements Runnable{
 
 		@Override
 		public void run() {
@@ -1843,7 +1817,7 @@ public class VideoPlayerJPActivity extends Activity implements
 						
 						String location = header.getValue();// 从header重新取出信息
 						Log.i(TAG, "Location: " + location);
-						if(location != null && location.equals("")) {
+						if(location != null && !location.equals("")) {
 							
 							urlRedirect(location, list);
 							
