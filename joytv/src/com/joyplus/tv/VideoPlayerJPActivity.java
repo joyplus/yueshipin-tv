@@ -1543,7 +1543,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		historyIntent.putExtra("prod_id", mProd_id);
 		historyIntent.putExtra("prod_sub_name", mProd_sub_name);
 		historyIntent.putExtra("prod_type", mProd_type);
-		historyIntent.putExtra("time", playBackTime*1000);
+		historyIntent.putExtra("time", playBackTime);
 		sendBroadcast(historyIntent);
 		
 		Intent mainIntent  = new Intent(UtilTools.ACTION_PLAY_END_MAIN);
