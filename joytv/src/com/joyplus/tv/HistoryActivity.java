@@ -208,165 +208,148 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 										}
 									}
 								}
+							}
+							
+							if(!isSame) {//如果其中没有相同的数据
 								
-								if(!isSame) {//如果其中没有相同的数据
-									
-									switch (tempProd_type) {
-									case 1:
-										ReturnProgramView returnProgramViewM = app.get_ReturnProgramView();
-										if(returnProgramViewM != null && returnProgramViewM.movie != null) {
+								switch (tempProd_type) {
+								case 1:
+									ReturnProgramView returnProgramViewM = app.get_ReturnProgramView();
+									if(returnProgramViewM != null && returnProgramViewM.movie != null) {
+										
+										HotItemInfo hotItemInfo2 = new HotItemInfo();
+										hotItemInfo2.prod_id = tempProd_id;
+										hotItemInfo2.prod_name = returnProgramViewM.movie.name;
+										hotItemInfo2.prod_type = tempProd_type + "";
+										
+										String bigPicUrl = returnProgramViewM.movie.ipad_poster;
+										if(bigPicUrl == null || bigPicUrl.equals("")
+												||bigPicUrl.equals(UtilTools.EMPTY)) {
 											
-											HotItemInfo hotItemInfo2 = new HotItemInfo();
-											hotItemInfo2.prod_id = tempProd_id;
-											hotItemInfo2.prod_name = returnProgramViewM.movie.name;
-											hotItemInfo2.prod_type = tempProd_type + "";
-											
-											String bigPicUrl = returnProgramViewM.movie.ipad_poster;
-											if(bigPicUrl == null || bigPicUrl.equals("")
-													||bigPicUrl.equals(UtilTools.EMPTY)) {
-												
-												bigPicUrl = returnProgramViewM.movie.poster;
-											}
-											
-											hotItemInfo2.prod_pic_url = bigPicUrl;
-											hotItemInfo2.stars = returnProgramViewM.movie.stars;
-											hotItemInfo2.directors = returnProgramViewM.movie.directors;
-											hotItemInfo2.favority_num = returnProgramViewM.movie.favority_num;
-											hotItemInfo2.support_num = returnProgramViewM.movie.support_num;
-											hotItemInfo2.publish_date = returnProgramViewM.movie.publish_date;
-											hotItemInfo2.score = returnProgramViewM.movie.score;
-											hotItemInfo2.area = returnProgramViewM.movie.area;
-											hotItemInfo2.definition = returnProgramViewM.movie.definition;
-											hotItemInfo2.prod_summary = returnProgramViewM.movie.summary;
-//											hotItemInfo2.video_url = returnProgramView.tv.video_url;
-											hotItemInfo2.playback_time = tempTime+"";
-											hotItemInfo2.prod_subname = tempProd_sub_name;
-											hotItemInfo2.play_type = 1+"";
-											
-											if(movieHistoryList == null) {
-												
-												movieHistoryList.add(hotItemInfo2);
-												
-											}else {
-												
-												movieHistoryList.add(0, hotItemInfo2);
-											}
-											
-											allHistoryList.add(0,hotItemInfo2);
+											bigPicUrl = returnProgramViewM.movie.poster;
 										}
-										break;
-									case 2:
-									case 131:
-										ReturnProgramView returnProgramView = app.get_ReturnProgramView();
-										if(returnProgramView != null && returnProgramView.tv != null) {
+										
+										hotItemInfo2.prod_pic_url = bigPicUrl;
+										hotItemInfo2.stars = returnProgramViewM.movie.stars;
+										hotItemInfo2.directors = returnProgramViewM.movie.directors;
+										hotItemInfo2.favority_num = returnProgramViewM.movie.favority_num;
+										hotItemInfo2.support_num = returnProgramViewM.movie.support_num;
+										hotItemInfo2.publish_date = returnProgramViewM.movie.publish_date;
+										hotItemInfo2.score = returnProgramViewM.movie.score;
+										hotItemInfo2.area = returnProgramViewM.movie.area;
+										hotItemInfo2.definition = returnProgramViewM.movie.definition;
+										hotItemInfo2.prod_summary = returnProgramViewM.movie.summary;
+//										hotItemInfo2.video_url = returnProgramView.tv.video_url;
+										hotItemInfo2.playback_time = tempTime+"";
+										hotItemInfo2.prod_subname = tempProd_sub_name;
+										hotItemInfo2.play_type = 1+"";
+										
+										if(movieHistoryList != null) {
 											
-											HotItemInfo hotItemInfo2 = new HotItemInfo();
-											hotItemInfo2.prod_id = tempProd_id;
-											hotItemInfo2.prod_name = returnProgramView.tv.name;
-											hotItemInfo2.prod_type = tempProd_type + "";
-											
-											String bigPicUrl = returnProgramView.tv.ipad_poster;
-											if(bigPicUrl == null || bigPicUrl.equals("")
-													||bigPicUrl.equals(UtilTools.EMPTY)) {
-												
-												bigPicUrl = returnProgramView.tv.poster;
-											}
-											
-											hotItemInfo2.prod_pic_url = bigPicUrl;
-											hotItemInfo2.stars = returnProgramView.tv.stars;
-											hotItemInfo2.directors = returnProgramView.tv.directors;
-											hotItemInfo2.favority_num = returnProgramView.tv.favority_num;
-											hotItemInfo2.support_num = returnProgramView.tv.support_num;
-											hotItemInfo2.publish_date = returnProgramView.tv.publish_date;
-											hotItemInfo2.score = returnProgramView.tv.score;
-											hotItemInfo2.area = returnProgramView.tv.area;
-											hotItemInfo2.cur_episode = returnProgramView.tv.cur_episode;
-											hotItemInfo2.max_episode = returnProgramView.tv.max_episode;
-											hotItemInfo2.definition = returnProgramView.tv.definition;
-											hotItemInfo2.prod_summary = returnProgramView.tv.summary;
-//											hotItemInfo2.video_url = returnProgramView.tv.video_url;
-											hotItemInfo2.playback_time = tempTime+"";
-											hotItemInfo2.prod_subname = tempProd_sub_name;
-											hotItemInfo2.play_type = 1+"";
-											
-											if(tempProd_type == 2) {
-												
-												if(tvHistoryList == null) {
-													
-													tvHistoryList = new ArrayList<HotItemInfo>();
-													tvHistoryList.add(hotItemInfo2);
-												} else {
-													
-													tvHistoryList.add(0, hotItemInfo2);
-												}
-											} else {
-												
-												if(dongmanHistoryList == null) {
-													
-													dongmanHistoryList = new ArrayList<HotItemInfo>();
-													dongmanHistoryList.add(hotItemInfo2);
-												} else {
-													
-													dongmanHistoryList.add(0, hotItemInfo2);
-												}
-											}
-											
-											allHistoryList.add(0,hotItemInfo2);
+											movieHistoryList.add(0, hotItemInfo2);
 										}
-										break;
-									case 3:
-										ReturnProgramView returnProgramViewZ = app.get_ReturnProgramView();
-										if(returnProgramViewZ != null && returnProgramViewZ.show != null) {
-											
-											HotItemInfo hotItemInfo2 = new HotItemInfo();
-											hotItemInfo2.prod_id = tempProd_id;
-											hotItemInfo2.prod_name = returnProgramViewZ.show.name;
-											hotItemInfo2.prod_type = tempProd_type + "";
-											
-											String bigPicUrl = returnProgramViewZ.show.ipad_poster;
-											if(bigPicUrl == null || bigPicUrl.equals("")
-													||bigPicUrl.equals(UtilTools.EMPTY)) {
-												
-												bigPicUrl = returnProgramViewZ.show.poster;
-											}
-											
-											hotItemInfo2.prod_pic_url = bigPicUrl;
-											hotItemInfo2.stars = returnProgramViewZ.show.stars;
-											hotItemInfo2.directors = returnProgramViewZ.show.directors;
-											hotItemInfo2.favority_num = returnProgramViewZ.show.favority_num;
-											hotItemInfo2.support_num = returnProgramViewZ.show.support_num;
-											hotItemInfo2.publish_date = returnProgramViewZ.show.publish_date;
-											hotItemInfo2.score = returnProgramViewZ.show.score;
-											hotItemInfo2.area = returnProgramViewZ.show.area;
-											hotItemInfo2.cur_episode = returnProgramViewZ.show.cur_episode;
-											hotItemInfo2.max_episode = returnProgramViewZ.show.max_episode;
-											hotItemInfo2.definition = returnProgramViewZ.show.definition;
-											hotItemInfo2.prod_summary = returnProgramViewZ.show.summary;
-//											hotItemInfo2.video_url = returnProgramView.tv.video_url;
-											hotItemInfo2.playback_time = tempTime+"";
-											hotItemInfo2.prod_subname = tempProd_sub_name;
-											hotItemInfo2.play_type = 1+"";
-											
-											if(zongyiHistoryList == null) {
-												
-												zongyiHistoryList.add(hotItemInfo2);
-												
-											}else {
-												
-												zongyiHistoryList.add(0, hotItemInfo2);
-											}
-											
-											allHistoryList.add(0,hotItemInfo2);
-										}
-										break;
-
-									default:
-										break;
+										
+										allHistoryList.add(0,hotItemInfo2);
 									}
-									
-									((HistortyAdapter)listView.getAdapter()).notifyDataSetChanged();
+									break;
+								case 2:
+								case 131:
+									ReturnProgramView returnProgramView = app.get_ReturnProgramView();
+									if(returnProgramView != null && returnProgramView.tv != null) {
+										
+										HotItemInfo hotItemInfo2 = new HotItemInfo();
+										hotItemInfo2.prod_id = tempProd_id;
+										hotItemInfo2.prod_name = returnProgramView.tv.name;
+										hotItemInfo2.prod_type = tempProd_type + "";
+										
+										String bigPicUrl = returnProgramView.tv.ipad_poster;
+										if(bigPicUrl == null || bigPicUrl.equals("")
+												||bigPicUrl.equals(UtilTools.EMPTY)) {
+											
+											bigPicUrl = returnProgramView.tv.poster;
+										}
+										
+										hotItemInfo2.prod_pic_url = bigPicUrl;
+										hotItemInfo2.stars = returnProgramView.tv.stars;
+										hotItemInfo2.directors = returnProgramView.tv.directors;
+										hotItemInfo2.favority_num = returnProgramView.tv.favority_num;
+										hotItemInfo2.support_num = returnProgramView.tv.support_num;
+										hotItemInfo2.publish_date = returnProgramView.tv.publish_date;
+										hotItemInfo2.score = returnProgramView.tv.score;
+										hotItemInfo2.area = returnProgramView.tv.area;
+										hotItemInfo2.cur_episode = returnProgramView.tv.cur_episode;
+										hotItemInfo2.max_episode = returnProgramView.tv.max_episode;
+										hotItemInfo2.definition = returnProgramView.tv.definition;
+										hotItemInfo2.prod_summary = returnProgramView.tv.summary;
+//										hotItemInfo2.video_url = returnProgramView.tv.video_url;
+										hotItemInfo2.playback_time = tempTime+"";
+										hotItemInfo2.prod_subname = tempProd_sub_name;
+										hotItemInfo2.play_type = 1+"";
+										
+										if(tempProd_type == 2) {
+											
+											if(tvHistoryList != null) {
+												
+												tvHistoryList.add(0, hotItemInfo2);
+											}
+										} else {
+											
+											if(dongmanHistoryList != null) {
+												
+												dongmanHistoryList.add(0, hotItemInfo2);
+											}
+										}
+										
+										allHistoryList.add(0,hotItemInfo2);
+									}
+									break;
+								case 3:
+									ReturnProgramView returnProgramViewZ = app.get_ReturnProgramView();
+									if(returnProgramViewZ != null && returnProgramViewZ.show != null) {
+										
+										HotItemInfo hotItemInfo2 = new HotItemInfo();
+										hotItemInfo2.prod_id = tempProd_id;
+										hotItemInfo2.prod_name = returnProgramViewZ.show.name;
+										hotItemInfo2.prod_type = tempProd_type + "";
+										
+										String bigPicUrl = returnProgramViewZ.show.ipad_poster;
+										if(bigPicUrl == null || bigPicUrl.equals("")
+												||bigPicUrl.equals(UtilTools.EMPTY)) {
+											
+											bigPicUrl = returnProgramViewZ.show.poster;
+										}
+										
+										hotItemInfo2.prod_pic_url = bigPicUrl;
+										hotItemInfo2.stars = returnProgramViewZ.show.stars;
+										hotItemInfo2.directors = returnProgramViewZ.show.directors;
+										hotItemInfo2.favority_num = returnProgramViewZ.show.favority_num;
+										hotItemInfo2.support_num = returnProgramViewZ.show.support_num;
+										hotItemInfo2.publish_date = returnProgramViewZ.show.publish_date;
+										hotItemInfo2.score = returnProgramViewZ.show.score;
+										hotItemInfo2.area = returnProgramViewZ.show.area;
+										hotItemInfo2.cur_episode = returnProgramViewZ.show.cur_episode;
+										hotItemInfo2.max_episode = returnProgramViewZ.show.max_episode;
+										hotItemInfo2.definition = returnProgramViewZ.show.definition;
+										hotItemInfo2.prod_summary = returnProgramViewZ.show.summary;
+//										hotItemInfo2.video_url = returnProgramView.tv.video_url;
+										hotItemInfo2.playback_time = tempTime+"";
+										hotItemInfo2.prod_subname = tempProd_sub_name;
+										hotItemInfo2.play_type = 1+"";
+										
+										if(zongyiHistoryList!= null){
+											
+											zongyiHistoryList.add(0, hotItemInfo2);
+										}
+										
+										allHistoryList.add(0,hotItemInfo2);
+									}
+									break;
+
+								default:
+									break;
 								}
 								
+								((HistortyAdapter)listView.getAdapter()).notifyDataSetChanged();
 							}
 						}
 					}
