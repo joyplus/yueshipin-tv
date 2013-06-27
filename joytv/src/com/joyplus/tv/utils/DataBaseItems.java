@@ -5,6 +5,9 @@ public class DataBaseItems {
 	public static final String ORDER_BY_TIME_DESC = "integer_1 desc";
 	public static final String ORDER_BY_TIME_ASC = "integer_1 asc";
 	
+	public static final String ORDER_BY_ID_DESC = "id desc";
+	public static final String ORDER_BY_ID_ASC = "id asc";
+	
 	public static interface SQLite3_DataType {
 		
 		

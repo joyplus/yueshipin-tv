@@ -348,7 +348,8 @@ public class DBUtils {
 		String[] columns = { UserHistory.PROD_TYPE,
 				UserHistory.PROD_SUBNAME,UserHistory.PLAYBACK_TIME};// 返回当前类型、看到的集数【电影为Empty】,所看到的的时间
 		
-		Cursor cursor = database.query(TvDatabaseHelper.HISTORY_TABLE_NAME, columns, selection, selectionArgs, null, null, null);
+		Cursor cursor = database.query(TvDatabaseHelper.HISTORY_TABLE_NAME, columns, selection, selectionArgs, null, null, 
+				DataBaseItems.ORDER_BY_ID_DESC);
 		
 		HotItemInfo info = new HotItemInfo();
 		
