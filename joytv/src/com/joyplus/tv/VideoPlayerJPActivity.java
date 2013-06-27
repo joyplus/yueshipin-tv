@@ -2,8 +2,10 @@ package com.joyplus.tv;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -1803,7 +1805,8 @@ public class VideoPlayerJPActivity extends Activity implements
 		URL url;
 		try {
 			url = new URL(urlStr);
-			HttpGet mHttpGet = new HttpGet(url.toURI());
+			URI uri = new URI(url.getProtocol(), url.getHost(), url.getPath(), url.getQuery(),null);
+			HttpGet mHttpGet = new HttpGet(uri);
 			HttpResponse response = mAndroidHttpClient.execute(mHttpGet);
 			StatusLine statusLine = response.getStatusLine();
 			
