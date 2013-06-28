@@ -82,6 +82,7 @@ import com.joyplus.tv.utils.JieMianConstant;
 import com.joyplus.tv.utils.Log;
 import com.joyplus.tv.utils.SouceComparatorIndex1;
 import com.joyplus.tv.utils.UtilTools;
+import com.umeng.analytics.MobclickAgent;
 
 public class VideoPlayerJPActivity extends Activity implements
 		MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener,
@@ -1515,6 +1516,13 @@ public class VideoPlayerJPActivity extends Activity implements
 			mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
 		}
 	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		MobclickAgent.onResume(this);
+		super.onResume();
+	}
 
 	@Override
 	protected void onPause() {
@@ -1522,6 +1530,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		Log.i(TAG, "onPause--->");
 		
 		// TODO Auto-generated method stub
+		MobclickAgent.onPause(this);
 		if (mProd_type > 0&&mStatue!=STATUE_LOADING) {
 			// SaveToServer(mVideoView.getDuration(),
 			// mVideoView.getCurrentPosition());
@@ -1530,6 +1539,9 @@ public class VideoPlayerJPActivity extends Activity implements
 			Log.d(TAG, "duration ->" + duration);
 			Log.d(TAG, "curretnPosition ->" + curretnPosition);
 			saveToServer(duration / 1000, curretnPosition / 1000);
+		}
+		if(!isFinishing()){
+			finish();
 		}
 		super.onPause();
 	}
