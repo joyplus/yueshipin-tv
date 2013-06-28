@@ -1345,14 +1345,17 @@ public class ShowXiangqingMovie extends Activity implements
 		public void run() {
 			// TODO Auto-generated method stub
 			if(movieData.movie.episodes.length <= 0) {
-				
+				Log.i(TAG, "CheckPlayUrl---><= 0");
 				handler.sendEmptyMessage(0);
 				return;
 			}
 			if (movieData.movie.episodes[0].down_urls == null) {
+				Log.i(TAG, "CheckPlayUrl--->down_urls == null");
 				handler.sendEmptyMessage(0);
 				return;
 			}
+			
+			Log.i(TAG, "CheckPlayUrl--->length" + movieData.movie.episodes.length);
 			
 			for(int i = 0; i < movieData.movie.episodes[0].down_urls.length; i++){
 				for (int j = 0; j < movieData.movie.episodes[0].down_urls[i].urls.length; j++){

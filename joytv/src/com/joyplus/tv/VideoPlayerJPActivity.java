@@ -1820,8 +1820,21 @@ public class VideoPlayerJPActivity extends Activity implements
 
 		@Override
 		public void run() {
+			
 			// TODO Auto-generated method stub
+			
+			Log.i(TAG, "UrlRedirectTask-->" + currentPlayUrl);
+			
+			if(currentPlayUrl != null && !currentPlayUrl.equals("")) {
+				
+				if(currentPlayUrl.indexOf(("{now_date}")) != -1) {
+					
+					currentPlayUrl = currentPlayUrl.replace("{now_date}", System.currentTimeMillis()/1000 + "");
+				}
+			}
+			
 			String str = getRedirectUrl();
+			
 			if(str!=null){
 				currentPlayUrl = str;
 				mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
@@ -1865,8 +1878,9 @@ public class VideoPlayerJPActivity extends Activity implements
 		URL url;
 		try {
 			url = new URL(urlStr);
-			URI uri = new URI(url.getProtocol(), url.getHost(), url.getPath(), url.getQuery(),null);
-			HttpGet mHttpGet = new HttpGet(uri);
+//			URI uri = new URI(url.getProtocol(), url.getHost(), url.getPath(), url.getQuery(),null);
+//			HttpGet mHttpGet = new HttpGet(uri);
+			HttpGet mHttpGet = new HttpGet(url.toURI());
 			HttpResponse response = mAndroidHttpClient.execute(mHttpGet);
 			StatusLine statusLine = response.getStatusLine();
 			
@@ -1874,7 +1888,7 @@ public class VideoPlayerJPActivity extends Activity implements
 			Log.i(TAG, "HTTP STATUS : " + status);
 			
 			if (status == HttpStatus.SC_OK) {
-				Log.i(TAG, "HttpStatus.SC_OK--->");
+				Log.i(TAG, "HttpStatus.SC_OK--->" + urlStr);
 				// 正确的话直接返回，不进行下面的步骤
 				mAndroidHttpClient.close();
 				list.add(urlStr);
@@ -1882,7 +1896,7 @@ public class VideoPlayerJPActivity extends Activity implements
 				return;//后面不执行
 			} else {
 				
-				Log.i(TAG, "NOT HttpStatus.SC_OK--->");
+				Log.i(TAG, "NOT HttpStatus.SC_OK--->" + urlStr);
 				
 				if (status == HttpStatus.SC_MOVED_PERMANENTLY || // 网址被永久移除
 						status == HttpStatus.SC_MOVED_TEMPORARILY || // 网址暂时性移除
