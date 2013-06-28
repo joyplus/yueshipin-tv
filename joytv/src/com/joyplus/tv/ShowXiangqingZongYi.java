@@ -199,7 +199,7 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 		
 		if(historyPlayIndex4DB != -1) {//能够获取历史记录
 			
-			if(tempStartTag < tempEndTag) {//正序
+			if(tempStartTag > tempEndTag) {//正序
 				
 				max = tempEndTag;
 				min = tempStartTag;
@@ -239,6 +239,14 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 			aq.id(R.id.arrow_right).invisible();
 			aq.id(R.id.scrollview).gone();
 			return;
+		} else {
+			
+//			if(isOver){
+				selectedIndex = seletedButtonIndex%20 ==0 ? seletedButtonIndex/20:(seletedButtonIndex/20 + 1);
+//			}else{
+//				int temp = num - seletedButtonIndex;
+//				selectedIndex = temp%20 ==0 ? temp/20:(temp/20);
+//			}
 		}
 		
 		isShowHeadTable = true;
@@ -260,31 +268,31 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 					int tempStartTag = i*COUNT+1;
 					int tempEndTag = num;
 					
-					setTitleButtonEnable(i+1,tempStartTag, tempEndTag, b);
+//					setTitleButtonEnable(i+1,tempStartTag, tempEndTag, b);
 				}else{
 					b.setText((i*COUNT+1) +"-"+(i+1)*COUNT);
 					
 					int tempStartTag = i*COUNT+1;
 					int tempEndTag = (i+1)*COUNT;
 					
-					setTitleButtonEnable(i+1,tempStartTag, tempEndTag, b);
+//					setTitleButtonEnable(i+1,tempStartTag, tempEndTag, b);
 				}
 			}else{
 				if(num-(i+1)*COUNT<0){
 					b.setText((num-i*COUNT) + "-1");
 					
-					setTitleButtonEnable(i+1,(num-i*COUNT), 1, b);
+//					setTitleButtonEnable(i+1,(num-i*COUNT), 1, b);
 				}else{
 					b.setText((num-i*COUNT) + "-" + (num-(i+1)*COUNT+1));
 					
-					setTitleButtonEnable(i+1,(num-i*COUNT), num-(i+1)*COUNT+1, b);
+//					setTitleButtonEnable(i+1,(num-i*COUNT), num-(i+1)*COUNT+1, b);
 				}
 				
 			}
-			if(i==0 && historyPlayIndex4DB == -1){//如果获取不到历史播放记录集数，就使用默认值
-				seletedTitleButton = b;
-				seletedTitleButton.setEnabled(false);
-			}
+//			if(i==0 && historyPlayIndex4DB == -1){//如果获取不到历史播放记录集数，就使用默认值
+//				seletedTitleButton = b;
+//				seletedTitleButton.setEnabled(false);
+//			}
 			b.setBackgroundResource(R.drawable.bg_button_tv_title_selector);
 			b.setTextColor(getResources().getColorStateList(R.color.tv_title_btn_text_color_selector));
 //			b.setCompoundDrawablesWithIntrinsicBounds(getResources()
@@ -298,6 +306,11 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 				layout.addView(t);
 			}
 			
+			if(i == selectedIndex-1){
+				seletedTitleButton = b;
+				seletedTitleButton.setEnabled(false);
+				seletedTitleButton.requestFocus();
+			}
 			
 			if(i == 0) {
 				
@@ -561,7 +574,7 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 			if(b!=null){
 				b.setBackgroundResource(R.drawable.bg_button_tv_selector_1);
 				b.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector_1));
-				b.setPadding(8, 0, 0, 0);
+//				b.setPadding(8, 0, 0, 0);
 			}
 			
 			//从DB文件中获取历史播放集数
@@ -895,26 +908,26 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 			row.setPadding(0, 5, 0, 5);
 			table.addView(row);
 			
-			if(!isSelected){//如果当前页没有一个button被选中
-				
-				if(seletedIndexButton == null) { //如果当前页没有一个button被选中
-					
-					if(historyPlayIndex4DB != -1) {
-						
-						Button button = (Button) findViewById(num-historyPlayIndex4DB + 1);
-						if(button != null) {
-							
-							button.setBackgroundResource(R.drawable.bg_button_tv_selector_1);
-							button.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector_1));
-//							button.setPadding(8, 0, 0, 0);
-							
-							seletedIndexButton = button;
-							seletedButtonIndex = num-historyPlayIndex4DB + 1;
-						}
-					}
-
-				}
-			}
+//			if(!isSelected){//如果当前页没有一个button被选中
+//				
+//				if(seletedIndexButton == null) { //如果当前页没有一个button被选中
+//					
+//					if(historyPlayIndex4DB != -1) {
+//						
+//						Button button = (Button) findViewById(num-historyPlayIndex4DB + 1);
+//						if(button != null) {
+//							
+//							button.setBackgroundResource(R.drawable.bg_button_tv_selector_1);
+//							button.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector_1));
+////							button.setPadding(8, 0, 0, 0);
+//							
+//							seletedIndexButton = button;
+//							seletedButtonIndex = num-historyPlayIndex4DB + 1;
+//						}
+//					}
+//
+//				}
+//			}
 			
 		}
 	}
@@ -985,12 +998,12 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 					
 					if(historyPlayProdSubName.equals(date.show.episodes[i].name)) {
 						
-						historyPlayIndex4DB = date.show.episodes.length - i;
+						historyPlayIndex4DB = i + 1;
 						Log.i(TAG, "onCreate--->historyPlayIndex4DB:" + historyPlayIndex4DB);
 					}
 				}
 			}
-			
+			seletedButtonIndex = historyPlayIndex4DB;
 			updateView();
 			
 			updateURLBoolean();
@@ -1334,8 +1347,8 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 		if(data != null) {
 			
 			String prodSubName = data.getStringExtra("prod_subname");
-			Log.i(TAG, "onActivityResult--->" + prodSubName 
-					+ " seletedIndexButton.getText()-->" + seletedIndexButton.getText());
+//			Log.i(TAG, "onActivityResult--->" + prodSubName 
+//					+ " seletedIndexButton.getText()-->" + seletedIndexButton.getText());
 			
 			if(prodSubName != null && !prodSubName.equals("")
 					&& !prodSubName.equals(seletedIndexButton.getText())) {//播放器中集数与一开始所选集数不同
@@ -1348,7 +1361,7 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 						
 						if(historyPlayProdSubName.equals(date.show.episodes[i].name)) {
 							
-							historyPlayIndex4DB = date.show.episodes.length - i;
+							historyPlayIndex4DB = i + 1;
 							Log.i(TAG, "historyPlayIndex4DB:" + historyPlayIndex4DB);
 						}
 						
@@ -1358,67 +1371,9 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 				
 				if(historyPlayIndex4DB != -1) {
 					
-					if(isShowHeadTable) {//如果显示表头
-						
-						if(seletedTitleButton != null) {
-							
-							seletedTitleButton.setEnabled(true);
-						}
-						
-						if(seletedIndexButton != null){
-							
-							seletedIndexButton.setBackgroundResource(R.drawable.bg_button_tv_selector);
-							seletedIndexButton.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector));
-							seletedIndexButton.setPadding(8, 0, 0, 0);
-						}
-						
-						seletedButtonIndex = -1;
-						seletedIndexButton = null;
-						
-						seletedTitleButton.setEnabled(true);
-						initButton();
-					}else {//如果只有一页
-						
-						int tempId = -1;
-						
-						if(date.show.episodes.length > 0) {
-							
-							tempId = date.show.episodes.length - historyPlayIndex4DB + 1;
-						}
-						
-						if(tempId > 0) {
-							
-							if(seletedIndexButton == null){
-								seletedIndexButton = (Button) findViewById(tempId);
-								
-								if(seletedIndexButton != null) {
-									
-									seletedIndexButton.setBackgroundResource(R.drawable.bg_button_tv_selector_1);
-									seletedIndexButton.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector_1));
-//									seletedIndexButton.setEnabled(false);
-									seletedIndexButton.setPadding(8, 0, 0, 0);
-								}
-
-							}else{
-//								seletedIndexButton.setEnabled(true);
-								seletedIndexButton.setBackgroundResource(R.drawable.bg_button_tv_selector);
-								seletedIndexButton.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector));
-								seletedIndexButton.setPadding(8, 0, 0, 0);
-								
-								seletedIndexButton = (Button) findViewById(tempId);
-								if(seletedIndexButton != null) {
-									
-									seletedIndexButton.setBackgroundResource(R.drawable.bg_button_tv_selector_1);
-									seletedIndexButton.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector_1));
-//									seletedIndexButton.setEnabled(false);
-									seletedIndexButton.setPadding(8, 0, 0, 0);
-								}
-							}
-						}
-						
-
-						seletedButtonIndex = historyPlayIndex4DB;
-					}
+					seletedButtonIndex = historyPlayIndex4DB;
+//					historyPlayIndex4DB = historyPlayIndex4DB;
+					updateView();
 				}
 			}
 			

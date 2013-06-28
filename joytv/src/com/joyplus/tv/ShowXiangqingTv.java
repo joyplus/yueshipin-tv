@@ -234,6 +234,13 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 			aq.id(R.id.arrow_right).invisible();
 			aq.id(R.id.scrollview).gone();
 			return;
+		}else{
+			if(isOver){
+				selectedIndex = seletedButtonIndex%20==0?seletedButtonIndex%20:(seletedButtonIndex%20+1);
+			}else{
+				int temp = num - seletedButtonIndex;
+				selectedIndex = temp%20 == 0? temp/20:(temp/20+1);
+			}
 		}
 		
 		isShowHeadTable = true;
@@ -1320,11 +1327,17 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 		if(data != null) {
 			
 			String prodSubName = data.getStringExtra("prod_subname");
-			Log.i(TAG, "onActivityResult--->" + prodSubName 
-					+ " seletedIndexButton.getText()-->" + seletedIndexButton.getText());
+			Log.i(TAG, "onActivityResult--->" + prodSubName );
 			
-			if(prodSubName != null && !prodSubName.equals("")
-					&& !prodSubName.equals(seletedIndexButton.getText())) {//播放器中集数与一开始所选集数不同
+			if(prodSubName != null && !prodSubName.equals("")) {//播放器中集数与一开始所选集数不同
+				
+//				if(seletedButtonIndex != null && seletedIndexButton.getText().equals(prodSubName)) {
+//					
+//					
+//				} else {
+//					
+//					
+//				}
 				
 				int tempId = -1;
 				
@@ -1335,59 +1348,63 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 					e.printStackTrace();
 				}
 				
-				if(tempId != -1) {
-					
-					if(isShowHeadTable) {//如果显示表头
-						
-						if(seletedTitleButton != null) {
-							
-							seletedTitleButton.setEnabled(true);
-						}
-						
-						if(seletedIndexButton != null){
-							
-							seletedIndexButton.setBackgroundResource(R.drawable.bg_button_tv_selector);
-							seletedIndexButton.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector));
-							seletedIndexButton.setPadding(8, 0, 0, 0);
-						}
-						
-						seletedButtonIndex = -1;
-						seletedIndexButton = null;
-						
-						historyPlayIndex4DB = tempId;
-						seletedTitleButton.setEnabled(true);
-						initButton();
-					}else {//如果只有一页
-						
-						if(seletedIndexButton == null){
-							seletedIndexButton = (Button) findViewById(tempId);
-							
-							if(seletedIndexButton != null) {
-								
-								seletedIndexButton.setBackgroundResource(R.drawable.bg_button_tv_selector_1);
-								seletedIndexButton.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector_1));
-//								seletedIndexButton.setEnabled(false);
-								seletedIndexButton.setPadding(8, 0, 0, 0);
-							}
-
-						}else{
-//							seletedIndexButton.setEnabled(true);
-							seletedIndexButton.setBackgroundResource(R.drawable.bg_button_tv_selector);
-							seletedIndexButton.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector));
-							seletedIndexButton.setPadding(8, 0, 0, 0);
-							
-							seletedIndexButton = (Button) findViewById(tempId);
-							if(seletedIndexButton != null) {
-								
-								seletedIndexButton.setBackgroundResource(R.drawable.bg_button_tv_selector_1);
-								seletedIndexButton.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector_1));
-//								seletedIndexButton.setEnabled(false);
-								seletedIndexButton.setPadding(8, 0, 0, 0);
-							}
-						}
-						seletedButtonIndex = tempId;
-					}
-				}
+				seletedButtonIndex = tempId;
+				historyPlayIndex4DB = tempId;
+				updateView();
+				
+//				if(tempId != -1) {
+//					
+//					if(isShowHeadTable) {//如果显示表头
+//						
+//						if(seletedTitleButton != null) {
+//							
+//							seletedTitleButton.setEnabled(true);
+//						}
+//						
+//						if(seletedIndexButton != null){
+//							
+//							seletedIndexButton.setBackgroundResource(R.drawable.bg_button_tv_selector);
+//							seletedIndexButton.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector));
+//							seletedIndexButton.setPadding(8, 0, 0, 0);
+//						}
+//						
+//						seletedButtonIndex = -1;
+//						seletedIndexButton = null;
+//						
+//						historyPlayIndex4DB = tempId;
+//						seletedTitleButton.setEnabled(true);
+//						initButton();
+//					}else {//如果只有一页
+//						
+//						if(seletedIndexButton == null){
+//							seletedIndexButton = (Button) findViewById(tempId);
+//							
+//							if(seletedIndexButton != null) {
+//								
+//								seletedIndexButton.setBackgroundResource(R.drawable.bg_button_tv_selector_1);
+//								seletedIndexButton.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector_1));
+////								seletedIndexButton.setEnabled(false);
+//								seletedIndexButton.setPadding(8, 0, 0, 0);
+//							}
+//
+//						}else{
+////							seletedIndexButton.setEnabled(true);
+//							seletedIndexButton.setBackgroundResource(R.drawable.bg_button_tv_selector);
+//							seletedIndexButton.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector));
+//							seletedIndexButton.setPadding(8, 0, 0, 0);
+//							
+//							seletedIndexButton = (Button) findViewById(tempId);
+//							if(seletedIndexButton != null) {
+//								
+//								seletedIndexButton.setBackgroundResource(R.drawable.bg_button_tv_selector_1);
+//								seletedIndexButton.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector_1));
+////								seletedIndexButton.setEnabled(false);
+//								seletedIndexButton.setPadding(8, 0, 0, 0);
+//							}
+//						}
+//						seletedButtonIndex = tempId;
+//					}
+//				}
 			}
 			
 			
