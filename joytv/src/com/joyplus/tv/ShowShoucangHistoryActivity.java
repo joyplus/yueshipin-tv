@@ -13,13 +13,11 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -27,9 +25,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.PopupWindow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
@@ -37,16 +33,13 @@ import com.androidquery.callback.AjaxStatus;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.joyplus.tv.Adapters.CurrentPlayData;
 import com.joyplus.tv.HistoryActivity.HistortyAdapter;
 import com.joyplus.tv.Service.Return.ReturnUserFavorities;
-import com.joyplus.tv.Service.Return.ReturnUserPlayHistories;
-import com.joyplus.tv.Video.VideoPlayerActivity;
 import com.joyplus.tv.entity.HotItemInfo;
-import com.joyplus.tv.ui.NavigateView;
-import com.joyplus.tv.ui.NavigateView.OnResultListener;
+import com.joyplus.tv.utils.DBUtils;
 import com.joyplus.tv.utils.ItemStateUtils;
 import com.joyplus.tv.utils.Log;
+import com.joyplus.tv.utils.UtilTools;
 import com.umeng.analytics.MobclickAgent;
 
 public class ShowShoucangHistoryActivity extends Activity implements OnClickListener, OnItemSelectedListener,OnFocusChangeListener {
@@ -199,10 +192,56 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 					@Override
 					public void onClick(View v) {
 						// TODO Auto-generated method stub
+						
+						Log.i(TAG, "delButton.setOnClickListener--->" + ((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_id);
+						
+						String prod_id = ((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_id;
 						deleteShoucang(true, ((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_id);
-						((HistortyAdapter)listView.getAdapter()).data.remove(arg2);
+//						((HistortyAdapter)listView.getAdapter()).data.remove(arg2);
+						if(allHistoryList!=null){
+							for(int i=0; i<allHistoryList.size(); i++){
+								if(allHistoryList.get(i).prod_id.equals(prod_id)){
+									allHistoryList.remove(i);
+								}
+							}
+						}
+						
+						if(movieHistoryList!=null){
+							for(int i=0; i<movieHistoryList.size(); i++){
+								if(movieHistoryList.get(i).prod_id.equals(prod_id)){
+									movieHistoryList.remove(i);
+								}
+							}
+						}
+						
+						if(tvHistoryList!=null){
+							for(int i=0; i<tvHistoryList.size(); i++){
+								if(tvHistoryList.get(i).prod_id.equals(prod_id)){
+									tvHistoryList.remove(i);
+								}
+							}
+						}
+						if(zongyiHistoryList!=null){
+							for(int i=0; i<zongyiHistoryList.size(); i++){
+								if(zongyiHistoryList.get(i).prod_id.equals(prod_id)){
+									zongyiHistoryList.remove(i);
+								}
+							}
+						}
+						if(dongmanHistoryList!=null){
+							for(int i=0; i<dongmanHistoryList.size(); i++){
+								if(dongmanHistoryList.get(i).prod_id.equals(prod_id)){
+									dongmanHistoryList.remove(i);
+								}
+							}
+						}
 						((BaseAdapter)listView.getAdapter()).notifyDataSetChanged();
 						dialog.dismiss();
+
+						//删除逐条数据时，同时删除数据库里面的数据
+						DBUtils.deleteData4ProId(getApplicationContext(),
+								UtilTools.getCurrentUserId(getApplicationContext()), 
+								prod_id);
 					}
 				});
 				nameText.setText(((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_name);
@@ -474,7 +513,37 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 					// TODO Auto-generated method stub
 					dialog.dismiss();
 					deleteShoucang(false, "");
+					
+					List<HotItemInfo> list = ((HistortyAdapter)listView.getAdapter()).data;
+					for(int i=0;i< list.size();i++) {
+						
+						DBUtils.deleteData4ProId(getApplicationContext(),
+								UtilTools.getCurrentUserId(getApplicationContext()), list.get(i).prod_id);
+					}
+					
+//					((HistortyAdapter)listView.getAdapter()).data.clear();
 					((HistortyAdapter)listView.getAdapter()).data.clear();
+					if(allHistoryList!=null&&allHistoryList.size()>0){
+						allHistoryList.clear();
+						allHistoryList = null;
+					}
+					if(movieHistoryList!=null&&movieHistoryList.size()>0){
+						movieHistoryList.clear();
+						movieHistoryList = null;
+					}
+					if(tvHistoryList!=null&&tvHistoryList.size()>0){
+						tvHistoryList.clear();
+						tvHistoryList = null;
+					}
+					if(zongyiHistoryList!=null&&zongyiHistoryList.size()>0){
+						zongyiHistoryList.clear();
+						zongyiHistoryList = null;
+					}
+					if(dongmanHistoryList!=null&&dongmanHistoryList.size()>0){
+						dongmanHistoryList.clear();
+						dongmanHistoryList = null;
+					}
+					
 					((HistortyAdapter)listView.getAdapter()).notifyDataSetChanged();
 				}
 			});
@@ -603,7 +672,7 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 //				item.prod_pic_url = result.favorities[i].big_content_pic_url;
 				String bigPicUrl = result.favorities[i].big_content_pic_url;
 				if(bigPicUrl == null || bigPicUrl.equals("")
-						||bigPicUrl.equals(StatisticsUtils.EMPTY)) {
+						||bigPicUrl.equals(UtilTools.EMPTY)) {
 					
 					bigPicUrl = result.favorities[i].content_pic_url;
 				}

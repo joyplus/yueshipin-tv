@@ -6,7 +6,7 @@ import org.json.JSONObject;
 
 import com.androidquery.callback.AjaxStatus;
 import com.joyplus.tv.entity.MovieItemData;
-import com.joyplus.tv.utils.BangDanKey;
+import com.joyplus.tv.utils.BangDanConstant;
 import com.joyplus.tv.utils.JieMianConstant;
 import com.joyplus.tv.utils.MyKeyEventKey;
 
@@ -14,7 +14,7 @@ import android.app.Activity;
 import android.view.View;
 
 public abstract class AbstractShowActivity extends Activity implements
-		View.OnKeyListener, MyKeyEventKey, BangDanKey, JieMianConstant,
+		View.OnKeyListener, MyKeyEventKey, BangDanConstant, JieMianConstant,
 		View.OnClickListener, View.OnFocusChangeListener {
 
 	protected void initActivity() {

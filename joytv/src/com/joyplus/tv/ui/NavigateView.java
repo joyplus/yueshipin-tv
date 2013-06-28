@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.os.Handler;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.AnimationSet;
@@ -49,6 +50,10 @@ public class NavigateView extends RelativeLayout implements OnItemSelectedListen
 	private Context mContext;
 	private Handler handler = new Handler();
 	
+	private boolean isTouchMode = false;//默认为光标移动模式
+	
+	private Button startFilterBt,exitBt;
+	
 	private BroadcastReceiver recvier = new BroadcastReceiver(){
 
 		@Override
@@ -64,25 +69,13 @@ public class NavigateView extends RelativeLayout implements OnItemSelectedListen
 			String action = intent.getAction();
 			if("KEY_EVENT_KEYCODE_DPAD_CENTER".equals(action)){
 				if(resultListener != null){
-					String[] result = new String[3];
-					result[0] = array_diqu[gallery1.getSelectedItemPosition()];
-					result[1] = array_leibie[gallery2.getSelectedItemPosition()];
-					result[2] = array_niandai[gallery3.getSelectedItemPosition()];
-					selected_gallery1_last = gallery1.getSelectedItemPosition();
-					selected_gallery2_last = gallery2.getSelectedItemPosition();
-					selected_gallery3_last = gallery3.getSelectedItemPosition();
-					resultListener.onResult(NavigateView.this, false, result);
+					
+					returnResult(false);
 				}
 			}else if("KEY_EVENT_KEYCODE_BACK".equals(action)){
 				if(resultListener != null){
-					String[] result = new String[3];
-					result[0] = array_diqu[gallery1.getSelectedItemPosition()];
-					result[1] = array_leibie[gallery2.getSelectedItemPosition()];
-					result[2] = array_niandai[gallery3.getSelectedItemPosition()];
-					selected_gallery1_last = gallery1.getSelectedItemPosition();
-					selected_gallery2_last = gallery2.getSelectedItemPosition();
-					selected_gallery3_last = gallery3.getSelectedItemPosition();
-					resultListener.onResult(NavigateView.this, true, result);
+					
+					returnResult(true);
 				}
 			}else if("KEY_EVENT_KEYCODE_DPAD_UP".equals(action)){
 				Log.d(TAG, "fouces view name " + getFocusedChild().getClass().getName());
@@ -178,9 +171,40 @@ public class NavigateView extends RelativeLayout implements OnItemSelectedListen
 		}
 	}
 	
+	private void returnResult(boolean isBack) {
+		
+		String[] result = new String[3];
+		result[0] = array_diqu[gallery1.getSelectedItemPosition()];
+		result[1] = array_leibie[gallery2.getSelectedItemPosition()];
+		result[2] = array_niandai[gallery3.getSelectedItemPosition()];
+		selected_gallery1_last = gallery1.getSelectedItemPosition();
+		selected_gallery2_last = gallery2.getSelectedItemPosition();
+		selected_gallery3_last = gallery3.getSelectedItemPosition();
+		
+		if(isBack) {
+			
+			resultListener.onResult(NavigateView.this, true, result);
+			
+		} else {
+			
+			resultListener.onResult(NavigateView.this, false, result);
+		}
+		
+		isTouchMode = false;
+		
+		LayoutParams parm = (LayoutParams) relativeLayout.getLayoutParams();
+		parm.height = 140;
+		relativeLayout.requestLayout();
+		
+		exitBt.setVisibility(View.INVISIBLE);
+		startFilterBt.setVisibility(View.INVISIBLE);
+		
+	}
+	
 	public NavigateView(Context context) {
 		super(context);
 		this.mContext = context;
+		isTouchMode = false;
 		// TODO Auto-generated constructor stub
 	}
 	
@@ -203,6 +227,107 @@ public class NavigateView extends RelativeLayout implements OnItemSelectedListen
 		all = (TextView) rootView.findViewById(R.id.all);
 		resetButton = (Button) rootView.findViewById(R.id.resetButton);
 		relativeLayout = (RelativeLayout) rootView.findViewById(R.id.relative_layout);
+		
+		startFilterBt = (Button) rootView.findViewById(R.id.bt_start_filter);
+		exitBt = (Button) rootView.findViewById(R.id.bt_exit);
+		
+		startFilterBt.setFocusable(false);
+		startFilterBt.setFocusableInTouchMode(false);
+		
+
+		exitBt.setFocusable(false);
+		exitBt.setFocusableInTouchMode(false);
+		
+		exitBt.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				
+				returnResult(true);
+			}
+		});
+		
+		startFilterBt.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				
+				returnResult(false);
+			}
+		});
+		
+		relativeLayout.setOnHoverListener(new View.OnHoverListener() {
+			
+			@Override
+			public boolean onHover(View v, MotionEvent event) {
+				// TODO Auto-generated method stub
+				final int action = event.getAction();
+				
+				switch (action) {
+				case MotionEvent.ACTION_HOVER_ENTER:
+					
+					exitBt.setVisibility(View.VISIBLE);
+					startFilterBt.setVisibility(View.VISIBLE);
+					
+					isTouchMode = true;
+					LayoutParams parm = (LayoutParams) relativeLayout.getLayoutParams();
+					parm.height = 180;
+					relativeLayout.requestLayout();
+					
+					break;
+				case MotionEvent.ACTION_HOVER_EXIT:
+					
+					break;
+				case MotionEvent.ACTION_HOVER_MOVE:
+					
+					break;
+
+				default:
+					break;
+				}
+				
+				return false;
+			}
+		});
+		
+		resetButton.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				
+					gallery1.setSelection(0);
+					gallery2.setSelection(0);
+					gallery3.setSelection(0);
+					gallery1.setVisibility(View.INVISIBLE);
+					gallery2.setVisibility(View.INVISIBLE);
+					gallery3.setVisibility(View.INVISIBLE);
+					gallery1.onFling(null, null, -1, 0);
+					gallery2.onFling(null, null, -1, 0);
+					gallery3.onFling(null, null, -1, 0);
+					handler.postDelayed(new Runnable() {
+						
+						@Override
+						public void run() {
+							// TODO Auto-generated method stub
+							gallery1.setVisibility(View.VISIBLE);
+							gallery2.setVisibility(View.VISIBLE);
+							gallery3.setVisibility(View.VISIBLE);
+						}
+					}, 200);
+//					selectedTextView1.setTextColor(Color.WHITE);
+					gallery1.requestFocus();
+					highlightLayout.setBackgroundResource(R.drawable.menubg);
+					highlightRect.setVisibility(View.VISIBLE);
+					resetButton.setEnabled(false);
+					resetButton.setVisibility(View.GONE);
+//					LayoutParams parm = (LayoutParams) relativeLayout.getLayoutParams();
+//					parm.height = 140;
+//					relativeLayout.requestLayout();
+			}
+		});
 		resetButton.setOnKeyListener(new OnKeyListener() {
 			
 			@Override
@@ -217,6 +342,7 @@ public class NavigateView extends RelativeLayout implements OnItemSelectedListen
 					break;
 				case KeyEvent.KEYCODE_DPAD_CENTER:
 				case KeyEvent.KEYCODE_ENTER:
+					Log.i(TAG, "resetButton.setOnKeyListener--->KEYCODE_ENTER");
 					if(event.getAction() == KeyEvent.ACTION_UP){
 						gallery1.setSelection(0);
 						gallery2.setSelection(0);
@@ -243,9 +369,13 @@ public class NavigateView extends RelativeLayout implements OnItemSelectedListen
 						highlightRect.setVisibility(View.VISIBLE);
 						resetButton.setEnabled(false);
 						resetButton.setVisibility(View.GONE);
-						LayoutParams parm = (LayoutParams) relativeLayout.getLayoutParams();
-						parm.height = 140;
-						relativeLayout.requestLayout();
+						
+						if(!isTouchMode) {
+							
+							LayoutParams parm = (LayoutParams) relativeLayout.getLayoutParams();
+							parm.height = 140;
+							relativeLayout.requestLayout();
+						}
 					}
 					break;
 				case KeyEvent.KEYCODE_BACK:
@@ -344,9 +474,13 @@ public class NavigateView extends RelativeLayout implements OnItemSelectedListen
 			all.setVisibility(View.GONE);
 			resetButton.setEnabled(true);
 			resetButton.setVisibility(View.VISIBLE);
-			LayoutParams parm = (LayoutParams) relativeLayout.getLayoutParams();
-			parm.height = 180;
-			relativeLayout.requestLayout();
+			
+			if(!isTouchMode) {
+				
+				LayoutParams parm = (LayoutParams) relativeLayout.getLayoutParams();
+				parm.height = 180;
+				relativeLayout.requestLayout();
+			}
 		}
 		switch (arg0.getId()) {
 		case R.id.gallery1:
@@ -466,12 +600,18 @@ public class NavigateView extends RelativeLayout implements OnItemSelectedListen
 			break;
 		}
 		if(gallery1.getSelectedItemPosition()==0&&gallery2.getSelectedItemPosition()==0&&gallery3.getSelectedItemPosition()==0){
+			
+			Log.i(TAG, "gallery1.getSelectedItemPosition()--->height");
 			all.setVisibility(View.VISIBLE);
 			resetButton.setEnabled(false);
 			resetButton.setVisibility(View.GONE);
-			LayoutParams parm = (LayoutParams) relativeLayout.getLayoutParams();
-			parm.height = 140;
-			relativeLayout.requestLayout();
+			
+			if(!isTouchMode) {
+				
+				LayoutParams parm = (LayoutParams) relativeLayout.getLayoutParams();
+				parm.height = 140;
+				relativeLayout.requestLayout();	
+			}
 		}
 	}
 	

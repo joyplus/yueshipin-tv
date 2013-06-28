@@ -36,6 +36,8 @@ import com.joyplus.tv.ui.MyMovieGridView;
 import com.joyplus.tv.ui.WaitingDialog;
 import com.joyplus.tv.utils.ItemStateUtils;
 import com.joyplus.tv.utils.Log;
+import com.joyplus.tv.utils.UtilTools;
+import com.joyplus.tv.utils.URLUtils;
 import com.umeng.analytics.MobclickAgent;
 
 public class ShowSearchActivity extends AbstractShowActivity {
@@ -466,7 +468,7 @@ public class ShowSearchActivity extends AbstractShowActivity {
 
 				// 缓存
 				int size = searchAdapter.getMovieList().size();
-				if (size - 1 - firstAndLastVisible[1] < StatisticsUtils.CACHE_NUM) {
+				if (size - 1 - firstAndLastVisible[1] < URLUtils.CACHE_NUM) {
 
 					if (isNextPagePossibles[currentListIndex]) {
 
@@ -494,11 +496,35 @@ public class ShowSearchActivity extends AbstractShowActivity {
 			}
 		});
 		
+		searchEt.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				
+				Log.i(TAG, "searchLL.setOnClickListener");
+				
+				if(keyBoardWindow == null) {
+					
+					keyBoardWindow = new PopupWindow(keyBoardView, searchEt.getRootView().getWidth(),
+							searchEt.getRootView().getHeight(), true);
+				}
+
+				if(keyBoardWindow != null && !keyBoardWindow.isShowing()){
+					
+					keyBoardWindow.showAtLocation(searchEt.getRootView(), Gravity.BOTTOM, 0, 0);
+				}
+				
+			}
+		});
+		
 		searchLL.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
+				
+				Log.i(TAG, "searchLL.setOnClickListener");
 				
 				if(keyBoardWindow == null) {
 					
@@ -558,7 +584,7 @@ public class ShowSearchActivity extends AbstractShowActivity {
 			initLists();//重新初始化数据
 			initButtons();//初始化buttons
 //			currentListIndex = SEARCH;
-			String url = StatisticsUtils.getSearch_200URL(searchStr);
+			String url = URLUtils.getSearch_200URL(searchStr);
 			getFilterData(url);
 		}
 	}
@@ -582,7 +608,7 @@ public class ShowSearchActivity extends AbstractShowActivity {
 
 		for (int i = 0; i < lists.length; i++) {
 
-			StatisticsUtils.clearList(lists[i]);
+			UtilTools.clearList(lists[i]);
 		}
 	}
 
@@ -717,7 +743,7 @@ public class ShowSearchActivity extends AbstractShowActivity {
 			}
 		}
 
-		if (list.size() == StatisticsUtils.CACHE_NUM) {
+		if (list.size() == URLUtils.CACHE_NUM) {
 
 			isNextPagePossibles[currentListIndex] = true;
 		} else {
@@ -769,7 +795,7 @@ public class ShowSearchActivity extends AbstractShowActivity {
 			
 			Log.d(TAG, json.toString());
 
-			refreshAdpter(StatisticsUtils.returnFilterMovieSearch_TVJson(json
+			refreshAdpter(UtilTools.returnFilterMovieSearch_TVJson(json
 					.toString()));
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
@@ -849,7 +875,7 @@ public class ShowSearchActivity extends AbstractShowActivity {
 				
 			
 			Log.d(TAG, json.toString());
-			List<MovieItemData> tempList = StatisticsUtils.returnFilterMovieSearch_TVJson(json
+			List<MovieItemData> tempList = UtilTools.returnFilterMovieSearch_TVJson(json
 					.toString());
 			
 			if(tempList != null && tempList.size() > 0) {//把第一次获取到的list分配到各个集合中

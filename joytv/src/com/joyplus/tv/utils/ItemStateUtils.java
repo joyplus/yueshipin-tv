@@ -3,7 +3,6 @@ package com.joyplus.tv.utils;
 import android.content.Context;
 import android.view.View;
 import android.view.animation.Animation;
-import android.view.animation.Animation.AnimationListener;
 import android.view.animation.ScaleAnimation;
 import android.widget.Button;
 import android.widget.GridView;
@@ -11,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.joyplus.tv.R;
-import com.joyplus.tv.StatisticsUtils;
 
 public class ItemStateUtils implements JieMianConstant{
 	
@@ -159,7 +157,7 @@ public class ItemStateUtils implements JieMianConstant{
 	public static void viewOutAnimation(Context context,View v) {
 		
 		Log.i(TAG, "viewOutAnimation");
-		ScaleAnimation outScaleAnimation = StatisticsUtils
+		ScaleAnimation outScaleAnimation = UtilTools
 				.getOutScaleAnimation();
 		ImageView iv = (ImageView) v
 				.findViewById(R.id.item_layout_dianying_reflact);
@@ -180,7 +178,7 @@ public class ItemStateUtils implements JieMianConstant{
 	public static void viewInAnimation(Context context,View v) {
 		
 		Log.i(TAG, "viewInAnimation");
-		ScaleAnimation inScaleAnimation = StatisticsUtils
+		ScaleAnimation inScaleAnimation = UtilTools
 				.getInScaleAnimation();
 		ImageView iv = (ImageView) v
 				.findViewById(R.id.item_layout_dianying_reflact);
@@ -200,7 +198,7 @@ public class ItemStateUtils implements JieMianConstant{
 	
 	public static void floatViewOutAnimaiton(Context context,final View v) {
 		Log.i(TAG, "floatViewOutAnimaiton");
-		ScaleAnimation outScaleAnimation = StatisticsUtils
+		ScaleAnimation outScaleAnimation = UtilTools
 				.getOutScaleAnimation();
 		ImageView iv = (ImageView) v
 				.findViewById(R.id.item_layout_dianying_reflact);
@@ -242,7 +240,7 @@ public class ItemStateUtils implements JieMianConstant{
 	
 	public static void floatViewInAnimaiton(Context context,View v) {
 		Log.i(TAG, "floatViewInAnimaiton");
-		ScaleAnimation inScaleAnimation = StatisticsUtils
+		ScaleAnimation inScaleAnimation = UtilTools
 				.getInScaleAnimation();
 		ImageView iv = (ImageView) v
 				.findViewById(R.id.item_layout_dianying_reflact);

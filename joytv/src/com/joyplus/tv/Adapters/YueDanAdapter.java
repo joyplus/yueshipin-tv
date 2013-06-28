@@ -14,12 +14,12 @@ import android.widget.TextView;
 
 import com.androidquery.AQuery;
 import com.joyplus.tv.R;
-import com.joyplus.tv.StatisticsUtils;
 import com.joyplus.tv.entity.GridViewItemHodler;
 import com.joyplus.tv.entity.MovieItemData;
 import com.joyplus.tv.entity.YueDanInfo2;
 import com.joyplus.tv.utils.JieMianConstant;
 import com.joyplus.tv.utils.Log;
+import com.joyplus.tv.utils.UtilTools;
 
 public class YueDanAdapter extends BaseAdapter implements JieMianConstant{
 	public static final String TAG = "YueDanAdapter";
@@ -123,7 +123,22 @@ public class YueDanAdapter extends BaseAdapter implements JieMianConstant{
 		String num = movieList.get(position).getNum();
 		if(num != null && !num.equals("") ) {
 			
-			viewItemHodler.otherInfo.setText(movieList.get(position).getNum() + context.getString(R.string.yingpianshu));
+			String proType = movieList.get(position).getMovieProType();
+			
+			if(proType != null && !proType.equals("")) {
+				
+				if(proType.equals("1")) {
+					
+					viewItemHodler.otherInfo.setText(context.getString(R.string.before_num_text) + 
+							movieList.get(position).getNum() + context.getString(R.string.after_num_text));
+				} else if(proType.equals("2")) {
+					
+					viewItemHodler.otherInfo.setText(context.getString(R.string.before_num_text) + 
+							movieList.get(position).getNum() + context.getString(R.string.after_num_text));
+				}
+			}
+			
+			
 		} else {
 			
 			String definition = movieList.get(position).getDefinition();
@@ -151,15 +166,15 @@ public class YueDanAdapter extends BaseAdapter implements JieMianConstant{
 				
 				if(proType.equals("1")) {
 					
-					viewItemHodler.scoreTv.setText(StatisticsUtils.formateScore(movieList.get(position).getMovieScore()));
+					viewItemHodler.scoreTv.setText(UtilTools.formateScore(movieList.get(position).getMovieScore()));
 					String duration = movieList.get(position).getMovieDuration();
 					if(duration != null && !duration.equals("")) {
 						
-						viewItemHodler.otherInfo.setText(StatisticsUtils.formatMovieDuration(duration));
+						viewItemHodler.otherInfo.setText(UtilTools.formatMovieDuration(duration));
 					}
 				} else if(proType.equals("2") || proType.equals("131")){
 					
-					viewItemHodler.scoreTv.setText(StatisticsUtils.formateScore(movieList.get(position).getMovieScore()));
+					viewItemHodler.scoreTv.setText(UtilTools.formateScore(movieList.get(position).getMovieScore()));
 					String curEpisode = movieList.get(position).getMovieCurEpisode();
 					String maxEpisode = movieList.get(position).getMovieMaxEpisode();
 					
@@ -182,7 +197,7 @@ public class YueDanAdapter extends BaseAdapter implements JieMianConstant{
 					String curEpisode = movieList.get(position).getMovieCurEpisode();
 					if(curEpisode != null && !curEpisode.equals("")) {
 						
-						viewItemHodler.otherInfo.setText(StatisticsUtils.formateZongyi(curEpisode, context));
+						viewItemHodler.otherInfo.setText(UtilTools.formateZongyi(curEpisode, context));
 					}
 				}
 			}

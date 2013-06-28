@@ -11,14 +11,19 @@ import org.json.JSONObject;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.BaseAdapter;
@@ -33,12 +38,14 @@ import com.androidquery.callback.AjaxStatus;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.joyplus.tv.Adapters.CurrentPlayData;
+import com.joyplus.tv.Service.Return.ReturnProgramView;
 import com.joyplus.tv.Service.Return.ReturnUserPlayHistories;
-import com.joyplus.tv.Video.VideoPlayerActivity;
+import com.joyplus.tv.entity.CurrentPlayDetailData;
 import com.joyplus.tv.entity.HotItemInfo;
+import com.joyplus.tv.utils.DBUtils;
 import com.joyplus.tv.utils.ItemStateUtils;
 import com.joyplus.tv.utils.Log;
+import com.joyplus.tv.utils.UtilTools;
 import com.umeng.analytics.MobclickAgent;
 
 public class HistoryActivity extends Activity implements OnClickListener, OnItemSelectedListener,OnFocusChangeListener {
@@ -62,6 +69,295 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 	private ListView listView;
 	private App app;
 	private AQuery aq;
+	
+	private BroadcastReceiver updateReceiver = new BroadcastReceiver() {
+		
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			// TODO Auto-generated method stub
+			Log.i(TAG, "updateReceiver--->ACTION_PLAY_END_HISTORY");
+			String action = intent.getAction();
+			if(action != null && action.equals(UtilTools.ACTION_PLAY_END_HISTORY)) {
+				
+				String tempProd_id = intent.getStringExtra("prod_id");
+				String tempProd_sub_name = intent.getStringExtra("prod_sub_name");
+				long tempTime = intent.getLongExtra("time", -1l);
+				int tempProd_type = intent.getIntExtra("prod_type", -1);
+				
+				Log.i(TAG, "updateReceiver--->ACTION_PLAY_END_HISTORY" + " prod_id-->" + tempProd_id
+						+ " prod_sub_name--->" + tempProd_sub_name + " time--->" + tempTime
+						+ " tempProd_type--->" + tempProd_type);
+				
+				if(tempProd_id != null && !tempProd_id.equals("")) {
+					
+					if(tempTime != -1l && tempProd_type != -1) {
+						
+						if(allHistoryList != null&& allHistoryList.size() > 0) {
+							
+							boolean isSame = false;
+							
+							for(HotItemInfo hotItemInfo :allHistoryList) {
+								
+								if(tempProd_id.equals(hotItemInfo.prod_id)) {
+									
+									long time = -1l;
+									
+									time = Long.valueOf(hotItemInfo.playback_time);
+									Log.i(TAG, "time--->" + time);
+									
+									if(time != -1) {
+										
+										switch (tempProd_type) {
+										case 1://电影
+											
+											isSame = true;
+											
+											if(tempTime != time ) {
+												
+												hotItemInfo.playback_time = tempTime +"";
+												
+												if(movieHistoryList != null && movieHistoryList.size() > 0 ) {
+													
+													for(HotItemInfo movieHotItemInfo:movieHistoryList) {
+														
+														if(tempProd_id.equals(movieHotItemInfo.prod_id)) {
+															
+															movieHotItemInfo.playback_time = tempTime +"";
+															
+														}
+													}
+												}
+												
+												((HistortyAdapter)listView.getAdapter()).notifyDataSetChanged();
+												Log.i(TAG, "time--->" + time);
+											}
+											break;
+										case 2://电视
+										case 131://动漫
+											
+											isSame = true;
+											
+											List<HotItemInfo> list = null;
+											
+											if(tempProd_type == 2) {
+												
+												list = tvHistoryList;
+											} else {
+												
+												list = dongmanHistoryList;
+											}
+											if(tempProd_sub_name != null && !tempProd_sub_name.equals("")) {
+												
+												if(tempTime != time || !tempProd_sub_name.equals(hotItemInfo.prod_subname)) {
+													
+													hotItemInfo.playback_time = tempTime +"";
+													hotItemInfo.prod_subname = tempProd_sub_name;
+													
+													if(list != null && list.size() > 0 ) {
+														
+														for(HotItemInfo movieHotItemInfo:list) {
+															
+															if(tempProd_id.equals(movieHotItemInfo.prod_id)) {
+																
+																movieHotItemInfo.playback_time = tempTime +"";
+																movieHotItemInfo.prod_subname = tempProd_sub_name;
+																
+															}
+														}
+													}
+													
+													((HistortyAdapter)listView.getAdapter()).notifyDataSetChanged();
+													Log.i(TAG, "time--->" + time);
+												}
+											}
+											
+											break;
+										case 3://综艺 综艺每一期为单独一个历史记录
+											if(tempProd_sub_name != null && !tempProd_sub_name.equals("")) {
+												
+												if(UtilTools.isSame4Str(tempProd_sub_name,hotItemInfo.prod_subname)) {
+													
+													isSame = true;//有相同的子集数，才认为有相同的数据
+													
+													if(tempTime != time ) {
+														
+														hotItemInfo.playback_time = tempTime +"";
+														
+														if(zongyiHistoryList != null && zongyiHistoryList.size() > 0 ) {
+															
+															for(HotItemInfo movieHotItemInfo:zongyiHistoryList) {
+																
+																if(tempProd_id.equals(movieHotItemInfo.prod_id)) {
+																	
+																	movieHotItemInfo.playback_time = tempTime +"";
+																	
+																}
+															}
+														}
+														
+														((HistortyAdapter)listView.getAdapter()).notifyDataSetChanged();
+														Log.i(TAG, "time--->" + time);
+													}
+												}
+											}
+											
+											break;
+
+										default:
+											break;
+										}
+									}
+								}
+							}
+							
+							if(!isSame) {//如果其中没有相同的数据
+								
+								switch (tempProd_type) {
+								case 1:
+									ReturnProgramView returnProgramViewM = app.get_ReturnProgramView();
+									if(returnProgramViewM != null && returnProgramViewM.movie != null) {
+										
+										HotItemInfo hotItemInfo2 = new HotItemInfo();
+										hotItemInfo2.prod_id = tempProd_id;
+										hotItemInfo2.prod_name = returnProgramViewM.movie.name;
+										hotItemInfo2.prod_type = tempProd_type + "";
+										
+										String bigPicUrl = returnProgramViewM.movie.ipad_poster;
+										if(bigPicUrl == null || bigPicUrl.equals("")
+												||bigPicUrl.equals(UtilTools.EMPTY)) {
+											
+											bigPicUrl = returnProgramViewM.movie.poster;
+										}
+										
+										hotItemInfo2.prod_pic_url = bigPicUrl;
+										hotItemInfo2.stars = returnProgramViewM.movie.stars;
+										hotItemInfo2.directors = returnProgramViewM.movie.directors;
+										hotItemInfo2.favority_num = returnProgramViewM.movie.favority_num;
+										hotItemInfo2.support_num = returnProgramViewM.movie.support_num;
+										hotItemInfo2.publish_date = returnProgramViewM.movie.publish_date;
+										hotItemInfo2.score = returnProgramViewM.movie.score;
+										hotItemInfo2.area = returnProgramViewM.movie.area;
+										hotItemInfo2.definition = returnProgramViewM.movie.definition;
+										hotItemInfo2.prod_summary = returnProgramViewM.movie.summary;
+//										hotItemInfo2.video_url = returnProgramView.tv.video_url;
+										hotItemInfo2.playback_time = tempTime+"";
+										hotItemInfo2.prod_subname = tempProd_sub_name;
+										hotItemInfo2.play_type = 1+"";
+										
+										if(movieHistoryList != null) {
+											
+											movieHistoryList.add(0, hotItemInfo2);
+										}
+										
+										allHistoryList.add(0,hotItemInfo2);
+									}
+									break;
+								case 2:
+								case 131:
+									ReturnProgramView returnProgramView = app.get_ReturnProgramView();
+									if(returnProgramView != null && returnProgramView.tv != null) {
+										
+										HotItemInfo hotItemInfo2 = new HotItemInfo();
+										hotItemInfo2.prod_id = tempProd_id;
+										hotItemInfo2.prod_name = returnProgramView.tv.name;
+										hotItemInfo2.prod_type = tempProd_type + "";
+										
+										String bigPicUrl = returnProgramView.tv.ipad_poster;
+										if(bigPicUrl == null || bigPicUrl.equals("")
+												||bigPicUrl.equals(UtilTools.EMPTY)) {
+											
+											bigPicUrl = returnProgramView.tv.poster;
+										}
+										
+										hotItemInfo2.prod_pic_url = bigPicUrl;
+										hotItemInfo2.stars = returnProgramView.tv.stars;
+										hotItemInfo2.directors = returnProgramView.tv.directors;
+										hotItemInfo2.favority_num = returnProgramView.tv.favority_num;
+										hotItemInfo2.support_num = returnProgramView.tv.support_num;
+										hotItemInfo2.publish_date = returnProgramView.tv.publish_date;
+										hotItemInfo2.score = returnProgramView.tv.score;
+										hotItemInfo2.area = returnProgramView.tv.area;
+										hotItemInfo2.cur_episode = returnProgramView.tv.cur_episode;
+										hotItemInfo2.max_episode = returnProgramView.tv.max_episode;
+										hotItemInfo2.definition = returnProgramView.tv.definition;
+										hotItemInfo2.prod_summary = returnProgramView.tv.summary;
+//										hotItemInfo2.video_url = returnProgramView.tv.video_url;
+										hotItemInfo2.playback_time = tempTime+"";
+										hotItemInfo2.prod_subname = tempProd_sub_name;
+										hotItemInfo2.play_type = 1+"";
+										
+										if(tempProd_type == 2) {
+											
+											if(tvHistoryList != null) {
+												
+												tvHistoryList.add(0, hotItemInfo2);
+											}
+										} else {
+											
+											if(dongmanHistoryList != null) {
+												
+												dongmanHistoryList.add(0, hotItemInfo2);
+											}
+										}
+										
+										allHistoryList.add(0,hotItemInfo2);
+									}
+									break;
+								case 3:
+									ReturnProgramView returnProgramViewZ = app.get_ReturnProgramView();
+									if(returnProgramViewZ != null && returnProgramViewZ.show != null) {
+										
+										HotItemInfo hotItemInfo2 = new HotItemInfo();
+										hotItemInfo2.prod_id = tempProd_id;
+										hotItemInfo2.prod_name = returnProgramViewZ.show.name;
+										hotItemInfo2.prod_type = tempProd_type + "";
+										
+										String bigPicUrl = returnProgramViewZ.show.ipad_poster;
+										if(bigPicUrl == null || bigPicUrl.equals("")
+												||bigPicUrl.equals(UtilTools.EMPTY)) {
+											
+											bigPicUrl = returnProgramViewZ.show.poster;
+										}
+										
+										hotItemInfo2.prod_pic_url = bigPicUrl;
+										hotItemInfo2.stars = returnProgramViewZ.show.stars;
+										hotItemInfo2.directors = returnProgramViewZ.show.directors;
+										hotItemInfo2.favority_num = returnProgramViewZ.show.favority_num;
+										hotItemInfo2.support_num = returnProgramViewZ.show.support_num;
+										hotItemInfo2.publish_date = returnProgramViewZ.show.publish_date;
+										hotItemInfo2.score = returnProgramViewZ.show.score;
+										hotItemInfo2.area = returnProgramViewZ.show.area;
+										hotItemInfo2.cur_episode = returnProgramViewZ.show.cur_episode;
+										hotItemInfo2.max_episode = returnProgramViewZ.show.max_episode;
+										hotItemInfo2.definition = returnProgramViewZ.show.definition;
+										hotItemInfo2.prod_summary = returnProgramViewZ.show.summary;
+//										hotItemInfo2.video_url = returnProgramView.tv.video_url;
+										hotItemInfo2.playback_time = tempTime+"";
+										hotItemInfo2.prod_subname = tempProd_sub_name;
+										hotItemInfo2.play_type = 1+"";
+										
+										if(zongyiHistoryList!= null){
+											
+											zongyiHistoryList.add(0, hotItemInfo2);
+										}
+										
+										allHistoryList.add(0,hotItemInfo2);
+									}
+									break;
+
+								default:
+									break;
+								}
+								
+								((HistortyAdapter)listView.getAdapter()).notifyDataSetChanged();
+							}
+						}
+					}
+				}
+				
+			}
+		}
+	};
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -126,8 +422,8 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 					public void onClick(View v) {
 						// TODO Auto-generated method stub
 						dialog.dismiss();
-						CurrentPlayData playDate = new CurrentPlayData();
-						Intent intent = new Intent(HistoryActivity.this,VideoPlayerActivity.class);
+						CurrentPlayDetailData playDate = new CurrentPlayDetailData();
+						Intent intent = new Intent(HistoryActivity.this,VideoPlayerJPActivity.class);
 						playDate.prod_id = ((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_id;
 						playDate.prod_type = Integer.valueOf(((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_type);
 						playDate.prod_name = ((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_name;
@@ -136,36 +432,83 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 						//清晰度
 						String definition = ((HistortyAdapter)listView.getAdapter()).data.get(arg2).definition;
 						
-						playDate.prod_qua = StatisticsUtils.string2Int(definition);
-						
-						if(playDate.prod_type!=1){
-							
-							if(playDate.prod_type == 3) {
-								
-								playDate.CurrentIndex = - 1;
-							} else {
-								
-								String  currentIndex = ((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_subname;
-								if(currentIndex!=null&&!"".equals(currentIndex)){
-									int current = Integer.valueOf(currentIndex);
-									if(current>0){
-										current = current-1;
-									}
-									playDate.CurrentIndex = current;
-								}
-							}
-							
-						}
+						playDate.prod_qua = UtilTools.string2Int(definition);
+						playDate.prod_sub_name = ((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_subname;
+//						if(playDate.prod_type!=1){
+//							
+//							if(playDate.prod_type == 3) {
+//								
+//								playDate.CurrentIndex = - 1;
+//							} else {
+//								
+//								String  currentIndex = ((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_subname;
+//								if(currentIndex!=null&&!"".equals(currentIndex)){
+//									int current = Integer.valueOf(currentIndex);
+//									if(current>0){
+//										current = current-1;
+//									}
+//									playDate.CurrentIndex = current;
+//								}
+//							}
+//							
+//						}
 //						playDate.prod_src = "";
 						if(!"".equals(((HistortyAdapter)listView.getAdapter()).data.get(arg2).playback_time)){
 							playDate.prod_time = Long.valueOf(((HistortyAdapter)listView.getAdapter()).data.get(arg2).playback_time)*1000;
 						}
 //						playDate.prod_qua = Integer.valueOf(info.definition);
-						app.setCurrentPlayData(playDate);
+						app.setmCurrentPlayDetailData(playDate);
 						app.set_ReturnProgramView(null);
 						startActivity(intent);
 					}
 				});
+				
+				
+				listView.setOnScrollListener(new AbsListView.OnScrollListener() {
+					
+					int tempfirstVisibleItem;
+					
+					@Override
+					public void onScrollStateChanged(AbsListView view, int scrollState) {
+						// TODO Auto-generated method stub
+						
+						Log.i(TAG, "onScrollStateChanged");
+						
+						switch (scrollState) {
+						case OnScrollListener.SCROLL_STATE_IDLE:
+							
+							Log.i(TAG, "playGv--->SCROLL_STATE_IDLE" + " tempfirstVisibleItem--->" + tempfirstVisibleItem);
+							
+							if(((HistortyAdapter)listView.getAdapter()).data.size()-listView.getLastVisiblePosition()==3){
+								
+								Log.d(TAG, "onItemSelected-->getMore");
+								getHistoryData(index);
+							}
+							
+							break;
+						case OnScrollListener.SCROLL_STATE_TOUCH_SCROLL:
+							Log.i(TAG, "playGv--->SCROLL_STATE_TOUCH_SCROLL");
+							
+							break;
+						case OnScrollListener.SCROLL_STATE_FLING:
+							Log.i(TAG, "playGv--->SCROLL_STATE_FLING");
+							
+							break;
+
+						default:
+							break;
+						}
+					}
+					
+					@Override
+					public void onScroll(AbsListView view, int firstVisibleItem,
+							int visibleItemCount, int totalItemCount) {
+						// TODO Auto-generated method stub
+						
+						tempfirstVisibleItem = firstVisibleItem;
+					}
+				});
+				
 				Button viewDetailButton = (Button) view.findViewById(R.id.history_view);
 				viewDetailButton.setOnClickListener(new OnClickListener() {
 					
@@ -212,8 +555,55 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 					@Override
 					public void onClick(View v) {
 						// TODO Auto-generated method stub
+						
+						String prod_id = ((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_id;
+						
+						Log.i(TAG, "delButton.setOnClickListener--->" + prod_id);
+						
 						deleteHistory(true, ((HistortyAdapter)listView.getAdapter()).data.get(arg2).id);
-						((HistortyAdapter)listView.getAdapter()).data.remove(arg2);
+						
+						DBUtils.deleteOneHotItemInfo2DB_History(getApplicationContext(),
+								UtilTools.getCurrentUserId(getApplicationContext()),prod_id 
+								);
+						
+//						((HistortyAdapter)listView.getAdapter()).data.remove(arg2);
+						if(allHistoryList!=null){
+							for(int i=0; i<allHistoryList.size(); i++){
+								if(allHistoryList.get(i).prod_id.equals(prod_id)){
+									allHistoryList.remove(i);
+								}
+							}
+						}
+						
+						if(movieHistoryList!=null){
+							for(int i=0; i<movieHistoryList.size(); i++){
+								if(movieHistoryList.get(i).prod_id.equals(prod_id)){
+									movieHistoryList.remove(i);
+								}
+							}
+						}
+						
+						if(tvHistoryList!=null){
+							for(int i=0; i<tvHistoryList.size(); i++){
+								if(tvHistoryList.get(i).prod_id.equals(prod_id)){
+									tvHistoryList.remove(i);
+								}
+							}
+						}
+						if(zongyiHistoryList!=null){
+							for(int i=0; i<zongyiHistoryList.size(); i++){
+								if(zongyiHistoryList.get(i).prod_id.equals(prod_id)){
+									zongyiHistoryList.remove(i);
+								}
+							}
+						}
+						if(dongmanHistoryList!=null){
+							for(int i=0; i<dongmanHistoryList.size(); i++){
+								if(dongmanHistoryList.get(i).prod_id.equals(prod_id)){
+									dongmanHistoryList.remove(i);
+								}
+							}
+						}
 						((BaseAdapter)listView.getAdapter()).notifyDataSetChanged();
 						dialog.dismiss();
 					}
@@ -243,6 +633,10 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 		});
 		
 		getHistoryData(0);
+		
+		//更新注册
+		IntentFilter filter = new IntentFilter(UtilTools.ACTION_PLAY_END_HISTORY);
+		registerReceiver(updateReceiver, filter);
 	}
 	
 	class HistortyAdapter extends BaseAdapter{
@@ -306,17 +700,16 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 					holder.stars_notice.setText(R.string.xiangqing_zhuyan_name);
 				}
 				int prod_type = Integer.valueOf(data.get(position).prod_type);
-				String playBack_time = StatisticsUtils.formatDuration1(Integer.valueOf(data.get(position).playback_time));
+				String playBack_time = UtilTools.formatDuration1(Integer.valueOf(data.get(position).playback_time));
 				switch (prod_type) {
 				case 1:
 					holder.content.setText("上次观看到：" + playBack_time);
 					break;
 				case 2:
-					
 					holder.content.setText("上次观看到：第" + data.get(position).prod_subname +"集 "+playBack_time);
 					break;
 				case 3:
-					holder.content.setText("上次观看到：第" + data.get(position).prod_subname+"期 "+playBack_time);
+					holder.content.setText("上次观看到：" + data.get(position).prod_subname+" "+playBack_time);
 					break;
 				case 131:
 					holder.content.setText("上次观看到：第" + data.get(position).prod_subname+"集 "+playBack_time);
@@ -467,7 +860,37 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 					// TODO Auto-generated method stub
 					dialog.dismiss();
 					deleteHistory(false, "");
+					
+					List<HotItemInfo> list = ((HistortyAdapter)listView.getAdapter()).data;
+					
+					for(int i=0;i<list.size();i++) {
+						
+						DBUtils.deleteOneHotItemInfo2DB_History(getApplicationContext(),
+								UtilTools.getCurrentUserId(getApplicationContext()),list.get(i).prod_id );
+					}
+					
+					
 					((HistortyAdapter)listView.getAdapter()).data.clear();
+					if(allHistoryList!=null&&allHistoryList.size()>0){
+						allHistoryList.clear();
+						allHistoryList = null;
+					}
+					if(movieHistoryList!=null&&movieHistoryList.size()>0){
+						movieHistoryList.clear();
+						movieHistoryList = null;
+					}
+					if(tvHistoryList!=null&&tvHistoryList.size()>0){
+						tvHistoryList.clear();
+						tvHistoryList = null;
+					}
+					if(zongyiHistoryList!=null&&zongyiHistoryList.size()>0){
+						zongyiHistoryList.clear();
+						zongyiHistoryList = null;
+					}
+					if(dongmanHistoryList!=null&&dongmanHistoryList.size()>0){
+						dongmanHistoryList.clear();
+						dongmanHistoryList = null;
+					}
 					((HistortyAdapter)listView.getAdapter()).notifyDataSetChanged();
 				}
 			});
@@ -504,8 +927,10 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 		// TODO Auto-generated method stub
 		selectedView = arg1;
 //		if(data.size()-arg2==3&&data.size()>=5){
-//			Log.d(TAG, "data.size()"+data.size()+"---------------------"+position);
+//			Log.d(TAG, "onItemSelected-->data.size()"+"---------------------"+arg2);
 		if(((HistortyAdapter)listView.getAdapter()).data.size()-listView.getLastVisiblePosition()==3){
+			
+			Log.d(TAG, "onItemSelected-->getMore");
 			getHistoryData(index);
 		}
 	}
@@ -598,7 +1023,7 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 				item.prod_type = result.histories[i].prod_type;
 				String bigPicUrl = result.histories[i].big_prod_pic_url;
 				if(bigPicUrl == null || bigPicUrl.equals("")
-						||bigPicUrl.equals(StatisticsUtils.EMPTY)) {
+						||bigPicUrl.equals(UtilTools.EMPTY)) {
 					
 					bigPicUrl = result.histories[i].prod_pic_url;
 				}
@@ -775,6 +1200,15 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 		super.onPause();
 		
 		MobclickAgent.onPause(this);
+	}
+	
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		
+		unregisterReceiver(updateReceiver);
+		
+		super.onDestroy();
 	}
 	
 	

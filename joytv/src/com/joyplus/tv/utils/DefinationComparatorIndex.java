@@ -2,6 +2,8 @@ package com.joyplus.tv.utils;
 
 import java.util.Comparator;
 
+import com.joyplus.tv.entity.URLS_INDEX;
+
 public class DefinationComparatorIndex implements Comparator {
 
 		@Override
