@@ -288,6 +288,8 @@ public class VideoPlayerJPActivity extends Activity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
+		
+		Log.i(TAG, "onCreate--->");
 		setContentView(R.layout.video_player_main);
 		aq = new AQuery(this);
 		app = (App) getApplication();
@@ -505,6 +507,9 @@ public class VideoPlayerJPActivity extends Activity implements
 	@Override
 	protected void onStart() {
 		// TODO Auto-generated method stub
+		
+		Log.i(TAG, "onStart--->");
+		
 		super.onStart();
 		mAudioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
 		mAudioManager.requestAudioFocus(null, AudioManager.STREAM_MUSIC,
@@ -1513,6 +1518,9 @@ public class VideoPlayerJPActivity extends Activity implements
 
 	@Override
 	protected void onPause() {
+		
+		Log.i(TAG, "onPause--->");
+		
 		// TODO Auto-generated method stub
 		if (mProd_type > 0&&mStatue!=STATUE_LOADING) {
 			// SaveToServer(mVideoView.getDuration(),
@@ -1528,6 +1536,9 @@ public class VideoPlayerJPActivity extends Activity implements
 
 	@Override
 	protected void onStop() {
+		
+		Log.i(TAG, "onStop--->");
+		
 		// TODO Auto-generated method stub
 		// if(mStatue != STATUE_LOADING&&mProd_type>0){
 		// // SaveToServer(mVideoView.getDuration(),
@@ -1644,6 +1655,8 @@ public class VideoPlayerJPActivity extends Activity implements
 	@Override
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
+		
+		Log.i(TAG, "onDestroy--->");
 		
 		unregisterReceiver(mReceiver);
 		if (mVideoView != null) {
