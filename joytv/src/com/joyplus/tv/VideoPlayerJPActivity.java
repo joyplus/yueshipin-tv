@@ -619,6 +619,13 @@ public class VideoPlayerJPActivity extends Activity implements
 			case STATUE_PAUSE:
 				return true;
 			case STATUE_FAST_DRAG:
+				mTimeJumpSpeed = 0;
+				upDateFastTimeBar();
+				mHandler.removeMessages(MESSAGE_UPDATE_PROGRESS);
+				mHandler.sendEmptyMessageDelayed(MESSAGE_UPDATE_PROGRESS, 1000);
+				mStatue = STATUE_PLAYING;
+				mSeekBar.setProgress(mVideoView.getCurrentPosition());
+				mSeekBar.setEnabled(true);
 				return true;
 			}
 			break;

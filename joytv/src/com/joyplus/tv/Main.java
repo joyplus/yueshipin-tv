@@ -917,32 +917,28 @@ public class Main extends Activity implements OnItemSelectedListener,
 				updateHotDate();
 				updateHotContentLayoue();
 				if(titleGroup.getSelectedTitleIndex()==1){
-					int seleted = gallery1.getSelectedItemPosition();
 					gallery1.setAdapter(new MainHotItemAdapter(Main.this, hot_list));
-					gallery1.setSelection(seleted);
-//					handler.postDelayed(new Runnable() {
-//						
-//						@Override
-//						public void run() {
-//							// TODO Auto-generated method stub
-//							gallery1.adjust();
-//						}
-//					},2000);
+					gallery1.setSelection(0);
+				}else{
+					indexCaces.put(1, 0);
 				}
 			}
 		}
 
 	};
 	
-	private void updateHotDate(){
+	private boolean updateHotDate(){
+		boolean flag = false;
 		HotItemInfo firstInfo = hot_list.get(0);
 		if(firstInfo!=null&&firstInfo.type==0){
 			for(int i=1; i<hot_list.size(); i++){
 				if(firstInfo.prod_id.equals(hot_list.get(i).prod_id)){
 					hot_list.remove(i);
+					flag = true;
 				}
 			}
 		}
+		return flag;
 	}
 	
 	private void updateHotContentLayoue(){
@@ -2068,16 +2064,18 @@ public class Main extends Activity implements OnItemSelectedListener,
 			ReturnUserPlayHistories result = mapper.readValue(json.toString(),
 					ReturnUserPlayHistories.class);
 			HotItemInfo item = new HotItemInfo();
-			if (hot_list.size() > 0) {//第一个存储的是历史记录，因此type是0
-				if (hot_list.get(0).type == 0) {//重新loading历史数据时，删除原先的view和数据
-					hot_list.remove(0);
-					hot_contentViews.remove(0);
-				}
-			}
+//			if (hot_list.size() > 0) {//第一个存储的是历史记录，因此type是0
+//				if (hot_list.get(0).type == 0) {//重新loading历史数据时，删除原先的view和数据
+//					hot_list.remove(0);
+//					hot_contentViews.remove(0);
+//				}
+//			}
 			if (result.histories.length == 0) {//历史记录为空，loading最原始数据即可 总共11个
 				if (isHotLoadedFlag == 1) {
 					if (titleGroup.getSelectedTitleIndex() == 1) {
 						itemFram.setVisibility(View.VISIBLE);
+						updateHotDate();
+						updateHotContentLayoue();
 						gallery1.setAdapter(new MainHotItemAdapter(Main.this,
 								hot_list));
 						gallery1.setSelection(0);
@@ -2087,6 +2085,10 @@ public class Main extends Activity implements OnItemSelectedListener,
 				} else if (isHotLoadedFlag == 0) {
 					isHotLoadedFlag = 1;
 				} else if (isHotLoadedFlag == 2) {
+					hot_list.clear();
+					for(int i=0; i<netWorkHotList.size(); i++){
+						hot_list.add(netWorkHotList.get(i));
+					}
 					if (titleGroup.getSelectedTitleIndex() == 1) {
 						itemFram.setVisibility(View.VISIBLE);
 						gallery1.setAdapter(new MainHotItemAdapter(Main.this,
@@ -2124,96 +2126,67 @@ public class Main extends Activity implements OnItemSelectedListener,
 			item.duration = result.histories[0].duration;
 			item.playback_time = result.histories[0].playback_time;
 			item.video_url = result.histories[0].video_url;
-
-			View hotView = LayoutInflater.from(Main.this).inflate(
-					R.layout.layout_hot, null);
-			TextView hot_name_tv = (TextView) hotView
-					.findViewById(R.id.hot_content_name);
-			TextView hot_score_tv = (TextView) hotView
-					.findViewById(R.id.hot_content_score);
-			TextView hot_directors_tv = (TextView) hotView
-					.findViewById(R.id.hot_content_directors);
-			TextView hot_starts_tv = (TextView) hotView
-					.findViewById(R.id.hot_content_stars);
-			TextView hot_introduce_tv = (TextView) hotView
-					.findViewById(R.id.hot_content_introduce);
-			ImageView icon_douban = (ImageView) hotView
-					.findViewById(R.id.icon_douban);
-			if ("3".equals(item.prod_type.trim())) {
-				TextView hot_title_director = (TextView) hotView
-						.findViewById(R.id.title_directors);
-				TextView hot_title_stars = (TextView) hotView
-						.findViewById(R.id.title_stars);
-				hot_title_director.setText(R.string.xiangqing_zongyi_zhuchi);
-				hot_title_stars.setText(R.string.xiangqing_zongyi_shoubo);
-				hot_starts_tv.setText(item.directors);
-				hot_directors_tv.setText(item.stars);
-				icon_douban.setVisibility(View.INVISIBLE);
-			} else {
-				hot_directors_tv.setText(item.directors);
-				hot_starts_tv.setText(item.stars);
-			}
-
-			hot_name_tv.setText(item.prod_name);
-			hot_score_tv.setText(UtilTools.formateScore(item.score));
-			hot_introduce_tv.setText(item.prod_summary);
+//
+//			View hotView = LayoutInflater.from(Main.this).inflate(
+//					R.layout.layout_hot, null);
+//			TextView hot_name_tv = (TextView) hotView
+//					.findViewById(R.id.hot_content_name);
+//			TextView hot_score_tv = (TextView) hotView
+//					.findViewById(R.id.hot_content_score);
+//			TextView hot_directors_tv = (TextView) hotView
+//					.findViewById(R.id.hot_content_directors);
+//			TextView hot_starts_tv = (TextView) hotView
+//					.findViewById(R.id.hot_content_stars);
+//			TextView hot_introduce_tv = (TextView) hotView
+//					.findViewById(R.id.hot_content_introduce);
+//			ImageView icon_douban = (ImageView) hotView
+//					.findViewById(R.id.icon_douban);
+//			if ("3".equals(item.prod_type.trim())) {
+//				TextView hot_title_director = (TextView) hotView
+//						.findViewById(R.id.title_directors);
+//				TextView hot_title_stars = (TextView) hotView
+//						.findViewById(R.id.title_stars);
+//				hot_title_director.setText(R.string.xiangqing_zongyi_zhuchi);
+//				hot_title_stars.setText(R.string.xiangqing_zongyi_shoubo);
+//				hot_starts_tv.setText(item.directors);
+//				hot_directors_tv.setText(item.stars);
+//				icon_douban.setVisibility(View.INVISIBLE);
+//			} else {
+//				hot_directors_tv.setText(item.directors);
+//				hot_starts_tv.setText(item.stars);
+//			}
+//
+//			hot_name_tv.setText(item.prod_name);
+//			hot_score_tv.setText(UtilTools.formateScore(item.score));
+//			hot_introduce_tv.setText(item.prod_summary);
 //			hot_list.add(0, item);
 			
-			Log.i(TAG, "item--->" + item.prod_id);
+//			Log.i(TAG, "item--->" + item.prod_id);
+//			hot_list.add(item);
+//			
+//			for(int i=0;i<netWorkHotList.size();i++) {
+//				HotItemInfo tempHotItemInfo = netWorkHotList.get(i);
+//				
+//				Log.i(TAG, "tempHotItemInfo--->" + tempHotItemInfo.prod_id);
+//				
+//				if(!tempHotItemInfo.prod_id.equals(item.prod_id)) {
+//					
+//					hot_list.add(tempHotItemInfo);
+//				}else {
+//					
+//					hot_contentViews.remove(i);
+//				}
+//			}
 			
-			if(netWorkHotList != null && netWorkHotList.size() > 0) {
-				
-				//重新设置hot_list
-				if(hot_list != null && !hot_list.isEmpty()) {
-					
-					hot_list.clear();
-					
-				}
-			}
-			
-			hot_list.add(item);
-			
-			for(int i=0;i<netWorkHotList.size();i++) {
-				HotItemInfo tempHotItemInfo = netWorkHotList.get(i);
-				
-				Log.i(TAG, "tempHotItemInfo--->" + tempHotItemInfo.prod_id);
-				
-				if(!tempHotItemInfo.prod_id.equals(item.prod_id)) {
-					
-					hot_list.add(tempHotItemInfo);
-				}else {
-					
-					hot_contentViews.remove(i);
-				}
-			}
-			
-			hot_contentViews.add(0, hotView);
-			
-			Log.d(TAG, "lengh = " + hot_contentViews.size());
+//			hot_contentViews.add(0, hotView);
+//			
+//			Log.d(TAG, "lengh = " + hot_contentViews.size());
 			if (isHotLoadedFlag == 1) {
 				if (titleGroup.getSelectedTitleIndex() == 1) {
 					itemFram.setVisibility(View.VISIBLE);
-					// removeSameInHotList();
-					
-//					//重新设置hot_list
-//					if(!hot_list.isEmpty()) {
-//						
-//						hot_list.clear();
-//					}
-//					
-//					hot_list.add(item);
-//					Log.i(TAG, "item--->" + item.prod_id);
-//					
-//					for(HotItemInfo tempHotItemInfo:netWorkHotList) {
-//						
-//						Log.i(TAG, "tempHotItemInfo--->" + tempHotItemInfo.prod_id);
-//						
-//						if(!tempHotItemInfo.prod_id.equals(item.prod_id)) {
-//							
-//							hot_list.add(tempHotItemInfo);
-//						}
-//					}
-					
+					hot_list.add(0, item);
+					updateHotDate();
+					updateHotContentLayoue();
 					gallery1.setAdapter(new MainHotItemAdapter(Main.this,
 							hot_list));
 					if (hot_list.size() > 0) {
@@ -2228,30 +2201,18 @@ public class Main extends Activity implements OnItemSelectedListener,
 				isHotLoadedFlag = 2;
 				return;
 			} else if (isHotLoadedFlag == 0) {
+				hot_list.add(item);
 				isHotLoadedFlag = 1;
 			} else if (isHotLoadedFlag == 2) {
+				hot_list.clear();
+				hot_list.add(item);
+				for(int i=0; i<netWorkHotList.size(); i++){
+					hot_list.add(netWorkHotList.get(i));
+				}
+				updateHotDate();
+				updateHotContentLayoue();
 				if (titleGroup.getSelectedTitleIndex() == 1) {
 					itemFram.setVisibility(View.VISIBLE);
-					// removeSameInHotList();
-					
-//					//重新设置hot_list
-//					if(!hot_list.isEmpty()) {
-//						
-//						hot_list.clear();
-//					}
-//					
-//					hot_list.add(item);
-//					Log.i(TAG, "tempHotItemInfo--->" + item.prod_id);
-//					
-//					for(HotItemInfo tempHotItemInfo:netWorkHotList) {
-//						
-//						Log.i(TAG, "tempHotItemInfo--->" + tempHotItemInfo.prod_id);
-//						
-//						if(!tempHotItemInfo.prod_id.equals(item.prod_id)) {
-//							
-//							hot_list.add(tempHotItemInfo);
-//						}
-//					}
 					
 					gallery1.setAdapter(new MainHotItemAdapter(Main.this,
 							hot_list));
@@ -2297,16 +2258,16 @@ public class Main extends Activity implements OnItemSelectedListener,
 			
 			//当历史加载完成，hot数据后加载
 			
-			String tempProdId = null;
-			
-			if(hot_list != null && hot_list.size() > 0 && netWorkHotList.size() <= 0 ) {
-				
-				HotItemInfo tempInfo = hot_list.get(0);
-				if(tempInfo != null) {
-					
-					tempProdId = tempInfo.prod_id;
-				}
-			}
+//			String tempProdId = null;
+//			
+//			if(hot_list != null && hot_list.size() > 0 && netWorkHotList.size() <= 0 ) {
+//				
+//				HotItemInfo tempInfo = hot_list.get(0);
+//				if(tempInfo != null) {
+//					
+//					tempProdId = tempInfo.prod_id;
+//				}
+//			}
 			for (int i = 0; i < result.items.length; i++) {
 				HotItemInfo item = new HotItemInfo();
 				item.type = 1;
@@ -2329,55 +2290,59 @@ public class Main extends Activity implements OnItemSelectedListener,
 				item.duration = result.items[i].duration;
 				item.play_urls = result.items[i].play_urls;
 				item.playback_time = "";
-				View hotView = LayoutInflater.from(Main.this).inflate(
-						R.layout.layout_hot, null);
-				TextView hot_name_tv = (TextView) hotView
-						.findViewById(R.id.hot_content_name);
-				TextView hot_score_tv = (TextView) hotView
-						.findViewById(R.id.hot_content_score);
-				TextView hot_directors_tv = (TextView) hotView
-						.findViewById(R.id.hot_content_directors);
-				TextView hot_starts_tv = (TextView) hotView
-						.findViewById(R.id.hot_content_stars);
-				TextView hot_introduce_tv = (TextView) hotView
-						.findViewById(R.id.hot_content_introduce);
-				ImageView icon_douban = (ImageView) hotView
-						.findViewById(R.id.icon_douban);
-				if ("3".equals(item.prod_type.trim())) {
-					TextView hot_title_director = (TextView) hotView
-							.findViewById(R.id.title_directors);
-					TextView hot_title_stars = (TextView) hotView
-							.findViewById(R.id.title_stars);
-					hot_title_director
-							.setText(R.string.xiangqing_zongyi_zhuchi);
-					hot_title_stars.setText(R.string.xiangqing_zongyi_shoubo);
-					hot_starts_tv.setText(item.directors);
-					hot_directors_tv.setText(item.stars);
-					icon_douban.setVisibility(View.INVISIBLE);
-				} else {
-					hot_directors_tv.setText(item.directors);
-					hot_starts_tv.setText(item.stars);
-				}
-
-				hot_name_tv.setText(item.prod_name);
-				hot_score_tv.setText(UtilTools.formateScore(item.score));
-				hot_introduce_tv.setText(item.prod_summary);
+				hot_list.add(item);
+				netWorkHotList.add(item);//网络数据
+//				View hotView = LayoutInflater.from(Main.this).inflate(
+//						R.layout.layout_hot, null);
+//				TextView hot_name_tv = (TextView) hotView
+//						.findViewById(R.id.hot_content_name);
+//				TextView hot_score_tv = (TextView) hotView
+//						.findViewById(R.id.hot_content_score);
+//				TextView hot_directors_tv = (TextView) hotView
+//						.findViewById(R.id.hot_content_directors);
+//				TextView hot_starts_tv = (TextView) hotView
+//						.findViewById(R.id.hot_content_stars);
+//				TextView hot_introduce_tv = (TextView) hotView
+//						.findViewById(R.id.hot_content_introduce);
+//				ImageView icon_douban = (ImageView) hotView
+//						.findViewById(R.id.icon_douban);
+//				if ("3".equals(item.prod_type.trim())) {
+//					TextView hot_title_director = (TextView) hotView
+//							.findViewById(R.id.title_directors);
+//					TextView hot_title_stars = (TextView) hotView
+//							.findViewById(R.id.title_stars);
+//					hot_title_director
+//							.setText(R.string.xiangqing_zongyi_zhuchi);
+//					hot_title_stars.setText(R.string.xiangqing_zongyi_shoubo);
+//					hot_starts_tv.setText(item.directors);
+//					hot_directors_tv.setText(item.stars);
+//					icon_douban.setVisibility(View.INVISIBLE);
+//				} else {
+//					hot_directors_tv.setText(item.directors);
+//					hot_starts_tv.setText(item.stars);
+//				}
+//
+//				hot_name_tv.setText(item.prod_name);
+//				hot_score_tv.setText(UtilTools.formateScore(item.score));
+//				hot_introduce_tv.setText(item.prod_summary);
 				
-				if(tempProdId != null && tempProdId.endsWith(item.prod_id)) {
-					
-					//说明历史加载先完成
-				} else {
-					
-					hot_list.add(item);
-					netWorkHotList.add(item);//网络数据
-					hot_contentViews.add(hotView);
-				}
+//				if(tempProdId != null && tempProdId.endsWith(item.prod_id)) {
+//					
+//					//说明历史加载先完成
+//				} else {
+//					
+//					hot_list.add(item);
+//					netWorkHotList.add(item);//网络数据
+//					hot_contentViews.add(hotView);
+//				}
 			}
 			// Log.d
 
 			if (isHotLoadedFlag == 1) {
 				if (titleGroup.getSelectedTitleIndex() == 1) {
 					// removeSameInHotList();
+					updateHotDate();
+					updateHotContentLayoue();
 					gallery1.setAdapter(new MainHotItemAdapter(Main.this,
 							hot_list));
 					if (hot_list.size() > 0) {
