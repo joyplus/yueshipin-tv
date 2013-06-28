@@ -4,7 +4,7 @@ import android.os.Environment;
 
 public class Constant {
 	
-//	// 正式环境
+	// 正式环境
 	public static boolean TestEnv = false;
 	public static final String BASE_URL = "http://api.joyplus.tv/joyplus-service/index.php/";
 	public static String DEFAULT_APPKEY = "ijoyplus_android_0001";
@@ -30,8 +30,8 @@ public class Constant {
 	
 //	//测试环境控制
 //	public static boolean TestEnv = true;
-////	
-////	//测试环境
+//////	
+//////	//测试环境
 //	 public static final String BASE_URL =
 //	 "http://apitest.yue001.com/joyplus-service/index.php/";
 //	 public static String DEFAULT_APPKEY = "ijoyplus_android_0001bj";
@@ -75,13 +75,13 @@ public class Constant {
 	public static final String[] video_dont_support_extensions = { ".m3u",".m3u8" };//不支持的格式
 	public static final String[] video_index = { "wangpan", "le_tv_fee",
 			"letv", "fengxing", "qiyi", "youku", "sinahd", "sohu", "56", "qq","pptv", "m1905" };//来源
-	
+	public static final String BAIDU_WANGPAN = "baidu_wangpan";
 	/*
 	 * "type": flv,3gp：标清 (普清就是标清) ,"mp4", mp4:高清，hd2：超清
 	 */
-	public static final String[] quality_index = { "hd2", "mp4", "flv", "3gp" }; // 播放器用
+//	public static final String[] quality_index = { "hd2", "mp4", "flv", "3gp" }; // 播放器用
 
-	public static final String[] player_quality_index = { "mp4", "hd2", "3gp","flv" };//格式
+	public static final String[] player_quality_index = { "hd2", "mp4", "3gp","flv" };//格式
 	
 	//模拟firefox发送请求
 	public static final String USER_AGENT_IOS = "Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_0 like Mac OS X; en-us) AppleWebKit/532.9 (KHTML, like Gecko) Version/4.0.5 Mobile/8A293 Safari/6531.22.7";

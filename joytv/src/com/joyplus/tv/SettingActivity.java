@@ -1,13 +1,7 @@
 package com.joyplus.tv;
 
-import com.androidquery.AQuery;
-import com.joyplus.tv.ui.UserInfo;
-import com.saulpower.fayeclient.FayeService;
-import com.umeng.analytics.MobclickAgent;
-
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Application;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -15,14 +9,21 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.text.BoringLayout;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.androidquery.AQuery;
+import com.joyplus.tv.ui.UserInfo;
+import com.saulpower.fayeclient.FayeService;
+import com.umeng.analytics.MobclickAgent;
+
 public class SettingActivity extends Activity implements OnClickListener {
+	
+	private static final String TAG = "SettingActivity";
 	
 	private static final int SHOW_DIALOG_UNBAND = 0;
 	
@@ -62,6 +63,7 @@ public class SettingActivity extends Activity implements OnClickListener {
 	}
 	@Override
 	public void onClick(View v) {
+		Log.i(TAG, "onClick(View v)--->");
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
 		case R.id.about_layout:

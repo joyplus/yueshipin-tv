@@ -2,6 +2,7 @@ package com.joyplus.tv.ui;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Scroller;
@@ -11,7 +12,7 @@ import com.joyplus.tv.R;
 
 public class MyScrollLayout extends ViewGroup {
 
-//	private static final String TAG = "ScrollLayout";
+	private static final String TAG = "MyScrollLayout";
 //	private VelocityTracker mVelocityTracker; 
 //	private static final int SNAP_VELOCITY = 600;   
 	private Scroller mScroller; 
@@ -36,6 +37,7 @@ public class MyScrollLayout extends ViewGroup {
 	}
 
 	private void init(Context context) {
+		Log.i(TAG, "init--->");
 		mCurTitle = 0;
 		mScroller = new Scroller(context);
 	}
@@ -133,6 +135,9 @@ public class MyScrollLayout extends ViewGroup {
 
 	//使屏幕移动到第whichScreen+1�?
 	private void snapToTitle(int index) {
+		
+		Log.i(TAG, "snapToDestination--->" + index);
+		
 		if(index<-2||index>(getChildCount()-3)){
 			return ;
 		}

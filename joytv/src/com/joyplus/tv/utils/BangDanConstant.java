@@ -2,7 +2,7 @@ package com.joyplus.tv.utils;
 
 import com.joyplus.tv.Constant;
 
-public interface BangDanKey {
+public interface BangDanConstant {
 
 	/**
 	 * 
@@ -56,7 +56,7 @@ public interface BangDanKey {
 	String REBO_GANGJU_DIANSHI = "2250";//2250 热播港剧
 	String REBO_TAIJU_DIANSHI = "150";//150 热播台剧 
 	String REBO_HANJU_DIANSHI = "918";//918 热播韩剧 
-	String REBO_RIJU_DIANSHI = "49";//49 热播日剧
+	String REBO_RIJU_DIANSHI = "149";//149 热播日剧
 	
 	String REBO_ZONGYI = "152";//152 热播综艺
 	
@@ -79,10 +79,14 @@ public interface BangDanKey {
 	String HISTORY_URL = Constant.BASE_URL + "/user/playHistories";
 	String YINGPING_URL = Constant.BASE_URL + "program/reviews";
 	String SEARCH_CAPITAL_URL = Constant.BASE_URL + "search_capital";
+	String SERISE_ALL_GROUP_URL = Constant.BASE_URL + "/program/RelatedGroup";
 	
 	String MOVIE_TYPE = "1";
 	String TV_TYPE = "2";
 	String ZONGYI_TYPE = "3";
 	String DONGMAN_TYPE = "131";
 
+	int CHANGXIAN = 6;//尝鲜
+	int GAOQING = 7;//高清 普清
+	int CHAOQING = 8;//超清
 }

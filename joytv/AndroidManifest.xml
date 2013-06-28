@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.joyplus.tv"
-    android:versionCode="5"
-    android:versionName="1.1.1" >
+    android:versionCode="6"
+    android:versionName="1.2" >
 
     <uses-sdk
         android:minSdkVersion="14"
@@ -42,7 +42,7 @@
             android:label="@string/app_name"
             android:launchMode="singleTop"
             android:screenOrientation="landscape"
-            android:theme="@android:style/Theme.NoTitleBar"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
             android:uiOptions="splitActionBarWhenNarrow" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -50,18 +50,31 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+<!--         <activity -->
+<!--             android:name=".Video.VideoPlayerActivity" -->
+<!--             android:configChanges="orientation|keyboardHidden|navigation" -->
+<!--             android:launchMode="singleTop" -->
+<!--             android:theme="@android:style/Theme.NoTitleBar.Fullscreen" > -->
+<!--         </activity> -->
         <activity
-            android:name=".Video.VideoPlayerActivity"
+            android:name="VideoPlayerJPActivity"
             android:configChanges="orientation|keyboardHidden|navigation"
             android:launchMode="singleTop"
+            android:screenOrientation="landscape"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
         </activity>
         <activity
             android:name="com.umeng.fb.ui.SendFeedback"
+            android:screenOrientation="landscape"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
             android:windowSoftInputMode="adjustResize" />
-        <activity android:name="com.umeng.fb.ui.FeedbackConversations" />
+        <activity android:name="com.umeng.fb.ui.FeedbackConversations" 
+            android:screenOrientation="landscape"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/>
         <activity
             android:name="com.umeng.fb.ui.FeedbackConversation"
+            android:screenOrientation="landscape"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
             android:configChanges="keyboard" />
 
         <service
@@ -76,18 +89,19 @@
             android:process=":DownloadingService" >
         </service>
 
-<!--         <meta-data -->
-<!--             android:name="UMENG_APPKEY" -->
-<!--             android:value="50937e6c5270151fc8000003" > -->
-<!--         </meta-data> -->
-<!--         <meta-data -->
-<!--             android:name="UMENG_CHANNEL" -->
-<!--             android:value="a002001" /> -->
+        <!-- <meta-data -->
+        <!-- android:name="UMENG_APPKEY" -->
+        <!-- android:value="50937e6c5270151fc8000003" > -->
+        <!-- </meta-data> -->
+        <!-- <meta-data -->
+        <!-- android:name="UMENG_CHANNEL" -->
+        <!-- android:value="a002001" /> -->
 
         <activity
             android:name="ShowMovieActivity"
             android:label="@string/app_name"
-            android:theme="@android:style/Theme.Black.NoTitleBar"
+            android:screenOrientation="landscape"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
             android:windowSoftInputMode="stateAlwaysHidden" >
 
             <!--
@@ -101,7 +115,8 @@
         <activity
             android:name="ShowDongManActivity"
             android:label="@string/app_name"
-            android:theme="@android:style/Theme.Black.NoTitleBar"
+            android:screenOrientation="landscape"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
             android:windowSoftInputMode="stateAlwaysHidden" >
 
             <!--
@@ -115,7 +130,8 @@
         <activity
             android:name="ShowSearchActivity"
             android:label="@string/app_name"
-            android:theme="@android:style/Theme.Black.NoTitleBar"
+            android:screenOrientation="landscape"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
             android:windowSoftInputMode="stateAlwaysHidden" >
 
             <!--
@@ -129,7 +145,8 @@
         <activity
             android:name="ShowTVActivity"
             android:label="@string/app_name"
-            android:theme="@android:style/Theme.Black.NoTitleBar"
+            android:screenOrientation="landscape"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
             android:windowSoftInputMode="stateAlwaysHidden" >
 
             <!--
@@ -143,7 +160,8 @@
         <activity
             android:name="ShowYueDanActivity"
             android:label="@string/app_name"
-            android:theme="@android:style/Theme.Black.NoTitleBar">
+            android:screenOrientation="landscape"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
 
             <!--
                  <intent-filter>
@@ -156,7 +174,8 @@
         <activity
             android:name="ShowYueDanListActivity"
             android:label="@string/app_name"
-            android:theme="@android:style/Theme.Black.NoTitleBar" >
+            android:screenOrientation="landscape"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
 
             <!--
                  <intent-filter>
@@ -169,7 +188,8 @@
         <activity
             android:name="ShowZongYiActivity"
             android:label="@string/app_name"
-            android:theme="@android:style/Theme.Black.NoTitleBar"
+            android:screenOrientation="landscape"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
             android:windowSoftInputMode="stateAlwaysHidden" >
 
             <!--
@@ -183,7 +203,8 @@
         <activity
             android:name="ShowXiangqingTv"
             android:label="@string/app_name"
-            android:theme="@android:style/Theme.Black.NoTitleBar" >
+            android:screenOrientation="landscape"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
 
             <!--
                  <intent-filter>
@@ -196,7 +217,8 @@
         <activity
             android:name="ShowXiangqingMovie"
             android:label="@string/app_name"
-            android:theme="@android:style/Theme.Black.NoTitleBar" >
+            android:screenOrientation="landscape"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
 
             <!--
             <intent-filter>
@@ -210,7 +232,8 @@
         <activity
             android:name="ShowXiangqingZongYi"
             android:label="@string/app_name"
-            android:theme="@android:style/Theme.Black.NoTitleBar" >
+            android:screenOrientation="landscape"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
 
             <!--
             <intent-filter>
@@ -224,7 +247,8 @@
         <activity
             android:name="ShowXiangqingDongman"
             android:label="@string/app_name"
-            android:theme="@android:style/Theme.Black.NoTitleBar" >
+            android:screenOrientation="landscape"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
 
             <!--
             <intent-filter>
@@ -238,52 +262,55 @@
         <activity
             android:name="SettingActivity"
             android:label="@string/app_name"
-            android:theme="@android:style/Theme.Black.NoTitleBar" >
+            android:screenOrientation="landscape"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
 
-            
-            <!-- <intent-filter>
+            <!--
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter> -->
-           
+            </intent-filter>
+            -->
 
         </activity>
         <activity
             android:name="AboutActivity"
             android:label="@string/app_name"
-            android:theme="@android:style/Theme.Black.NoTitleBar"
+            android:screenOrientation="landscape"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
             android:windowSoftInputMode="adjustPan" >
         </activity>
         <activity
             android:name="DeclarationActivity"
             android:label="@string/app_name"
-            android:theme="@android:style/Theme.Black.NoTitleBar"
+            android:screenOrientation="landscape"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
             android:windowSoftInputMode="adjustPan" >
         </activity>
         <activity
             android:name="FAQActivity"
             android:label="@string/app_name"
-            android:theme="@android:style/Theme.Black.NoTitleBar"
+            android:screenOrientation="landscape"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
             android:windowSoftInputMode="adjustPan" >
         </activity>
-        
         <activity
             android:name=".HistoryActivity"
             android:screenOrientation="landscape"
-            android:theme="@android:style/Theme.NoTitleBar"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
             android:uiOptions="splitActionBarWhenNarrow" >
         </activity>
         <activity
             android:name=".ShowShoucangHistoryActivity"
             android:screenOrientation="landscape"
-            android:theme="@android:style/Theme.NoTitleBar"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
             android:uiOptions="splitActionBarWhenNarrow" >
         </activity>
         <activity
             android:name=".DetailComment"
             android:screenOrientation="landscape"
-            android:theme="@android:style/Theme.NoTitleBar"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
             android:uiOptions="splitActionBarWhenNarrow" >
         </activity>
 
@@ -299,9 +326,10 @@
             android:name="UMENG_APPKEY"
             android:value="5160f44856240b223800369a" >
         </meta-data>
-	        <meta-data
+        <meta-data
             android:name="UMENG_CHANNEL"
             android:value="j001" />
+
         <service android:name="com.parse.PushService" />
 
         <receiver android:name="com.parse.ParseBroadcastReceiver" >
@@ -315,7 +343,8 @@
                 <action android:name="com.example.UPDATE_STATUS" />
             </intent-filter>
         </receiver>
-        <receiver android:name="AlarmBroadcastReceiver"></receiver>
+        <receiver android:name="AlarmBroadcastReceiver" >
+        </receiver>
     </application>
 
 </manifest>

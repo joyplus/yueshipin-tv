@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    
+    <string name="version_code">1.2</string>
+    <string name="version_name">6</string>
 
     <string name="app_name">悦视频</string>
     <string name="action_settings">Settings</string>
@@ -94,6 +97,12 @@
     <string name="dialog_unband_no">否</string>
     
     <string name="search_hint">请输入首字母搜索</string>
+    
+    <string name="before_num_text">共</string>
+    <string name="after_num_text">部</string>
+    
+    <string name="group_series_tv_dongman">全系列</string>
+    
     <!--Yangzhg  -->
     
     
