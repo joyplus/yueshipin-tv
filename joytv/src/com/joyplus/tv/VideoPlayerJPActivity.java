@@ -1310,92 +1310,207 @@ public class VideoPlayerJPActivity extends Activity implements
 			playUrls.clear();
 			switch (mProd_type) {
 			case 1:
-				mProd_name = m_ReturnProgramView.movie.name;
-				for (int i = 0; i < m_ReturnProgramView.movie.episodes[0].down_urls.length; i++) {
-					String souces = m_ReturnProgramView.movie.episodes[0].down_urls[i].source;
-					for (int j = 0; j < m_ReturnProgramView.movie.episodes[0].down_urls[i].urls.length; j++) {
-						URLS_INDEX url = new URLS_INDEX();
-						url.source_from = souces;
-						url.defination_from_server = m_ReturnProgramView.movie.episodes[0].down_urls[i].urls[j].type;
-						url.url = m_ReturnProgramView.movie.episodes[0].down_urls[i].urls[j].url;
-						playUrls.add(url);
+				
+				if(m_ReturnProgramView.movie != null) {
+					
+					mProd_name = m_ReturnProgramView.movie.name;
+					
+					if(m_ReturnProgramView.movie.episodes != null 
+							&& m_ReturnProgramView.movie.episodes.length > 0 
+							&& m_ReturnProgramView.movie.episodes[0].down_urls != null) {
+						
+						for (int i = 0; i < m_ReturnProgramView.movie.episodes[0].down_urls.length; i++) {
+							
+							if(m_ReturnProgramView.movie.episodes[0].down_urls[i] != null) {
+								
+								String souces = m_ReturnProgramView.movie.episodes[0].down_urls[i].source;
+								
+								if(m_ReturnProgramView.movie.episodes[0].down_urls[i].urls != null) {
+									
+									for (int j = 0; j < m_ReturnProgramView.movie.episodes[0].down_urls[i].urls.length; j++) {
+										
+										if(m_ReturnProgramView.movie.episodes[0].down_urls[i].urls[j] != null) {
+											
+											URLS_INDEX url = new URLS_INDEX();
+											url.source_from = souces;
+											url.defination_from_server = m_ReturnProgramView.movie.episodes[0].down_urls[i].urls[j].type;
+											url.url = m_ReturnProgramView.movie.episodes[0].down_urls[i].urls[j].url;
+											playUrls.add(url);
+										}
+
+									}
+								}
+							}
+						}
 					}
+
 				}
+				
 				break;
 			case 2:
 			case 131:
-				mProd_name = m_ReturnProgramView.tv.name;
-				if (mEpisodeIndex == -1) {
-					for (int i = 0; i < m_ReturnProgramView.tv.episodes.length; i++) {
-						if (mProd_sub_name
-								.equals(m_ReturnProgramView.tv.episodes[i].name)) {
-							mEpisodeIndex = i;
-							if(m_ReturnProgramView.tv.episodes[i].down_urls == null){
-								mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
-								return; 
-							}
-							for (int j = 0; j < m_ReturnProgramView.tv.episodes[i].down_urls.length; j++) {
-								String souces = m_ReturnProgramView.tv.episodes[i].down_urls[j].source;
-								for (int k = 0; k < m_ReturnProgramView.tv.episodes[i].down_urls[j].urls.length; k++) {
-									URLS_INDEX url = new URLS_INDEX();
-									url.source_from = souces;
-									url.defination_from_server = m_ReturnProgramView.tv.episodes[i].down_urls[j].urls[k].type;
-									url.url = m_ReturnProgramView.tv.episodes[i].down_urls[j].urls[k].url;
-									playUrls.add(url);
+				
+				if(m_ReturnProgramView.tv != null) {
+					
+					mProd_name = m_ReturnProgramView.tv.name;
+					
+					if(m_ReturnProgramView.tv.episodes != null) {
+						
+						if (mEpisodeIndex == -1) {
+							for (int i = 0; i < m_ReturnProgramView.tv.episodes.length; i++) {
+								if (m_ReturnProgramView.tv.episodes[i] != null 
+										&& mProd_sub_name
+										.equals(m_ReturnProgramView.tv.episodes[i].name)) {
+									mEpisodeIndex = i;
+									if(m_ReturnProgramView.tv.episodes[i].down_urls == null){
+										mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
+										return; 
+									}
+									for (int j = 0; j < m_ReturnProgramView.tv.episodes[i].down_urls.length; j++) {
+										
+										if(m_ReturnProgramView.tv.episodes[i].down_urls[j] != null) {
+											
+											String souces = m_ReturnProgramView.tv.episodes[i].down_urls[j].source;
+											
+											if(m_ReturnProgramView.tv.episodes[i].down_urls[j].urls != null) {
+												
+												for (int k = 0; k < m_ReturnProgramView.tv.episodes[i].down_urls[j].urls.length; k++) {
+													
+													if(m_ReturnProgramView.tv.episodes[i].down_urls[j].urls[k] != null) {
+														
+														URLS_INDEX url = new URLS_INDEX();
+														url.source_from = souces;
+														url.defination_from_server = m_ReturnProgramView.tv.episodes[i].down_urls[j].urls[k].type;
+														url.url = m_ReturnProgramView.tv.episodes[i].down_urls[j].urls[k].url;
+														playUrls.add(url);
+													}
+												}
+											}
+										}
+
+									}
 								}
 							}
+						} else {
+							
+							if(m_ReturnProgramView.tv.episodes.length > mEpisodeIndex
+									&& m_ReturnProgramView.tv.episodes[mEpisodeIndex] != null) {
+								
+								if(m_ReturnProgramView.tv.episodes[mEpisodeIndex].down_urls != null) {
+									
+									for (int j = 0; j < m_ReturnProgramView.tv.episodes[mEpisodeIndex].down_urls.length; j++) {
+										
+										if(m_ReturnProgramView.tv.episodes[mEpisodeIndex].down_urls[j] != null) {
+											
+											String souces = m_ReturnProgramView.tv.episodes[mEpisodeIndex].down_urls[j].source;
+											
+											if( m_ReturnProgramView.tv.episodes[mEpisodeIndex].down_urls[j].urls != null) {
+												
+												for (int k = 0; k < m_ReturnProgramView.tv.episodes[mEpisodeIndex].down_urls[j].urls.length; k++) {
+													
+													if(m_ReturnProgramView.tv.episodes[mEpisodeIndex].down_urls[j].urls[k] != null) {
+														
+														URLS_INDEX url = new URLS_INDEX();
+														url.source_from = souces;
+														url.defination_from_server = m_ReturnProgramView.tv.episodes[mEpisodeIndex].down_urls[j].urls[k].type;
+														url.url = m_ReturnProgramView.tv.episodes[mEpisodeIndex].down_urls[j].urls[k].url;
+														playUrls.add(url);
+													}
+												}
+											}
+										}
+									}
+								}
+								mProd_sub_name = m_ReturnProgramView.tv.episodes[mEpisodeIndex].name;
+							}
 						}
 					}
-				} else {
-					for (int j = 0; j < m_ReturnProgramView.tv.episodes[mEpisodeIndex].down_urls.length; j++) {
-						String souces = m_ReturnProgramView.tv.episodes[mEpisodeIndex].down_urls[j].source;
-						for (int k = 0; k < m_ReturnProgramView.tv.episodes[mEpisodeIndex].down_urls[j].urls.length; k++) {
-							URLS_INDEX url = new URLS_INDEX();
-							url.source_from = souces;
-							url.defination_from_server = m_ReturnProgramView.tv.episodes[mEpisodeIndex].down_urls[j].urls[k].type;
-							url.url = m_ReturnProgramView.tv.episodes[mEpisodeIndex].down_urls[j].urls[k].url;
-							playUrls.add(url);
-						}
-					}
-					mProd_sub_name = m_ReturnProgramView.tv.episodes[mEpisodeIndex].name;
 				}
+				
 				break;
 			case 3:
-				mProd_name = m_ReturnProgramView.show.name;
-				if (mEpisodeIndex == -1) {
-					for (int i = 0; i < m_ReturnProgramView.show.episodes.length; i++) {
-						if (UtilTools.isSame4Str(mProd_sub_name, m_ReturnProgramView.show.episodes[i].name)) {
-							mEpisodeIndex = i;
-							mProd_sub_name = m_ReturnProgramView.show.episodes[i].name;
-							if(m_ReturnProgramView.show.episodes[i].down_urls==null){
-								mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
-								return ;
-							}
-							for (int j = 0; j < m_ReturnProgramView.show.episodes[i].down_urls.length; j++) {
-								String souces = m_ReturnProgramView.show.episodes[i].down_urls[j].source;
-								for (int k = 0; k < m_ReturnProgramView.show.episodes[i].down_urls[j].urls.length; k++) {
-									URLS_INDEX url = new URLS_INDEX();
-									url.source_from = souces;
-									url.defination_from_server = m_ReturnProgramView.show.episodes[i].down_urls[j].urls[k].type;
-									url.url = m_ReturnProgramView.show.episodes[i].down_urls[j].urls[k].url;
-									playUrls.add(url);
+				
+				if(m_ReturnProgramView.show != null) {
+					
+					mProd_name = m_ReturnProgramView.show.name;
+					
+					if(m_ReturnProgramView.show.episodes != null) {
+						
+						if (mEpisodeIndex == -1) {
+							for (int i = 0; i < m_ReturnProgramView.show.episodes.length; i++) {
+								
+								if(m_ReturnProgramView.show.episodes[i] != null) {
+									
+									if (UtilTools.isSame4Str(mProd_sub_name, m_ReturnProgramView.show.episodes[i].name)) {
+										mEpisodeIndex = i;
+										mProd_sub_name = m_ReturnProgramView.show.episodes[i].name;
+										if(m_ReturnProgramView.show.episodes[i].down_urls==null){
+											mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
+											return ;
+										}
+										for (int j = 0; j < m_ReturnProgramView.show.episodes[i].down_urls.length; j++) {
+											
+											
+											if(m_ReturnProgramView.show.episodes[i].down_urls[j] != null) {
+												
+												String souces = m_ReturnProgramView.show.episodes[i].down_urls[j].source;
+												
+												if(m_ReturnProgramView.show.episodes[i].down_urls[j].urls != null) {
+													
+													for (int k = 0; k < m_ReturnProgramView.show.episodes[i].down_urls[j].urls.length; k++) {
+														
+														if(m_ReturnProgramView.show.episodes[i].down_urls[j].urls[k] != null) {
+															
+															URLS_INDEX url = new URLS_INDEX();
+															url.source_from = souces;
+															url.defination_from_server = m_ReturnProgramView.show.episodes[i].down_urls[j].urls[k].type;
+															url.url = m_ReturnProgramView.show.episodes[i].down_urls[j].urls[k].url;
+															playUrls.add(url);
+														}
+													}
+												}
+											}
+										}
+									}
 								}
 							}
+						} else {
+							
+							if(m_ReturnProgramView.show.episodes.length > mEpisodeIndex ) {
+								
+								if(m_ReturnProgramView.show.episodes[mEpisodeIndex] != null 
+										&& m_ReturnProgramView.show.episodes[mEpisodeIndex].down_urls != null) {
+									
+									for (int j = 0; j < m_ReturnProgramView.show.episodes[mEpisodeIndex].down_urls.length; j++) {
+										
+										if(m_ReturnProgramView.show.episodes[mEpisodeIndex].down_urls[j] != null) {
+											
+											String souces = m_ReturnProgramView.show.episodes[mEpisodeIndex].down_urls[j].source;
+											
+											if(m_ReturnProgramView.show.episodes[mEpisodeIndex].down_urls[j].urls != null) {
+												
+												for (int k = 0; k < m_ReturnProgramView.show.episodes[mEpisodeIndex].down_urls[j].urls.length; k++) {
+													
+													if(m_ReturnProgramView.show.episodes[mEpisodeIndex].down_urls[j].urls[k] != null) {
+														
+														URLS_INDEX url = new URLS_INDEX();
+														url.source_from = souces;
+														url.defination_from_server = m_ReturnProgramView.show.episodes[mEpisodeIndex].down_urls[j].urls[k].type;
+														url.url = m_ReturnProgramView.show.episodes[mEpisodeIndex].down_urls[j].urls[k].url;
+														playUrls.add(url);
+													}
+												}
+											}
+										}
+
+									}
+								}
+								mProd_sub_name = m_ReturnProgramView.show.episodes[mEpisodeIndex].name;
+							}
 						}
 					}
-				} else {
-					for (int j = 0; j < m_ReturnProgramView.show.episodes[mEpisodeIndex].down_urls.length; j++) {
-						String souces = m_ReturnProgramView.show.episodes[mEpisodeIndex].down_urls[j].source;
-						for (int k = 0; k < m_ReturnProgramView.show.episodes[mEpisodeIndex].down_urls[j].urls.length; k++) {
-							URLS_INDEX url = new URLS_INDEX();
-							url.source_from = souces;
-							url.defination_from_server = m_ReturnProgramView.show.episodes[mEpisodeIndex].down_urls[j].urls[k].type;
-							url.url = m_ReturnProgramView.show.episodes[mEpisodeIndex].down_urls[j].urls[k].url;
-							playUrls.add(url);
-						}
-					}
-					mProd_sub_name = m_ReturnProgramView.show.episodes[mEpisodeIndex].name;
 				}
+				
 				break;
 			}
 			Log.d(TAG, "playUrls size ------->" + playUrls.size());

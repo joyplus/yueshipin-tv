@@ -1271,6 +1271,14 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 		if(num<=index){
 			return;
 		}
+		
+		if(date == null || date.tv == null
+				|| date.tv.episodes == null 
+				|| index >= date.tv.episodes.length) {
+			
+			return;
+		}
+		
 		CurrentPlayDetailData playDate = new CurrentPlayDetailData();
 		Intent intent = new Intent(this,VideoPlayerJPActivity.class);
 		playDate.prod_id = prod_id;

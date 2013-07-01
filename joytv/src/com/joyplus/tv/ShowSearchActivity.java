@@ -10,6 +10,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
@@ -199,6 +200,14 @@ public class ShowSearchActivity extends AbstractShowActivity {
 		}
 
 	}
+	
+	@Override
+	public boolean dispatchKeyEvent(KeyEvent event) {
+		// TODO Auto-generated method stub
+		
+		Log.i(TAG, "dispatchKeyEvent--->" + event.getKeyCode());
+		return super.dispatchKeyEvent(event);
+	}
 
 	@Override
 	public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -309,6 +318,8 @@ public class ShowSearchActivity extends AbstractShowActivity {
 					
 					keyBoardWindow = new PopupWindow(keyBoardView, searchEt.getRootView().getWidth(),
 							searchEt.getRootView().getHeight(), true);
+					keyBoardWindow.setBackgroundDrawable(new BitmapDrawable());
+					keyBoardWindow.setOutsideTouchable(true);
 				}
 				
 				if(keyBoardWindow != null && !keyBoardWindow.isShowing()){
@@ -508,6 +519,8 @@ public class ShowSearchActivity extends AbstractShowActivity {
 					
 					keyBoardWindow = new PopupWindow(keyBoardView, searchEt.getRootView().getWidth(),
 							searchEt.getRootView().getHeight(), true);
+					keyBoardWindow.setBackgroundDrawable(new BitmapDrawable());
+					keyBoardWindow.setOutsideTouchable(true);
 				}
 
 				if(keyBoardWindow != null && !keyBoardWindow.isShowing()){
@@ -530,6 +543,8 @@ public class ShowSearchActivity extends AbstractShowActivity {
 					
 					keyBoardWindow = new PopupWindow(keyBoardView, searchEt.getRootView().getWidth(),
 							searchEt.getRootView().getHeight(), true);
+					keyBoardWindow.setBackgroundDrawable(new BitmapDrawable());
+					keyBoardWindow.setOutsideTouchable(true);
 				}
 
 				if(keyBoardWindow != null && !keyBoardWindow.isShowing()){
