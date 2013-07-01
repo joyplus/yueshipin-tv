@@ -26,6 +26,7 @@ import com.joyplus.adkey.video.RichMediaView;
 import com.joyplus.adkey.video.TrackerService;
 import com.joyplus.adkey.video.VideoData;
 import com.joyplus.adkey.widget.Log;
+import com.miaozhen.mzmonitor.MZMonitor;
 
 public class AdManager {
 	
@@ -299,6 +300,9 @@ public class AdManager {
 	
 	public void showAd() {
 		//
+		if(Util.MIAOZHENFLAG){
+			MZMonitor.adTrack(mContext, Const.FULLSCREEN_VIDEO);
+		}
 		Activity activity = (Activity) getContext();
 		if ((mResponse == null)
 				|| (mResponse.getType() == Const.NO_AD)
