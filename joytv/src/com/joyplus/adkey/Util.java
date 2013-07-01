@@ -2,6 +2,7 @@ package com.joyplus.adkey;
 
 import static com.joyplus.adkey.Const.PREFS_DEVICE_ID;
 
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.math.BigInteger;
@@ -10,7 +11,9 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.security.MessageDigest;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.UUID;
 
 import android.Manifest;
@@ -30,13 +33,16 @@ import android.preference.PreferenceManager;
 import android.provider.Settings.Secure;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
+import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.TranslateAnimation;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.widget.FrameLayout;
 
+import com.joyplus.adkey.db.ScreenSaverInfo;
 import com.joyplus.adkey.video.RichMediaAd;
 
 public class Util {
@@ -55,7 +61,19 @@ public class Util {
 	public static boolean DEBUE_MODE = true;
 	//if CACHE_MODE is true,adkey support VideoAd's cacheDisplay
 	public static boolean CACHE_MODE = true;
-
+	//video PublisherId
+	public static String PublisherId = null;
+	public static String VideoFileDir = null;
+	
+	//pic download key-value
+	public static Map<Integer, String> pic_downloaders = new HashMap<Integer, String>();
+	public static Map<Integer, ScreenSaverInfo> pic_info = new HashMap<Integer, ScreenSaverInfo>();
+	
+	//pic for loop's number
+	public static int PicNum = 0;
+	//pic for download number
+	public static int PicDownloadNum = 0;
+	
 	public static boolean isNetworkAvailable(Context ctx) {
 		int networkStatePermission = ctx
 				.checkCallingOrSelfPermission(Manifest.permission.ACCESS_NETWORK_STATE);
@@ -433,6 +451,14 @@ public class Util {
         }   
         return filename;   
     }
+	
+	/*
+	 * By application's package name Get Download path
+	 */
+	public static void GetPackage(Context context){
+		if(context!=null)
+			VideoFileDir = context.getPackageName()+"/"+PublisherId+"/";
+	}
 	/*
 	 * get device name 
 	 */
@@ -440,4 +466,18 @@ public class Util {
 	public static String GetDeviceName(){
 		return new Build().MODEL;
 	}
+	
+	/*
+	 * save a class by Serialie
+	 */
+	public void saveClassToSeriale(java.io.ObjectOutputStream out)throws IOException {
+//		out.
+	}
+	/*
+	 * get a class from SerialieData
+	 */
+	public void getClassFromSeriale(){
+		
+	}
+	
 }
