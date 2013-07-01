@@ -216,7 +216,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="right|top" />
         </FrameLayout>
-
+		
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
@@ -224,9 +224,17 @@
             android:layout_marginTop="5dp"
             android:background="@drawable/bg_teat_repeat"
             android:orientation="horizontal"
-            android:paddingLeft="221dp"
+           	
             android:paddingTop="15dp" >
-
+            <!-- android:paddingLeft="221dp" -->
+            <RelativeLayout
+       			android:id="@+id/adsdkContent"
+       			android:paddingLeft="5dp"
+       			android:paddingBottom="5dp"
+        		android:layout_width="221dp"
+        		android:layout_height="fill_parent"
+        		android:layout_below="@id/galleryFram"
+        		android:background="@android:color/transparent"/>
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
@@ -294,6 +302,7 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:scaleType="fitXY"
-        android:src="@drawable/starting" />
+        />
+    <!-- android:src="@drawable/starting" --> 
 
 </RelativeLayout>

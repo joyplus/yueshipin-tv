@@ -36,7 +36,7 @@ public class SettingActivity extends Activity implements OnClickListener {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			// TODO Auto-generated method stub
-			if(Main.ACTION_USERUPDATE.equals(intent.getAction())){
+			if(Main1.ACTION_USERUPDATE.equals(intent.getAction())){
 				updateUser();
 			}
 		}
@@ -58,7 +58,7 @@ public class SettingActivity extends Activity implements OnClickListener {
 		aboutLayout.setOnClickListener(this);
 		declarationLayout.setOnClickListener(this);
 		faqLayout.setOnClickListener(this);
-		IntentFilter filter = new IntentFilter(Main.ACTION_USERUPDATE);
+		IntentFilter filter = new IntentFilter(Main1.ACTION_USERUPDATE);
 		registerReceiver(receiver, filter);
 	}
 	@Override
