@@ -25,13 +25,11 @@ public class ImpressionThread extends Thread{
 	{
 		// TODO Auto-generated method stub
 		String url = Util.mImpressionUrl+"&ds="+Util.GetDeviceName();
-//		String url = Util.mImpressionUrl;
 		DefaultHttpClient client = new DefaultHttpClient();
 		HttpConnectionParams.setSoTimeout(client.getParams(),
 				Const.SOCKET_TIMEOUT);
 		HttpConnectionParams.setConnectionTimeout(client.getParams(),
 				Const.CONNECTION_TIMEOUT);
-//		HttpProtocolParams.setUserAgent(client.getParams(),null);
 		HttpGet get = new HttpGet(url);
 		HttpResponse response;
 		try {
