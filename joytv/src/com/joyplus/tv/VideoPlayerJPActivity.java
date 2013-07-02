@@ -2,10 +2,8 @@ package com.joyplus.tv;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -34,12 +32,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.TrafficStats;
 import android.net.Uri;
 import android.net.http.AndroidHttpClient;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -571,6 +570,25 @@ public class VideoPlayerJPActivity extends Activity implements
 		mVoiceProgress = (ArcView) findViewById(R.id.av_volume);
 
 		mPreLoadLayout = (RelativeLayout) findViewById(R.id.rl_preload);
+		
+		BitmapFactory.Options opt = new BitmapFactory.Options();
+		// opt.inPreferredConfig = Bitmap.Config.RGB_565; // Each pixel is
+		// stored 2 bytes
+		// opt.inPreferredConfig = Bitmap.Config.ARGB_8888; //Each pixel is
+		// stored 4 bytes
+
+		opt.inTempStorage = new byte[16 * 1024];
+		opt.inPurgeable = true;
+		opt.inInputShareable = true;
+
+		try {
+			mPreLoadLayout.setBackgroundDrawable(new BitmapDrawable(BitmapFactory.decodeResource(
+					getResources(), R.drawable.player_bg, opt)));
+		} catch (OutOfMemoryError e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
 		mNoticeLayout = (RelativeLayout) findViewById(R.id.rl_titile_seekbar);
 		mControlLayout = (LinearLayout) findViewById(R.id.ll_control_buttons);
 		mVocieLayout = (LinearLayout) findViewById(R.id.ll_volume);
@@ -1796,6 +1814,8 @@ public class VideoPlayerJPActivity extends Activity implements
 		if (mVideoView != null) {
 			mVideoView.stopPlayback();
 		}
+		
+		UtilTools.recycleBitmap(((BitmapDrawable)mPreLoadLayout.getBackground()).getBitmap());
 		
 		super.onDestroy();
 	}

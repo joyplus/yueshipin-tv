@@ -27,6 +27,8 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
@@ -228,6 +230,22 @@ public class Main extends Activity implements OnItemSelectedListener,
 		MobclickAgent.onError(this);
 
 		startingImageView = (ImageView) findViewById(R.id.image_starting);
+		
+//		BitmapFactory.Options opt = new BitmapFactory.Options();
+////		  opt.inPreferredConfig = Bitmap.Config.RGB_565; // Each pixel is stored 2 bytes
+//	  // opt.inPreferredConfig = Bitmap.Config.ARGB_8888; //Each pixel is stored 4 bytes
+//
+//		opt.inTempStorage = new byte[16 * 1024];
+//		opt.inPurgeable = true;
+//		opt.inInputShareable = true;
+//		
+//		try {
+//			startingImageView.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.starting, opt));
+//		} catch (OutOfMemoryError e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		}
+		
 		rootLayout = (RelativeLayout) findViewById(R.id.root_layout);
 		gallery1 = (CustomGallery) findViewById(R.id.gallery);
 		contentLayout = (LinearLayout) findViewById(R.id.contentlayout);
@@ -754,6 +772,18 @@ public class Main extends Activity implements OnItemSelectedListener,
 					initStep += 1;
 					if (startingImageView.getVisibility() == View.VISIBLE) {
 						startingImageView.setVisibility(View.GONE);
+						handler.postDelayed(new Runnable() {
+							
+							@Override
+							public void run() {
+								// TODO Auto-generated method stub
+								
+								if(!startingImageView.isShown()) {
+									UtilTools.recycleBitmap(((BitmapDrawable)startingImageView.getDrawable()).getBitmap());
+								}
+							}
+						}, 1000);
+						
 						startingImageView.startAnimation(alpha_disappear);
 						rootLayout.setVisibility(View.VISIBLE);
 						gallery1.requestFocus();
@@ -777,6 +807,19 @@ public class Main extends Activity implements OnItemSelectedListener,
 			case MESSAGE_START_TIMEOUT:// 超时还未加载好
 				if (initStep < 3) {
 					startingImageView.setVisibility(View.GONE);
+					
+					handler.postDelayed(new Runnable() {
+						
+						@Override
+						public void run() {
+							// TODO Auto-generated method stub
+							
+							if(!startingImageView.isShown()) {
+								UtilTools.recycleBitmap(((BitmapDrawable)startingImageView.getDrawable()).getBitmap());
+							}
+						}
+					}, 1000);
+//					UtilTools.recycleBitmap(((BitmapDrawable)startingImageView.getDrawable()).getBitmap());
 					contentLayout.setVisibility(View.INVISIBLE);
 					showDialog(DIALOG_WAITING);
 				}
