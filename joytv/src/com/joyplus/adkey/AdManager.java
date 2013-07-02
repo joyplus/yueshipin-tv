@@ -18,6 +18,7 @@ import android.os.Handler;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import com.joyplus.adkey.banner.AdViewScreenSaver;
 import com.joyplus.adkey.download.Downloader;
 import com.joyplus.adkey.download.ImpressionThread;
 import com.joyplus.adkey.video.ResourceManager;
@@ -27,6 +28,7 @@ import com.joyplus.adkey.video.RichMediaView;
 import com.joyplus.adkey.video.TrackerService;
 import com.joyplus.adkey.video.VideoData;
 import com.joyplus.adkey.widget.Log;
+import com.joyplus.adkey.widget.SerializeManager;
 import com.miaozhen.mzmonitor.MZMonitor;
 
 public class AdManager {
@@ -46,6 +48,8 @@ public class AdManager {
 	private String requestURL;
 
 	private String mUserAgent;
+	
+	private SerializeManager serializeManager = null;
 
 	public static AdManager getAdManager(RichMediaAd ad) {
 		AdManager adManager = sRunningAds.remove(ad.getTimestamp());
@@ -114,8 +118,12 @@ public class AdManager {
 					try {
 						RequestRichMediaAd requestAd = new RequestRichMediaAd();
 						AdRequest request = getRequest();
-						
 						mResponse = requestAd.sendRequest(request);
+						//if hasn't net,the writeSerializableData function doesn't called
+						String path = Const.DOWNLOAD_PATH + Util.VideoFileDir
+								+ "ad";
+						serializeManager.writeSerializableData(path, mResponse);
+						
 						if(mResponse.getVideo()!=null && android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.FROYO){
 							notifyNoAdFound();
 						}
@@ -152,26 +160,67 @@ public class AdManager {
 							}
 						}
 					} catch (Throwable t) {
-						mResponse = new RichMediaAd();
-						mResponse.setType(Const.AD_FAILED);
-						if (mListener != null) {
-							t.printStackTrace();
+						String path = Const.DOWNLOAD_PATH + Util.VideoFileDir
+								+ "ad";
+						mResponse = (RichMediaAd)serializeManager.readSerializableData(path);
+						if(mResponse!=null)
+						{
+							if(mResponse.getVideo()!=null && android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.FROYO){
+								notifyNoAdFound();
+							}
+							else if (mResponse.getType() == Const.VIDEO_TO_INTERSTITIAL || mResponse.getType() == Const.INTERSTITIAL_TO_VIDEO || mResponse.getType() == Const.VIDEO || mResponse.getType() == Const.INTERSTITIAL ) {
+								if (mListener != null) {
+									mHandler.post(new Runnable() {
 
-							mHandler.post(new Runnable() {
-
-								@Override
-								public void run() {
-									notifyNoAdFound();
-
+										@Override
+										public void run() {
+											mListener.adLoadSucceeded(mResponse);
+										}
+									});
 								}
-							});
+							} else if (mResponse.getType() == Const.NO_AD){
+								if (mListener != null) {
+									mHandler.post(new Runnable() {
+
+										@Override
+										public void run() {
+											notifyNoAdFound();
+										}
+									});
+								}
+							}
+							else {
+								if (mListener != null) {
+									mHandler.post(new Runnable() {
+
+										@Override
+										public void run() {
+											notifyNoAdFound();
+										}
+									});
+								}
+							}
+						}else{
+							mResponse = new RichMediaAd();
+							mResponse.setType(Const.AD_FAILED);
+							if (mListener != null) {
+								t.printStackTrace();
+
+								mHandler.post(new Runnable() {
+
+									@Override
+									public void run() {
+										notifyNoAdFound();
+
+									}
+								});
+							}
 						}
 					}
 					mRequestThread = null;
 				}
 			});
-			mRequestThread
-			.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
+			mRequestThread.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
 
 				@Override
 				public void uncaughtException(Thread thread,
@@ -318,7 +367,7 @@ public class AdManager {
 		RichMediaAd ad = mResponse;
 		boolean result = false;
 		try {
-			if (Util.isNetworkAvailable(getContext())) {
+//			if (Util.isNetworkAvailable(getContext())) {
 				VideoData video = ad.getVideo();
 				if(Util.CACHE_MODE&&video!=null){					
 					String path = video.getVideoUrl();
@@ -376,7 +425,7 @@ public class AdManager {
 					result = true;
 					sRunningAds.put(ad.getTimestamp(), this);
 				}
-			}
+//			}
 		} catch (Exception e) {
 		} finally {
 			notifyAdShown(ad, result);
@@ -388,7 +437,7 @@ public class AdManager {
 		 * init Util.VideoFileDir
 		 */
 		Util.GetPackage(mContext);
-		
+		serializeManager = new SerializeManager();
 		mUserAgent = Util.getDefaultUserAgentString(getContext());
 		this.mUniqueId1 = Util.getTelephonyDeviceId(getContext());
 		this.mUniqueId2 = Util.getDeviceId(getContext());
