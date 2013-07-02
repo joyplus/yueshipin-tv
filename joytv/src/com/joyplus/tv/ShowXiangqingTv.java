@@ -1362,7 +1362,11 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 				
 				seletedButtonIndex = tempId;
 				historyPlayIndex4DB = tempId;
-				updateView();
+				
+				if(date != null && date.tv != null) {
+					
+					updateView();
+				}
 				
 //				if(tempId != -1) {
 //					
