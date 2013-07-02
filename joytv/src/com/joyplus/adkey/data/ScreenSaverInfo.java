@@ -1,4 +1,4 @@
-package com.joyplus.adkey.db;
+package com.joyplus.adkey.data;
 
 /**
  * @author yyc
