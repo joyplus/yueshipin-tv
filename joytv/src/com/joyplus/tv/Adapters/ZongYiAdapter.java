@@ -270,27 +270,62 @@ public class ZongYiAdapter extends BaseAdapter implements JieMianConstant{
 				String curEpisode = movieList.get(position).getMovieCurEpisode();
 				String maxEpisode = movieList.get(position).getMovieMaxEpisode();
 				
-				if(maxEpisode != null && !maxEpisode.equals("")) {
+				if(maxEpisode != null && !maxEpisode.equals("")
+						&& !maxEpisode.equals("0")) {
 
-					if(curEpisode == null || curEpisode.equals("0")) {
+					if(curEpisode == null || curEpisode.equals("") 
+							|| curEpisode.equals("0")) {
 						
 						viewItemHodler.otherInfo.setText(
 								maxEpisode + context.getString(R.string.dianshiju_jiquan));
 						} else{
 
-							int max = Integer.valueOf(maxEpisode);
-							int min = Integer.valueOf(curEpisode);
+							int max = 0;
+							int min = 0;
+							try {
+								min = Integer.valueOf(curEpisode);
+								max = Integer.valueOf(maxEpisode);
+								
+							} catch (NumberFormatException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
 							
-							if(min >= max) {
+							if(max != 0 && min != 0) {
 								
-								viewItemHodler.otherInfo.setText(
-										maxEpisode + context.getString(R.string.dianshiju_jiquan));
-							} else {
-								
-								viewItemHodler.otherInfo.setText( "更新至第" + 
-										curEpisode + "集");
+								if(min >= max) {
+									
+									viewItemHodler.otherInfo.setText(
+											maxEpisode + context.getString(R.string.dianshiju_jiquan));
+								} else {
+									
+									viewItemHodler.otherInfo.setText(context.getString(R.string.zongyi_gengxinzhi) + 
+											curEpisode);
+								}
 							}
 
+					}
+				} else {
+					
+					Log.i(TAG, "curEpisode--->" + curEpisode);
+					
+					if(curEpisode != null &&  !curEpisode.equals("") 
+							&& !curEpisode.equals("0")) {
+						
+						int cur = 0;
+						
+						try {
+							cur = Integer.valueOf(curEpisode);
+						} catch (NumberFormatException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						
+						if(cur != 0) {
+							
+							viewItemHodler.otherInfo.setText(context.getString(R.string.zongyi_gengxinzhi) + 
+									curEpisode);
+						}
 					}
 				}
 

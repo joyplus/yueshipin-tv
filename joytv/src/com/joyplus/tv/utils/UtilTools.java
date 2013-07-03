@@ -15,6 +15,7 @@ import android.app.Instrumentation;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.graphics.Bitmap;
 import android.text.format.DateFormat;
 import android.view.View;
 import android.view.animation.Animation;
@@ -28,7 +29,6 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joyplus.tv.App;
 import com.joyplus.tv.Constant;
-import com.joyplus.tv.R;
 import com.joyplus.tv.Service.Return.ReturnTVBangDanList;
 import com.joyplus.tv.Service.Return.ReturnTops;
 import com.joyplus.tv.Service.Return.ReturnUserFavorities;
@@ -986,6 +986,19 @@ public class UtilTools implements JieMianConstant, BangDanConstant {
 					}
 				}
 			}
+		}
+	}
+	
+	public static void recycleBitmap(Bitmap bitmap) {
+		
+		if(bitmap != null) {
+			
+			if(!bitmap.isRecycled()) {
+				
+				bitmap.recycle();
+			}
+			
+			bitmap = null;
 		}
 	}
 

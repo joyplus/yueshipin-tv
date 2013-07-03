@@ -10,6 +10,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.util.SparseArray;
@@ -788,6 +789,8 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 					keyBoardWindow = new PopupWindow(keyBoardView, searchEt
 							.getRootView().getWidth(), searchEt.getRootView()
 							.getHeight(), true);
+					keyBoardWindow.setBackgroundDrawable(new BitmapDrawable());
+					keyBoardWindow.setOutsideTouchable(true);
 				}
 
 				if (keyBoardWindow != null && !keyBoardWindow.isShowing()) {
@@ -812,6 +815,8 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 					keyBoardWindow = new PopupWindow(keyBoardView, searchEt
 							.getRootView().getWidth(), searchEt.getRootView()
 							.getHeight(), true);
+					keyBoardWindow.setBackgroundDrawable(new BitmapDrawable());
+					keyBoardWindow.setOutsideTouchable(true);
 				}
 
 				if (keyBoardWindow != null && !keyBoardWindow.isShowing()) {

@@ -2,40 +2,25 @@ package com.joyplus.tv;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 import org.json.JSONObject;
 
-import android.R.integer;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.ActivityNotFoundException;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Display;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
-import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.WindowManager;
 import android.view.animation.Animation;
-import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
-import android.webkit.URLUtil;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -46,12 +31,9 @@ import com.androidquery.callback.AjaxStatus;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.joyplus.tv.R;
 import com.joyplus.tv.Adapters.DetailCommentListData;
 import com.joyplus.tv.Service.Return.ReturnProgramReviews;
-import com.parse.Parse;
 import com.umeng.analytics.MobclickAgent;
-import com.umeng.update.UmengUpdateAgent;
 
 public class DetailComment extends Activity implements
 		android.widget.AdapterView.OnItemClickListener {
@@ -151,7 +133,7 @@ public class DetailComment extends Activity implements
 		aq.id(R.id.textView_score).text(prod_dou);
 		aq.id(R.id.textView1).text(prod_name);
 		aq.id(R.id.image).image(prod_url, true, true, 0,
-				R.drawable.movie_pic);
+				R.drawable.post_normal);
 
 		scrollViewItemDetail = (ScrollView) findViewById(R.id.scrollViewItemDetail);
 		
