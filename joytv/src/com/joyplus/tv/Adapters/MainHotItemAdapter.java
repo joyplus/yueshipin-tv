@@ -101,7 +101,15 @@ public class MainHotItemAdapter extends BaseAdapter {
 				break;
 			case 2:
 				if("".equals(hot_list.get(position).max_episode)){
-					holder.content.setText("");
+					
+					if("".equals(hot_list.get(position).cur_episode)||"0".equals(hot_list.get(position).cur_episode)) {
+						
+						holder.content.setText("");
+					} else {
+						
+//						int curEpisode = Integer.valueOf(hot_list.get(position).cur_episode);
+						holder.content.setText("更新到第" + hot_list.get(position).cur_episode+"集");
+					}
 				}else{
 					if("".equals(hot_list.get(position).cur_episode)||"0".equals(hot_list.get(position).cur_episode)){
 						holder.content.setText(hot_list.get(position).max_episode + "集全");
