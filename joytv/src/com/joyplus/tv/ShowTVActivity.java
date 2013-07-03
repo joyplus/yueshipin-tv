@@ -10,6 +10,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.util.SparseArray;
@@ -18,13 +19,13 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
-import android.widget.AbsListView.OnScrollListener;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
@@ -41,8 +42,8 @@ import com.joyplus.tv.ui.WaitingDialog;
 import com.joyplus.tv.utils.DBUtils;
 import com.joyplus.tv.utils.ItemStateUtils;
 import com.joyplus.tv.utils.Log;
-import com.joyplus.tv.utils.UtilTools;
 import com.joyplus.tv.utils.URLUtils;
+import com.joyplus.tv.utils.UtilTools;
 import com.umeng.analytics.MobclickAgent;
 
 public class ShowTVActivity extends AbstractShowActivity {
@@ -806,6 +807,8 @@ public class ShowTVActivity extends AbstractShowActivity {
 					
 					keyBoardWindow = new PopupWindow(keyBoardView, searchEt.getRootView().getWidth(),
 							searchEt.getRootView().getHeight(), true);
+					keyBoardWindow.setBackgroundDrawable(new BitmapDrawable());
+					keyBoardWindow.setOutsideTouchable(true);
 				}
 
 				if(keyBoardWindow != null && !keyBoardWindow.isShowing()){
@@ -828,6 +831,8 @@ public class ShowTVActivity extends AbstractShowActivity {
 					
 					keyBoardWindow = new PopupWindow(keyBoardView, searchEt.getRootView().getWidth(),
 							searchEt.getRootView().getHeight(), true);
+					keyBoardWindow.setBackgroundDrawable(new BitmapDrawable());
+					keyBoardWindow.setOutsideTouchable(true);
 				}
 
 				if(keyBoardWindow != null && !keyBoardWindow.isShowing()){

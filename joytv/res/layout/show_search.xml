@@ -198,8 +198,7 @@
                     android:paddingLeft="20dp"
                     android:paddingRight="40dp"
                     android:paddingTop="40dp"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/help_for_search" />
+                    android:scaleType="fitXY" />
 
                 <com.joyplus.tv.ui.MyMovieGridView
                     android:id="@+id/gv_movie_show"

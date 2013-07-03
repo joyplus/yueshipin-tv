@@ -11,6 +11,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -346,6 +347,9 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 		biaoqingLL = (LinearLayout) popupView
 				.findViewById(R.id.ll_gaoqing_biaoqing);
 		popupWindow = new PopupWindow(popupView);
+		
+		popupWindow.setBackgroundDrawable(new BitmapDrawable());
+		popupWindow.setOutsideTouchable(true);
 		
 		currentBofangViewPop = chaoqingLL;
 		beforeTempPop = chaoqingLL;

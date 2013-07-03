@@ -861,6 +861,11 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 					dialog.dismiss();
 					deleteHistory(false, "");
 					
+					if(listView.getAdapter() == null 
+							|| ((HistortyAdapter)listView.getAdapter()).data == null) {
+						
+						return;
+					}
 					List<HotItemInfo> list = ((HistortyAdapter)listView.getAdapter()).data;
 					
 					for(int i=0;i<list.size();i++) {

@@ -1,10 +1,7 @@
 package com.joyplus.tv;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.json.JSONObject;
@@ -14,6 +11,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -43,14 +41,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joyplus.tv.Service.Return.ReturnProgramRelatedVideos;
 import com.joyplus.tv.Service.Return.ReturnProgramView;
 import com.joyplus.tv.entity.CurrentPlayDetailData;
-import com.joyplus.tv.entity.URLS_INDEX;
 import com.joyplus.tv.ui.WaitingDialog;
 import com.joyplus.tv.utils.BangDanConstant;
-import com.joyplus.tv.utils.DefinationComparatorIndex;
 import com.joyplus.tv.utils.ItemStateUtils;
 import com.joyplus.tv.utils.Log;
 import com.joyplus.tv.utils.MyKeyEventKey;
-import com.joyplus.tv.utils.SouceComparatorIndex1;
 import com.joyplus.tv.utils.URLUtils;
 import com.joyplus.tv.utils.UtilTools;
 import com.umeng.analytics.MobclickAgent;
@@ -200,6 +195,10 @@ public class ShowXiangqingMovie extends Activity implements
 		biaoqingLL = (LinearLayout) popupView
 				.findViewById(R.id.ll_gaoqing_biaoqing);
 		popupWindow = new PopupWindow(popupView);
+		
+		popupWindow.setBackgroundDrawable(new BitmapDrawable());
+		popupWindow.setOutsideTouchable(true);
+		
 		currentBofangViewPop = chaoqingLL;
 		beforeTempPop = chaoqingLL;
 	}

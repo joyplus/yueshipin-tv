@@ -11,6 +11,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -344,6 +345,9 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 		biaoqingLL = (LinearLayout) popupView
 				.findViewById(R.id.ll_gaoqing_biaoqing);
 		popupWindow = new PopupWindow(popupView);
+		
+		popupWindow.setBackgroundDrawable(new BitmapDrawable());
+		popupWindow.setOutsideTouchable(true);
 		
 		currentBofangViewPop = chaoqingLL;
 		beforeTempPop = chaoqingLL;
@@ -1271,6 +1275,14 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 		if(num<=index){
 			return;
 		}
+		
+		if(date == null || date.tv == null
+				|| date.tv.episodes == null 
+				|| index >= date.tv.episodes.length) {
+			
+			return;
+		}
+		
 		CurrentPlayDetailData playDate = new CurrentPlayDetailData();
 		Intent intent = new Intent(this,VideoPlayerJPActivity.class);
 		playDate.prod_id = prod_id;
@@ -1350,7 +1362,11 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 				
 				seletedButtonIndex = tempId;
 				historyPlayIndex4DB = tempId;
-				updateView();
+				
+				if(date != null && date.tv != null) {
+					
+					updateView();
+				}
 				
 //				if(tempId != -1) {
 //					

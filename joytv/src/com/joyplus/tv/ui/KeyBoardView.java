@@ -2,6 +2,7 @@ package com.joyplus.tv.ui;
 
 import android.content.Context;
 import android.text.Editable;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,8 @@ import android.widget.LinearLayout;
 import com.joyplus.tv.R;
 
 public class KeyBoardView extends LinearLayout implements android.view.View.OnClickListener, android.view.View.OnKeyListener{
+	
+	private static final String TAG = "KeyBoardView";
 	
 	private EditText mEditText;
 	private OnKeyBoardResultListener listener;
@@ -328,6 +331,14 @@ public class KeyBoardView extends LinearLayout implements android.view.View.OnCl
 		}else{
 			return false;
 		}
+	}
+	
+	@Override
+	public boolean dispatchKeyEvent(KeyEvent event) {
+		// TODO Auto-generated method stub
+		Log.i(TAG, "dispatchKeyEvent--->" + event.getKeyCode());
+		
+		return super.dispatchKeyEvent(event);
 	}
 
 }

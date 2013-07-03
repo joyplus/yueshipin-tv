@@ -151,7 +151,7 @@ public class DetailComment extends Activity implements
 		aq.id(R.id.textView_score).text(prod_dou);
 		aq.id(R.id.textView1).text(prod_name);
 		aq.id(R.id.image).image(prod_url, true, true, 0,
-				R.drawable.movie_pic);
+				R.drawable.post_normal);
 
 		scrollViewItemDetail = (ScrollView) findViewById(R.id.scrollViewItemDetail);
 		
