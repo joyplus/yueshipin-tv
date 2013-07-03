@@ -39,6 +39,7 @@ import android.media.MediaPlayer;
 import android.net.TrafficStats;
 import android.net.Uri;
 import android.net.http.AndroidHttpClient;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -66,6 +67,9 @@ import com.androidquery.callback.AjaxStatus;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.joyplus.adkey.Ad;
+import com.joyplus.adkey.AdListener;
+import com.joyplus.adkey.banner.AdView;
 import com.joyplus.tv.Service.Return.ReturnProgramView;
 import com.joyplus.tv.database.TvDatabaseHelper;
 import com.joyplus.tv.entity.CurrentPlayDetailData;
@@ -88,7 +92,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		MediaPlayer.OnPreparedListener, MediaPlayer.OnBufferingUpdateListener,
 		MediaPlayer.OnInfoListener, MediaPlayer.OnSeekCompleteListener,
 		MediaPlayer.OnVideoSizeChangedListener, OnSeekBarChangeListener,
-		OnClickListener {
+		OnClickListener, AdListener {
 
 	private static final String TAG = "VideoPlayerActivity";
 
@@ -218,7 +222,17 @@ public class VideoPlayerJPActivity extends Activity implements
 	
 	private Animation mAlphaDispear;
 	private boolean isSeekBarIntoch = false;
-
+	/*
+	 * (non-Javadoc)
+	 * @see android.app.Activity#onCreate(android.os.Bundle)
+	 * blew is adkey varies
+	 * @author yyc
+	 */
+	private RelativeLayout layout;
+	private AdView mAdView;
+	private String publisherId = "b7a59bdb75c2e6341e6dfac70b68b709";//要显示广告的publisherId
+	private boolean animation = true;//该广告加载时是否用动画效果
+	
 	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
@@ -294,6 +308,13 @@ public class VideoPlayerJPActivity extends Activity implements
 		aq = new AQuery(this);
 		app = (App) getApplication();
 		mAlphaDispear = AnimationUtils.loadAnimation(this, R.anim.alpha_disappear);
+		//广告位初始化
+		layout = (RelativeLayout)findViewById(R.id.adsdkContent);
+		if (mAdView != null) {
+			removeBanner();
+			if(layout!=null)
+				layout.setVisibility(View.GONE);
+		}
 		initViews();
 		mSeekBar.setEnabled(false);
 
@@ -570,7 +591,6 @@ public class VideoPlayerJPActivity extends Activity implements
 		mVoiceProgress = (ArcView) findViewById(R.id.av_volume);
 
 		mPreLoadLayout = (RelativeLayout) findViewById(R.id.rl_preload);
-		
 		BitmapFactory.Options opt = new BitmapFactory.Options();
 		// opt.inPreferredConfig = Bitmap.Config.RGB_565; // Each pixel is
 		// stored 2 bytes
@@ -588,7 +608,6 @@ public class VideoPlayerJPActivity extends Activity implements
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		
 		mNoticeLayout = (RelativeLayout) findViewById(R.id.rl_titile_seekbar);
 		mControlLayout = (LinearLayout) findViewById(R.id.ll_control_buttons);
 		mVocieLayout = (LinearLayout) findViewById(R.id.ll_volume);
@@ -651,6 +670,11 @@ public class VideoPlayerJPActivity extends Activity implements
 		case KeyEvent.KEYCODE_ENTER:
 			switch (mStatue) {
 			case STATUE_PLAYING:
+				/*
+				 * 显示banner
+				 */
+				showBanner();
+				layout.setVisibility(View.VISIBLE);
 				mVocieLayout.setVisibility(View.GONE);
 				mHandler.removeMessages(MESSAGE_HIDE_VOICE);
 				mStatue = STATUE_PAUSE;
@@ -836,6 +860,12 @@ public class VideoPlayerJPActivity extends Activity implements
 			mBottomButton.setBackgroundResource(R.drawable.player_btn_fav);
 		}
 
+		/*
+		 * 显示banner
+		 */
+		showBanner();
+		layout.setVisibility(View.VISIBLE);
+		
 		mVocieLayout.setVisibility(View.GONE);
 		mHandler.removeMessages(MESSAGE_HIDE_VOICE);
 		mStatue = STATUE_PAUSE;
@@ -1101,6 +1131,9 @@ public class VideoPlayerJPActivity extends Activity implements
 			mSeekBar.setEnabled(true);
 			mVideoView.requestFocus();
 			mVideoView.start();
+			removeBanner();
+			if(layout!=null)	
+				layout.setVisibility(View.GONE);
 			break;
 		case R.id.btn_continue:
 //			mContinueLayout.setVisibility(View.GONE);
@@ -1110,6 +1143,9 @@ public class VideoPlayerJPActivity extends Activity implements
 			mSeekBar.setEnabled(true);
 			mVideoView.requestFocus();
 			mVideoView.start();
+			removeBanner();
+			if(layout!=null)
+				layout.setVisibility(View.GONE);
 			break;
 		case R.id.ib_control_center:
 			// mVideoView.stopPlayback();
@@ -1156,6 +1192,9 @@ public class VideoPlayerJPActivity extends Activity implements
 	}
 
 	private void showLoading() {
+		removeBanner();
+		if(layout!=null)
+			layout.setVisibility(View.GONE);
 		mLoadingPreparedPercent = 0;
 		rxByteslast = 0;
 		mStartRX = TrafficStats.getTotalRxBytes();
@@ -1528,7 +1567,6 @@ public class VideoPlayerJPActivity extends Activity implements
 						}
 					}
 				}
-				
 				break;
 			}
 			Log.d(TAG, "playUrls size ------->" + playUrls.size());
@@ -2096,5 +2134,56 @@ public class VideoPlayerJPActivity extends Activity implements
 		mSeekBar.setEnabled(true);
 		mHandler.sendEmptyMessageDelayed(MESSAGE_UPDATE_PROGRESS, 1000);
 		mHandler.sendEmptyMessageDelayed(MESSAGE_HIDE_PROGRESSBAR, 5000);
+	}
+	
+	/*
+	 * adkey player picture in picture
+	 * author yyc
+	 */
+	private void showBanner(){
+		if (mAdView != null) {
+			removeBanner();
+		}
+		mAdView = new AdView(this, publisherId,animation);
+		mAdView.setAdListener(this);
+		layout.addView(mAdView);
+	}
+	
+	private void removeBanner(){
+		if(mAdView!=null){
+			layout.removeView(mAdView);
+			mAdView = null;
+		}
+	}
+	
+	@Override
+	public void adClicked()
+	{
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void adClosed(Ad ad, boolean completed)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void adLoadSucceeded(Ad ad)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void adShown(Ad ad, boolean succeeded)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void noAdFound()
+	{
+		// TODO Auto-generated method stub
+		
 	}
 }

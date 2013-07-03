@@ -71,12 +71,12 @@
         android:gravity="right|center_vertical"
         android:orientation="horizontal" >
 
-        <TextView 
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="left|center_vertical"
-            android:text="测试版本"
-            android:visibility="visible"/>
+<!--         <TextView  -->
+<!--             android:layout_width="wrap_content" -->
+<!--             android:layout_height="wrap_content" -->
+<!--             android:layout_gravity="left|center_vertical" -->
+<!--             android:text="测试版本" -->
+<!--             android:visibility="visible"/> -->
         
         <ImageView
             android:id="@+id/iv_head_logo"

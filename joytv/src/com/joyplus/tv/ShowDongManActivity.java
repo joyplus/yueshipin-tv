@@ -861,8 +861,6 @@ public class ShowDongManActivity extends AbstractShowActivity {
 					
 					keyBoardWindow = new PopupWindow(keyBoardView, searchEt.getRootView().getWidth(),
 							searchEt.getRootView().getHeight(), true);
-					keyBoardWindow.setBackgroundDrawable(new BitmapDrawable());
-					keyBoardWindow.setOutsideTouchable(true);
 				}
 
 				if(keyBoardWindow != null && !keyBoardWindow.isShowing()){
