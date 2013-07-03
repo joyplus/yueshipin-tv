@@ -230,7 +230,7 @@ public class VideoPlayerJPActivity extends Activity implements
 	 */
 	private RelativeLayout layout;
 	private AdView mAdView;
-	private String publisherId = "b7a59bdb75c2e6341e6dfac70b68b709";//要显示广告的publisherId
+	private String publisherId = "5b702aa315663879a582097a36ba0cdc";//要显示广告的publisherId
 	private boolean animation = true;//该广告加载时是否用动画效果
 	
 	private BroadcastReceiver mReceiver = new BroadcastReceiver() {

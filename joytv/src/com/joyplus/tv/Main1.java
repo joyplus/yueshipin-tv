@@ -227,7 +227,7 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 	 */
 	private RelativeLayout layout;
 	private AdView mAdView;
-	private String publisherId = "dabb5c604c9dd34e4ee519c9c2fdcd52";//要显示广告的publisherId
+	private String publisherId = "9d30a5d07eb3a9ed66a9d70d0185205f";//要显示广告的publisherId
 	private boolean animation = true;//该广告加载时是否用动画效果
 	// private Handler mHandler = new Handler();
 
