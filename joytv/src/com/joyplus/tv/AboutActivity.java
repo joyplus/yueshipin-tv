@@ -17,6 +17,11 @@ public class AboutActivity extends Activity {
 		setContentView(R.layout.activity_about);
 		app = (App) getApplication();
 		aq = new AQuery(this);
+		
+		if(Constant.isJoyPlus) {
+			
+			
+		}
 	}
 
 	@Override
