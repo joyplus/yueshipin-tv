@@ -4,7 +4,7 @@ import android.os.Environment;
 
 public class Constant {
 	
-	public static boolean isJoyPlus = false;//是否是JoyPlus本身应用，还是其他应用
+	public static boolean isJoyPlus = true;//是否是JoyPlus本身应用，还是其他应用
 	
 //	public static final String APPKEY_TOP = "ijoyplus_android_0001";//正式
 	// 正式环境

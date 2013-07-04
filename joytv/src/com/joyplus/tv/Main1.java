@@ -1155,23 +1155,36 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 			if (!Constant.TestEnv)
 				ReadLocalAppKey();
 		} else {
-			if(returnLogInfo != null)
-			Log.i(TAG, "returnLogInfo.api_url--->" + returnLogInfo.logo_url);
-			if(returnLogInfo != null && returnLogInfo.api_url != null 
-					&& !returnLogInfo.equals("") && returnLogInfo.app_key != null 
-					&& !returnLogInfo.app_key.equals("")) {//如果能够获取的到，appkey使用获取数据，图片使用网上下载的
+
+			if(returnLogInfo != null ) {//如果能够获取的到，appkey使用获取数据，图片使用网上下载的
 				Log.i(TAG, "returnLogInfo.api_url--->" + returnLogInfo.logo_url);
+				
 				aq.id(logoIv).image(
 						returnLogInfo.logo_url, false, true, 0,R.drawable.logo_custom);
 				
 				UtilTools.setLogoUrl(getApplicationContext(), returnLogInfo.logo_url);
 				
-				headers.put("app_key", returnLogInfo.app_key);
-				headers.put("client", "tv");
-				app.setHeaders(headers);
+				if(returnLogInfo.app_key != null && !returnLogInfo.app_key.equals("")) {
+					
+					Constant.APPKEY = returnLogInfo.app_key;
+					headers.put("app_key", returnLogInfo.app_key);
+					headers.put("client", "tv");
+					app.setHeaders(headers);
+					
+				} else {
+					
+					headers.put("app_key", Constant.APPKEY);
+					headers.put("client", "tv");
+					app.setHeaders(headers);
+
+					if (!Constant.TestEnv)
+						ReadLocalAppKey();
+				}
 				
-				Constant.BASE_URL = returnLogInfo.api_url;
-				Constant.APPKEY = returnLogInfo.app_key;
+				if(returnLogInfo.api_url != null && !returnLogInfo.api_url.equals("")) {
+					
+					Constant.BASE_URL = returnLogInfo.api_url;
+				}
 				
 //				if (!Constant.TestEnv)
 //					ReadLocalAppKey();
