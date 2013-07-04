@@ -36,22 +36,24 @@
             android:layout_marginTop="15dp" >
 
             <TextView
+                android:id="@+id/tv_personal_record"
                 android:layout_width="fill_parent"
                 android:layout_height="45dp"
                 android:focusable="false"
                 android:gravity="center_vertical"
                 android:paddingLeft="14dp"
-                android:text="我的悦视频"
+                android:text="@string/personal_record"
                 android:textColor="@color/common_title_unselected"
                 android:textSize="30dp" />
 
             <TextView
+                android:id="@+id/tv_play_store"
                 android:layout_width="fill_parent"
                 android:layout_height="45dp"
                 android:focusable="false"
                 android:gravity="center_vertical"
                 android:paddingLeft="14dp"
-                android:text="悦片库"
+                android:text="@string/play_store"
                 android:textColor="@color/common_title_unselected"
                 android:textSize="30dp" />
 

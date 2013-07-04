@@ -74,6 +74,7 @@ import com.joyplus.adkey.banner.AdView;
 import com.joyplus.tv.Adapters.MainHotItemAdapter;
 import com.joyplus.tv.Adapters.MainLibAdapter;
 import com.joyplus.tv.Adapters.MainYueDanItemAdapter;
+import com.joyplus.tv.Service.Return.ReturnLogInfo;
 import com.joyplus.tv.Service.Return.ReturnMainHot;
 import com.joyplus.tv.Service.Return.ReturnProgramView;
 import com.joyplus.tv.Service.Return.ReturnTops;
@@ -230,6 +231,8 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 	private String publisherId = "9d30a5d07eb3a9ed66a9d70d0185205f";//要显示广告的publisherId
 	private boolean animation = true;//该广告加载时是否用动画效果
 	// private Handler mHandler = new Handler();
+	
+	private boolean isShowAd = false;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -240,24 +243,32 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 		app = (App) getApplicationContext();
 		aq = new AQuery(this);
 		
-		MobclickAgent.onError(this);
+//		MobclickAgent.onError(this);
+		
+		isShowAd = UtilTools.getIsShowAd(getApplicationContext());
 
 		startingImageView = (ImageView) findViewById(R.id.image_starting);
 		
-//		BitmapFactory.Options opt = new BitmapFactory.Options();
-////		  opt.inPreferredConfig = Bitmap.Config.RGB_565; // Each pixel is stored 2 bytes
-//	  // opt.inPreferredConfig = Bitmap.Config.ARGB_8888; //Each pixel is stored 4 bytes
-////
-//		opt.inTempStorage = new byte[16 * 1024];
-////		opt.inPurgeable = true;
-////		opt.inInputShareable = true;
-////		
-//		try {
-//			startingImageView.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.starting, opt));
-//		} catch (OutOfMemoryError e1) {
-//			// TODO Auto-generated catch block
-//			e1.printStackTrace();
-//		}
+		if(!isShowAd) {
+			
+			BitmapFactory.Options opt = new BitmapFactory.Options();
+//			  opt.inPreferredConfig = Bitmap.Config.RGB_565; // Each pixel is stored 2 bytes
+		  // opt.inPreferredConfig = Bitmap.Config.ARGB_8888; //Each pixel is stored 4 bytes
+	//
+			opt.inTempStorage = new byte[16 * 1024];
+//			opt.inPurgeable = true;
+//			opt.inInputShareable = true;
+//			
+			try {
+				startingImageView.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.starting, opt));
+			} catch (OutOfMemoryError e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		} else {
+			
+			showDialog(DIALOG_WAITING);
+		}
 		
 		rootLayout = (RelativeLayout) findViewById(R.id.root_layout);
 		gallery1 = (CustomGallery) findViewById(R.id.gallery);
@@ -802,23 +813,34 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 					initStep += 1;
 					if (startingImageView.getVisibility() == View.VISIBLE) {
 						startingImageView.setVisibility(View.GONE);
-//						handler.postDelayed(new Runnable() {
-//							
-//							@Override
-//							public void run() {
-//								// TODO Auto-generated method stub
-//								
-//								if(!startingImageView.isShown()) {
-//									UtilTools.recycleBitmap(((BitmapDrawable)startingImageView.getDrawable()).getBitmap());
-//								}
-//							}
-//						}, 1000);
+						
+						if(!isShowAd) {
+							
+							handler.postDelayed(new Runnable() {
+								
+								@Override
+								public void run() {
+									// TODO Auto-generated method stub
+									
+									if(!startingImageView.isShown()) {
+										UtilTools.recycleBitmap(((BitmapDrawable)startingImageView.getDrawable()).getBitmap());
+									}
+								}
+							}, 1000);
+						}
 						startingImageView.startAnimation(alpha_disappear);
 						rootLayout.setVisibility(View.VISIBLE);
 						gallery1.requestFocus();
 						handler.removeMessages(MESSAGE_START_TIMEOUT);
 //						new Thread(new CheckPlayUrl()).start();
+						Log.i(TAG,"removeDialog(DIALOG_WAITING);---else ---->1");
+						
+						if(isShowAd) {
+							
+							removeDialog(DIALOG_WAITING);
+						}
 					} else {
+						Log.i(TAG,"removeDialog(DIALOG_WAITING);---else ---->2");
 						removeDialog(DIALOG_WAITING);
 						contentLayout.setVisibility(View.VISIBLE);
 						gallery1.requestFocus();
@@ -835,32 +857,42 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 				/*
 				 * adkey show,the Viewo of ad init()
 				 */
-				if (mAdView != null) {
-					removeBanner();
+				if(UtilTools.getIsShowAd(getApplicationContext())) {
+					
+					if (mAdView != null) {
+						removeBanner();
+					}
+					mAdView = new AdView(Main1.this, publisherId,animation);
+					mAdView.setAdListener(Main1.this);
+					layout.addView(mAdView);
 				}
-				mAdView = new AdView(Main1.this, publisherId,animation);
-				mAdView.setAdListener(Main1.this);
-				layout.addView(mAdView);
 				
 				break;
 			case MESSAGE_START_TIMEOUT:// 超时还未加载好
 				if (initStep < 3) {
 					startingImageView.setVisibility(View.GONE);
 					
-//					handler.postDelayed(new Runnable() {
-//						
-//						@Override
-//						public void run() {
-//							// TODO Auto-generated method stub
-//							
-//							if(!startingImageView.isShown()) {
-//								UtilTools.recycleBitmap(((BitmapDrawable)startingImageView.getDrawable()).getBitmap());
-//							}
-//						}
-//					}, 1000);
+					if(!isShowAd) {
+						
+						handler.postDelayed(new Runnable() {
+							
+							@Override
+							public void run() {
+								// TODO Auto-generated method stub
+								
+								if(!startingImageView.isShown()) {
+									UtilTools.recycleBitmap(((BitmapDrawable)startingImageView.getDrawable()).getBitmap());
+								}
+							}
+						}, 1000);
+					}
 					
 					contentLayout.setVisibility(View.INVISIBLE);
-					showDialog(DIALOG_WAITING);
+					
+					if(!isShowAd) {
+						
+						showDialog(DIALOG_WAITING);
+					}
 				}
 
 				break;
@@ -1091,13 +1123,68 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 	// 数据初始化
 
 	private void initNetWorkData() {
+		
+		if(Constant.isJoyPlus) {//如果过不是自身应用 //测试
+			
+			getLogoInfo(Constant.BASE_URL_TOP + "/open_api_config");
+			
+		} else {//如果是自身应用
+			
+			initAppkeyAndBaseurl(null);
+		}
+		
+		
+	}
+	
+	private void initAppkeyAndBaseurl(ReturnLogInfo returnLogInfo) {
+		
+		TextView personal_recordTv = (TextView) findViewById(R.id.tv_personal_record);
+		TextView playStoreTv = (TextView) findViewById(R.id.tv_play_store);
+		ImageView logoIv = (ImageView) findViewById(R.id.iv_head_logo);
+		
+		if(Constant.isJoyPlus) {//如果是本身应用
+			
+			personal_recordTv.setText("我的悦视频");
+			playStoreTv.setText("悦片库");
+			logoIv.setImageResource(R.drawable.logo);
+			
+			headers.put("app_key", Constant.APPKEY);
+			headers.put("client", "tv");
+			app.setHeaders(headers);
 
-		headers.put("app_key", Constant.APPKEY);
-		headers.put("client", "tv");
-		app.setHeaders(headers);
+			if (!Constant.TestEnv)
+				ReadLocalAppKey();
+		} else {
+			
+			if(returnLogInfo != null && returnLogInfo.api_url != null 
+					&& !returnLogInfo.equals("") && returnLogInfo.app_key != null 
+					&& !returnLogInfo.app_key.equals("")) {//如果能够获取的到，appkey使用获取数据，图片使用网上下载的
+				
+				aq.id(R.id.iv_head_user_icon).image(
+						returnLogInfo.logo_url, false, true, 0,0);
+				
+				UtilTools.setLogoUrl(getApplicationContext(), returnLogInfo.logo_url);
+				
+				headers.put("app_key", returnLogInfo.app_key);
+				headers.put("client", "tv");
+				app.setHeaders(headers);
+				
+				Constant.BASE_URL = returnLogInfo.api_url;
+				
+//				if (!Constant.TestEnv)
+//					ReadLocalAppKey();
 
-		if (!Constant.TestEnv)
-			ReadLocalAppKey();
+			} else {//如果获取不到 appkey使用Joyplus的,其他文字显示使用默认,图片使用默认
+				
+				headers.put("app_key", Constant.APPKEY);
+				headers.put("client", "tv");
+				app.setHeaders(headers);
+
+				if (!Constant.TestEnv)
+					ReadLocalAppKey();
+			}
+		}
+		
 		checkLogin();
 		// getHotServiceData();
 		handler.sendEmptyMessageDelayed(MESSAGE_START_TIMEOUT, LOADING_PIC_TIME);
@@ -2819,6 +2906,22 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 		cb.SetHeader(app.getHeaders());
 		aq.ajax(cb);
 	}
+	
+	protected void getPostServiceData(String url, String interfaceName) {
+		
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("app_key",Constant.APPKEY_TOP );
+		params.put("device_name",Build.MODEL );
+		
+//		Log.i(TAG, "Build.MODEL--->" + Build.MODEL);
+
+		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
+//		cb.SetHeader(app.getHeaders());
+
+		cb.params(params).url(url).type(JSONObject.class)
+				.weakHandler(this, interfaceName);
+		aq.ajax(cb);
+	}
 
 	protected void getShouCangData(String url) {
 		// TODO Auto-generated method stub
@@ -2830,6 +2933,46 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 		// TODO Auto-generated method stub
 
 		getServiceData(url, "initHistoryServiceData");
+	}
+	
+	protected void getLogoInfo(String url) {
+		// TODO Auto-generated method stub
+
+		getPostServiceData(url, "initLogoInfo");
+	}
+	
+	public void initLogoInfo(String url, JSONObject json,
+			AjaxStatus status) {
+		// TODO Auto-generated method stub
+
+		if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
+
+			app.MyToast(aq.getContext(),
+					getResources().getString(R.string.networknotwork));
+			return;
+		}
+		try {
+
+			if (json == null || json.equals(""))
+				return;
+
+			Log.d(TAG, "initLogoInfo" + json.toString());
+			ReturnLogInfo logoInfo = mapper.readValue(json.toString(),
+					ReturnLogInfo.class);
+			
+
+//			initAppkeyAndBaseurl(logoInfo);
+			initAppkeyAndBaseurl(null);
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public void initShouCangServiceData(String url, JSONObject json,

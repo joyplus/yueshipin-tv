@@ -962,6 +962,62 @@ public class UtilTools implements JieMianConstant, BangDanConstant {
 		return sp.getString("cancelShoucangProId", "");
 	}
 	
+	/**
+	 * 存储广告是否显示
+	 * @param context
+	 * @param isShow
+	 */
+	public static void setIsShowAd(Context context,boolean isShow) {
+		
+		SharedPreferences sp = context.getSharedPreferences(TV_SETTING_XML,
+				Context.MODE_PRIVATE);
+		Editor editor = sp.edit();
+		editor.putBoolean("isShowAd", isShow);
+		editor.commit();
+	}
+	
+	public static boolean getIsShowAd(Context context) {
+		
+		SharedPreferences sp = context.getSharedPreferences(TV_SETTING_XML,
+				Context.MODE_PRIVATE);
+		
+		return sp.getBoolean("isShowAd", false);
+	}
+	
+	public static void setIsJoyPlusApp(Context context,boolean isJoyPlusApp) {
+		
+		SharedPreferences sp = context.getSharedPreferences(TV_SETTING_XML,
+				Context.MODE_PRIVATE);
+		Editor editor = sp.edit();
+		editor.putBoolean("isJoyPlusApp", isJoyPlusApp);
+		editor.commit();
+	}
+	
+	public static boolean getIsJoyPlusApp(Context context) {
+		
+		SharedPreferences sp = context.getSharedPreferences(TV_SETTING_XML,
+				Context.MODE_PRIVATE);
+		
+		return sp.getBoolean("isJoyPlusApp", true);
+	}
+	
+	public static void setLogoUrl(Context context , String logoUrl) {
+		
+		SharedPreferences sp = context.getSharedPreferences(TV_SETTING_XML,
+				Context.MODE_PRIVATE);
+		Editor editor = sp.edit();
+		editor.putString("logoUrl", logoUrl);
+		editor.commit();
+	}
+	
+	public static String getLogoUrl(Context context) {
+		
+		SharedPreferences sp = context.getSharedPreferences(TV_SETTING_XML,
+				Context.MODE_PRIVATE);
+		
+		return sp.getString("logoUrl","");
+	}
+	
 	public  static boolean isSame4Str(String str1, String str2){
 		if(str1==null||str2==null){
 			return false;

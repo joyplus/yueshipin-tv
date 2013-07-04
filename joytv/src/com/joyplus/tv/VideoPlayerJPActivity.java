@@ -310,11 +310,16 @@ public class VideoPlayerJPActivity extends Activity implements
 		mAlphaDispear = AnimationUtils.loadAnimation(this, R.anim.alpha_disappear);
 		//广告位初始化
 		layout = (RelativeLayout)findViewById(R.id.adsdkContent);
-		if (mAdView != null) {
-			removeBanner();
-			if(layout!=null)
-				layout.setVisibility(View.GONE);
+		
+		if(UtilTools.getIsShowAd(getApplicationContext())) {
+			
+			if (mAdView != null) {
+				removeBanner();
+				if(layout!=null)
+					layout.setVisibility(View.GONE);
+			}
 		}
+		
 		initViews();
 		mSeekBar.setEnabled(false);
 
@@ -670,11 +675,16 @@ public class VideoPlayerJPActivity extends Activity implements
 		case KeyEvent.KEYCODE_ENTER:
 			switch (mStatue) {
 			case STATUE_PLAYING:
-				/*
-				 * 显示banner
-				 */
-				showBanner();
-				layout.setVisibility(View.VISIBLE);
+				
+				if(UtilTools.getIsShowAd(getApplicationContext())) {
+					
+					/*
+					 * 显示banner
+					 */
+					showBanner();
+					layout.setVisibility(View.VISIBLE);
+				}
+				
 				mVocieLayout.setVisibility(View.GONE);
 				mHandler.removeMessages(MESSAGE_HIDE_VOICE);
 				mStatue = STATUE_PAUSE;
@@ -860,11 +870,14 @@ public class VideoPlayerJPActivity extends Activity implements
 			mBottomButton.setBackgroundResource(R.drawable.player_btn_fav);
 		}
 
-		/*
-		 * 显示banner
-		 */
-		showBanner();
-		layout.setVisibility(View.VISIBLE);
+		if(UtilTools.getIsShowAd(getApplicationContext())) {
+			
+			/*
+			 * 显示banner
+			 */
+			showBanner();
+			layout.setVisibility(View.VISIBLE);
+		}
 		
 		mVocieLayout.setVisibility(View.GONE);
 		mHandler.removeMessages(MESSAGE_HIDE_VOICE);
@@ -1131,9 +1144,14 @@ public class VideoPlayerJPActivity extends Activity implements
 			mSeekBar.setEnabled(true);
 			mVideoView.requestFocus();
 			mVideoView.start();
-			removeBanner();
-			if(layout!=null)	
-				layout.setVisibility(View.GONE);
+			
+			if(UtilTools.getIsShowAd(getApplicationContext())) {
+				
+				removeBanner();
+				if(layout!=null)	
+					layout.setVisibility(View.GONE);
+			}
+
 			break;
 		case R.id.btn_continue:
 //			mContinueLayout.setVisibility(View.GONE);
@@ -1193,8 +1211,13 @@ public class VideoPlayerJPActivity extends Activity implements
 
 	private void showLoading() {
 		removeBanner();
-		if(layout!=null)
-			layout.setVisibility(View.GONE);
+		
+		if(UtilTools.getIsShowAd(getApplicationContext())) {
+			
+			if(layout!=null)
+				layout.setVisibility(View.GONE);
+		}
+		
 		mLoadingPreparedPercent = 0;
 		rxByteslast = 0;
 		mStartRX = TrafficStats.getTotalRxBytes();
