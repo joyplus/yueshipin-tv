@@ -1,10 +1,12 @@
 package com.joyplus.tv;
 
 import com.androidquery.AQuery;
+import com.joyplus.tv.utils.UtilTools;
 import com.umeng.analytics.MobclickAgent;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.widget.ImageView;
 
 public class AboutActivity extends Activity {
 	private App app;
@@ -18,10 +20,9 @@ public class AboutActivity extends Activity {
 		app = (App) getApplication();
 		aq = new AQuery(this);
 		
-		if(Constant.isJoyPlus) {
-			
-			
-		}
+		ImageView iv = (ImageView) findViewById(R.id.iv_head_logo);
+		
+		UtilTools.setLogoPic(getApplicationContext(), aq, iv);
 	}
 
 	@Override

@@ -116,6 +116,11 @@ public class ShowXiangqingMovie extends Activity implements
 		this.setContentView(R.layout.show_xiangxi_dianying_layout);
 		aq = new AQuery(this);
 		app = (App) getApplication();
+		
+		ImageView iv = (ImageView) findViewById(R.id.iv_head_logo);
+		
+		UtilTools.setLogoPic(getApplicationContext(), aq, iv);
+		
 		supportDefination = 3;
 		prod_id = getIntent().getStringExtra("ID");
 		if (prod_id == null || "".equals(prod_id)) {

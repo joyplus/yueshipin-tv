@@ -21,14 +21,17 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
+import android.widget.ImageView;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.joyplus.adkey.Util;
 import com.joyplus.tv.App;
 import com.joyplus.tv.Constant;
+import com.joyplus.tv.R;
 import com.joyplus.tv.Service.Return.ReturnTVBangDanList;
 import com.joyplus.tv.Service.Return.ReturnTops;
 import com.joyplus.tv.Service.Return.ReturnUserFavorities;
@@ -1058,6 +1061,23 @@ public class UtilTools implements JieMianConstant, BangDanConstant {
 		}
 	}
 	
-//	public static void setLogoPic(Ima)
+	public static void setLogoPic(Context context,AQuery aq,ImageView iv) {
+		
+		if(Constant.isJoyPlus) {
+			
+			iv.setImageResource(R.drawable.logo);
+		} else {//否则不是本身应用
+			
+			String url = UtilTools.getLogoUrl(context);
+			
+			if(url != null && !url.equals("")) {
+				
+				aq.id(iv).image(url, false, true, 0,R.drawable.logo_custom);
+			} else {
+				
+				iv.setImageResource(R.drawable.logo_custom);
+			}
+		}
+	}
 
 }

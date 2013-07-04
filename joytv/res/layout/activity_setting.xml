@@ -198,7 +198,9 @@
                     android:orientation="vertical"
                     android:paddingLeft="15dp"
                     android:paddingRight="30dp"
-                    android:paddingTop="20dp" >
+                    android:paddingTop="20dp" 
+                    android:id="@+id/ll_setting_erwei"
+                    android:visibility="invisible">
 
                     <TextView
                         android:layout_width="wrap_content"

@@ -1124,7 +1124,7 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 
 	private void initNetWorkData() {
 		
-		if(Constant.isJoyPlus) {//如果过不是自身应用 //测试
+		if(!Constant.isJoyPlus) {//如果过不是自身应用 
 			
 			getLogoInfo(Constant.BASE_URL_TOP + "/open_api_config");
 			
@@ -1155,13 +1155,14 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 			if (!Constant.TestEnv)
 				ReadLocalAppKey();
 		} else {
-			
+			if(returnLogInfo != null)
+			Log.i(TAG, "returnLogInfo.api_url--->" + returnLogInfo.logo_url);
 			if(returnLogInfo != null && returnLogInfo.api_url != null 
 					&& !returnLogInfo.equals("") && returnLogInfo.app_key != null 
 					&& !returnLogInfo.app_key.equals("")) {//如果能够获取的到，appkey使用获取数据，图片使用网上下载的
-				
-				aq.id(R.id.iv_head_user_icon).image(
-						returnLogInfo.logo_url, false, true, 0,0);
+				Log.i(TAG, "returnLogInfo.api_url--->" + returnLogInfo.logo_url);
+				aq.id(logoIv).image(
+						returnLogInfo.logo_url, false, true, 0,R.drawable.logo_custom);
 				
 				UtilTools.setLogoUrl(getApplicationContext(), returnLogInfo.logo_url);
 				
@@ -1170,12 +1171,13 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 				app.setHeaders(headers);
 				
 				Constant.BASE_URL = returnLogInfo.api_url;
+				Constant.APPKEY = returnLogInfo.app_key;
 				
 //				if (!Constant.TestEnv)
 //					ReadLocalAppKey();
 
 			} else {//如果获取不到 appkey使用Joyplus的,其他文字显示使用默认,图片使用默认
-				
+				logoIv.setImageResource(R.drawable.logo_custom);
 				headers.put("app_key", Constant.APPKEY);
 				headers.put("client", "tv");
 				app.setHeaders(headers);
@@ -2961,8 +2963,8 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 					ReturnLogInfo.class);
 			
 
-//			initAppkeyAndBaseurl(logoInfo);
-			initAppkeyAndBaseurl(null);
+			initAppkeyAndBaseurl(logoInfo);
+//			initAppkeyAndBaseurl(null);
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

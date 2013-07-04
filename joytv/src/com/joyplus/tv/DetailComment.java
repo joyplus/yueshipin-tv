@@ -49,6 +49,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joyplus.tv.R;
 import com.joyplus.tv.Adapters.DetailCommentListData;
 import com.joyplus.tv.Service.Return.ReturnProgramReviews;
+import com.joyplus.tv.utils.UtilTools;
 import com.parse.Parse;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.update.UmengUpdateAgent;
@@ -85,6 +86,11 @@ public class DetailComment extends Activity implements
 		setContentView(R.layout.detail_comment);
 		app = (App) getApplication();
 		aq = new AQuery(this);
+		
+		ImageView iv = (ImageView) findViewById(R.id.iv_head_logo);
+		
+		UtilTools.setLogoPic(getApplicationContext(), aq, iv);
+		
 		dataStruct = new ArrayList();
 
 		// 获取listview对象
