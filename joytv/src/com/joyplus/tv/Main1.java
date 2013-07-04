@@ -1124,6 +1124,8 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 
 	private void initNetWorkData() {
 		
+		UtilTools.setLogoUrl(getApplicationContext(), "");
+		
 		if(!Constant.isJoyPlus) {//如果过不是自身应用 
 			Log.i(TAG, "initNetWorkData--->Constant.isJoyPlus " + Constant.isJoyPlus);
 			
@@ -1160,8 +1162,11 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 			if(returnLogInfo != null ) {//如果能够获取的到，appkey使用获取数据，图片使用网上下载的
 				Log.i(TAG, "returnLogInfo.api_url--->" + returnLogInfo.logo_url);
 				
-				aq.id(logoIv).image(
-						returnLogInfo.logo_url, false, true, 0,R.drawable.logo_custom);
+				if(returnLogInfo.logo_url != null && !returnLogInfo.logo_url.equals("")) {
+					
+					aq.id(logoIv).image(
+							returnLogInfo.logo_url, false, true, 0,R.drawable.logo_custom);
+				}
 				
 				UtilTools.setLogoUrl(getApplicationContext(), returnLogInfo.logo_url);
 				
