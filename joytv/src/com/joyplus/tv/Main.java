@@ -58,17 +58,20 @@ public class Main extends Activity implements AdListener{
 		
 		MobclickAgent.onError(this);
 		
+		String onLineIsShowAd = null;
+		
 		if(Constant.isJoyPlus) {//如果过是JoyPlus自身应用
 			
 			UtilTools.setIsJoyPlusApp(getApplicationContext(), true);
+			onLineIsShowAd = MobclickAgent.getConfigParams(this, "JOYPLUS_TV_SHOW_AD");
 		} else {
 			
 			UtilTools.setIsJoyPlusApp(getApplicationContext(), false);
+			onLineIsShowAd = MobclickAgent.getConfigParams(this, "OTHER_TV_SHOW_AD");
 		}
 		
 		MobclickAgent.updateOnlineConfig(this);
 		
-		String onLineIsShowAd = MobclickAgent.getConfigParams(this, "TV_SHOW_AD");
 //		String onLineIsShowAd = true + "";//测试数据
 		Log.i(TAG, "onLineIsShowAd--->" + onLineIsShowAd);
 		if(onLineIsShowAd != null && onLineIsShowAd.equals("true")) {

@@ -65,6 +65,10 @@ public class SettingActivity extends Activity implements OnClickListener {
 		if(Constant.isJoyPlus) {
 			
 			findViewById(R.id.ll_setting_erwei).setVisibility(View.VISIBLE);
+			findViewById(R.id.iv_about).setVisibility(View.VISIBLE);
+			findViewById(R.id.about_layout).setVisibility(View.VISIBLE);
+			findViewById(R.id.tv_filling).setVisibility(View.GONE);
+			findViewById(R.id.iv_filling).setVisibility(View.GONE);
 		}
 		
 		unbandLayout.setOnClickListener(this);

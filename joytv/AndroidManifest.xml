@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.joyplus.tv"
     android:versionCode="7"
-    android:versionName="1.2.1alpha" >
+    android:versionName="1.2.1" >
 
     <uses-sdk
         android:minSdkVersion="14"
@@ -331,7 +331,7 @@
         </meta-data>
         <meta-data
             android:name="UMENG_CHANNEL"
-            android:value="j001" />
+            android:value="j001adv" />
 
         <service android:name="com.parse.PushService" />
 

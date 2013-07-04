@@ -1125,6 +1125,7 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 	private void initNetWorkData() {
 		
 		if(!Constant.isJoyPlus) {//如果过不是自身应用 
+			Log.i(TAG, "initNetWorkData--->Constant.isJoyPlus " + Constant.isJoyPlus);
 			
 			getLogoInfo(Constant.BASE_URL_TOP + "/open_api_config");
 			
@@ -2964,12 +2965,17 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 
 			app.MyToast(aq.getContext(),
 					getResources().getString(R.string.networknotwork));
+			initAppkeyAndBaseurl(null);
 			return;
 		}
 		try {
 
-			if (json == null || json.equals(""))
+			if (json == null || json.equals("")) {
+				
+				initAppkeyAndBaseurl(null);
 				return;
+			}
+				
 
 			Log.d(TAG, "initLogoInfo" + json.toString());
 			ReturnLogInfo logoInfo = mapper.readValue(json.toString(),
