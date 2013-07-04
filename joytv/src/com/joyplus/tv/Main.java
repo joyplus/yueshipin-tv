@@ -69,7 +69,7 @@ public class Main extends Activity implements AdListener{
 		MobclickAgent.updateOnlineConfig(this);
 		
 //		String onLineIsShowAd = MobclickAgent.getConfigParams(this, "TV_SHOW_AD");
-		String onLineIsShowAd = false + "";//测试数据
+		String onLineIsShowAd = true + "";//测试数据
 		Log.i(TAG, "onLineIsShowAd--->" + onLineIsShowAd);
 		if(onLineIsShowAd != null && onLineIsShowAd.equals("true")) {
 			

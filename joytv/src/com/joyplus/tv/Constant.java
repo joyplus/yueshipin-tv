@@ -7,13 +7,8 @@ public class Constant {
 	public static boolean isJoyPlus = true;//是否是JoyPlus本身应用，还是其他应用
 	
 //	public static final String APPKEY_TOP = "ijoyplus_android_0001";//正式
-	public static final String APPKEY_TOP = "ijoyplus_android_0001bj";//测试
-	
-//	public static final String BASE_URL_TOP = "http://api.joyplus.tv/joyplus-service/index.php/";//正式
-	public static final String BASE_URL_TOP = "http://apitest.yue001.com/joyplus-service/index.php/";//测试
-	
-	
 	// 正式环境
+//	public static final String BASE_URL_TOP = "http://api.joyplus.tv/joyplus-service/index.php/";//正式
 //	public static boolean TestEnv = false;
 //	public static  String BASE_URL = "http://api.joyplus.tv/joyplus-service/index.php/";
 //	public static String DEFAULT_APPKEY = "ijoyplus_android_0001";
@@ -39,6 +34,8 @@ public class Constant {
 	 */
 	
 //	//测试环境控制
+	public static final String APPKEY_TOP = "ijoyplus_android_0001bj";//测试
+	public static final String BASE_URL_TOP = "http://apitest.yue001.com/joyplus-service/index.php/";//测试
 	public static boolean TestEnv = true;
 ////	
 ////	//测试环境

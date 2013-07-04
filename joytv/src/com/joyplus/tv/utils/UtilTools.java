@@ -1057,5 +1057,7 @@ public class UtilTools implements JieMianConstant, BangDanConstant {
 			bitmap = null;
 		}
 	}
+	
+//	public static void setLogoPic(Ima)
 
 }
