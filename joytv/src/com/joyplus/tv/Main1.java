@@ -1831,7 +1831,13 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 			return true;
 		case KeyEvent.KEYCODE_BACK:
 			if ((System.currentTimeMillis() - exitTime) > 2000) {
-				Toast.makeText(this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
+//				Toast.makeText(this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
+
+				Toast toast = new Toast(this);
+				View v = getLayoutInflater().inflate(R.layout.toast_textview, null);
+				toast.setView(v);
+				toast.setDuration(Toast.LENGTH_SHORT);
+				toast.show();
 				exitTime = System.currentTimeMillis();
 			} else {
 				finish();
