@@ -11,6 +11,7 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.graphics.Paint.Join;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -38,8 +39,8 @@ import com.joyplus.tv.ui.MyMovieGridView;
 import com.joyplus.tv.ui.WaitingDialog;
 import com.joyplus.tv.utils.ItemStateUtils;
 import com.joyplus.tv.utils.Log;
-import com.joyplus.tv.utils.UtilTools;
 import com.joyplus.tv.utils.URLUtils;
+import com.joyplus.tv.utils.UtilTools;
 import com.umeng.analytics.MobclickAgent;
 
 public class ShowSearchActivity extends AbstractShowActivity {
@@ -111,6 +112,10 @@ public class ShowSearchActivity extends AbstractShowActivity {
 
 		aq = new AQuery(this);
 		app = (App) getApplication();
+		
+		ImageView iv = (ImageView) findViewById(R.id.iv_head_logo);
+		
+		UtilTools.setLogoPic(getApplicationContext(), aq, iv);
 		
 		initActivity();
 		
@@ -284,8 +289,10 @@ public class ShowSearchActivity extends AbstractShowActivity {
 	@Override
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
-		
-		UtilTools.recycleBitmap(((BitmapDrawable)helpForSearch.getDrawable()).getBitmap());
+		if(helpForSearch.getDrawable() != null) {
+			
+			UtilTools.recycleBitmap(((BitmapDrawable)helpForSearch.getDrawable()).getBitmap());
+		}
 		
 		super.onDestroy();
 	}
@@ -1108,22 +1115,22 @@ public class ShowSearchActivity extends AbstractShowActivity {
 		playGv = (MyMovieGridView) findViewById(R.id.gv_movie_show);
 		helpForSearch = (ImageView) findViewById(R.id.iv_help_for_search);
 		
-		BitmapFactory.Options opt = new BitmapFactory.Options();
-		// opt.inPreferredConfig = Bitmap.Config.RGB_565; // Each pixel is
-		// stored 2 bytes
-		// opt.inPreferredConfig = Bitmap.Config.ARGB_8888; //Each pixel is
-		// stored 4 bytes
-
-		opt.inTempStorage = new byte[16 * 1024];
-		opt.inPurgeable = true;
-		opt.inInputShareable = true;
-
-		try {
-			helpForSearch.setImageBitmap(BitmapFactory.decodeResource(
-					getResources(), R.drawable.help_for_search, opt));
-		} catch (OutOfMemoryError e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+		if(Constant.isJoyPlus) {
+			
+			BitmapFactory.Options opt = new BitmapFactory.Options();
+//			  opt.inPreferredConfig = Bitmap.Config.RGB_565; // Each pixel is stored 2 bytes
+		  // opt.inPreferredConfig = Bitmap.Config.ARGB_8888; //Each pixel is stored 4 bytes
+	//
+			opt.inTempStorage = new byte[16 * 1024];
+//			opt.inPurgeable = true;
+//			opt.inInputShareable = true;
+//			
+			try {
+				helpForSearch.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.help_for_search, opt));
+			} catch (OutOfMemoryError e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 		
 		keyBoardView = new KeyBoardView(ShowSearchActivity.this, searchEt, new KeyBoardView.OnKeyBoardResultListener() {

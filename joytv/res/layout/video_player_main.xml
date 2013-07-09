@@ -11,6 +11,14 @@
         android:focusable="false"
         android:focusableInTouchMode="false"
         android:configChanges="orientation" />
+   	<RelativeLayout
+        android:id="@+id/adsdkContent"
+        android:layout_width="600dp"
+        android:layout_height="400dp"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+         >
+    </RelativeLayout>
     <RelativeLayout
         android:id="@+id/rl_preload"
         android:layout_width="match_parent"

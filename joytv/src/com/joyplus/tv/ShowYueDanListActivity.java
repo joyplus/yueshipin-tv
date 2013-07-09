@@ -17,6 +17,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.PopupWindow;
@@ -83,6 +84,10 @@ public class ShowYueDanListActivity extends AbstractShowActivity{
 
 		aq = new AQuery(this);
 		app = (App) getApplication();
+		
+		ImageView iv = (ImageView) findViewById(R.id.iv_head_logo);
+		
+		UtilTools.setLogoPic(getApplicationContext(), aq, iv);
 
 		Intent intent = getIntent();
 		Bundle bundle = intent.getExtras();
