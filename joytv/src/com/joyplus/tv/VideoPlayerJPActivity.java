@@ -484,6 +484,9 @@ public class VideoPlayerJPActivity extends Activity implements
 						Log.e(TAG, "no url can play!");
 						if(!VideoPlayerJPActivity.this.isFinishing()){
 							showDialog(0);
+							
+							//所有url不能播放，向服务器传递-1
+							saveToServer(-1, 0);
 						}
 					}
 				}
