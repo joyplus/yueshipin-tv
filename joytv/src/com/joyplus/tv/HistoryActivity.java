@@ -365,6 +365,11 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 		setContentView(R.layout.activity_history);
 		app = (App) getApplication();
 		aq = new AQuery(this);
+		
+		ImageView iv = (ImageView) findViewById(R.id.iv_head_logo);
+		
+		UtilTools.setLogoPic(getApplicationContext(), aq, iv);
+		
 		listView = (ListView) findViewById(R.id.history_list);
 		btn_fenlei_all = (Button) findViewById(R.id.fenlei_all);
 		btn_fenlei_movie = (Button) findViewById(R.id.fenlei_movie);

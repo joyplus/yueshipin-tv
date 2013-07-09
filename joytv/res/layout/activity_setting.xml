@@ -63,10 +63,10 @@
                         android:layout_height="0dp"
                         android:layout_weight="1"
                         android:background="@drawable/historty_listitem_drawable_selector"
+                        android:clickable="true"
                         android:focusable="true"
                         android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:clickable="true" >
+                        android:orientation="horizontal" >
 
                         <ImageView
                             android:id="@+id/user_avatar"
@@ -136,9 +136,11 @@
                         android:textSize="25dp" />
 
                     <ImageView
+                        android:id="@+id/iv_about"
                         android:layout_width="fill_parent"
                         android:layout_height="1px"
-                        android:background="@drawable/line" />
+                        android:background="@drawable/line"
+                        android:visibility="gone" />
 
                     <TextView
                         android:id="@+id/about_layout"
@@ -151,7 +153,8 @@
                         android:paddingLeft="15dp"
                         android:text="关于我们"
                         android:textColor="@color/hot_content_notice"
-                        android:textSize="25dp" />
+                        android:textSize="25dp"
+                        android:visibility="gone" />
 
                     <ImageView
                         android:layout_width="fill_parent"
@@ -188,9 +191,22 @@
                                 android:textSize="18dp" />
                         </LinearLayout>
                     </LinearLayout>
+
+                    <ImageView
+                        android:id="@+id/iv_filling"
+                        android:layout_width="fill_parent"
+                        android:layout_height="1px"
+                        android:background="@drawable/line" />
+
+                    <TextView
+                        android:id="@+id/tv_filling"
+                        android:layout_width="fill_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/ll_setting_erwei"
                     android:layout_width="0dp"
                     android:layout_height="fill_parent"
                     android:layout_weight="1"
@@ -198,7 +214,8 @@
                     android:orientation="vertical"
                     android:paddingLeft="15dp"
                     android:paddingRight="30dp"
-                    android:paddingTop="20dp" >
+                    android:paddingTop="20dp"
+                    android:visibility="invisible" >
 
                     <TextView
                         android:layout_width="wrap_content"

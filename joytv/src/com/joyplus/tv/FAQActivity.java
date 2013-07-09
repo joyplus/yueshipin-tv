@@ -5,8 +5,10 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ImageView;
 
 import com.androidquery.AQuery;
+import com.joyplus.tv.utils.UtilTools;
 import com.umeng.analytics.MobclickAgent;
 
 public class FAQActivity extends Activity {
@@ -21,6 +23,11 @@ public class FAQActivity extends Activity {
 		setContentView(R.layout.activity_faq);
 		app = (App) getApplication();
 		aq = new AQuery(this);
+		
+		ImageView iv = (ImageView) findViewById(R.id.iv_head_logo);
+		
+		UtilTools.setLogoPic(getApplicationContext(), aq, iv);
+		
 		webView = (WebView) findViewById(R.id.webView);
 //		webView.setBackgroundColor(0);
 //		webView.getBackground().setAlpha(0);

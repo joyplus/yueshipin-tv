@@ -21,14 +21,17 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
+import android.widget.ImageView;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.joyplus.adkey.Util;
 import com.joyplus.tv.App;
 import com.joyplus.tv.Constant;
+import com.joyplus.tv.R;
 import com.joyplus.tv.Service.Return.ReturnTVBangDanList;
 import com.joyplus.tv.Service.Return.ReturnTops;
 import com.joyplus.tv.Service.Return.ReturnUserFavorities;
@@ -962,6 +965,62 @@ public class UtilTools implements JieMianConstant, BangDanConstant {
 		return sp.getString("cancelShoucangProId", "");
 	}
 	
+	/**
+	 * 存储广告是否显示
+	 * @param context
+	 * @param isShow
+	 */
+	public static void setIsShowAd(Context context,boolean isShow) {
+		
+		SharedPreferences sp = context.getSharedPreferences(TV_SETTING_XML,
+				Context.MODE_PRIVATE);
+		Editor editor = sp.edit();
+		editor.putBoolean("isShowAd", isShow);
+		editor.commit();
+	}
+	
+	public static boolean getIsShowAd(Context context) {
+		
+		SharedPreferences sp = context.getSharedPreferences(TV_SETTING_XML,
+				Context.MODE_PRIVATE);
+		
+		return sp.getBoolean("isShowAd", false);
+	}
+	
+	public static void setIsJoyPlusApp(Context context,boolean isJoyPlusApp) {
+		
+		SharedPreferences sp = context.getSharedPreferences(TV_SETTING_XML,
+				Context.MODE_PRIVATE);
+		Editor editor = sp.edit();
+		editor.putBoolean("isJoyPlusApp", isJoyPlusApp);
+		editor.commit();
+	}
+	
+	public static boolean getIsJoyPlusApp(Context context) {
+		
+		SharedPreferences sp = context.getSharedPreferences(TV_SETTING_XML,
+				Context.MODE_PRIVATE);
+		
+		return sp.getBoolean("isJoyPlusApp", true);
+	}
+	
+	public static void setLogoUrl(Context context , String logoUrl) {
+		
+		SharedPreferences sp = context.getSharedPreferences(TV_SETTING_XML,
+				Context.MODE_PRIVATE);
+		Editor editor = sp.edit();
+		editor.putString("logoUrl", logoUrl);
+		editor.commit();
+	}
+	
+	public static String getLogoUrl(Context context) {
+		
+		SharedPreferences sp = context.getSharedPreferences(TV_SETTING_XML,
+				Context.MODE_PRIVATE);
+		
+		return sp.getString("logoUrl","");
+	}
+	
 	public  static boolean isSame4Str(String str1, String str2){
 		if(str1==null||str2==null){
 			return false;
@@ -999,6 +1058,25 @@ public class UtilTools implements JieMianConstant, BangDanConstant {
 			}
 			
 			bitmap = null;
+		}
+	}
+	
+	public static void setLogoPic(Context context,AQuery aq,ImageView iv) {
+		
+		if(Constant.isJoyPlus) {
+			
+			iv.setImageResource(R.drawable.logo);
+		} else {//否则不是本身应用
+			
+			String url = UtilTools.getLogoUrl(context);
+			
+			if(url != null && !url.equals("")) {
+				
+				aq.id(iv).image(url, false, true, 0,R.drawable.logo_custom);
+			} else {
+				
+				iv.setImageResource(R.drawable.logo_custom);
+			}
 		}
 	}
 

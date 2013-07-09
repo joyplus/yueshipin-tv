@@ -22,6 +22,7 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.AbsListView.OnScrollListener;
@@ -117,6 +118,10 @@ public class ShowMovieActivity extends AbstractShowActivity {
 
 		app = (App) getApplication();
 		aq = new AQuery(this);
+		
+		ImageView iv = (ImageView) findViewById(R.id.iv_head_logo);
+		
+		UtilTools.setLogoPic(getApplicationContext(), aq, iv);
 
 		initActivity();// 初始化界面
 

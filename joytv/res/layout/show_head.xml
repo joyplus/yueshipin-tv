@@ -82,8 +82,7 @@
             android:id="@+id/iv_head_logo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="right|center_vertical"
-            android:src="@drawable/logo" />
+            android:layout_gravity="right|center_vertical" />
     </LinearLayout>
 
 </LinearLayout>

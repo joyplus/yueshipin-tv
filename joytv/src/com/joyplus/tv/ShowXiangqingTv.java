@@ -23,6 +23,7 @@ import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TableLayout;
@@ -120,6 +121,11 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 		
 		aq = new AQuery(this);
 		app = (App) getApplication();
+		
+		ImageView iv = (ImageView) findViewById(R.id.iv_head_logo);
+		
+		UtilTools.setLogoPic(getApplicationContext(), aq, iv);
+		
 		showDefultDate();
 		initView();
 		showDialog(DIALOG_WAITING);

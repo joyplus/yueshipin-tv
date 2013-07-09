@@ -36,22 +36,24 @@
             android:layout_marginTop="15dp" >
 
             <TextView
+                android:id="@+id/tv_personal_record"
                 android:layout_width="fill_parent"
                 android:layout_height="45dp"
                 android:focusable="false"
                 android:gravity="center_vertical"
                 android:paddingLeft="14dp"
-                android:text="我的悦视频"
+                android:text="@string/personal_record"
                 android:textColor="@color/common_title_unselected"
                 android:textSize="30dp" />
 
             <TextView
+                android:id="@+id/tv_play_store"
                 android:layout_width="fill_parent"
                 android:layout_height="45dp"
                 android:focusable="false"
                 android:gravity="center_vertical"
                 android:paddingLeft="14dp"
-                android:text="悦片库"
+                android:text="@string/play_store"
                 android:textColor="@color/common_title_unselected"
                 android:textSize="30dp" />
 
@@ -216,7 +218,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="right|top" />
         </FrameLayout>
-
+		
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
@@ -224,9 +226,17 @@
             android:layout_marginTop="5dp"
             android:background="@drawable/bg_teat_repeat"
             android:orientation="horizontal"
-            android:paddingLeft="221dp"
+           	
             android:paddingTop="15dp" >
-
+            <!-- android:paddingLeft="221dp" -->
+            <RelativeLayout
+       			android:id="@+id/adsdkContent"
+       			android:paddingLeft="5dp"
+       			android:paddingBottom="5dp"
+        		android:layout_width="221dp"
+        		android:layout_height="fill_parent"
+        		android:layout_below="@id/galleryFram"
+        		android:background="@android:color/transparent"/>
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
@@ -293,6 +303,8 @@
         android:id="@+id/image_starting"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:scaleType="fitXY" />
+        android:scaleType="fitXY"
+        />
+    <!-- android:src="@drawable/starting" --> 
 
 </RelativeLayout>

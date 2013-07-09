@@ -59,4 +59,5 @@
     <!-- Yu -->
     <!-- Yu -->
 
+	<color name="bright_foreground_dark">#ffffffff</color>  
 </resources>
