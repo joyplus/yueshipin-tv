@@ -82,6 +82,22 @@ public class Main extends Activity implements AdListener{
 			umengChannel =info.metaData.getString("UMENG_CHANNEL");
 			Log.i(TAG, "UMENG_CHANNEL--->" + umengChannel);
 			
+			if (umengChannel != null && !umengChannel.equals("")) {
+
+				if (UtilTools.getUmengChannel(getApplicationContext()) != null
+						&& !UtilTools.getUmengChannel(getApplicationContext())
+								.equals("")
+						&& !UtilTools.getUmengChannel(getApplicationContext())
+								.equals(umengChannel)) {
+
+					UtilTools.setLoadingAdvID(getApplicationContext(), "");
+					UtilTools.setMainAdvID(getApplicationContext(), "");
+					UtilTools.setPlayerAdvID(getApplicationContext(), "");
+				}
+		
+				UtilTools.setUmengChannel(getApplicationContext(), umengChannel);
+			}
+
 		} catch (NameNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

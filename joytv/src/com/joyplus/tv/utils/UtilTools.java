@@ -1131,4 +1131,21 @@ public class UtilTools implements JieMianConstant, BangDanConstant {
 		
 		return sp.getString("playerAdvID", "");
 	}
+	
+	public static void setUmengChannel(Context context,String channel) {
+		
+		SharedPreferences sp = context.getSharedPreferences(TV_ADKEY_CONFIG_XML,
+				Context.MODE_PRIVATE);
+		Editor editor = sp.edit();
+		editor.putString("channel", channel);
+		editor.commit();
+	}
+	
+	public static String getUmengChannel(Context context) {
+		
+		SharedPreferences sp = context.getSharedPreferences(TV_ADKEY_CONFIG_XML,
+				Context.MODE_PRIVATE);
+		
+		return sp.getString("channel", "");
+	}
 }
