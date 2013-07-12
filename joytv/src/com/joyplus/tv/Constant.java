@@ -4,10 +4,18 @@ import android.os.Environment;
 
 public class Constant {
 	
-	public static boolean isJoyPlus = false;//是否是JoyPlus本身应用，还是其他应用
+	public static final boolean isJoyPlus = false;//是否是JoyPlus本身应用，还是其他应用
+	
+	public static final boolean cacheMode = true;//该广告加载时是否用本地缓存 Loading界面
+	public static final boolean ANIMATION = true;//该广告加载时是否用动画效果 首页
+	
+	// 正式环境
+	public static String LOADING_ADV_PUBLISHERID = "02e071ed43ff9d9e1c57647de3fafc84";//加载页面
+	public static String MAIN_ADV_PUBLISHERID = "9be3883720dfd077b8f4d69bb487d4e2";//首页
+	public static String PLAYER_ADV_PUBLISHERID = "9ada2fbd0ff493d8a11b4e5aefaf7df0";//播放器
 	
 	public static final String APPKEY_TOP = "ijoyplus_android_0001";//正式
-	// 正式环境
+
 	public static final String BASE_URL_TOP = "http://api.joyplus.tv/joyplus-service/index.php/";//正式
 	public static boolean TestEnv = false;
 	public static  String BASE_URL = "http://api.joyplus.tv/joyplus-service/index.php/";
@@ -32,6 +40,10 @@ public class Constant {
 	 * 
 	 * 2：cms cms-test.yue001.com/manager/index.php
 	 */
+	
+//	public static String LOADING_ADV_PUBLISHERID = "42ed1ef187e3fa7179d7edc86906cd89";//加载页面
+//	public static String MAIN_ADV_PUBLISHERID = "2e82295fab92770b89eae5caf62bdbed";//首页
+//	public static String PLAYER_ADV_PUBLISHERID = "ad591f194cabeff51ed456ee63e0def2";//播放器
 	
 //	//测试环境控制
 //	public static final String APPKEY_TOP = "ijoyplus_android_0001bj";//测试

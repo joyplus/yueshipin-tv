@@ -46,6 +46,9 @@ public class UtilTools implements JieMianConstant, BangDanConstant {
 	
 	public static final String ACTION_PLAY_END_MAIN = "action_play_end_main";
 	public static final String ACTION_PLAY_END_HISTORY = "action_play_end_history";
+	
+	public static final String TV_SETTING_XML = "tv_setting_xml";
+	public static final String TV_ADKEY_CONFIG_XML = "tv_adkey_config_xml";
 
 	/**
 	 * 用来统计用户点击播放视屏后正常跳转的次数 有可能跳转到播放器，也有可能跳转到浏览器
@@ -900,8 +903,6 @@ public class UtilTools implements JieMianConstant, BangDanConstant {
 	// return str.substring(start)
 	// }
 
-	public static final String TV_SETTING_XML = "tv_setting_xml";
-
 	public static boolean is48TimeClock(Context context) {
 
 		SharedPreferences sp = context.getSharedPreferences(TV_SETTING_XML,
@@ -1079,5 +1080,55 @@ public class UtilTools implements JieMianConstant, BangDanConstant {
 			}
 		}
 	}
-
+	
+	public static void setLoadingAdvID(Context context,String loadingAdvID) {
+		
+		SharedPreferences sp = context.getSharedPreferences(TV_ADKEY_CONFIG_XML,
+				Context.MODE_PRIVATE);
+		Editor editor = sp.edit();
+		editor.putString("loadingAdvID", loadingAdvID);
+		editor.commit();
+	}
+	
+	public static String getLoadingAdvID(Context context) {
+		
+		SharedPreferences sp = context.getSharedPreferences(TV_ADKEY_CONFIG_XML,
+				Context.MODE_PRIVATE);
+		
+		return sp.getString("loadingAdvID", "");
+	}
+	
+	public static void setMainAdvID(Context context,String mainAdvID) {
+		
+		SharedPreferences sp = context.getSharedPreferences(TV_ADKEY_CONFIG_XML,
+				Context.MODE_PRIVATE);
+		Editor editor = sp.edit();
+		editor.putString("mainAdvID", mainAdvID);
+		editor.commit();
+	}
+	
+	public static String getMainAdvID(Context context) {
+		
+		SharedPreferences sp = context.getSharedPreferences(TV_ADKEY_CONFIG_XML,
+				Context.MODE_PRIVATE);
+		
+		return sp.getString("mainAdvID", "");
+	}
+	
+	public static void setPlayerAdvID(Context context,String playerAdvID) {
+		
+		SharedPreferences sp = context.getSharedPreferences(TV_ADKEY_CONFIG_XML,
+				Context.MODE_PRIVATE);
+		Editor editor = sp.edit();
+		editor.putString("playerAdvID", playerAdvID);
+		editor.commit();
+	}
+	
+	public static String getPlayerAdvID(Context context) {
+		
+		SharedPreferences sp = context.getSharedPreferences(TV_ADKEY_CONFIG_XML,
+				Context.MODE_PRIVATE);
+		
+		return sp.getString("playerAdvID", "");
+	}
 }
