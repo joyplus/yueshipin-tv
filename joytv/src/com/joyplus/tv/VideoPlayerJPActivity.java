@@ -1879,7 +1879,10 @@ public class VideoPlayerJPActivity extends Activity implements
 			mVideoView.stopPlayback();
 		}
 		
-		UtilTools.recycleBitmap(((BitmapDrawable)mPreLoadLayout.getBackground()).getBitmap());
+		if(mPreLoadLayout.getBackground() != null) {
+			
+			UtilTools.recycleBitmap(((BitmapDrawable)mPreLoadLayout.getBackground()).getBitmap());
+		}
 		
 		super.onDestroy();
 	}
