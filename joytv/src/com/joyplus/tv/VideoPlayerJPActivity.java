@@ -230,8 +230,8 @@ public class VideoPlayerJPActivity extends Activity implements
 	 */
 	private RelativeLayout layout;
 	private AdView mAdView;
-	private String publisherId = "5b702aa315663879a582097a36ba0cdc";//要显示广告的publisherId
-	private boolean animation = true;//该广告加载时是否用动画效果
+//	private String publisherId = "5b702aa315663879a582097a36ba0cdc";//要显示广告的publisherId
+//	private boolean animation = true;//该广告加载时是否用动画效果
 	
 	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
 		@Override
@@ -311,14 +311,14 @@ public class VideoPlayerJPActivity extends Activity implements
 		//广告位初始化
 		layout = (RelativeLayout)findViewById(R.id.adsdkContent);
 		
-		if(UtilTools.getIsShowAd(getApplicationContext())) {
+//		if(UtilTools.getIsShowAd(getApplicationContext())) {
 			
 			if (mAdView != null) {
 				removeBanner();
 				if(layout!=null)
 					layout.setVisibility(View.GONE);
 			}
-		}
+//		}
 		
 		initViews();
 		mSeekBar.setEnabled(false);
@@ -679,14 +679,14 @@ public class VideoPlayerJPActivity extends Activity implements
 			switch (mStatue) {
 			case STATUE_PLAYING:
 				
-				if(UtilTools.getIsShowAd(getApplicationContext())) {
+//				if(UtilTools.getIsShowAd(getApplicationContext())) {
 					
 					/*
 					 * 显示banner
 					 */
 					showBanner();
 					layout.setVisibility(View.VISIBLE);
-				}
+//				}
 				
 				mVocieLayout.setVisibility(View.GONE);
 				mHandler.removeMessages(MESSAGE_HIDE_VOICE);
@@ -873,14 +873,14 @@ public class VideoPlayerJPActivity extends Activity implements
 			mBottomButton.setBackgroundResource(R.drawable.player_btn_fav);
 		}
 
-		if(UtilTools.getIsShowAd(getApplicationContext())) {
+//		if(UtilTools.getIsShowAd(getApplicationContext())) {
 			
 			/*
 			 * 显示banner
 			 */
 			showBanner();
 			layout.setVisibility(View.VISIBLE);
-		}
+//		}
 		
 		mVocieLayout.setVisibility(View.GONE);
 		mHandler.removeMessages(MESSAGE_HIDE_VOICE);
@@ -1148,12 +1148,12 @@ public class VideoPlayerJPActivity extends Activity implements
 			mVideoView.requestFocus();
 			mVideoView.start();
 			
-			if(UtilTools.getIsShowAd(getApplicationContext())) {
+//			if(UtilTools.getIsShowAd(getApplicationContext())) {
 				
 				removeBanner();
 				if(layout!=null)	
 					layout.setVisibility(View.GONE);
-			}
+//			}
 
 			break;
 		case R.id.btn_continue:
@@ -1215,11 +1215,11 @@ public class VideoPlayerJPActivity extends Activity implements
 	private void showLoading() {
 		removeBanner();
 		
-		if(UtilTools.getIsShowAd(getApplicationContext())) {
+//		if(UtilTools.getIsShowAd(getApplicationContext())) {
 			
 			if(layout!=null)
 				layout.setVisibility(View.GONE);
-		}
+//		}
 		
 		mLoadingPreparedPercent = 0;
 		rxByteslast = 0;
@@ -1879,7 +1879,10 @@ public class VideoPlayerJPActivity extends Activity implements
 			mVideoView.stopPlayback();
 		}
 		
-		UtilTools.recycleBitmap(((BitmapDrawable)mPreLoadLayout.getBackground()).getBitmap());
+		if(mPreLoadLayout.getBackground() != null) {
+			
+			UtilTools.recycleBitmap(((BitmapDrawable)mPreLoadLayout.getBackground()).getBitmap());
+		}
 		
 		super.onDestroy();
 	}
@@ -2170,7 +2173,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		if (mAdView != null) {
 			removeBanner();
 		}
-		mAdView = new AdView(this, publisherId,animation);
+		mAdView = new AdView(this, Constant.PLAYER_ADV_PUBLISHERID,Constant.ANIMATION);
 		mAdView.setAdListener(this);
 		layout.addView(mAdView);
 	}
