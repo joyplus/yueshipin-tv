@@ -175,6 +175,7 @@ public class Main extends Activity implements AdListener{
 //			UtilTools.setIsShowAd(getApplicationContext(), false);
 			//如果不显示广告,直接跳过这个界面
 			if(mManager!=null){
+				Log.i(TAG, "mManager.isCacheLoaded()--->" + mManager.isCacheLoaded());
 				if(!mManager.isCacheLoaded()){
 					UtilTools.setIsShowAd(getApplicationContext(), false);
 					final Intent intent = new Intent(Main.this, Main1.class);// AndroidMainScreen为主界面
@@ -186,6 +187,12 @@ public class Main extends Activity implements AdListener{
 			UtilTools.setIsShowAd(getApplicationContext(), true);
 //		}
 		
+	}
+	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		// TODO Auto-generated method stub
+		return true;
 	}
 	
 	@Override
@@ -283,7 +290,7 @@ public class Main extends Activity implements AdListener{
 	public void adLoadSucceeded(Ad ad)
 	{
 		// TODO Auto-generated method stub
-		if (mManager != null && mManager.isAdLoaded())
+		if (mManager != null && mManager.isCacheLoaded())
 			mManager.showAd();
 	}
 
