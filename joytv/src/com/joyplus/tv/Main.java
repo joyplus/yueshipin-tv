@@ -6,14 +6,12 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.KeyEvent;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -80,7 +78,7 @@ public class Main extends Activity implements AdListener{
 			ApplicationInfo info=this.getPackageManager().getApplicationInfo(getPackageName(),
 			        PackageManager.GET_META_DATA);
 			umengChannel =info.metaData.getString("UMENG_CHANNEL");
-			Log.i(TAG, "UMENG_CHANNEL--->" + umengChannel);
+//			Log.i(TAG, "UMENG_CHANNEL--->" + umengChannel);
 			
 			if (umengChannel != null && !umengChannel.equals("")) {
 
@@ -113,7 +111,7 @@ public class Main extends Activity implements AdListener{
 				
 				String loadingAdvID = MobclickAgent.getConfigParams(this, umengChannel + "_LOADING_ADV_PUBLISHERID");
 				String str = umengChannel + "_LOADING_ADV_PUBLISHERID";
-				Log.i(TAG, "name--->" +str + " loadingAdvID--->" + loadingAdvID);
+//				Log.i(TAG, "name--->" +str + " loadingAdvID--->" + loadingAdvID);
 				if(loadingAdvID != null && !loadingAdvID.equals("")){
 					
 					Constant.LOADING_ADV_PUBLISHERID = loadingAdvID;
@@ -132,7 +130,7 @@ public class Main extends Activity implements AdListener{
 			if(umengChannel != null && !umengChannel.equals("")) {
 				
 				String mainAdvID = MobclickAgent.getConfigParams(this, umengChannel + "_MAIN_ADV_PUBLISHERID");
-				Log.i(TAG, "mainAdvID--->" + mainAdvID);
+//				Log.i(TAG, "mainAdvID--->" + mainAdvID);
 				if(mainAdvID != null && !mainAdvID.equals("")){
 					
 					Constant.MAIN_ADV_PUBLISHERID = mainAdvID;
@@ -150,7 +148,7 @@ public class Main extends Activity implements AdListener{
 			if(umengChannel != null && !umengChannel.equals("")) {
 				
 				String playerAdv = MobclickAgent.getConfigParams(this, umengChannel + "_PLAYER_ADV_PUBLISHERID");
-				Log.i(TAG, "playerAdv--->" + playerAdv);
+//				Log.i(TAG, "playerAdv--->" + playerAdv);
 				if(playerAdv != null && !playerAdv.equals("")){
 					
 					Constant.MAIN_ADV_PUBLISHERID = playerAdv;
@@ -175,7 +173,7 @@ public class Main extends Activity implements AdListener{
 //			UtilTools.setIsShowAd(getApplicationContext(), false);
 			//如果不显示广告,直接跳过这个界面
 			if(mManager!=null){
-				Log.i(TAG, "mManager.isCacheLoaded()--->" + mManager.isCacheLoaded());
+				
 				if(!mManager.isCacheLoaded()){
 					UtilTools.setIsShowAd(getApplicationContext(), false);
 					final Intent intent = new Intent(Main.this, Main1.class);// AndroidMainScreen为主界面
