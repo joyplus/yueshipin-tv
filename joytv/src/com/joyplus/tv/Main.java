@@ -117,7 +117,8 @@ public class Main extends Activity implements AdListener{
 				if(loadingAdvID != null && !loadingAdvID.equals("")){
 					
 					Constant.LOADING_ADV_PUBLISHERID = loadingAdvID;
-					UtilTools.setLoadingAdvID(getApplicationContext(), loadingAdvID);
+
+					UtilTools.setLoadingAdvID(getApplicationContext(), Constant.LOADING_ADV_PUBLISHERID);
 				}
 			}
 		}
@@ -135,7 +136,7 @@ public class Main extends Activity implements AdListener{
 				if(mainAdvID != null && !mainAdvID.equals("")){
 					
 					Constant.MAIN_ADV_PUBLISHERID = mainAdvID;
-					UtilTools.setMainAdvID(getApplicationContext(), mainAdvID);
+					UtilTools.setMainAdvID(getApplicationContext(), Constant.MAIN_ADV_PUBLISHERID);
 				}
 			}
 		}

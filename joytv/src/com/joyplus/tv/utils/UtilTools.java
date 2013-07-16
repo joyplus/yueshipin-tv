@@ -1022,6 +1022,23 @@ public class UtilTools implements JieMianConstant, BangDanConstant {
 		return sp.getString("logoUrl","");
 	}
 	
+	public static void setDisclaimerVisible(Context context,boolean isDisclaimerVisible){
+		
+		SharedPreferences sp = context.getSharedPreferences(TV_SETTING_XML,
+				Context.MODE_PRIVATE);
+		Editor editor = sp.edit();
+		editor.putBoolean("isDisclaimerVisible", isDisclaimerVisible);
+		editor.commit();
+	}
+	
+	public static boolean getDisclaimerVisible(Context context) {
+		
+		SharedPreferences sp = context.getSharedPreferences(TV_SETTING_XML,
+				Context.MODE_PRIVATE);
+		
+		return sp.getBoolean("isDisclaimerVisible",false);
+	}
+	
 	public  static boolean isSame4Str(String str1, String str2){
 		if(str1==null||str2==null){
 			return false;

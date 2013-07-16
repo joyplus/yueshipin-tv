@@ -861,10 +861,31 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 						removeBanner();
 					}
 					
-					mAdView = new AdView(Main1.this, Constant.MAIN_ADV_PUBLISHERID,Constant.ANIMATION);
+					mAdView = new AdView(Main1.this, Constant.MAIN_ADV_PUBLISHERID,false);
 					mAdView.setAdListener(Main1.this);
 					layout.addView(mAdView);
 //				}
+					
+					//弹出免责声明
+					if(!UtilTools.getDisclaimerVisible(getApplicationContext())){
+						
+						final Dialog dialog = new AlertDialog.Builder(Main1.this).create();
+						dialog.setCanceledOnTouchOutside(false);
+						dialog.show();
+						LayoutInflater inflater = LayoutInflater.from(Main1.this);
+						View view = inflater.inflate(R.layout.mianze_dialog, null);
+						Button buttonYes = (Button) view.findViewById(R.id.btnyes);
+						buttonYes.setOnClickListener(new Button.OnClickListener() {
+							@Override
+							public void onClick(View v) {
+								// TODO Auto-generated method stub
+								dialog.dismiss();
+								// 将内容保存在sharedPreference
+								UtilTools.setDisclaimerVisible(getApplicationContext(), true);
+							}
+						});
+						dialog.setContentView(view);
+					}
 				
 				break;
 			case MESSAGE_START_TIMEOUT:// 超时还未加载好
