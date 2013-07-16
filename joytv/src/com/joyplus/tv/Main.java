@@ -1,20 +1,15 @@
 package com.joyplus.tv;
 
-import com.joyplus.adkey.Ad;
-import com.joyplus.adkey.AdListener;
-import com.joyplus.adkey.AdManager;
-import com.joyplus.adkey.widget.Log;
-import com.joyplus.tv.ui.WaitingDialog;
-import com.joyplus.tv.utils.UtilTools;
-import com.umeng.analytics.MobclickAgent;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.KeyEvent;
@@ -24,6 +19,13 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 
+import com.joyplus.adkey.Ad;
+import com.joyplus.adkey.AdListener;
+import com.joyplus.adkey.AdManager;
+import com.joyplus.adkey.widget.Log;
+import com.joyplus.tv.utils.UtilTools;
+import com.umeng.analytics.MobclickAgent;
+
 public class Main extends Activity implements AdListener{
 	
 	private static final String TAG = "AD_LOGO";
@@ -31,8 +33,8 @@ public class Main extends Activity implements AdListener{
 	private static final int DIALOG_NETWORK_ERROR = 1;
 	
 	private AdManager mManager;
-	private String publisherId = "53f2f418bfc3759e34e4294ae7b4ebb3";//要显示广告的publisherId
-	private boolean cacheMode = true;//该广告加载时是否用本地缓存
+//	private String publisherId = "53f2f418bfc3759e34e4294ae7b4ebb3";//要显示广告的publisherId
+//	private boolean cacheMode = true;//该广告加载时是否用本地缓存
 	private RelativeLayout starting;
 	
 	private App app;
@@ -58,39 +60,131 @@ public class Main extends Activity implements AdListener{
 		
 		MobclickAgent.onError(this);
 		
-		String onLineIsShowAd = null;
-		
-		if(Constant.isJoyPlus) {//如果过是JoyPlus自身应用
-			
-			UtilTools.setIsJoyPlusApp(getApplicationContext(), true);
-			onLineIsShowAd = MobclickAgent.getConfigParams(this, "JOYPLUS_TV_SHOW_AD");
-		} else {
-			
-			UtilTools.setIsJoyPlusApp(getApplicationContext(), false);
-			onLineIsShowAd = MobclickAgent.getConfigParams(this, "OTHER_TV_SHOW_AD");
-		}
+//		String onLineIsShowAd = null;
 		
 		MobclickAgent.updateOnlineConfig(this);
 		
+//		if(Constant.isJoyPlus) {//如果过是JoyPlus自身应用
+//			
+//			UtilTools.setIsJoyPlusApp(getApplicationContext(), true);
+//			onLineIsShowAd = MobclickAgent.getConfigParams(this, "JOYPLUS_TV_SHOW_AD");
+//		} else {
+//			
+//			UtilTools.setIsJoyPlusApp(getApplicationContext(), false);
+//			onLineIsShowAd = MobclickAgent.getConfigParams(this, "OTHER_TV_SHOW_AD");
+//		}
+		
+		String umengChannel = null;
+		
+		try {
+			ApplicationInfo info=this.getPackageManager().getApplicationInfo(getPackageName(),
+			        PackageManager.GET_META_DATA);
+			umengChannel =info.metaData.getString("UMENG_CHANNEL");
+			Log.i(TAG, "UMENG_CHANNEL--->" + umengChannel);
+			
+			if (umengChannel != null && !umengChannel.equals("")) {
+
+				if (UtilTools.getUmengChannel(getApplicationContext()) != null
+						&& !UtilTools.getUmengChannel(getApplicationContext())
+								.equals("")
+						&& !UtilTools.getUmengChannel(getApplicationContext())
+								.equals(umengChannel)) {
+
+					UtilTools.setLoadingAdvID(getApplicationContext(), "");
+					UtilTools.setMainAdvID(getApplicationContext(), "");
+					UtilTools.setPlayerAdvID(getApplicationContext(), "");
+				}
+		
+				UtilTools.setUmengChannel(getApplicationContext(), umengChannel);
+			}
+
+		} catch (NameNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		if(UtilTools.getLoadingAdvID(getApplicationContext()) != null
+				&& !UtilTools.getLoadingAdvID(getApplicationContext()).equals("")) {
+			
+			Constant.LOADING_ADV_PUBLISHERID = UtilTools.getLoadingAdvID(getApplicationContext());
+		} else {
+			
+			if(umengChannel != null && !umengChannel.equals("")) {
+				
+				String loadingAdvID = MobclickAgent.getConfigParams(this, umengChannel + "_LOADING_ADV_PUBLISHERID");
+				String str = umengChannel + "_LOADING_ADV_PUBLISHERID";
+				Log.i(TAG, "name--->" +str + " loadingAdvID--->" + loadingAdvID);
+				if(loadingAdvID != null && !loadingAdvID.equals("")){
+					
+					Constant.LOADING_ADV_PUBLISHERID = loadingAdvID;
+
+					UtilTools.setLoadingAdvID(getApplicationContext(), Constant.LOADING_ADV_PUBLISHERID);
+				}
+			}
+		}
+		
+		if(UtilTools.getMainAdvID(getApplicationContext()) != null
+				&& !UtilTools.getMainAdvID(getApplicationContext()).equals("")) {
+			
+			Constant.MAIN_ADV_PUBLISHERID = UtilTools.getMainAdvID(getApplicationContext());
+		} else {
+			
+			if(umengChannel != null && !umengChannel.equals("")) {
+				
+				String mainAdvID = MobclickAgent.getConfigParams(this, umengChannel + "_MAIN_ADV_PUBLISHERID");
+				Log.i(TAG, "mainAdvID--->" + mainAdvID);
+				if(mainAdvID != null && !mainAdvID.equals("")){
+					
+					Constant.MAIN_ADV_PUBLISHERID = mainAdvID;
+					UtilTools.setMainAdvID(getApplicationContext(), Constant.MAIN_ADV_PUBLISHERID);
+				}
+			}
+		}
+		
+		if(UtilTools.getPlayerAdvID(getApplicationContext()) != null
+				&& !UtilTools.getPlayerAdvID(getApplicationContext()).equals("")) {
+			
+			Constant.PLAYER_ADV_PUBLISHERID = UtilTools.getPlayerAdvID(getApplicationContext());
+		} else {
+			
+			if(umengChannel != null && !umengChannel.equals("")) {
+				
+				String playerAdv = MobclickAgent.getConfigParams(this, umengChannel + "_PLAYER_ADV_PUBLISHERID");
+				Log.i(TAG, "playerAdv--->" + playerAdv);
+				if(playerAdv != null && !playerAdv.equals("")){
+					
+					Constant.MAIN_ADV_PUBLISHERID = playerAdv;
+					UtilTools.setPlayerAdvID(getApplicationContext(), playerAdv);
+				}
+			}
+		}
+		
 //		String onLineIsShowAd = true + "";//测试数据
-		Log.i(TAG, "onLineIsShowAd--->" + onLineIsShowAd);
-		if(onLineIsShowAd != null && onLineIsShowAd.equals("true")) {
+//		Log.i(TAG, "onLineIsShowAd--->" + onLineIsShowAd);
+//		if(onLineIsShowAd != null && onLineIsShowAd.equals("true")) {
 			
-			UtilTools.setIsShowAd(getApplicationContext(), true);
+//			UtilTools.setIsShowAd(getApplicationContext(), true);
 			
 			
-			mManager = new AdManager(this,publisherId,cacheMode);
+			mManager = new AdManager(this,Constant.LOADING_ADV_PUBLISHERID,Constant.cacheMode);
 			mManager.setListener(this);
 			mManager.requestAd();
 			starting = (RelativeLayout)findViewById(R.id.starting);
-		} else {
+//		} else {
 			
-			UtilTools.setIsShowAd(getApplicationContext(), false);
+//			UtilTools.setIsShowAd(getApplicationContext(), false);
 			//如果不显示广告,直接跳过这个界面
-			final Intent intent = new Intent(Main.this, Main1.class);// AndroidMainScreen为主界面
-			startActivity(intent);
-			Main.this.finish();
-		}
+			if(mManager!=null){
+				if(!mManager.isCacheLoaded()){
+					UtilTools.setIsShowAd(getApplicationContext(), false);
+					final Intent intent = new Intent(Main.this, Main1.class);// AndroidMainScreen为主界面
+					startActivity(intent);
+					Main.this.finish();
+					return;
+				}
+			}
+			UtilTools.setIsShowAd(getApplicationContext(), true);
+//		}
 		
 	}
 	
@@ -150,11 +244,6 @@ public class Main extends Activity implements AdListener{
 		
 		MobclickAgent.onResume(this);
 		
-		if(mManager!=null){
-			if(!mManager.isCacheLoaded()){
-				starting.setVisibility(View.VISIBLE);
-			}
-		}
 	}
 
 	@Override
