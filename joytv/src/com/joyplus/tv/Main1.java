@@ -228,11 +228,9 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 	 */
 	private RelativeLayout layout;
 	private AdView mAdView;
-	private String publisherId = "9d30a5d07eb3a9ed66a9d70d0185205f";//要显示广告的publisherId
-	private boolean animation = true;//该广告加载时是否用动画效果
+//	private String publisherId = "9d30a5d07eb3a9ed66a9d70d0185205f";//要显示广告的publisherId
+//	private boolean animation = true;//该广告加载时是否用动画效果
 	// private Handler mHandler = new Handler();
-	
-	private boolean isShowAd = false;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -245,11 +243,10 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 		
 //		MobclickAgent.onError(this);
 		
-		isShowAd = UtilTools.getIsShowAd(getApplicationContext());
 
 		startingImageView = (ImageView) findViewById(R.id.image_starting);
 		
-		if(!isShowAd) {
+		if(!UtilTools.getIsShowAd(getApplicationContext())) {
 			
 			BitmapFactory.Options opt = new BitmapFactory.Options();
 //			  opt.inPreferredConfig = Bitmap.Config.RGB_565; // Each pixel is stored 2 bytes
@@ -765,6 +762,7 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 		@Override
 		public void handleMessage(Message msg) {
 			// TODO Auto-generated method stub
+			
 			switch (msg.what) {
 			case MESSAGE_UPDATEUSER:// userInfo相关验证完成
 				if (initStep == 0) {
@@ -814,20 +812,20 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 					if (startingImageView.getVisibility() == View.VISIBLE) {
 						startingImageView.setVisibility(View.GONE);
 						
-						if(!isShowAd) {
-							
-							handler.postDelayed(new Runnable() {
-								
-								@Override
-								public void run() {
-									// TODO Auto-generated method stub
-									
-									if(!startingImageView.isShown()) {
-										UtilTools.recycleBitmap(((BitmapDrawable)startingImageView.getDrawable()).getBitmap());
-									}
-								}
-							}, 1000);
-						}
+//						if(!isShowAd) {
+//							
+//							handler.postDelayed(new Runnable() {
+//								
+//								@Override
+//								public void run() {
+//									// TODO Auto-generated method stub
+//									
+//									if(!startingImageView.isShown()) {
+//										UtilTools.recycleBitmap(((BitmapDrawable)startingImageView.getDrawable()).getBitmap());
+//									}
+//								}
+//							}, 1000);
+//						}
 						startingImageView.startAnimation(alpha_disappear);
 						rootLayout.setVisibility(View.VISIBLE);
 						gallery1.requestFocus();
@@ -835,10 +833,10 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 //						new Thread(new CheckPlayUrl()).start();
 						Log.i(TAG,"removeDialog(DIALOG_WAITING);---else ---->1");
 						
-						if(isShowAd) {
+//						if(isShowAd) {
 							
 							removeDialog(DIALOG_WAITING);
-						}
+//						}
 					} else {
 						Log.i(TAG,"removeDialog(DIALOG_WAITING);---else ---->2");
 						removeDialog(DIALOG_WAITING);
@@ -857,39 +855,61 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 				/*
 				 * adkey show,the Viewo of ad init()
 				 */
-				if(UtilTools.getIsShowAd(getApplicationContext())) {
+//				if(UtilTools.getIsShowAd(getApplicationContext())) {
 					
 					if (mAdView != null) {
 						removeBanner();
 					}
-					mAdView = new AdView(Main1.this, publisherId,animation);
+					
+					mAdView = new AdView(Main1.this, Constant.MAIN_ADV_PUBLISHERID,false);
 					mAdView.setAdListener(Main1.this);
 					layout.addView(mAdView);
-				}
+//				}
+					
+					//弹出免责声明
+					if(!UtilTools.getDisclaimerVisible(getApplicationContext())){
+						
+						final Dialog dialog = new AlertDialog.Builder(Main1.this).create();
+						dialog.setCanceledOnTouchOutside(false);
+						dialog.show();
+						LayoutInflater inflater = LayoutInflater.from(Main1.this);
+						View view = inflater.inflate(R.layout.mianze_dialog, null);
+						Button buttonYes = (Button) view.findViewById(R.id.btnyes);
+						buttonYes.setOnClickListener(new Button.OnClickListener() {
+							@Override
+							public void onClick(View v) {
+								// TODO Auto-generated method stub
+								dialog.dismiss();
+								// 将内容保存在sharedPreference
+								UtilTools.setDisclaimerVisible(getApplicationContext(), true);
+							}
+						});
+						dialog.setContentView(view);
+					}
 				
 				break;
 			case MESSAGE_START_TIMEOUT:// 超时还未加载好
 				if (initStep < 3) {
 					startingImageView.setVisibility(View.GONE);
 					
-					if(!isShowAd) {
-						
-						handler.postDelayed(new Runnable() {
-							
-							@Override
-							public void run() {
-								// TODO Auto-generated method stub
-								
-								if(!startingImageView.isShown()) {
-									UtilTools.recycleBitmap(((BitmapDrawable)startingImageView.getDrawable()).getBitmap());
-								}
-							}
-						}, 1000);
-					}
+//					if(!isShowAd) {
+//						
+//						handler.postDelayed(new Runnable() {
+//							
+//							@Override
+//							public void run() {
+//								// TODO Auto-generated method stub
+//								
+//								if(!startingImageView.isShown()) {
+//									UtilTools.recycleBitmap(((BitmapDrawable)startingImageView.getDrawable()).getBitmap());
+//								}
+//							}
+//						}, 1000);
+//					}
 					
 					contentLayout.setVisibility(View.INVISIBLE);
 					
-					if(!isShowAd) {
+					if(!UtilTools.getIsShowAd(getApplicationContext())) {
 						
 						showDialog(DIALOG_WAITING);
 					}
@@ -1272,6 +1292,13 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 
 			unregisterReceiver(receiver);
 		}
+		
+		if(!UtilTools.getIsShowAd(getApplicationContext()) && startingImageView.getDrawable() != null) {
+			
+			UtilTools.recycleBitmap(((BitmapDrawable)startingImageView.getDrawable()).getBitmap());
+
+		}
+		
 		handler.removeCallbacksAndMessages(null);
 		super.onDestroy();
 	}
