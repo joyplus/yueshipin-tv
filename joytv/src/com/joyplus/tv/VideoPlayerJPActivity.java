@@ -355,7 +355,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		mStatue = STATUE_LOADING;
 		mSeekBar.setEnabled(false);
 		mSeekBar.setProgress(0);
-		mTotalTimeTextView.setText(UtilTools.formatDuration(0));
+		mTotalTimeTextView.setText("--:--");
 		mPreLoadLayout.setVisibility(View.VISIBLE);
 		mNoticeLayout.setVisibility(View.VISIBLE);
 		mContinueLayout.setVisibility(View.GONE);
@@ -1763,7 +1763,11 @@ public class VideoPlayerJPActivity extends Activity implements
 			long curretnPosition = mVideoView.getCurrentPosition();
 			Log.d(TAG, "duration ->" + duration);
 			Log.d(TAG, "curretnPosition ->" + curretnPosition);
-			saveToServer(duration / 1000, curretnPosition / 1000);
+			if(duration-curretnPosition<10*1000){
+				saveToServer(duration / 1000, (duration / 1000) -10);
+			}else{
+				saveToServer(duration / 1000, curretnPosition / 1000);
+			}
 		}
 		super.onPause();
 	}
