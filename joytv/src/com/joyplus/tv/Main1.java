@@ -1324,7 +1324,7 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 			WifiInfo info = (null == wifiMgr ? null : wifiMgr
 					.getConnectionInfo());
 			if (info != null) {
-//				macAddress = info.getMacAddress();
+				macAddress = info.getMacAddress();
 			}
 			// 2. 通过调用 service account/generateUIID把UUID传递到服务器
 			String url = Constant.BASE_URL + "account/generateUIID";
