@@ -177,6 +177,8 @@ public class VideoPlayerJPActivity extends Activity implements
 	private String mProd_name;
 	private int mProd_type;
 	private String mProd_src;// 来源
+	
+	private String url_temp;//首次url备份
 	private int mDefination = 0; // 清晰度 6为尝鲜，7为普清，8为高清
 	private String mProd_sub_name = null;
 	private int mEpisodeIndex = -1; // 当前集数对应的index
@@ -240,10 +242,15 @@ public class VideoPlayerJPActivity extends Activity implements
 
 			if (action.equals(Constant.VIDEOPLAYERCMD)) {
 				int mCMD = intent.getIntExtra("cmd", 0);
+				Log.d(TAG, "onReceive------>" + mCMD);
 				String mContent = intent.getStringExtra("content");
 				String mProd_url = intent.getStringExtra("prod_url");
-				if (!mProd_url.equalsIgnoreCase(currentPlayUrl))
-					return;
+				if (!mProd_url.equalsIgnoreCase(url_temp)){
+					Log.d(TAG, "mProd_url != url_temp");
+					return ;
+				}
+				
+				
 				/*
 				 * “403”：视频推送后，手机发送播放指令。 “405”：视频推送后，手机发送暂停指令。
 				 * “407”：视频推送后，手机发送快进指令。 “409”：视频推送后，手机发送后退指令。
@@ -322,7 +329,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		
 		initViews();
 		mSeekBar.setEnabled(false);
-
+		m_ReturnProgramView = app.get_ReturnProgramView();
 		initVedioDate();
 
 		Window win = getWindow();
@@ -347,7 +354,10 @@ public class VideoPlayerJPActivity extends Activity implements
 	private void initVedioDate() {
 		mStatue = STATUE_LOADING;
 		mSeekBar.setEnabled(false);
+		mSeekBar.setProgress(0);
+		mTotalTimeTextView.setText("--:--");
 		mPreLoadLayout.setVisibility(View.VISIBLE);
+		mNoticeLayout.setVisibility(View.VISIBLE);
 		mContinueLayout.setVisibility(View.GONE);
 		mControlLayout.setVisibility(View.GONE);
 		mStartRX = TrafficStats.getTotalRxBytes();// 获取网络速度
@@ -361,6 +371,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		// 点击某部影片播放时，会全局设置CurrentPlayData
 		CurrentPlayDetailData playDate = app.getmCurrentPlayDetailData();
 		if (playDate == null) {// 如果不设置就不播放
+			Log.e(TAG, "playDate----->null");
 			finish();
 			return;
 		}
@@ -370,10 +381,14 @@ public class VideoPlayerJPActivity extends Activity implements
 		mProd_name = playDate.prod_name;
 		mProd_sub_name = playDate.prod_sub_name;
 		currentPlayUrl = playDate.prod_url;
+		url_temp = playDate.prod_url;
 		mDefination = playDate.prod_qua;
 		lastTime = (int) playDate.prod_time;
 		mProd_src = playDate.prod_src;
 
+		Log.d(TAG, "name ----->" + mProd_name);
+		Log.d(TAG, "currentPlayUrl ----->" + currentPlayUrl);
+		
 		if(mDefination == 0){
 			mDefination = 8;
 		}
@@ -386,9 +401,8 @@ public class VideoPlayerJPActivity extends Activity implements
 //				mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
 				new Thread(new UrlRedirectTask()).start();
 			} else {
-				if (app.get_ReturnProgramView() != null) {// 如果不为空，获取服务器返回的详细数据
+				if (m_ReturnProgramView != null) {// 如果不为空，获取服务器返回的详细数据
 
-					m_ReturnProgramView = app.get_ReturnProgramView();
 					mHandler.sendEmptyMessage(MESSAGE_RETURN_DATE_OK);
 				} else {// 如果为空，就重新获取
 
@@ -396,7 +410,7 @@ public class VideoPlayerJPActivity extends Activity implements
 				}
 			}
 		} else {
-			if (app.get_ReturnProgramView() != null) {// 如果不为空，获取服务器返回的详细数据
+			if (m_ReturnProgramView != null) {// 如果不为空，获取服务器返回的详细数据
 
 				m_ReturnProgramView = app.get_ReturnProgramView();
 				mHandler.sendEmptyMessage(MESSAGE_RETURN_DATE_OK);
@@ -407,25 +421,27 @@ public class VideoPlayerJPActivity extends Activity implements
 		}
 		
 		Log.d(TAG, "defination----->" + mDefination);
-		String lastTimeStr = DBUtils.getDuartion4HistoryDB(
-				getApplicationContext(),
-				UtilTools.getCurrentUserId(getApplicationContext()), mProd_id,mProd_sub_name);
-		Log.i(TAG, "DBUtils.getDuartion4HistoryDB-->lastTimeStr:" + lastTimeStr);
+		if(lastTime<=0){
+			String lastTimeStr = DBUtils.getDuartion4HistoryDB(
+					getApplicationContext(),
+					UtilTools.getCurrentUserId(getApplicationContext()), mProd_id,mProd_sub_name);
+			Log.i(TAG, "DBUtils.getDuartion4HistoryDB-->lastTimeStr:" + lastTimeStr);
 
-		if (lastTimeStr != null && !lastTimeStr.equals("")) {
+			if (lastTimeStr != null && !lastTimeStr.equals("")) {
 
-			try {
-				long tempTime = Integer.valueOf(lastTimeStr);
-				Log.i(TAG, "DBUtils.getDuartion4HistoryDB-->time:" + tempTime);
-				if (tempTime != 0) {
+				try {
+					long tempTime = Integer.valueOf(lastTimeStr);
+					Log.i(TAG, "DBUtils.getDuartion4HistoryDB-->time:" + tempTime);
+					if (tempTime != 0) {
 
-					lastTime = tempTime * 1000;
+						lastTime = tempTime * 1000;
+					}
+				} catch (NumberFormatException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
-			} catch (NumberFormatException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 
+			}
 		}
 	}
 
@@ -830,6 +846,7 @@ public class VideoPlayerJPActivity extends Activity implements
 
 	private void showControlLayout() {
 		// 判断上下集能不能用
+		Log.d(TAG, "mEpisodeIndex----->" + mEpisodeIndex);
 		if (mProd_type == 3) {
 			if (mEpisodeIndex > 0&&m_ReturnProgramView.show.episodes[mEpisodeIndex-1].down_urls!=null) {
 				mNextButton.setEnabled(true);
@@ -1021,7 +1038,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		case STATUE_LOADING:
 			long current = mVideoView.getCurrentPosition();// 当前进度
 			long lastProgress = mSeekBar.getProgress();
-			Log.d(TAG, "loading --->" + current);
+//			Log.d(TAG, "loading --->" + current);
 			// updateTimeNoticeView(mSeekBar.getProgress());
 			if(current>lastProgress){
 				hidePreLoad(); 
@@ -1238,10 +1255,12 @@ public class VideoPlayerJPActivity extends Activity implements
 
 	private void playNext() {
 		// TODO Auto-generated method stub
+		url_temp = null;
 		mStatue = STATUE_LOADING;
 		mSeekBar.setProgress(0);
 		mSeekBar.setEnabled(false);
-		mHandler.removeCallbacksAndMessages(this);
+		mTotalTimeTextView.setText(UtilTools.formatDuration(0));
+		mHandler.removeCallbacksAndMessages(null);
 		mControlLayout.setVisibility(View.GONE);
 		lastTime = 0;
 		mVideoView.stopPlayback();
@@ -1256,10 +1275,12 @@ public class VideoPlayerJPActivity extends Activity implements
 
 	private void playPrevious() {
 		// TODO Auto-generated method stub
+		url_temp = null;
 		mStatue = STATUE_LOADING;
 		mSeekBar.setProgress(0);
 		mSeekBar.setEnabled(false);
-		mHandler.removeCallbacksAndMessages(this);
+		mTotalTimeTextView.setText(UtilTools.formatDuration(0));
+		mHandler.removeCallbacksAndMessages(null);
 		mControlLayout.setVisibility(View.GONE);
 		lastTime = 0;
 		mVideoView.stopPlayback();
@@ -1742,10 +1763,11 @@ public class VideoPlayerJPActivity extends Activity implements
 			long curretnPosition = mVideoView.getCurrentPosition();
 			Log.d(TAG, "duration ->" + duration);
 			Log.d(TAG, "curretnPosition ->" + curretnPosition);
-			saveToServer(duration / 1000, curretnPosition / 1000);
-		}
-		if(!isFinishing()){
-			finish();
+			if(duration-curretnPosition<10*1000){
+				saveToServer(duration / 1000, (duration / 1000) -10);
+			}else{
+				saveToServer(duration / 1000, curretnPosition / 1000);
+			}
 		}
 		super.onPause();
 	}
@@ -1765,6 +1787,9 @@ public class VideoPlayerJPActivity extends Activity implements
 		// Log.d(TAG, "curretnPosition ->" + curretnPosition);
 		// SaveToServer(duration/1000, curretnPosition/1000);
 		// }
+		if(!isFinishing()){
+			finish();
+		}
 		super.onStop();
 	}
 
@@ -1860,11 +1885,18 @@ public class VideoPlayerJPActivity extends Activity implements
 		// TODO Auto-generated method stub
 		Log.d(TAG, "--------on new Intent--------------");
 		super.onNewIntent(intent);
-		mHandler.removeCallbacksAndMessages(this);
-		if (mVideoView.isPlaying()) {
+		mHandler.removeCallbacksAndMessages(null);
+		m_ReturnProgramView = null;
+		if (mVideoView.isPlaying()) { 
 			mVideoView.stopPlayback();
-			// mVideoView.resume();
+			mVideoView.resume();
 		}
+		lastTime = 0;
+		rxByteslast = 0;
+		mLoadingPreparedPercent = 0;
+		mEpisodeIndex = -1;
+		mPercentTextView.setText(", 已完成"
+				+ Long.toString(mLoadingPreparedPercent / 100) + "%");
 		initVedioDate();
 	}
 
