@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     
-    <string name="version_code">1.2.2</string>
-    <string name="version_name">8</string>
+    <string name="version_code">1.2.3</string>
+    <string name="version_name">9</string>
 
     <string name="app_name">悦视频</string>
     <string name="action_settings">Settings</string>
