@@ -5,6 +5,13 @@
     android:background="#08111a" >
 
     <RelativeLayout
+        android:id="@+id/adsdkContentFake"
+        android:layout_width="1dp"
+        android:layout_height="1dp"
+        android:background="@android:color/transparent"
+        android:visibility="gone" />
+
+    <RelativeLayout
         android:id="@+id/root_layout"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" >
@@ -218,7 +225,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="right|top" />
         </FrameLayout>
-		
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
@@ -226,17 +233,19 @@
             android:layout_marginTop="5dp"
             android:background="@drawable/bg_teat_repeat"
             android:orientation="horizontal"
-           	
             android:paddingTop="15dp" >
+
             <!-- android:paddingLeft="221dp" -->
+
             <RelativeLayout
-       			android:id="@+id/adsdkContent"
-       			android:paddingLeft="5dp"
-       			android:paddingBottom="5dp"
-        		android:layout_width="221dp"
-        		android:layout_height="fill_parent"
-        		android:layout_below="@id/galleryFram"
-        		android:background="@android:color/transparent"/>
+                android:id="@+id/adsdkContent"
+                android:layout_width="221dp"
+                android:layout_height="fill_parent"
+                android:layout_below="@id/galleryFram"
+                android:background="@android:color/transparent"
+                android:paddingBottom="5dp"
+                android:paddingLeft="5dp" />
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
@@ -292,8 +301,8 @@
         android:layout_width="45dp"
         android:layout_height="45dp"
         android:layout_alignParentRight="true"
-        android:layout_marginTop="105dp"
         android:layout_marginRight="33dp"
+        android:layout_marginTop="105dp"
         android:background="@drawable/bg_button_down_scroll"
         android:focusable="false"
         android:focusableInTouchMode="false"
@@ -303,8 +312,7 @@
         android:id="@+id/image_starting"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:scaleType="fitXY"
-        />
-    <!-- android:src="@drawable/starting" --> 
+        android:scaleType="fitXY" />
+    <!-- android:src="@drawable/starting" -->
 
 </RelativeLayout>

@@ -228,6 +228,9 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 	 */
 	private RelativeLayout layout;
 	private AdView mAdView;
+	
+	private AdView mAdViewFake;
+	private RelativeLayout layoutFake;
 //	private String publisherId = "9d30a5d07eb3a9ed66a9d70d0185205f";//要显示广告的publisherId
 //	private boolean animation = true;//该广告加载时是否用动画效果
 	// private Handler mHandler = new Handler();
@@ -343,6 +346,7 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 		 * banner ad
 		 */
 		layout = (RelativeLayout) findViewById(R.id.adsdkContent);
+		layoutFake = (RelativeLayout) findViewById(R.id.adsdkContentFake);
 		// 一开始判断有没有网络
 		if (!app.isNetworkAvailable()) {// 如果没有网络，弹出提示dialog
 
@@ -864,6 +868,10 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 					mAdView = new AdView(Main1.this, Constant.MAIN_ADV_PUBLISHERID,false);
 					mAdView.setAdListener(Main1.this);
 					layout.addView(mAdView);
+					
+					mAdViewFake = new AdView(Main1.this, Constant.MAIN_ADV_PUBLISHERID,false);
+					mAdViewFake.setAdListener(Main1.this);
+					layoutFake.addView(mAdViewFake);
 //				}
 					
 					//弹出免责声明
@@ -3435,6 +3443,12 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 		if(mAdView!=null){
 			layout.removeView(mAdView);
 			mAdView = null;
+		}
+		
+		if(mAdViewFake != null){
+			
+			layoutFake.removeView(mAdViewFake);
+			mAdViewFake = null;
 		}
 	}
 	
