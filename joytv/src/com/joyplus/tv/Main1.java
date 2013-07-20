@@ -877,6 +877,7 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 						mAdViewFake = new AdView(Main1.this, publishFakeId,false);
 						mAdViewFake.setAdListener(Main1.this);
 						layoutFake.addView(mAdViewFake);
+						
 					}
 //				}
 					
