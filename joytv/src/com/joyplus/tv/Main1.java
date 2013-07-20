@@ -869,7 +869,8 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 					mAdView.setAdListener(Main1.this);
 					layout.addView(mAdView);
 					
-					if(UtilTools.getUmengChannel(getApplicationContext()).equals("j001")){
+					if(UtilTools.getUmengChannel(getApplicationContext())!= null &&
+							UtilTools.getUmengChannel(getApplicationContext()).equals("j001")){
 						
 						String publishFakeId = "630d9584df5cfdc2de7a8ed5d0946f99";
 						
