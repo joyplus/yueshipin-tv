@@ -1259,7 +1259,8 @@ public class VideoPlayerJPActivity extends Activity implements
 		mStatue = STATUE_LOADING;
 		mSeekBar.setProgress(0);
 		mSeekBar.setEnabled(false);
-		mTotalTimeTextView.setText(UtilTools.formatDuration(0));
+//		mTotalTimeTextView.setText(UtilTools.formatDuration(0));
+		mTotalTimeTextView.setText("--:--");
 		mHandler.removeCallbacksAndMessages(null);
 		mControlLayout.setVisibility(View.GONE);
 		lastTime = 0;
@@ -1279,7 +1280,8 @@ public class VideoPlayerJPActivity extends Activity implements
 		mStatue = STATUE_LOADING;
 		mSeekBar.setProgress(0);
 		mSeekBar.setEnabled(false);
-		mTotalTimeTextView.setText(UtilTools.formatDuration(0));
+//		mTotalTimeTextView.setText(UtilTools.formatDuration(0));
+		mTotalTimeTextView.setText("--:--");
 		mHandler.removeCallbacksAndMessages(null);
 		mControlLayout.setVisibility(View.GONE);
 		lastTime = 0;
@@ -1887,7 +1889,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		super.onNewIntent(intent);
 		mHandler.removeCallbacksAndMessages(null);
 		m_ReturnProgramView = null;
-		if (mVideoView.isPlaying()) { 
+		if (mVideoView!=null) { 
 			mVideoView.stopPlayback();
 			mVideoView.resume();
 		}
