@@ -11,19 +11,19 @@ public class Constant {
 	
 	// 正式环境
 
-	public static String LOADING_ADV_PUBLISHERID = "02e071ed43ff9d9e1c57647de3fafc84";//加载页面
-	public static String MAIN_ADV_PUBLISHERID = "9be3883720dfd077b8f4d69bb487d4e2";//首页
-	public static String PLAYER_ADV_PUBLISHERID = "9ada2fbd0ff493d8a11b4e5aefaf7df0";//播放器
-	
-	public static final String APPKEY_TOP = "ijoyplus_android_0001";//正式
-
-	public static final String BASE_URL_TOP = "http://api.joyplus.tv/joyplus-service/index.php/";//正式
-	public static boolean TestEnv = false;
-	public static  String BASE_URL = "http://api.joyplus.tv/joyplus-service/index.php/";
-	public static String DEFAULT_APPKEY = "ijoyplus_android_0001";
-	public static String APPKEY = "ijoyplus_android_0001";
-	public static final String FAYESERVERURL = "http://comet.joyplus.tv:8080/bindtv";
-	public static final String FAYESERVERURL_CHECKBAND = "http://comet.joyplus.tv:8080/api/check_binding";
+//	public static String LOADING_ADV_PUBLISHERID = "02e071ed43ff9d9e1c57647de3fafc84";//加载页面
+//	public static String MAIN_ADV_PUBLISHERID = "9be3883720dfd077b8f4d69bb487d4e2";//首页
+//	public static String PLAYER_ADV_PUBLISHERID = "9ada2fbd0ff493d8a11b4e5aefaf7df0";//播放器
+//	
+//	public static final String APPKEY_TOP = "ijoyplus_android_0001";//正式
+//
+//	public static final String BASE_URL_TOP = "http://api.joyplus.tv/joyplus-service/index.php/";//正式
+//	public static boolean TestEnv = false;
+//	public static  String BASE_URL = "http://api.joyplus.tv/joyplus-service/index.php/";
+//	public static String DEFAULT_APPKEY = "ijoyplus_android_0001";
+//	public static String APPKEY = "ijoyplus_android_0001";
+//	public static final String FAYESERVERURL = "http://comet.joyplus.tv:8080/bindtv";
+//	public static final String FAYESERVERURL_CHECKBAND = "http://comet.joyplus.tv:8080/api/check_binding";
 	
 //	
 	
@@ -42,25 +42,25 @@ public class Constant {
 	 * 2：cms cms-test.yue001.com/manager/index.php
 	 */
 	
-//	public static String LOADING_ADV_PUBLISHERID = "42ed1ef187e3fa7179d7edc86906cd89";//加载页面
-//	public static String MAIN_ADV_PUBLISHERID = "2e82295fab92770b89eae5caf62bdbed";//首页
-//	public static String PLAYER_ADV_PUBLISHERID = "ad591f194cabeff51ed456ee63e0def2";//播放器
-//	
-//	//测试环境控制
-//	public static final String APPKEY_TOP = "ijoyplus_android_0001bj";//测试
-//	public static final String BASE_URL_TOP = "http://apitest.yue001.com/joyplus-service/index.php/";//测试
-//	public static boolean TestEnv = true;
-//////	
-//////	//测试环境
-//	 public static  String BASE_URL =
-//	 "http://apitest.yue001.com/joyplus-service/index.php/";
-//	 public static String DEFAULT_APPKEY = "ijoyplus_android_0001bj";
-//	 public static String APPKEY = "ijoyplus_android_0001bj";
-//
-//	 public static final String FAYESERVERURL =
-//	 "http://comettest.joyplus.tv:8000/bindtv";//测试
-//	 public static final String FAYESERVERURL_CHECKBAND =
-//	 "http://comettest.joyplus.tv:8000/api/check_binding";//测试
+	public static String LOADING_ADV_PUBLISHERID = "42ed1ef187e3fa7179d7edc86906cd89";//加载页面
+	public static String MAIN_ADV_PUBLISHERID = "2e82295fab92770b89eae5caf62bdbed";//首页
+	public static String PLAYER_ADV_PUBLISHERID = "ad591f194cabeff51ed456ee63e0def2";//播放器
+	
+	//测试环境控制
+	public static final String APPKEY_TOP = "ijoyplus_android_0001bj";//测试
+	public static final String BASE_URL_TOP = "http://apitest.yue001.com/joyplus-service/index.php/";//测试
+	public static boolean TestEnv = true;
+////	
+////	//测试环境
+	 public static  String BASE_URL =
+	 "http://apitest.yue001.com/joyplus-service/index.php/";
+	 public static String DEFAULT_APPKEY = "ijoyplus_android_0001bj";
+	 public static String APPKEY = "ijoyplus_android_0001bj";
+
+	 public static final String FAYESERVERURL =
+	 "http://comettest.joyplus.tv:8000/bindtv";//测试
+	 public static final String FAYESERVERURL_CHECKBAND =
+	 "http://comettest.joyplus.tv:8000/api/check_binding";//测试
 
 	
 	// 我们的sina账号

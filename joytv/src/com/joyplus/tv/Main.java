@@ -158,6 +158,13 @@ public class Main extends Activity implements AdListener{
 			}
 		}
 		
+		if(UtilTools.getReplenishAdvID(getApplicationContext()) == null 
+				||UtilTools.getReplenishAdvID(getApplicationContext()).equals("")){
+			
+			String replenishAdvID = MobclickAgent.getConfigParams(this, "REPLENISH_ADV_PUBLISHERID");
+			UtilTools.setReplenishAdvID(getApplicationContext(), replenishAdvID);
+		}
+		
 //		String onLineIsShowAd = true + "";//测试数据
 //		Log.i(TAG, "onLineIsShowAd--->" + onLineIsShowAd);
 //		if(onLineIsShowAd != null && onLineIsShowAd.equals("true")) {

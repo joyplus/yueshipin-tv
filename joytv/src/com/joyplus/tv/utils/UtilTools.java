@@ -1149,6 +1149,23 @@ public class UtilTools implements JieMianConstant, BangDanConstant {
 		return sp.getString("playerAdvID", "");
 	}
 	
+	public static void setReplenishAdvID(Context context,String replenishAdvID){
+		
+		SharedPreferences sp = context.getSharedPreferences(TV_ADKEY_CONFIG_XML,
+				Context.MODE_PRIVATE);
+		Editor editor = sp.edit();
+		editor.putString("replenishAdvID", replenishAdvID);
+		editor.commit();
+	}
+	
+	public static String getReplenishAdvID(Context context) {
+		
+		SharedPreferences sp = context.getSharedPreferences(TV_ADKEY_CONFIG_XML,
+				Context.MODE_PRIVATE);
+		
+		return sp.getString("replenishAdvID", "");
+	}
+	
 	public static void setUmengChannel(Context context,String channel) {
 		
 		SharedPreferences sp = context.getSharedPreferences(TV_ADKEY_CONFIG_XML,
@@ -1165,4 +1182,6 @@ public class UtilTools implements JieMianConstant, BangDanConstant {
 		
 		return sp.getString("channel", "");
 	}
+	
+
 }
