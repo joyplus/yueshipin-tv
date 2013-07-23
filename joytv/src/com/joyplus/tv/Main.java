@@ -16,6 +16,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.joyplus.adkey.Ad;
 import com.joyplus.adkey.AdListener;
@@ -29,7 +30,7 @@ public class Main extends Activity implements AdListener{
 	private static final String TAG = "AD_LOGO";
 	
 	private static final int DIALOG_NETWORK_ERROR = 1;
-	
+
 	private AdManager mManager;
 //	private String publisherId = "53f2f418bfc3759e34e4294ae7b4ebb3";//要显示广告的publisherId
 //	private boolean cacheMode = true;//该广告加载时是否用本地缓存
@@ -170,20 +171,17 @@ public class Main extends Activity implements AdListener{
 			starting = (RelativeLayout)findViewById(R.id.starting);
 //		} else {
 			
-//			UtilTools.setIsShowAd(getApplicationContext(), false);
-			//如果不显示广告,直接跳过这个界面
-			if(mManager!=null){
-				
-				if(!mManager.isCacheLoaded()){
+//			if(mManager!=null){
+//				Log.i(TAG,"isCacheLoaded"+mManager.isCacheLoaded());
+//				if(!mManager.isCacheLoaded()){
 					UtilTools.setIsShowAd(getApplicationContext(), false);
-					final Intent intent = new Intent(Main.this, Main1.class);// AndroidMainScreen为主界面
-					startActivity(intent);
-					Main.this.finish();
-					return;
-				}
-			}
-			UtilTools.setIsShowAd(getApplicationContext(), true);
-//		}
+//					final Intent intent = new Intent(Main.this, Main1.class);// AndroidMainScreen为主界面
+//					startActivity(intent);
+//					Main.this.finish();
+//					return;
+//				}
+//			}
+//			UtilTools.setIsShowAd(getApplicationContext(), true);
 		
 	}
 	
@@ -278,7 +276,7 @@ public class Main extends Activity implements AdListener{
 	public void adClosed(Ad ad, boolean completed)
 	{
 		// TODO Auto-generated method stub
-//		Toast.makeText(Logo.this, "关闭了", Toast.LENGTH_SHORT).show();
+		Log.i(TAG,"adClosed");
 		final Intent intent = new Intent(Main.this, Main1.class);// AndroidMainScreen为主界面
 		startActivity(intent);
 		Main.this.finish();
@@ -288,23 +286,31 @@ public class Main extends Activity implements AdListener{
 	public void adLoadSucceeded(Ad ad)
 	{
 		// TODO Auto-generated method stub
+		Log.i(TAG,"adLoadSucceeded");
 		if (mManager != null && mManager.isCacheLoaded())
+		{
+			Log.i(TAG, "isCacheLoaded"+mManager.isCacheLoaded()+":"+mManager.isAdLoaded());
 			mManager.showAd();
+			UtilTools.setIsShowAd(getApplicationContext(), true);
+		}else{
+			UtilTools.setIsShowAd(getApplicationContext(), false);
+			final Intent intent = new Intent(Main.this, Main1.class);// AndroidMainScreen为主界面
+			startActivity(intent);
+			Main.this.finish();
+		}
 	}
 
 	@Override
 	public void adShown(Ad ad, boolean succeeded)
 	{
 		// TODO Auto-generated method stub
-//		Toast.makeText(Logo.this, "广告显示事件", Toast.LENGTH_SHORT).show();
+//		Toast.makeText(Main.this, "广告显示事件", Toast.LENGTH_SHORT).show();
 	}
 
 	@Override
 	public void noAdFound()
 	{
-		// TODO Auto-generated method stub
-//		Toast.makeText(Logo.this, "No ad found!", Toast.LENGTH_LONG).show();
-		
+		// TODO Auto-generated method stu
 		Intent intent = new Intent(Main.this, Main1.class);// AndroidMainScreen为主界面
 		startActivity(intent);
 		finish();
