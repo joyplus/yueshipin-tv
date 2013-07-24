@@ -103,6 +103,11 @@ public class VideoPlayerJPActivity extends Activity implements
 	private static final int MESSAGE_UPDATE_PROGRESS = MESSAGE_URL_NEXT + 1;
 	private static final int MESSAGE_HIDE_PROGRESSBAR = MESSAGE_UPDATE_PROGRESS + 1;
 	private static final int MESSAGE_HIDE_VOICE = MESSAGE_HIDE_PROGRESSBAR + 1;
+	
+	private static final int STATUS_GENERAL_URL = 0;//一般URL，不包含乐视、乐视收费和风行的地址
+	private static final int STATUS_UNUSUAL_LETV_FEE_URL = STATUS_GENERAL_URL + 1;
+	private static final int STATUS_UNUSUAL_LETV_URL = STATUS_UNUSUAL_LETV_FEE_URL + 1;//包含乐视、乐视收费、风行和搜狐的地址
+//	private static final int STATUS_RESOLVE_URL= STATUS_UNUSUAL_URL + 1;//重新从服务器解析获取url
 
 	/**
 	 * 数据加载
@@ -234,6 +239,8 @@ public class VideoPlayerJPActivity extends Activity implements
 	private AdView mAdView;
 //	private String publisherId = "5b702aa315663879a582097a36ba0cdc";//要显示广告的publisherId
 //	private boolean animation = true;//该广告加载时是否用动画效果
+	
+	private int urlListStatus = STATUS_GENERAL_URL;//初始值不包含乐视、乐视收费和风行
 	
 	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
 		@Override
@@ -393,6 +400,29 @@ public class VideoPlayerJPActivity extends Activity implements
 			mDefination = 8;
 		}
 		
+		//记录点击次数
+		if(mProd_id != null && !mProd_id.equals("")
+				&& mProd_name != null && !mProd_name.equals("")){
+			
+			switch (mProd_type) {
+			case 1:
+				UtilTools.StatisticsClicksShow(aq, app, mProd_id, mProd_name, "", mProd_type);
+				break;
+			case 2:
+			case 3:
+			case 131:
+				if(mProd_sub_name != null && !mProd_sub_name.equals("")){
+					
+					UtilTools.StatisticsClicksShow(aq, app, mProd_id, mProd_name, mProd_sub_name, mProd_type);
+				}
+				
+				break;
+
+			default:
+				break;
+			}
+		}
+		
 		// 更新播放来源和上次播放时间
 		updateSourceAndTime();
 		updateName();
@@ -498,12 +528,19 @@ public class VideoPlayerJPActivity extends Activity implements
 					} else {
 						// 所有的片源都不能播放
 						Log.e(TAG, "no url can play!");
-						if(!VideoPlayerJPActivity.this.isFinishing()){
-							showDialog(0);
+//						if(urlListStatus == STATUS_UNUSUAL_URL){//如果包含风行、乐视和乐视收费，就像服务器重新请求
 							
-							//所有url不能播放，向服务器传递-1
-							saveToServer(-1, 0);
-						}
+//							？？
+//						}else {
+							
+							if(!VideoPlayerJPActivity.this.isFinishing()){
+								showDialog(0);
+								
+								//所有url不能播放，向服务器传递-1
+								saveToServer(-1, 0);
+							}
+//						}
+
 					}
 				}
 				break;
@@ -1625,14 +1662,17 @@ public class VideoPlayerJPActivity extends Activity implements
 						Constant.video_index[0])) {
 					url_index.souces = 0;
 				} else if (url_index.source_from.trim().equalsIgnoreCase(
-						Constant.video_index[1])) {
+						Constant.video_index[1])) {//le_tv_fee
 					url_index.souces = 1;
+//					urlListStatus = STATUS_UNUSUAL_URL;
 				} else if (url_index.source_from.trim().equalsIgnoreCase(
-						Constant.video_index[2])) {
+						Constant.video_index[2])) {//letv
 					url_index.souces = 2;
+//					urlListStatus = STATUS_UNUSUAL_URL;
 				} else if (url_index.source_from.trim().equalsIgnoreCase(
-						Constant.video_index[3])) {
+						Constant.video_index[3])) {//fengxing
 					url_index.souces = 3;
+					//风行暂时不处理
 				} else if (url_index.source_from.trim().equalsIgnoreCase(
 						Constant.video_index[4])) {
 					url_index.souces = 4;

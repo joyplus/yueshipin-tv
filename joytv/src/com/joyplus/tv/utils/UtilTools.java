@@ -63,6 +63,7 @@ public class UtilTools implements JieMianConstant, BangDanConstant {
 	 */
 	public static void StatisticsClicksShow(AQuery aq, App app, String prod_id,
 			String prod_name, String prod_subname, int pro_type) {
+		Log.i(TAG, "StatisticsClicksShow--->");
 
 		String url = Constant.BASE_URL + "program/recordPlay";
 
