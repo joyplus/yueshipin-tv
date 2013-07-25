@@ -497,7 +497,8 @@ public class VideoPlayerJPActivity extends Activity implements
 				currentPlayIndex = 0;
 				currentPlayUrl = playUrls.get(currentPlayIndex).url;
 				mProd_src = playUrls.get(currentPlayIndex).source_from;
-				Log.i(TAG, "MESSAGE_URLS_READY--->" + currentPlayUrl + " isOnlyExistFengXing--->" + isOnlyExistFengXing);
+				Log.i(TAG, "MESSAGE_URLS_READY--->" + currentPlayUrl + " isOnlyExistFengXing--->" + isOnlyExistFengXing
+						+" sourceFromUrl--->" + sourceFromUrl);
 				if (currentPlayUrl != null
 						&& URLUtil.isNetworkUrl(currentPlayUrl)) {
 					
@@ -594,11 +595,12 @@ public class VideoPlayerJPActivity extends Activity implements
 			app.MyToast(aq.getContext(),
 					getResources().getString(R.string.networknotwork));
 
+			mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
 			return;
 		}
 
 		if (json == null || json.equals("")){
-			
+			mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
 			return;
 		}
 
@@ -638,8 +640,7 @@ public class VideoPlayerJPActivity extends Activity implements
 									String tempUrl = returnFirstFengxingUrlView.video_infos[i].request_url;
 									Log.i(TAG, "tempUrl--->" + tempUrl);
 									getFenxingNetServiceData(tempUrl);
-									break;
-									
+									return;
 								}
 							}
 							
@@ -658,7 +659,50 @@ public class VideoPlayerJPActivity extends Activity implements
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}finally{
+			
+			mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
 		}
+	}
+	
+	private String defintionToType(int defintion){
+		
+		String sourceQua = "";
+		
+		switch (defintion) {
+		case 8:
+			sourceQua = "hd2";
+			break;
+		case 7:
+			sourceQua = "mp4";
+			break;
+		case 6:
+			sourceQua = "flv";
+			break;
+		}
+		
+		return sourceQua;
+	}
+	
+	private int typeToTypedefintion(String type){
+		
+		int defintion = 8;
+		
+		if(type != null && !type.equals("")){
+			
+			if(type.equals("hd2")){
+				
+				return 8;
+			}else if(type.equals("mp4")){
+				
+				return 7;
+			}else if(type.equals("flv")){
+				
+				return 6;
+			}
+		}
+		
+		return defintion;
 	}
 	
 	private void noUrlCanPlay(){
@@ -681,11 +725,12 @@ public class VideoPlayerJPActivity extends Activity implements
 		if (status.getCode() == AjaxStatus.NETWORK_ERROR || json == null) {
 			app.MyToast(aq.getContext(),
 					getResources().getString(R.string.networknotwork));
+			mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
 			return;
 		}
 
 		if (json == null || json.equals("")){
-			
+			mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
 			return;
 		}
 
@@ -726,11 +771,13 @@ public class VideoPlayerJPActivity extends Activity implements
 		if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
 			app.MyToast(aq.getContext(),
 					getResources().getString(R.string.networknotwork));
+			mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
 			return;
 		}
 		
 		if (json == null || json.equals("")){
 			Log.d(TAG, "initFengxingSecondServiceData = ");
+			mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
 			return;
 		}
 
@@ -746,9 +793,19 @@ public class VideoPlayerJPActivity extends Activity implements
 				
 				if(returnFengxingSecondView.urls != null && returnFengxingSecondView.urls.length > 0){
 					
+					String type = defintionToType(mDefination);
+					if(playUrls != null){
+						
+						playUrls.clear();
+					}
 					for(int i=0;i<returnFengxingSecondView.urls.length;i++){
 						
-//						URLS_INDEX 
+						URLS_INDEX urls_INDEX = new URLS_INDEX();
+						urls_INDEX.source_from = Constant.video_index[3];
+						urls_INDEX.defination_from_server = type;
+						urls_INDEX.url = returnFengxingSecondView.urls[i];
+						Log.i(TAG, "urls_INDEX--->" + urls_INDEX.toString());
+						playUrls.add(urls_INDEX);
 					}
 				}
 			}
@@ -761,6 +818,9 @@ public class VideoPlayerJPActivity extends Activity implements
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}finally{
+			
+			mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
 		}
 	}
 	
