@@ -1,6 +1,7 @@
 package com.joyplus.tv;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -11,10 +12,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.http.Header;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.json.JSONException;
@@ -39,7 +42,6 @@ import android.media.MediaPlayer;
 import android.net.TrafficStats;
 import android.net.Uri;
 import android.net.http.AndroidHttpClient;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -70,7 +72,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joyplus.adkey.Ad;
 import com.joyplus.adkey.AdListener;
 import com.joyplus.adkey.banner.AdView;
+import com.joyplus.tv.Service.Return.ReturnFengxingSecondView;
+import com.joyplus.tv.Service.Return.ReturnFirstFengxingUrlView;
 import com.joyplus.tv.Service.Return.ReturnProgramView;
+import com.joyplus.tv.Service.Return.ReturnReGetVideoView;
 import com.joyplus.tv.database.TvDatabaseHelper;
 import com.joyplus.tv.entity.CurrentPlayDetailData;
 import com.joyplus.tv.entity.HotItemInfo;
@@ -84,6 +89,7 @@ import com.joyplus.tv.utils.DefinationComparatorIndex;
 import com.joyplus.tv.utils.JieMianConstant;
 import com.joyplus.tv.utils.Log;
 import com.joyplus.tv.utils.SouceComparatorIndex1;
+import com.joyplus.tv.utils.URLUtils;
 import com.joyplus.tv.utils.UtilTools;
 import com.umeng.analytics.MobclickAgent;
 
@@ -234,6 +240,11 @@ public class VideoPlayerJPActivity extends Activity implements
 	private AdView mAdView;
 //	private String publisherId = "5b702aa315663879a582097a36ba0cdc";//要显示广告的publisherId
 //	private boolean animation = true;//该广告加载时是否用动画效果
+	
+	private boolean isOnlyExistFengXing = false;
+	private boolean isOnlyExistLetv = false;
+	
+	private String sourceFromUrl = null;//当前集的原始播放地址
 	
 	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
 		@Override
@@ -393,6 +404,29 @@ public class VideoPlayerJPActivity extends Activity implements
 			mDefination = 8;
 		}
 		
+		//记录点击次数
+		if(mProd_id != null && !mProd_id.equals("")
+				&& mProd_name != null && !mProd_name.equals("")){
+			
+			switch (mProd_type) {
+			case 1:
+				UtilTools.StatisticsClicksShow(aq, app, mProd_id, mProd_name, "", mProd_type);
+				break;
+			case 2:
+			case 3:
+			case 131:
+				if(mProd_sub_name != null && !mProd_sub_name.equals("")){
+					
+					UtilTools.StatisticsClicksShow(aq, app, mProd_id, mProd_name, mProd_sub_name, mProd_type);
+				}
+				
+				break;
+
+			default:
+				break;
+			}
+		}
+		
 		// 更新播放来源和上次播放时间
 		updateSourceAndTime();
 		updateName();
@@ -463,12 +497,24 @@ public class VideoPlayerJPActivity extends Activity implements
 				currentPlayIndex = 0;
 				currentPlayUrl = playUrls.get(currentPlayIndex).url;
 				mProd_src = playUrls.get(currentPlayIndex).source_from;
+				Log.i(TAG, "MESSAGE_URLS_READY--->" + currentPlayUrl + " isOnlyExistFengXing--->" + isOnlyExistFengXing
+						+" sourceFromUrl--->" + sourceFromUrl);
 				if (currentPlayUrl != null
 						&& URLUtil.isNetworkUrl(currentPlayUrl)) {
-					// 地址跳转相关。。。
-					new Thread(new UrlRedirectTask()).start();
-//					mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
-					// 要根据不同的节目做相应的处理。这里仅仅是为了验证上下集
+					
+					if(isOnlyExistFengXing && sourceFromUrl != null){//
+						
+						String url = URLUtils.getFexingParseUrlURL(Constant.FENGXING_REGET_FIRST_URL, sourceFromUrl);
+						getFengxingParseServiceData(url);
+						
+					}else {//只存在风行的地址
+						
+						// 地址跳转相关。。。
+						new Thread(new UrlRedirectTask()).start();
+//						mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
+						// 要根据不同的节目做相应的处理。这里仅仅是为了验证上下集
+					}
+
 				}
 				break;
 			case MESSAGE_URL_NEXT:
@@ -497,12 +543,17 @@ public class VideoPlayerJPActivity extends Activity implements
 						}
 					} else {
 						// 所有的片源都不能播放
-						Log.e(TAG, "no url can play!");
-						if(!VideoPlayerJPActivity.this.isFinishing()){
-							showDialog(0);
+						Log.e(TAG, "no url can play!--->");
+						
+						if(isOnlyExistLetv && m_ReturnProgramView != null
+								&& sourceFromUrl != null){
+							String url = URLUtils.
+									getParseUrlURL(Constant.LETV_PARSE_URL_URL, sourceFromUrl, mProd_id, mProd_sub_name);
+							Log.i(TAG, "sourceUrl--->" + sourceFromUrl + " url---->" + url);
+							getLetvParseServiceData(url);
+						}else {
 							
-							//所有url不能播放，向服务器传递-1
-							saveToServer(-1, 0);
+							noUrlCanPlay();
 						}
 					}
 				}
@@ -532,6 +583,336 @@ public class VideoPlayerJPActivity extends Activity implements
 			}
 		}
 	};
+	
+	private void getFengxingParseServiceData(String url){
+		
+		getParseServiceData(url, "initFengxingParseServiceData");
+	}
+	
+	public void initFengxingParseServiceData(String url, JSONObject json, AjaxStatus status) {
+
+		if (status.getCode() == AjaxStatus.NETWORK_ERROR || json == null) {
+			app.MyToast(aq.getContext(),
+					getResources().getString(R.string.networknotwork));
+
+			mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
+			return;
+		}
+
+		if (json == null || json.equals("")){
+			mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
+			return;
+		}
+
+
+		Log.d(TAG, "initFengxingParseServiceData= " + json.toString());
+		
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			ReturnFirstFengxingUrlView returnFirstFengxingUrlView = mapper.readValue(json.toString(),
+					ReturnFirstFengxingUrlView.class);
+			
+			if(returnFirstFengxingUrlView != null){
+				if(returnFirstFengxingUrlView.error != null && 
+						returnFirstFengxingUrlView.error.equals("false")){
+					String sourceQua = "";
+					switch (mDefination) {
+					case 8:
+						sourceQua = "hd2";
+						break;
+					case 7:
+						sourceQua = "mp4";
+						break;
+					case 6:
+						sourceQua = "flv";
+						break;
+					}
+					if(returnFirstFengxingUrlView.video_infos != null &&
+							returnFirstFengxingUrlView.video_infos.length > 0){
+						
+						for(int i=0;i<returnFirstFengxingUrlView.video_infos.length;i++){
+							
+							if(returnFirstFengxingUrlView.video_infos[i]!= null 
+									&& returnFirstFengxingUrlView.video_infos[i].type != null){
+								
+								if(sourceQua.equals(returnFirstFengxingUrlView.video_infos[i].type)){
+									
+									String tempUrl = returnFirstFengxingUrlView.video_infos[i].request_url;
+									Log.i(TAG, "tempUrl--->" + tempUrl);
+									getFenxingNetServiceData(tempUrl);
+									return;
+								}
+							}
+							
+						}
+					}
+
+				}
+				
+			}
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally{
+			
+			mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
+		}
+	}
+	
+	private String defintionToType(int defintion){
+		
+		String sourceQua = "";
+		
+		switch (defintion) {
+		case 8:
+			sourceQua = "hd2";
+			break;
+		case 7:
+			sourceQua = "mp4";
+			break;
+		case 6:
+			sourceQua = "flv";
+			break;
+		}
+		
+		return sourceQua;
+	}
+	
+	private int typeToTypedefintion(String type){
+		
+		int defintion = 8;
+		
+		if(type != null && !type.equals("")){
+			
+			if(type.equals("hd2")){
+				
+				return 8;
+			}else if(type.equals("mp4")){
+				
+				return 7;
+			}else if(type.equals("flv")){
+				
+				return 6;
+			}
+		}
+		
+		return defintion;
+	}
+	
+	private void noUrlCanPlay(){
+		
+		if(!VideoPlayerJPActivity.this.isFinishing()){
+			showDialog(0);
+			
+			//所有url不能播放，向服务器传递-1
+			saveToServer(-1, 0);
+		}
+	}
+	
+	private void getFenxingNetServiceData(String url){
+		
+		getParseServiceData(url, "initFenxingNetServiceData");
+	}
+	
+	public void initFenxingNetServiceData(String url, JSONObject json, AjaxStatus status) {
+
+		if (status.getCode() == AjaxStatus.NETWORK_ERROR || json == null) {
+			app.MyToast(aq.getContext(),
+					getResources().getString(R.string.networknotwork));
+			mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
+			return;
+		}
+
+		if (json == null || json.equals("")){
+			mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
+			return;
+		}
+
+		Log.d(TAG, "initFenxingNetServiceData = " + json.toString());
+		getFengxingSecondServiceData(Constant.FENGXING_REGET_SECOND_URL, json);
+		
+	}
+	
+	private void getFengxingSecondServiceData(String url,JSONObject json){
+		
+		getParseServiceData(url,json, "initFengxingSecondServiceData");
+	}
+	
+	protected void getParseServiceData(String url,JSONObject json, String interfaceName) {
+		// TODO Auto-generated method stub
+
+		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
+		cb.url(url).type(JSONObject.class).weakHandler(this, interfaceName);
+		Map<String, Object> params = new HashMap<String, Object>();
+		try {
+			HttpEntity entity = new StringEntity(json.toString());
+			params.put(AQuery.POST_ENTITY, entity);
+
+			cb.params(params);
+			Map<String, String> headers = new HashMap<String, String>();
+			headers.put("Content-Type", "application/json");
+			cb.SetHeader(headers);
+			aq.ajax(cb);
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+;
+	}
+	
+	public void initFengxingSecondServiceData(String url, JSONObject json, AjaxStatus status) {
+
+		if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
+			app.MyToast(aq.getContext(),
+					getResources().getString(R.string.networknotwork));
+			mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
+			return;
+		}
+		
+		if (json == null || json.equals("")){
+			Log.d(TAG, "initFengxingSecondServiceData = ");
+			mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
+			return;
+		}
+
+
+		Log.d(TAG, "initFengxingSecondServiceData = " + json.toString());
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			ReturnFengxingSecondView returnFengxingSecondView = mapper.readValue(json.toString(),
+					ReturnFengxingSecondView.class);
+			
+			if(returnFengxingSecondView != null && returnFengxingSecondView.error!= null
+					&& returnFengxingSecondView.error.equals("false")){
+				
+				if(returnFengxingSecondView.urls != null && returnFengxingSecondView.urls.length > 0){
+					
+					String type = defintionToType(mDefination);
+					if(playUrls != null){
+						
+						playUrls.clear();
+					}
+					for(int i=0;i<returnFengxingSecondView.urls.length;i++){
+						
+						URLS_INDEX urls_INDEX = new URLS_INDEX();
+						urls_INDEX.source_from = Constant.video_index[3];
+						urls_INDEX.defination_from_server = type;
+						urls_INDEX.url = returnFengxingSecondView.urls[i];
+						Log.i(TAG, "urls_INDEX--->" + urls_INDEX.toString());
+						playUrls.add(urls_INDEX);
+					}
+				}
+			}
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally{
+			
+			mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
+		}
+	}
+	
+	protected void getParseServiceData(String url, String interfaceName) {
+		// TODO Auto-generated method stub
+
+		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
+		cb.url(url).type(JSONObject.class).weakHandler(this, interfaceName);
+
+		aq.ajax(cb);
+	}
+	
+	private void getLetvParseServiceData(String url){
+		
+		getParseServiceData(url, "initLetvParseServiceData");
+	}
+	
+	public void initLetvParseServiceData(String url, JSONObject json, AjaxStatus status) {
+
+		if (status.getCode() == AjaxStatus.NETWORK_ERROR || json == null) {
+			app.MyToast(aq.getContext(),
+					getResources().getString(R.string.networknotwork));
+			noUrlCanPlay();
+			return;
+		}
+
+		if (json == null || json.equals("")){
+			
+			noUrlCanPlay();
+			return;
+		}
+
+
+		Log.d(TAG, "initLetvParseServiceData = " + json.toString());
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			ReturnReGetVideoView reGetVideoView = mapper.readValue(json.toString(),
+					ReturnReGetVideoView.class);
+			
+			
+			if(reGetVideoView != null && reGetVideoView.down_urls != null
+					&& reGetVideoView.down_urls.urls != null
+					&& reGetVideoView.down_urls.urls.length > 0){
+				if(playUrls != null){
+					
+					playUrls.clear();
+				}
+				for(int i=0;i<reGetVideoView.down_urls.urls.length ;i++){
+					
+					if(reGetVideoView.down_urls.urls != null){
+						
+						URLS_INDEX urls_INDEX = new URLS_INDEX(); 
+						urls_INDEX.source_from = reGetVideoView.down_urls.source;
+						urls_INDEX.defination_from_server = reGetVideoView.down_urls.urls[i].type;
+						urls_INDEX.url = reGetVideoView.down_urls.urls[i].url;
+						Log.i(TAG, "urls_INDEX--->" + urls_INDEX.toString());
+						playUrls.add(urls_INDEX);
+					}
+				}
+				
+				if(maxQuality != -1 && isOnlyExistLetv){
+					
+					if(maxQuality == mDefination){
+						
+						mDefination = 8;
+					}
+				}
+				
+				sequenceList();
+				
+				for(int i=0;i<playUrls.size();i++){
+					
+					Log.i(TAG, "playUrls--->" + playUrls.get(i).defination_from_server);
+				}
+				// url list 准备完成
+				mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
+				return;
+				
+			}
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		noUrlCanPlay();
+	}
 
 	private void updateName() {
 		switch (mProd_type) {
@@ -1424,6 +1805,32 @@ public class VideoPlayerJPActivity extends Activity implements
 					if(m_ReturnProgramView.movie.episodes != null 
 							&& m_ReturnProgramView.movie.episodes.length > 0 
 							&& m_ReturnProgramView.movie.episodes[0].down_urls != null) {
+							
+							if(m_ReturnProgramView.movie.episodes[0].video_urls != null
+									&& m_ReturnProgramView.movie.episodes[0].video_urls.length ==1){
+								if(m_ReturnProgramView.movie.episodes[0].video_urls[0]!= null){
+									
+									if(m_ReturnProgramView.movie.episodes[0].video_urls[0].source != null){
+										
+										if(m_ReturnProgramView.movie.episodes[0].video_urls[0].source.
+												equals(Constant.video_index[1])||
+												m_ReturnProgramView.movie.episodes[0].video_urls[0].source.
+												equals(Constant.video_index[2])){
+											
+											isOnlyExistLetv = true;
+										}else if(m_ReturnProgramView.movie.episodes[0].video_urls[0].source.
+												equals(Constant.video_index[3])){
+											
+											isOnlyExistFengXing = true;
+										}
+									}
+									
+									if(isOnlyExistFengXing || isOnlyExistLetv){
+										
+										sourceFromUrl = m_ReturnProgramView.movie.episodes[0].video_urls[0].url;
+									}
+								}
+							}
 						
 						for (int i = 0; i < m_ReturnProgramView.movie.episodes[0].down_urls.length; i++) {
 							
@@ -1472,6 +1879,33 @@ public class VideoPlayerJPActivity extends Activity implements
 										mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
 										return; 
 									}
+									
+									if(m_ReturnProgramView.tv.episodes[i].video_urls != null
+											&& m_ReturnProgramView.tv.episodes[i].video_urls.length ==1){
+										if(m_ReturnProgramView.tv.episodes[i].video_urls[0]!= null){
+											
+											if(m_ReturnProgramView.tv.episodes[i].video_urls[0].source != null){
+												
+												if(m_ReturnProgramView.tv.episodes[i].video_urls[0].source.
+														equals(Constant.video_index[1])||
+														m_ReturnProgramView.tv.episodes[i].video_urls[0].source.
+														equals(Constant.video_index[2])){
+													
+													isOnlyExistLetv = true;
+												}else if(m_ReturnProgramView.tv.episodes[i].video_urls[0].source.
+														equals(Constant.video_index[3])){
+													
+													isOnlyExistFengXing = true;
+												}
+											}
+											
+											if(isOnlyExistFengXing || isOnlyExistLetv){
+												
+												sourceFromUrl = m_ReturnProgramView.tv.episodes[i].video_urls[0].url;
+											}
+										}
+									}
+									
 									for (int j = 0; j < m_ReturnProgramView.tv.episodes[i].down_urls.length; j++) {
 										
 										if(m_ReturnProgramView.tv.episodes[i].down_urls[j] != null) {
@@ -1501,6 +1935,32 @@ public class VideoPlayerJPActivity extends Activity implements
 							
 							if(m_ReturnProgramView.tv.episodes.length > mEpisodeIndex
 									&& m_ReturnProgramView.tv.episodes[mEpisodeIndex] != null) {
+								
+								if(m_ReturnProgramView.tv.episodes[mEpisodeIndex].video_urls != null
+										&& m_ReturnProgramView.tv.episodes[mEpisodeIndex].video_urls.length ==1){
+									if(m_ReturnProgramView.tv.episodes[mEpisodeIndex].video_urls[0]!= null){
+										
+										if(m_ReturnProgramView.tv.episodes[mEpisodeIndex].video_urls[0].source != null){
+											
+											if(m_ReturnProgramView.tv.episodes[mEpisodeIndex].video_urls[0].source.
+													equals(Constant.video_index[1])||
+													m_ReturnProgramView.tv.episodes[mEpisodeIndex].video_urls[0].source.
+													equals(Constant.video_index[2])){
+												
+												isOnlyExistLetv = true;
+											}else if(m_ReturnProgramView.tv.episodes[mEpisodeIndex].video_urls[0].source.
+													equals(Constant.video_index[3])){
+												
+												isOnlyExistFengXing = true;
+											}
+										}
+										
+										if(isOnlyExistFengXing || isOnlyExistLetv){
+											
+											sourceFromUrl = m_ReturnProgramView.tv.episodes[mEpisodeIndex].video_urls[0].url;
+										}
+									}
+								}
 								
 								if(m_ReturnProgramView.tv.episodes[mEpisodeIndex].down_urls != null) {
 									
@@ -1554,6 +2014,33 @@ public class VideoPlayerJPActivity extends Activity implements
 											mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
 											return ;
 										}
+										
+										if(m_ReturnProgramView.show.episodes[mEpisodeIndex].video_urls != null
+												&& m_ReturnProgramView.show.episodes[mEpisodeIndex].video_urls.length ==1){
+											if(m_ReturnProgramView.show.episodes[mEpisodeIndex].video_urls[0]!= null){
+												
+												if(m_ReturnProgramView.show.episodes[mEpisodeIndex].video_urls[0].source != null){
+													
+													if(m_ReturnProgramView.show.episodes[mEpisodeIndex].video_urls[0].source.
+															equals(Constant.video_index[1])||
+															m_ReturnProgramView.show.episodes[mEpisodeIndex].video_urls[0].source.
+															equals(Constant.video_index[2])){
+														
+														isOnlyExistLetv = true;
+													}else if(m_ReturnProgramView.show.episodes[mEpisodeIndex].video_urls[0].source.
+															equals(Constant.video_index[3])){
+														
+														isOnlyExistFengXing = true;
+													}
+												}
+												
+												if(isOnlyExistFengXing || isOnlyExistLetv){
+													
+													sourceFromUrl = m_ReturnProgramView.show.episodes[mEpisodeIndex].video_urls[0].url;
+												}
+											}
+										}
+										
 										for (int j = 0; j < m_ReturnProgramView.show.episodes[i].down_urls.length; j++) {
 											
 											
@@ -1587,6 +2074,32 @@ public class VideoPlayerJPActivity extends Activity implements
 								if(m_ReturnProgramView.show.episodes[mEpisodeIndex] != null 
 										&& m_ReturnProgramView.show.episodes[mEpisodeIndex].down_urls != null) {
 									
+									if(m_ReturnProgramView.show.episodes[mEpisodeIndex].video_urls != null
+											&& m_ReturnProgramView.show.episodes[mEpisodeIndex].video_urls.length ==1){
+										if(m_ReturnProgramView.show.episodes[mEpisodeIndex].video_urls[0]!= null){
+											
+											if(m_ReturnProgramView.show.episodes[mEpisodeIndex].video_urls[0].source != null){
+												
+												if(m_ReturnProgramView.show.episodes[mEpisodeIndex].video_urls[0].source.
+														equals(Constant.video_index[1])||
+														m_ReturnProgramView.show.episodes[mEpisodeIndex].video_urls[0].source.
+														equals(Constant.video_index[2])){
+													
+													isOnlyExistLetv = true;
+												}else if(m_ReturnProgramView.show.episodes[mEpisodeIndex].video_urls[0].source.
+														equals(Constant.video_index[3])){
+													
+													isOnlyExistFengXing = true;
+												}
+											}
+											
+											if(isOnlyExistFengXing || isOnlyExistLetv){
+												
+												sourceFromUrl = m_ReturnProgramView.show.episodes[mEpisodeIndex].video_urls[0].url;
+											}
+										}
+									}
+									
 									for (int j = 0; j < m_ReturnProgramView.show.episodes[mEpisodeIndex].down_urls.length; j++) {
 										
 										if(m_ReturnProgramView.show.episodes[mEpisodeIndex].down_urls[j] != null) {
@@ -1618,129 +2131,176 @@ public class VideoPlayerJPActivity extends Activity implements
 				}
 				break;
 			}
-			Log.d(TAG, "playUrls size ------->" + playUrls.size());
-			for (int i = 0; i < playUrls.size(); i++) {
+			
+			boolean hasChaoqing = false,hasGaoqing = false,hasPuqing = false;
+			
+			for(int i=0;i<playUrls.size();i++){
+				
 				URLS_INDEX url_index = playUrls.get(i);
-				if (url_index.source_from.trim().equalsIgnoreCase(
-						Constant.video_index[0])) {
-					url_index.souces = 0;
-				} else if (url_index.source_from.trim().equalsIgnoreCase(
-						Constant.video_index[1])) {
-					url_index.souces = 1;
-				} else if (url_index.source_from.trim().equalsIgnoreCase(
-						Constant.video_index[2])) {
-					url_index.souces = 2;
-				} else if (url_index.source_from.trim().equalsIgnoreCase(
-						Constant.video_index[3])) {
-					url_index.souces = 3;
-				} else if (url_index.source_from.trim().equalsIgnoreCase(
-						Constant.video_index[4])) {
-					url_index.souces = 4;
-				} else if (url_index.source_from.trim().equalsIgnoreCase(
-						Constant.video_index[5])) {
-					url_index.souces = 5;
-				} else if (url_index.source_from.trim().equalsIgnoreCase(
-						Constant.video_index[6])) {
-					url_index.souces = 6;
-				} else if (url_index.source_from.trim().equalsIgnoreCase(
-						Constant.video_index[7])) {
-					url_index.souces = 7;
-				} else if (url_index.source_from.trim().equalsIgnoreCase(
-						Constant.video_index[8])) {
-					url_index.souces = 8;
-				} else if (url_index.source_from.trim().equalsIgnoreCase(
-						Constant.video_index[9])) {
-					url_index.souces = 9;
-				} else if (url_index.source_from.trim().equalsIgnoreCase(
-						Constant.video_index[10])) {
-					url_index.souces = 10;
-				} else if (url_index.source_from.trim().equalsIgnoreCase(
-						Constant.video_index[11])) {
-					url_index.souces = 11;
+				
+				if(url_index.defination_from_server.equals(Constant.player_quality_index[0])){
+					
+					hasChaoqing = true;
+				}else if(url_index.defination_from_server.equals(Constant.player_quality_index[1])){
+					
+					hasGaoqing = true;
+				}else {
+					
+					hasPuqing = true;
+				}
+			}
+			
+			if(hasChaoqing){
+				
+				maxQuality = 8;
+			}else {
+				
+				if(hasGaoqing){
+					
+					maxQuality = 7;
+				}else {
+					
+					if(hasPuqing){
+						
+						maxQuality = 6;
+					}
+				}
+			}
+
+			sequenceList();
+			// url list 准备完成
+			mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
+		}
+	}
+	
+	private int maxQuality = -1;//最高清晰度
+	
+	private void sequenceList(){
+		
+		Log.d(TAG, "playUrls size ------->" + playUrls.size() + " maxQuality--->" + maxQuality);
+		
+		for (int i = 0; i < playUrls.size(); i++) {
+			URLS_INDEX url_index = playUrls.get(i);
+
+			if (url_index.source_from.trim().equalsIgnoreCase(
+					Constant.video_index[0])) {
+				url_index.souces = 0;
+			} else if (url_index.source_from.trim().equalsIgnoreCase(
+					Constant.video_index[1])) {//le_tv_fee
+				url_index.souces = 1;
+				
+			} else if (url_index.source_from.trim().equalsIgnoreCase(
+					Constant.video_index[2])) {//letv
+				url_index.souces = 2;
+
+			} else if (url_index.source_from.trim().equalsIgnoreCase(
+					Constant.video_index[3])) {//fengxing
+				url_index.souces = 3;
+			} else if (url_index.source_from.trim().equalsIgnoreCase(
+					Constant.video_index[4])) {
+				url_index.souces = 4;
+			} else if (url_index.source_from.trim().equalsIgnoreCase(
+					Constant.video_index[5])) {
+				url_index.souces = 5;
+			} else if (url_index.source_from.trim().equalsIgnoreCase(
+					Constant.video_index[6])) {
+				url_index.souces = 6;
+			} else if (url_index.source_from.trim().equalsIgnoreCase(
+					Constant.video_index[7])) {
+				url_index.souces = 7;
+			} else if (url_index.source_from.trim().equalsIgnoreCase(
+					Constant.video_index[8])) {
+				url_index.souces = 8;
+			} else if (url_index.source_from.trim().equalsIgnoreCase(
+					Constant.video_index[9])) {
+				url_index.souces = 9;
+			} else if (url_index.source_from.trim().equalsIgnoreCase(
+					Constant.video_index[10])) {
+				url_index.souces = 10;
+			} else if (url_index.source_from.trim().equalsIgnoreCase(
+					Constant.video_index[11])) {
+				url_index.souces = 11;
+			} else {
+				url_index.souces = 12;
+			}
+			switch (mDefination) {
+			case BangDanConstant.GAOQING:// 高清
+				if (url_index.defination_from_server.trim()
+						.equalsIgnoreCase(Constant.player_quality_index[1])) {
+					url_index.defination = 1;
+				} else if (url_index.defination_from_server.trim()
+						.equalsIgnoreCase(Constant.player_quality_index[0])) {
+					url_index.defination = 2;
+				} else if (url_index.defination_from_server.trim()
+						.equalsIgnoreCase(Constant.player_quality_index[2])) {
+					url_index.defination = 3;
+				} else if (url_index.defination_from_server.trim()
+						.equalsIgnoreCase(Constant.player_quality_index[3])) {
+					url_index.defination = 4;
 				} else {
-					url_index.souces = 12;
+					url_index.defination = 5;
 				}
-				switch (mDefination) {
-				case BangDanConstant.GAOQING:// 高清
-					if (url_index.defination_from_server.trim()
-							.equalsIgnoreCase(Constant.player_quality_index[1])) {
-						url_index.defination = 1;
-					} else if (url_index.defination_from_server.trim()
-							.equalsIgnoreCase(Constant.player_quality_index[0])) {
-						url_index.defination = 2;
-					} else if (url_index.defination_from_server.trim()
-							.equalsIgnoreCase(Constant.player_quality_index[2])) {
-						url_index.defination = 3;
-					} else if (url_index.defination_from_server.trim()
-							.equalsIgnoreCase(Constant.player_quality_index[3])) {
-						url_index.defination = 4;
-					} else {
-						url_index.defination = 5;
-					}
-					break;
-				case BangDanConstant.CHAOQING:// 超清
-					if (url_index.defination_from_server.trim()
-							.equalsIgnoreCase(Constant.player_quality_index[0])) {
-						url_index.defination = 1;
-					} else if (url_index.defination_from_server.trim()
-							.equalsIgnoreCase(Constant.player_quality_index[1])) {
-						url_index.defination = 2;
-					} else if (url_index.defination_from_server.trim()
-							.equalsIgnoreCase(Constant.player_quality_index[2])) {
-						url_index.defination = 3;
-					} else if (url_index.defination_from_server.trim()
-							.equalsIgnoreCase(Constant.player_quality_index[3])) {
-						url_index.defination = 4;
-					} else {
-						url_index.defination = 5;
-					}
-					break;
-				case BangDanConstant.CHANGXIAN:// 标清
-					if (url_index.defination_from_server.trim()
-							.equalsIgnoreCase(Constant.player_quality_index[2])) {
-						url_index.defination = 1;
-					} else if (url_index.defination_from_server.trim()
-							.equalsIgnoreCase(Constant.player_quality_index[3])) {
-						url_index.defination = 2;
-					} else if (url_index.defination_from_server.trim()
-							.equalsIgnoreCase(Constant.player_quality_index[1])) {
-						url_index.defination = 3;
-					} else if (url_index.defination_from_server.trim()
-							.equalsIgnoreCase(Constant.player_quality_index[0])) {
-						url_index.defination = 4;
-					} else {
-						url_index.defination = 5;
-					}
-					break;
+				break;
+			case BangDanConstant.CHAOQING:// 超清
+				if (url_index.defination_from_server.trim()
+						.equalsIgnoreCase(Constant.player_quality_index[0])) {
+					url_index.defination = 1;
+				} else if (url_index.defination_from_server.trim()
+						.equalsIgnoreCase(Constant.player_quality_index[1])) {
+					url_index.defination = 2;
+				} else if (url_index.defination_from_server.trim()
+						.equalsIgnoreCase(Constant.player_quality_index[2])) {
+					url_index.defination = 3;
+				} else if (url_index.defination_from_server.trim()
+						.equalsIgnoreCase(Constant.player_quality_index[3])) {
+					url_index.defination = 4;
+				} else {
+					url_index.defination = 5;
 				}
-				if (url_index.source_from
-						.equalsIgnoreCase(Constant.BAIDU_WANGPAN)) {
-					Document doc = null;
-					try {
-						doc = Jsoup.connect(url_index.url).timeout(10000).get();
-						// doc = Jsoup.connect(htmlStr).timeout(10000).get();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					if (doc != null) {
-						Element e = doc.getElementById("fileDownload");
-						if (e != null) {
-							Log.d(TAG, "url = " + e.attr("href"));
-							if (e.attr("href") != null
-									&& e.attr("href").length() > 0) {
-								url_index.url = e.attr("href");
-							}
+				break;
+			case BangDanConstant.CHANGXIAN:// 标清
+				if (url_index.defination_from_server.trim()
+						.equalsIgnoreCase(Constant.player_quality_index[2])) {
+					url_index.defination = 1;
+				} else if (url_index.defination_from_server.trim()
+						.equalsIgnoreCase(Constant.player_quality_index[3])) {
+					url_index.defination = 2;
+				} else if (url_index.defination_from_server.trim()
+						.equalsIgnoreCase(Constant.player_quality_index[1])) {
+					url_index.defination = 3;
+				} else if (url_index.defination_from_server.trim()
+						.equalsIgnoreCase(Constant.player_quality_index[0])) {
+					url_index.defination = 4;
+				} else {
+					url_index.defination = 5;
+				}
+				break;
+			}
+			if (url_index.source_from
+					.equalsIgnoreCase(Constant.BAIDU_WANGPAN)) {
+				Document doc = null;
+				try {
+					doc = Jsoup.connect(url_index.url).timeout(10000).get();
+					// doc = Jsoup.connect(htmlStr).timeout(10000).get();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				if (doc != null) {
+					Element e = doc.getElementById("fileDownload");
+					if (e != null) {
+						Log.d(TAG, "url = " + e.attr("href"));
+						if (e.attr("href") != null
+								&& e.attr("href").length() > 0) {
+							url_index.url = e.attr("href");
 						}
 					}
 				}
 			}
-			if (playUrls.size() > 1) {
-				Collections.sort(playUrls, new SouceComparatorIndex1());
-				Collections.sort(playUrls, new DefinationComparatorIndex());
-			}
-			// url list 准备完成
-			mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
+		}
+		if (playUrls.size() > 1) {
+			Collections.sort(playUrls, new SouceComparatorIndex1());
+			Collections.sort(playUrls, new DefinationComparatorIndex());
 		}
 	}
 	
@@ -1812,6 +2372,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		cb.SetHeader(app.getHeaders());
 		cb.params(params).url(url).type(JSONObject.class)
 				.weakHandler(this, "CallProgramPlayResult");
+		
 		aq.ajax(cb);
 
 		// DB操作，把存储到服务器的数据保存到数据库

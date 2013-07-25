@@ -671,6 +671,8 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 				int size = searchAdapter.getMovieList().size();
 				if (size - 1 - firstAndLastVisible[1] < URLUtils.CACHE_NUM) {
 
+					Log.i(TAG, "isNextPagePossibles[currentListIndex]--->" + isNextPagePossibles[currentListIndex]
+							+ "  currentListIndex--->" + currentListIndex);
 					if (isNextPagePossibles[currentListIndex]) {
 
 						pageNums[currentListIndex]++;
@@ -1037,6 +1039,8 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 	@Override
 	protected void refreshAdpter(List<MovieItemData> list) {
 		// TODO Auto-generated method stub
+		
+		Log.i(TAG, "refreshAdpter--->");
 
 		List<MovieItemData> srcList = searchAdapter.getMovieList();
 
@@ -1145,7 +1149,7 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 			if (json == null || json.equals(""))
 				return;
 
-			Log.d(TAG, json.toString());
+			Log.d(TAG, "initMoreFilerServiceData--->" + json.toString());
 
 			refreshAdpter(UtilTools.returnFilterMovieSearch_TVJson(json
 					.toString()));
@@ -1235,7 +1239,7 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 			}
 
 			Log.i(TAG, "Temp size:" + tempList.size());
-			if (tempList.size() == URLUtils.CACHE_NUM) {
+			if (tempList.size() == URLUtils.FIRST_NUM) {
 
 				isNextPagePossibles[currentListIndex] = true;
 			}

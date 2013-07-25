@@ -9,6 +9,13 @@ public class Constant {
 	public static final boolean cacheMode = true;//该广告加载时是否用本地缓存 Loading界面
 	public static final boolean ANIMATION = true;//该广告加载时是否用动画效果 首页
 	
+	public static final String PARSE_URL_BASE_URL = "http://parseurl.joyplus.tv/";
+	public static final String LETV_PARSE_URL_URL = PARSE_URL_BASE_URL + "letv/";
+	public static final String SOHU_PARSE_URL_URL = PARSE_URL_BASE_URL + "sohu/";
+	
+	public static final String FENGXING_REGET_FIRST_URL = "http://parseurl.joyplus.tv/funshion/first/";
+	public static final String FENGXING_REGET_SECOND_URL = "http://parseurl.joyplus.tv/funshion/second/";
+	
 	// 正式环境
 
 //	public static String LOADING_ADV_PUBLISHERID = "02e071ed43ff9d9e1c57647de3fafc84";//加载页面

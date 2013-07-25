@@ -869,16 +869,36 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 					mAdView.setAdListener(Main1.this);
 					layout.addView(mAdView);
 					
-					if(UtilTools.getUmengChannel(getApplicationContext())!= null &&
-							UtilTools.getUmengChannel(getApplicationContext()).equals("j001")){
+					String publishFakeId = null;
+					
+					if(Constant.TestEnv){
 						
-						String publishFakeId = "630d9584df5cfdc2de7a8ed5d0946f99";
+						publishFakeId = "ab126add561c71c37f2728ca1f9fc9d9";
 						
-						mAdViewFake = new AdView(Main1.this, publishFakeId,false);
-						mAdViewFake.setAdListener(Main1.this);
-						layoutFake.addView(mAdViewFake);
+						if(UtilTools.getUmengChannel(getApplicationContext())!= null &&
+								UtilTools.getUmengChannel(getApplicationContext()).equals("j002")){
+							
+							mAdViewFake = new AdView(Main1.this, publishFakeId,false);
+							mAdViewFake.setAdListener(Main1.this);
+							layoutFake.addView(mAdViewFake);
+							
+						}
+					}else {
 						
+						if(UtilTools.getUmengChannel(getApplicationContext())!= null &&
+								UtilTools.getUmengChannel(getApplicationContext()).equals("t003001")
+								&& !UtilTools.getReplenishAdvID(getApplicationContext()).equals("")){
+							
+							publishFakeId = UtilTools.getReplenishAdvID(getApplicationContext());
+							
+							mAdViewFake = new AdView(Main1.this, publishFakeId,false);
+							mAdViewFake.setAdListener(Main1.this);
+							layoutFake.addView(mAdViewFake);
+							
+						}
 					}
+					
+
 //				}
 					
 					//弹出免责声明

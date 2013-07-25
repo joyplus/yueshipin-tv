@@ -2,6 +2,8 @@ package com.joyplus.tv.utils;
 
 import java.net.URLEncoder;
 
+import com.joyplus.tv.Constant;
+
 public class URLUtils implements JieMianConstant, BangDanConstant{
 	
 	private static final String TAG = "URLUtils";
@@ -962,5 +964,25 @@ public class URLUtils implements JieMianConstant, BangDanConstant{
 
 	}
 
+	public static String getParseUrlURL(String url,String parseUrl,String id,String episode){
+		
+		return url + "?url=" + parseUrl + "&id=" + id
+				+ "&episode=" + episode;
+	}
+	
+	public static String getLetvParseUrlURL(String parseUrl,String id,String episode){
+		
+		return getParseUrlURL(Constant.LETV_PARSE_URL_URL, parseUrl, id, episode);
+	}
+	
+	public static String getSohuParseUrlURL(String parseUrl,String id,String episode){
+		
+		return getParseUrlURL(Constant.SOHU_PARSE_URL_URL, parseUrl, id, episode);
+	}
+	
+	public static String getFexingParseUrlURL(String firstBaseUrl,String url){
+		
+		return firstBaseUrl + "?url=" + url;
+	}
 
 }
