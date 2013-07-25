@@ -873,7 +873,7 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 					
 					if(Constant.TestEnv){
 						
-						publishFakeId = "630d9584df5cfdc2de7a8ed5d0946f99";
+						publishFakeId = "ab126add561c71c37f2728ca1f9fc9d9";
 						
 						if(UtilTools.getUmengChannel(getApplicationContext())!= null &&
 								UtilTools.getUmengChannel(getApplicationContext()).equals("j002")){
