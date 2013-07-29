@@ -36,6 +36,7 @@ public class Main extends Activity implements AdListener{
 //	private boolean cacheMode = true;//该广告加载时是否用本地缓存
 	private RelativeLayout starting;
 	
+	
 	private App app;
 	
 	/** Called when the activity is first created. */
