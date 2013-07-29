@@ -659,10 +659,8 @@ public class VideoPlayerJPActivity extends Activity implements
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}finally{
-			
-			mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
 		}
+			mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
 	}
 	
 	private String defintionToType(int defintion){
@@ -818,10 +816,9 @@ public class VideoPlayerJPActivity extends Activity implements
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}finally{
+		}
 			
 			mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
-		}
 	}
 	
 	protected void getParseServiceData(String url, String interfaceName) {
