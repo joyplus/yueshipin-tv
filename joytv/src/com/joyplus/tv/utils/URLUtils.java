@@ -975,10 +975,10 @@ public class URLUtils implements JieMianConstant, BangDanConstant{
 		return getParseUrlURL(Constant.LETV_PARSE_URL_URL, parseUrl, id, episode);
 	}
 	
-	public static String getSohuParseUrlURL(String parseUrl,String id,String episode){
-		
-		return getParseUrlURL(Constant.SOHU_PARSE_URL_URL, parseUrl, id, episode);
-	}
+//	public static String getSohuParseUrlURL(String parseUrl,String id,String episode){
+//		
+//		return getParseUrlURL(Constant.SOHU_PARSE_URL_URL, parseUrl, id, episode);
+//	}
 	
 	public static String getFexingParseUrlURL(String firstBaseUrl,String url){
 		
