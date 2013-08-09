@@ -83,7 +83,8 @@ public class FayeService extends Service implements FayeListener{
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
-						Toast.makeText(FayeService.this, "解绑遇到问题，再试一次哦", Toast.LENGTH_LONG).show();
+						app.MyToast(FayeService.this, "解绑遇到问题，再试一次哦");
+//						Toast.makeText(FayeService.this, "解绑遇到问题，再试一次哦", Toast.LENGTH_LONG).show();
 					}
 	        	}else if(ACTION_M_APPEAR.equals(intent.getAction())){
 	        		//二维码出现啦
@@ -236,7 +237,8 @@ public class FayeService extends Service implements FayeListener{
 							@Override
 							public void run() {
 								// TODO Auto-generated method stub
-								Toast.makeText(FayeService.this, "绑定在路上, 再试一次哦", Toast.LENGTH_LONG).show();
+								app.MyToast(FayeService.this, "绑定在路上, 再试一次哦");
+//								Toast.makeText(FayeService.this, "绑定在路上, 再试一次哦", Toast.LENGTH_LONG).show();
 								myClient.connectToServer(null);
 //								myClient = null;
 //								System.gc();
@@ -288,7 +290,8 @@ public class FayeService extends Service implements FayeListener{
 //								myClient = new FayeClient(handler, url, channel);
 //								myClient.setFayeListener(FayeService.this);
 //								myClient.connectToServer(null);
-								Toast.makeText(FayeService.this, "绑定在路上, 再试一次哦", Toast.LENGTH_LONG).show();
+								app.MyToast(FayeService.this, "绑定在路上, 再试一次哦");
+//								Toast.makeText(FayeService.this, "绑定在路上, 再试一次哦", Toast.LENGTH_LONG).show();
 								myClient.connectToServer(null);
 							}
 						});
