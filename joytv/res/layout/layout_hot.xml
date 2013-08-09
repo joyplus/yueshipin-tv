@@ -6,7 +6,7 @@
 
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="35dp"
+        android:layout_height="wrap_content"
         android:gravity="center_vertical" >
 
         <TextView
@@ -15,7 +15,7 @@
             android:layout_height="fill_parent"
             android:gravity="center_vertical"
             android:textColor="@color/blue_content_title"
-            android:textSize="25dp" />
+            android:textSize="30dp" />
 
         <ImageView
             android:id="@+id/icon_douban"
@@ -33,7 +33,7 @@
             android:layout_marginLeft="5dp"
             android:gravity="center_vertical"
             android:textColor="@color/clock_green"
-            android:textSize="20dp" />
+            android:textSize="24dp" />
 
         <LinearLayout
             android:id="@+id/ll_over_time_main"
@@ -47,14 +47,14 @@
      	        <TextView android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:layout_marginLeft="48dp"
-	        android:textSize="20dp"
+	        android:textSize="24dp"
 	        android:textColor="@color/clock_green"
 	        android:text="约在"
 	        />
             -->
 
             <include
-                android:layout_marginLeft="20dp"
+                android:layout_marginLeft="24dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 layout="@layout/show_timeover_item" />
@@ -89,67 +89,68 @@
                 android:layout_height="wrap_content"
                 android:text="看完"
                 android:textColor="@color/clock_green"
-                android:textSize="20dp" /> -->
+                android:textSize="24dp" /> -->
         </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="25dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="15dp" >
 
         <TextView
             android:id="@+id/title_directors"
             android:layout_width="wrap_content"
-            android:layout_height="25dp"
+            android:layout_height="wrap_content"
             android:text="导演:"
             android:textColor="@color/hot_content_notice"
-            android:textSize="20dp" />
+            android:textSize="24dp" />
 
         <TextView
             android:id="@+id/hot_content_directors"
             android:layout_width="wrap_content"
-            android:layout_height="25dp"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
             android:textColor="@color/hot_content_content"
-            android:textSize="20dp" />
+            android:textSize="24dp" />
 
         <TextView
             android:id="@+id/title_stars"
             android:layout_width="wrap_content"
-            android:layout_height="25dp"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="48dp"
             android:text="主演:"
             android:textColor="@color/hot_content_notice"
-            android:textSize="20dp" />
+            android:textSize="24dp" />
 
         <TextView
             android:id="@+id/hot_content_stars"
             android:layout_width="wrap_content"
-            android:layout_height="25dp"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
             android:singleLine="true"
             android:textColor="@color/hot_content_content"
-            android:textSize="20dp" />
+            android:textSize="24dp" />
     </LinearLayout>
 
     <TextView
         android:layout_width="wrap_content"
-        android:layout_height="25dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
         android:text="剧情简介:"
+        android:visibility="gone"
         android:textColor="@color/hot_content_notice"
-        android:textSize="20dp" />
+        android:textSize="24dp" />
 
     <TextView
         android:id="@+id/hot_content_introduce"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="15dp"
         android:ellipsize="end"
         android:lineSpacingExtra="5dip"
         android:maxLines="3"
         android:textColor="@color/hot_content_content"
-        android:textSize="20dp" />
+        android:textSize="24dp" />
 
 </LinearLayout>
