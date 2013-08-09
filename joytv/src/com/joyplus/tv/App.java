@@ -7,6 +7,7 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.content.res.Resources.NotFoundException;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.view.Gravity;
@@ -234,9 +235,14 @@ public class App extends Application {
 
 	public void MyToast(Context context, CharSequence text) {
 		Toast m_toast = Toast.makeText(context, text, Toast.LENGTH_SHORT);
-		ViewGroup viewGroup = (ViewGroup) m_toast.getView();
-		TextView tv = (TextView) viewGroup.getChildAt(0);
-		tv.setTextSize(getResources().getDimension(R.dimen.my_toast_text_size));
+		try {
+			ViewGroup viewGroup = (ViewGroup) m_toast.getView();
+			TextView tv = (TextView) viewGroup.getChildAt(0);
+			tv.setTextSize(getResources().getDimension(R.dimen.my_toast_text_size));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		m_toast.setGravity(Gravity.CENTER, m_toast.getXOffset() / 2,
 				m_toast.getYOffset() / 2);
 		m_toast.show();
