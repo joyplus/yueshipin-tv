@@ -31,6 +31,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.opengl.Visibility;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -1163,6 +1164,7 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 				hot_starts_tv.setText(item.directors);
 				hot_directors_tv.setText(item.stars);
 				icon_douban.setVisibility(View.INVISIBLE);
+				hot_score_tv.setVisibility(View.INVISIBLE);
 			} else {
 				hot_directors_tv.setText(item.directors);
 				hot_starts_tv.setText(item.stars);
@@ -1170,7 +1172,7 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 			Log.d(TAG, item.prod_name);
 			hot_name_tv.setText(item.prod_name);
 			hot_score_tv.setText(UtilTools.formateScore(item.score));
-			hot_introduce_tv.setText(item.prod_summary);
+			hot_introduce_tv.setText("\t\t" + item.prod_summary);
 			hot_contentViews.put(i, hotView);
 		}
 	}
