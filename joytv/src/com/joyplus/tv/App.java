@@ -19,7 +19,6 @@ import com.joyplus.tv.Service.Return.ReturnProgramView;
 import com.joyplus.tv.entity.CurrentPlayDetailData;
 import com.joyplus.tv.ui.UserInfo;
 import com.joyplus.tv.utils.Log;
-import com.parse.Parse;
 
 public class App extends Application {
 	private final String TAG = "App";
@@ -90,7 +89,7 @@ public class App extends Application {
 
 		File cacheDir = new File(Constant.PATH);
 		AQUtility.setCacheDir(cacheDir);
-		Parse.initialize(this, Constant.Parse_AppId, Constant.Parse_ClientKey);
+
 		instance = this;
 	}
 
