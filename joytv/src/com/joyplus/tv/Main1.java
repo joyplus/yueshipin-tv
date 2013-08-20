@@ -1336,6 +1336,13 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 
 		}
 		
+		//程序退出时设为false
+		if(UtilTools.getWpBaiduLocalParseInit(getApplicationContext())){
+			
+			UtilTools.setWpBaiduLocalParseInit(getApplicationContext(), false);
+			UtilTools.setWpBaiduLocalParse(getApplicationContext(), false);
+		}
+		
 		handler.removeCallbacksAndMessages(null);
 		super.onDestroy();
 	}

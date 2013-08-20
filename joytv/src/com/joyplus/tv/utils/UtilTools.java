@@ -1040,6 +1040,40 @@ public class UtilTools implements JieMianConstant, BangDanConstant {
 		return sp.getBoolean("isDisclaimerVisible",false);
 	}
 	
+	public static void setWpBaiduLocalParse(Context context,boolean isDWpBaiduLocalParse){
+		
+		SharedPreferences sp = context.getSharedPreferences(TV_SETTING_XML,
+				Context.MODE_PRIVATE);
+		Editor editor = sp.edit();
+		editor.putBoolean("isDWpBaiduLocalParse", isDWpBaiduLocalParse);
+		editor.commit();
+	}
+	
+	public static boolean getWpBaiduLocalParse(Context context) {
+		
+		SharedPreferences sp = context.getSharedPreferences(TV_SETTING_XML,
+				Context.MODE_PRIVATE);
+		
+		return sp.getBoolean("isDWpBaiduLocalParse",false);
+	}
+	
+	public static void setWpBaiduLocalParseInit(Context context,boolean isDWpBaiduLocalParseInit){
+		
+		SharedPreferences sp = context.getSharedPreferences(TV_SETTING_XML,
+				Context.MODE_PRIVATE);
+		Editor editor = sp.edit();
+		editor.putBoolean("isDWpBaiduLocalParseInit", isDWpBaiduLocalParseInit);
+		editor.commit();
+	}
+	
+	public static boolean getWpBaiduLocalParseInit(Context context) {
+		
+		SharedPreferences sp = context.getSharedPreferences(TV_SETTING_XML,
+				Context.MODE_PRIVATE);
+		
+		return sp.getBoolean("isDWpBaiduLocalParseInit",false);
+	}
+	
 	public  static boolean isSame4Str(String str1, String str2){
 		if(str1==null||str2==null){
 			return false;
