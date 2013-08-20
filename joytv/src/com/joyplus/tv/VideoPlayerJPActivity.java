@@ -5,6 +5,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -858,7 +859,8 @@ public class VideoPlayerJPActivity extends Activity implements
 					ReturnReGetVideoView.class);
 			
 			
-			if(reGetVideoView != null && reGetVideoView.down_urls != null
+			if(reGetVideoView != null && "false".equals(reGetVideoView.error)
+					&&reGetVideoView.down_urls != null
 					&& reGetVideoView.down_urls.urls != null
 					&& reGetVideoView.down_urls.urls.length > 0){
 				if(playUrls != null){
@@ -2275,21 +2277,59 @@ public class VideoPlayerJPActivity extends Activity implements
 			}
 			if (url_index.source_from
 					.equalsIgnoreCase(Constant.BAIDU_WANGPAN)) {
-				Document doc = null;
-				try {
-					doc = Jsoup.connect(url_index.url).timeout(10000).get();
-					// doc = Jsoup.connect(htmlStr).timeout(10000).get();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				if (doc != null) {
-					Element e = doc.getElementById("fileDownload");
-					if (e != null) {
-						Log.d(TAG, "url = " + e.attr("href"));
-						if (e.attr("href") != null
-								&& e.attr("href").length() > 0) {
-							url_index.url = e.attr("href");
+//				Document doc = null;
+//				try {
+//					doc = Jsoup.connect(url_index.url).timeout(10000).get();
+//					// doc = Jsoup.connect(htmlStr).timeout(10000).get();
+//				} catch (IOException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//				if (doc != null) {
+//					Element e = doc.getElementById("fileDownload");
+//					if (e != null) {
+//						Log.d(TAG, "url = " + e.attr("href"));
+//						if (e.attr("href") != null
+//								&& e.attr("href").length() > 0) {
+//							url_index.url = e.attr("href");
+//						}
+//					}
+//				}
+				
+				String wangPanUrl = URLUtils.
+						getParseUrlURL(Constant.LETV_PARSE_URL_URL, url_index.url, mProd_id, mProd_sub_name);
+				AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();           
+				cb.url(wangPanUrl).type(JSONObject.class);             
+				        
+				aq.sync(cb);
+//				AjaxStatus status = cb.getStatus();
+				JSONObject jo = cb.getResult();
+				if(jo != null){
+					
+					Log.i(TAG, "wangpan src url:" + url_index.url+ "  --wangpan-jsondata:" + jo.toString());
+					
+					if(jo.has("error")){
+						
+						try {
+							if(!jo.getBoolean("error")){
+								
+								ObjectMapper mapper = new ObjectMapper();
+								ReturnReGetVideoView reGetVideoView = mapper.readValue(jo.toString(),
+										ReturnReGetVideoView.class);
+								if(reGetVideoView != null && reGetVideoView.down_urls != null
+										&& reGetVideoView.down_urls.urls != null
+										&& reGetVideoView.down_urls.urls.length > 0){
+									for(int tempI=0;tempI<reGetVideoView.down_urls.urls.length;tempI++){
+										
+										url_index.url = reGetVideoView.down_urls.urls[tempI].url;
+										break;
+									}
+									
+								}
+							}
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
 						}
 					}
 				}

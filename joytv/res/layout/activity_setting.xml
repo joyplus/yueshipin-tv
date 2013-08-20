@@ -184,9 +184,9 @@
                                 android:textSize="20dp" />
 
                             <TextView
+                                android:id="@+id/tv_version_name"
                                 android:layout_width="fill_parent"
-                                android:layout_height="wrap_content"
-                                android:text="@string/version_code"
+                                android:layout_height="wrap_content"                          
                                 android:textColor="@color/hot_content_notice"
                                 android:textSize="18dp" />
                         </LinearLayout>

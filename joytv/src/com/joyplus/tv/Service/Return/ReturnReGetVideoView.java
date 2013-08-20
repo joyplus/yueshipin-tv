@@ -2,11 +2,12 @@ package com.joyplus.tv.Service.Return;
 
 public class ReturnReGetVideoView {
 	
+	public String movieName;
 	public String code;
 	public DownUrl down_urls;
-	public String episode;
+//	public String episode;
 	public String error;
-	public String id;
+//	public String id;
 	public String msg;
 	public String source;
 
@@ -19,6 +20,7 @@ public class ReturnReGetVideoView {
 	
 	public static class Url{
 		
+		public String file;
 		public String type;
 		public String url;
 	}

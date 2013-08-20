@@ -8,7 +8,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Paint.Join;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -32,6 +34,7 @@ public class SettingActivity extends Activity implements OnClickListener {
 	
 	private LinearLayout unbandLayout;
 	private TextView aboutLayout,declarationLayout,faqLayout;
+	private TextView versionNameTv;
 	private App app;
 	private AQuery aq;
 	private BroadcastReceiver receiver = new BroadcastReceiver(){
@@ -55,6 +58,7 @@ public class SettingActivity extends Activity implements OnClickListener {
 		aboutLayout = (TextView) findViewById(R.id.about_layout);
 		declarationLayout = (TextView) findViewById(R.id.declaration_layout);
 		faqLayout = (TextView) findViewById(R.id.faq_layout);
+		versionNameTv = (TextView) findViewById(R.id.tv_version_name);
 		app = (App) getApplication();
 		aq = new AQuery(this);
 		
@@ -69,6 +73,15 @@ public class SettingActivity extends Activity implements OnClickListener {
 			findViewById(R.id.about_layout).setVisibility(View.VISIBLE);
 			findViewById(R.id.tv_filling).setVisibility(View.GONE);
 			findViewById(R.id.iv_filling).setVisibility(View.GONE);
+		}
+		 
+		PackageInfo pinfo;
+		try {
+			pinfo = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_CONFIGURATIONS);
+			versionNameTv.setText(pinfo.versionName);
+		} catch (NameNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
 		unbandLayout.setOnClickListener(this);
