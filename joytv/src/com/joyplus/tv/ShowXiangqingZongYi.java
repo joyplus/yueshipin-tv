@@ -1392,70 +1392,70 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 		
 	}
 	
-	private List<URLS_INDEX> getBofangList(int index){
-		List<URLS_INDEX> list = new ArrayList<URLS_INDEX>();
-		
-		if(index >= date.show.episodes.length) {
-			
-			return null;
-		}
-		
-		DOWN_URLS[] urls = date.show.episodes[index].down_urls;
-		if(urls == null){
-			return null;
-		}
-		for(int i=0;i<urls.length; i++){
-			for(int j=0; j<urls[i].urls.length; j++){
-				URLS_INDEX url_index = new URLS_INDEX();
-				url_index.source_from = urls[i].source;
-				url_index.url = urls[i].urls[j].url;
-				if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[0])) {
-					url_index.souces = 0;
-				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[1])) {
-					url_index.souces = 1;
-				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[2])) {
-					url_index.souces = 2;
-				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[3])) {
-					url_index.souces = 3;
-				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[4])) {
-					url_index.souces = 4;
-				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[5])) {
-					url_index.souces = 5;
-				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[6])) {
-					url_index.souces = 6;
-				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[7])) {
-					url_index.souces = 7;
-				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[8])) {
-					url_index.souces = 8;
-				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[9])) {
-					url_index.souces = 9;
-				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[10])) {
-					url_index.souces = 10;
-				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[11])) {
-					url_index.souces = 11;
-				} else {
-					url_index.souces = 12;
-				}
-				if(urls[i].urls[j].type.trim().equalsIgnoreCase(Constant.player_quality_index[0])){
-					url_index.defination = 1;
-				}else if(urls[i].urls[j].type.trim().equalsIgnoreCase(Constant.player_quality_index[1])){
-					url_index.defination = 2;
-				}else if(urls[i].urls[j].type.trim().equalsIgnoreCase(Constant.player_quality_index[2])){
-					url_index.defination = 3;
-				}else if(urls[i].urls[j].type.trim().equalsIgnoreCase(Constant.player_quality_index[3])){
-					url_index.defination = 4;
-				} else {
-					url_index.defination = 5;
-				}
-				list.add(url_index);
-			}
-		}
-		if(list.size()>1){
-			Collections.sort(list, new DefinationComparatorIndex());
-			Collections.sort(list, new SouceComparatorIndex1());
-		}
-		return list;
-	}
+//	private List<URLS_INDEX> getBofangList(int index){
+//		List<URLS_INDEX> list = new ArrayList<URLS_INDEX>();
+//		
+//		if(index >= date.show.episodes.length) {
+//			
+//			return null;
+//		}
+//		
+//		DOWN_URLS[] urls = date.show.episodes[index].down_urls;
+//		if(urls == null){
+//			return null;
+//		}
+//		for(int i=0;i<urls.length; i++){
+//			for(int j=0; j<urls[i].urls.length; j++){
+//				URLS_INDEX url_index = new URLS_INDEX();
+//				url_index.source_from = urls[i].source;
+//				url_index.url = urls[i].urls[j].url;
+//				if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[0])) {
+//					url_index.souces = 0;
+//				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[1])) {
+//					url_index.souces = 1;
+//				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[2])) {
+//					url_index.souces = 2;
+//				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[3])) {
+//					url_index.souces = 3;
+//				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[4])) {
+//					url_index.souces = 4;
+//				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[5])) {
+//					url_index.souces = 5;
+//				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[6])) {
+//					url_index.souces = 6;
+//				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[7])) {
+//					url_index.souces = 7;
+//				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[8])) {
+//					url_index.souces = 8;
+//				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[9])) {
+//					url_index.souces = 9;
+//				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[10])) {
+//					url_index.souces = 10;
+//				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[11])) {
+//					url_index.souces = 11;
+//				} else {
+//					url_index.souces = 12;
+//				}
+//				if(urls[i].urls[j].type.trim().equalsIgnoreCase(Constant.player_quality_index[0])){
+//					url_index.defination = 1;
+//				}else if(urls[i].urls[j].type.trim().equalsIgnoreCase(Constant.player_quality_index[1])){
+//					url_index.defination = 2;
+//				}else if(urls[i].urls[j].type.trim().equalsIgnoreCase(Constant.player_quality_index[2])){
+//					url_index.defination = 3;
+//				}else if(urls[i].urls[j].type.trim().equalsIgnoreCase(Constant.player_quality_index[3])){
+//					url_index.defination = 4;
+//				} else {
+//					url_index.defination = 5;
+//				}
+//				list.add(url_index);
+//			}
+//		}
+//		if(list.size()>1){
+//			Collections.sort(list, new DefinationComparatorIndex());
+//			Collections.sort(list, new SouceComparatorIndex1());
+//		}
+//		return list;
+//	}
 	
 	private void cancelshoucang(){
 		

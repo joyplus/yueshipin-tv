@@ -653,6 +653,7 @@ public class VideoPlayerJPActivity extends Activity implements
 						sourceQua = "flv";
 						break;
 					}
+					Log.i(TAG, "mDefination--->" + mDefination);
 					if(returnFirstFengxingUrlView.video_infos != null &&
 							returnFirstFengxingUrlView.video_infos.length > 0){
 						
@@ -660,7 +661,7 @@ public class VideoPlayerJPActivity extends Activity implements
 							
 							if(returnFirstFengxingUrlView.video_infos[i]!= null 
 									&& returnFirstFengxingUrlView.video_infos[i].type != null){
-								
+								Log.i(TAG, "sourceQua--->" + sourceQua + " type:" + returnFirstFengxingUrlView.video_infos[i].type);
 								if(sourceQua.equals(returnFirstFengxingUrlView.video_infos[i].type)){
 									
 									String tempUrl = returnFirstFengxingUrlView.video_infos[i].request_url;
@@ -805,7 +806,7 @@ public class VideoPlayerJPActivity extends Activity implements
 					for(int i=0;i<returnFengxingSecondView.urls.length;i++){
 						
 						URLS_INDEX urls_INDEX = new URLS_INDEX();
-						urls_INDEX.source_from = Constant.video_index[3];
+						urls_INDEX.source_from = "fengxing";
 						urls_INDEX.defination_from_server = type;
 						urls_INDEX.url = returnFengxingSecondView.urls[i];
 						Log.i(TAG, "urls_INDEX--->" + urls_INDEX.toString());
@@ -1365,7 +1366,7 @@ public class VideoPlayerJPActivity extends Activity implements
 							if(mBefSubTitleE == null
 									|| mCurSubTitleE.getRank() - mBefSubTitleE.getRank() == 0
 									|| mCurSubTitleE.getRank() - mBefSubTitleE.getRank() == 1){
-								mSubTitleTv.setText(mCurSubTitleE.getText().replaceAll("<font.*>", ""));
+								mSubTitleTv.setText(mCurSubTitleE.getText().replaceAll("<font.*>", "").trim());
 							}else {
 								
 								StringBuilder sb = new StringBuilder();
@@ -1377,7 +1378,7 @@ public class VideoPlayerJPActivity extends Activity implements
 //										
 //										sb.append("\n");
 //									}
-									mSubTitleTv.setText(sb.toString());
+									mSubTitleTv.setText(sb.toString().trim());
 								}
 							}
 							
@@ -2045,13 +2046,13 @@ public class VideoPlayerJPActivity extends Activity implements
 									if(m_ReturnProgramView.movie.episodes[0].video_urls[0].source != null){
 										
 										if(m_ReturnProgramView.movie.episodes[0].video_urls[0].source.
-												equals(Constant.video_index[1])||
+												equals(Constant.video_index[2])||
 												m_ReturnProgramView.movie.episodes[0].video_urls[0].source.
-												equals(Constant.video_index[2])){
+												equals(Constant.video_index[3])){
 											
 											isOnlyExistLetv = true;
 										}else if(m_ReturnProgramView.movie.episodes[0].video_urls[0].source.
-												equals(Constant.video_index[3])){
+												equals(Constant.video_index[4])){
 											
 											isOnlyExistFengXing = true;
 										}
@@ -2119,13 +2120,13 @@ public class VideoPlayerJPActivity extends Activity implements
 											if(m_ReturnProgramView.tv.episodes[i].video_urls[0].source != null){
 												
 												if(m_ReturnProgramView.tv.episodes[i].video_urls[0].source.
-														equals(Constant.video_index[1])||
+														equals(Constant.video_index[2])||
 														m_ReturnProgramView.tv.episodes[i].video_urls[0].source.
-														equals(Constant.video_index[2])){
+														equals(Constant.video_index[3])){
 													
 													isOnlyExistLetv = true;
 												}else if(m_ReturnProgramView.tv.episodes[i].video_urls[0].source.
-														equals(Constant.video_index[3])){
+														equals(Constant.video_index[4])){
 													
 													isOnlyExistFengXing = true;
 												}
@@ -2175,13 +2176,13 @@ public class VideoPlayerJPActivity extends Activity implements
 										if(m_ReturnProgramView.tv.episodes[mEpisodeIndex].video_urls[0].source != null){
 											
 											if(m_ReturnProgramView.tv.episodes[mEpisodeIndex].video_urls[0].source.
-													equals(Constant.video_index[1])||
+													equals(Constant.video_index[2])||
 													m_ReturnProgramView.tv.episodes[mEpisodeIndex].video_urls[0].source.
-													equals(Constant.video_index[2])){
+													equals(Constant.video_index[3])){
 												
 												isOnlyExistLetv = true;
 											}else if(m_ReturnProgramView.tv.episodes[mEpisodeIndex].video_urls[0].source.
-													equals(Constant.video_index[3])){
+													equals(Constant.video_index[4])){
 												
 												isOnlyExistFengXing = true;
 											}
@@ -2254,13 +2255,13 @@ public class VideoPlayerJPActivity extends Activity implements
 												if(m_ReturnProgramView.show.episodes[mEpisodeIndex].video_urls[0].source != null){
 													
 													if(m_ReturnProgramView.show.episodes[mEpisodeIndex].video_urls[0].source.
-															equals(Constant.video_index[1])||
+															equals(Constant.video_index[2])||
 															m_ReturnProgramView.show.episodes[mEpisodeIndex].video_urls[0].source.
-															equals(Constant.video_index[2])){
+															equals(Constant.video_index[3])){
 														
 														isOnlyExistLetv = true;
 													}else if(m_ReturnProgramView.show.episodes[mEpisodeIndex].video_urls[0].source.
-															equals(Constant.video_index[3])){
+															equals(Constant.video_index[4])){
 														
 														isOnlyExistFengXing = true;
 													}
