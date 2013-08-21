@@ -966,14 +966,14 @@ public class URLUtils implements JieMianConstant, BangDanConstant{
 
 	public static String getParseUrlURL(String url,String parseUrl,String id,String episode){
 		
-		return url + "?url=" + parseUrl + "&id=" + id
+		return url + "?url=" + URLEncoder.encode(parseUrl) + "&id=" + id
 				+ "&episode=" + episode;
 	}
 	
-	public static String getLetvParseUrlURL(String parseUrl,String id,String episode){
-		
-		return getParseUrlURL(Constant.LETV_PARSE_URL_URL, parseUrl, id, episode);
-	}
+//	public static String getLetvParseUrlURL(String parseUrl,String id,String episode){
+//		
+//		return getParseUrlURL(Constant.LETV_PARSE_URL_URL, parseUrl, id, episode);
+//	}
 	
 //	public static String getSohuParseUrlURL(String parseUrl,String id,String episode){
 //		
@@ -982,7 +982,12 @@ public class URLUtils implements JieMianConstant, BangDanConstant{
 	
 	public static String getFexingParseUrlURL(String firstBaseUrl,String url){
 		
-		return firstBaseUrl + "?url=" + url;
+		return firstBaseUrl + "?url=" + URLEncoder.encode(url);
+	}
+	
+	public static String getXunLeiUrlURL(String baseUrl,String url ,String md5){
+		
+		return baseUrl + "?url=" + URLEncoder.encode(url) + "&md5_code=" + md5;
 	}
 
 }

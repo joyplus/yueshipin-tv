@@ -1,6 +1,11 @@
 package com.joyplus.tv.utils;
 
+import info.monitorenter.cpdetector.io.CodepageDetectorProxy;
+import info.monitorenter.cpdetector.io.JChardetFacade;
+
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -1040,6 +1045,57 @@ public class UtilTools implements JieMianConstant, BangDanConstant {
 		return sp.getBoolean("isDisclaimerVisible",false);
 	}
 	
+	public static void setWpBaiduLocalParse(Context context,boolean isDWpBaiduLocalParse){
+		
+		SharedPreferences sp = context.getSharedPreferences(TV_SETTING_XML,
+				Context.MODE_PRIVATE);
+		Editor editor = sp.edit();
+		editor.putBoolean("isDWpBaiduLocalParse", isDWpBaiduLocalParse);
+		editor.commit();
+	}
+	
+	public static boolean getWpBaiduLocalParse(Context context) {
+		
+		SharedPreferences sp = context.getSharedPreferences(TV_SETTING_XML,
+				Context.MODE_PRIVATE);
+		
+		return sp.getBoolean("isDWpBaiduLocalParse",false);
+	}
+	
+	public static void setWpBaiduLocalParseInit(Context context,boolean isDWpBaiduLocalParseInit){
+		
+		SharedPreferences sp = context.getSharedPreferences(TV_SETTING_XML,
+				Context.MODE_PRIVATE);
+		Editor editor = sp.edit();
+		editor.putBoolean("isDWpBaiduLocalParseInit", isDWpBaiduLocalParseInit);
+		editor.commit();
+	}
+	
+	public static boolean getWpBaiduLocalParseInit(Context context) {
+		
+		SharedPreferences sp = context.getSharedPreferences(TV_SETTING_XML,
+				Context.MODE_PRIVATE);
+		
+		return sp.getBoolean("isDWpBaiduLocalParseInit",false);
+	}
+	
+	public static void setP2PMD5(Context context , String p2pMd5) {
+		
+		SharedPreferences sp = context.getSharedPreferences(TV_SETTING_XML,
+				Context.MODE_PRIVATE);
+		Editor editor = sp.edit();
+		editor.putString("p2pMd5", p2pMd5);
+		editor.commit();
+	}
+	
+	public static String getP2PMD5(Context context) {
+		
+		SharedPreferences sp = context.getSharedPreferences(TV_SETTING_XML,
+				Context.MODE_PRIVATE);
+		
+		return sp.getString("p2pMd5","");
+	}
+	
 	public  static boolean isSame4Str(String str1, String str2){
 		if(str1==null||str2==null){
 			return false;
@@ -1184,5 +1240,45 @@ public class UtilTools implements JieMianConstant, BangDanConstant {
 		return sp.getString("channel", "");
 	}
 	
-
+    public static boolean isUTF_8(byte[] file){
+        if(file.length<3)
+            return false;
+//        if((file[0]&0xFF)==0xEF && 
+//                (file[1]&0xFF)==0xBB &&
+//                (file[2]&0xFF)==0xBF)
+        
+        if (file[0] == -17 && file[1] == -69 && file[2] == -65) 
+            return true;
+        return false;
+    }
+    
+    public static String getCharset(byte[] subTitle,int length){
+    	
+    	if(subTitle != null){
+    		
+    		if(subTitle.length < length){
+    			
+    			length = subTitle.length;
+    		}
+    		
+    		ByteArrayInputStream in = new ByteArrayInputStream(subTitle);
+    		
+    		CodepageDetectorProxy detector = CodepageDetectorProxy.getInstance();
+//    		detector.add(new ParsingDetector(false));
+    		detector.add(JChardetFacade.getInstance());
+    		try {
+    			Charset charset = detector.detectCodepage(in, length);
+    			
+    			return charset!= null ? charset.name() : "";
+    		} catch (IllegalArgumentException e) {
+    			// TODO Auto-generated catch block
+    			e.printStackTrace();
+    		} catch (IOException e) {
+    			// TODO Auto-generated catch block
+    			e.printStackTrace();
+    		}
+    	}
+		
+		return "";
+    }
 }
