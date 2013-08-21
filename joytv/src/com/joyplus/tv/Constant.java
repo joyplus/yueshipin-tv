@@ -60,8 +60,11 @@ public class Constant {
 	public static final String FAYESERVERURL_CHECKBAND ="http://comettest.joyplus.tv:8000/api/check_binding";//测试
 	
 	public static final String LETV_PARSE_URL_URL = PARSE_URL_BASE_URL + "getAnalyzedUrl";
+	public static final String P2P_PARSE_URL_URL = PARSE_URL_BASE_URL + "GetXunleiurl";
 	public static final String FENGXING_REGET_FIRST_URL = LETV_PARSE_URL_URL;
 	public static final String FENGXING_REGET_SECOND_URL = PARSE_URL_BASE_URL + "funshion/second/";
+	
+	public static final String DES_KEY = "ilovejoy";
 
 	// faye 相关（二维码扫描）
 	public static final String FAYECHANNEL_TV_BASE = "/screencast/CHANNEL_TV_";
@@ -73,7 +76,7 @@ public class Constant {
 	public static final String VIDEOPLAYERCMD = "com.joyplus.tv.videoservicecommand";
 
 	public static final String[] video_dont_support_extensions = { ".m3u",".m3u8" };//不支持的格式
-	public static final String[] video_index = { "wangpan", "le_tv_fee",
+	public static final String[] video_index = { "p2p","wangpan", "le_tv_fee",
 			"letv", "fengxing", "qiyi", "youku", "sinahd", "sohu", "56", "qq","pptv", "m1905" };//来源
 	public static final String BAIDU_WANGPAN = "baidu_wangpan";
 	
@@ -96,5 +99,9 @@ public class Constant {
 	+ "/Android/data/com.joyplus.tv/bg_image_cache";
 	public static String PATH_HEAD = Environment.getExternalStorageDirectory()
 			+ "/joy/admin/";
+	
+	public static final int DEFINATION_HD2 = 8; 
+	public static final int DEFINATION_MP4 = 7; 
+	public static final int DEFINATION_FLV = 6; 
 
 }

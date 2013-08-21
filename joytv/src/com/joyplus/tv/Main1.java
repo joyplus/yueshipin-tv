@@ -1341,6 +1341,7 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 			
 			UtilTools.setWpBaiduLocalParseInit(getApplicationContext(), false);
 			UtilTools.setWpBaiduLocalParse(getApplicationContext(), false);
+			UtilTools.setP2PMD5(getApplicationContext(), "");
 		}
 		
 		handler.removeCallbacksAndMessages(null);

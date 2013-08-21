@@ -984,5 +984,10 @@ public class URLUtils implements JieMianConstant, BangDanConstant{
 		
 		return firstBaseUrl + "?url=" + URLEncoder.encode(url);
 	}
+	
+	public static String getXunLeiUrlURL(String baseUrl,String url ,String md5){
+		
+		return baseUrl + "?url=" + URLEncoder.encode(url) + "&md5_code=" + md5;
+	}
 
 }
