@@ -1322,6 +1322,7 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 
 	@Override
 	protected void onDestroy() {
+		Log.i(TAG, "onDestroy---->");
 		if (aq != null)
 			aq.dismiss();
 
@@ -1341,8 +1342,10 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 			
 			UtilTools.setWpBaiduLocalParseInit(getApplicationContext(), false);
 			UtilTools.setWpBaiduLocalParse(getApplicationContext(), false);
-			UtilTools.setP2PMD5(getApplicationContext(), "");
+			
 		}
+		
+		UtilTools.setP2PMD5(getApplicationContext(), "");
 		
 		handler.removeCallbacksAndMessages(null);
 		super.onDestroy();
@@ -1913,8 +1916,8 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 				exitTime = System.currentTimeMillis();
 			} else {
 				finish();
-				android.os.Process.killProcess(android.os.Process.myPid());
-				System.exit(0);
+//				android.os.Process.killProcess(android.os.Process.myPid());
+//				System.exit(0);
 			}
 			return true;
 		}
