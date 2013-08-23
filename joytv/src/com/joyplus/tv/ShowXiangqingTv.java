@@ -36,6 +36,7 @@ import com.androidquery.callback.AjaxStatus;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.joyplus.JoyplusMediaPlayerActivity;
 import com.joyplus.tv.Service.Return.ReturnProgramView;
 import com.joyplus.tv.Service.Return.ReturnRelatedGroup;
 import com.joyplus.tv.entity.CurrentPlayDetailData;
@@ -1290,7 +1291,10 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 		}
 		
 		CurrentPlayDetailData playDate = new CurrentPlayDetailData();
-		Intent intent = new Intent(this,VideoPlayerJPActivity.class);
+		//change by Jas@20130815 JoyplusMediaPlayerActivity
+		//Intent intent = new Intent(this,VideoPlayerJPActivity.class);
+		Intent intent = new Intent(this,JoyplusMediaPlayerActivity.class);
+		//end change by Jas
 		playDate.prod_id = prod_id;
 		playDate.prod_type = 2;
 		playDate.prod_name = date.tv.name;

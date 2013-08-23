@@ -21,6 +21,8 @@
     <dimen name="search_padding_left">6dp</dimen>
     <dimen name="search_text_size">16dp</dimen>
     
+    <dimen name="my_toast_text_size">30dp</dimen>
+    
     <!--Yangzhg  -->
     
     

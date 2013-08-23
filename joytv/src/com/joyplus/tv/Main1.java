@@ -31,6 +31,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.opengl.Visibility;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -67,6 +68,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.zxing.WriterException;
+import com.joyplus.JoyplusMediaPlayerActivity;
 import com.joyplus.adkey.Ad;
 import com.joyplus.adkey.AdListener;
 import com.joyplus.adkey.Const;
@@ -1163,6 +1165,7 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 				hot_starts_tv.setText(item.directors);
 				hot_directors_tv.setText(item.stars);
 				icon_douban.setVisibility(View.INVISIBLE);
+				hot_score_tv.setVisibility(View.INVISIBLE);
 			} else {
 				hot_directors_tv.setText(item.directors);
 				hot_starts_tv.setText(item.stars);
@@ -1170,7 +1173,7 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 			Log.d(TAG, item.prod_name);
 			hot_name_tv.setText(item.prod_name);
 			hot_score_tv.setText(UtilTools.formateScore(item.score));
-			hot_introduce_tv.setText(item.prod_summary);
+			hot_introduce_tv.setText("\t\t" + item.prod_summary);
 			hot_contentViews.put(i, hotView);
 		}
 	}
@@ -1923,7 +1926,10 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 			if (info.type == 0) {
 				// 历史
 				CurrentPlayDetailData playDate = new CurrentPlayDetailData();
-				intent = new Intent(this, VideoPlayerJPActivity.class);
+				//change by Jas@20130614 JoyplusMediaPlayerActivity
+				//intent = new Intent(this, VideoPlayerJPActivity.class);
+				intent = new Intent(this, JoyplusMediaPlayerActivity.class);
+				//end change by Jas
 				playDate.prod_id = info.prod_id;
 				playDate.prod_type = Integer.valueOf(info.prod_type);
 				playDate.prod_name = info.prod_name;
@@ -1966,7 +1972,10 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 				case 1:
 					Log.d(TAG, "name---->" + info.prod_name);
 					CurrentPlayDetailData playDate = new CurrentPlayDetailData();
-					intent = new Intent(this, VideoPlayerJPActivity.class);
+					//change by Jas JoyplusMediaPlayerActivity
+					//intent = new Intent(this, VideoPlayerJPActivity.class);
+					intent = new Intent(this, JoyplusMediaPlayerActivity.class);
+					//end change by jas
 					playDate.prod_id = info.prod_id;
 					playDate.prod_type = Integer.valueOf(info.prod_type);
 					playDate.prod_name = info.prod_name;

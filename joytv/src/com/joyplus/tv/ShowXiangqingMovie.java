@@ -38,6 +38,7 @@ import com.androidquery.callback.AjaxStatus;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.joyplus.JoyplusMediaPlayerActivity;
 import com.joyplus.tv.Service.Return.ReturnProgramRelatedVideos;
 import com.joyplus.tv.Service.Return.ReturnProgramView;
 import com.joyplus.tv.entity.CurrentPlayDetailData;
@@ -433,8 +434,11 @@ public class ShowXiangqingMovie extends Activity implements
 			// app.setCurrentPlayData(playDate);
 			// app.set_ReturnProgramView(null);
 			// startActivity(intent);
-
-			Intent intent = new Intent(this, VideoPlayerJPActivity.class);
+            
+			//change by Jas@20130815 JoyplusMediaPlayerActivity
+			//Intent intent = new Intent(this, VideoPlayerJPActivity.class);
+			Intent intent = new Intent(this, JoyplusMediaPlayerActivity.class);
+			//end change by Jas
 			CurrentPlayDetailData playData = new CurrentPlayDetailData();
 
 			playData.prod_id = movieData.movie.id;
@@ -577,8 +581,10 @@ public class ShowXiangqingMovie extends Activity implements
 				bofangLL.setEnabled(false);
 
 				int id = v.getId();
-				Intent intent = new Intent(ShowXiangqingMovie.this,
-						VideoPlayerJPActivity.class);
+				//chnage by Jas JoyplusMediaPlayerActivity
+				//Intent intent = new Intent(ShowXiangqingMovie.this,	VideoPlayerJPActivity.class);
+				Intent intent = new Intent(ShowXiangqingMovie.this,JoyplusMediaPlayerActivity.class);
+				//end change by Jas
 				CurrentPlayDetailData playDate = new CurrentPlayDetailData();
 				playDate.prod_id = movieData.movie.id;
 				playDate.prod_type = 1;

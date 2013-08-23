@@ -8,7 +8,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Paint.Join;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -17,8 +18,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.androidquery.AQuery;
+import com.joyplus.mediaplayer.VideoViewInterface.DecodeType;
 import com.joyplus.tv.ui.UserInfo;
 import com.joyplus.tv.utils.UtilTools;
 import com.saulpower.fayeclient.FayeService;
@@ -34,6 +37,10 @@ public class SettingActivity extends Activity implements OnClickListener {
 	private TextView aboutLayout,declarationLayout,faqLayout;
 	private App app;
 	private AQuery aq;
+	//add by Jas@20130816 for mediaplayer
+	private TextView MediaPlayerDecodeLayout;
+	private JoyplusMediaPlayerSetting mediaplayersetting;
+	//end add by Jas
 	private BroadcastReceiver receiver = new BroadcastReceiver(){
 
 		@Override
@@ -55,6 +62,9 @@ public class SettingActivity extends Activity implements OnClickListener {
 		aboutLayout = (TextView) findViewById(R.id.about_layout);
 		declarationLayout = (TextView) findViewById(R.id.declaration_layout);
 		faqLayout = (TextView) findViewById(R.id.faq_layout);
+		//add by Jas
+		MediaPlayerDecodeLayout = (TextView) findViewById(R.id.joyplusmediaplayer_decode_layout);
+		//end add by Jas
 		app = (App) getApplication();
 		aq = new AQuery(this);
 		
@@ -75,6 +85,9 @@ public class SettingActivity extends Activity implements OnClickListener {
 		aboutLayout.setOnClickListener(this);
 		declarationLayout.setOnClickListener(this);
 		faqLayout.setOnClickListener(this);
+		//add by Jas
+		MediaPlayerDecodeLayout.setOnClickListener(this);
+		//end add by Jas
 		IntentFilter filter = new IntentFilter(Main1.ACTION_USERUPDATE);
 		registerReceiver(receiver, filter);
 	}
@@ -102,7 +115,31 @@ public class SettingActivity extends Activity implements OnClickListener {
 				showDialog(SHOW_DIALOG_UNBAND);
 			}
 			break;
-
+		case R.id.joyplusmediaplayer_decode_layout:
+			mediaplayersetting = new JoyplusMediaPlayerSetting(this);
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setTitle("播放器解码设置").
+			setMessage("  当前解码方式为 ："+mediaplayersetting.getCurrentType()).			        
+			setNegativeButton("取消", new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					// TODO Auto-generated method stub
+				}
+			}).setPositiveButton("切换", new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					// TODO Auto-generated method stub
+					if(mediaplayersetting.changeDecode())
+						Toast.makeText(SettingActivity.this, "切换成功", Toast.LENGTH_LONG).show();
+					else
+						Toast.makeText(SettingActivity.this, "切换失败", Toast.LENGTH_LONG).show();
+				}
+			}).setCancelable(false);
+			AlertDialog dialog = builder.show();
+			Button button = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+			button.setSelected(true);
+			button.requestFocus();
+			break;
 		default:
 			break;
 		}
@@ -207,5 +244,73 @@ public class SettingActivity extends Activity implements OnClickListener {
 		}
 		unregisterReceiver(receiver);
 		super.onDestroy();
+	}
+	//add by Jas
+	private class JoyplusMediaPlayerSetting{
+		private Context mDataContext;
+     	
+        private static final String  JOYPLUS_CONFIG_XML = "joyplus_mediaplayer_config_xml";
+        
+        /*Interface of Decode type*/
+        private static final String  KEY_DECODETYPE     = "KEY_DECODETYPE";
+        public JoyplusMediaPlayerSetting(Context context){
+        	mDataContext = context;
+        }
+        public boolean changeDecode(){
+        	if(getDecodeType() == DecodeType.Decode_HW)
+        		return setDecodeType(DecodeType.Decode_SW);
+        	else 
+        		return setDecodeType(DecodeType.Decode_HW);
+        }
+        public String getCurrentType(){
+        	if(getDecodeType() == DecodeType.Decode_HW)return "硬解";
+        	else if(getDecodeType() == DecodeType.Decode_SW)return "软解";
+        	else if(mDataContext.getString(R.string.Default_Decode).equals(DecodeType.Decode_HW.toString()))return "硬解";
+        	else return "软解";
+        }
+		public  DecodeType getDecodeType(){
+        	return getDecodeType(getString(mDataContext,JOYPLUS_CONFIG_XML,KEY_DECODETYPE));
+        }
+        public  boolean setDecodeType(DecodeType type){
+        	return saveString(mDataContext,JOYPLUS_CONFIG_XML,KEY_DECODETYPE,getDecodeType(type));
+        }
+        private String getDecodeType(DecodeType type){
+        	if(type == DecodeType.Decode_HW){
+        		return mDataContext.getString(R.string.Decode_HW);
+        	}else if(type == DecodeType.Decode_SW){
+        		return mDataContext.getString(R.string.Decode_SW);
+        	}else{
+        		return mDataContext.getString(R.string.Default_Decode);
+        	}
+        }
+        private DecodeType getDecodeType(String type){
+        	if(!type.equals(mDataContext.getString(R.string.Decode_HW)) &&
+        			!type.equals(mDataContext.getString(R.string.Decode_SW))){
+        		type = mDataContext.getString(R.string.Default_Decode);
+        	}
+        	if(type.equals(mDataContext.getString(R.string.Decode_HW))){
+        		return DecodeType.Decode_HW;
+        	}else if(type.equals(mDataContext.getString(R.string.Decode_SW))){
+        		return DecodeType.Decode_SW;
+        	}else return null;//this can't be happen.
+        }
+		public String getString(Context context,String XML,String KEY){
+            if(XML == null || XML.equals(""))return null;
+       	 if(KEY == null || KEY.equals(""))return null;
+       	 SharedPreferences sp = context.getSharedPreferences(XML,Context.MODE_PRIVATE);
+    		 return sp.getString(KEY, "");
+       }
+       
+       public boolean saveString(Context context,String XML,String KEY,String VALUE){
+       	if(XML == null || XML.equals(""))return false;
+      	    if(KEY == null || KEY.equals(""))return false;
+      	    if(VALUE == null) return false;
+      	    SharedPreferences sp = context.getSharedPreferences(XML,Context.MODE_PRIVATE);
+   		Editor editor = sp.edit();
+   		editor.putString(KEY, VALUE);
+   		editor.commit();
+   		if(VALUE.equals(getString(context,XML,KEY)))return true;
+   		return false;
+       }
 	}
 }

@@ -7,10 +7,13 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.content.res.Resources.NotFoundException;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.view.Gravity;
+import android.view.ViewGroup;
 import android.webkit.URLUtil;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.androidquery.callback.BitmapAjaxCallback;
@@ -19,7 +22,6 @@ import com.joyplus.tv.Service.Return.ReturnProgramView;
 import com.joyplus.tv.entity.CurrentPlayDetailData;
 import com.joyplus.tv.ui.UserInfo;
 import com.joyplus.tv.utils.Log;
-import com.parse.Parse;
 
 public class App extends Application {
 	private final String TAG = "App";
@@ -90,7 +92,7 @@ public class App extends Application {
 
 		File cacheDir = new File(Constant.PATH);
 		AQUtility.setCacheDir(cacheDir);
-		Parse.initialize(this, Constant.Parse_AppId, Constant.Parse_ClientKey);
+
 		instance = this;
 	}
 
@@ -233,6 +235,14 @@ public class App extends Application {
 
 	public void MyToast(Context context, CharSequence text) {
 		Toast m_toast = Toast.makeText(context, text, Toast.LENGTH_SHORT);
+		try {
+			ViewGroup viewGroup = (ViewGroup) m_toast.getView();
+			TextView tv = (TextView) viewGroup.getChildAt(0);
+			tv.setTextSize(getResources().getDimension(R.dimen.my_toast_text_size));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		m_toast.setGravity(Gravity.CENTER, m_toast.getXOffset() / 2,
 				m_toast.getYOffset() / 2);
 		m_toast.show();

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     
-    <string name="version_code">1.2.3</string>
-    <string name="version_name">9</string>
+    <string name="version_code">1.2.4</string>
+    <string name="version_name">10</string>
 
     <string name="app_name">悦视频</string>
     <string name="action_settings">Settings</string>
@@ -16,12 +16,12 @@
     <string name="  cancel">取消</string>
       
       <string name="init_decoders">正在进行第一次解压解码包...</string>
-     <string name="VideoView_error_title">Cannot play video</string>
       <string name=" addressnotwork">播放的地址失效！</string>
-    <string name="VideoView_error_text_invalid_progressive_playback">播放的地址失效！</string>
+    <!--<string name="VideoView_error_text_invalid_progressive_playback">播放的地址失效！</string>
+    <string name="VideoView_error_title">Cannot play video</string>
     <string name="VideoView_error_text_unknown">Sorry, this video cannot be played.</string>
     <string name="VideoView_error_button">OK</string>
-    <string name="mediacontroller_play_pause">Play/Pause</string>
+    <string name="mediacontroller_play_pause">Play/Pause</string>-->
     
     <!--Yangzhg  -->
     <string name="hello_world">Hello world!</string>

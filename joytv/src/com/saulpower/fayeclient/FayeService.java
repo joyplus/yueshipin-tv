@@ -14,6 +14,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.widget.Toast;
 
+import com.joyplus.JoyplusMediaPlayerActivity;
 import com.joyplus.tv.App;
 import com.joyplus.tv.Constant;
 import com.joyplus.tv.VideoPlayerJPActivity;
@@ -83,7 +84,8 @@ public class FayeService extends Service implements FayeListener{
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
-						Toast.makeText(FayeService.this, "解绑遇到问题，再试一次哦", Toast.LENGTH_LONG).show();
+						app.MyToast(FayeService.this, "解绑遇到问题，再试一次哦");
+//						Toast.makeText(FayeService.this, "解绑遇到问题，再试一次哦", Toast.LENGTH_LONG).show();
 					}
 	        	}else if(ACTION_M_APPEAR.equals(intent.getAction())){
 	        		//二维码出现啦
@@ -236,7 +238,8 @@ public class FayeService extends Service implements FayeListener{
 							@Override
 							public void run() {
 								// TODO Auto-generated method stub
-								Toast.makeText(FayeService.this, "绑定在路上, 再试一次哦", Toast.LENGTH_LONG).show();
+								app.MyToast(FayeService.this, "绑定在路上, 再试一次哦");
+//								Toast.makeText(FayeService.this, "绑定在路上, 再试一次哦", Toast.LENGTH_LONG).show();
 								myClient.connectToServer(null);
 //								myClient = null;
 //								System.gc();
@@ -288,7 +291,8 @@ public class FayeService extends Service implements FayeListener{
 //								myClient = new FayeClient(handler, url, channel);
 //								myClient.setFayeListener(FayeService.this);
 //								myClient.connectToServer(null);
-								Toast.makeText(FayeService.this, "绑定在路上, 再试一次哦", Toast.LENGTH_LONG).show();
+								app.MyToast(FayeService.this, "绑定在路上, 再试一次哦");
+//								Toast.makeText(FayeService.this, "绑定在路上, 再试一次哦", Toast.LENGTH_LONG).show();
 								myClient.connectToServer(null);
 							}
 						});
@@ -335,7 +339,10 @@ public class FayeService extends Service implements FayeListener{
 				}
 				if(app.getUserData("isBand") != null&&"1".equals(app.getUserData("isBand"))&&phoneID.equals(json.get("user_id"))){
 					CurrentPlayDetailData playDate = new CurrentPlayDetailData();
-					Intent intent = new Intent(this,VideoPlayerJPActivity.class);
+					//change by Jas@20130813 JoyplusMediaPlayerActivity
+					//Intent intent = new Intent(this,VideoPlayerJPActivity.class);
+					Intent intent = new Intent(this,JoyplusMediaPlayerActivity.class);
+					//end change by Jas
 //					intent.putExtra("ID", json.getString("prod_id"));
 					intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 					playDate.prod_id = json.getString("prod_id");

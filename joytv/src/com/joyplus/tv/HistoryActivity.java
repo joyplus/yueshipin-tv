@@ -38,6 +38,7 @@ import com.androidquery.callback.AjaxStatus;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.joyplus.JoyplusMediaPlayerActivity;
 import com.joyplus.tv.Service.Return.ReturnProgramView;
 import com.joyplus.tv.Service.Return.ReturnUserPlayHistories;
 import com.joyplus.tv.entity.CurrentPlayDetailData;
@@ -428,7 +429,10 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 						// TODO Auto-generated method stub
 						dialog.dismiss();
 						CurrentPlayDetailData playDate = new CurrentPlayDetailData();
-						Intent intent = new Intent(HistoryActivity.this,VideoPlayerJPActivity.class);
+						//change by Jas@20130813 JoyplusMediaPlayerActivity
+						//Intent intent = new Intent(HistoryActivity.this,VideoPlayerJPActivity.class);
+						Intent intent = new Intent(HistoryActivity.this,JoyplusMediaPlayerActivity.class);
+						//end change by Jas
 						playDate.prod_id = ((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_id;
 						playDate.prod_type = Integer.valueOf(((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_type);
 						playDate.prod_name = ((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_name;

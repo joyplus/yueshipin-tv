@@ -141,6 +141,25 @@
                         android:layout_height="1px"
                         android:background="@drawable/line"
                         android:visibility="gone" />
+                    <TextView
+                        android:id="@+id/joyplusmediaplayer_decode_layout"
+                        android:layout_width="fill_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/historty_listitem_drawable_selector"
+                        android:focusable="true"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="15dp"
+                        android:text="播放器设置"
+                        android:textColor="@color/hot_content_notice"
+                        android:textSize="25dp" />
+
+                    <ImageView
+                        android:id="@+id/iv_about"
+                        android:layout_width="fill_parent"
+                        android:layout_height="1px"
+                        android:background="@drawable/line"
+                        android:visibility="gone" />
 
                     <TextView
                         android:id="@+id/about_layout"

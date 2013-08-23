@@ -69,6 +69,7 @@ import com.androidquery.callback.AjaxStatus;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.joyplus.JoyplusMediaPlayerActivity;
 import com.joyplus.adkey.Ad;
 import com.joyplus.adkey.AdListener;
 import com.joyplus.adkey.banner.AdView;
@@ -322,6 +323,12 @@ public class VideoPlayerJPActivity extends Activity implements
 		super.onCreate(savedInstanceState);
 		
 		Log.i(TAG, "onCreate--->");
+		if(true){
+		Intent intent = new Intent();
+		intent.setClass(this, JoyplusMediaPlayerActivity.class);
+		this.startActivity(intent);
+		//finish();
+		}else{
 		setContentView(R.layout.video_player_main);
 		aq = new AQuery(this);
 		app = (App) getApplication();
@@ -341,7 +348,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		initViews();
 		mSeekBar.setEnabled(false);
 		m_ReturnProgramView = app.get_ReturnProgramView();
-		initVedioDate();
+		initVedioDate(); 
 
 		Window win = getWindow();
 		WindowManager.LayoutParams winParams = win.getAttributes();
@@ -351,10 +358,11 @@ public class VideoPlayerJPActivity extends Activity implements
 
 		IntentFilter intentFilter = new IntentFilter();
 		intentFilter.addAction(Constant.VIDEOPLAYERCMD);
-		registerReceiver(mReceiver, intentFilter);
+		//registerReceiver(mReceiver, intentFilter);
 
 		// 获取是否收藏
 		getIsShoucangData();
+		}
 	}
 	
 	private void dismissView(View v){
@@ -659,10 +667,8 @@ public class VideoPlayerJPActivity extends Activity implements
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}finally{
-			
-			mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
 		}
+			mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
 	}
 	
 	private String defintionToType(int defintion){
@@ -818,10 +824,9 @@ public class VideoPlayerJPActivity extends Activity implements
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}finally{
+		}
 			
 			mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
-		}
 	}
 	
 	protected void getParseServiceData(String url, String interfaceName) {
