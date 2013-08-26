@@ -142,7 +142,7 @@ public class VideoPlayerJPActivity extends Activity implements
 	
 	private static final int SEEKBAR_REFRESH_TIME = 200;//refresh time
 
-	private static final int OFFSET = 33;
+	private int OFFSET = 33;
 	private int seekBarWidthOffset = 40;
 
 	private TextView mVideoNameText; // 名字
@@ -381,6 +381,9 @@ public class VideoPlayerJPActivity extends Activity implements
 
 		// 获取是否收藏
 		getIsShoucangData();
+		
+		OFFSET = UtilTools.getStandardValue(getApplicationContext(), OFFSET);
+		seekBarWidthOffset = UtilTools.getStandardValue(getApplicationContext(), seekBarWidthOffset);
 	}
 	
 	private void dismissView(View v){
@@ -1720,7 +1723,7 @@ public class VideoPlayerJPActivity extends Activity implements
 			parms.leftMargin = (int) mLeft;
 		else
 			parms.leftMargin = OFFSET;
-		parms.bottomMargin = 20 + 10;
+		parms.bottomMargin = UtilTools.getStandardValue(getApplicationContext(), 30);
 		mTimeLayout.setLayoutParams(parms);
 
 		mCurrentTimeTextView.setText(UtilTools.formatDuration(progress));
@@ -3330,7 +3333,8 @@ public class VideoPlayerJPActivity extends Activity implements
 				tv.setText("标    清");
 				break;
 			}
-			Gallery.LayoutParams param = new Gallery.LayoutParams(165, 40);
+			Gallery.LayoutParams param = new Gallery.LayoutParams(UtilTools.getStandardValue(getApplicationContext(), 165),
+					UtilTools.getStandardValue(getApplicationContext(), 40));
 			tv.setGravity(Gravity.CENTER);
 			tv.setLayoutParams(param);
 			return tv;
@@ -3384,7 +3388,8 @@ public class VideoPlayerJPActivity extends Activity implements
 				tv.setText("关");
 				break;
 			}
-			Gallery.LayoutParams param = new Gallery.LayoutParams(165, 40);
+			Gallery.LayoutParams param = new Gallery.LayoutParams(UtilTools.getStandardValue(getApplicationContext(), 165),
+					UtilTools.getStandardValue(getApplicationContext(), 40));
 			tv.setGravity(Gravity.CENTER);
 			tv.setLayoutParams(param);
 			return tv;
