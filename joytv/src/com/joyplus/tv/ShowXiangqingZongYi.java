@@ -267,7 +267,8 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 			Button b = new Button(this);
 //			b.setWidth(table.getWidth()/5);
 //			b.setHeight(layout.getHeight());
-			b.setLayoutParams(new LayoutParams((table.getWidth()-80)/5,35));
+			b.setLayoutParams(new LayoutParams((table.getWidth()-UtilTools.getStandardValue(getApplicationContext(),80))/5,
+					UtilTools.getStandardValue(getApplicationContext(),35)));
 			if(isOver){
 				if((i+1)*COUNT>num){
 					b.setText((i*COUNT+1) +"-"+num);
@@ -309,7 +310,8 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 			layout.addView(b);
 			if(i!=totle_pagecount-1){
 				TextView t = new TextView(this);
-				t.setLayoutParams(new LayoutParams(20,35));
+				t.setLayoutParams(new LayoutParams(UtilTools.getStandardValue(getApplicationContext(),20),
+						UtilTools.getStandardValue(getApplicationContext(),35)));
 				layout.addView(t);
 			}
 			
