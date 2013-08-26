@@ -21,9 +21,9 @@
     <string name="local_audio">播放本地音频文件</string>
     <string name="res_audio">播放资源音频文件</string>
     
-    <string name="meidaplayer_loading_string">"载入中...( <xliff:g id="speed">%s</xliff:g> KB/S ) ，已完成  <xliff:g id="finished">%s</xliff:g> KB"</string>
+    <string name="meidaplayer_loading_string">"载入中...( <xliff:g id="speed">%s</xliff:g> KB/S ) ，已完成  <xliff:g id="finished">%s</xliff:g> %%"</string>
     <string name="meidaplayer_loading_string_loading">载入中...</string>
     <string name="meidaplayer_loading_string_lasttime">上次播放时间：</string>
     <string name="meidaplayer_loading_string_from">网络来源：</string>
-    
+    <string name="meidaplayer_loading_string_loadingprogress">努力加载中...</string>
 </resources>

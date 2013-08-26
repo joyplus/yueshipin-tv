@@ -3,11 +3,16 @@
     android:id="@+id/system_mediaplayer_videoview"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_centerInParent="true"
+    android:gravity="center"
     android:orientation="vertical" >
-
-    <com.joyplus.mediaplayer.SystemVideoView
-        android:id="@+id/systemvideoView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
+    <io.vov.vitamio.widget.CenterLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+	    <com.joyplus.mediaplayer.SystemVideoView
+	        android:id="@+id/systemvideoView"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content" />
+   </io.vov.vitamio.widget.CenterLayout>
 </com.joyplus.mediaplayer.SystemMediaPlayerVideoView>

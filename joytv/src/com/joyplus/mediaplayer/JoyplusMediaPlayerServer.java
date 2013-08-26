@@ -17,7 +17,7 @@ public class JoyplusMediaPlayerServer {
 	
 	private final static int NO_FIND = -1;
 	
-	private Context mContext;
+	//private Context mContext;
 	
 	private JoyplusPlayerConfig[] mPlayerConfigs;//it depend on priority_HW which depend in "JoyplusMediaPlayerConfig.XML" ,
 	//private VideoViewInterface    mPlayers[];//it depend on priority_HW which depend in "JoyplusMediaPlayerConfig.XML" ,
@@ -32,7 +32,7 @@ public class JoyplusMediaPlayerServer {
     
 	/*client of JoyplusMediaPlayerServer,bc no C/S,so do it in the same thread*/
 	public JoyplusMediaPlayerServer(Context context){
-		  this.mContext  = context;
+		 // this.mContext  = context;
 		  mStateTracker  = new JoyplusMediaPlayerStateTrack();
 		  mPlayerConfigs = new JoyplusPlayerConfig[JoyplusMediaPlayerManager.TYPE_MAX+1];
 		  //mPlayers       = new VideoViewInterface[JoyplusMediaPlayerManager.TYPE_MAX+1];
@@ -218,15 +218,30 @@ public class JoyplusMediaPlayerServer {
     	}
     	public String toString(){
     		StringBuffer sb = new StringBuffer();
-            sb.append("PlayerState{ PlayerType: ").append(JoyplusMediaPlayerManager.getInstance().getPlayerTypeName(PlayerType)).
+            sb.append("PlayerState{ PlayerType: ").append(JoyplusMediaPlayerManager.getPlayerTypeName(PlayerType)).
                append(", DecodeType:").append(JoyplusMediaPlayerManager.getInstance().getDecodeName(DecodeType)).
                append(", MediaInfo:").append(Info.toString());
             return sb.toString();
     	}
     }
     
-    
-    
+    /*Interface of switch player*/
+    public boolean SwitchPlayer(){
+    	try {
+			PlayerState nextPlayer = getNextType(mCurrentState.PlayerType);
+			if(NO_FIND != nextPlayer.PlayerType && JoyplusMediaPlayerManager.isTypeAvailable(nextPlayer.PlayerType)){
+				mCurrentState = new PlayerState(nextPlayer);
+				return true;
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	return false;
+    }
+    public void InitPlayer(){
+    	mCurrentState = new PlayerState();
+    }
     /*Interface of Listener*/
 	public void registerListener(JoyplusMediaPlayerListener listener){
 		if(listener == null)return;
@@ -275,8 +290,5 @@ public class JoyplusMediaPlayerServer {
 		mMediaPlayerHandler.removeCallbacksAndMessages("MSG_NOPROCESSCOMMEND");
 		mMediaPlayerHandler.sendMessage(m);
  	 }
-	 
-	
-	
-	
+		
 }

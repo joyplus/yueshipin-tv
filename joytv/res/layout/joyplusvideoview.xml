@@ -24,6 +24,7 @@
 			            android:layout_width="match_parent"
 			            android:layout_height="match_parent"
 			            android:layout_centerInParent="true"
+			            android:layout_gravity="center"
 			            android:orientation="vertical"/>
 			        <ViewStub android:id="@+id/system_vitamioplayer_videoview_stub"
 			            android:layout="@layout/system_vitamioplayer_videoview"
@@ -91,10 +92,9 @@
 		                android:layout_height="wrap_content"
 		                android:layout_centerVertical="true"
 		                android:layout_marginLeft="30dp"
-		                android:text="Name"
-		                android:textAppearance="?android:attr/textAppearanceLarge"
+		                android:text=""
 		                android:textColor="@color/white"
-		                android:textSize="24dp" />
+		                android:textSize="26dp" />
 		            <TextView
 		                android:id="@+id/mediacontroller_topbar_time"
 		                android:layout_width="wrap_content"
@@ -102,9 +102,7 @@
 		                android:layout_alignParentRight="true"
 		                android:layout_centerVertical="true"
 		                android:layout_marginRight="30dp"
-		                android:text="26dp"
-		                android:textStyle="bold"
-		                android:textAppearance="?android:attr/textAppearanceLarge"
+		                android:textSize="26dp"
 		                android:textColor="@color/white" />
 		            <ImageView
 		                android:id="@+id/mediacontroller_topbar_resolution"

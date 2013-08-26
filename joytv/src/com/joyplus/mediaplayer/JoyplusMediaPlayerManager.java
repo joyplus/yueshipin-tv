@@ -129,6 +129,14 @@ public class JoyplusMediaPlayerManager {
 		public void unregisterAllListener(){
 			mServer.unregisterAllListener();
 		}
+		/*Interface of switch player*/
+		public boolean SwitchPlayer(){
+			return mServer.SwitchPlayer();
+		}
+		public void InitPlayer(){
+			mServer.InitPlayer();
+		}
+		
 	    private class JoyplusMediaPlayerDataManager{
 	    	private Context mDataContext;
 	     	

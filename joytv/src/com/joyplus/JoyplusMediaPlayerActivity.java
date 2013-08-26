@@ -34,7 +34,6 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joyplus.mediaplayer.JoyplusMediaPlayerListener;
 import com.joyplus.mediaplayer.JoyplusMediaPlayerManager;
-import com.joyplus.mediaplayer.JoyplusMediaPlayerServer.PlayerState;
 import com.joyplus.mediaplayer.MediaInfo;
 import com.joyplus.mediaplayer.VideoViewInterface;
 import com.joyplus.mediaplayer.VideoViewInterface.STATE;
@@ -59,24 +58,30 @@ import com.joyplus.tv.utils.UtilTools;
 import com.joyplus.tv.utils.DataBaseItems.UserHistory;
 import com.joyplus.tv.utils.DataBaseItems.UserShouCang;
 import com.umeng.analytics.MobclickAgent;
+
+import android.net.Uri;
 import android.net.http.AndroidHttpClient;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.provider.MediaStore.Video;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.Menu;
+import android.webkit.MimeTypeMap;
 import android.webkit.URLUtil;
 
 
@@ -93,7 +98,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 	//private Handler mHandler = new Handler(){};
 	/*msg 0-99*/
 	public static final int   MSG_MEDIAINFO         = 0;
-	public static final int   DELAY_SHOWVIEW        = 15*1000; //15s
+	public static final int   DELAY_SHOWVIEW        = 10*1000; //10s
 	public static final int   MSG_UPDATEPLAYERINFO  = 1;
 	public static final int   MSG_REQUSETPLAYERINFO = 2;
 	
@@ -102,6 +107,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 	public static final int   MSG_REQUESTFORWARD    = 5;
 	public static final int   MSG_REQUESTBACKWARD   = 6;
 	
+	public static final int   MSG_UPDATECURRENTINFO = 7;
 	enum URLTYPE{
 		UNKNOW (0), NETWORK (1), LOCAL (2);
 		private int type;
@@ -114,12 +120,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 	}
 	
 	public  static CurrentPlayerInfo mInfo;
-	private void NotifyPlayerInfo(){
-		Message m = new Message();
-		m.what    = MSG_UPDATEPLAYERINFO;
-		m.obj     = new CurrentPlayerInfo(mInfo);
-		JoyplusdispatchMessage(m);
-	}
+
 	private boolean StateOk = false;//flog of player in loading or others
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -131,13 +132,16 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 	private class JoyplusFinish implements Runnable{
 		@Override 
         public void run() {
+			finish();
 			JoyplusMediaPlayerManager.getInstance().unregisterListener(JoyplusMediaPlayerActivity.this);
-        	mTopBottomController.JoyplussetVisible(false, 0);
+			mTopBottomController.JoyplussetVisible(false, 0);
         	mMiddleControl.JoyplussetVisible(false, 0);
         	mVideoView.JoyplussetVisible(false, 0);
-            finish();
         }
 	};
+	private void finishActivity(){
+		new JoyplusFinish().run();
+	}
 	private Handler MiniHandler = new Handler(){
 		@Override
 		public void handleMessage(Message msg) {
@@ -148,7 +152,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 				mVideoView.getPlayer().PauseVideo();
 				return;
 			case JoyplusMediaPlayerMiddleControlMini.MSG_KEYDOWN_CENTER:
-				new JoyplusFinish().run();
+				finishActivity();
 				break;
 			case JoyplusMediaPlayerMiddleControlMini.MSG_KEYDOWN_LEFT:
 				if(mInfo.mType == URLTYPE.NETWORK && mInfo.getHavePre()){
@@ -177,7 +181,14 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 				}
 				break;
 			case JoyplusMediaPlayerMiddleControlMini.MSG_KEYDOWN_BOTTOM:
-				mInfo.setCollection(mInfo.mCollection!=0);
+				Log.d(TAG,"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
+				if(mInfo.mCollection!=0)
+				    mInfo.setCollection(false);
+				else 
+					mInfo.setCollection(true);
+				if(mVideoView.getPlayer() != null){
+					mVideoView.getPlayer().StartVideo();
+				}
 				mMiddleControl.JoyplussetVisible(false, JoyplusMediaPlayerMiddleControl.LAYOUT_MINI);
 				break;
 			case JoyplusMediaPlayerMiddleControlMini.MSG_KEYDOWN_PAUSEPLAY:
@@ -213,6 +224,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
     	mVideoView           = new JoyplusMediaPlayerVideoView(this);
     	mMiddleControl       = (JoyplusMediaPlayerMiddleControl) this.findViewById(R.id.JoyplusMediaPlayerMiddleControl);
     	mTopBottomController = new JoyplusMediaPlayerBar(this);
+    	registerReceiver(mReceiver, new IntentFilter(Constant.VIDEOPLAYERCMD));
 	}
 	private void InitUI(){
 		StateOk = false;
@@ -223,8 +235,9 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
     	mInfo = null;
     	mInfo = new CurrentPlayerInfo();
     	mInfo.mType = Info.mType;
+    	mInfo.NotifyPlayerInfo(); 
     	if(mVideoView.getPlayer() == null){
-    		new JoyplusFinish().run();
+    		finishActivity();
     		return;
     	}
 	}
@@ -232,6 +245,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
     	InitUI();
     	if(intent != null && intent.getData() != null){
     		mInfo.mType = URLTYPE.LOCAL;
+    		CreateLocal(intent.getData());
     	}else{
     		mInfo.mType = URLTYPE.NETWORK;
     		Create();
@@ -242,7 +256,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
     	return mVideoView.getPlayer();
     }
 	private boolean JoyplusdispatchMessage(Message msg){
-		if(Debug)Log.d(TAG,"JoyplusdispatchMessage()");
+		//if(Debug)Log.d(TAG,"JoyplusdispatchMessage()");
 		if(!mMiddleControl.JoyplusdispatchMessage(msg))
 			if(!mTopBottomController.JoyplusdispatchMessage(msg))
 				if(!mVideoView.JoyplusdispatchMessage(msg))
@@ -250,7 +264,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 		return true;
 	}
 	private boolean JoyplusonKeyDown(int keyCode, KeyEvent event){
-		if(Debug)Log.d(TAG,"JoyplusonKeyDown()");
+		if(Debug)Log.d(TAG,"JoyplusonKeyDown() "+keyCode);
 		if(!mMiddleControl.JoyplusonKeyDown(keyCode, event))
 		    if(!mTopBottomController.JoyplusonKeyDown(keyCode, event))
 			   return false;
@@ -261,12 +275,15 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 		// TODO Auto-generated method stub
 		if(!StateOk){
 			//when loading ,we only can finish it.
-			if(keyCode == KeyEvent.KEYCODE_BACK || keyCode == 111)new JoyplusFinish().run();
+			if(keyCode == KeyEvent.KEYCODE_BACK || keyCode == 111)finishActivity();;
 			return true;
 		}
 		if(JoyplusonKeyDown(keyCode,event))return true;
 		switch(keyCode){
 		case KeyEvent.KEYCODE_BACK:
+			if(mProd_type == 1 || mInfo.mType == URLTYPE.LOCAL){//movie
+				finishActivity();return true; 
+			}
 			JoyplusMediaPlayerMiddleControlMini.setLayout(JoyplusMediaPlayerMiddleControlMini.LAYOUT_SWITCH);
 			mMiddleControl.JoyplussetVisible(true, JoyplusMediaPlayerMiddleControl.LAYOUT_MINI);
 			return true;
@@ -303,21 +320,25 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 			case MSG_REQUESTFORWARD:
 				break;
 			case MSG_REQUESTBACKWARD:
-				new JoyplusFinish().run();
+				finishActivity();
 				break;
 			}
 		}
 	};
+	
 	@Override
 	public void MediaInfo(MediaInfo info) {
 		// TODO Auto-generated method stub
-		if((info.getState().toInt()>=STATE.MEDIA_STATE_INITED.toInt()&&!StateOk&&JoyplusMediaPlayerMiddleControlLoading.getReady())){ 
+		if((info.getState().toInt()>=STATE.MEDIA_STATE_INITED.toInt()&&!StateOk)){ 
 			mVideoView.getPlayer().StartVideo();
-			mMiddleControl.JoyplussetVisible(false, 0);
-			mTopBottomController.JoyplussetVisible(true, 0);
-			StateOk = true;//now we can dispatch keydown or others operation
+			if(mVideoView.hasMediaInfoChange()){
+				mMiddleControl.JoyplussetVisible(false, 0);
+				mTopBottomController.JoyplussetVisible(true, 0);
+				StateOk = true;//now we can dispatch keydown or others operation
+			}
 		}
 		mInfo.mState = info.CreateMediaInfo().getState();
+		//if(mInfo.mState == STATE.MEDIA_STATE_FINISH)MediaCompletion();
 		Message m = new Message();
 		m.what    = MSG_MEDIAINFO;
 		m.obj     = info;
@@ -328,29 +349,95 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 		// TODO Auto-generated method stub
 		if(mInfo.mType == URLTYPE.NETWORK){
 			autoPlayNext();
+		}else{//local media should be exit
+			finishActivity();
 		}
 	}
 	@Override
 	public void ErrorInfo() {
 		// TODO Auto-generated method stub
-	    new JoyplusFinish().run();
+		Log.e(TAG,"+++++++++++++++++ERROR+++++++++++++++");
+		finishActivity();
 	}
 	@Override
 	public void NoProcess(String commend) {
 		// TODO Auto-generated method stub
-		
+		Log.i(TAG,"Commend ("+commend+") is no disptch !!!");
 	} 
+	/* follow was use to handle the local resource
+	 * 
+	 * */
+	private void CreateLocal( Uri uri){
+		String scheme = uri.getScheme();
+        if (scheme.equals("content")) {
+			try {
+				initFromContentUri(uri);
+				mVideoView.getPlayer().SetVideoPaths(uri.toString());
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				onCreateDialog(0);//the uri was bad we can finish this.
+				e.printStackTrace();
+			}
+        } else if (uri.getScheme().equals("file")) {
+        	mInfo.mPlayerName = uri.getPath();
+        	mVideoView.getPlayer().SetVideoPaths(uri.toString());
+        }
+        mInfo.NotifyPlayerInfo();
+	}
 	
-	//this class was use to interface the player param before (VideoPlayerJPActivity)
+	private String getMediaType(String string){
+		String extension = MimeTypeMap.getFileExtensionFromUrl(string);
+        if (TextUtils.isEmpty(extension)) {
+            // getMimeTypeFromExtension() doesn't handle spaces in filenames nor can it handle
+            // urlEncoded strings. Let's try one last time at finding the extension.
+            int dotPos = string.lastIndexOf('.');
+            if (0 <= dotPos) {
+                extension = string.substring(dotPos + 1);
+            }
+        }
+        return extension;
+	}
+	 private void initFromContentUri(Uri uri) throws Exception {
+	        ContentResolver cr = this.getContentResolver();
+	        Cursor c = cr.query(uri, new String[] {Video.Media.DATA}, null, null, null);
+	        if (c != null) {
+	            try {
+	                if (c.moveToFirst()) {
+	                    String path;
+	                    try {
+	                        // Local videos will have a data column
+	                        path = c.getString(0);
+	                    } catch (IllegalArgumentException e) {
+	                        // For non-local videos, the path is the uri
+	                        path = uri.toString();
+	                    }
+	                    mInfo.mPlayerName = path.substring(path.lastIndexOf('/') + 1);
+	                } else {
+	                    throw new Exception("Nothing found: " + uri);
+	                }
+	            } finally {
+	                c.close();
+	            }
+	        } else {
+	            throw new Exception("Bad URI: " + uri);
+	        }
+	    }
+
+	/*
+	 * this class was use to interface the player param before (VideoPlayerJPActivity)
+	 * 
+	 */
 	public class CurrentPlayerInfo  implements Parcelable{
-		public String  mPlayerUri  = ""; //the uri which was use to play
-		public String  mPlayerName = "";//the name of media
+		public String  mPlayerUri  = "";             //the uri which was use to play
+		public String  mPlayerName = "";             //the name of media
 		public String  mQua        = "Unknow";       //the qua of madia 720P/1080P/Unknow
-		public URLTYPE mType       = URLTYPE.UNKNOW;
-		public int     mCollection = 0 ; //false =0 else true
+		public URLTYPE mType       = URLTYPE.UNKNOW; //the flog of this resource from
+		public int     mCollection = 0 ;             //false =0 else true
 		public STATE   mState      = STATE.MEDIA_STATE_UNKNOW;//current state
-	
-		public int     mLastTime   = 0;
+	    
+		public int     mHaveNext   = 0 ;             //false =0 else true
+		public int     mHavePre    = 0 ;             //false =0 else true
+		public int     mLastTime   = 0 ;
 		public String  mFrom       = "";
 		@Override
 		public int describeContents() {
@@ -367,6 +454,8 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 				mType       = info.mType;
 				mCollection = info.mCollection;
 				mState      = info.mState;
+				mHaveNext   = info.mHaveNext;
+				mHavePre    = info.mHavePre;
 				mLastTime   = info.mLastTime;
 				mFrom       = info.mFrom;
 			}
@@ -383,6 +472,8 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 			dest.writeInt(mType.toInt());
 			dest.writeInt(mCollection);
 			dest.writeInt(mState.toInt());
+			dest.writeInt(mHaveNext);
+			dest.writeInt(mHavePre);
 			dest.writeInt(mLastTime);
 			dest.writeString(mFrom);
 		}
@@ -426,6 +517,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 			return false;
 		}
 		public void setCollection(boolean collection){
+			Log.d(TAG,"1111111111111111111111111111 "+collection);
 			String url = "";
 			if(collection)
 				url = Constant.BASE_URL + "program/favority";
@@ -436,10 +528,16 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 			AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
 			cb.SetHeader(app.getHeaders());
 			if(collection)
-			    cb.params(params).url(url).type(JSONObject.class).weakHandler(this, "favorityResult");
+			    cb.params(params).url(url).type(JSONObject.class).weakHandler(JoyplusMediaPlayerActivity.this, "favorityResult");
 			else 
-				cb.params(params).url(url).type(JSONObject.class).weakHandler(this, "unfavorityResult");
-			aq.ajax(cb);
+				cb.params(params).url(url).type(JSONObject.class).weakHandler(JoyplusMediaPlayerActivity.this, "unfavorityResult");
+			aq.ajax(url,JSONObject.class,cb);
+		}
+		private void NotifyPlayerInfo(){
+			Message m = new Message();
+			m.what    = MSG_UPDATEPLAYERINFO;
+			m.obj     = new CurrentPlayerInfo(this);
+			JoyplusdispatchMessage(m);
 		}
 	}
 	
@@ -527,9 +625,6 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 		app = (App) getApplication();
 		m_ReturnProgramView = app.get_ReturnProgramView();
 		initVedioDate();
-		IntentFilter intentFilter = new IntentFilter();
-		intentFilter.addAction(Constant.VIDEOPLAYERCMD);
-		registerReceiver(mReceiver, intentFilter);
 		// 获取是否收藏
 		getIsShoucangData();
 	}
@@ -539,7 +634,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 		CurrentPlayDetailData playDate = app.getmCurrentPlayDetailData();
 		if (playDate == null) {// 如果不设置就不播放
 			//change by Jas@20130816
-			new JoyplusFinish().run();
+			finishActivity();
 			return;
 		}
 		// 初始化基本播放数据
@@ -628,12 +723,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 				new Thread(new PrepareTask()).start();
 				break;
 			case MESSAGE_URLS_READY:// url 准备好了
-				if(playUrls.size()<=0){
-					if(!JoyplusMediaPlayerActivity.this.isFinishing()){
-						showDialog(0);
-					}
-					return;
-				}
+				if(playUrls.size()<=0)return;
 				currentPlayIndex = 0;
 				currentPlayUrl = playUrls.get(currentPlayIndex).url;
 				mProd_src = playUrls.get(currentPlayIndex).source_from;
@@ -696,7 +786,6 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 				updateSourceAndTime();
 				//add by Jas@20130816 for player
 				mInfo.mPlayerUri = currentPlayUrl;
-				NotifyPlayerInfo();
 				mVideoView.getPlayer().SetVideoPaths(currentPlayUrl);
 				if(lastTime>0){
 					mVideoView.getPlayer().SeekVideo((int)lastTime);
@@ -793,8 +882,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 	}
 	
 	private void noUrlCanPlay(){		
-		if(!JoyplusMediaPlayerActivity.this.isFinishing()){
-			showDialog(0);			
+		if(!JoyplusMediaPlayerActivity.this.isFinishing()){			
 			//所有url不能播放，向服务器传递-1
 			saveToServer(-1, 0);
 		}
@@ -980,13 +1068,13 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 			mInfo.mPlayerName = "UnKnow ";
 			break;
 		}
-		NotifyPlayerInfo();
+		mInfo.NotifyPlayerInfo();
 	}
 		
 	private void autoPlayNext(){
 		switch (mProd_type) {
 		case 1:
-			new JoyplusFinish().run();
+			finishActivity();
 			break;
 		case 2:
 		case 131:
@@ -994,7 +1082,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 				playNext();
 			}else{
 				setResult2Xiangqing();//返回集数和是否收藏
-				new JoyplusFinish().run();
+				finishActivity();
 			}
 			break;
 		case 3:
@@ -1002,16 +1090,15 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 				playNext();
 			}else{
 				setResult2Xiangqing();//返回集数和是否收藏
-				new JoyplusFinish().run();
+				finishActivity();
 			}
 			break;
 		default:
-			new JoyplusFinish().run();
+			finishActivity();
 			break;
 		}
 	}
 	private void playNext(){
-		mInfo = new CurrentPlayerInfo();
 		InitUI();
 		lastTime = 0;
 		if (mProd_type == 3) {
@@ -1117,8 +1204,8 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 				//mDefinationIcon.setVisibility(View.INVISIBLE);
 				mInfo.mQua = "Unknow";
 			}
-			NotifyPlayerInfo();
 		}
+		mInfo.NotifyPlayerInfo();
 	}
 
 	/**
@@ -1744,10 +1831,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
 		Log.i(TAG, "onDestroy--->");		
-		unregisterReceiver(mReceiver);
-		if (mVideoView != null) {
-			
-		}		
+		unregisterReceiver(mReceiver);	
 		super.onDestroy();
 	}
 
@@ -1769,8 +1853,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 			app.MyToast(aq.getContext(),getResources().getString(R.string.networknotwork));
 			return;
 		}
-		if (json == null || json.equals(""))
-			return;
+		if (json == null || json.equals(""))return;
 		Log.d(TAG, "data = " + json.toString());
 		String flag = json.toString();
 		if (!flag.equals("")) {
@@ -1788,6 +1871,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 	}
 
 	public void favorityResult(String url, JSONObject json,AjaxStatus status) {
+		Log.d(TAG,"222222222222favorityResult");
 		if (json != null) {
 			try {
 				// woof is "00000",now "20024",by yyc
@@ -1814,6 +1898,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 	}
 
 	public void unfavorityResult(String url, JSONObject json, AjaxStatus status) {
+		Log.d(TAG," 2222222unfavorityResult ");
 		if (json != null) {
 			try {
 				if (json.getString("res_code").trim().equalsIgnoreCase("00000")) {
@@ -1848,15 +1933,9 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
 							// TODO Auto-generated method stub
-							new JoyplusFinish().run();
+							finishActivity();
 						}
-					}).setOnCancelListener(new DialogInterface.OnCancelListener() {
-						@Override
-						public void onCancel(DialogInterface dialog) {
-							// TODO Auto-generated method stub
-							new JoyplusFinish().run();
-						}
-			}).create();
+					}).create();
 	        alertDialog.show(); 
 		return super.onCreateDialog(id);
 	}

@@ -14,7 +14,7 @@ import android.widget.LinearLayout;
 
 public class JoyplusVideoView extends LinearLayout{
 
-	private boolean Debug = true;
+	private boolean Debug = false;
 	private String  TAG   = "JoyplusVideoView";
 	
 	private Context mContext;

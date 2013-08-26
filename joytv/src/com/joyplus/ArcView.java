@@ -14,7 +14,7 @@ public class ArcView extends View {
 	int r1 = 12;
 	private int mAngle = 180;
 	private Paint mPaints;
-    private boolean mUseCenters;
+    //private boolean mUseCenters;
     private RectF mBigOval;
     private float mStart;
 
@@ -43,7 +43,7 @@ public class ArcView extends View {
        mPaints.setStyle(Paint.Style.STROKE);
        mPaints.setStrokeWidth(r1);
        mPaints.setColor(0xFFF18C21);
-       mUseCenters = true;
+      // mUseCenters = true;
 
 	}
     private void drawArcs(Canvas canvas, RectF oval, boolean useCenter,

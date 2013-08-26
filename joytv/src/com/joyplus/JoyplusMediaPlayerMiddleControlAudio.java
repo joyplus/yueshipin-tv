@@ -5,12 +5,10 @@ import com.joyplus.tv.R;
 
 import android.content.Context;
 import android.media.AudioManager;
-import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 public class JoyplusMediaPlayerMiddleControlAudio extends LinearLayout implements JoyplusMediaPlayerInterface{
 	

@@ -2,6 +2,7 @@ package com.joyplus;
 
 
 
+import com.joyplus.JoyplusMediaPlayerActivity.URLTYPE;
 import com.joyplus.tv.R;
 
 import android.content.Context;
@@ -9,7 +10,6 @@ import android.net.TrafficStats;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -19,10 +19,8 @@ public class JoyplusMediaPlayerMiddleControlLoading extends LinearLayout impleme
 	private Context mContext;
 	private long mStartRX = 0;//
 	private long rxByteslast = 0;
-	public static long mLoadingPreparedPercent = 0;//
-	public static boolean getReady(){
-		return mLoadingPreparedPercent>=1000;
-	}
+	public  long mLoadingPreparedPercent = -1;//
+	
 	private TextView info;
 	private TextView lasttime;
 	private TextView from;
@@ -44,15 +42,16 @@ public class JoyplusMediaPlayerMiddleControlLoading extends LinearLayout impleme
 	}
 	private void UpdateInfo(int speed,int finished){
 		if(speed<0)speed = 0;
-		if(finished<0)finished=0;
-		info.setText(mContext.getApplicationContext().getString(R.string.meidaplayer_loading_string,speed,finished));
+		if(finished<-1)finished=0;
+		else if(finished>95)finished = 95;
+		if(finished >= 0)info.setText(mContext.getApplicationContext().getString(R.string.meidaplayer_loading_string,speed,finished));
 		if(JoyplusMediaPlayerActivity.mInfo.mLastTime>0){
 			lasttime.setVisibility(View.VISIBLE);
 			lasttime.setText(mContext.getApplicationContext().getString(R.string.meidaplayer_loading_string_lasttime)+getTimeString(JoyplusMediaPlayerActivity.mInfo.mLastTime));
 		}else lasttime.setVisibility(View.GONE);
 		if(JoyplusMediaPlayerActivity.mInfo.mFrom != null && !"".equals(JoyplusMediaPlayerActivity.mInfo.mFrom)){
 			from.setVisibility(View.VISIBLE);
-			from.setText(mContext.getApplicationContext().getString(R.string.meidaplayer_loading_string_from)+JoyplusMediaPlayerActivity.mInfo.mFrom);
+			from.setText(JoyplusMediaPlayerActivity.mInfo.mFrom);
 		}else from.setVisibility(View.GONE);
 	}
 	private String getTimeString(int time){
@@ -97,9 +96,8 @@ public class JoyplusMediaPlayerMiddleControlLoading extends LinearLayout impleme
 				m_bitrate = (rxBytes - rxByteslast) / timeTakenMillis;
 				rxByteslast = rxBytes;
 				mLoadingPreparedPercent+=m_bitrate;
-				UpdateInfo((int) m_bitrate,(int)mLoadingPreparedPercent);
-			}
-			//mHandler.removeCallbacks(UpdateTrafficStats);		
+				UpdateInfo((int) m_bitrate,(int)mLoadingPreparedPercent/100);
+			}	
 			mHandler.removeCallbacksAndMessages(null);
 			mHandler.postDelayed(UpdateTrafficStats, 500);
 		}
@@ -117,11 +115,12 @@ public class JoyplusMediaPlayerMiddleControlLoading extends LinearLayout impleme
 	@Override
 	public void JoyplussetVisible(boolean visible,int layout) {
 		// TODO Auto-generated method stub
-		Log.d("Jas","ddddddddddddddd"+visible);
 		if(visible){
 			this.setVisibility(View.VISIBLE);
-			StartTrafficStates();
-			UpdateInfo(0,(int)mLoadingPreparedPercent);
+			if(JoyplusMediaPlayerActivity.mInfo.mType == URLTYPE.NETWORK){
+				StartTrafficStates();
+				UpdateInfo(-1,(int)mLoadingPreparedPercent);
+			}
 		}
 		if(!visible){
 			mHandler.removeCallbacksAndMessages(null);

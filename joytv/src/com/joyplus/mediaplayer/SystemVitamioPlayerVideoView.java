@@ -1,8 +1,6 @@
 package com.joyplus.mediaplayer;
 
-import com.joyplus.mediaplayer.VideoViewInterface.STATE;
 import com.joyplus.tv.R;
-
 import io.vov.vitamio.MediaPlayer;
 import io.vov.vitamio.MediaPlayer.OnCompletionListener;
 import io.vov.vitamio.MediaPlayer.OnErrorListener;
@@ -12,7 +10,8 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.LinearLayout;
 
-public class SystemVitamioPlayerVideoView extends LinearLayout  implements ViewInterface,VideoViewInterface, OnErrorListener, OnCompletionListener, OnPreparedListener{
+public class SystemVitamioPlayerVideoView extends LinearLayout  implements ViewInterface,VideoViewInterface, OnErrorListener,
+                                                                           OnCompletionListener, OnPreparedListener{
     
 	private boolean Debug = true;
 	private String  TAG   = "SystemVitamioPlayerVideoView";
@@ -139,5 +138,4 @@ public class SystemVitamioPlayerVideoView extends LinearLayout  implements ViewI
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 }

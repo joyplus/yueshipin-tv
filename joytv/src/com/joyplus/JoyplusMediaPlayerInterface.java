@@ -1,7 +1,5 @@
 package com.joyplus;
 
-import com.joyplus.mediaplayer.ViewInterface;
-
 import android.os.Message;
 import android.view.KeyEvent;
 

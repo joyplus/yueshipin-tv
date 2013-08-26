@@ -1,5 +1,6 @@
 package com.joyplus.mediaplayer;
 
+
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -36,6 +37,9 @@ public class SystemVideoView extends VideoView implements VideoViewInterface{
 				||mMediaInfo.getState() == STATE.MEDIA_STATE_INITED){
 			mMediaInfo.setCurrentTime(this.getCurrentPosition());
 			mMediaInfo.setTotleTime(this.getDuration());
+		}else if(mMediaInfo.getPath() == null){
+			mMediaInfo.setCurrentTime(0);
+			mMediaInfo.setTotleTime(0);
 		}
 		return mMediaInfo;
 	}
@@ -76,6 +80,7 @@ public class SystemVideoView extends VideoView implements VideoViewInterface{
 		// TODO Auto-generated method stub
 		if(Debug)Log.d(TAG,"seekVideo("+seekTo+")");
 		this.seekTo(seekTo);
+		mMediaInfo.setState(STATE.MEDIA_STATE_LOADING);
 	}
     public boolean IsPlaying(){
     	if(Debug)Log.d(TAG,"IsPlaying()");

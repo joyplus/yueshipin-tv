@@ -15,7 +15,7 @@ public class JoyplusPlayerMonitor{
 	    private String  TAG   = "JoyplusPlayerMonitor";
 	    private static Handler mHandler;
 	    private VideoViewInterface  mPlayer;
-	    private static  int DELAY = 800;
+	    private static  int DELAY = 500;
 	    private boolean Flog = false;
 	    public  static final int MSG_STATEUPDATE       = 1;
 	    public  static final int MSG_NOPROCESSCOMMEND  = 2;
@@ -26,7 +26,7 @@ public class JoyplusPlayerMonitor{
 
 		public void setUpdateTime(int time){
 			if(Debug)Log.d(TAG,"setUpdateTime("+time+")");
-			if(time>=500 && time<=1000){
+			if(time>=300 && time<=800){
 				DELAY  = time;
 			}
 		}
@@ -65,6 +65,7 @@ public class JoyplusPlayerMonitor{
 					try {
 						Thread.sleep(DELAY);
 						notityState();
+						System.gc();
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace(); 

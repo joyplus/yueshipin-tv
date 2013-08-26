@@ -353,8 +353,18 @@
             android:name="com.joyplus.JoyplusMediaPlayerActivity"
             android:configChanges="orientation|keyboardHidden|navigation"
             android:launchMode="singleTop"
+            android:clearTaskOnLaunch="true"
             android:screenOrientation="landscape"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <action android:name="android.intent.action.SENDTO" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data   android:mimeType="video/*" android:scheme="file" />
+                <data   android:mimeType="video/*" android:scheme="content" />
+            </intent-filter>
+            
         </activity>
         <activity
             android:name="io.vov.vitamio.InitActivity"

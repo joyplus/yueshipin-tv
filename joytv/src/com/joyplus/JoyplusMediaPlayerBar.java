@@ -2,27 +2,18 @@ package com.joyplus;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
-
-import com.joyplus.JoyplusMediaPlayerActivity.CurrentPlayerInfo;
 import com.joyplus.mediaplayer.MediaInfo;
 import com.joyplus.mediaplayer.VideoViewInterface.STATE;
 import com.joyplus.tv.R;
-import com.joyplus.tv.utils.UtilTools;
 
 public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
     
@@ -35,7 +26,7 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 	private static final int MSG_BASE        = 300;
 	private static final int MSG_SHOWVIEW    = MSG_BASE+1;
 	private static final int MSG_HIDEVIEW    = MSG_BASE+2;
-	private static final int MSG_UPDATETIME  = MSG_BASE+3;
+	//private static final int MSG_UPDATETIME  = MSG_BASE+3;
 	private static final int MSG_REQUESTSHOW = MSG_BASE+4;
 	private static final int MSG_REQUESTHIDE = MSG_BASE+5;
 	private static final int LAYOUT_BAR      = MSG_BASE+7;
@@ -152,7 +143,7 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 		public VideoViewTopBar(){
 			InitResource();
 		}
-		public void dispatchMessage(Message m){
+		/*public void dispatchMessage(Message m){
 			switch(m.what){
 			case JoyplusMediaPlayerActivity.MSG_MEDIAINFO:
 				 if(Layout.getVisibility() == View.VISIBLE){
@@ -160,7 +151,7 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 				 }
 				 break;
 			}
-		}
+		}*/
 		private Runnable UpdateTime = new Runnable(){
 			@Override
 			public void run() {
@@ -231,6 +222,7 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 	    private static final int OFFSET = 33;
 		private int seekBarWidthOffset  = 40;
 		public void Init(){
+			SeekBar.setEnabled(false);
 			mSeekBarType = SEEKTYPE.NORMAL;
 			mSpeed       = SPEED.X0;
 			setVisible(true);
@@ -275,20 +267,22 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 			if(Layout_Time.getVisibility() == View.VISIBLE && (mActivity.getPlayer()!=null)){
 				switch(keyCode){
 				case KeyEvent.KEYCODE_DPAD_LEFT:
-					if(mSeekBarType == SEEKTYPE.FORWARD)mSpeed = SPEED.X1;
-					else if(mSpeed == SPEED.X3)
-						return true;
-					else mSpeed = getNextSpeed(mSpeed);
-					mSeekBarType = SEEKTYPE.BACKWARD;					
+					if(mSeekBarType == SEEKTYPE.FORWARD){
+						if(mSpeed == SPEED.X1)mSeekBarType = SEEKTYPE.BACKWARD;
+						mSpeed = SPEED.X1;
+					}else if(mSpeed == SPEED.X3)return true;
+					else {mSpeed = getNextSpeed(mSpeed);
+						mSeekBarType = SEEKTYPE.BACKWARD;}
 					mHandler.removeCallbacks(QuickAdjustSeekBar);
 					mHandler.postDelayed(QuickAdjustSeekBar, 200);
 					return true;
 				case KeyEvent.KEYCODE_DPAD_RIGHT:
-					if(mSeekBarType == SEEKTYPE.BACKWARD)mSpeed = SPEED.X1;
-					else if(mSpeed == SPEED.X3)
-						return true;
-					else mSpeed = getNextSpeed(mSpeed);
-					mSeekBarType = SEEKTYPE.FORWARD;
+					if(mSeekBarType == SEEKTYPE.BACKWARD){
+						if(mSpeed == SPEED.X1)mSeekBarType = SEEKTYPE.FORWARD;
+						mSpeed = SPEED.X1;
+					}else if(mSpeed == SPEED.X3)	return true;
+					else {mSpeed = getNextSpeed(mSpeed);
+					      mSeekBarType = SEEKTYPE.FORWARD;}
 					mHandler.removeCallbacks(QuickAdjustSeekBar);
 					mHandler.postDelayed(QuickAdjustSeekBar, 200);
 					return true;
@@ -320,6 +314,7 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 			if(Debug)Log.d(TAG,"setVisibility("+Visiblility+")");
 			Layout_Time.setVisibility(Visiblility?View.VISIBLE:View.GONE);
 			Layout_seek.setVisibility(Visiblility?View.VISIBLE:View.GONE);
+			if(Visiblility)UpdateProgress(JoyplusMediaPlayerVideoView.CurrentMediaInfo);
 		}
 		private void InitResource(){
 			if(Debug)Log.d(TAG,"VideoViewController InitResource()");
@@ -330,6 +325,8 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 			Layout_seek       = (RelativeLayout)mActivity.findViewById(R.id.mediacontroller_bottombar_seek);
 			Layout_Speed      = (RelativeLayout)mActivity.findViewById(R.id.mediacontroller_bottombar_time_fast);
 			SpeedView         = (TextView)      mActivity.findViewById(R.id.mediacontroller_bottombar_time_fasttext);
+			SeekBar.setEnabled(false);
+			
 		}
 		public void UpdateProgress(MediaInfo info){
 			//if(Debug)Log.d(TAG,"UpdateProgress()");

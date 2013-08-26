@@ -135,6 +135,4 @@ public class SystemMediaPlayerVideoView extends LinearLayout implements ViewInte
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	
 }

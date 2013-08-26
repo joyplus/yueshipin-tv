@@ -9,11 +9,6 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewStub;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-
-import com.joyplus.mediaplayer.JoyplusMediaPlayerManager;
-import com.joyplus.mediaplayer.JoyplusPlayerMonitor;
-import com.joyplus.mediaplayer.VideoViewInterface;
 import com.joyplus.tv.R;
 
 public class JoyplusMediaPlayerMiddleControl extends LinearLayout implements JoyplusMediaPlayerInterface{
@@ -23,7 +18,7 @@ public class JoyplusMediaPlayerMiddleControl extends LinearLayout implements Joy
 	private String  TAG   = "JoyplusMediaPlayerMiddleControl";
 	
 	private JoyplusMediaPlayerInterface   mView;//Current display layout;
-	private Context  mContext;
+	//private Context  mContext;
 	
 	private final static int MSG_BASE  = 200;
 	public  final static int MSG_HIDEVIEW               = MSG_BASE+1;
@@ -95,13 +90,13 @@ public class JoyplusMediaPlayerMiddleControl extends LinearLayout implements Joy
 	public JoyplusMediaPlayerMiddleControl(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		// TODO Auto-generated constructor stub
-		mContext = context;
+		//mContext = context;
 		hideView();
 	}
 	public JoyplusMediaPlayerMiddleControl(Context context) {
 		super(context);
 		// TODO Auto-generated constructor stub
-		mContext = context;
+		//mContext = context;
 		hideView();
 	}
 	public void hideView(){
