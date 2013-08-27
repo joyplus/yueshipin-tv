@@ -1,6 +1,6 @@
 package com.joyplus.mediaplayer;
 
-public interface VideoViewInterface{
+public interface VideoViewInterface extends ViewInterface{
      
 	   /*interface of event*/
 	   static final int MIN_PLAYER_EVENT = 1;

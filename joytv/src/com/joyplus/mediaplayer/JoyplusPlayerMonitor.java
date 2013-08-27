@@ -13,7 +13,7 @@ public class JoyplusPlayerMonitor{
 
 		private boolean Debug = false;
 	    private String  TAG   = "JoyplusPlayerMonitor";
-	    private static Handler mHandler;
+	    public static Handler mHandler;
 	    private VideoViewInterface  mPlayer;
 	    private static  int DELAY = 500;
 	    private boolean Flog = false;
@@ -37,14 +37,14 @@ public class JoyplusPlayerMonitor{
 			if(mHandler == null || mPlayer == null)return;
 			Message m = Message.obtain(mHandler, MSG_STATEUPDATE,"MSG_STATEUPDATE");
 			m.obj     = mPlayer.getMediaInfo();
-			mHandler.removeCallbacksAndMessages("MSG_STATEUPDATE");
+			mHandler.removeCallbacksAndMessages(null);
 			mHandler.sendMessage(m);
 		}
 	    public void stopMonitor(){
 	    	if(Debug)Log.d(TAG,"stopMonitor()");
 	    	Flog = false;
 	    	mRunnable = null;
-			mHandler.removeCallbacksAndMessages("MSG_STATEUPDATE");
+			mHandler.removeCallbacksAndMessages(null);
 			mHandler = null;
 	    }
 	    public void startMonitor(Handler handler){

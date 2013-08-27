@@ -103,6 +103,7 @@ public class JoyplusMediaPlayerMiddleControl extends LinearLayout implements Joy
 		if(mView!=null){
 			mView.JoyplussetVisible(false, 0);
     		((View)mView).setVisibility(View.GONE);
+    		((View)mView).startAnimation(JoyplusMediaPlayerActivity.mAlphaDispear);
     	}
 	}
 	public boolean update(int layout){
@@ -156,7 +157,6 @@ public class JoyplusMediaPlayerMiddleControl extends LinearLayout implements Joy
 			 if( mView.JoyplusonKeyDown(keyCode, event)){
 				 mHandler.sendEmptyMessage(MSG_REQUESTSHOWVIEW);
 			 }else{
-				 Log.d("Jas","3333333333333333333333333333");
 				 setVisible(false,0,mView.JoyplusgetLayout());
 			 };
 			 return true;
@@ -166,13 +166,17 @@ public class JoyplusMediaPlayerMiddleControl extends LinearLayout implements Joy
 	@Override
 	public void JoyplussetVisible(boolean visible,int layout) {
 		// TODO Auto-generated method stub
-		 Log.d("Jas","444444444444444444"+visible);
 		setVisible(visible,0,layout);
 	}
 	@Override
 	public int JoyplusgetLayout() {
 		// TODO Auto-generated method stub
 		return LAYOUT_CONTROL_MIDDLE;
+	}
+	@Override
+	public boolean JoyplusonKeyLongPress(int keyCode, KeyEvent event) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 	
 }

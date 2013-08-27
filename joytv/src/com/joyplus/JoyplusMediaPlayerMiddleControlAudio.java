@@ -79,4 +79,9 @@ public class JoyplusMediaPlayerMiddleControlAudio extends LinearLayout implement
 		// TODO Auto-generated method stub
 		return JoyplusMediaPlayerMiddleControl.LAYOUT_AUDIO;
 	}
+	@Override
+	public boolean JoyplusonKeyLongPress(int keyCode, KeyEvent event) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

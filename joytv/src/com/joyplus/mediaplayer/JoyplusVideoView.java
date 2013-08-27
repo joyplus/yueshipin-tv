@@ -98,6 +98,7 @@ public class JoyplusVideoView extends LinearLayout{
     public void hideView(){
     	if(Debug)Log.d(TAG,"hideView()");
     	if(mView!=null){
+    		((ViewInterface)mView).setVisibility(false);
     		((View)mView).setVisibility(View.GONE);
     	}
     	if(mMonitor != null){

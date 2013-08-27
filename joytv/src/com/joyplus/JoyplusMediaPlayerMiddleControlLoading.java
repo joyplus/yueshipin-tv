@@ -132,4 +132,9 @@ public class JoyplusMediaPlayerMiddleControlLoading extends LinearLayout impleme
 		// TODO Auto-generated method stub
 		return JoyplusMediaPlayerMiddleControl.LAYOUT_LOADING;
 	}
+	@Override
+	public boolean JoyplusonKeyLongPress(int keyCode, KeyEvent event) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

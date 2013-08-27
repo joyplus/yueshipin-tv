@@ -81,14 +81,16 @@ import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.webkit.MimeTypeMap;
 import android.webkit.URLUtil;
 
 
 public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMediaPlayerListener{
 	
-	private boolean Debug = true;
-	private String  TAG   = "JoyplusMediaPlayerActivity";
+	private boolean Debug   = true;
+	private String  TAG     = "JoyplusMediaPlayerActivity";
 	/*videoview layout      msg 100-199  level 3*/
 	public JoyplusMediaPlayerVideoView     mVideoView;
 	/*middle control layout msg 200-299  level 2*/
@@ -108,6 +110,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 	public static final int   MSG_REQUESTBACKWARD   = 6;
 	
 	public static final int   MSG_UPDATECURRENTINFO = 7;
+	
 	enum URLTYPE{
 		UNKNOW (0), NETWORK (1), LOCAL (2);
 		private int type;
@@ -118,10 +121,9 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 			return type;
 		}
 	}
-	
 	public  static CurrentPlayerInfo mInfo;
-
-	private boolean StateOk = false;//flog of player in loading or others
+	public  static boolean StateOk = false;//flog of player in loading or others
+	public  static Animation mAlphaDispear ;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -181,7 +183,6 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 				}
 				break;
 			case JoyplusMediaPlayerMiddleControlMini.MSG_KEYDOWN_BOTTOM:
-				Log.d(TAG,"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
 				if(mInfo.mCollection!=0)
 				    mInfo.setCollection(false);
 				else 
@@ -196,6 +197,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 					mVideoView.getPlayer().StartVideo();
 				}
 				mMiddleControl.JoyplussetVisible(false, JoyplusMediaPlayerMiddleControl.LAYOUT_MINI);
+				mTopBottomController.JoyplussetVisible(true, 0);//Controller should be hide next.
 				break;
 			}			
 		}
@@ -225,6 +227,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
     	mMiddleControl       = (JoyplusMediaPlayerMiddleControl) this.findViewById(R.id.JoyplusMediaPlayerMiddleControl);
     	mTopBottomController = new JoyplusMediaPlayerBar(this);
     	registerReceiver(mReceiver, new IntentFilter(Constant.VIDEOPLAYERCMD));
+    	mAlphaDispear = AnimationUtils.loadAnimation(this, R.anim.alpha_disappear);
 	}
 	private void InitUI(){
 		StateOk = false;
@@ -257,12 +260,21 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
     }
 	private boolean JoyplusdispatchMessage(Message msg){
 		//if(Debug)Log.d(TAG,"JoyplusdispatchMessage()");
-		if(!mMiddleControl.JoyplusdispatchMessage(msg))
-			if(!mTopBottomController.JoyplusdispatchMessage(msg))
-				if(!mVideoView.JoyplusdispatchMessage(msg))
+		if(!mVideoView.JoyplusdispatchMessage(msg))
+			if(!mMiddleControl.JoyplusdispatchMessage(msg))
+				if(!mTopBottomController.JoyplusdispatchMessage(msg))
 				       return false;
 		return true;
 	}
+	
+	private boolean JoyplusonKeyLongPress(int keyCode, KeyEvent event){
+		if(Debug)Log.d(TAG,"JoyplusonKeyLongPress() "+keyCode);
+		if(!mMiddleControl.JoyplusonKeyLongPress(keyCode, event))
+		    if(!mTopBottomController.JoyplusonKeyLongPress(keyCode, event))
+			   return false;
+		return true;
+	}
+
 	private boolean JoyplusonKeyDown(int keyCode, KeyEvent event){
 		if(Debug)Log.d(TAG,"JoyplusonKeyDown() "+keyCode);
 		if(!mMiddleControl.JoyplusonKeyDown(keyCode, event))
@@ -272,10 +284,34 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 	}
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		// TODO Auto-generated method stub	
+		if(!event.isTracking())event.startTracking();//now we can listener to omKeyLongPress	
+		return true;
+	}
+	@Override
+	public boolean onKeyLongPress(int keyCode, KeyEvent event) {
+		// TODO Auto-generated method stub
+		if(!StateOk ){
+			return true;
+		}
+		if(JoyplusonKeyLongPress(keyCode,event))return true;
+		switch(keyCode){
+		case KeyEvent.KEYCODE_DPAD_LEFT:
+		case KeyEvent.KEYCODE_DPAD_RIGHT:
+			 Message msg = new Message();
+			 msg.what    = JoyplusMediaPlayerBar.MSG_SHOWANDKEYLONGPRESS;
+			 msg.obj     = keyCode;
+		     mTopBottomController.JoyplusdispatchMessage(msg);
+		     break;
+		}
+		return super.onKeyLongPress(keyCode, event);
+	}
+	@Override
+	public boolean onKeyUp(int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
 		if(!StateOk){
 			//when loading ,we only can finish it.
-			if(keyCode == KeyEvent.KEYCODE_BACK || keyCode == 111)finishActivity();;
+			if(keyCode == KeyEvent.KEYCODE_BACK || keyCode == 111)finishActivity();
 			return true;
 		}
 		if(JoyplusonKeyDown(keyCode,event))return true;
@@ -289,23 +325,32 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 			return true;
 		case KeyEvent.KEYCODE_DPAD_LEFT:
 		case KeyEvent.KEYCODE_DPAD_RIGHT:
-			mTopBottomController.JoyplussetVisible(true, 0);
-			break;
+			Message msg = new Message();
+			msg.what    = JoyplusMediaPlayerBar.MSG_SHOWANDKEYDOWN;
+			msg.obj     = keyCode;
+		    mTopBottomController.JoyplusdispatchMessage(msg);
+			return true;
 		case KeyEvent.KEYCODE_DPAD_UP:
 		case KeyEvent.KEYCODE_DPAD_DOWN:
 		case KeyEvent.KEYCODE_VOLUME_DOWN:
 		case KeyEvent.KEYCODE_VOLUME_UP:
 		case KeyEvent.KEYCODE_VOLUME_MUTE:
 			mMiddleControl.JoyplussetVisible(true, JoyplusMediaPlayerMiddleControl.LAYOUT_AUDIO);
-			if(mMiddleControl.JoyplusonKeyDown(keyCode, event))return true;
+			if(mMiddleControl.JoyplusonKeyDown(keyCode, event))return true;			
 			break;
 		case KeyEvent.KEYCODE_DPAD_CENTER:
 		case KeyEvent.KEYCODE_ENTER:
 			JoyplusMediaPlayerMiddleControlMini.setLayout(JoyplusMediaPlayerMiddleControlMini.LAYOUT_PAUSEPLAY);
 			mMiddleControl.JoyplussetVisible(true, JoyplusMediaPlayerMiddleControl.LAYOUT_MINI);
+			RequestMediaPlayerBarShowandHold();
 			break;
 		}
-		return super.onKeyDown(keyCode, event);
+		return super.onKeyUp(keyCode, event);
+	}
+	private void RequestMediaPlayerBarShowandHold(){
+		Message m = new Message();
+		m.what    = JoyplusMediaPlayerBar.MSG_SHOWANDHOLD;
+		mTopBottomController.JoyplusdispatchMessage(m);
 	}
 	private Handler VIDEOPLAYERCMD_Handler = new Handler(){
 		@Override
@@ -364,6 +409,23 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 		// TODO Auto-generated method stub
 		Log.i(TAG,"Commend ("+commend+") is no disptch !!!");
 	} 
+	
+	
+	public void SaveCurrentRecord(){
+		if (mProd_type > 0 && mVideoView.CurrentMediaInfo != null && mInfo.mType == URLTYPE.NETWORK) {
+			MediaInfo info       = mVideoView.CurrentMediaInfo.CreateMediaInfo();
+			long duration        = info.getTotleTime();
+			long curretnPosition = info.getCurrentTime();
+			Log.d(TAG, "duration ->" + duration);
+			Log.d(TAG, "curretnPosition ->" + curretnPosition);
+			if(duration<=curretnPosition || curretnPosition<=0)return;
+			if(duration-curretnPosition<10*1000){
+				saveToServer(duration / 1000, (duration / 1000) -10);
+			}else{
+				saveToServer(duration / 1000, curretnPosition / 1000);
+			}
+		}
+	}
 	/* follow was use to handle the local resource
 	 * 
 	 * */
@@ -379,12 +441,21 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 				e.printStackTrace();
 			}
         } else if (uri.getScheme().equals("file")) {
-        	mInfo.mPlayerName = uri.getPath();
+        	mInfo.mPlayerName = getMediaName(uri);
         	mVideoView.getPlayer().SetVideoPaths(uri.toString());
         }
         mInfo.NotifyPlayerInfo();
 	}
-	
+	private String getMediaName(Uri uri){
+		String extension = uri.getPath();
+		if(!TextUtils.isEmpty(extension)){
+			int dotPos = extension.lastIndexOf('.');
+            if (0 <= dotPos) {
+                extension = extension.substring(dotPos + 1);
+            }
+		}
+		return extension;
+	}
 	private String getMediaType(String string){
 		String extension = MimeTypeMap.getFileExtensionFromUrl(string);
         if (TextUtils.isEmpty(extension)) {
@@ -435,8 +506,6 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 		public int     mCollection = 0 ;             //false =0 else true
 		public STATE   mState      = STATE.MEDIA_STATE_UNKNOW;//current state
 	    
-		public int     mHaveNext   = 0 ;             //false =0 else true
-		public int     mHavePre    = 0 ;             //false =0 else true
 		public int     mLastTime   = 0 ;
 		public String  mFrom       = "";
 		@Override
@@ -454,8 +523,6 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 				mType       = info.mType;
 				mCollection = info.mCollection;
 				mState      = info.mState;
-				mHaveNext   = info.mHaveNext;
-				mHavePre    = info.mHavePre;
 				mLastTime   = info.mLastTime;
 				mFrom       = info.mFrom;
 			}
@@ -472,8 +539,6 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 			dest.writeInt(mType.toInt());
 			dest.writeInt(mCollection);
 			dest.writeInt(mState.toInt());
-			dest.writeInt(mHaveNext);
-			dest.writeInt(mHavePre);
 			dest.writeInt(mLastTime);
 			dest.writeString(mFrom);
 		}
@@ -517,7 +582,6 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 			return false;
 		}
 		public void setCollection(boolean collection){
-			Log.d(TAG,"1111111111111111111111111111 "+collection);
 			String url = "";
 			if(collection)
 				url = Constant.BASE_URL + "program/favority";
@@ -1727,21 +1791,10 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 		Log.i(TAG, "onPause--->");		
 		// TODO Auto-generated method stub
 		MobclickAgent.onPause(this);
-		if (mProd_type > 0 && mVideoView.CurrentMediaInfo != null) {
-			MediaInfo info       = mVideoView.CurrentMediaInfo.CreateMediaInfo();
-			long duration        = info.getTotleTime();
-			long curretnPosition = info.getCurrentTime();
-			Log.d(TAG, "duration ->" + duration);
-			Log.d(TAG, "curretnPosition ->" + curretnPosition);
-			if(duration-curretnPosition<10*1000){
-				saveToServer(duration / 1000, (duration / 1000) -10);
-			}else{
-				saveToServer(duration / 1000, curretnPosition / 1000);
-			}
-		}
+		SaveCurrentRecord();
 		super.onPause();
 	}
-
+    
 	@Override
 	protected void onStop() {
 		Log.i(TAG, "onStop--->");
@@ -1805,7 +1858,6 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 		mainIntent.putExtra("prod_type", mProd_type);
 		mainIntent.putExtra("time", playBackTime);
 		sendBroadcast(mainIntent);
-		
 	}
 	
 	private void setResult2Xiangqing() {		
@@ -1871,7 +1923,6 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 	}
 
 	public void favorityResult(String url, JSONObject json,AjaxStatus status) {
-		Log.d(TAG,"222222222222favorityResult");
 		if (json != null) {
 			try {
 				// woof is "00000",now "20024",by yyc

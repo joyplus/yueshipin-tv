@@ -60,12 +60,22 @@ public class JoyplusMediaPlayerMiddleControlMini extends LinearLayout implements
             mWhat = what;
         }
         public void onClick(View v) {
+        	if(mSwitch.getVisibility() == View.VISIBLE){
+				UpdateUI(LAYOUT_SWITCH,v.getId());
+			}else if(mPauseplay.getVisibility() == View.VISIBLE){
+				UpdateUI(LAYOUT_PAUSEPLAY,v.getId());
+			}
             Message msg = Message.obtain(mHandler, mWhat);
             msg.sendToTarget();
         }
 		@Override
 		public void onFocusChange(View v, boolean hasFocus) {
 			// TODO Auto-generated method stub
+			if(mSwitch.getVisibility() == View.VISIBLE){
+				UpdateUI(LAYOUT_SWITCH,v.getId());
+			}else if(mPauseplay.getVisibility() == View.VISIBLE){
+				UpdateUI(LAYOUT_PAUSEPLAY,v.getId());
+			}
 			Message msg = Message.obtain(mHandler, mWhat);
             msg.sendToTarget();
 		}
@@ -99,6 +109,7 @@ public class JoyplusMediaPlayerMiddleControlMini extends LinearLayout implements
 		//UpdateShowLayout();	    
 	}
 	private void ShowSwitch(){
+		if(mPauseplay.getVisibility()!=View.VISIBLE &&mSwitch.getVisibility() == View.VISIBLE)return;
 		mPauseplay.setVisibility(View.GONE);
 		mSwitch.setVisibility(View.VISIBLE);
 		mSwitch_center = (ImageButton) findViewById(R.id.joyplusvideoview_mini_switch_center);
@@ -116,6 +127,18 @@ public class JoyplusMediaPlayerMiddleControlMini extends LinearLayout implements
 		mSwitch_right.setOnFocusChangeListener(new MessageOnClick(MSG_KEYDOWN_RIGHT));
 		mSwitch_bottom.setOnClickListener(new MessageOnClick(MSG_KEYDOWN_BOTTOM));
 		mSwitch_bottom.setOnFocusChangeListener(new MessageOnClick(MSG_KEYDOWN_BOTTOM));
+		UpdateButtonState();
+		Message.obtain(mHandler, MSG_PAUSEPLAY).sendToTarget();
+	}
+	private void ShowPlaypause(){
+		if(mSwitch.getVisibility()!=View.VISIBLE &&mPauseplay.getVisibility() == View.VISIBLE)return;
+		mPauseplay.setVisibility(View.VISIBLE);
+		mSwitch.setVisibility(View.GONE);
+		mPauseplay_button = (ImageButton)  findViewById(R.id.joyplusvideoview_mini_pauseplay_button);
+		mPauseplay_button.setOnClickListener(new MessageOnClick(MSG_KEYDOWN_PAUSEPLAY));
+		Message.obtain(mHandler, MSG_PAUSEPLAY).sendToTarget();
+	}
+	private void UpdateButtonState(){
 		if(!JoyplusMediaPlayerActivity.mInfo.getHaveNext()){
 			mSwitch_right.setFocusable(false);
 			mSwitch_right.setEnabled(false);
@@ -135,16 +158,7 @@ public class JoyplusMediaPlayerMiddleControlMini extends LinearLayout implements
 		}else{
 			mSwitch_bottom.setBackgroundResource(R.drawable.player_btn_fav);
 		}
-		Message.obtain(mHandler, MSG_PAUSEPLAY).sendToTarget();
 	}
-	private void ShowPlaypause(){
-		mPauseplay.setVisibility(View.VISIBLE);
-		mSwitch.setVisibility(View.GONE);
-		mPauseplay_button = (ImageButton)  findViewById(R.id.joyplusvideoview_mini_pauseplay_button);
-		mPauseplay_button.setOnClickListener(new MessageOnClick(MSG_KEYDOWN_PAUSEPLAY));
-		Message.obtain(mHandler, MSG_PAUSEPLAY).sendToTarget();
-	}
-	
 	@Override
 	public boolean JoyplusdispatchMessage(Message msg) {
 		// TODO Auto-generated method stub
@@ -155,12 +169,10 @@ public class JoyplusMediaPlayerMiddleControlMini extends LinearLayout implements
 		// TODO Auto-generated method stub
 		switch(keyCode){
 		case KeyEvent.KEYCODE_DPAD_CENTER:
-			Log.d("Jas","------------");
 			if(mSwitch.getVisibility() == View.VISIBLE){
 				UpdateUI(LAYOUT_SWITCH,mSwitch_center.getId());
 				Message.obtain(mHandler, MSG_KEYDOWN_CENTER).sendToTarget();
 			}else if(mPauseplay.getVisibility() == View.VISIBLE){
-				Log.d("Jas","+++++++++++++++++++");
 				UpdateUI(LAYOUT_PAUSEPLAY,mPauseplay_button.getId());
 				Message.obtain(mHandler, MSG_KEYDOWN_PAUSEPLAY).sendToTarget();
 			}
@@ -195,7 +207,7 @@ public class JoyplusMediaPlayerMiddleControlMini extends LinearLayout implements
 		return true;
 	}
 	
-	/*follow was use to change UI*/
+	/*follow was use to change UI ,it only use to adapter TV*/
 	private void UpdateUI(int layout){
 		switch(layout){
 		case LAYOUT_SWITCH:
@@ -277,7 +289,7 @@ public class JoyplusMediaPlayerMiddleControlMini extends LinearLayout implements
 		}
 	}
 	private void UpdatemSwitch_left(int type){
-		if(!mSwitch_left.isEnabled())return;
+		if(!mSwitch_left.isEnabled())type = TYPE_UNUSE;
 		switch(type){
 		case TYPE_ACTIVE:
 			mSwitch_left.setBackgroundResource(R.drawable.player_btn_pre_active);
@@ -292,7 +304,7 @@ public class JoyplusMediaPlayerMiddleControlMini extends LinearLayout implements
 		}
 	}
 	private void UpdatemSwitch_right(int type){
-		if(!mSwitch_right.isEnabled())return;
+		if(!mSwitch_right.isEnabled())type = TYPE_UNUSE;
 		switch(type){
 		case TYPE_ACTIVE:
 			mSwitch_right.setBackgroundResource(R.drawable.player_btn_next_active);
@@ -325,9 +337,11 @@ public class JoyplusMediaPlayerMiddleControlMini extends LinearLayout implements
 		case TYPE_NORMAL:
 			default:
 				if(JoyplusMediaPlayerActivity.mInfo.mCollection == 0){//un collection
-					mSwitch_bottom.setBackgroundResource(R.drawable.player_btn_unfav_normal);
-				}else{
+					//mSwitch_bottom.setBackgroundResource(R.drawable.player_btn_unfav_normal);
 					mSwitch_bottom.setBackgroundResource(R.drawable.player_btn_fav_normal);
+				}else{
+					//mSwitch_bottom.setBackgroundResource(R.drawable.player_btn_fav_normal);
+					mSwitch_bottom.setBackgroundResource(R.drawable.player_btn_unfav_normal);
 				}	
 			break;	
 		}
@@ -352,6 +366,11 @@ public class JoyplusMediaPlayerMiddleControlMini extends LinearLayout implements
 	public int JoyplusgetLayout() {
 		// TODO Auto-generated method stub
 		return JoyplusMediaPlayerMiddleControl.LAYOUT_MINI;
+	}
+	@Override
+	public boolean JoyplusonKeyLongPress(int keyCode, KeyEvent event) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

@@ -43,6 +43,7 @@ public class SystemMediaPlayerVideoView extends LinearLayout implements ViewInte
 	@Override
 	public void setVisibility(boolean visible) {
 		// TODO Auto-generated method stub
+		Log.d("Jas","Mediaplayerssssssssssssssss "+visible);
 		if(visible == false){
 			mVideoView.StopVideo();
 		}

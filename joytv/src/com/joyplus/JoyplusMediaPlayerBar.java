@@ -7,6 +7,8 @@ import android.os.Message;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
@@ -30,7 +32,14 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 	private static final int MSG_REQUESTSHOW = MSG_BASE+4;
 	private static final int MSG_REQUESTHIDE = MSG_BASE+5;
 	private static final int LAYOUT_BAR      = MSG_BASE+7;
+	
+	public static final int  MSG_SHOWANDKEYLONGPRESS = MSG_BASE+8;
+	public static final int  MSG_SHOWANDKEYDOWN      = MSG_BASE+9;
+	public static final int  MSG_SHOWANDHOLD         = MSG_BASE+10;
 	/*use to control seekbar*/
+	enum SEEKMODE{
+		NORMAL , LONGPRESS
+	}
 	enum SEEKTYPE{
 		NORMAL , FORWARD , BACKWARD
 	}
@@ -46,7 +55,7 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 	}
 	public int getIntSpeed(SPEED speed){
 		if(speed == null)return 0;
-		if(speed == SPEED.X3)return 3;
+		if(speed == SPEED.X3)return 4;
 		if(speed == SPEED.X2)return 2;
 		if(speed == SPEED.X1)return 1;
 		if(speed == SPEED.X0)return 0;
@@ -85,18 +94,29 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 				mBottomBar.setVisible(true);
 				setVisible(false,JoyplusMediaPlayerActivity.DELAY_SHOWVIEW);
 				break;
-			case MSG_HIDEVIEW:
+			case MSG_HIDEVIEW:				
 				mTopBar.setVisible(false);
 				mBottomBar.setVisible(false);
+				mHandler.removeCallbacksAndMessages(null);
 				break;
 			case MSG_REQUESTSHOW:
-				setVisible(true,0);
+				setVisible(true,500);
 				break;
 			case MSG_REQUESTHIDE:
 				setVisible(false,0);
 				break;
 			case JoyplusMediaPlayerActivity.MSG_UPDATEPLAYERINFO:
 				mTopBar.UpdatePlayerInfo();
+				break;
+			case MSG_SHOWANDKEYLONGPRESS:
+			case MSG_SHOWANDKEYDOWN:
+				mTopBar.setVisible(true);
+				mBottomBar.setVisible(true);
+				mBottomBar.dispatchMessage(msg);
+				break;
+			case MSG_SHOWANDHOLD:
+				mTopBar.setVisible(true);
+				mBottomBar.setVisible(true);
 				break;
 			}
 		}
@@ -143,15 +163,6 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 		public VideoViewTopBar(){
 			InitResource();
 		}
-		/*public void dispatchMessage(Message m){
-			switch(m.what){
-			case JoyplusMediaPlayerActivity.MSG_MEDIAINFO:
-				 if(Layout.getVisibility() == View.VISIBLE){
-					 MediaInfo info = ((MediaInfo) m.obj).CreateMediaInfo();
-				 }
-				 break;
-			}
-		}*/
 		private Runnable UpdateTime = new Runnable(){
 			@Override
 			public void run() {
@@ -167,8 +178,10 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 				InitView();
 				mHandler.removeCallbacks(UpdateTime);
 				mHandler.postDelayed(UpdateTime, 1000);
-			}else
+			}else{
+				Layout.startAnimation(JoyplusMediaPlayerActivity.mAlphaDispear);
 				mHandler.removeCallbacks(UpdateTime);
+			}
 		}
 		
 		private void InitView() {
@@ -208,29 +221,29 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 		private boolean     Debug = true;
 		private String      TAG   = "VideoViewController";
 		
-		//private ImageButton PlayOrPauseButton;
-		private TextView    CurrentTimeView;
-		private TextView    TotalTimeView;
-		//private TextView    FileNameView;
-		
+		private TextView       CurrentTimeView;
+		private TextView       TotalTimeView;
 		private SeekBar        SeekBar;
 		private RelativeLayout Layout_Time;
 		private RelativeLayout Layout_seek;
 		private RelativeLayout Layout_Speed;
 		private TextView       SpeedView;
-	    private int            DefaultSpeedSpace = 60*100;//1min
+	    private int            DefaultSpeedSpace = 1000;
 	    private static final int OFFSET = 33;
 		private int seekBarWidthOffset  = 40;
 		public void Init(){
 			SeekBar.setEnabled(false);
-			mSeekBarType = SEEKTYPE.NORMAL;
-			mSpeed       = SPEED.X0;
+			InitSpeed();
 			setVisible(true);
 			mHandler.removeCallbacks(QuickAdjustSeekBar);
 			UpdateProgress(null);
 			Layout_Time.setVisibility(View.VISIBLE);
 		}
-		
+		public void InitSpeed(){
+			mSeekBarMode = SEEKMODE.NORMAL;
+			mSeekBarType = SEEKTYPE.NORMAL;
+			mSpeed       = SPEED.X0;
+		}
 		private Runnable QuickAdjustSeekBar = new Runnable(){
 			@Override
 			public void run() {
@@ -238,19 +251,27 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 				if(mSeekBarType == SEEKTYPE.NORMAL) return;
 				int position =0;
 				if(mSeekBarType == SEEKTYPE.FORWARD)
-				    position  = SeekBar.getProgress()+DefaultSpeedSpace*getIntSpeed(mSpeed);
+				    position  = SeekBar.getProgress()+getSpeedSpace()*getIntSpeed(mSpeed);
 				else if(mSeekBarType == SEEKTYPE.BACKWARD)
-					position  = SeekBar.getProgress()-DefaultSpeedSpace*getIntSpeed(mSpeed);
+					position  = SeekBar.getProgress()-getSpeedSpace()*getIntSpeed(mSpeed);
 				if(position<0)position = 0;
 				if(position>SeekBar.getMax())position = SeekBar.getMax();
 				SeekBar.setProgress(position);
 				UpdateProgress(null);
 				mHandler.sendEmptyMessage(MSG_REQUESTSHOW);
-				mHandler.removeCallbacks(QuickAdjustSeekBar);
-				mHandler.postDelayed(QuickAdjustSeekBar, 200);
+				mHandler.removeCallbacks(null);
+				mHandler.postDelayed(QuickAdjustSeekBar, 20);
 			}
 		};
+		private int getSpeedSpace(){
+			int Space = SeekBar.getMax();
+			if(Space == 0)
+				return 0;
+			else 
+				return Space/DefaultSpeedSpace;
+		}
 		/*it use to fast forward or fast backward*/
+		private SEEKMODE mSeekBarMode;
 		private SEEKTYPE mSeekBarType;
 		private SPEED    mSpeed;
 		public void dispatchMessage(Message m){
@@ -260,49 +281,99 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 					 UpdateProgress(((MediaInfo) m.obj).CreateMediaInfo());
 				 }
 				 break;
+			case MSG_SHOWANDKEYLONGPRESS:
+				JoyplusonKeyLongPress((Integer) m.obj,null);
+				break;
+			case MSG_SHOWANDKEYDOWN:
+				JoyplusonKeyDown((Integer) m.obj,null);
+				break;
 			}
+		}
+		public boolean JoyplusonKeyLongPress(int keyCode, KeyEvent event){
+			Log.d("Jas","Bar JoyplusonKeyLongPress keyCode="+keyCode);
+			if(Layout_Time.getVisibility() == View.VISIBLE && (mActivity.getPlayer()!=null)){
+				Log.d("Jas","Bar JoyplusonKeyLongPress ");
+				switch(keyCode){
+				case KeyEvent.KEYCODE_DPAD_LEFT:
+					mSeekBarMode = SEEKMODE.LONGPRESS;
+					if(mSpeed == SPEED.X2 && mSeekBarType == SEEKTYPE.BACKWARD)return true;
+					mSpeed = SPEED.X2;
+					mSeekBarType = SEEKTYPE.BACKWARD;
+					mHandler.removeCallbacks(QuickAdjustSeekBar);
+					mHandler.postDelayed(QuickAdjustSeekBar, 50);
+					return true;
+				case KeyEvent.KEYCODE_DPAD_RIGHT:
+					mSeekBarMode = SEEKMODE.LONGPRESS;
+					if(mSpeed == SPEED.X2 && mSeekBarType == SEEKTYPE.FORWARD)return true;
+					mSpeed = SPEED.X2;
+					mSeekBarType = SEEKTYPE.FORWARD;
+					mHandler.removeCallbacks(QuickAdjustSeekBar);
+					mHandler.postDelayed(QuickAdjustSeekBar, 50);
+					return true;
+				}
+			}
+			return false;
 		}
 		public boolean JoyplusonKeyDown(int keyCode, KeyEvent event) {
 			// TODO Auto-generated method stub
+			Log.d("Jas","Bar JoyplusonKeyDown keyCode="+keyCode);
 			if(Layout_Time.getVisibility() == View.VISIBLE && (mActivity.getPlayer()!=null)){
+				Log.d("Jas","Bar JoyplusonKeyLongPress ");
 				switch(keyCode){
 				case KeyEvent.KEYCODE_DPAD_LEFT:
-					if(mSeekBarType == SEEKTYPE.FORWARD){
-						if(mSpeed == SPEED.X1)mSeekBarType = SEEKTYPE.BACKWARD;
-						mSpeed = SPEED.X1;
-					}else if(mSpeed == SPEED.X3)return true;
-					else {mSpeed = getNextSpeed(mSpeed);
-						mSeekBarType = SEEKTYPE.BACKWARD;}
+					if(mSeekBarMode == SEEKMODE.LONGPRESS){
+						JoyplusonKeyDown(KeyEvent.KEYCODE_DPAD_CENTER,null);
+						return true;
+					}else{
+						if(mSeekBarType == SEEKTYPE.FORWARD){
+							if(mSpeed == SPEED.X1)mSeekBarType = SEEKTYPE.BACKWARD;
+							mSpeed = SPEED.X1;
+						}else if(mSpeed == SPEED.X3)return true;
+						else {mSpeed = getNextSpeed(mSpeed);
+							mSeekBarType = SEEKTYPE.BACKWARD;}
+					}
 					mHandler.removeCallbacks(QuickAdjustSeekBar);
-					mHandler.postDelayed(QuickAdjustSeekBar, 200);
+					mHandler.postDelayed(QuickAdjustSeekBar, 50);
 					return true;
 				case KeyEvent.KEYCODE_DPAD_RIGHT:
-					if(mSeekBarType == SEEKTYPE.BACKWARD){
-						if(mSpeed == SPEED.X1)mSeekBarType = SEEKTYPE.FORWARD;
-						mSpeed = SPEED.X1;
-					}else if(mSpeed == SPEED.X3)	return true;
-					else {mSpeed = getNextSpeed(mSpeed);
-					      mSeekBarType = SEEKTYPE.FORWARD;}
+					if(mSeekBarMode == SEEKMODE.LONGPRESS){
+						JoyplusonKeyDown(KeyEvent.KEYCODE_DPAD_CENTER,null);
+						return true;
+					}else{
+						if(mSeekBarType == SEEKTYPE.BACKWARD){
+							if(mSpeed == SPEED.X1)mSeekBarType = SEEKTYPE.FORWARD;
+							mSpeed = SPEED.X1;
+						}else if(mSpeed == SPEED.X3)return true;
+						else {mSpeed = getNextSpeed(mSpeed);
+						      mSeekBarType = SEEKTYPE.FORWARD;}
+					}
 					mHandler.removeCallbacks(QuickAdjustSeekBar);
-					mHandler.postDelayed(QuickAdjustSeekBar, 200);
+					mHandler.postDelayed(QuickAdjustSeekBar, 50);
 					return true;
 				case KeyEvent.KEYCODE_DPAD_CENTER:
 				case KeyEvent.KEYCODE_ENTER:
 					if(mSeekBarType != SEEKTYPE.NORMAL){
-						mSpeed   = SPEED.X0;
-						mHandler.removeCallbacks(QuickAdjustSeekBar);
-						mSeekBarType = SEEKTYPE.NORMAL;
+						mHandler.removeCallbacksAndMessages(null);											
+						mHandler.postDelayed(new Runnable(){
+							@Override
+							public void run() {
+								// TODO Auto-generated method stub
+								InitSpeed();
+							}							
+						}, Integer.parseInt(mActivity.getString(R.string.defaultUpdateTime)));
 						mActivity.getPlayer().SeekVideo(SeekBar.getProgress());
 						return true;
 					}
-					break;
+					return true;
 				case KeyEvent.KEYCODE_BACK:
 				case 111://the keycode was be change to 111 ,but don't know where change
-					mSeekBarType = SEEKTYPE.NORMAL;
-					mSpeed       = SPEED.X0;
-					mHandler.removeCallbacks(QuickAdjustSeekBar);
-					mHandler.sendEmptyMessage(MSG_REQUESTHIDE);
-					break;
+					if(mSeekBarType != SEEKTYPE.NORMAL){
+						mSeekBarType = SEEKTYPE.NORMAL;
+						mSpeed       = SPEED.X0;
+						mHandler.removeCallbacks(QuickAdjustSeekBar);
+					}else
+					    mHandler.sendEmptyMessage(MSG_REQUESTHIDE);
+					return true;
 				}
 			} 
 			return false;
@@ -314,7 +385,12 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 			if(Debug)Log.d(TAG,"setVisibility("+Visiblility+")");
 			Layout_Time.setVisibility(Visiblility?View.VISIBLE:View.GONE);
 			Layout_seek.setVisibility(Visiblility?View.VISIBLE:View.GONE);
-			if(Visiblility)UpdateProgress(JoyplusMediaPlayerVideoView.CurrentMediaInfo);
+			if(Visiblility && mSeekBarType == SEEKTYPE.NORMAL)
+				UpdateProgress(JoyplusMediaPlayerVideoView.CurrentMediaInfo);
+			else{
+				Layout_Time.startAnimation(JoyplusMediaPlayerActivity.mAlphaDispear);
+				Layout_seek.startAnimation(JoyplusMediaPlayerActivity.mAlphaDispear);
+			}
 		}
 		private void InitResource(){
 			if(Debug)Log.d(TAG,"VideoViewController InitResource()");
@@ -325,8 +401,7 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 			Layout_seek       = (RelativeLayout)mActivity.findViewById(R.id.mediacontroller_bottombar_seek);
 			Layout_Speed      = (RelativeLayout)mActivity.findViewById(R.id.mediacontroller_bottombar_time_fast);
 			SpeedView         = (TextView)      mActivity.findViewById(R.id.mediacontroller_bottombar_time_fasttext);
-			SeekBar.setEnabled(false);
-			
+			SeekBar.setEnabled(false);			
 		}
 		public void UpdateProgress(MediaInfo info){
 			//if(Debug)Log.d(TAG,"UpdateProgress()");
@@ -345,8 +420,8 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 			Layout_Speed.setVisibility(View.GONE);
 			if(info != null){Log.d(TAG,"UpdateProgress info="+info.toString());
 				//if(info.getState().toInt()>=STATE.MEDIA_STATE_INITED.toInt()){
-			    if(info.getState() == STATE.MEDIA_STATE_PUSE
-						||info.getState() == STATE.MEDIA_STATE_PLAYING
+			    if(//info.getState() == STATE.MEDIA_STATE_PUSE||
+			    		info.getState() == STATE.MEDIA_STATE_PLAYING
 						||info.getState() == STATE.MEDIA_STATE_INITED){
 					CurrentTimeView.setText(getTimeString((int)info.getCurrentTime()));
 					TotalTimeView.setText(getTimeString((int)info.getTotleTime()));
@@ -413,14 +488,17 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 	@Override
 	public boolean JoyplusonKeyDown(int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
+		Log.d("Jas","Bar hhhhh JoyplusonKeyDown");
 		if(mBottomBar.Layout_Time.getVisibility()== View.VISIBLE){
 			if(mBottomBar.JoyplusonKeyDown(keyCode, event)){
 				mHandler.sendEmptyMessage(MSG_REQUESTSHOW);
+				return true;
 			}
-			return true;
+			//return true;
 		}
 		return false;
 	}
+	
 	@Override
 	public void JoyplussetVisible(boolean visible,int layout) {
 		// TODO Auto-generated method stub
@@ -431,5 +509,16 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 	public int JoyplusgetLayout() {
 		// TODO Auto-generated method stub
 		return LAYOUT_BAR;
+	}
+	@Override
+	public boolean JoyplusonKeyLongPress(int keyCode, KeyEvent event) {
+		// TODO Auto-generated method stub
+		if(mBottomBar.Layout_Time.getVisibility()== View.VISIBLE){
+			if(mBottomBar.JoyplusonKeyLongPress(keyCode, event)){
+				mHandler.sendEmptyMessage(MSG_REQUESTSHOW);
+			}
+			return true;
+		}
+		return false;
 	}
 }

@@ -10,6 +10,10 @@ public interface JoyplusMediaPlayerInterface {
 	  
 	  boolean JoyplusonKeyDown(int keyCode, KeyEvent event);
 	  
+	  boolean JoyplusonKeyLongPress(int keyCode, KeyEvent event);
+	  
+	  //boolean JoyplusonKeyUp(int keyCode, KeyEvent event);
+	  
 	  void    JoyplussetVisible(boolean visible,int layout);
 	  
 	  int     JoyplusgetLayout();
