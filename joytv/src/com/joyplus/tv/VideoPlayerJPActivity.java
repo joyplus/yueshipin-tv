@@ -1373,7 +1373,8 @@ public class VideoPlayerJPActivity extends Activity implements
 							}else {
 								
 								StringBuilder sb = new StringBuilder();
-								for(int i=mBefSubTitleE.getRank();i<mCurSubTitleE.getRank();i++){
+								for(int i=mBefSubTitleE.getRank();i<mCurSubTitleE.getRank() &&i<mSubTitleCollection.getElementSize();i++){
+
 									org.blaznyoght.subtitles.model.Element element = 
 											mSubTitleCollection.getElements().get(i);
 									sb.append(element.getText().replaceAll("<font.*>", ""));
