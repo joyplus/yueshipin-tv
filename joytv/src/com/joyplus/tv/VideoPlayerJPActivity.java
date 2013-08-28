@@ -2785,7 +2785,9 @@ public class VideoPlayerJPActivity extends Activity implements
 			}
 			parser.parse(new ByteArrayInputStream(subTitle));
 			
-			mSubTitleCollection = parser.getCollection();
+			if(parser.getCollection().getElements().size() > 2){
+				mSubTitleCollection = parser.getCollection();
+			}
 			Log.d(TAG, "mSubTitleCollection--->" + mSubTitleCollection.toString());
 			return;
 		}
