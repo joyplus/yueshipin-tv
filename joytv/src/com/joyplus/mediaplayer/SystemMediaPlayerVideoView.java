@@ -9,7 +9,7 @@ import android.util.Log;
 import android.widget.LinearLayout;
 
 public class SystemMediaPlayerVideoView extends LinearLayout implements ViewInterface,VideoViewInterface,MediaPlayer.OnErrorListener,MediaPlayer.OnCompletionListener,
-                                                                        MediaPlayer.OnPreparedListener{
+                                                                        MediaPlayer.OnPreparedListener,MediaPlayer.OnInfoListener{
 	private boolean Debug = true;
 	private String  TAG   = "SystemMediaPlayerVideoView";
     private SystemVideoView  mVideoView;   
@@ -22,6 +22,7 @@ public class SystemMediaPlayerVideoView extends LinearLayout implements ViewInte
 		mVideoView.setOnErrorListener(this);
 		mVideoView.setOnCompletionListener(this);
 		mVideoView.setOnPreparedListener(this);
+		mVideoView.setOnInfoListener(this);
 	}
 
 	public SystemMediaPlayerVideoView(Context context) {
@@ -135,5 +136,19 @@ public class SystemMediaPlayerVideoView extends LinearLayout implements ViewInte
 	public MediaInfo getTargetMediaInfo() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public boolean onInfo(MediaPlayer mp, int what, int extra) {
+		// TODO Auto-generated method stub
+		Log.i("Jas","Vitamio info="+what+" "+extra);
+		mVideoView.SetINFO(what);
+		return false;
+	}
+
+	@Override
+	public void SetINFO(int info) {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -52,12 +52,21 @@ public class MediaInfo implements Parcelable{
 	public String getPath(){
 		return this.Path;
 	}
+	/*add by Jas for VideoView info*/
+	private int INFO;
+	public void setINFO(int info){
+		this.INFO = info;
+	}
+	public int getINFO(){
+	    return this.INFO;	
+	} 
 	public MediaInfo(){
 		this.mState      = STATE.MEDIA_STATE_IDLE;
 		this.CurrentTime = 0;
 		this.TotleTime   = 0;
 		this.TYPE        = JoyplusMediaPlayerManager.TYPE_UNKNOW;
 		this.Path        = null;
+		this.INFO        = 0;
 	}
 	public MediaInfo(MediaInfo info){
 		if(info != null){
@@ -66,6 +75,7 @@ public class MediaInfo implements Parcelable{
 			this.TotleTime   = info.TotleTime;
 			this.TYPE        = info.TYPE;
 			this.Path        = info.Path;
+			this.INFO        = info.INFO;
 		}
 	}
 	public MediaInfo CreateMediaInfo(){
@@ -84,6 +94,7 @@ public class MediaInfo implements Parcelable{
 		arg0.writeLong(CurrentTime);
 		arg0.writeLong(TotleTime);
 		arg0.writeString(Path);
+		arg0.writeInt(INFO);
 	}
 	
 	@Override
@@ -93,7 +104,8 @@ public class MediaInfo implements Parcelable{
         sb.append("MediaInfo{ STATE: ").append(mState.toInt()).
            append(", CurrentTime: ").append(CurrentTime).
            append(", TotleTime: ").append(TotleTime ).
-           append(",Path: ").append(Path).
+           append(", Path: ").append(Path).
+           append(", INFO: ").append(INFO).
            append("} ");
         return sb.toString();
 	}

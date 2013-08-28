@@ -135,11 +135,18 @@ public class JoyplusVideoView extends LinearLayout{
     	LinearLayout view = (LinearLayout) getStubView(stubId,viewId);
     	view.setVisibility(View.VISIBLE);
     	if(view != null){
+    		//view.setLayoutParams(JoyplusMediaPlayerScreenManager.getInstance().getParams());
     		mMonitor = new JoyplusPlayerMonitor(mContext,(VideoViewInterface)view);
     		mMonitor.startMonitor(MediaPlayerhandler);
     		mServerHandler = JoyplusMediaPlayerManager.getInstance().getmediaPlayerHandler();
     	}
     	return (VideoViewInterface)view;
     }
-    
+    public boolean setLayoutParams(LinearLayout.LayoutParams params){
+    	if(mView!=null && params!=null){
+    		((LinearLayout)mView).setLayoutParams(params);
+    		return true;
+    	}
+    	return false;
+    }
 }

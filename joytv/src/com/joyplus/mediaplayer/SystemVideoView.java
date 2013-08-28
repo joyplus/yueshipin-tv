@@ -1,10 +1,11 @@
 package com.joyplus.mediaplayer;
 
 
+
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.widget.VideoView;
+
 
 public class SystemVideoView extends VideoView implements VideoViewInterface{
 	
@@ -112,5 +113,10 @@ public class SystemVideoView extends VideoView implements VideoViewInterface{
 	public MediaInfo getTargetMediaInfo() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	@Override
+	public void SetINFO(int info) {
+		// TODO Auto-generated method stub
+		mMediaInfo.setINFO(info);
 	}
 }

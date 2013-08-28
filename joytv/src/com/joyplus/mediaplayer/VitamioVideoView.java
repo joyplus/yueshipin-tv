@@ -117,4 +117,9 @@ public class VitamioVideoView extends VideoView implements VideoViewInterface{
 		// TODO Auto-generated method stub
 		return null;
 	}
+	@Override
+	public void SetINFO(int info) {
+		// TODO Auto-generated method stub
+		mMediaInfo.setINFO(info);
+	}
 }

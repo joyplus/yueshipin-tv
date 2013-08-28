@@ -3,6 +3,7 @@ package com.joyplus;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.net.TrafficStats;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.joyplus.mediaplayer.JoyplusVideoView;
@@ -35,11 +37,11 @@ public class JoyplusMediaPlayerVideoView implements JoyplusMediaPlayerInterface{
 	private VideoViewInterface         Player = null;
 	private JoyplusVideoView           VideoView;
 	public  static MediaInfo           CurrentMediaInfo;
-	public  MediaInfo                  PreMediaInfo;
-	private RoundProcessDialog         mWaitingDialog;
+	public  MediaInfo                  PreMediaInfo;	
 	private LoadingWindows             mWaitingWindows;
 	private final static int MSG_BASE  = 100;
 	public  final static int LAYOUT_VIDEOVIEW = MSG_BASE+1;
+
 	public void Init(){
 		update();
 		CurrentMediaInfo = new MediaInfo();
@@ -69,8 +71,12 @@ public class JoyplusMediaPlayerVideoView implements JoyplusMediaPlayerInterface{
 		// TODO Auto-generated method stub
 		switch(msg.what){
 		case JoyplusMediaPlayerActivity.MSG_MEDIAINFO:
+			//Log.d("Jas","PreMediaInfo = "+PreMediaInfo.toString());
+			//Log.d("Jas","CurrentMediaInfo = "+CurrentMediaInfo.toString());
 			PreMediaInfo     = new MediaInfo(CurrentMediaInfo);
 			CurrentMediaInfo = ((MediaInfo) msg.obj).CreateMediaInfo();
+			//Log.d("Jas","+++PreMediaInfo = "+PreMediaInfo.toString());
+			//Log.d("Jas","+++CurrentMediaInfo = "+CurrentMediaInfo.toString());
 			return CheckMediaInfo(); 
 		}
 		return false;
@@ -79,14 +85,14 @@ public class JoyplusMediaPlayerVideoView implements JoyplusMediaPlayerInterface{
 		if(CurrentMediaInfo.getState().toInt()>STATE.MEDIA_STATE_INITED.toInt()
 		&& CurrentMediaInfo.getState().toInt()<STATE.MEDIA_STATE_FINISH.toInt()
 		&& CurrentMediaInfo.getState().toInt() != STATE.MEDIA_STATE_PUSE.toInt()){
-			if(CurrentMediaInfo.getCurrentTime() == PreMediaInfo.getCurrentTime() 
+			if( CurrentMediaInfo.getINFO() == 701 //loading
 					&& CurrentMediaInfo.getCurrentTime()>1000
-					&& JoyplusMediaPlayerActivity.StateOk)
-				//mWaitingDialog.setVisible(true);
+					&& JoyplusMediaPlayerActivity.StateOk
+					){
 				mWaitingWindows.setVisible(true);
-			else
-				//mWaitingDialog.setVisible(false);
+			}else{
 				mWaitingWindows.setVisible(false);
+			}
 		}
 		if(CurrentMediaInfo.getPath()==null || "".equals(CurrentMediaInfo.getPath()))return true;
 		if(PreMediaInfo.getPath()!=null && !PreMediaInfo.getPath().equals(CurrentMediaInfo.getPath()))return true;
@@ -112,29 +118,33 @@ public class JoyplusMediaPlayerVideoView implements JoyplusMediaPlayerInterface{
 		// TODO Auto-generated method stub
 		return LAYOUT_VIDEOVIEW;
 	}
-	 
+	public boolean setLayoutParams(LinearLayout.LayoutParams params){
+		return VideoView.setLayoutParams(params);
+	}  
 	public boolean hasMediaInfoChange(){
 		long delay = Math.abs(CurrentMediaInfo.getCurrentTime()-PreMediaInfo.getCurrentTime());
 		Log.e(TAG,"eeeeeeeeeeeeeeeee  "+delay +" eeeeeeeeeeee");
 		return (delay<2000&&delay>=300);
 	}
-	private class LoadingWindows extends PopupWindow{
+	private class LoadingWindows {
 		private final static int MSG_SHOW = 1;
 		private final static int MSG_HIDE = 2;
+		private final static int MSG_UPDATEUI = 3;
 		
-	    private TextView mInfo;
+	    private TextView       mInfo;
+		private RelativeLayout mLayout;
+		
+		private long mStartRX = 0;
+		private long rxByteslast = 0;
 		public LoadingWindows(){
-			LoadingWindows.this.setContentView(getView());	        
-		}
-		private View getView(){
-			View view = LayoutInflater.from(mActivity).inflate(R.layout.joyplusmediaplayer_loading_process,null);
-			mInfo     = (TextView) mActivity.findViewById(R.id.loading_process_info);
-			return view;
+			mInfo   = (TextView)       mActivity.findViewById(R.id.joyplus_videoview_buffer_info);
+			mLayout = (RelativeLayout) mActivity.findViewById(R.id.joyplus_videoview_buffer);
 		}
 		public void setVisible(boolean Visible){
-			if(LoadingWindows.this.isShowing() == Visible)return;
+			if(Visible)mHandler.removeCallbacksAndMessages(null);
+			if((mLayout.getVisibility()==View.VISIBLE) == Visible)return;
 			mHandler.removeCallbacksAndMessages(null);
-			if(Visible)mHandler.sendEmptyMessageDelayed(MSG_SHOW, 1000);
+			if(Visible)mHandler.sendEmptyMessage(MSG_SHOW);
 			else       mHandler.sendEmptyMessage(MSG_HIDE);
 		}
 		private Handler mHandler = new Handler(){
@@ -142,62 +152,64 @@ public class JoyplusMediaPlayerVideoView implements JoyplusMediaPlayerInterface{
 				super.handleMessage(msg);
 				switch(msg.what){
 				case MSG_SHOW:
-					if(LoadingWindows.this.isShowing())return;
-					LoadingWindows.this.showAtLocation(mActivity.findViewById(R.id.joyplusvideoview_main), Gravity.CENTER, 0, 0);
+					if(mLayout.getVisibility()==View.VISIBLE)return;
+					mLayout.setVisibility(View.VISIBLE);
+					mHandler.removeCallbacksAndMessages(null);
+					StartTrafficStates();
 					break;
 				case MSG_HIDE:
-					if(!LoadingWindows.this.isShowing())return;
-					LoadingWindows.this.dismiss();
+					if(!(mLayout.getVisibility()==View.VISIBLE))return;
+					mLayout.setVisibility(View.GONE);
+					mHandler.removeCallbacksAndMessages(null);
+					break;
+				case MSG_UPDATEUI:
+					if(!(mLayout.getVisibility()==View.VISIBLE))return;
+					long speed = (Long) msg.obj;
+					
 					break;
 				}
 			}
 		};
-	}
-	private class RoundProcessDialog extends Dialog{
-		private final static int MSG_SHOW = 1;
-		private final static int MSG_HIDE = 2;
-		private boolean          MSG_Visible = false;
-		public RoundProcessDialog(Context context, int theme) {
-			super(context, theme);
-			// TODO Auto-generated constructor stub
-			this.setContentView(R.layout.joyplusmediaplayer_loading_process);
+		private void StartTrafficStates(){
+			Log.d("Jas","=========StartTrafficStates===========");
+			long mStartRX = TrafficStats.getTotalRxBytes();// ��ȡ�����ٶ�
+			rxByteslast = 0;
+			if (mStartRX == TrafficStats.UNSUPPORTED) {
+			     
+			} else {
+				mHandler.removeCallbacks(UpdateTrafficStats);
+				mHandler.postDelayed(UpdateTrafficStats, 500);
+			}
 		}
-		protected RoundProcessDialog(Context context, boolean cancelable,
-				OnCancelListener cancelListener) {
-			super(context, cancelable, cancelListener);
-			// TODO Auto-generated constructor stub
-			this.setContentView(R.layout.joyplusmediaplayer_loading_process);
-		}
-		public RoundProcessDialog(Context context) {
-			super(context);
-			// TODO Auto-generated constructor stub
-			this.setContentView(R.layout.joyplusmediaplayer_loading_process);
-		}
-		public void setVisible(boolean Visible){
-			if(MSG_Visible == Visible)return;
-			MSG_Visible = Visible;
-			mHandler.removeCallbacksAndMessages(null);
-			if(Visible)mHandler.sendEmptyMessageDelayed(MSG_SHOW, 1000);
-			else       mHandler.sendEmptyMessage(MSG_HIDE);
-		}
-		private Handler mHandler = new Handler(){
+		private Runnable UpdateTrafficStats = new Runnable(){
+			long beginTimeMillis, timeTakenMillis, m_bitrate;
 			@Override
-			public void handleMessage(Message msg) {
+			public void run() {
 				// TODO Auto-generated method stub
-				super.handleMessage(msg);
-				switch(msg.what){
-				case MSG_SHOW:
-					if(!RoundProcessDialog.this.isShowing())
-						RoundProcessDialog.this.show();
-					break;
-				case MSG_HIDE:
-					if(RoundProcessDialog.this.isShowing())
-						RoundProcessDialog.this.dismiss();
-					break;
-				}
+				Log.d("Jas","-------------run-------------");
+				long rxBytes = TrafficStats.getTotalRxBytes() - mStartRX;
+				timeTakenMillis = System.currentTimeMillis() - beginTimeMillis;
+				beginTimeMillis = System.currentTimeMillis();
+				if(timeTakenMillis>0){
+					m_bitrate = (rxBytes - rxByteslast) / timeTakenMillis;
+					rxByteslast = rxBytes;
+					UpdateInfo(m_bitrate);
+				}	
+				mHandler.removeCallbacks(UpdateTrafficStats);
+				mHandler.postDelayed(UpdateTrafficStats, 500);
 			}
 		};
+		private void UpdateInfo(long speed){
+			Log.d("Jas","============= speed="+speed+" =========================");
+			if(!(mLayout.getVisibility()==View.VISIBLE))return;
+			mInfo.setVisibility(View.VISIBLE);
+			if(speed>=0)
+				mInfo.setText(mActivity.getApplicationContext().getString(R.string.meidaplayer_loading_string_buffer,speed));
+			else
+				mInfo.setText(mActivity.getApplicationContext().getString(R.string.meidaplayer_loading_string_buffer_loading));
+		}
 	}
+	
 
 	@Override
 	public boolean JoyplusonKeyLongPress(int keyCode, KeyEvent event) {

@@ -48,4 +48,5 @@ public interface VideoViewInterface extends ViewInterface{
 	    void PauseVideo();
 	    void SeekVideo(int seekTo);
 	    boolean IsPlaying();
+	    void SetINFO(int info);
 }

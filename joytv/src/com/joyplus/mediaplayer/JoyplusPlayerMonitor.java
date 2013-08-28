@@ -35,9 +35,11 @@ public class JoyplusPlayerMonitor{
 		private void notityState(){
 			if(Debug)Log.d(TAG,"notityState()mHandler="+(mHandler == null)+" mPlayer="+(mPlayer == null));
 			if(mHandler == null || mPlayer == null)return;
-			Message m = Message.obtain(mHandler, MSG_STATEUPDATE,"MSG_STATEUPDATE");
-			m.obj     = mPlayer.getMediaInfo();
 			mHandler.removeCallbacksAndMessages(null);
+			Message m = new Message();
+			m.what    = MSG_STATEUPDATE;
+			//Message m = Message.obtain(mHandler, MSG_STATEUPDATE,"MSG_STATEUPDATE");
+			m.obj     = mPlayer.getMediaInfo();			
 			mHandler.sendMessage(m);
 		}
 	    public void stopMonitor(){

@@ -34,6 +34,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joyplus.mediaplayer.JoyplusMediaPlayerListener;
 import com.joyplus.mediaplayer.JoyplusMediaPlayerManager;
+import com.joyplus.mediaplayer.JoyplusMediaPlayerScreenManager;
 import com.joyplus.mediaplayer.MediaInfo;
 import com.joyplus.mediaplayer.VideoViewInterface;
 import com.joyplus.mediaplayer.VideoViewInterface.STATE;
@@ -98,6 +99,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 	/*Top and bottom layout msg 300-399  level 1*/
 	public JoyplusMediaPlayerBar           mTopBottomController;
 	//private Handler mHandler = new Handler(){};
+	public JoyplusMediaPlayerScreenManager mScreenManager;
 	/*msg 0-99*/
 	public static final int   MSG_MEDIAINFO         = 0;
 	public static final int   DELAY_SHOWVIEW        = 10*1000; //10s
@@ -219,6 +221,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
     	try {
 			JoyplusMediaPlayerManager.Init(this);
 			JoyplusMediaPlayerManager.getInstance().registerListener(this);
+			mScreenManager = new JoyplusMediaPlayerScreenManager(this);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

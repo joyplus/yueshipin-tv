@@ -4,6 +4,7 @@ import com.joyplus.tv.R;
 import io.vov.vitamio.MediaPlayer;
 import io.vov.vitamio.MediaPlayer.OnCompletionListener;
 import io.vov.vitamio.MediaPlayer.OnErrorListener;
+import io.vov.vitamio.MediaPlayer.OnInfoListener;
 import io.vov.vitamio.MediaPlayer.OnPreparedListener;
 import android.content.Context;
 import android.util.AttributeSet;
@@ -11,7 +12,7 @@ import android.util.Log;
 import android.widget.LinearLayout;
 
 public class SystemVitamioPlayerVideoView extends LinearLayout  implements ViewInterface,VideoViewInterface, OnErrorListener,
-                                                                           OnCompletionListener, OnPreparedListener{
+                                                                           OnCompletionListener, OnPreparedListener,OnInfoListener{
     
 	private boolean Debug = true;
 	private String  TAG   = "SystemVitamioPlayerVideoView";
@@ -25,6 +26,7 @@ public class SystemVitamioPlayerVideoView extends LinearLayout  implements ViewI
 		mVideoView.setOnErrorListener(this);
 		mVideoView.setOnCompletionListener(this);
 		mVideoView.setOnPreparedListener(this);
+		mVideoView.setOnInfoListener(this);
 	}
 
 	public SystemVitamioPlayerVideoView(Context context) {
@@ -137,5 +139,19 @@ public class SystemVitamioPlayerVideoView extends LinearLayout  implements ViewI
 	public MediaInfo getTargetMediaInfo() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void SetINFO(int info) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean onInfo(MediaPlayer mp, int what, int extra) {
+		// TODO Auto-generated method stub
+		Log.i("Jas","Vitamio info="+what+" "+extra);
+		mVideoView.SetINFO(what);
+		return false;
 	}
 }
