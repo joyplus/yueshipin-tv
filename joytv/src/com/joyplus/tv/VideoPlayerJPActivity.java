@@ -2412,7 +2412,7 @@ public class VideoPlayerJPActivity extends Activity implements
 	
 	private byte[] getSubTitleBytes(String p2pUrl,String md5){
 		
-		String subTitleUrl = Constant.PARSE_URL_BASE_URL + "xunlei/subtitle/?url="
+		String subTitleUrl = Constant.SUBTITLE_PARSE_URL_URL + "?url="
 				+ URLEncoder.encode(p2pUrl) + "&md5_code=" + md5;
 		Log.i(TAG, "subTitleUrl-->" + subTitleUrl);
 		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();           
