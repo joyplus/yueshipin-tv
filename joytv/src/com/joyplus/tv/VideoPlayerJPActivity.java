@@ -1,10 +1,12 @@
 package com.joyplus.tv;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -20,6 +22,9 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
+import org.blaznyoght.subtitles.model.Collection;
+import org.blaznyoght.subtitles.model.Parser;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
@@ -36,6 +41,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -45,15 +51,21 @@ import android.net.http.AndroidHttpClient;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.webkit.URLUtil;
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.Gallery;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -87,6 +99,7 @@ import com.joyplus.tv.utils.DBUtils;
 import com.joyplus.tv.utils.DataBaseItems.UserHistory;
 import com.joyplus.tv.utils.DataBaseItems.UserShouCang;
 import com.joyplus.tv.utils.DefinationComparatorIndex;
+import com.joyplus.tv.utils.DesUtils;
 import com.joyplus.tv.utils.JieMianConstant;
 import com.joyplus.tv.utils.Log;
 import com.joyplus.tv.utils.SouceComparatorIndex1;
@@ -127,8 +140,10 @@ public class VideoPlayerJPActivity extends Activity implements
 	 * 快退、快进
 	 */
 	private static final int STATUE_FAST_DRAG = STATUE_PAUSE + 1;
+	
+	private static final int SEEKBAR_REFRESH_TIME = 200;//refresh time
 
-	private static final int OFFSET = 33;
+	private int OFFSET = 33;
 	private int seekBarWidthOffset = 40;
 
 	private TextView mVideoNameText; // 名字
@@ -176,6 +191,10 @@ public class VideoPlayerJPActivity extends Activity implements
 	 * 暂停继续层
 	 */
 	private LinearLayout mContinueLayout;
+	/**
+	 * subtitle
+	 */
+	private TextView mSubTitleTv;
 
 	/**
 	 * 基本播放参数
@@ -239,13 +258,23 @@ public class VideoPlayerJPActivity extends Activity implements
 	 */
 	private RelativeLayout layout;
 	private AdView mAdView;
-//	private String publisherId = "5b702aa315663879a582097a36ba0cdc";//要显示广告的publisherId
-//	private boolean animation = true;//该广告加载时是否用动画效果
 	
 	private boolean isOnlyExistFengXing = false;
 	private boolean isOnlyExistLetv = false;
 	
 	private String sourceFromUrl = null;//当前集的原始播放地址
+	
+	private List<URLS_INDEX> playUrls_hd2 = new ArrayList<URLS_INDEX>();//超清
+//	private List<URLS_INDEX> playUrls_hd = new ArrayList<URLS_INDEX>();//
+	private List<URLS_INDEX> playUrls_mp4 = new ArrayList<URLS_INDEX>();//高清
+	private List<URLS_INDEX> playUrls_flv = new ArrayList<URLS_INDEX>();//标清
+	ArrayList<Integer> definationStrings = new ArrayList<Integer>();//清晰度选择
+	ArrayList<Integer> zimuStrings = new ArrayList<Integer>();
+
+	/**  Subtitle*/
+	private Collection mSubTitleCollection = null;
+//	private int mStartTimeSubTitle,mEndTimeSubTitle;
+	private org.blaznyoght.subtitles.model.Element mCurSubTitleE,mBefSubTitleE;
 	
 	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
 		@Override
@@ -322,13 +351,13 @@ public class VideoPlayerJPActivity extends Activity implements
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		
-		Log.i(TAG, "onCreate--->");
 		if(true){
-		Intent intent = new Intent();
-		intent.setClass(this, JoyplusMediaPlayerActivity.class);
-		this.startActivity(intent);
-		//finish();
-		}else{
+			
+			startActivity(new Intent(this, JoyplusMediaPlayerActivity.class));
+			return;
+		}
+		
+		Log.i(TAG, "onCreate--->");
 		setContentView(R.layout.video_player_main);
 		aq = new AQuery(this);
 		app = (App) getApplication();
@@ -336,19 +365,16 @@ public class VideoPlayerJPActivity extends Activity implements
 		//广告位初始化
 		layout = (RelativeLayout)findViewById(R.id.adsdkContent);
 		
-//		if(UtilTools.getIsShowAd(getApplicationContext())) {
-			
-			if (mAdView != null) {
-				removeBanner();
-				if(layout!=null)
-					layout.setVisibility(View.GONE);
-			}
-//		}
+		if (mAdView != null) {
+			removeBanner();
+			if (layout != null)
+				layout.setVisibility(View.GONE);
+		}
 		
 		initViews();
 		mSeekBar.setEnabled(false);
 		m_ReturnProgramView = app.get_ReturnProgramView();
-		initVedioDate(); 
+		initVedioDate();
 
 		Window win = getWindow();
 		WindowManager.LayoutParams winParams = win.getAttributes();
@@ -358,11 +384,13 @@ public class VideoPlayerJPActivity extends Activity implements
 
 		IntentFilter intentFilter = new IntentFilter();
 		intentFilter.addAction(Constant.VIDEOPLAYERCMD);
-		//registerReceiver(mReceiver, intentFilter);
+		registerReceiver(mReceiver, intentFilter);
 
 		// 获取是否收藏
 		getIsShoucangData();
-		}
+		
+		OFFSET = UtilTools.getStandardValue(getApplicationContext(), OFFSET);
+		seekBarWidthOffset = UtilTools.getStandardValue(getApplicationContext(), seekBarWidthOffset);
 	}
 	
 	private void dismissView(View v){
@@ -371,6 +399,9 @@ public class VideoPlayerJPActivity extends Activity implements
 	}
 
 	private void initVedioDate() {
+		
+		reInitDefinationPartAndSubTitle();
+		
 		mStatue = STATUE_LOADING;
 		mSeekBar.setEnabled(false);
 		mSeekBar.setProgress(0);
@@ -384,7 +415,6 @@ public class VideoPlayerJPActivity extends Activity implements
 			mSpeedTextView
 					.setText("Your device does not support traffic stat monitoring.");
 		} else {
-
 			mHandler.postDelayed(mLoadingRunnable, 500);
 		}
 		// 点击某部影片播放时，会全局设置CurrentPlayData
@@ -440,7 +470,6 @@ public class VideoPlayerJPActivity extends Activity implements
 		updateName();
 		if (currentPlayUrl != null && URLUtil.isNetworkUrl(currentPlayUrl)) {
 			if (mProd_type<0) {
-//				mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
 				new Thread(new UrlRedirectTask()).start();
 			} else {
 				if (m_ReturnProgramView != null) {// 如果不为空，获取服务器返回的详细数据
@@ -510,19 +539,20 @@ public class VideoPlayerJPActivity extends Activity implements
 				if (currentPlayUrl != null
 						&& URLUtil.isNetworkUrl(currentPlayUrl)) {
 					
-					if(isOnlyExistFengXing && sourceFromUrl != null){//
+					if(isOnlyExistFengXing && sourceFromUrl != null){//只存在风行的地址
 						
 						String url = URLUtils.getFexingParseUrlURL(Constant.FENGXING_REGET_FIRST_URL, sourceFromUrl);
 						getFengxingParseServiceData(url);
 						
-					}else {//只存在风行的地址
+					}else {
 						
 						// 地址跳转相关。。。
 						new Thread(new UrlRedirectTask()).start();
-//						mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
 						// 要根据不同的节目做相应的处理。这里仅仅是为了验证上下集
 					}
 
+				}else {
+					mHandler.sendEmptyMessage(MESSAGE_URL_NEXT);
 				}
 				break;
 			case MESSAGE_URL_NEXT:
@@ -544,10 +574,10 @@ public class VideoPlayerJPActivity extends Activity implements
 						if (currentPlayUrl != null
 								&& URLUtil.isNetworkUrl(currentPlayUrl)) {
 							// 地址跳转相关。。。
-							Log.d(TAG, currentPlayUrl);
-							Log.d(TAG, mProd_src);
+							Log.d(TAG, "currentPlayUrl:" + currentPlayUrl + "  mProd_src-->" + mProd_src);
 							new Thread(new UrlRedirectTask()).start();
-//							mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
+						}else {
+							mHandler.sendEmptyMessage(MESSAGE_URL_NEXT);
 						}
 					} else {
 						// 所有的片源都不能播放
@@ -580,11 +610,9 @@ public class VideoPlayerJPActivity extends Activity implements
 				break;
 			case MESSAGE_HIDE_PROGRESSBAR:
 				dismissView(mNoticeLayout);
-//				mNoticeLayout.setVisibility(View.GONE);
 				break;
 			case MESSAGE_HIDE_VOICE:
 				dismissView(mVocieLayout);
-//				mVocieLayout.setVisibility(View.GONE);
 				break;
 			default:
 				break;
@@ -635,6 +663,7 @@ public class VideoPlayerJPActivity extends Activity implements
 						sourceQua = "flv";
 						break;
 					}
+					Log.i(TAG, "mDefination--->" + mDefination);
 					if(returnFirstFengxingUrlView.video_infos != null &&
 							returnFirstFengxingUrlView.video_infos.length > 0){
 						
@@ -642,7 +671,7 @@ public class VideoPlayerJPActivity extends Activity implements
 							
 							if(returnFirstFengxingUrlView.video_infos[i]!= null 
 									&& returnFirstFengxingUrlView.video_infos[i].type != null){
-								
+								Log.i(TAG, "sourceQua--->" + sourceQua + " type:" + returnFirstFengxingUrlView.video_infos[i].type);
 								if(sourceQua.equals(returnFirstFengxingUrlView.video_infos[i].type)){
 									
 									String tempUrl = returnFirstFengxingUrlView.video_infos[i].request_url;
@@ -688,27 +717,6 @@ public class VideoPlayerJPActivity extends Activity implements
 		}
 		
 		return sourceQua;
-	}
-	
-	private int typeToTypedefintion(String type){
-		
-		int defintion = 8;
-		
-		if(type != null && !type.equals("")){
-			
-			if(type.equals("hd2")){
-				
-				return 8;
-			}else if(type.equals("mp4")){
-				
-				return 7;
-			}else if(type.equals("flv")){
-				
-				return 6;
-			}
-		}
-		
-		return defintion;
 	}
 	
 	private void noUrlCanPlay(){
@@ -763,6 +771,7 @@ public class VideoPlayerJPActivity extends Activity implements
 			cb.params(params);
 			Map<String, String> headers = new HashMap<String, String>();
 			headers.put("Content-Type", "application/json");
+			headers.put("app_key", Constant.APPKEY);
 			cb.SetHeader(headers);
 			aq.ajax(cb);
 		} catch (UnsupportedEncodingException e) {
@@ -807,7 +816,7 @@ public class VideoPlayerJPActivity extends Activity implements
 					for(int i=0;i<returnFengxingSecondView.urls.length;i++){
 						
 						URLS_INDEX urls_INDEX = new URLS_INDEX();
-						urls_INDEX.source_from = Constant.video_index[3];
+						urls_INDEX.source_from = "fengxing";
 						urls_INDEX.defination_from_server = type;
 						urls_INDEX.url = returnFengxingSecondView.urls[i];
 						Log.i(TAG, "urls_INDEX--->" + urls_INDEX.toString());
@@ -835,6 +844,12 @@ public class VideoPlayerJPActivity extends Activity implements
 		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
 		cb.url(url).type(JSONObject.class).weakHandler(this, interfaceName);
 
+		if(!"initFenxingNetServiceData".equals(interfaceName)){
+			
+			Map<String, String> headers = new HashMap<String, String>();
+			headers.put("app_key", Constant.APPKEY);
+			cb.SetHeader(headers);
+		}
 		aq.ajax(cb);
 	}
 	
@@ -866,7 +881,8 @@ public class VideoPlayerJPActivity extends Activity implements
 					ReturnReGetVideoView.class);
 			
 			
-			if(reGetVideoView != null && reGetVideoView.down_urls != null
+			if(reGetVideoView != null && "false".equals(reGetVideoView.error)
+					&&reGetVideoView.down_urls != null
 					&& reGetVideoView.down_urls.urls != null
 					&& reGetVideoView.down_urls.urls.length > 0){
 				if(playUrls != null){
@@ -990,6 +1006,8 @@ public class VideoPlayerJPActivity extends Activity implements
 		mBottomButton = (ImageButton) findViewById(R.id.ib_control_bottom);
 		mCenterButton = (ImageButton) findViewById(R.id.ib_control_center);
 		mContinueButton = (ImageButton) findViewById(R.id.btn_continue);
+		
+		mSubTitleTv = (TextView) findViewById(R.id.tv_subtitle);
 
 		mPreButton.setOnClickListener(this);
 		mNextButton.setOnClickListener(this);
@@ -1068,8 +1086,10 @@ public class VideoPlayerJPActivity extends Activity implements
 			case STATUE_FAST_DRAG:
 				mTimeJumpSpeed = 0;
 				upDateFastTimeBar();
-				mHandler.removeMessages(MESSAGE_UPDATE_PROGRESS);
-				mHandler.sendEmptyMessageDelayed(MESSAGE_UPDATE_PROGRESS, 1000);
+//				mHandler.removeMessages(MESSAGE_UPDATE_PROGRESS);
+//				mHandler.sendEmptyMessageDelayed(MESSAGE_UPDATE_PROGRESS, 1000);
+				endUpdateSeekBar();
+				startUpdateSeekBar(SEEKBAR_REFRESH_TIME);
 				mStatue = STATUE_PLAYING;
 				mSeekBar.setProgress(mVideoView.getCurrentPosition());
 				mSeekBar.setEnabled(true);
@@ -1080,15 +1100,11 @@ public class VideoPlayerJPActivity extends Activity implements
 		case KeyEvent.KEYCODE_ENTER:
 			switch (mStatue) {
 			case STATUE_PLAYING:
-				
-//				if(UtilTools.getIsShowAd(getApplicationContext())) {
-					
-					/*
-					 * 显示banner
-					 */
-					showBanner();
-					layout.setVisibility(View.VISIBLE);
-//				}
+				/*
+				 * 显示banner
+				 */
+				showBanner();
+				layout.setVisibility(View.VISIBLE);
 				
 				mVocieLayout.setVisibility(View.GONE);
 				mHandler.removeMessages(MESSAGE_HIDE_VOICE);
@@ -1109,13 +1125,93 @@ public class VideoPlayerJPActivity extends Activity implements
 				}
 				mTimeJumpSpeed = 0;
 				upDateFastTimeBar();
-				mHandler.removeMessages(MESSAGE_UPDATE_PROGRESS);
-				mHandler.sendEmptyMessageDelayed(MESSAGE_UPDATE_PROGRESS, 1000);
+//				mHandler.removeMessages(MESSAGE_UPDATE_PROGRESS);
+//				mHandler.sendEmptyMessageDelayed(MESSAGE_UPDATE_PROGRESS, 1000);
+				endUpdateSeekBar();
+				startUpdateSeekBar(SEEKBAR_REFRESH_TIME);
 				mStatue = STATUE_PLAYING;
 				mSeekBar.setEnabled(true);
 				break;
 			}
 			break;
+		case KeyEvent.KEYCODE_MENU:
+				try{
+					final Dialog dialog = new AlertDialog.Builder(this).create();
+					dialog.show();
+					LayoutInflater inflater = LayoutInflater.from(this);
+					View view = inflater.inflate(R.layout.video_choose_defination, null);
+					Button btn_ok = (Button) view.findViewById(R.id.btn_ok_def);
+					Button btn_cancel = (Button) view.findViewById(R.id.btn_cancle_def);
+//					final LinearLayout layout_def = (LinearLayout) view.findViewById(R.id.layout_def);
+//					final LinearLayout layout_zimu = (LinearLayout) view.findViewById(R.id.layout_zimu);
+					final Gallery gallery = (Gallery) view.findViewById(R.id.gallery_def);
+					final Gallery gallery_zm = (Gallery) view.findViewById(R.id.gallery_zimu);
+					
+					definationStrings.clear();
+					zimuStrings.clear();
+					if(mSubTitleCollection == null){
+						zimuStrings.add(-1);//暂无字幕
+					}else{
+						zimuStrings.add(0);//字幕开
+						zimuStrings.add(1);//字幕关
+					}
+//					definationStrings.add("超    清");
+//					definationStrings.add("高    清");
+//					definationStrings.add("标    清");
+//					definationStrings.add("流    畅");
+					if(playUrls_hd2.size()>0){
+						definationStrings.add(Constant.DEFINATION_HD2);
+					}
+					
+					if(playUrls_mp4.size()>0){
+						definationStrings.add(Constant.DEFINATION_MP4);
+					}
+					if(playUrls_flv.size()>0){
+						definationStrings.add(Constant.DEFINATION_FLV);
+					}
+					
+					gallery.setAdapter(new DefinationAdapter(this, definationStrings));
+					gallery.setSelection(definationStrings.indexOf(mDefination));
+					
+					gallery_zm.setAdapter(new ZimuAdapter(this, zimuStrings));
+					if(mSubTitleTv.getVisibility()==View.VISIBLE){
+						gallery_zm.setSelection(0);
+					}else{
+						gallery_zm.setSelection(1);
+					}
+					
+					gallery.requestFocus();
+					btn_ok.setOnClickListener(new OnClickListener() {
+						
+						@Override
+						public void onClick(View v) {
+							// TODO Auto-generated method stub
+							dialog.dismiss();
+							if(gallery_zm.getChildCount()>1){
+								if(gallery_zm.getSelectedItemPosition()==0){
+									mSubTitleTv.setVisibility(View.VISIBLE);
+								}else{
+									mSubTitleTv.setVisibility(View.INVISIBLE);
+								}
+							}
+							changeDefination(definationStrings.get(gallery.getSelectedItemPosition()));
+						}
+					});
+					btn_cancel.setOnClickListener(new OnClickListener() {
+						
+						@Override
+						public void onClick(View v) {
+							// TODO Auto-generated method stub
+							dialog.dismiss();
+						}
+					});
+					dialog.setContentView(view);
+				}catch (Exception e) {
+					// TODO: handle exception
+					e.printStackTrace();
+				}
+				
+			return true;
 		case KeyEvent.KEYCODE_VOLUME_UP:
 			if (mStatue == STATUE_PLAYING) {
 				mHandler.removeMessages(MESSAGE_HIDE_VOICE);
@@ -1229,6 +1325,182 @@ public class VideoPlayerJPActivity extends Activity implements
 		}
 		return super.onKeyDown(keyCode, event);
 	}
+	
+	private void startUpdateSeekBar(long time){
+		
+		mHandler.sendEmptyMessageDelayed(MESSAGE_UPDATE_PROGRESS, time);
+		
+		if(time == SEEKBAR_REFRESH_TIME && mStatue == STATUE_PLAYING){
+			
+			updateSubtitle();
+		}else {
+			
+			mCurSubTitleE = null;//当前
+			mBefSubTitleE = null;//之前
+			mSubTitleTv.setText("");
+		}
+		
+		
+		
+	}
+	
+	private void updateSubtitle(){
+		
+		if(mVideoView != null && mVideoView.getCurrentPosition() >= 0){
+			long currentPosition = mVideoView.getCurrentPosition();
+			if(mSubTitleCollection != null){
+				
+				if(mCurSubTitleE == null) {
+					
+					for(int i=0;i<mSubTitleCollection.getElementSize();i++){
+						
+						org.blaznyoght.subtitles.model.Element element = 
+								mSubTitleCollection.getElements().get(i);
+						if(currentPosition < element.getStartTime().getTime()){
+							
+							mCurSubTitleE = element;
+							
+							break;
+						}
+					}
+				} else {
+					
+					long startTime = mCurSubTitleE.getStartTime().getTime();
+					long endTime = mCurSubTitleE.getEndTime().getTime();
+					
+					if(currentPosition - startTime > 0){
+						
+						if(mSubTitleTv.getText().toString().equals("")){
+
+							Log.d(TAG, "subtitle start--->startTime:" + startTime);
+							if(mBefSubTitleE == null
+									|| mCurSubTitleE.getRank() - mBefSubTitleE.getRank() == 0
+									|| mCurSubTitleE.getRank() - mBefSubTitleE.getRank() == 1){
+								mSubTitleTv.setText(mCurSubTitleE.getText().replaceAll("<font.*>", "").trim());
+							}else {
+								
+								StringBuilder sb = new StringBuilder();
+								for(int i=mBefSubTitleE.getRank();i<mCurSubTitleE.getRank() &&i<mSubTitleCollection.getElementSize();i++){
+
+									org.blaznyoght.subtitles.model.Element element = 
+											mSubTitleCollection.getElements().get(i);
+									sb.append(element.getText().replaceAll("<font.*>", ""));
+//									if(i<=mCurSubTitleE.getRank() -1){
+//										
+//										sb.append("\n");
+//									}
+									mSubTitleTv.setText(sb.toString().trim());
+								}
+							}
+							
+							mBefSubTitleE = mCurSubTitleE;
+						}
+					}
+					
+					if (currentPosition - endTime > 0) {
+						Log.d(TAG, "subtitle over--->endTime:" + endTime);
+						if(!mSubTitleTv.getText().toString().equals("")){
+							
+							mSubTitleTv.setText("");
+							mCurSubTitleE = null;
+						}
+						
+					}
+				}
+			}
+		}
+	}
+	
+	private void endUpdateSeekBar(){
+		
+		mHandler.removeMessages(MESSAGE_UPDATE_PROGRESS);
+		mCurSubTitleE = null;//当前
+		mBefSubTitleE = null;//之前
+	}
+	
+	private void changeDefination(int defination){
+		if(mDefination == defination){
+			return ;
+		}
+		lastTime = mVideoView.getCurrentPosition();
+		rxByteslast = 0;
+		mLoadingPreparedPercent = 0;
+		mEpisodeIndex = -1;
+		mPercentTextView.setText(", 已完成"
+				+ Long.toString(mLoadingPreparedPercent / 100) + "%");
+		mDefination = defination;
+		mVideoView.stopPlayback();
+		mStatue = STATUE_LOADING;
+		mSeekBar.setEnabled(false);
+		mSeekBar.setProgress(0);
+		mTotalTimeTextView.setText("--:--");
+		mPreLoadLayout.setVisibility(View.VISIBLE);
+		mNoticeLayout.setVisibility(View.VISIBLE);
+		mContinueLayout.setVisibility(View.GONE);
+		mControlLayout.setVisibility(View.GONE);
+		mStartRX = TrafficStats.getTotalRxBytes();// 获取网络速度
+		if (mStartRX == TrafficStats.UNSUPPORTED) {
+			mSpeedTextView
+					.setText("Your device does not support traffic stat monitoring.");
+		} else {
+
+			mHandler.postDelayed(mLoadingRunnable, 500);
+		}
+		sortPushUrls(mDefination);
+		mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
+	}
+	
+	private void sortPushUrls(int defination){
+		
+		for(URLS_INDEX url_index_info:playUrls){
+			switch (defination) {
+			case Constant.DEFINATION_HD2:
+				if("hd2".equalsIgnoreCase(url_index_info.defination_from_server)){
+					url_index_info.defination = 0;
+				}else if("hd".equalsIgnoreCase(url_index_info.defination_from_server)){
+					url_index_info.defination = 1;
+				}else if("mp4".equalsIgnoreCase(url_index_info.defination_from_server)){
+					url_index_info.defination = 2;
+				}else if("flv".equalsIgnoreCase(url_index_info.defination_from_server)){
+					url_index_info.defination = 3;
+				}else{
+					url_index_info.defination = 4;
+				}
+				break;
+			case Constant.DEFINATION_MP4:
+				if("hd2".equalsIgnoreCase(url_index_info.defination_from_server)){
+					url_index_info.defination = 1;
+				}else if("hd".equalsIgnoreCase(url_index_info.defination_from_server)){
+					url_index_info.defination = 2;
+				}else if("mp4".equalsIgnoreCase(url_index_info.defination_from_server)){
+					url_index_info.defination = 0;
+				}else if("flv".equalsIgnoreCase(url_index_info.defination_from_server)){
+					url_index_info.defination = 3;
+				}else{
+					url_index_info.defination = 4;
+				}
+				break;
+			case Constant.DEFINATION_FLV:
+				if("hd2".equalsIgnoreCase(url_index_info.defination_from_server)){
+					url_index_info.defination = 1;
+				}else if("hd".equalsIgnoreCase(url_index_info.defination_from_server)){
+					url_index_info.defination = 2;
+				}else if("mp4".equalsIgnoreCase(url_index_info.defination_from_server)){
+					url_index_info.defination = 3;
+				}else if("flv".equalsIgnoreCase(url_index_info.defination_from_server)){
+					url_index_info.defination = 0;
+				}else{
+					url_index_info.defination = 4;
+				}
+				break;
+			default:
+				break;
+			}
+		}
+		if(playUrls.size()>1){
+			Collections.sort(playUrls, new DefinationComparatorIndex());
+		}
+	}
 
 	private void showControlLayout() {
 		// 判断上下集能不能用
@@ -1275,15 +1547,12 @@ public class VideoPlayerJPActivity extends Activity implements
 
 			mBottomButton.setBackgroundResource(R.drawable.player_btn_fav);
 		}
-
-//		if(UtilTools.getIsShowAd(getApplicationContext())) {
-			
-			/*
-			 * 显示banner
-			 */
-			showBanner();
-			layout.setVisibility(View.VISIBLE);
-//		}
+		
+		/*
+		 * 显示banner
+		 */
+		showBanner();
+		layout.setVisibility(View.VISIBLE);
 		
 		mVocieLayout.setVisibility(View.GONE);
 		mHandler.removeMessages(MESSAGE_HIDE_VOICE);
@@ -1294,20 +1563,6 @@ public class VideoPlayerJPActivity extends Activity implements
 		mControlLayout.setVisibility(View.VISIBLE);
 		mNoticeLayout.setVisibility(View.VISIBLE);
 		mCenterButton.requestFocus();
-		// if( getCurrentFocus().getId() != mSeekBar.getId()) {
-		//
-		// mSeekBar.requestFocus();
-		// }
-		//
-		// Log.d(TAG,"FOUCED ID -->" + getCurrentFocus().getId());
-		// mHandler.postDelayed(new Runnable() {
-		//
-		// @Override
-		// public void run() {
-		// // TODO Auto-generated method stub
-		// mTopButton.requestFocus();
-		// }
-		// }, 200);
 	}
 
 	private void upDateFastTimeBar() {
@@ -1329,8 +1584,6 @@ public class VideoPlayerJPActivity extends Activity implements
 			mHandler.removeMessages(MESSAGE_HIDE_PROGRESSBAR);
 			mHandler.sendEmptyMessageDelayed(MESSAGE_HIDE_PROGRESSBAR, 2500);
 		}
-		// mHandler.removeMessages(MESSAGE_UPDATE_PROGRESS);
-		// mHandler.sendEmptyMessageDelayed(MESSAGE_UPDATE_PROGRESS, 500);
 	}
 
 	@Override
@@ -1385,14 +1638,8 @@ public class VideoPlayerJPActivity extends Activity implements
 		mSeekBar.setMax((int) mVideoView.getDuration());
 		mSeekBar.setOnSeekBarChangeListener(VideoPlayerJPActivity.this);
 		mSeekBar.setProgress((int) lastTime);
-		mHandler.sendEmptyMessageDelayed(MESSAGE_UPDATE_PROGRESS, 1000);
-//		mHandler.postDelayed(new Runnable() {
-//			@Override
-//			public void run() {
-//				// TODO Auto-generated method stub
-//				
-//			}
-//		}, 500);
+//		mHandler.sendEmptyMessageDelayed(MESSAGE_UPDATE_PROGRESS, 1000);
+		startUpdateSeekBar(SEEKBAR_REFRESH_TIME);
 	}
 
 	@Override
@@ -1430,7 +1677,8 @@ public class VideoPlayerJPActivity extends Activity implements
 				hidePreLoad(); 
 			}else{
 				mSeekBar.setProgress((int) current);
-				mHandler.sendEmptyMessageDelayed(MESSAGE_UPDATE_PROGRESS, 1000);
+				startUpdateSeekBar(SEEKBAR_REFRESH_TIME);
+//				mHandler.sendEmptyMessageDelayed(MESSAGE_UPDATE_PROGRESS, 1000);
 			}
 			break;
 		case STATUE_PLAYING:
@@ -1439,7 +1687,8 @@ public class VideoPlayerJPActivity extends Activity implements
 				mSeekBar.setProgress((int) current1);
 				// updateTimeNoticeView(mSeekBar.getProgress());
 			}
-			mHandler.sendEmptyMessageDelayed(MESSAGE_UPDATE_PROGRESS, 1000);
+//			mHandler.sendEmptyMessageDelayed(MESSAGE_UPDATE_PROGRESS, 1000);
+			startUpdateSeekBar(SEEKBAR_REFRESH_TIME);
 			break;
 		case STATUE_FAST_DRAG:
 			if (mTimeJumpSpeed > 0) {
@@ -1458,11 +1707,13 @@ public class VideoPlayerJPActivity extends Activity implements
 			}
 			mSeekBar.setProgress(mFastJumpTime);
 			// updateTimeNoticeView(mSeekBar.getProgress());
-			mHandler.sendEmptyMessageDelayed(MESSAGE_UPDATE_PROGRESS,
-					mTimes[Math.abs(mTimeJumpSpeed) - 1]);
+//			mHandler.sendEmptyMessageDelayed(MESSAGE_UPDATE_PROGRESS,
+//					mTimes[Math.abs(mTimeJumpSpeed) - 1]);
+			startUpdateSeekBar(mTimes[Math.abs(mTimeJumpSpeed) - 1]);
 			break;
 		default:
-			mHandler.sendEmptyMessageDelayed(MESSAGE_UPDATE_PROGRESS, 1000);
+//			mHandler.sendEmptyMessageDelayed(MESSAGE_UPDATE_PROGRESS, 1000);
+			startUpdateSeekBar(SEEKBAR_REFRESH_TIME);
 			break;
 		}
 	}
@@ -1480,7 +1731,7 @@ public class VideoPlayerJPActivity extends Activity implements
 			parms.leftMargin = (int) mLeft;
 		else
 			parms.leftMargin = OFFSET;
-		parms.bottomMargin = 20 + 10;
+		parms.bottomMargin = UtilTools.getStandardValue(getApplicationContext(), 30);
 		mTimeLayout.setLayoutParams(parms);
 
 		mCurrentTimeTextView.setText(UtilTools.formatDuration(progress));
@@ -1535,7 +1786,6 @@ public class VideoPlayerJPActivity extends Activity implements
 		isSeekBarIntoch = false;
 		mVideoView.seekTo(mSeekBar.getProgress());
 		mHandler.sendEmptyMessageDelayed(MESSAGE_HIDE_PROGRESSBAR, 2500);
-//		mHandler.re
 	}
 
 	@Override
@@ -1543,24 +1793,19 @@ public class VideoPlayerJPActivity extends Activity implements
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
 		case R.id.ib_control_top:
-//			mControlLayout.setVisibility(View.GONE);
 			dismissView(mControlLayout);
 			mHandler.sendEmptyMessageDelayed(MESSAGE_HIDE_PROGRESSBAR, 2500);
 			mStatue = STATUE_PLAYING;
 			mSeekBar.setEnabled(true);
 			mVideoView.requestFocus();
 			mVideoView.start();
-			
-//			if(UtilTools.getIsShowAd(getApplicationContext())) {
-				
-				removeBanner();
-				if(layout!=null)	
-					layout.setVisibility(View.GONE);
-//			}
+		
+			removeBanner();
+			if (layout != null)
+				layout.setVisibility(View.GONE);
 
 			break;
 		case R.id.btn_continue:
-//			mContinueLayout.setVisibility(View.GONE);
 			dismissView(mContinueLayout);
 			mHandler.sendEmptyMessageDelayed(MESSAGE_HIDE_PROGRESSBAR, 2500);
 			mStatue = STATUE_PLAYING;
@@ -1572,7 +1817,6 @@ public class VideoPlayerJPActivity extends Activity implements
 				layout.setVisibility(View.GONE);
 			break;
 		case R.id.ib_control_center:
-			// mVideoView.stopPlayback();
 			setResult2Xiangqing();
 			finish();
 			break;
@@ -1617,12 +1861,8 @@ public class VideoPlayerJPActivity extends Activity implements
 
 	private void showLoading() {
 		removeBanner();
-		
-//		if(UtilTools.getIsShowAd(getApplicationContext())) {
-			
-			if(layout!=null)
-				layout.setVisibility(View.GONE);
-//		}
+		if (layout != null)
+			layout.setVisibility(View.GONE);
 		
 		mLoadingPreparedPercent = 0;
 		rxByteslast = 0;
@@ -1636,7 +1876,6 @@ public class VideoPlayerJPActivity extends Activity implements
 		mPercentTextView.setText("已完成0%");
 		mPreLoadLayout.setVisibility(View.VISIBLE);
 		mNoticeLayout.setVisibility(View.VISIBLE);
-//		mHandler.sendEmptyMessageDelayed(MESSAGE_HIDE_PROGRESSBAR, 2500);
 	}
 
 	private void playNext() {
@@ -1645,7 +1884,6 @@ public class VideoPlayerJPActivity extends Activity implements
 		mStatue = STATUE_LOADING;
 		mSeekBar.setProgress(0);
 		mSeekBar.setEnabled(false);
-//		mTotalTimeTextView.setText(UtilTools.formatDuration(0));
 		mTotalTimeTextView.setText("--:--");
 		mHandler.removeCallbacksAndMessages(null);
 		mControlLayout.setVisibility(View.GONE);
@@ -1666,7 +1904,6 @@ public class VideoPlayerJPActivity extends Activity implements
 		mStatue = STATUE_LOADING;
 		mSeekBar.setProgress(0);
 		mSeekBar.setEnabled(false);
-//		mTotalTimeTextView.setText(UtilTools.formatDuration(0));
 		mTotalTimeTextView.setText("--:--");
 		mHandler.removeCallbacksAndMessages(null);
 		mControlLayout.setVisibility(View.GONE);
@@ -1764,7 +2001,9 @@ public class VideoPlayerJPActivity extends Activity implements
 				strSrc = "PPTV";
 			} else if (mProd_src.equalsIgnoreCase("m1905")) {
 				strSrc = "电  影  网";
-			} else {
+			} else if (mProd_src.equalsIgnoreCase("p2p")) {
+				strSrc = "P 2 P";
+			}else {
 				strSrc = "PPTV";
 			}
 			mResourceTextView.setText(strSrc);
@@ -1818,13 +2057,13 @@ public class VideoPlayerJPActivity extends Activity implements
 									if(m_ReturnProgramView.movie.episodes[0].video_urls[0].source != null){
 										
 										if(m_ReturnProgramView.movie.episodes[0].video_urls[0].source.
-												equals(Constant.video_index[1])||
+												equals(Constant.video_index[2])||
 												m_ReturnProgramView.movie.episodes[0].video_urls[0].source.
-												equals(Constant.video_index[2])){
+												equals(Constant.video_index[3])){
 											
 											isOnlyExistLetv = true;
 										}else if(m_ReturnProgramView.movie.episodes[0].video_urls[0].source.
-												equals(Constant.video_index[3])){
+												equals(Constant.video_index[4])){
 											
 											isOnlyExistFengXing = true;
 										}
@@ -1892,13 +2131,13 @@ public class VideoPlayerJPActivity extends Activity implements
 											if(m_ReturnProgramView.tv.episodes[i].video_urls[0].source != null){
 												
 												if(m_ReturnProgramView.tv.episodes[i].video_urls[0].source.
-														equals(Constant.video_index[1])||
+														equals(Constant.video_index[2])||
 														m_ReturnProgramView.tv.episodes[i].video_urls[0].source.
-														equals(Constant.video_index[2])){
+														equals(Constant.video_index[3])){
 													
 													isOnlyExistLetv = true;
 												}else if(m_ReturnProgramView.tv.episodes[i].video_urls[0].source.
-														equals(Constant.video_index[3])){
+														equals(Constant.video_index[4])){
 													
 													isOnlyExistFengXing = true;
 												}
@@ -1948,13 +2187,13 @@ public class VideoPlayerJPActivity extends Activity implements
 										if(m_ReturnProgramView.tv.episodes[mEpisodeIndex].video_urls[0].source != null){
 											
 											if(m_ReturnProgramView.tv.episodes[mEpisodeIndex].video_urls[0].source.
-													equals(Constant.video_index[1])||
+													equals(Constant.video_index[2])||
 													m_ReturnProgramView.tv.episodes[mEpisodeIndex].video_urls[0].source.
-													equals(Constant.video_index[2])){
+													equals(Constant.video_index[3])){
 												
 												isOnlyExistLetv = true;
 											}else if(m_ReturnProgramView.tv.episodes[mEpisodeIndex].video_urls[0].source.
-													equals(Constant.video_index[3])){
+													equals(Constant.video_index[4])){
 												
 												isOnlyExistFengXing = true;
 											}
@@ -2027,13 +2266,13 @@ public class VideoPlayerJPActivity extends Activity implements
 												if(m_ReturnProgramView.show.episodes[mEpisodeIndex].video_urls[0].source != null){
 													
 													if(m_ReturnProgramView.show.episodes[mEpisodeIndex].video_urls[0].source.
-															equals(Constant.video_index[1])||
+															equals(Constant.video_index[2])||
 															m_ReturnProgramView.show.episodes[mEpisodeIndex].video_urls[0].source.
-															equals(Constant.video_index[2])){
+															equals(Constant.video_index[3])){
 														
 														isOnlyExistLetv = true;
 													}else if(m_ReturnProgramView.show.episodes[mEpisodeIndex].video_urls[0].source.
-															equals(Constant.video_index[3])){
+															equals(Constant.video_index[4])){
 														
 														isOnlyExistFengXing = true;
 													}
@@ -2178,11 +2417,144 @@ public class VideoPlayerJPActivity extends Activity implements
 		}
 	}
 	
+	private byte[] getSubTitleBytes(String p2pUrl,String md5){
+		
+		String subTitleUrl = Constant.SUBTITLE_PARSE_URL_URL + "?url="
+				+ URLEncoder.encode(p2pUrl) + "&md5_code=" + md5;
+		Log.i(TAG, "subTitleUrl-->" + subTitleUrl);
+		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();           
+		cb.url(subTitleUrl).type(JSONObject.class);             
+		Map<String, String> headers = new HashMap<String, String>();
+		headers.put("app_key", Constant.APPKEY);
+		cb.SetHeader(headers);        
+		aq.sync(cb);
+		
+		JSONObject jo = cb.getResult();
+		if(jo != null && jo.has("error")){
+			Log.i(TAG, "jo-->" + jo.toString());
+			try {
+				if(!jo.getBoolean("error")){
+					if(!jo.getBoolean("error") && jo.has("subtitles")){
+						JSONArray subtitleContents = jo.getJSONArray("subtitles");
+						if(subtitleContents != null && subtitleContents.length() > 0){
+							String subTitleUrl2 = subtitleContents.getString(0);
+							if(subTitleUrl2 != null && !subTitleUrl.equals("")){
+								AjaxCallback<byte[]> cb2 = new AjaxCallback<byte[]>();
+								cb2.url(subTitleUrl2).type(byte[].class);
+								cb2.SetHeader(headers);
+								aq.sync(cb2);
+								byte[] subTitle = cb2.getResult();
+								return subTitle;
+							}
+						}
+					}
+				}
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
+	
 	private int maxQuality = -1;//最高清晰度
 	
 	private void sequenceList(){
 		
+		reInitDefinationPartAndSubTitle();
+		
 		Log.d(TAG, "playUrls size ------->" + playUrls.size() + " maxQuality--->" + maxQuality);
+		
+		if("".equals(UtilTools.getP2PMD5(getApplicationContext()))){
+			
+			String md5 = MobclickAgent.getConfigParams(this, "P2P_TV_MD5");
+			Log.i(TAG, "md5--->" + md5);
+			if(md5 != null && !"".equals(md5)){
+				
+				UtilTools.setP2PMD5(getApplicationContext(), md5);
+			}
+		}
+		
+		List<URLS_INDEX> tempP2PList = new ArrayList<URLS_INDEX>();
+		List<URLS_INDEX> tempExP2PList = new ArrayList<URLS_INDEX>();
+		
+		for (int i = 0; i < playUrls.size(); i++) {
+			Log.i(TAG, "url_index-->" + playUrls.get(i).toString());
+
+			if ("p2p".equals(playUrls.get(i).source_from)) {
+				tempP2PList.add(playUrls.get(i));
+			}else {
+				
+				tempExP2PList.add(playUrls.get(i));
+			}
+		}
+		for(int i=0;i< tempP2PList.size();i++){
+			
+			if("p2p".equals(tempP2PList.get(i).source_from)){
+				
+				String p2pUrl = tempP2PList.get(i).url;
+				Log.i(TAG, "p2pUrl--->" + p2pUrl);
+				if(p2pUrl != null && !p2pUrl.equals("")){
+					
+					if(!"".equals(UtilTools.getP2PMD5(getApplicationContext()))){
+						
+						String p2pStr = URLUtils.getXunLeiUrlURL(Constant.P2P_PARSE_URL_URL,p2pUrl,
+								UtilTools.getP2PMD5(getApplicationContext()));
+						Log.i(TAG, "p2pStr-->" + p2pStr);
+						AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();           
+						cb.url(p2pStr).type(JSONObject.class);             
+						Map<String, String> headers = new HashMap<String, String>();
+						headers.put("app_key", Constant.APPKEY);
+						cb.SetHeader(headers);        
+						aq.sync(cb);
+//						AjaxStatus status = cb.getStatus();
+						JSONObject jo = cb.getResult();
+						if(jo != null && jo.has("error")){
+							Log.i(TAG, "jo-->" + jo.toString());
+							
+							try {
+								if(!jo.getBoolean("error")){
+									String downloadUrl = jo.getString("downurl");
+									if(downloadUrl != null && !"".equals(downloadUrl)){
+										String data = DesUtils.decode(Constant.DES_KEY, downloadUrl);
+										Log.i(TAG, "data code-->" + data);
+										String[] urls = data.split("\\{mType\\}");
+										for(String str : urls){
+											URLS_INDEX url_index_info = new URLS_INDEX();
+											String[] p = str.split("\\{m\\}");
+											if(p.length<2){
+												continue;
+											}
+											url_index_info.source_from="p2p";
+											url_index_info.defination_from_server = p[0];
+											if("hd".equals(p[0])){
+												url_index_info.defination_from_server="mp4";
+											}else if("hd2".equals(p[0])){
+												url_index_info.defination_from_server="hd2";
+											}else {
+												url_index_info.defination_from_server="flv";
+											}
+											url_index_info.url = p[1];
+											tempExP2PList.add(url_index_info);
+										}
+									}
+								}
+							} catch (JSONException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
+						//获取字幕
+						if(mSubTitleCollection == null){
+							initSubTitleCollection(getSubTitleBytes(p2pUrl, UtilTools.getP2PMD5(getApplicationContext())));
+						}
+					}
+				}
+			}
+		}
+		
+		playUrls.clear();
+		playUrls = tempExP2PList;
 		
 		for (int i = 0; i < playUrls.size(); i++) {
 			URLS_INDEX url_index = playUrls.get(i);
@@ -2191,18 +2563,19 @@ public class VideoPlayerJPActivity extends Activity implements
 					Constant.video_index[0])) {
 				url_index.souces = 0;
 			} else if (url_index.source_from.trim().equalsIgnoreCase(
-					Constant.video_index[1])) {//le_tv_fee
+					Constant.video_index[1])) {
 				url_index.souces = 1;
 				
 			} else if (url_index.source_from.trim().equalsIgnoreCase(
-					Constant.video_index[2])) {//letv
+					Constant.video_index[2])) {//le_tv_fee
 				url_index.souces = 2;
+				
+			} else if (url_index.source_from.trim().equalsIgnoreCase(
+					Constant.video_index[3])) {//letv
+				url_index.souces = 3;
 
 			} else if (url_index.source_from.trim().equalsIgnoreCase(
-					Constant.video_index[3])) {//fengxing
-				url_index.souces = 3;
-			} else if (url_index.source_from.trim().equalsIgnoreCase(
-					Constant.video_index[4])) {
+					Constant.video_index[4])) {//fengxing
 				url_index.souces = 4;
 			} else if (url_index.source_from.trim().equalsIgnoreCase(
 					Constant.video_index[5])) {
@@ -2225,8 +2598,11 @@ public class VideoPlayerJPActivity extends Activity implements
 			} else if (url_index.source_from.trim().equalsIgnoreCase(
 					Constant.video_index[11])) {
 				url_index.souces = 11;
-			} else {
+			} else if (url_index.source_from.trim().equalsIgnoreCase(
+					Constant.video_index[12])) {
 				url_index.souces = 12;
+			} else {
+				url_index.souces = 13;
 			}
 			switch (mDefination) {
 			case BangDanConstant.GAOQING:// 高清
@@ -2283,21 +2659,79 @@ public class VideoPlayerJPActivity extends Activity implements
 			}
 			if (url_index.source_from
 					.equalsIgnoreCase(Constant.BAIDU_WANGPAN)) {
-				Document doc = null;
-				try {
-					doc = Jsoup.connect(url_index.url).timeout(10000).get();
-					// doc = Jsoup.connect(htmlStr).timeout(10000).get();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				boolean isLocalParse = false;
+				if(UtilTools.getWpBaiduLocalParseInit(getApplicationContext())){
+					
+					isLocalParse = UtilTools.getWpBaiduLocalParse(getApplicationContext());
+				}else {
+					
+					String localParse = MobclickAgent.getConfigParams(this, "WP_BAIDU_LOCAL_PARSE");
+					Log.i(TAG, "localParse--->" + localParse);
+					if(localParse != null && "true".equals(localParse)){
+						
+						isLocalParse = true;
+						UtilTools.setWpBaiduLocalParse(getApplicationContext(), true);
+					}else {
+						
+						isLocalParse = false;
+						UtilTools.setWpBaiduLocalParse(getApplicationContext(), false);
+					}
 				}
-				if (doc != null) {
-					Element e = doc.getElementById("fileDownload");
-					if (e != null) {
-						Log.d(TAG, "url = " + e.attr("href"));
-						if (e.attr("href") != null
-								&& e.attr("href").length() > 0) {
-							url_index.url = e.attr("href");
+				
+				if(isLocalParse){
+					
+					Document doc = null;
+					try {
+						doc = Jsoup.connect(url_index.url).timeout(10000).get();
+						// doc = Jsoup.connect(htmlStr).timeout(10000).get();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					if (doc != null) {
+						Element e = doc.getElementById("fileDownload");
+						if (e != null) {
+							Log.d(TAG, "url = " + e.attr("href"));
+							if (e.attr("href") != null
+									&& e.attr("href").length() > 0) {
+								url_index.url = e.attr("href");
+							}
+						}
+					}
+				} else {
+					
+					String wangPanUrl = URLUtils.
+							getParseUrlURL(Constant.LETV_PARSE_URL_URL, url_index.url, mProd_id, mProd_sub_name);
+					AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();           
+					cb.url(wangPanUrl).type(JSONObject.class);             
+					Map<String, String> headers = new HashMap<String, String>();
+					headers.put("app_key", Constant.APPKEY);
+					cb.SetHeader(headers);        
+					aq.sync(cb);
+//					AjaxStatus status = cb.getStatus();
+					JSONObject jo = cb.getResult();
+					if(jo != null){
+						Log.i(TAG, "wangpan src url:" + url_index.url+ "  --wangpan-jsondata:" + jo.toString());
+						if(jo.has("error")){
+							try {
+								if(!jo.getBoolean("error")){
+									
+									ObjectMapper mapper = new ObjectMapper();
+									ReturnReGetVideoView reGetVideoView = mapper.readValue(jo.toString(),
+											ReturnReGetVideoView.class);
+									if(reGetVideoView != null && reGetVideoView.down_urls != null
+											&& reGetVideoView.down_urls.urls != null
+											&& reGetVideoView.down_urls.urls.length > 0){
+										if(reGetVideoView.down_urls.urls[0] != null
+												&& reGetVideoView.down_urls.urls[0].url != null){
+											url_index.url = reGetVideoView.down_urls.urls[0].url;
+										}
+									}
+								}
+							} catch (Exception e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
 						}
 					}
 				}
@@ -2307,6 +2741,65 @@ public class VideoPlayerJPActivity extends Activity implements
 			Collections.sort(playUrls, new SouceComparatorIndex1());
 			Collections.sort(playUrls, new DefinationComparatorIndex());
 		}
+		
+		for (int i = 0; i < playUrls.size(); i++) {
+
+			if ("hd2".equals(playUrls.get(i).defination_from_server)) {
+				playUrls_hd2.add(playUrls.get(i));
+			} else if ("mp4".equals(playUrls.get(i).defination_from_server)) {
+				playUrls_mp4.add(playUrls.get(i));
+			} else if ("flv".equals(playUrls.get(i).defination_from_server)) {
+				playUrls_flv.add(playUrls.get(i));
+			}
+		}
+	}
+	
+	private void reInitDefinationPartAndSubTitle(){
+		
+		playUrls_flv.clear();
+		playUrls_hd2.clear();
+		playUrls_mp4.clear();
+		
+		mSubTitleCollection = null;
+		mBefSubTitleE = null;
+		mCurSubTitleE = null;
+	}
+	
+	private void initSubTitleCollection(byte[] subTitle){
+		
+		if(subTitle != null && subTitle.length > 3
+				&& mSubTitleCollection == null){
+			
+			Parser parser = new Parser();
+			
+			String charsetName = UtilTools.getCharset(subTitle, 128);
+			Log.d(TAG, "initSubTitleCollection-->charsetName:" + charsetName);
+			if(charsetName.equals("")){
+				
+				boolean isUtf8 = UtilTools.isUTF_8(subTitle);
+				Log.i(TAG, "isUtf8--->" + isUtf8);
+				
+				if(!isUtf8){
+					
+					parser.setCharset("GBK");
+				} else {
+					
+					parser.setCharset("UTF-8");
+				}
+			}else {
+				
+				parser.setCharset(charsetName);
+			}
+			parser.parse(new ByteArrayInputStream(subTitle));
+			
+			if(parser.getCollection().getElements().size() > 2){
+				mSubTitleCollection = parser.getCollection();
+			}
+			Log.d(TAG, "mSubTitleCollection--->" + mSubTitleCollection.toString());
+			return;
+		}
+		
+//		Utils.showToast(this, "获取字幕失败");
 	}
 	
 	@Override
@@ -2324,8 +2817,6 @@ public class VideoPlayerJPActivity extends Activity implements
 		// TODO Auto-generated method stub
 		MobclickAgent.onPause(this);
 		if (mProd_type > 0&&mStatue!=STATUE_LOADING) {
-			// SaveToServer(mVideoView.getDuration(),
-			// mVideoView.getCurrentPosition());
 			long duration = mVideoView.getDuration();
 			long curretnPosition = mVideoView.getCurrentPosition();
 			Log.d(TAG, "duration ->" + duration);
@@ -2343,17 +2834,7 @@ public class VideoPlayerJPActivity extends Activity implements
 	protected void onStop() {
 		
 		Log.i(TAG, "onStop--->");
-		
 		// TODO Auto-generated method stub
-		// if(mStatue != STATUE_LOADING&&mProd_type>0){
-		// // SaveToServer(mVideoView.getDuration(),
-		// mVideoView.getCurrentPosition());
-		// long duration = mVideoView.getDuration();
-		// long curretnPosition = mVideoView.getCurrentPosition();
-		// Log.d(TAG, "duration ->" + duration);
-		// Log.d(TAG, "curretnPosition ->" + curretnPosition);
-		// SaveToServer(duration/1000, curretnPosition/1000);
-		// }
 		if(!isFinishing()){
 			finish();
 		}
@@ -2474,15 +2955,15 @@ public class VideoPlayerJPActivity extends Activity implements
 		
 		Log.i(TAG, "onDestroy--->");
 		
-		unregisterReceiver(mReceiver);
+//		unregisterReceiver(mReceiver);
 		if (mVideoView != null) {
 			mVideoView.stopPlayback();
 		}
 		
-		if(mPreLoadLayout.getBackground() != null) {
-			
-			UtilTools.recycleBitmap(((BitmapDrawable)mPreLoadLayout.getBackground()).getBitmap());
-		}
+//		if(mPreLoadLayout.getBackground() != null) {
+//			
+//			UtilTools.recycleBitmap(((BitmapDrawable)mPreLoadLayout.getBackground()).getBitmap());
+//		}
 		
 		super.onDestroy();
 	}
@@ -2656,7 +3137,6 @@ public class VideoPlayerJPActivity extends Activity implements
 	
 	private String getRedirectUrl(){
 		String urlStr = null;
-//		while(urlStr == null) {
 			
 		List<String> list = new ArrayList<String>();
 		
@@ -2670,7 +3150,6 @@ public class VideoPlayerJPActivity extends Activity implements
 		if(list.size() > 0) {
 			 urlStr = list.get(list.size() -1);
 		}
-//		}
 		return urlStr;
 	}
 	
@@ -2761,7 +3240,8 @@ public class VideoPlayerJPActivity extends Activity implements
 		mHandler.removeCallbacks(mLoadingRunnable);
 		mStatue = STATUE_PLAYING;
 		mSeekBar.setEnabled(true);
-		mHandler.sendEmptyMessageDelayed(MESSAGE_UPDATE_PROGRESS, 1000);
+//		mHandler.sendEmptyMessageDelayed(MESSAGE_UPDATE_PROGRESS, 1000);
+		startUpdateSeekBar(SEEKBAR_REFRESH_TIME);
 		mHandler.sendEmptyMessageDelayed(MESSAGE_HIDE_PROGRESSBAR, 5000);
 	}
 	
@@ -2814,5 +3294,116 @@ public class VideoPlayerJPActivity extends Activity implements
 	{
 		// TODO Auto-generated method stub
 		
+	}
+	
+	class DefinationAdapter extends BaseAdapter{
+
+		List<Integer> list;
+		Context c;
+		
+		public DefinationAdapter(Context c, List<Integer> list){
+			this.c = c;
+			this.list = list;
+		}
+		
+		@Override
+		public int getCount() {
+			// TODO Auto-generated method stub
+			return list.size();
+		}
+
+		@Override
+		public Object getItem(int position) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public long getItemId(int position) {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			// TODO Auto-generated method stub
+			TextView tv = new TextView(c);
+			tv.setBackgroundResource(R.drawable.bg_choose_defination_selector);
+			tv.setTextColor(Color.WHITE);
+			tv.setTextSize(25);
+			switch (list.get(position)) {
+			case Constant.DEFINATION_HD2:
+				tv.setText("超    清");
+				break;
+			case Constant.DEFINATION_MP4:
+				tv.setText("高    清");
+				
+				break;
+			case Constant.DEFINATION_FLV:
+				tv.setText("标    清");
+				break;
+			}
+			Gallery.LayoutParams param = new Gallery.LayoutParams(UtilTools.getStandardValue(getApplicationContext(), 165),
+					UtilTools.getStandardValue(getApplicationContext(), 40));
+			tv.setGravity(Gravity.CENTER);
+			tv.setLayoutParams(param);
+			return tv;
+		}
+
+	}
+	
+	class ZimuAdapter extends BaseAdapter{
+
+		List<Integer> list;
+		Context c;
+		
+		public ZimuAdapter(Context c, List<Integer> list){
+			this.c = c;
+			this.list = list;
+		}
+		
+		@Override
+		public int getCount() {
+			// TODO Auto-generated method stub
+			return list.size();
+		}
+
+		@Override
+		public Object getItem(int position) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public long getItemId(int position) {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			// TODO Auto-generated method stub
+			TextView tv = new TextView(c);
+			tv.setTextColor(Color.WHITE);
+			tv.setBackgroundResource(R.drawable.bg_choose_defination_selector);
+			tv.setTextSize(25);
+			switch (list.get(position)) {
+			case -1://无字幕
+				tv.setText("暂无字幕");
+				break;
+			case 0://字幕开
+				tv.setText("开");
+				break;
+			case 1://字幕关
+				tv.setText("关");
+				break;
+			}
+			Gallery.LayoutParams param = new Gallery.LayoutParams(UtilTools.getStandardValue(getApplicationContext(), 165),
+					UtilTools.getStandardValue(getApplicationContext(), 40));
+			tv.setGravity(Gravity.CENTER);
+			tv.setLayoutParams(param);
+			return tv;
+		}
+
 	}
 }

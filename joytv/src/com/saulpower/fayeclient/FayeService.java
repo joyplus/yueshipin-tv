@@ -14,7 +14,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.widget.Toast;
 
-import com.joyplus.JoyplusMediaPlayerActivity;
 import com.joyplus.tv.App;
 import com.joyplus.tv.Constant;
 import com.joyplus.tv.VideoPlayerJPActivity;
@@ -339,10 +338,7 @@ public class FayeService extends Service implements FayeListener{
 				}
 				if(app.getUserData("isBand") != null&&"1".equals(app.getUserData("isBand"))&&phoneID.equals(json.get("user_id"))){
 					CurrentPlayDetailData playDate = new CurrentPlayDetailData();
-					//change by Jas@20130813 JoyplusMediaPlayerActivity
-					//Intent intent = new Intent(this,VideoPlayerJPActivity.class);
-					Intent intent = new Intent(this,JoyplusMediaPlayerActivity.class);
-					//end change by Jas
+					Intent intent = new Intent(this,VideoPlayerJPActivity.class);
 //					intent.putExtra("ID", json.getString("prod_id"));
 					intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 					playDate.prod_id = json.getString("prod_id");

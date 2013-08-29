@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.joyplus.mediaplayer.MediaInfo;
 import com.joyplus.mediaplayer.VideoViewInterface.STATE;
 import com.joyplus.tv.R;
+import com.joyplus.tv.utils.UtilTools;
 
 public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
     
@@ -229,7 +230,7 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 		private RelativeLayout Layout_Speed;
 		private TextView       SpeedView;
 	    private int            DefaultSpeedSpace = 1000;
-	    private static final int OFFSET = 33;
+	    private int OFFSET = 33;
 		private int seekBarWidthOffset  = 40;
 		public void Init(){
 			SeekBar.setEnabled(false);
@@ -451,12 +452,13 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 					RelativeLayout.LayoutParams.WRAP_CONTENT);
 			parms.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);	
 			if (SeekBar.getProgress()>0){
-				double mLeft = (double) SeekBar.getProgress() / SeekBar.getMax()* (SeekBar.getMeasuredWidth() - seekBarWidthOffset) + OFFSET;
+				double mLeft = (double) SeekBar.getProgress() / SeekBar.getMax()* 
+						(SeekBar.getMeasuredWidth() - UtilTools.getStandardValue(mActivity, seekBarWidthOffset)) + OFFSET;
 				parms.leftMargin = (int) mLeft;
 			}else{
-				parms.leftMargin = OFFSET;
+				parms.leftMargin = UtilTools.getStandardValue(mActivity, OFFSET);
 			}
-			parms.bottomMargin = 20 + 10;
+			parms.bottomMargin = UtilTools.getStandardValue(mActivity,(20 + 10));
 			Layout_Time.setLayoutParams(parms);
 		}
 		private String getTimeString(int time){

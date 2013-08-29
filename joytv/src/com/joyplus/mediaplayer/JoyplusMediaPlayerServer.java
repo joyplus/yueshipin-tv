@@ -228,15 +228,18 @@ public class JoyplusMediaPlayerServer {
     /*Interface of switch player*/
     public boolean SwitchPlayer(){
     	try {
-			PlayerState nextPlayer = getNextType(mCurrentState.PlayerType);
-			if(NO_FIND != nextPlayer.PlayerType && JoyplusMediaPlayerManager.isTypeAvailable(nextPlayer.PlayerType)){
-				mCurrentState = new PlayerState(nextPlayer);
-				return true;
-			}
+    		if(JoyplusMediaPlayerManager.isTypeAvailable(mCurrentState.PlayerType)){
+				PlayerState nextPlayer = getNextType(mCurrentState.PlayerType);
+				if(NO_FIND != nextPlayer.PlayerType && JoyplusMediaPlayerManager.isTypeAvailable(nextPlayer.PlayerType)){
+					mCurrentState = new PlayerState(nextPlayer);
+					return true;
+				}
+    		}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+    	InitPlayer();
     	return false;
     }
     public void InitPlayer(){

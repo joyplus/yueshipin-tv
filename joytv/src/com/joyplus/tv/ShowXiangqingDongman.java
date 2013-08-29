@@ -36,7 +36,6 @@ import com.androidquery.callback.AjaxStatus;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.joyplus.JoyplusMediaPlayerActivity;
 import com.joyplus.tv.Service.Return.ReturnProgramView;
 import com.joyplus.tv.Service.Return.ReturnRelatedGroup;
 import com.joyplus.tv.entity.CurrentPlayDetailData;
@@ -264,7 +263,8 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 			Button b = new Button(this);
 //			b.setWidth(table.getWidth()/5);
 //			b.setHeight(layout.getHeight());
-			b.setLayoutParams(new LayoutParams((table.getWidth()-80)/5,35));
+			b.setLayoutParams(new LayoutParams((table.getWidth()-UtilTools.getStandardValue(getApplicationContext(),80))/5,
+					UtilTools.getStandardValue(getApplicationContext(),35)));
 			if(isOver){
 				if((i+1)*COUNT>num){
 					b.setText((i*COUNT+1) +"-"+num);
@@ -306,7 +306,8 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 			layout.addView(b);
 			if(i!=totle_pagecount-1){
 				TextView t = new TextView(this);
-				t.setLayoutParams(new LayoutParams(20,35));
+				t.setLayoutParams(new LayoutParams(UtilTools.getStandardValue(getApplicationContext(),20),
+						UtilTools.getStandardValue(getApplicationContext(),35)));
 				layout.addView(t);
 			}
 			
@@ -475,11 +476,11 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 					int[] location = new int[2];
 					v.getLocationOnScreen(location);
 					popupWindow.setFocusable(true);
-					popupWindow.setWidth(width + 10);
-					popupWindow.setHeight(height + 40);
+					popupWindow.setWidth(width + UtilTools.getStandardValue(getApplicationContext(),10));
+					popupWindow.setHeight(height + UtilTools.getStandardValue(getApplicationContext(),40));
 					popupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
-							location[0] - 6, location[1] - locationY
-									- 40);
+							location[0] - UtilTools.getStandardValue(getApplicationContext(),6), location[1] - locationY
+									- UtilTools.getStandardValue(getApplicationContext(),40));
 				} else if (supportDefination == 2) {
 
 					int width = v.getWidth();
@@ -488,11 +489,11 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 					int[] location = new int[2];
 					v.getLocationOnScreen(location);
 					popupWindow.setFocusable(true);
-					popupWindow.setWidth(width + 10);
-					popupWindow.setHeight(height + 40);
+					popupWindow.setWidth(width + UtilTools.getStandardValue(getApplicationContext(),10));
+					popupWindow.setHeight(height + UtilTools.getStandardValue(getApplicationContext(),40));
 					popupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
-							location[0] - 6, location[1] - locationY
-									- 40);
+							location[0] - UtilTools.getStandardValue(getApplicationContext(),6), location[1] - locationY
+									- UtilTools.getStandardValue(getApplicationContext(),40));
 				}
 				return false;
 			}
@@ -704,11 +705,11 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 							int[] location = new int[2];
 							v.getLocationOnScreen(location);
 							popupWindow.setFocusable(true);
-							popupWindow.setWidth(width + 10);
-							popupWindow.setHeight(height + 40);
+							popupWindow.setWidth(width + UtilTools.getStandardValue(getApplicationContext(),10));
+							popupWindow.setHeight(height + UtilTools.getStandardValue(getApplicationContext(),40));
 							popupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
-									location[0] - 6, location[1] - locationY
-											- 40);
+									location[0] - UtilTools.getStandardValue(getApplicationContext(),6), location[1] - locationY
+											- UtilTools.getStandardValue(getApplicationContext(),40));
 						} else if (supportDefination == 2) {
 
 							int width = v.getWidth();
@@ -717,11 +718,11 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 							int[] location = new int[2];
 							v.getLocationOnScreen(location);
 							popupWindow.setFocusable(true);
-							popupWindow.setWidth(width + 10);
-							popupWindow.setHeight(height + 40);
+							popupWindow.setWidth(width + UtilTools.getStandardValue(getApplicationContext(),10));
+							popupWindow.setHeight(height + UtilTools.getStandardValue(getApplicationContext(),40));
 							popupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
-									location[0] - 6, location[1] - locationY
-											- 40);
+									location[0] - UtilTools.getStandardValue(getApplicationContext(),6), location[1] - locationY
+											- UtilTools.getStandardValue(getApplicationContext(),40));
 						}
 
 					} 
@@ -1305,10 +1306,7 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 			return;
 		}
 		CurrentPlayDetailData playDate = new CurrentPlayDetailData();
-		//change by Jas@20130815 JoyplusMediaPlayerActivity
-		//Intent intent = new Intent(this,VideoPlayerJPActivity.class);
-		Intent intent = new Intent(this,JoyplusMediaPlayerActivity.class);
-		//end change by Jas
+		Intent intent = new Intent(this,VideoPlayerJPActivity.class);
 		playDate.prod_id = prod_id;
 		playDate.prod_type = 131;
 		playDate.prod_sub_name = date.tv.episodes[index].name;

@@ -40,7 +40,6 @@ import com.androidquery.callback.AjaxStatus;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.joyplus.JoyplusMediaPlayerActivity;
 import com.joyplus.tv.Service.Return.ReturnProgramView;
 import com.joyplus.tv.Service.Return.ReturnProgramView.DOWN_URLS;
 import com.joyplus.tv.entity.CurrentPlayDetailData;
@@ -268,7 +267,8 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 			Button b = new Button(this);
 //			b.setWidth(table.getWidth()/5);
 //			b.setHeight(layout.getHeight());
-			b.setLayoutParams(new LayoutParams((table.getWidth()-80)/5,35));
+			b.setLayoutParams(new LayoutParams((table.getWidth()-UtilTools.getStandardValue(getApplicationContext(),80))/5,
+					UtilTools.getStandardValue(getApplicationContext(),35)));
 			if(isOver){
 				if((i+1)*COUNT>num){
 					b.setText((i*COUNT+1) +"-"+num);
@@ -310,7 +310,8 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 			layout.addView(b);
 			if(i!=totle_pagecount-1){
 				TextView t = new TextView(this);
-				t.setLayoutParams(new LayoutParams(20,35));
+				t.setLayoutParams(new LayoutParams(UtilTools.getStandardValue(getApplicationContext(),20),
+						UtilTools.getStandardValue(getApplicationContext(),35)));
 				layout.addView(t);
 			}
 			
@@ -1307,10 +1308,7 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 			return;
 		}
 		CurrentPlayDetailData playDate = new CurrentPlayDetailData();
-		//change by Jas@20130815 JoyplusMediaPlayerActivity
-		//Intent intent = new Intent(this,VideoPlayerJPActivity.class);
-		Intent intent = new Intent(this,JoyplusMediaPlayerActivity.class);
-		//end change by Jas
+		Intent intent = new Intent(this,VideoPlayerJPActivity.class);
 		playDate.prod_id = prod_id;
 		playDate.prod_type = 3;
 		playDate.prod_name = date.show.name;
@@ -1396,70 +1394,70 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 		
 	}
 	
-	private List<URLS_INDEX> getBofangList(int index){
-		List<URLS_INDEX> list = new ArrayList<URLS_INDEX>();
-		
-		if(index >= date.show.episodes.length) {
-			
-			return null;
-		}
-		
-		DOWN_URLS[] urls = date.show.episodes[index].down_urls;
-		if(urls == null){
-			return null;
-		}
-		for(int i=0;i<urls.length; i++){
-			for(int j=0; j<urls[i].urls.length; j++){
-				URLS_INDEX url_index = new URLS_INDEX();
-				url_index.source_from = urls[i].source;
-				url_index.url = urls[i].urls[j].url;
-				if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[0])) {
-					url_index.souces = 0;
-				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[1])) {
-					url_index.souces = 1;
-				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[2])) {
-					url_index.souces = 2;
-				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[3])) {
-					url_index.souces = 3;
-				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[4])) {
-					url_index.souces = 4;
-				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[5])) {
-					url_index.souces = 5;
-				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[6])) {
-					url_index.souces = 6;
-				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[7])) {
-					url_index.souces = 7;
-				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[8])) {
-					url_index.souces = 8;
-				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[9])) {
-					url_index.souces = 9;
-				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[10])) {
-					url_index.souces = 10;
-				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[11])) {
-					url_index.souces = 11;
-				} else {
-					url_index.souces = 12;
-				}
-				if(urls[i].urls[j].type.trim().equalsIgnoreCase(Constant.player_quality_index[0])){
-					url_index.defination = 1;
-				}else if(urls[i].urls[j].type.trim().equalsIgnoreCase(Constant.player_quality_index[1])){
-					url_index.defination = 2;
-				}else if(urls[i].urls[j].type.trim().equalsIgnoreCase(Constant.player_quality_index[2])){
-					url_index.defination = 3;
-				}else if(urls[i].urls[j].type.trim().equalsIgnoreCase(Constant.player_quality_index[3])){
-					url_index.defination = 4;
-				} else {
-					url_index.defination = 5;
-				}
-				list.add(url_index);
-			}
-		}
-		if(list.size()>1){
-			Collections.sort(list, new DefinationComparatorIndex());
-			Collections.sort(list, new SouceComparatorIndex1());
-		}
-		return list;
-	}
+//	private List<URLS_INDEX> getBofangList(int index){
+//		List<URLS_INDEX> list = new ArrayList<URLS_INDEX>();
+//		
+//		if(index >= date.show.episodes.length) {
+//			
+//			return null;
+//		}
+//		
+//		DOWN_URLS[] urls = date.show.episodes[index].down_urls;
+//		if(urls == null){
+//			return null;
+//		}
+//		for(int i=0;i<urls.length; i++){
+//			for(int j=0; j<urls[i].urls.length; j++){
+//				URLS_INDEX url_index = new URLS_INDEX();
+//				url_index.source_from = urls[i].source;
+//				url_index.url = urls[i].urls[j].url;
+//				if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[0])) {
+//					url_index.souces = 0;
+//				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[1])) {
+//					url_index.souces = 1;
+//				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[2])) {
+//					url_index.souces = 2;
+//				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[3])) {
+//					url_index.souces = 3;
+//				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[4])) {
+//					url_index.souces = 4;
+//				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[5])) {
+//					url_index.souces = 5;
+//				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[6])) {
+//					url_index.souces = 6;
+//				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[7])) {
+//					url_index.souces = 7;
+//				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[8])) {
+//					url_index.souces = 8;
+//				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[9])) {
+//					url_index.souces = 9;
+//				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[10])) {
+//					url_index.souces = 10;
+//				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[11])) {
+//					url_index.souces = 11;
+//				} else {
+//					url_index.souces = 12;
+//				}
+//				if(urls[i].urls[j].type.trim().equalsIgnoreCase(Constant.player_quality_index[0])){
+//					url_index.defination = 1;
+//				}else if(urls[i].urls[j].type.trim().equalsIgnoreCase(Constant.player_quality_index[1])){
+//					url_index.defination = 2;
+//				}else if(urls[i].urls[j].type.trim().equalsIgnoreCase(Constant.player_quality_index[2])){
+//					url_index.defination = 3;
+//				}else if(urls[i].urls[j].type.trim().equalsIgnoreCase(Constant.player_quality_index[3])){
+//					url_index.defination = 4;
+//				} else {
+//					url_index.defination = 5;
+//				}
+//				list.add(url_index);
+//			}
+//		}
+//		if(list.size()>1){
+//			Collections.sort(list, new DefinationComparatorIndex());
+//			Collections.sort(list, new SouceComparatorIndex1());
+//		}
+//		return list;
+//	}
 	
 	private void cancelshoucang(){
 		

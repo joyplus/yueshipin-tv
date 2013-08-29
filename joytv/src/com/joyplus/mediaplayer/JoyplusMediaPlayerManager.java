@@ -44,6 +44,7 @@ public class JoyplusMediaPlayerManager {
 	    		 return Integer.toString(type);
 	    	 }
 	    }
+	    
 		public static boolean isTypeAvailable(int type){
 			return (type>TYPE_UNKNOW && type<=TYPE_MAX);
 		}
@@ -113,6 +114,11 @@ public class JoyplusMediaPlayerManager {
 				}
 	    	}
 	    	return current;
+	    }
+	    public boolean IshaveNextType(){
+	    	if(!isTypeAvailable(getCurrentType().PlayerType))return false;
+	        mServer.SwitchPlayer();
+	    	return false;
 	    }
 		/*Interface of MediaPlayer Listener*/
 	    public Handler getmediaPlayerHandler(){

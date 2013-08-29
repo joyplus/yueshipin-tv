@@ -933,6 +933,11 @@ public class ShowSearchActivity extends AbstractShowActivity {
 							
 							lists[ZONGYI_LIST_INDEX].add(movieItemData);
 						}
+//						else {
+//							
+//							resetData();
+//							return;
+//						}
 					}
 				}
 			} else {//如果没有获取任何数据

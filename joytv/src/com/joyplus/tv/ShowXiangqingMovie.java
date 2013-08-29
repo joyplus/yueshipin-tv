@@ -38,7 +38,6 @@ import com.androidquery.callback.AjaxStatus;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.joyplus.JoyplusMediaPlayerActivity;
 import com.joyplus.tv.Service.Return.ReturnProgramRelatedVideos;
 import com.joyplus.tv.Service.Return.ReturnProgramView;
 import com.joyplus.tv.entity.CurrentPlayDetailData;
@@ -344,11 +343,11 @@ public class ShowXiangqingMovie extends Activity implements
 					int[] location = new int[2];
 					v.getLocationOnScreen(location);
 					popupWindow.setFocusable(true);
-					popupWindow.setWidth(width + 10);
-					popupWindow.setHeight(height + 40);
+					popupWindow.setWidth(width + UtilTools.getStandardValue(getApplicationContext(),10));
+					popupWindow.setHeight(height + UtilTools.getStandardValue(getApplicationContext(),40));
 					popupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
-							location[0] - 6, location[1] - locationY
-									- 40);
+							location[0] - UtilTools.getStandardValue(getApplicationContext(),6), location[1] - locationY
+									- UtilTools.getStandardValue(getApplicationContext(),40));
 				} else if (supportDefination == 2) {
 
 					int width = v.getWidth();
@@ -357,11 +356,11 @@ public class ShowXiangqingMovie extends Activity implements
 					int[] location = new int[2];
 					v.getLocationOnScreen(location);
 					popupWindow.setFocusable(true);
-					popupWindow.setWidth(width + 10);
-					popupWindow.setHeight(height + 40);
+					popupWindow.setWidth(width + UtilTools.getStandardValue(getApplicationContext(),10));
+					popupWindow.setHeight(height + UtilTools.getStandardValue(getApplicationContext(),40));
 					popupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
-							location[0] - 6, location[1] - locationY
-									- 40);
+							location[0] - UtilTools.getStandardValue(getApplicationContext(),6), location[1] - locationY
+									- UtilTools.getStandardValue(getApplicationContext(),40));
 				}
 				return false;
 			}
@@ -434,11 +433,8 @@ public class ShowXiangqingMovie extends Activity implements
 			// app.setCurrentPlayData(playDate);
 			// app.set_ReturnProgramView(null);
 			// startActivity(intent);
-            
-			//change by Jas@20130815 JoyplusMediaPlayerActivity
-			//Intent intent = new Intent(this, VideoPlayerJPActivity.class);
-			Intent intent = new Intent(this, JoyplusMediaPlayerActivity.class);
-			//end change by Jas
+
+			Intent intent = new Intent(this, VideoPlayerJPActivity.class);
 			CurrentPlayDetailData playData = new CurrentPlayDetailData();
 
 			playData.prod_id = movieData.movie.id;
@@ -581,10 +577,8 @@ public class ShowXiangqingMovie extends Activity implements
 				bofangLL.setEnabled(false);
 
 				int id = v.getId();
-				//chnage by Jas JoyplusMediaPlayerActivity
-				//Intent intent = new Intent(ShowXiangqingMovie.this,	VideoPlayerJPActivity.class);
-				Intent intent = new Intent(ShowXiangqingMovie.this,JoyplusMediaPlayerActivity.class);
-				//end change by Jas
+				Intent intent = new Intent(ShowXiangqingMovie.this,
+						VideoPlayerJPActivity.class);
 				CurrentPlayDetailData playDate = new CurrentPlayDetailData();
 				playDate.prod_id = movieData.movie.id;
 				playDate.prod_type = 1;
