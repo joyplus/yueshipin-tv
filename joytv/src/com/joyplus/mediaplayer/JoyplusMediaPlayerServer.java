@@ -274,6 +274,7 @@ public class JoyplusMediaPlayerServer {
 					mStateTracker.notifyMediaInfo(info);
 					if(info.getState() == STATE.MEDIA_STATE_UNKNOW ){
 						//SwitchPlayer();
+						mStateTracker.notifyMediaError();
 					}else if(info.getState() == STATE.MEDIA_STATE_FINISH){
 						mStateTracker.notifyMediaCompletion();
 					}
