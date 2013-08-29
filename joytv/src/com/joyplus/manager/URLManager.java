@@ -9,9 +9,11 @@ import com.joyplus.tv.Constant;
 import com.joyplus.tv.entity.URLS_INDEX;
 import com.joyplus.tv.utils.BangDanConstant;
 import com.joyplus.tv.utils.DefinationComparatorIndex;
+import com.joyplus.tv.utils.Log;
 import com.joyplus.tv.utils.SouceComparatorIndex1;
 
 public class URLManager {
+	private static final String TAG = "URLManager";
 	
 	enum Quality{
 		HD2  (8),//超清
@@ -117,11 +119,13 @@ public class URLManager {
 				if(index.url.equals(mURUrls_INDEX.url)){
 					 if(it.hasNext()){
 						 mURUrls_INDEX=it.next();
+						 Log.i(TAG, "getNextURLS--->" + mURUrls_INDEX.toString());
 						 return mURUrls_INDEX;
 					 }
 					 break;
 				}
 			}
+			mURUrls_INDEX = null;
 			return null;
 		}
 		

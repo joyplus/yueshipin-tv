@@ -824,8 +824,8 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 					}
 				} else {
 					if (urlManager.getNextURLS() != null) {
-						currentPlayUrl = urlManager.getNextURLS().url;
-						mProd_src = urlManager.getNextURLS().source_from;
+						currentPlayUrl = urlManager.getURLS().url;
+						mProd_src = urlManager.getURLS().source_from;
 						if (currentPlayUrl != null
 								&& URLUtil.isNetworkUrl(currentPlayUrl)) {
 							// 地址跳转相关。。。
@@ -1047,13 +1047,13 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 									if(m_ReturnProgramView.movie.episodes[0].video_urls[0].source != null){
 										
 										if(m_ReturnProgramView.movie.episodes[0].video_urls[0].source.
-												equals(Constant.video_index[1])||
+												equals(Constant.video_index[2])||
 												m_ReturnProgramView.movie.episodes[0].video_urls[0].source.
-												equals(Constant.video_index[2])){
+												equals(Constant.video_index[3])){
 											
 											isOnlyExistLetv = true;
 										}else if(m_ReturnProgramView.movie.episodes[0].video_urls[0].source.
-												equals(Constant.video_index[3])){
+												equals(Constant.video_index[4])){
 											
 											isOnlyExistFengXing = true;
 										}
@@ -1121,13 +1121,13 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 											if(m_ReturnProgramView.tv.episodes[i].video_urls[0].source != null){
 												
 												if(m_ReturnProgramView.tv.episodes[i].video_urls[0].source.
-														equals(Constant.video_index[1])||
+														equals(Constant.video_index[2])||
 														m_ReturnProgramView.tv.episodes[i].video_urls[0].source.
-														equals(Constant.video_index[2])){
+														equals(Constant.video_index[3])){
 													
 													isOnlyExistLetv = true;
 												}else if(m_ReturnProgramView.tv.episodes[i].video_urls[0].source.
-														equals(Constant.video_index[3])){
+														equals(Constant.video_index[4])){
 													
 													isOnlyExistFengXing = true;
 												}
@@ -1177,13 +1177,13 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 										if(m_ReturnProgramView.tv.episodes[mEpisodeIndex].video_urls[0].source != null){
 											
 											if(m_ReturnProgramView.tv.episodes[mEpisodeIndex].video_urls[0].source.
-													equals(Constant.video_index[1])||
+													equals(Constant.video_index[2])||
 													m_ReturnProgramView.tv.episodes[mEpisodeIndex].video_urls[0].source.
-													equals(Constant.video_index[2])){
+													equals(Constant.video_index[3])){
 												
 												isOnlyExistLetv = true;
 											}else if(m_ReturnProgramView.tv.episodes[mEpisodeIndex].video_urls[0].source.
-													equals(Constant.video_index[3])){
+													equals(Constant.video_index[4])){
 												
 												isOnlyExistFengXing = true;
 											}
@@ -1256,13 +1256,13 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 												if(m_ReturnProgramView.show.episodes[mEpisodeIndex].video_urls[0].source != null){
 													
 													if(m_ReturnProgramView.show.episodes[mEpisodeIndex].video_urls[0].source.
-															equals(Constant.video_index[1])||
+															equals(Constant.video_index[2])||
 															m_ReturnProgramView.show.episodes[mEpisodeIndex].video_urls[0].source.
-															equals(Constant.video_index[2])){
+															equals(Constant.video_index[3])){
 														
 														isOnlyExistLetv = true;
 													}else if(m_ReturnProgramView.show.episodes[mEpisodeIndex].video_urls[0].source.
-															equals(Constant.video_index[3])){
+															equals(Constant.video_index[4])){
 														
 														isOnlyExistFengXing = true;
 													}
@@ -1375,23 +1375,32 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 				if(url_index.defination_from_server.equals(Constant.player_quality_index[0])){
 					
 					hasChaoqing = true;
-				}else if(url_index.defination_from_server.equals(Constant.player_quality_index[1])){					
+				}else if(url_index.defination_from_server.equals(Constant.player_quality_index[1])){
+					
 					hasGaoqing = true;
-				}else {					
+				}else {
+					
 					hasPuqing = true;
 				}
-			}			
-			if(hasChaoqing){				
+			}
+			
+			if(hasChaoqing){
+				
 				maxQuality = 8;
-			}else {				
-				if(hasGaoqing){					
+			}else {
+				
+				if(hasGaoqing){
+					
 					maxQuality = 7;
-				}else {					
-					if(hasPuqing){						
+				}else {
+					
+					if(hasPuqing){
+						
 						maxQuality = 6;
 					}
 				}
 			}
+
 			sequenceList();
 			// url list 准备完成
 			mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
