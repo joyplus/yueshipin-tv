@@ -31,7 +31,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
-import android.opengl.Visibility;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -128,20 +127,9 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 			R.drawable.episode_active, R.drawable.cartoon_active,
 			R.drawable.variety_active, R.drawable.search_active, };
 
-	// private int [] resouces_my_nomal = {
-	// R.drawable.follow_normal,
-	// R.drawable.recent_normal,
-	// R.drawable.down_normal,
-	// R.drawable.system_normal
-	// };
 	private int[] resouces_my_nomal = { R.drawable.follow_normal,
 			R.drawable.recent_normal, R.drawable.system_normal };
-	// private int [] resouces_my_active = {
-	// R.drawable.follow_active,
-	// R.drawable.recent_active,
-	// R.drawable.down_active,
-	// R.drawable.system_active,
-	// };
+	
 	private int[] resouces_my_active = { R.drawable.follow_active,
 			R.drawable.recent_active, R.drawable.system_active, };
 
@@ -162,7 +150,6 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 	private List<View> yuedan_contentViews = new ArrayList<View>();
 
 	private CustomGallery gallery1;
-	private float density;
 	private int displayWith;
 	private MyScrollLayout titleGroup;
 	private FrameLayout itemFram;
@@ -180,16 +167,9 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 	private LinearLayout contentLayout;
 	private TextView noticeView;
 
-	// private View hotView;
-	// private View yeuDanView;
 	private View kuView;
 	private View myView;
 	private TextView lastBandTimeView;
-	// private TextView hot_name_tv;
-	// private TextView hot_score_tv;
-	// private TextView hot_directors_tv;
-	// private TextView hot_starts_tv;
-	// private TextView hot_introduce_tv;
 
 	private Map<Integer, Integer> indexCaces = new HashMap<Integer, Integer>();
 
@@ -200,9 +180,6 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 	private TranslateAnimation leftTranslateAnimationStep2;
 	private TranslateAnimation rightTranslateAnimationStep1;
 	private TranslateAnimation rightTranslateAnimationStep2;
-
-	// private FayeClient mClient;
-//	private String macAddress;
 
 	private static final int DIALOG_NETWORK_ERROR = DIALOG_WAITING + 1;
 	private static final int DIALOG_NETWORK_SLOW = DIALOG_NETWORK_ERROR + 1;
@@ -232,9 +209,6 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 	
 	private AdView mAdViewFake = null;
 	private RelativeLayout layoutFake;
-//	private String publisherId = "9d30a5d07eb3a9ed66a9d70d0185205f";//要显示广告的publisherId
-//	private boolean animation = true;//该广告加载时是否用动画效果
-	// private Handler mHandler = new Handler();
 
 	/** Called when the activity is first created. */
 	@Override
@@ -243,10 +217,7 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 		setContentView(R.layout.main);
 
 		app = (App) getApplicationContext();
-		aq = new AQuery(this);
-		
-//		MobclickAgent.onError(this);
-		
+		aq = new AQuery(this);		
 
 		startingImageView = (ImageView) findViewById(R.id.image_starting);
 		
@@ -700,17 +671,12 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 		// MarginLayoutParams mlp = (MarginLayoutParams)
 		// gallery1.getLayoutParams();
 		DisplayMetrics metrics = new DisplayMetrics();
-		density = metrics.density;
 		Display display = getWindowManager().getDefaultDisplay();
 		displayWith = display.getWidth();
 		// Toast.makeText(this, "widthPixels = " + display.get, 100).show();
 		// Toast.makeText(this, "topMargin = " + mlp.topMargin, 100).show();
 		getWindowManager().getDefaultDisplay().getMetrics(metrics);
-		// mlp.setMargins(-displayWith+displayWith/2,
-		// mlp.topMargin,
-		// mlp.rightMargin,
-		// mlp.bottomMargin
-		// );
+
 		gallery1.setAdapter(new MainHotItemAdapter(Main1.this, hot_list));
 		// gallery1.setCallbackDuringFling(false);
 		gallery1.setOnItemSelectedListener(this);
@@ -719,21 +685,16 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 
 		MarginLayoutParams mlp2 = (MarginLayoutParams) titleGroup
 				.getLayoutParams();
-		mlp2.setMargins((displayWith - 40) / 6 + 21, mlp2.topMargin,
+		mlp2.setMargins((displayWith - UtilTools.getStandardValue(this,40)) / 6 + UtilTools.getStandardValue(this,21), mlp2.topMargin,
 				mlp2.rightMargin, mlp2.bottomMargin);
 		MarginLayoutParams mlp3 = (MarginLayoutParams) noticeView
 				.getLayoutParams();
-		mlp3.setMargins((displayWith - 40) / 6 + 21, mlp3.topMargin,
+		mlp3.setMargins((displayWith - UtilTools.getStandardValue(this,40)) / 6 + UtilTools.getStandardValue(this,21), mlp3.topMargin,
 				mlp3.rightMargin, mlp3.bottomMargin);
-		// MarginLayoutParams mlp4 = (MarginLayoutParams)
-		// contentLayout.getLayoutParams();
-		// mlp4.setMargins((displayWith-40)/6+15,
-		// mlp4.topMargin,
-		// mlp4.rightMargin,
-		// mlp4.bottomMargin);
+
 		LayoutParams param = itemFram.getLayoutParams();
-		param.height = 2 * displayWith / 9 + 3;
-		param.width = displayWith / 6 + 3;
+		param.height = 2 * displayWith / 9 + UtilTools.getStandardValue(this,3);
+		param.width = displayWith / 6 + UtilTools.getStandardValue(this,3);
 		itemFram.setVisibility(View.INVISIBLE);
 		alpha_appear = AnimationUtils.loadAnimation(this, R.anim.alpha_appear);
 		alpha_disappear = AnimationUtils.loadAnimation(this,
@@ -859,9 +820,7 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 				
 				/*
 				 * adkey show,the Viewo of ad init()
-				 */
-//				if(UtilTools.getIsShowAd(getApplicationContext())) {
-					
+				 */					
 					if (mAdView != null) {
 						removeBanner();
 					}
@@ -898,10 +857,6 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 							
 						}
 					}
-					
-
-//				}
-					
 					//弹出免责声明
 					if(!UtilTools.getDisclaimerVisible(getApplicationContext())){
 						
@@ -927,22 +882,6 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 			case MESSAGE_START_TIMEOUT:// 超时还未加载好
 				if (initStep < 3) {
 					startingImageView.setVisibility(View.GONE);
-					
-//					if(!isShowAd) {
-//						
-//						handler.postDelayed(new Runnable() {
-//							
-//							@Override
-//							public void run() {
-//								// TODO Auto-generated method stub
-//								
-//								if(!startingImageView.isShown()) {
-//									UtilTools.recycleBitmap(((BitmapDrawable)startingImageView.getDrawable()).getBitmap());
-//								}
-//							}
-//						}, 1000);
-//					}
-					
 					contentLayout.setVisibility(View.INVISIBLE);
 					
 					if(!UtilTools.getIsShowAd(getApplicationContext())) {
@@ -1182,7 +1121,8 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 	private void initNetWorkData() {
 		
 		UtilTools.setLogoUrl(getApplicationContext(), "");
-		
+		handler.sendEmptyMessageDelayed(MESSAGE_START_TIMEOUT, LOADING_PIC_TIME);
+		handler.sendEmptyMessageDelayed(MESSAGE_30S_TIMEOUT, LOADING_TIME_OUT);// 图片撤掉20S后
 		if(!Constant.isJoyPlus) {//如果过不是自身应用 
 			Log.i(TAG, "initNetWorkData--->Constant.isJoyPlus " + Constant.isJoyPlus);
 			
@@ -1265,17 +1205,9 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 		
 		checkLogin();
 		// getHotServiceData();
-		handler.sendEmptyMessageDelayed(MESSAGE_START_TIMEOUT, LOADING_PIC_TIME);
-		handler.sendEmptyMessageDelayed(MESSAGE_30S_TIMEOUT, LOADING_TIME_OUT);// 图片撤掉20S后
+//		handler.sendEmptyMessageDelayed(MESSAGE_START_TIMEOUT, LOADING_PIC_TIME);
+//		handler.sendEmptyMessageDelayed(MESSAGE_30S_TIMEOUT, LOADING_TIME_OUT);// 图片撤掉20S后
 		// getHistoryServiceData();
-		//
-		// DisplayMetrics dm = new DisplayMetrics();
-		// this.getWindowManager().getDefaultDisplay().getMetrics(dm);
-		// int width = dm.widthPixels;//屏幕宽度
-		// int height = dm.heightPixels;//屏幕高度
-		//
-		// Toast.makeText(this, "Width:" + width + " Height:" + height,
-		// Toast.LENGTH_LONG).show();
 	}
 
 	@Override
@@ -2971,34 +2903,6 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 		}
 	}
 
-	// class PLAY_URLS_INDEX{
-	// int index;
-	// // public String source;
-	// public String url;
-	// public URLS[] urls;
-	// }
-
-	// class URLS_INDEX{
-	// int souces;
-	// int defination;
-	// String url;
-	// }
-
-	// private void removeSameInHotList(){
-	// HotItemInfo info = hot_list.get(0);
-	// if(info.type == 0){
-	// Log.d(TAG, "---------------------> remove same");
-	// if(hot_list.size()>1){
-	// for(int i=1; i<hot_list.size();i++){
-	// HotItemInfo info2 = hot_list.get(i);
-	// if(info.prod_id.equals(info2.prod_id)){
-	// hot_list.remove(info2);
-	// }
-	// }
-	// }
-	// }
-	// }
-
 	protected void getServiceData(String url, String interfaceName) {
 		// TODO Auto-generated method stub
 
@@ -3377,105 +3281,6 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 
 	}
 
-//	class CheckPlayUrl implements Runnable {
-//
-//		@Override
-//		public void run() {
-//			// TODO Auto-generated method stub
-//
-//			for (int i = 0; i < hot_list.size(); i++) {
-//				HotItemInfo info = hot_list.get(i);
-//				if (info.type > 0) {
-//					List<URLS_INDEX> playUrls = new ArrayList<URLS_INDEX>();
-//					for (int j = 0; j < info.play_urls.length; j++) {
-//						for (int k = 0; k < info.play_urls[j].urls.length; k++) {
-//							URLS_INDEX url_index = new URLS_INDEX();
-//							url_index.url = info.play_urls[j].urls[k].url;
-//							url_index.source_from = info.play_urls[j].source;
-//							if (info.play_urls[j].source.trim()
-//									.equalsIgnoreCase(Constant.video_index[0])) {
-//								url_index.souces = 0;
-//							} else if (info.play_urls[j].source.trim()
-//									.equalsIgnoreCase(Constant.video_index[1])) {
-//								url_index.souces = 1;
-//							} else if (info.play_urls[j].source.trim()
-//									.equalsIgnoreCase(Constant.video_index[2])) {
-//								url_index.souces = 2;
-//							} else if (info.play_urls[j].source.trim()
-//									.equalsIgnoreCase(Constant.video_index[3])) {
-//								url_index.souces = 3;
-//							} else if (info.play_urls[j].source.trim()
-//									.equalsIgnoreCase(Constant.video_index[4])) {
-//								url_index.souces = 4;
-//							} else if (info.play_urls[j].source.trim()
-//									.equalsIgnoreCase(Constant.video_index[5])) {
-//								url_index.souces = 5;
-//							} else if (info.play_urls[j].source.trim()
-//									.equalsIgnoreCase(Constant.video_index[6])) {
-//								url_index.souces = 6;
-//							} else if (info.play_urls[j].source.trim()
-//									.equalsIgnoreCase(Constant.video_index[7])) {
-//								url_index.souces = 7;
-//							} else if (info.play_urls[j].source.trim()
-//									.equalsIgnoreCase(Constant.video_index[8])) {
-//								url_index.souces = 8;
-//							} else if (info.play_urls[j].source.trim()
-//									.equalsIgnoreCase(Constant.video_index[9])) {
-//								url_index.souces = 9;
-//							} else if (info.play_urls[j].source.trim()
-//									.equalsIgnoreCase(Constant.video_index[10])) {
-//								url_index.souces = 10;
-//							} else if (info.play_urls[j].source.trim()
-//									.equalsIgnoreCase(Constant.video_index[11])) {
-//								url_index.souces = 11;
-//							} else {
-//								url_index.souces = 12;
-//							}
-//							if (info.play_urls[j].urls[k].type.trim()
-//									.equalsIgnoreCase(
-//											Constant.player_quality_index[1])) {
-//								url_index.defination = 1;
-//							} else if (info.play_urls[j].urls[k].type.trim()
-//									.equalsIgnoreCase(
-//											Constant.player_quality_index[0])) {
-//								url_index.defination = 2;
-//							} else if (info.play_urls[j].urls[k].type.trim()
-//									.equalsIgnoreCase(
-//											Constant.player_quality_index[2])) {
-//								url_index.defination = 3;
-//							} else if (info.play_urls[j].urls[k].type.trim()
-//									.equalsIgnoreCase(
-//											Constant.player_quality_index[3])) {
-//								url_index.defination = 4;
-//							} else {
-//								url_index.defination = 5;
-//							}
-//							playUrls.add(url_index);
-//						}
-//					}
-//
-//					if (playUrls.size() > 1) {
-//						Collections.sort(playUrls,
-//								new DefinationComparatorIndex());
-//						Collections.sort(playUrls, new SouceComparatorIndex1());
-//					}
-//					Log.d(TAG, "test------------------" + i
-//							+ "playUrls size = " + playUrls.size() + "name = "
-//							+ info.prod_name);
-//					for (int n = 0; info.video_url == null
-//							&& n < playUrls.size(); n++) {
-//						String url = playUrls.get(n).url;
-//						if (app.CheckUrl(url)) {
-//							Log.d(TAG, "url-------ok----->" + url);
-//							hot_list.get(i).video_url = url;
-//							hot_list.get(i).source = playUrls.get(n).source_from;
-//						}
-//					}
-//				}
-//			}
-//		}
-//
-//	}
 	/*
 	 * @remove banner
 	 */

@@ -81,6 +81,7 @@ import com.androidquery.callback.AjaxStatus;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.joyplus.JoyplusMediaPlayerActivity;
 import com.joyplus.adkey.Ad;
 import com.joyplus.adkey.AdListener;
 import com.joyplus.adkey.banner.AdView;
@@ -142,7 +143,7 @@ public class VideoPlayerJPActivity extends Activity implements
 	
 	private static final int SEEKBAR_REFRESH_TIME = 200;//refresh time
 
-	private static final int OFFSET = 33;
+	private int OFFSET = 33;
 	private int seekBarWidthOffset = 40;
 
 	private TextView mVideoNameText; // 名字
@@ -350,6 +351,12 @@ public class VideoPlayerJPActivity extends Activity implements
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		
+		if(true){
+			
+			startActivity(new Intent(this, JoyplusMediaPlayerActivity.class));
+			return;
+		}
+		
 		Log.i(TAG, "onCreate--->");
 		setContentView(R.layout.video_player_main);
 		aq = new AQuery(this);
@@ -381,6 +388,9 @@ public class VideoPlayerJPActivity extends Activity implements
 
 		// 获取是否收藏
 		getIsShoucangData();
+		
+		OFFSET = UtilTools.getStandardValue(getApplicationContext(), OFFSET);
+		seekBarWidthOffset = UtilTools.getStandardValue(getApplicationContext(), seekBarWidthOffset);
 	}
 	
 	private void dismissView(View v){
@@ -1370,7 +1380,8 @@ public class VideoPlayerJPActivity extends Activity implements
 							}else {
 								
 								StringBuilder sb = new StringBuilder();
-								for(int i=mBefSubTitleE.getRank();i<mCurSubTitleE.getRank();i++){
+								for(int i=mBefSubTitleE.getRank();i<mCurSubTitleE.getRank() &&i<mSubTitleCollection.getElementSize();i++){
+
 									org.blaznyoght.subtitles.model.Element element = 
 											mSubTitleCollection.getElements().get(i);
 									sb.append(element.getText().replaceAll("<font.*>", ""));
@@ -1720,7 +1731,7 @@ public class VideoPlayerJPActivity extends Activity implements
 			parms.leftMargin = (int) mLeft;
 		else
 			parms.leftMargin = OFFSET;
-		parms.bottomMargin = 20 + 10;
+		parms.bottomMargin = UtilTools.getStandardValue(getApplicationContext(), 30);
 		mTimeLayout.setLayoutParams(parms);
 
 		mCurrentTimeTextView.setText(UtilTools.formatDuration(progress));
@@ -2408,7 +2419,7 @@ public class VideoPlayerJPActivity extends Activity implements
 	
 	private byte[] getSubTitleBytes(String p2pUrl,String md5){
 		
-		String subTitleUrl = Constant.PARSE_URL_BASE_URL + "xunlei/subtitle/?url="
+		String subTitleUrl = Constant.SUBTITLE_PARSE_URL_URL + "?url="
 				+ URLEncoder.encode(p2pUrl) + "&md5_code=" + md5;
 		Log.i(TAG, "subTitleUrl-->" + subTitleUrl);
 		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();           
@@ -2781,7 +2792,9 @@ public class VideoPlayerJPActivity extends Activity implements
 			}
 			parser.parse(new ByteArrayInputStream(subTitle));
 			
-			mSubTitleCollection = parser.getCollection();
+			if(parser.getCollection().getElements().size() > 2){
+				mSubTitleCollection = parser.getCollection();
+			}
 			Log.d(TAG, "mSubTitleCollection--->" + mSubTitleCollection.toString());
 			return;
 		}
@@ -2942,15 +2955,15 @@ public class VideoPlayerJPActivity extends Activity implements
 		
 		Log.i(TAG, "onDestroy--->");
 		
-		unregisterReceiver(mReceiver);
+//		unregisterReceiver(mReceiver);
 		if (mVideoView != null) {
 			mVideoView.stopPlayback();
 		}
 		
-		if(mPreLoadLayout.getBackground() != null) {
-			
-			UtilTools.recycleBitmap(((BitmapDrawable)mPreLoadLayout.getBackground()).getBitmap());
-		}
+//		if(mPreLoadLayout.getBackground() != null) {
+//			
+//			UtilTools.recycleBitmap(((BitmapDrawable)mPreLoadLayout.getBackground()).getBitmap());
+//		}
 		
 		super.onDestroy();
 	}
@@ -3330,7 +3343,8 @@ public class VideoPlayerJPActivity extends Activity implements
 				tv.setText("标    清");
 				break;
 			}
-			Gallery.LayoutParams param = new Gallery.LayoutParams(165, 40);
+			Gallery.LayoutParams param = new Gallery.LayoutParams(UtilTools.getStandardValue(getApplicationContext(), 165),
+					UtilTools.getStandardValue(getApplicationContext(), 40));
 			tv.setGravity(Gravity.CENTER);
 			tv.setLayoutParams(param);
 			return tv;
@@ -3384,7 +3398,8 @@ public class VideoPlayerJPActivity extends Activity implements
 				tv.setText("关");
 				break;
 			}
-			Gallery.LayoutParams param = new Gallery.LayoutParams(165, 40);
+			Gallery.LayoutParams param = new Gallery.LayoutParams(UtilTools.getStandardValue(getApplicationContext(), 165),
+					UtilTools.getStandardValue(getApplicationContext(), 40));
 			tv.setGravity(Gravity.CENTER);
 			tv.setLayoutParams(param);
 			return tv;

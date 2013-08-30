@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.androidquery.AQuery;
 import com.joyplus.tv.R;
 import com.joyplus.tv.entity.YueDanInfo;
+import com.joyplus.tv.utils.UtilTools;
 
 public class MainYueDanItemAdapter extends BaseAdapter {
 	
@@ -107,32 +108,10 @@ public class MainYueDanItemAdapter extends BaseAdapter {
 			break;
 		}
 		
-//		aq = new AQuery(convertView);
-//		holder.image.setTag(yuedan_list.get(position).prod_pic_url);
-////		holder.image.setImageResource(R.drawable.test1);
-//		aq.id(holder.image).image(yuedan_list.get(position).prod_pic_url,true,true);
-//		if(yuedan_list.get(position).type == 0){
-//			holder.firstTitle.setVisibility(View.VISIBLE);
-//		}else{
-//			holder.firstTitle.setVisibility(View.GONE);
-//		}
-//		holder.secondTitle.setText(yuedan_list.get(position).prod_name);
-//		holder.score.setVisibility(View.GONE);
-//		switch (Integer.valueOf(yuedan_list.get(position).definition)) {
-//		case 5:
-//			holder.definition.setImageResource(R.drawable.icon_bd);
-//			break;
-//		case 4:
-//			holder.definition.setImageResource(R.drawable.icon_hd);
-//			break;
-//		case 3:
-//			holder.definition.setImageResource(R.drawable.icon_ts);
-//			break;
-//		default:
-//			holder.definition.setVisibility(View.GONE);
-//			break;
-//		}
-		convertView.setPadding(15, 10, 15, 10);
+		convertView.setPadding(UtilTools.getStandardValue(c,15), 
+				UtilTools.getStandardValue(c,10), 
+				UtilTools.getStandardValue(c,15), 
+				UtilTools.getStandardValue(c,10));
 		convertView.setLayoutParams(layoutParam);
 		return convertView;
 	}
