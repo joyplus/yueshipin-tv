@@ -167,12 +167,14 @@ public class JoyplusMediaPlayerMiddleControlMini extends LinearLayout implements
 	@Override
 	public boolean JoyplusonKeyDown(int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
+		Log.d("JoyplusMediaPlayerActivity"," Mini keydown() keyCode="+keyCode);
 		switch(keyCode){
 		case KeyEvent.KEYCODE_DPAD_CENTER:
+		case KeyEvent.KEYCODE_ENTER:
 			if(mSwitch.getVisibility() == View.VISIBLE){
 				UpdateUI(LAYOUT_SWITCH,mSwitch_center.getId());
 				Message.obtain(mHandler, MSG_KEYDOWN_CENTER).sendToTarget();
-			}else if(mPauseplay.getVisibility() == View.VISIBLE){
+			}else if(mPauseplay.getVisibility() == View.VISIBLE){ 
 				UpdateUI(LAYOUT_PAUSEPLAY,mPauseplay_button.getId());
 				Message.obtain(mHandler, MSG_KEYDOWN_PAUSEPLAY).sendToTarget();
 			}

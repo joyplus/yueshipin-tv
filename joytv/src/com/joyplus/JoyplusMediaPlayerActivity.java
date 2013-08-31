@@ -309,6 +309,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 		if(JoyplusonKeyDown(keyCode,event))return true;
 		switch(keyCode){
 		case KeyEvent.KEYCODE_BACK:
+		case 111:
 			if(mProd_type == 1 || mInfo.mType == URLTYPE.LOCAL){//movie
 				finishActivity();return true; 
 			}
@@ -990,7 +991,9 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 				strSrc = "PPTV";
 			} else if (mProd_src.equalsIgnoreCase("m1905")) {
 				strSrc = "电  影  网";
-			} else {
+			} else if (mProd_src.equalsIgnoreCase("p2p")) {
+				strSrc = "P 2 P";
+			}else {
 				strSrc = "PPTV";
 			}
 			//add by Jas
