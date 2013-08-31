@@ -224,32 +224,28 @@
             android:text="全部分类"
             android:textColor="@color/common_title_selected"
             android:textSize="20dp"
-            android:visibility="gone"
-            android:singleLine="true" />
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/diqu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/common_title_selected"
-            android:textSize="20dp" 
-            android:singleLine="true"/>
+            android:textSize="20dp" />
 
         <TextView
             android:id="@+id/leibie"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/common_title_selected"
-            android:textSize="20dp" 
-            android:singleLine="true"/>
+            android:textSize="20dp" />
 
         <TextView
             android:id="@+id/niandai"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/common_title_selected"
-            android:textSize="20dp" 
-            android:singleLine="true"/>
+            android:textSize="20dp" />
     </LinearLayout>
 
 </RelativeLayout>

@@ -343,11 +343,11 @@ public class ShowXiangqingMovie extends Activity implements
 					int[] location = new int[2];
 					v.getLocationOnScreen(location);
 					popupWindow.setFocusable(true);
-					popupWindow.setWidth(width + UtilTools.getStandardValue(getApplicationContext(),10));
-					popupWindow.setHeight(height + UtilTools.getStandardValue(getApplicationContext(),40));
+					popupWindow.setWidth(width + 10);
+					popupWindow.setHeight(height + 40);
 					popupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
-							location[0] - UtilTools.getStandardValue(getApplicationContext(),6), location[1] - locationY
-									- UtilTools.getStandardValue(getApplicationContext(),40));
+							location[0] - 6, location[1] - locationY
+									- 40);
 				} else if (supportDefination == 2) {
 
 					int width = v.getWidth();
@@ -356,11 +356,11 @@ public class ShowXiangqingMovie extends Activity implements
 					int[] location = new int[2];
 					v.getLocationOnScreen(location);
 					popupWindow.setFocusable(true);
-					popupWindow.setWidth(width + UtilTools.getStandardValue(getApplicationContext(),10));
-					popupWindow.setHeight(height + UtilTools.getStandardValue(getApplicationContext(),40));
+					popupWindow.setWidth(width + 10);
+					popupWindow.setHeight(height + 40);
 					popupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
-							location[0] - UtilTools.getStandardValue(getApplicationContext(),6), location[1] - locationY
-									- UtilTools.getStandardValue(getApplicationContext(),40));
+							location[0] - 6, location[1] - locationY
+									- 40);
 				}
 				return false;
 			}

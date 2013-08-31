@@ -24,7 +24,6 @@ import android.widget.TextView;
 
 import com.joyplus.tv.R;
 import com.joyplus.tv.utils.Log;
-import com.joyplus.tv.utils.UtilTools;
 
 public class NavigateView extends RelativeLayout implements OnItemSelectedListener {
 	private static final String TAG = "NavigateView";
@@ -374,7 +373,7 @@ public class NavigateView extends RelativeLayout implements OnItemSelectedListen
 						if(!isTouchMode) {
 							
 							LayoutParams parm = (LayoutParams) relativeLayout.getLayoutParams();
-							parm.height = UtilTools.getStandardValue(mContext, 140);
+							parm.height = 140;
 							relativeLayout.requestLayout();
 						}
 					}
@@ -401,12 +400,9 @@ public class NavigateView extends RelativeLayout implements OnItemSelectedListen
 		this.array_leibie = array_leibie;
 		this.array_niandai = array_niandai;
 		this.resultListener = listener;
-//		gallery1.setPadding(-(1280-480)+105, 0, 0, 0);
-//		gallery2.setPadding(-(1280-480)+105, 0, 0, 0);
-//		gallery3.setPadding(-(1280-480)+105, 0, 0, 0);
-		gallery1.setPadding(UtilTools.getStandardValue(mContext, -(1280-480)+105), 0, 0, 0);
-		gallery2.setPadding(UtilTools.getStandardValue(mContext, -(1280-480)+105), 0, 0, 0);
-		gallery3.setPadding(UtilTools.getStandardValue(mContext, -(1280-480)+105), 0, 0, 0);
+		gallery1.setPadding(-(1280-480)+105, 0, 0, 0);
+		gallery2.setPadding(-(1280-480)+105, 0, 0, 0);
+		gallery3.setPadding(-(1280-480)+105, 0, 0, 0);
 		gallery1.setCallbackDuringFling(false);
 		gallery2.setCallbackDuringFling(false);
 		gallery3.setCallbackDuringFling(false);
@@ -482,7 +478,7 @@ public class NavigateView extends RelativeLayout implements OnItemSelectedListen
 			if(!isTouchMode) {
 				
 				LayoutParams parm = (LayoutParams) relativeLayout.getLayoutParams();
-				parm.height = UtilTools.getStandardValue(mContext, 180);
+				parm.height = 180;
 				relativeLayout.requestLayout();
 			}
 		}
@@ -613,7 +609,7 @@ public class NavigateView extends RelativeLayout implements OnItemSelectedListen
 			if(!isTouchMode) {
 				
 				LayoutParams parm = (LayoutParams) relativeLayout.getLayoutParams();
-				parm.height = UtilTools.getStandardValue(mContext, 140);
+				parm.height = 140;
 				relativeLayout.requestLayout();	
 			}
 		}

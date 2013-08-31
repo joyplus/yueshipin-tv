@@ -11,7 +11,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.joyplus.tv.R;
-import com.joyplus.tv.utils.UtilTools;
 
 public class MainLibAdapter extends BaseAdapter {
 
@@ -68,10 +67,7 @@ public class MainLibAdapter extends BaseAdapter {
 		holder.layout.setVisibility(View.GONE);
 		holder.definition.setVisibility(View.GONE);
 		holder.image.setImageResource(data[position]);
-		convertView.setPadding(UtilTools.getStandardValue(c,15), 
-				UtilTools.getStandardValue(c,10), 
-				UtilTools.getStandardValue(c,15), 
-				UtilTools.getStandardValue(c,10));
+		convertView.setPadding(15, 10, 15, 10);
 		convertView.setLayoutParams(layoutParam);
 		return convertView;
 	}

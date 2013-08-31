@@ -1281,9 +1281,4 @@ public class UtilTools implements JieMianConstant, BangDanConstant {
 		
 		return "";
     }
-    
-	public static int getStandardValue(Context context,int value){
-		
-		return (int) (context.getResources().getDimension(R.dimen.standard_1_dp) * value);
-	}
 }

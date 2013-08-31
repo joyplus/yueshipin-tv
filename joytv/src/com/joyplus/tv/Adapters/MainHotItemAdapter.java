@@ -162,12 +162,15 @@ public class MainHotItemAdapter extends BaseAdapter {
 			holder.definition.setImageDrawable(null);
 			break;
 		}
-		convertView.setPadding(UtilTools.getStandardValue(c,15), 
-				UtilTools.getStandardValue(c,10), 
-				UtilTools.getStandardValue(c,15), 
-				UtilTools.getStandardValue(c,10));
+		convertView.setPadding(15, 10, 15, 10);
 		convertView.setLayoutParams(layoutParam);
 		
+//		ImageView img = (ImageView) view.findViewById(R.id.image);
+//		
+//		img.setImageResource(resouces[position]);
+//		Log.d(TAG, hot_list.get(position).prod_pic_url);
+//		aq = new AQuery(view);
+//		aq.id(R.id.image).image(hot_list.get(position).prod_pic_url);
 		return convertView;
 	}
 	
