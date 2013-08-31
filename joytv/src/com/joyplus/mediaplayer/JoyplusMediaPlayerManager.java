@@ -81,7 +81,8 @@ public class JoyplusMediaPlayerManager {
 	    public DecodeType getDecodeType(){
 	    	return mDataManager.getDecodeType();
 	    }
-	    /*Interface of Switch Internal flog*/
+	    /*Interface of Switch Internal flog
+	     * it use to control switch player en*/
 	    public boolean setSwitchEn(boolean en){
 	    	return mDataManager.setSwitchEnable(en);
 	    }
@@ -99,10 +100,14 @@ public class JoyplusMediaPlayerManager {
 	    public String getDecodeName(DecodeType type){
 	    	return mDataManager.getDecodeType(type);
 	    }
-	    /*Interface of mediaplayer */
+	    /*Interface of mediaplayer 
+	     * it will result current player state*/
 	    public PlayerState getCurrentType(){
 	    	return mServer.getCurrentType();
 	    }
+	    /*Interface of mediaplayer 
+	     * it will result next player state
+	     *    the next player may be unavailable*/
 	    public PlayerState getNextType(){
 	    	PlayerState current = getCurrentType();
 	    	if(current.PlayerType != JoyplusMediaPlayerManager.TYPE_UNKNOW && isTypeAvailable(current.PlayerType)){
@@ -115,10 +120,12 @@ public class JoyplusMediaPlayerManager {
 	    	}
 	    	return current;
 	    }
+	    /*Interface of switch player
+	     *true: it have aviable player next and switch to it
+	     *false: it don't have available player next and switch to default one*/
 	    public boolean IshaveNextType(){
-	    	if(!isTypeAvailable(getCurrentType().PlayerType))return false;
-	        mServer.SwitchPlayer();
-	    	return false;
+	    	if(!isTypeAvailable(getCurrentType().PlayerType) || !getSwitchEn())return false;
+	        return mServer.SwitchPlayer();
 	    }
 		/*Interface of MediaPlayer Listener*/
 	    public Handler getmediaPlayerHandler(){
@@ -186,8 +193,8 @@ public class JoyplusMediaPlayerManager {
             	return saveString(mDataContext,JOYPLUS_CONFIG_XML,KEY_SWITCHINTERNAL,(en?"true":"false"));
             }
             public boolean getSwitchEnable(){
-            	if("false".equals(getString(mDataContext,JOYPLUS_CONFIG_XML,KEY_SWITCHINTERNAL))
-            		|| "false".equals(mDataContext.getString(R.string.switch_internal))){
+            	if("false".equalsIgnoreCase(getString(mDataContext,JOYPLUS_CONFIG_XML,KEY_SWITCHINTERNAL))
+            		|| "false".equalsIgnoreCase(mDataContext.getString(R.string.switch_internal))){
             	    return false;
             	}
                 return true;
