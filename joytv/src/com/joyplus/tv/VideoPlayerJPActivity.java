@@ -122,7 +122,10 @@ public class VideoPlayerJPActivity extends Activity implements
 	private static final int MESSAGE_UPDATE_PROGRESS = MESSAGE_URL_NEXT + 1;
 	private static final int MESSAGE_HIDE_PROGRESSBAR = MESSAGE_UPDATE_PROGRESS + 1;
 	private static final int MESSAGE_HIDE_VOICE = MESSAGE_HIDE_PROGRESSBAR + 1;
-
+	private static final int MESSAGE_DATALOADING_UPDATE_NETSPEED = MESSAGE_HIDE_VOICE + 1;
+	private static final int MESSAGE_SUBTITLE_BEGAIN_SHOW = MESSAGE_DATALOADING_UPDATE_NETSPEED + 1;
+	private static final int MESSAGE_SUBTITLE_END_HIDEN = MESSAGE_SUBTITLE_BEGAIN_SHOW + 1;
+	
 	/**
 	 * 数据加载
 	 */
@@ -273,7 +276,7 @@ public class VideoPlayerJPActivity extends Activity implements
 	/**  Subtitle*/
 	private Collection mSubTitleCollection = null;
 //	private int mStartTimeSubTitle,mEndTimeSubTitle;
-	private org.blaznyoght.subtitles.model.Element mCurSubTitleE,mBefSubTitleE;
+//	private org.blaznyoght.subtitles.model.Element mCurSubTitleE,mBefSubTitleE;
 	
 	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
 		@Override
@@ -606,6 +609,44 @@ public class VideoPlayerJPActivity extends Activity implements
 				break;
 			case MESSAGE_HIDE_VOICE:
 				dismissView(mVocieLayout);
+				break;
+			case MESSAGE_SUBTITLE_BEGAIN_SHOW:
+				org.blaznyoght.subtitles.model.Element element_show = 
+				(org.blaznyoght.subtitles.model.Element) msg.obj;
+				if(element_show != null){
+					long currentPositionShow = mVideoView.getCurrentPosition();
+					org.blaznyoght.subtitles.model.Element preElement_show = getPreElement(currentPositionShow);
+					//在字幕的显示时间段内
+					if(element_show.getStartTime().getTime() < currentPositionShow + SEEKBAR_REFRESH_TIME/2
+							&& element_show.getStartTime().getTime() > currentPositionShow - SEEKBAR_REFRESH_TIME/2){
+						mSubTitleTv.setText(element_show.getText().replaceAll("<font.*>", "").trim());
+					}
+					if(element_show.getEndTime().getTime() < currentPositionShow){
+						mSubTitleTv.setText("");
+						mHandler.removeMessages(MESSAGE_SUBTITLE_END_HIDEN);
+						if(preElement_show != null){
+							Message messageHiden = mHandler.obtainMessage(MESSAGE_SUBTITLE_END_HIDEN, preElement_show);
+							mHandler.sendMessageDelayed(messageHiden, preElement_show.getEndTime().getTime() - currentPositionShow);
+						}
+					}
+					if(preElement_show != null){
+						Message messageShow = mHandler.obtainMessage(MESSAGE_SUBTITLE_BEGAIN_SHOW, preElement_show);
+						mHandler.sendMessageDelayed(messageShow, preElement_show.getStartTime().getTime() - currentPositionShow);
+					}
+				}
+				break;
+			case MESSAGE_SUBTITLE_END_HIDEN:
+				org.blaznyoght.subtitles.model.Element element_end = 
+				(org.blaznyoght.subtitles.model.Element) msg.obj;
+				if(element_end != null){
+					long currentPositionShow = mVideoView.getCurrentPosition();
+					org.blaznyoght.subtitles.model.Element preElement_show = getPreElement(currentPositionShow);
+					if(preElement_show != null){
+						Message messageHiden = mHandler.obtainMessage(MESSAGE_SUBTITLE_END_HIDEN, preElement_show);
+						mHandler.sendMessageDelayed(messageHiden, preElement_show.getEndTime().getTime() - currentPositionShow);
+					}
+				}
+				mSubTitleTv.setText("");
 				break;
 			default:
 				break;
@@ -1323,92 +1364,92 @@ public class VideoPlayerJPActivity extends Activity implements
 		
 		mHandler.sendEmptyMessageDelayed(MESSAGE_UPDATE_PROGRESS, time);
 		
-		if(time == SEEKBAR_REFRESH_TIME && mStatue == STATUE_PLAYING){
-			
-			updateSubtitle();
-		}else {
-			
-			mCurSubTitleE = null;//当前
-			mBefSubTitleE = null;//之前
-			mSubTitleTv.setText("");
-		}
-		
+//		if(time == SEEKBAR_REFRESH_TIME && mStatue == STATUE_PLAYING){
+//			
+//			updateSubtitle();
+//		}else {
+//			
+//			mCurSubTitleE = null;//当前
+//			mBefSubTitleE = null;//之前
+//			mSubTitleTv.setText("");
+//		}
+//		
 		
 		
 	}
 	
-	private void updateSubtitle(){
-		
-		if(mVideoView != null && mVideoView.getCurrentPosition() >= 0){
-			long currentPosition = mVideoView.getCurrentPosition();
-			if(mSubTitleCollection != null){
-				
-				if(mCurSubTitleE == null) {
-					
-					for(int i=0;i<mSubTitleCollection.getElementSize();i++){
-						
-						org.blaznyoght.subtitles.model.Element element = 
-								mSubTitleCollection.getElements().get(i);
-						if(currentPosition < element.getStartTime().getTime()){
-							
-							mCurSubTitleE = element;
-							
-							break;
-						}
-					}
-				} else {
-					
-					long startTime = mCurSubTitleE.getStartTime().getTime();
-					long endTime = mCurSubTitleE.getEndTime().getTime();
-					
-					if(currentPosition - startTime > 0){
-						
-						if(mSubTitleTv.getText().toString().equals("")){
-
-							Log.d(TAG, "subtitle start--->startTime:" + startTime);
-							if(mBefSubTitleE == null
-									|| mCurSubTitleE.getRank() - mBefSubTitleE.getRank() == 0
-									|| mCurSubTitleE.getRank() - mBefSubTitleE.getRank() == 1){
-								mSubTitleTv.setText(mCurSubTitleE.getText().replaceAll("<font.*>", "").trim());
-							}else {
-								
-								StringBuilder sb = new StringBuilder();
-								for(int i=mBefSubTitleE.getRank();i<mCurSubTitleE.getRank() &&i<mSubTitleCollection.getElementSize();i++){
-
-									org.blaznyoght.subtitles.model.Element element = 
-											mSubTitleCollection.getElements().get(i);
-									sb.append(element.getText().replaceAll("<font.*>", ""));
-//									if(i<=mCurSubTitleE.getRank() -1){
-//										
-//										sb.append("\n");
-//									}
-									mSubTitleTv.setText(sb.toString().trim());
-								}
-							}
-							
-							mBefSubTitleE = mCurSubTitleE;
-						}
-					}
-					
-					if (currentPosition - endTime > 0) {
-						Log.d(TAG, "subtitle over--->endTime:" + endTime);
-						if(!mSubTitleTv.getText().toString().equals("")){
-							
-							mSubTitleTv.setText("");
-							mCurSubTitleE = null;
-						}
-						
-					}
-				}
-			}
-		}
-	}
+//	private void updateSubtitle(){
+//		
+//		if(mVideoView != null && mVideoView.getCurrentPosition() >= 0){
+//			long currentPosition = mVideoView.getCurrentPosition();
+//			if(mSubTitleCollection != null){
+//				
+//				if(mCurSubTitleE == null) {
+//					
+//					for(int i=0;i<mSubTitleCollection.getElementSize();i++){
+//						
+//						org.blaznyoght.subtitles.model.Element element = 
+//								mSubTitleCollection.getElements().get(i);
+//						if(currentPosition < element.getStartTime().getTime()){
+//							
+//							mCurSubTitleE = element;
+//							
+//							break;
+//						}
+//					}
+//				} else {
+//					
+//					long startTime = mCurSubTitleE.getStartTime().getTime();
+//					long endTime = mCurSubTitleE.getEndTime().getTime();
+//					
+//					if(currentPosition - startTime > 0){
+//						
+//						if(mSubTitleTv.getText().toString().equals("")){
+//
+//							Log.d(TAG, "subtitle start--->startTime:" + startTime);
+//							if(mBefSubTitleE == null
+//									|| mCurSubTitleE.getRank() - mBefSubTitleE.getRank() == 0
+//									|| mCurSubTitleE.getRank() - mBefSubTitleE.getRank() == 1){
+//								mSubTitleTv.setText(mCurSubTitleE.getText().replaceAll("<font.*>", "").trim());
+//							}else {
+//								
+//								StringBuilder sb = new StringBuilder();
+//								for(int i=mBefSubTitleE.getRank();i<mCurSubTitleE.getRank() &&i<mSubTitleCollection.getElementSize();i++){
+//
+//									org.blaznyoght.subtitles.model.Element element = 
+//											mSubTitleCollection.getElements().get(i);
+//									sb.append(element.getText().replaceAll("<font.*>", ""));
+////									if(i<=mCurSubTitleE.getRank() -1){
+////										
+////										sb.append("\n");
+////									}
+//									mSubTitleTv.setText(sb.toString().trim());
+//								}
+//							}
+//							
+//							mBefSubTitleE = mCurSubTitleE;
+//						}
+//					}
+//					
+//					if (currentPosition - endTime > 0) {
+//						Log.d(TAG, "subtitle over--->endTime:" + endTime);
+//						if(!mSubTitleTv.getText().toString().equals("")){
+//							
+//							mSubTitleTv.setText("");
+//							mCurSubTitleE = null;
+//						}
+//						
+//					}
+//				}
+//			}
+//		}
+//	}
 	
 	private void endUpdateSeekBar(){
 		
 		mHandler.removeMessages(MESSAGE_UPDATE_PROGRESS);
-		mCurSubTitleE = null;//当前
-		mBefSubTitleE = null;//之前
+//		mCurSubTitleE = null;//当前
+//		mBefSubTitleE = null;//之前
 	}
 	
 	private void changeDefination(int defination){
@@ -2762,8 +2803,8 @@ public class VideoPlayerJPActivity extends Activity implements
 		playUrls_mp4.clear();
 		
 		mSubTitleCollection = null;
-		mBefSubTitleE = null;
-		mCurSubTitleE = null;
+//		mBefSubTitleE = null;
+//		mCurSubTitleE = null;
 	}
 	
 	private void initSubTitleCollection(byte[] subTitle){
@@ -2795,12 +2836,43 @@ public class VideoPlayerJPActivity extends Activity implements
 			
 			if(parser.getCollection().getElements().size() > 2){
 				mSubTitleCollection = parser.getCollection();
+				if(mVideoView != null){
+					long currentPosition = mVideoView.getCurrentPosition();
+					org.blaznyoght.subtitles.model.Element element = getPreElement(currentPosition);
+					if(element != null){
+						Message messageShow = mHandler.obtainMessage(MESSAGE_SUBTITLE_BEGAIN_SHOW, element);
+						Message messageHiden = mHandler.obtainMessage(MESSAGE_SUBTITLE_END_HIDEN, element);
+						mHandler.sendMessageDelayed(messageShow, element.getStartTime().getTime() - currentPosition);
+						mHandler.sendMessageDelayed(messageHiden, element.getEndTime().getTime() - currentPosition);
+					}
+				}
 			}
 			Log.d(TAG, "mSubTitleCollection--->" + mSubTitleCollection.toString());
 			return;
 		}
 		
 //		Utils.showToast(this, "获取字幕失败");
+	}
+	
+	/**获取将要显示的元素**/
+	private org.blaznyoght.subtitles.model.Element getPreElement(long currentPosition){
+		
+		if(mSubTitleCollection != null){
+			
+			for(int i=0;i<mSubTitleCollection.getElementSize();i++){
+				
+				org.blaznyoght.subtitles.model.Element element = 
+						mSubTitleCollection.getElements().get(i);
+				if(currentPosition < element.getStartTime().getTime()){
+					Log.i(TAG, "mSubTitleCollection.getElementSize()--->" + mSubTitleCollection.getElementSize() 
+							+ " i--->" + i
+							+ " element--->" + element.toString());
+					return element;
+				}
+			}
+		}
+		
+		return null;
 	}
 	
 	@Override
