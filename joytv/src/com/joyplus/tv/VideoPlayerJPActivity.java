@@ -2465,9 +2465,18 @@ public class VideoPlayerJPActivity extends Activity implements
 		
 		Log.d(TAG, "playUrls size ------->" + playUrls.size() + " maxQuality--->" + maxQuality);
 		
+		if(Constant.TestEnv){
+			UtilTools.setP2PMD5(getApplicationContext(), "");
+		}
 		if("".equals(UtilTools.getP2PMD5(getApplicationContext()))){
 			
-			String md5 = MobclickAgent.getConfigParams(this, "P2P_TV_MD5");
+			String md5 = null;
+			if(Constant.TestEnv){
+				md5 = MobclickAgent.getConfigParams(this, "TEST_P2P_TV_MD5");
+			}else {
+				md5 = MobclickAgent.getConfigParams(this, "P2P_TV_MD5");
+			}
+			
 			Log.i(TAG, "md5--->" + md5);
 			if(md5 != null && !"".equals(md5)){
 				
