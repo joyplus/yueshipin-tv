@@ -15,7 +15,7 @@ import com.joyplus.tv.utils.SouceComparatorIndex1;
 public class URLManager {
 	private static final String TAG = "URLManager";
 	
-	enum Quality{
+	public enum Quality{
 		HD2  (8),//超清
 		MP4  (7), //高清
 		FLV  (6);//普清
@@ -56,8 +56,11 @@ public class URLManager {
     public void resetCurURLS_INDEX(){
     	mServer.resetCurURLS_INDEX();
     }
+    public Quality getDefaultQuality(){
+    	return mServer.getDefaultQuality();
+    }
 	/*Interface */
-	public Quality getQuality(){
+	public Quality getCurrentQuality(){
 		if(mServer.mURUrls_INDEX == null)return DefaultQuality;
 		return getQuality(mServer.mURUrls_INDEX.defination_from_server.trim());
 	}
@@ -70,7 +73,23 @@ public class URLManager {
 	public boolean isHave_FLV(){
 		return mServer.isHave_FLV();
 	}
-
+	/*Interface for String show*/
+    public ArrayList<String> getExitQualityList(){
+    	ArrayList<String> definationStrings = new ArrayList<String>();
+    	if(isHave_HD2())definationStrings.add("超    清");
+    	if(isHave_MP4())definationStrings.add("高    清");
+    	if(isHave_FLV())definationStrings.add("标    清");
+    	return definationStrings;
+    }
+    public static String getQualityString(Quality quality){
+    	switch(quality.toInt()){
+    	case 6:return "超    清";
+    	case 7:return "高    清";
+    	case 8:return "标    清";
+    	}
+		return "超    清";
+    }
+    /*Interface of quality tranface*/
    public static Quality getQuality(String string){    	
     	if (string.trim().equalsIgnoreCase("mp4")) {
 			return Quality.MP4;
@@ -143,7 +162,9 @@ public class URLManager {
 			mDefaultQuality = qua;
 			InitResource();
 		}
-		
+		public Quality getDefaultQuality(){
+			return mDefaultQuality;
+		}
 		public URLManagerServer(List<URLS_INDEX> list ){
 			this(list,DefaultQuality.toInt());
 		}
