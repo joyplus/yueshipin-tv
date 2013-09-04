@@ -31,7 +31,10 @@ public class URLManager {
 	private URLManagerServer mServer;
 	
 	private final static Quality DefaultQuality  = Quality.HD2;
-
+    
+	public URLManager(){
+		mServer = new URLManagerServer();
+	}
 	public URLManager(List<URLS_INDEX> list){
 		mServer = new URLManagerServer(list);
 	}
@@ -39,7 +42,7 @@ public class URLManager {
 		mServer = new URLManagerServer(list,defaultQuality);
 	}
 	
-	public  URLS_INDEX getURLS(){
+	public  URLS_INDEX getCurURLS_INDEX(){
 		return mServer.mURUrls_INDEX;
 	}
 	public URLS_INDEX getNextURLS(){
@@ -76,18 +79,18 @@ public class URLManager {
 	/*Interface for String show*/
     public ArrayList<String> getExitQualityList(){
     	ArrayList<String> definationStrings = new ArrayList<String>();
-    	if(isHave_HD2())definationStrings.add("超    清");
+     	if(isHave_HD2())definationStrings.add("超    清");
     	if(isHave_MP4())definationStrings.add("高    清");
     	if(isHave_FLV())definationStrings.add("标    清");
     	return definationStrings;
     }
     public static String getQualityString(Quality quality){
     	switch(quality.toInt()){
-    	case 6:return "超    清";
+    	case 8:return "超    清";
     	case 7:return "高    清";
-    	case 8:return "标    清";
+    	case 6:return "标    清";
     	}
-		return "超    清";
+		return getQualityString(DefaultQuality);
     }
     /*Interface of quality tranface*/
    public static Quality getQuality(String string){    	
@@ -148,8 +151,7 @@ public class URLManager {
 			return null;
 		}
 		
-		public void resetCurURLS_INDEX(){
-			
+		public void resetCurURLS_INDEX(){			
 			if(mList.size()<=0){
 				mURUrls_INDEX= null;
 				return;
@@ -164,6 +166,9 @@ public class URLManager {
 		}
 		public Quality getDefaultQuality(){
 			return mDefaultQuality;
+		}
+		public URLManagerServer(){
+			
 		}
 		public URLManagerServer(List<URLS_INDEX> list ){
 			this(list,DefaultQuality.toInt());

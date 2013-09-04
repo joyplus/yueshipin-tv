@@ -47,6 +47,7 @@ import com.androidquery.callback.AjaxStatus;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.joyplus.Sub.JoyplusSubManager;
 import com.joyplus.manager.URLManager;
 import com.joyplus.mediaplayer.JoyplusMediaPlayerListener;
 import com.joyplus.mediaplayer.JoyplusMediaPlayerManager;
@@ -88,6 +89,8 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 	public JoyplusMediaPlayerBar           mTopBottomController;
 	//private Handler mHandler = new Handler(){};
 	public JoyplusMediaPlayerScreenManager mScreenManager;
+	//Setting
+	public JoyplusMediaPlayerPreference    mPreference;
 	
 	public static final int   DELAY_SHOWVIEW        = 10*1000; //10s
 	/*msg 0-99*/
@@ -220,6 +223,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
     	mTopBottomController = new JoyplusMediaPlayerBar(this);
     	registerReceiver(mReceiver, new IntentFilter(Constant.VIDEOPLAYERCMD));
     	mAlphaDispear = AnimationUtils.loadAnimation(this, R.anim.alpha_disappear);
+    	mPreference   = new JoyplusMediaPlayerPreference(this);
 	}
 	private void InitUI(){
 		StateOk = false;
@@ -235,6 +239,12 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
     		finishActivity();
     		return;
     	}
+    	InitSubAndURL();
+	}
+	private void InitSubAndURL(){
+		JoyplusMediaPlayerManager.getInstance().ResetURLAndSub();
+    	urlManager = JoyplusMediaPlayerManager.getInstance().getURLManager();
+    	subManager = JoyplusMediaPlayerManager.getInstance().getSubManager();
 	}
     private void initFromIntent(Intent intent){
     	InitUI();
@@ -336,6 +346,14 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 			JoyplusMediaPlayerMiddleControlMini.setLayout(JoyplusMediaPlayerMiddleControlMini.LAYOUT_PAUSEPLAY);
 			mMiddleControl.JoyplussetVisible(true, JoyplusMediaPlayerMiddleControl.LAYOUT_MINI);
 			RequestMediaPlayerBarShowandHold();
+			break;
+		case KeyEvent.KEYCODE_MENU:
+			if(mPreference.isShowing()){
+				mPreference.dismiss();
+				return true;
+			}
+			mPreference.show();
+			mPreference.setURLManager(urlManager);
 			break;
 		}
 		return super.onKeyUp(keyCode, event);
@@ -640,7 +658,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
     private String            sourceFromUrl = null;//当前集的原始播放地址
     
     private URLManager urlManager = null;
-	
+	private JoyplusSubManager subManager = null;
 	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
@@ -789,8 +807,8 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 					}
 					return;
 				}
-				currentPlayUrl = urlManager.getURLS().url;
-				mProd_src = urlManager.getURLS().source_from;
+				currentPlayUrl = urlManager.getCurURLS_INDEX().url;
+				mProd_src = urlManager.getCurURLS_INDEX().source_from;
 				Log.i(TAG, "MESSAGE_URLS_READY--->" + currentPlayUrl + " isOnlyExistFengXing--->" + isOnlyExistFengXing
 						+" sourceFromUrl--->" + sourceFromUrl);
 				if (currentPlayUrl != null
@@ -825,8 +843,8 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 					}
 				} else {
 					if (urlManager.getNextURLS() != null) {
-						currentPlayUrl = urlManager.getURLS().url;
-						mProd_src = urlManager.getURLS().source_from;
+						currentPlayUrl = urlManager.getCurURLS_INDEX().url;
+						mProd_src = urlManager.getCurURLS_INDEX().source_from;
 						if (currentPlayUrl != null
 								&& URLUtil.isNetworkUrl(currentPlayUrl)) {
 							// 地址跳转相关。。。
@@ -1003,13 +1021,13 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 		//add by Jas
 		mInfo.mLastTime = (int) lastTime;
 		//end add by Jas
-		if(urlManager.getURLS() != null){
-			Log.d(TAG, "type---->" + urlManager.getURLS().defination_from_server);
+		if(urlManager.getCurURLS_INDEX() != null){
+			Log.d(TAG, "type---->" + urlManager.getCurURLS_INDEX().defination_from_server);
 			//mDefinationIcon.setVisibility(View.VISIBLE);
-			if(Constant.player_quality_index[0].equalsIgnoreCase(urlManager.getURLS().defination_from_server)){
+			if(Constant.player_quality_index[0].equalsIgnoreCase(urlManager.getCurURLS_INDEX().defination_from_server)){
 				//mDefinationIcon.setImageResource(R.drawable.player_1080p);
 				mInfo.mQua = "1080p";
-			}else if(Constant.player_quality_index[1].equalsIgnoreCase(urlManager.getURLS().defination_from_server)){
+			}else if(Constant.player_quality_index[1].equalsIgnoreCase(urlManager.getCurURLS_INDEX().defination_from_server)){
 				//mDefinationIcon.setImageResource(R.drawable.player_720p);
 				mInfo.mQua = "720p";
 			}else{

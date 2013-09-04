@@ -23,7 +23,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.blaznyoght.subtitles.model.Collection;
-import org.blaznyoght.subtitles.model.Parser;
+import org.blaznyoght.subtitles.model.SRTParser;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -2557,6 +2557,7 @@ public class VideoPlayerJPActivity extends Activity implements
 						if(mSubTitleCollection == null){
 							initSubTitleCollection(getSubTitleBytes(p2pUrl, UtilTools.getP2PMD5(getApplicationContext())));
 						}
+						
 					}
 				}
 			}
@@ -2779,7 +2780,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		if(subTitle != null && subTitle.length > 3
 				&& mSubTitleCollection == null){
 			
-			Parser parser = new Parser();
+			SRTParser parser = new SRTParser();
 			
 			String charsetName = UtilTools.getCharset(subTitle, 128);
 			Log.d(TAG, "initSubTitleCollection-->charsetName:" + charsetName);

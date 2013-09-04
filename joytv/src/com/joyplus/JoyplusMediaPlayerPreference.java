@@ -1,52 +1,83 @@
 package com.joyplus;
 
 import java.util.ArrayList;
-import java.util.List;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
-import android.util.AttributeSet;
+import android.os.Bundle;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.Gallery;
 import android.widget.TextView;
-
 import com.joyplus.manager.URLManager;
-import com.joyplus.tv.Constant;
 import com.joyplus.tv.R;
 import com.joyplus.tv.utils.Log;
 import com.joyplus.tv.utils.UtilTools;
 
 
-public class JoyplusMediaPlayerPreference extends Dialog{
+public class JoyplusMediaPlayerPreference extends AlertDialog{
 
 	private boolean Debug = true;
 	private String  TAG   = "JoyplusMediaPlayerPreference";
 	
-	private Context mContext;
-	private Button btn_ok,btn_cancel;
+	private Context    mContext;
 	private QUALITY    mQuality;
 	
 	public JoyplusMediaPlayerPreference(Context context) {
 		super(context);
 		// TODO Auto-generated constructor stub
+		//View view = LayoutInflater.from(context).inflate(R.layout.video_choose_defination, null);
 		mContext = context;
+		
+//		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		//this.setContentView(view);
+//		this.setContentView(R.layout.video_choose_defination);
+	}
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.video_choose_defination);
 		initView();
 	}
-
+    public void setURLManager(URLManager urlManager){
+    	Log.d(TAG, "mQuality="+(mQuality==null)+"setURLManager--->"+(urlManager==null));
+    	if(mQuality == null) return;
+    	mQuality.setURLManager(urlManager);
+    }
 	private void initView() {
 		// TODO Auto-generated method stub		
-		btn_ok     = (Button) findViewById(R.id.btn_ok_def);
-		btn_cancel = (Button) findViewById(R.id.btn_cancle_def);
-		mQuality = new QUALITY();
+		findViewById(R.id.btn_ok_def).setOnClickListener(new OKListener());
+		findViewById(R.id.btn_cancle_def).setOnClickListener(new android.view.View.OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Dismiss();				
+			}
+		});
+		mQuality   = new QUALITY();
 	}
-	
-	
+	private void Dismiss() {
+		// TODO Auto-generated method stub
+		JoyplusMediaPlayerPreference.this.dismiss();
+	}	
+	private class OKListener implements android.view.View.OnClickListener{
+		@Override
+		public void onClick(View v) {
+			// TODO Auto-generated method stub
+			
+			Dismiss();
+		}		
+	}
 	private class QUALITY {		
 		public  Gallery              gallery;
 		private URLManager.Quality   mCurrentQuality;
@@ -56,9 +87,12 @@ public class JoyplusMediaPlayerPreference extends Dialog{
 			gallery.requestFocus();
 		};
         public void setURLManager(URLManager urlManager){
+        	Log.d(TAG, "setURLManager--->");
         	if(urlManager == null)return;
         	definationStrings = urlManager.getExitQualityList();
         	mCurrentQuality   = urlManager.getCurrentQuality();
+        	Log.d(TAG, "definationStrings size:" + definationStrings.size() + 
+        			" definationStrings-->" + definationStrings.toString());
         	gallery.setAdapter(new QuaSubAdapter(definationStrings));
         	gallery.setSelection(definationStrings.indexOf(URLManager.getQualityString(mCurrentQuality)));
         	gallery.requestFocus();
@@ -87,6 +121,7 @@ public class JoyplusMediaPlayerPreference extends Dialog{
 			if(list == null)return;
 			StringResource.clear();
 			StringResource = list;
+//			this.notify();
 		}
 		@Override
 		public int getCount() {

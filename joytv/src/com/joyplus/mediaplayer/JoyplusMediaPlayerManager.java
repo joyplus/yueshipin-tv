@@ -2,8 +2,8 @@ package com.joyplus.mediaplayer;
 
 import io.vov.vitamio.LibsChecker;
 
-import java.net.URL;
-
+import com.joyplus.Sub.JoyplusSubManager;
+import com.joyplus.manager.URLManager;
 import com.joyplus.mediaplayer.JoyplusMediaPlayerServer.PlayerState;
 import com.joyplus.mediaplayer.VideoViewInterface.DecodeType;
 import com.joyplus.tv.R;
@@ -13,8 +13,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Handler;
-import android.view.SurfaceHolder;
-
 
 public class JoyplusMediaPlayerManager {
 
@@ -22,9 +20,15 @@ public class JoyplusMediaPlayerManager {
 	    private String  TAG   = "MediaPlayerManager";
 	    
 	    private Context mContext;
-	    private JoyplusMediaPlayerServer       mServer;
-	    private JoyplusMediaPlayerDataManager  mDataManager;
-	    
+	    /*Interface of control videoview*/
+	    private JoyplusMediaPlayerServer        mServer;
+	    /*Interface of videoview preference*/
+	    private JoyplusMediaPlayerDataManager   mDataManager;
+	    /*Interface of sub manager*/
+	    private JoyplusSubManager               mSubManager;
+	    /*Interface of Url Manager*/
+	    private URLManager                      mURLManager;
+	    	    
 	    /*a type of media player which unknow*/
 	    public final static int TYPE_UNKNOW       = -1;
 	    /*a type of media player it use Android default mediaplayer*/
@@ -58,10 +62,25 @@ public class JoyplusMediaPlayerManager {
 	    		
 	    public JoyplusMediaPlayerManager(Context context) throws Exception{
 	    	if(! (context instanceof Activity))throw new Exception("use it in Activity");
-	    	mContext     = context;
-	    	mDataManager = new JoyplusMediaPlayerDataManager(context);
-	    	mServer      = new JoyplusMediaPlayerServer(context);
+	    	mContext       = context;
+	    	mDataManager   = new JoyplusMediaPlayerDataManager(context);
+	    	mServer        = new JoyplusMediaPlayerServer(context);
+	    	InitURLAndSub();
 	    	setVitamioEn(LibsChecker.checkVitamioLibs((Activity)context));
+	    }
+	    /*Interface of SubManager and Urlmanager*/
+	    public JoyplusSubManager getSubManager(){
+	    	return mSubManager;
+	    }
+	    public URLManager getURLManager(){
+	    	return mURLManager;
+	    }
+	    private void InitURLAndSub(){
+	    	ResetURLAndSub();
+	    }
+	    public void ResetURLAndSub(){
+	    	mSubManager    = new JoyplusSubManager(mContext);
+	    	mURLManager    = new URLManager();
 	    }
 	    /*Interface of type config*/
 	    public JoyplusPlayerConfig getJoyplusPlayerConfig(int Type){
