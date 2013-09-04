@@ -80,6 +80,7 @@ import com.umeng.analytics.MobclickAgent;
 public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMediaPlayerListener{
 	
 	private boolean Debug   = true;
+	
 	private String  TAG     = "JoyplusMediaPlayerActivity";
 	/*videoview layout      msg 100-199  level 3*/
 	public JoyplusMediaPlayerVideoView     mVideoView;
