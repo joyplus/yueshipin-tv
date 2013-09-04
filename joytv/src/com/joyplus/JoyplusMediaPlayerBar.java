@@ -7,8 +7,6 @@ import android.os.Message;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
@@ -25,7 +23,7 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 	private JoyplusMediaPlayerActivity mActivity;
 	private VideoViewController        mBottomBar;
 	private VideoViewTopBar            mTopBar;
-	
+
 	private static final int MSG_BASE        = 300;
 	private static final int MSG_SHOWVIEW    = MSG_BASE+1;
 	private static final int MSG_HIDEVIEW    = MSG_BASE+2;
@@ -33,7 +31,7 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 	private static final int MSG_REQUESTSHOW = MSG_BASE+4;
 	private static final int MSG_REQUESTHIDE = MSG_BASE+5;
 	private static final int LAYOUT_BAR      = MSG_BASE+7;
-	
+
 	public static final int  MSG_SHOWANDKEYLONGPRESS = MSG_BASE+8;
 	public static final int  MSG_SHOWANDKEYDOWN      = MSG_BASE+9;
 	public static final int  MSG_SHOWANDHOLD         = MSG_BASE+10;
@@ -101,9 +99,12 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 				mHandler.removeCallbacksAndMessages(null);
 				break;
 			case MSG_REQUESTSHOW:
+				//mHandler.removeCallbacksAndMessages(null);
 				setVisible(true,500);
+				//setVisible(false,JoyplusMediaPlayerActivity.DELAY_SHOWVIEW);
 				break;
 			case MSG_REQUESTHIDE:
+				mHandler.removeCallbacksAndMessages(null);
 				setVisible(false,0);
 				break;
 			case JoyplusMediaPlayerActivity.MSG_UPDATEPLAYERINFO:
@@ -111,6 +112,7 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 				break;
 			case MSG_SHOWANDKEYLONGPRESS:
 			case MSG_SHOWANDKEYDOWN:
+				mHandler.removeCallbacksAndMessages(null);
 				mTopBar.setVisible(true);
 				mBottomBar.setVisible(true);
 				mBottomBar.dispatchMessage(msg);
@@ -118,11 +120,12 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 			case MSG_SHOWANDHOLD:
 				mTopBar.setVisible(true);
 				mBottomBar.setVisible(true);
+				mHandler.removeCallbacksAndMessages(null);
 				break;
 			}
 		}
 	};
-	
+
 	public JoyplusMediaPlayerBar(JoyplusMediaPlayerActivity context){
 		mActivity  = context;
 		mBottomBar = new VideoViewController();
@@ -139,15 +142,15 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 		mHandler.removeCallbacksAndMessages("MSG_HIDEVIEW");
 		mHandler.sendMessageDelayed(m,delay);
 	}
-	
+
 	/*add by Jas@20130812 for TopBar in JoyPlus VideoView
 	 * it use to display Media name , media resolution .current time
 	 * */
 	private class VideoViewTopBar {
-		
+
 		private boolean     Debug = true;
 		private String      TAG   = "VideoViewTopBar";
-		
+
 		private ImageView   MediaResolution;
 		private TextView    MediaName;
 		private TextView    Click;
@@ -184,7 +187,7 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 				mHandler.removeCallbacks(UpdateTime);
 			}
 		}
-		
+
 		private void InitView() {
 			// TODO Auto-generated method stub
 			if(Layout.getVisibility() != View.VISIBLE)return;
@@ -202,7 +205,7 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 				MediaResolution.setVisibility(View.GONE);
 			}
 		}
-		
+
 		private void InitResource() {
 			// TODO Auto-generated method stub
 			Layout          = (RelativeLayout) mActivity.findViewById(R.id.mediacontroller_topbar);
@@ -212,7 +215,7 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 			setVisible(true);
 		}
 	}
-	
+
 	/*Add by Jas@20130813 for add the BottomBar in JoyPlus VideoView 
 	 * it depends on the MediaInfo which report from JoyPlusMediaPlayerStateTrack
 	 * and depends on the layout of joyplusvideoview.xml 
@@ -221,7 +224,7 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
         
 		private boolean     Debug = true;
 		private String      TAG   = "VideoViewController";
-		
+
 		private TextView       CurrentTimeView;
 		private TextView       TotalTimeView;
 		private SeekBar        SeekBar;
@@ -260,7 +263,7 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 				SeekBar.setProgress(position);
 				UpdateProgress(null);
 				mHandler.sendEmptyMessage(MSG_REQUESTSHOW);
-				mHandler.removeCallbacks(null);
+				mHandler.removeCallbacks(QuickAdjustSeekBar);
 				mHandler.postDelayed(QuickAdjustSeekBar, 20);
 			}
 		};
@@ -291,9 +294,9 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 			}
 		}
 		public boolean JoyplusonKeyLongPress(int keyCode, KeyEvent event){
-			Log.d("Jas","Bar JoyplusonKeyLongPress keyCode="+keyCode);
+			Log.d("KeyCode","Bar JoyplusonKeyLongPress keyCode="+keyCode);
 			if(Layout_Time.getVisibility() == View.VISIBLE && (mActivity.getPlayer()!=null)){
-				Log.d("Jas","Bar JoyplusonKeyLongPress ");
+				Log.d("KeyCode","Bar JoyplusonKeyLongPress ");
 				switch(keyCode){
 				case KeyEvent.KEYCODE_DPAD_LEFT:
 					mSeekBarMode = SEEKMODE.LONGPRESS;
@@ -317,9 +320,9 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 		}
 		public boolean JoyplusonKeyDown(int keyCode, KeyEvent event) {
 			// TODO Auto-generated method stub
-			Log.d("Jas","Bar JoyplusonKeyDown keyCode="+keyCode);
+			Log.d("KeyCode","Bar JoyplusonKeyDown keyCode="+keyCode);
 			if(Layout_Time.getVisibility() == View.VISIBLE && (mActivity.getPlayer()!=null)){
-				Log.d("Jas","Bar JoyplusonKeyLongPress ");
+				Log.d("KeyCode","Bar JoyplusonKeyDown ");
 				switch(keyCode){
 				case KeyEvent.KEYCODE_DPAD_LEFT:
 					if(mSeekBarMode == SEEKMODE.LONGPRESS){
@@ -365,15 +368,19 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 						mActivity.getPlayer().SeekVideo(SeekBar.getProgress());
 						return true;
 					}
-					return true;
+					return false;
 				case KeyEvent.KEYCODE_BACK:
 				case 111://the keycode was be change to 111 ,but don't know where change
 					if(mSeekBarType != SEEKTYPE.NORMAL){
 						mSeekBarType = SEEKTYPE.NORMAL;
 						mSpeed       = SPEED.X0;
-						mHandler.removeCallbacks(QuickAdjustSeekBar);
-					}else
-					    mHandler.sendEmptyMessage(MSG_REQUESTHIDE);
+						//mHandler.removeCallbacks(QuickAdjustSeekBar);
+						mHandler.removeCallbacksAndMessages(null);
+					}else{
+					    //mHandler.sendEmptyMessage(MSG_REQUESTHIDE);
+						mHandler.removeCallbacksAndMessages(null);
+						mHandler.sendEmptyMessage(MSG_REQUESTHIDE);
+					}
 					return true;
 				}
 			} 
@@ -490,7 +497,6 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 	@Override
 	public boolean JoyplusonKeyDown(int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
-		Log.d("Jas","Bar hhhhh JoyplusonKeyDown");
 		if(mBottomBar.Layout_Time.getVisibility()== View.VISIBLE){
 			if(mBottomBar.JoyplusonKeyDown(keyCode, event)){
 				mHandler.sendEmptyMessage(MSG_REQUESTSHOW);
@@ -500,7 +506,7 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 		}
 		return false;
 	}
-	
+
 	@Override
 	public void JoyplussetVisible(boolean visible,int layout) {
 		// TODO Auto-generated method stub
@@ -517,9 +523,10 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 		// TODO Auto-generated method stub
 		if(mBottomBar.Layout_Time.getVisibility()== View.VISIBLE){
 			if(mBottomBar.JoyplusonKeyLongPress(keyCode, event)){
-				mHandler.sendEmptyMessage(MSG_REQUESTSHOW);
+				//mHandler.sendEmptyMessage(MSG_REQUESTSHOW);
+				return true;
 			}
-			return true;
+
 		}
 		return false;
 	}

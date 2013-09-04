@@ -16,10 +16,10 @@ public class JoyplusMediaPlayerMiddleControl extends LinearLayout implements Joy
 
 	private boolean Debug = true;
 	private String  TAG   = "JoyplusMediaPlayerMiddleControl";
-	
+
 	private JoyplusMediaPlayerInterface   mView;//Current display layout;
 	//private Context  mContext;
-	
+
 	private final static int MSG_BASE  = 200;
 	public  final static int MSG_HIDEVIEW               = MSG_BASE+1;
 	public  final static int MSG_SHOWVIEW               = MSG_BASE+2;
@@ -37,9 +37,9 @@ public class JoyplusMediaPlayerMiddleControl extends LinearLayout implements Joy
 	public void Init(){
 		update(LAYOUT_LOADING);
 		mHandler.removeCallbacksAndMessages(null);
-		if(mView.JoyplusgetLayout() == LAYOUT_LOADING){
-			mView.JoyplussetVisible(true, 0);
-		}
+		//if(mView.JoyplusgetLayout() == LAYOUT_LOADING){
+		//	mView.JoyplussetVisible(true, 0);
+		//}
 	}
 	private Handler mHandler = new Handler(){
 		@Override
@@ -52,11 +52,11 @@ public class JoyplusMediaPlayerMiddleControl extends LinearLayout implements Joy
 				break;
 			case MSG_SHOWVIEW:
 				update((Integer) msg.obj);
-				setVisible(false,JoyplusMediaPlayerActivity.DELAY_SHOWVIEW,0);
-				if(mView != null && mView.JoyplusgetLayout()==LAYOUT_MINI){
-					((JoyplusMediaPlayerMiddleControlMini)mView).UpdateShowLayout();
-					mHandler.sendEmptyMessage(MSG_REQUESTHOLDSHOWVIEW);
-				}
+				//setVisible(false,JoyplusMediaPlayerActivity.DELAY_SHOWVIEW,0);
+				//if(mView != null && mView.JoyplusgetLayout()==LAYOUT_MINI){
+				//	((JoyplusMediaPlayerMiddleControlMini)mView).UpdateShowLayout();
+				//	mHandler.sendEmptyMessage(MSG_REQUESTHOLDSHOWVIEW);
+				//}
 				break;
             case MSG_REQUESTSHOWVIEW:
             	if(mView != null && ((View)mView).getVisibility()!=View.VISIBLE){
@@ -105,10 +105,12 @@ public class JoyplusMediaPlayerMiddleControl extends LinearLayout implements Joy
     		((View)mView).setVisibility(View.GONE);
     		((View)mView).startAnimation(JoyplusMediaPlayerActivity.mAlphaDispear);
     	}
+		mView = null;
 	}
 	public boolean update(int layout){
 		hideView();
 		mView = CreateView(layout);
+		mView.JoyplussetVisible(true, mView.JoyplusgetLayout());
 		return true;
 	}
 	private View getStubView(int stubId,int viewId){
@@ -154,6 +156,7 @@ public class JoyplusMediaPlayerMiddleControl extends LinearLayout implements Joy
 	public boolean JoyplusonKeyDown(int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
 		if(mView!=null && (((View)mView).getVisibility() == View.VISIBLE)){
+			 if(Debug)Log.d("KeyCode","Control JoyplusonKeyDown() keyCode="+keyCode);
 			 if( mView.JoyplusonKeyDown(keyCode, event)){
 				 mHandler.sendEmptyMessage(MSG_REQUESTSHOWVIEW);
 			 }else{
@@ -178,5 +181,5 @@ public class JoyplusMediaPlayerMiddleControl extends LinearLayout implements Joy
 		// TODO Auto-generated method stub
 		return false;
 	}
-	
+
 }

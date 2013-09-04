@@ -1,6 +1,8 @@
 package com.joyplus;
 
 
+import com.joyplus.mediaplayer.MediaInfo;
+import com.joyplus.mediaplayer.VideoViewInterface.STATE;
 import com.joyplus.tv.R;
 
 import android.content.Context;
@@ -16,9 +18,11 @@ import android.widget.LinearLayout;
 
 
 public class JoyplusMediaPlayerMiddleControlMini extends LinearLayout implements JoyplusMediaPlayerInterface{
-	
+
 	//private Context        mContext;
 	private static Handler mHandler;
+
+	private boolean StateOk = false;
 	//switch layout
 	private LinearLayout mSwitch;
 	private ImageButton  mSwitch_center;
@@ -29,7 +33,7 @@ public class JoyplusMediaPlayerMiddleControlMini extends LinearLayout implements
 	//pause or play layout
 	private LinearLayout mPauseplay;
 	private ImageButton  mPauseplay_button;
-	
+
 	/*Event of this layout*/
 	public final static int MSG_KEYDOWN_CENTER    = 1;
 	public final static int MSG_KEYDOWN_LEFT      = 2;
@@ -39,7 +43,7 @@ public class JoyplusMediaPlayerMiddleControlMini extends LinearLayout implements
 	public final static int MSG_KEYDOWN_PAUSEPLAY = 6;
 	public final static int MSG_REQUESTHIDEVIEW   = 7;
 	public final static int MSG_PAUSEPLAY         = 8;
-	
+
 	public final static int LAYOUT_PAUSEPLAY    = 1;
 	public final static int LAYOUT_SWITCH       = 2;
 	public final static int LAYOUT_UNKNOW       = 3;
@@ -89,7 +93,7 @@ public class JoyplusMediaPlayerMiddleControlMini extends LinearLayout implements
 		super(context, attrs);
 		// TODO Auto-generated constructor stub
 		//mContext = context; 
-		
+
 	}
 	public void UpdateShowLayout(){
 		if(mLayout       == LAYOUT_SWITCH){
@@ -101,6 +105,7 @@ public class JoyplusMediaPlayerMiddleControlMini extends LinearLayout implements
 		}
 		UpdateUI(mLayout);
 		mLayout             = LAYOUT_UNKNOW;
+		Message.obtain(mHandler, MSG_PAUSEPLAY).sendToTarget();
 	}
 	protected void onFinishInflate() {
 		super.onFinishInflate();
@@ -162,19 +167,28 @@ public class JoyplusMediaPlayerMiddleControlMini extends LinearLayout implements
 	@Override
 	public boolean JoyplusdispatchMessage(Message msg) {
 		// TODO Auto-generated method stub
+		switch(msg.what){
+		case JoyplusMediaPlayerActivity.MSG_MEDIAINFO:
+			if(mPauseplay.getVisibility()==View.VISIBLE
+			   || mSwitch.getVisibility()==View.VISIBLE){
+			   MediaInfo info = ((MediaInfo) msg.obj).CreateMediaInfo();
+			   if(info.getState()!=STATE.MEDIA_STATE_PUSE){
+				   mHandler.sendEmptyMessageDelayed(MSG_REQUESTHIDEVIEW,100);
+			   }
+			}
+		}
 		return false;
 	}
 	@Override
 	public boolean JoyplusonKeyDown(int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
-		Log.d("JoyplusMediaPlayerActivity"," Mini keydown() keyCode="+keyCode);
+		Log.d("KeyCode","ControlMini JoyplusonKeyDown() keyCode="+keyCode);
 		switch(keyCode){
 		case KeyEvent.KEYCODE_DPAD_CENTER:
-		case KeyEvent.KEYCODE_ENTER:
 			if(mSwitch.getVisibility() == View.VISIBLE){
 				UpdateUI(LAYOUT_SWITCH,mSwitch_center.getId());
 				Message.obtain(mHandler, MSG_KEYDOWN_CENTER).sendToTarget();
-			}else if(mPauseplay.getVisibility() == View.VISIBLE){ 
+			}else if(mPauseplay.getVisibility() == View.VISIBLE){
 				UpdateUI(LAYOUT_PAUSEPLAY,mPauseplay_button.getId());
 				Message.obtain(mHandler, MSG_KEYDOWN_PAUSEPLAY).sendToTarget();
 			}
@@ -208,7 +222,7 @@ public class JoyplusMediaPlayerMiddleControlMini extends LinearLayout implements
 		}
 		return true;
 	}
-	
+
 	/*follow was use to change UI ,it only use to adapter TV*/
 	private void UpdateUI(int layout){
 		switch(layout){
@@ -362,7 +376,11 @@ public class JoyplusMediaPlayerMiddleControlMini extends LinearLayout implements
 	@Override
 	public void JoyplussetVisible(boolean visible, int layout) {
 		// TODO Auto-generated method stub
-		
+		if(visible == false)StateOk = false;
+		else{
+			UpdateShowLayout();
+			StateOk = true;
+		}
 	}
 	@Override
 	public int JoyplusgetLayout() {
