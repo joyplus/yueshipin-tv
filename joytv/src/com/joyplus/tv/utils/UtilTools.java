@@ -1286,4 +1286,22 @@ public class UtilTools implements JieMianConstant, BangDanConstant {
 		
 		return (int) (context.getResources().getDimension(R.dimen.standard_1_dp) * value);
 	}
+	
+	/**
+	 * 获取权限
+	 * 
+	 * @param permission
+	 *            权限
+	 * @param path
+	 *            路径
+	 */
+	public static void chmod(String permission, String path) {
+		try {
+			String command = "chmod " + permission + " " + path;
+			Runtime runtime = Runtime.getRuntime();
+			runtime.exec(command);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 }

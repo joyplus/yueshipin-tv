@@ -40,6 +40,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ApplicationInfo;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -74,7 +75,6 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
-import android.widget.VideoView;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
@@ -94,6 +94,7 @@ import com.joyplus.tv.entity.CurrentPlayDetailData;
 import com.joyplus.tv.entity.HotItemInfo;
 import com.joyplus.tv.entity.URLS_INDEX;
 import com.joyplus.tv.ui.ArcView;
+import com.joyplus.tv.ui.VideoView;
 import com.joyplus.tv.utils.BangDanConstant;
 import com.joyplus.tv.utils.DBUtils;
 import com.joyplus.tv.utils.DataBaseItems.UserHistory;
@@ -145,6 +146,7 @@ public class VideoPlayerJPActivity extends Activity implements
 	private static final int STATUE_FAST_DRAG = STATUE_PAUSE + 1;
 	
 	private static final int SEEKBAR_REFRESH_TIME = 200;//refresh time
+	private static final int SUBTITLE_DELAY_TIME_MAX = 1000;
 
 	private int OFFSET = 33;
 	private int seekBarWidthOffset = 40;
@@ -172,6 +174,9 @@ public class VideoPlayerJPActivity extends Activity implements
 	private ImageButton mContinueButton;// 继续
 
 	private ArcView mVoiceProgress; // 声音大小显示
+	
+	private TextView mDataLoadingSpeedText; //缓冲速度
+	private long mCurrentLoadingbytes;
 
 	/**
 	 * 预加载层
@@ -194,6 +199,10 @@ public class VideoPlayerJPActivity extends Activity implements
 	 * 暂停继续层
 	 */
 	private LinearLayout mContinueLayout;
+	/**
+	 * 缓冲速度
+	 */
+	private LinearLayout mDateLoadingLayout;
 	/**
 	 * subtitle
 	 */
@@ -409,6 +418,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		mNoticeLayout.setVisibility(View.VISIBLE);
 		mContinueLayout.setVisibility(View.GONE);
 		mControlLayout.setVisibility(View.GONE);
+		mDateLoadingLayout.setVisibility(View.GONE);
 		mStartRX = TrafficStats.getTotalRxBytes();// 获取网络速度
 		if (mStartRX == TrafficStats.UNSUPPORTED) {
 			mSpeedTextView
@@ -613,6 +623,9 @@ public class VideoPlayerJPActivity extends Activity implements
 			case MESSAGE_HIDE_VOICE:
 				dismissView(mVocieLayout);
 				break;
+			case MESSAGE_DATALOADING_UPDATE_NETSPEED:
+				updateDataLoadingSpeed();
+				break;
 			case MESSAGE_SUBTITLE_BEGAIN_SHOW:
 				org.blaznyoght.subtitles.model.Element element_show = 
 				(org.blaznyoght.subtitles.model.Element) msg.obj;
@@ -620,9 +633,11 @@ public class VideoPlayerJPActivity extends Activity implements
 					long currentPositionShow = mVideoView.getCurrentPosition();
 					org.blaznyoght.subtitles.model.Element preElement_show = getPreElement(currentPositionShow);
 					//在字幕的显示时间段内
-					if(element_show.getStartTime().getTime() < currentPositionShow + SEEKBAR_REFRESH_TIME/2
-							&& element_show.getStartTime().getTime() > currentPositionShow - SEEKBAR_REFRESH_TIME/2){
-						mSubTitleTv.setText(element_show.getText().replaceAll("<font.*>", "").trim());
+					if(!element_show.getText().equals(mSubTitleTv.getText())){
+						if(element_show.getStartTime().getTime() < currentPositionShow + SEEKBAR_REFRESH_TIME/2
+								&& element_show.getStartTime().getTime() > currentPositionShow - SEEKBAR_REFRESH_TIME/2){
+							mSubTitleTv.setText(element_show.getText());
+						}
 					}
 					if(element_show.getEndTime().getTime() < currentPositionShow){
 						mSubTitleTv.setText("");
@@ -634,7 +649,11 @@ public class VideoPlayerJPActivity extends Activity implements
 					}
 					if(preElement_show != null){
 						Message messageShow = mHandler.obtainMessage(MESSAGE_SUBTITLE_BEGAIN_SHOW, preElement_show);
-						mHandler.sendMessageDelayed(messageShow, preElement_show.getStartTime().getTime() - currentPositionShow);
+						if(preElement_show.getStartTime().getTime() - currentPositionShow > SUBTITLE_DELAY_TIME_MAX){
+							mHandler.sendMessageDelayed(messageShow, SUBTITLE_DELAY_TIME_MAX);
+						}else {
+							mHandler.sendMessageDelayed(messageShow, preElement_show.getStartTime().getTime() - currentPositionShow);
+						}
 					}
 				}
 				break;
@@ -644,12 +663,14 @@ public class VideoPlayerJPActivity extends Activity implements
 				if(element_end != null){
 					long currentPositionShow = mVideoView.getCurrentPosition();
 					org.blaznyoght.subtitles.model.Element preElement_show = getPreElement(currentPositionShow);
+					if(element_end.getEndTime().getTime() > currentPositionShow - SEEKBAR_REFRESH_TIME/2){
+						mSubTitleTv.setText("");
+					}
 					if(preElement_show != null){
 						Message messageHiden = mHandler.obtainMessage(MESSAGE_SUBTITLE_END_HIDEN, preElement_show);
 						mHandler.sendMessageDelayed(messageHiden, preElement_show.getEndTime().getTime() - currentPositionShow);
 					}
 				}
-				mSubTitleTv.setText("");
 				break;
 			default:
 				break;
@@ -971,6 +992,20 @@ public class VideoPlayerJPActivity extends Activity implements
 		
 		noUrlCanPlay();
 	}
+	
+	private void updateDataLoadingSpeed(){
+		long speed = getLoadingData() - mCurrentLoadingbytes;
+		mDataLoadingSpeedText.setText("（" + speed + "kb/s）");
+		mCurrentLoadingbytes += speed;
+		mHandler.sendEmptyMessageDelayed(MESSAGE_DATALOADING_UPDATE_NETSPEED, 1000);
+	}
+	
+	private long getLoadingData(){
+		ApplicationInfo ai = getApplicationInfo();
+//		return TrafficStats.getUidRxBytes(ai.uid) == TrafficStats.UNSUPPORTED ? 0
+//				: (TrafficStats.getTotalRxBytes() / 1024);
+		return TrafficStats.getTotalRxBytes() / 1024;
+	}
 
 	private void updateName() {
 		switch (mProd_type) {
@@ -1045,6 +1080,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		mContinueButton = (ImageButton) findViewById(R.id.btn_continue);
 		
 		mSubTitleTv = (TextView) findViewById(R.id.tv_subtitle);
+		mDataLoadingSpeedText = (TextView) findViewById(R.id.tv_dataloading_network_kb);
 
 		mPreButton.setOnClickListener(this);
 		mNextButton.setOnClickListener(this);
@@ -1077,10 +1113,12 @@ public class VideoPlayerJPActivity extends Activity implements
 		mControlLayout = (LinearLayout) findViewById(R.id.ll_control_buttons);
 		mVocieLayout = (LinearLayout) findViewById(R.id.ll_volume);
 		mContinueLayout = (LinearLayout) findViewById(R.id.ll_continue);
+		mDateLoadingLayout = (LinearLayout) findViewById(R.id.ll_data_loading);
 		mVideoView = (VideoView) findViewById(R.id.surface_view);
 		mVideoView.setOnErrorListener(this);
 		mVideoView.setOnCompletionListener(this);
 		mVideoView.setOnPreparedListener(this);
+		mVideoView.setOnInfoListener(this);
 		mVideoView.setOnTouchListener(new View.OnTouchListener() {
 
 			@Override
@@ -1110,6 +1148,7 @@ public class VideoPlayerJPActivity extends Activity implements
 				return true;
 			case STATUE_PLAYING:
 				if (mProd_type == 2 || mProd_type == 131 || mProd_type == 3) {
+					mDateLoadingLayout.setVisibility(View.GONE);
 					showControlLayout();
 					return true;
 				} else {
@@ -1141,17 +1180,19 @@ public class VideoPlayerJPActivity extends Activity implements
 				 * 显示banner
 				 */
 				showBanner();
-				layout.setVisibility(View.VISIBLE);
 				
-				mVocieLayout.setVisibility(View.GONE);
-				mHandler.removeMessages(MESSAGE_HIDE_VOICE);
-				mStatue = STATUE_PAUSE;
-				mSeekBar.setEnabled(false);
-				mVideoView.pause();
-				mHandler.removeMessages(MESSAGE_HIDE_PROGRESSBAR);
-				mContinueLayout.setVisibility(View.VISIBLE);
-				mNoticeLayout.setVisibility(View.VISIBLE);
-				mContinueButton.requestFocus();
+				layout.setVisibility(View.VISIBLE);
+				if(!(mDateLoadingLayout.getVisibility()==View.VISIBLE)){
+					mVocieLayout.setVisibility(View.GONE);
+					mHandler.removeMessages(MESSAGE_HIDE_VOICE);
+					mStatue = STATUE_PAUSE;
+					mSeekBar.setEnabled(false);
+					mVideoView.pause();
+					mHandler.removeMessages(MESSAGE_HIDE_PROGRESSBAR);
+					mContinueLayout.setVisibility(View.VISIBLE);
+					mNoticeLayout.setVisibility(View.VISIBLE);
+					mContinueButton.requestFocus();
+				}
 				break;
 			case STATUE_FAST_DRAG:
 				if (mFastJumpTime < mVideoView.getDuration()) {
@@ -1172,6 +1213,7 @@ public class VideoPlayerJPActivity extends Activity implements
 			}
 			break;
 		case KeyEvent.KEYCODE_MENU:
+			if(mDateLoadingLayout.getVisibility()!=View.VISIBLE && mStatue == STATUE_PLAYING){
 				try{
 					final Dialog dialog = new AlertDialog.Builder(this).create();
 					dialog.show();
@@ -1270,7 +1312,7 @@ public class VideoPlayerJPActivity extends Activity implements
 					// TODO: handle exception
 					e.printStackTrace();
 				}
-				
+			}	
 			return true;
 		case KeyEvent.KEYCODE_VOLUME_UP:
 			if (mStatue == STATUE_PLAYING) {
@@ -1407,6 +1449,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		mDefination = defination;
 		mVideoView.stopPlayback();
 		mStatue = STATUE_LOADING;
+		mDateLoadingLayout.setVisibility(View.GONE);
 		mSeekBar.setEnabled(false);
 		mSeekBar.setProgress(0);
 		mTotalTimeTextView.setText("--:--");
@@ -1633,7 +1676,32 @@ public class VideoPlayerJPActivity extends Activity implements
 	@Override
 	public boolean onInfo(MediaPlayer mp, int what, int extra) {
 		// TODO Auto-generated method stub
-		return false;
+		Log.d(TAG, "onInfo-------->what = " + what);
+		Log.d(TAG, "onInfo-------->extra = " + extra);
+		switch (what) {
+		case 701:
+			if(mStatue == STATUE_FAST_DRAG||mStatue == STATUE_PLAYING){
+				mDateLoadingLayout.setVisibility(View.VISIBLE);
+				mCurrentLoadingbytes = getLoadingData();
+				if (mStartRX == TrafficStats.UNSUPPORTED) {
+					mDataLoadingSpeedText.setText("");
+				} else {
+					mDataLoadingSpeedText.setText("（0kb/s）");
+					mHandler.sendEmptyMessageDelayed(MESSAGE_DATALOADING_UPDATE_NETSPEED, 1000);
+				}
+			}
+			//showDialog(1);
+			break;
+		case 702:
+			//removeDialog(1);
+			mDateLoadingLayout.setVisibility(View.GONE);
+			mHandler.removeMessages(MESSAGE_DATALOADING_UPDATE_NETSPEED);
+			break;
+
+		default:
+			break;
+		}
+		return true;
 	}
 
 	@Override
@@ -1850,6 +1918,7 @@ public class VideoPlayerJPActivity extends Activity implements
 			mHandler.postDelayed(mLoadingRunnable, 500);
 		}
 		mPercentTextView.setText("已完成0%");
+		mDateLoadingLayout.setVisibility(View.GONE);
 		mPreLoadLayout.setVisibility(View.VISIBLE);
 		mNoticeLayout.setVisibility(View.VISIBLE);
 	}
@@ -2804,7 +2873,7 @@ public class VideoPlayerJPActivity extends Activity implements
 					parser.setCharset(charsetName);
 				}
 				parser.parse(new ByteArrayInputStream(subTitle));
-				
+				Log.d(TAG, "getElements().size()--->" + parser.getCollection().getElements().size());
 				if(parser.getCollection().getElements().size() > 2){
 					mSubTitleCollection = parser.getCollection();
 					if(mVideoView != null){
@@ -2813,9 +2882,24 @@ public class VideoPlayerJPActivity extends Activity implements
 						if(element != null){
 							Message messageShow = mHandler.obtainMessage(MESSAGE_SUBTITLE_BEGAIN_SHOW, element);
 							Message messageHiden = mHandler.obtainMessage(MESSAGE_SUBTITLE_END_HIDEN, element);
-							mHandler.sendMessageDelayed(messageShow, element.getStartTime().getTime() - currentPosition);
+							if(element.getStartTime().getTime() - currentPosition > SUBTITLE_DELAY_TIME_MAX){
+								mHandler.sendMessageDelayed(messageShow, SUBTITLE_DELAY_TIME_MAX);
+							}else {
+								
+								mHandler.sendMessageDelayed(messageShow, element.getStartTime().getTime() - currentPosition);
+							}
 							mHandler.sendMessageDelayed(messageHiden, element.getEndTime().getTime() - currentPosition);
 						}
+					}
+				}else {
+					Log.i(TAG, "restart init");
+					if(subTitleUrlList.size() > 0 && currentSubtitleIndex < subTitleUrlList.size()){
+						mHandler.removeMessages(MESSAGE_SUBTITLE_BEGAIN_SHOW);
+						mHandler.removeMessages(MESSAGE_SUBTITLE_END_HIDEN);
+						subTitleUrlList.remove(currentSubtitleIndex);
+						currentSubtitleIndex = 0;
+						mSubTitleCollection = null;
+						initSubTitleCollection();
 					}
 				}
 //				Log.d(TAG, "mSubTitleCollection--->" + mSubTitleCollection.getElementSize());

@@ -1,6 +1,8 @@
 package com.joyplus.tv;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,6 +14,7 @@ import org.json.JSONObject;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -29,6 +32,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
@@ -95,11 +99,14 @@ import com.joyplus.tv.utils.DataBaseItems;
 import com.joyplus.tv.utils.DataBaseItems.UserHistory;
 import com.joyplus.tv.utils.DataBaseItems.UserShouCang;
 import com.joyplus.tv.utils.Log;
+import com.joyplus.tv.utils.PackageUtils;
 import com.joyplus.tv.utils.URLUtils;
 import com.joyplus.tv.utils.UtilTools;
 import com.saulpower.fayeclient.FayeService;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.update.UmengUpdateAgent;
+import com.umeng.update.UmengUpdateListener;
+import com.umeng.update.UpdateResponse;
 
 public class Main1 extends Activity implements OnItemSelectedListener,
 		OnItemClickListener , AdListener{
@@ -721,6 +728,73 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 		UmengUpdateAgent.setUpdateOnlyWifi(false);
 		UmengUpdateAgent.setOnDownloadListener(null);
 		UmengUpdateAgent.update(this);
+		UmengUpdateAgent.setUpdateAutoPopup(false);
+		
+		UmengUpdateAgent.setUpdateListener(new UmengUpdateListener() {
+	        @Override
+	        public void onUpdateReturned(int updateStatus,UpdateResponse updateInfo) {
+	            switch (updateStatus) {
+	            case 0: // has update
+	            case 2:
+	            	Log.d(TAG, "hasUpdate---->" + updateInfo.hasUpdate);
+	            	Log.d(TAG, "path ------>" + updateInfo.path);
+	            	Log.d(TAG, "log---->" + updateInfo.updateLog);
+	            	Log.d(TAG, "version---->" + updateInfo.version);
+	            	final File f = new File(getCacheDir(), DownLoadUpdateApkThread.NAME_APK_DOWNLOADED);
+	            	if(f.exists()){
+	            		PackageInfo info = PackageUtils.getAppPackageInfo(Main1.this, f.getAbsolutePath());
+	            		if(info != null&&info.versionName!=null&&info.versionName.equals(updateInfo.version)){
+	            			//Toast.makeText(MainActivity.this, "可以更新啦", Toast.LENGTH_SHORT).show();
+	            			AlertDialog.Builder builder = new Builder(Main1.this);
+	            			  builder.setMessage(updateInfo.updateLog);
+
+	            			  builder.setTitle("发现新版本:" + updateInfo.version);
+
+	            			  builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+
+		            			   @Override
+		            			   public void onClick(DialogInterface dialog, int which) {
+		            				   dialog.dismiss();
+		            				   try {
+		            						Uri packageURI =Uri.parse("file://"+f.getAbsolutePath());
+		            						Intent intent = new Intent(Intent.ACTION_INSTALL_PACKAGE, packageURI);
+		            						startActivity(intent);
+		            					} catch (Exception e) {
+		            						// TODO: handle exception
+		            						e.printStackTrace();
+		            					}
+		            			   }
+	            			  });
+
+	            			  builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+
+		            			   @Override
+		            			   public void onClick(DialogInterface dialog, int which) {
+		            			    dialog.dismiss();
+		            			   }
+	            			  });
+
+	            			  builder.create().show();
+	            		}else{
+	            			new Thread(new DownLoadUpdateApkThread(Main1.this, URLDecoder.decode(updateInfo.path))).start();
+	            		}
+	            	}else{
+	            		new Thread(new DownLoadUpdateApkThread(Main1.this, URLDecoder.decode(updateInfo.path))).start();
+	            	}
+//	                UmengUpdateAgent.showUpdateDialog(MainActivity.this, updateInfo);
+	                break;
+	            case 1: // has no update
+	                //Toast.makeText(MainActivity.this, "没有更新", Toast.LENGTH_SHORT).show();
+	                break;
+//	            case 2: // none wifi
+	                //Toast.makeText(MainActivity.this, "没有wifi连接， 只在wifi下更新", Toast.LENGTH_SHORT).show();
+//	                break;
+	            case 3: // time out
+	                //Toast.makeText(MainActivity.this, "超时", Toast.LENGTH_SHORT).show();
+	                break;
+	            }
+	        }
+	});
 
 	}
 	private Handler handler = new Handler() {
