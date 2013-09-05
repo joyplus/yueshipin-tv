@@ -27,7 +27,7 @@
         android:shadowRadius="2"
         android:text=""
         android:textColor="#ffffff"
-        android:textSize="35dp"
+        android:textSize="36dp"
         android:maxLines="6" />
 
     <RelativeLayout
