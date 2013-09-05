@@ -71,12 +71,8 @@ public class JoyplusMediaPlayerVideoView implements JoyplusMediaPlayerInterface{
 		// TODO Auto-generated method stub
 		switch(msg.what){
 		case JoyplusMediaPlayerActivity.MSG_MEDIAINFO:
-			//Log.d("Jas","PreMediaInfo = "+PreMediaInfo.toString());
-			//Log.d("Jas","CurrentMediaInfo = "+CurrentMediaInfo.toString());
 			PreMediaInfo     = new MediaInfo(CurrentMediaInfo);
 			CurrentMediaInfo = ((MediaInfo) msg.obj).CreateMediaInfo();
-			//Log.d("Jas","+++PreMediaInfo = "+PreMediaInfo.toString());
-			//Log.d("Jas","+++CurrentMediaInfo = "+CurrentMediaInfo.toString());
 			return CheckMediaInfo(); 
 		}
 		return false;

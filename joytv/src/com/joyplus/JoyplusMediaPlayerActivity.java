@@ -86,7 +86,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 	public JoyplusMediaPlayerVideoView     mVideoView;
 	/*middle control layout msg 200-299  level 2*/
 	public JoyplusMediaPlayerMiddleControl mMiddleControl;
-	/*Top and bottom layout msg 300-399  level 1*/
+	/*Top and bottom layout msg 300-399  level 1*/   
 	public JoyplusMediaPlayerBar           mTopBottomController;
 	//private Handler mHandler = new Handler(){};
 	public JoyplusMediaPlayerScreenManager mScreenManager;

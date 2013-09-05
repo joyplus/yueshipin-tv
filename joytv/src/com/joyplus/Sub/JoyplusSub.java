@@ -3,28 +3,24 @@ package com.joyplus.Sub;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.blaznyoght.subtitles.model.Collection;
-import org.blaznyoght.subtitles.model.Element;
-
-import android.net.Uri;
-
-public abstract class JoyplusSub {
+public abstract class JoyplusSub implements JoyplusSubInterface{
     
-	protected String   mTag;
-	protected String   mContentType;
+	protected String           mTag;
+	protected SubContentType   mContentType;
 	
-	private Uri        mUri;
-	public Uri getUri(){
+	private String     mUri;
+	public  String     getUri(){
 		return mUri;
 	}
-	private List<Element> elements = new ArrayList<Element>();
+	protected List<Element> elements = new ArrayList<Element>();
 
 	public List<Element> getElements() {
 		return elements;
 	}
 	
-	public JoyplusSub(Uri uri){
+	public JoyplusSub(String uri){
 		mUri = uri;
+		mContentType = SubContentType.SUB_UNKNOW;
 	}
 	
 }

@@ -34,14 +34,9 @@ public class JoyplusMediaPlayerPreference extends AlertDialog{
 	public JoyplusMediaPlayerPreference(Context context) {
 		super(context);
 		// TODO Auto-generated constructor stub
-		//View view = LayoutInflater.from(context).inflate(R.layout.video_choose_defination, null);
 		mContext = context;
 		
-//		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-		//this.setContentView(view);
-//		this.setContentView(R.layout.video_choose_defination);
-	}
-	
+	}	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -121,7 +116,6 @@ public class JoyplusMediaPlayerPreference extends AlertDialog{
 			if(list == null)return;
 			StringResource.clear();
 			StringResource = list;
-//			this.notify();
 		}
 		@Override
 		public int getCount() {
