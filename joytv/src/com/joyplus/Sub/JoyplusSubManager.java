@@ -14,6 +14,8 @@ public class JoyplusSubManager {
 	   private Context mContext;
 	   
 	   
+	   
+	   
 	   private JoyplusSubServer mSubServer;
 	   
 	   public JoyplusSubManager(Context context){
@@ -21,20 +23,20 @@ public class JoyplusSubManager {
 		     mSubServer = new JoyplusSubServer(mContext);
 	   }
 	   
-	   public void setSubUri(String string){
+	   public void setSubUri(SubURI string){
 		   if(string == null || !mSubServer.CheckSubAviable())return;
-		   List<String> sub = new ArrayList<String>();
+		   List<SubURI> sub = new ArrayList<SubURI>();
 		   sub.add(string);
 		   setSubUri(sub);
 	   }
-	   public void setSubUri(List<String> subUri){
+	   public void setSubUri(List<SubURI> subUri){
 		   if(subUri==null || subUri.size()<=0 ||!mSubServer.CheckSubAviable())return;
 		   mSubServer.setSubUri(subUri);
 	   }
 	   public int getCurrentSubIndex(){
 		   return mSubServer.getCurrentSubIndex();
 	   }
-	   public List<String> getSubList(){
+	   public List<SubURI> getSubList(){
 		   return mSubServer.getSubList();
 	   }
 	   public void SwitchSub(int index){

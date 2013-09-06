@@ -7,7 +7,7 @@ import android.content.ContentResolver;
 
 public interface JoyplusSubContentRestriction {
      
-	void checkSubSize(int SubSize, int increaseSize, ContentResolver resolver) throws ContentRestrictionException;
+	void checkSubSize(int SubSize, int increaseSize) throws ContentRestrictionException;
 	
 	void checkUri(SubContentType type,String uri) throws ContentRestrictionException;
 	

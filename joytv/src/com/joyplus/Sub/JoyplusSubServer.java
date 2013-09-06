@@ -14,7 +14,7 @@ import com.joyplus.tv.Constant;
 
 public class JoyplusSubServer {
 
-	private List<String> SubUri = new ArrayList<String>();
+	private List<SubURI> SubUri = new ArrayList<SubURI>();
 	
 	private JoyplusSub mSub;
     private Context mContext;
@@ -22,12 +22,12 @@ public class JoyplusSubServer {
     public JoyplusSubServer(Context context){
     	mContext = context;
     }
-	public void setSubUri(List<String> subUri){
+	public void setSubUri(List<SubURI> subUri){
 		 if(subUri==null || subUri.size()<=0)return;
 		 SubUri = subUri;
 		 CheckSubUriList();
 	}
-	public List<String> getSubList(){
+	public List<SubURI> getSubList(){
 		return SubUri;
 	}
     public boolean CheckSubAviable(){
@@ -40,22 +40,22 @@ public class JoyplusSubServer {
     }
 	private void CheckSubUriList() {
 		// TODO Auto-generated method stub
-		for(String uri : SubUri){
+		for(SubURI uri : SubUri){
 			if(InstanceSub(uri))return;
 			SubUri.remove(uri);
 		}
-		SubUri = new ArrayList<String>();
+		SubUri = new ArrayList<SubURI>();
 		mSub   = null;
 	}
 	
-	private boolean InstanceSub(String uri){
+	private boolean InstanceSub(SubURI uri){
 		mSub = InstanceSRTSub(uri);
 		if(mSub != null)return true;
 		return false;
 	}
-	private JoyplusSub InstanceSRTSub(String uri){
+	private JoyplusSub InstanceSRTSub(SubURI uri){
 		try{
-			JoyplusSub sub = new SRTSub(uri);
+			JoyplusSub sub = new SRTSub(uri.Uri);
 			sub.parse(getSubByte(sub.getUri()));
 			if(sub.getElements().size()>2)return sub;
 		}catch(ContentRestrictionException e){

@@ -22,10 +22,13 @@ public class SRTSub extends JoyplusSub{
 		// TODO Auto-generated method stub
 		JoyplusSubContentRestrictionFactory.getContentRestriction().checkUri(SubContentType.SUB_SRT, this.getUri());
 	}
-
+    private void CheckSize(byte[] Sub){
+    	JoyplusSubContentRestrictionFactory.getContentRestriction().checkSubSize(0, Sub.length);
+    }
 	@Override
 	public void parse(byte[] Sub) {
 		// TODO Auto-generated method stub
+		CheckSize(Sub);
 		SRTParser parser = new SRTParser();		
 		String charsetName = UtilTools.getCharset(Sub, 512);		
 		if(charsetName.equals("")){			
