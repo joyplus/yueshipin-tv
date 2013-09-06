@@ -2991,13 +2991,16 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 		
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("app_key",Constant.APPKEY_TOP );
-		params.put("device_name",Build.MODEL );
 		
-//		Log.i(TAG, "Build.MODEL--->" + Build.MODEL);
+		params.put("device_name",UtilTools.getUmengChannel(this) );
+//		params.put("app_channel",UtilTools.getUmengChannel(this) );
+		Log.i(TAG, "getPostServiceData--->" + UtilTools.getUmengChannel(this));
 
 		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
+		Map<String,String> head = new HashMap<String, String>();
+		head.put("app_channel", UtilTools.getUmengChannel(this));
 //		cb.SetHeader(app.getHeaders());
-
+		cb.SetHeader(head);
 		cb.params(params).url(url).type(JSONObject.class)
 				.weakHandler(this, interfaceName);
 		aq.ajax(cb);
