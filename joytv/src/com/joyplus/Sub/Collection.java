@@ -27,18 +27,18 @@ public class Collection {
 		return builder.toString();
 	}
 
-	public void synchronize(final int startRank, final Time newStartTime,
-			final int endRank, final Time newEndTime) {
-		final Time oldStartTime = elements.get(startRank).getStartTime();
-		final Time oldEndTime = elements.get(endRank).getEndTime();
+	public void synchronize(final int startRank, final JoyplusSubTime newStartTime,
+			final int endRank, final JoyplusSubTime newEndTime) {
+		final JoyplusSubTime oldStartTime = elements.get(startRank).getStartTime();
+		final JoyplusSubTime oldEndTime = elements.get(endRank).getEndTime();
 		final long init = newStartTime.getTime() - oldStartTime.getTime();
 		final double coef = (newStartTime.getTime() - oldStartTime.getTime())
 				/ (newEndTime.getTime() - oldEndTime.getTime());
 		for (int i = startRank; i <= endRank; ++i) {
 			final Element e = elements.get(i);
-			e.setStartTime(new Time(
+			e.setStartTime(new JoyplusSubTime(
 					(long) (e.getStartTime().getTime() * coef + init)));
-			e.setEndTime(new Time(
+			e.setEndTime(new JoyplusSubTime(
 					(long) (e.getEndTime().getTime() * coef + init)));
 		}
 	}

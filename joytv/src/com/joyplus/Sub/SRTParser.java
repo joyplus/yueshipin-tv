@@ -121,14 +121,14 @@ public class SRTParser {
 			final long m = Long.parseLong(matcher.group(3));
 			final long s = Long.parseLong(matcher.group(4));
 			final long ms = Long.parseLong(matcher.group(5));
-			e.setStartTime(new Time(h, m, s, ms));
+			e.setStartTime(new JoyplusSubTime(h, m, s, ms));
 		}
 		{
 			final long h = Long.parseLong(matcher.group(6));
 			final long m = Long.parseLong(matcher.group(7));
 			final long s = Long.parseLong(matcher.group(8));
 			final long ms = Long.parseLong(matcher.group(9));
-			e.setEndTime(new Time(h, m, s, ms));
+			e.setEndTime(new JoyplusSubTime(h, m, s, ms));
 		}
 		e.setText(matcher.group(10).replaceAll("<.*>", "").trim().replaceAll("\\\\N", "\n"));
 		return e;

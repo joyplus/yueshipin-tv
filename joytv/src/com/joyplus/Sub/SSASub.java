@@ -1,51 +1,32 @@
 package com.joyplus.Sub;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.InputStream;
 import java.util.Iterator;
-import android.util.Log;
 
+import com.joyplus.Sub.JoyplusSubInterface.SubContentType;
 import com.joyplus.Sub.SubURI.SUBTYPE;
-import com.joyplus.tv.utils.UtilTools;
 
+public class SSASub extends JoyplusSub{
 
-public class SRTSub extends JoyplusSub{
-  
-	
-	public SRTSub(SubURI uri) {
+	public SSASub(SubURI uri) {
 		super(uri);
 		// TODO Auto-generated constructor stub
-		this.mContentType = SubContentType.SUB_SRT;
+		this.mContentType = SubContentType.SUB_SSA;
 		CheckUri();
 	}
-
 	private void CheckUri() {
 		// TODO Auto-generated method stub
-		JoyplusSubContentRestrictionFactory.getContentRestriction().checkUri(SubContentType.SUB_SRT, this.getUri().Uri);
+		JoyplusSubContentRestrictionFactory.getContentRestriction().checkUri(SubContentType.SUB_SSA, this.getUri().Uri);
 	}
-    private void CheckSize(byte[] Sub){
+	private void CheckSize(byte[] Sub){
     	JoyplusSubContentRestrictionFactory.getContentRestriction().checkSubSize(0, Sub.length);
     }
 	@Override
-	public void parse(byte[] Sub) {
+	public void parse(byte[] sub) {
 		// TODO Auto-generated method stub
 		if(this.getUri().SubType != SUBTYPE.NETWORK)return;
-		CheckSize(Sub);
-		SRTParser parser = new SRTParser();		
-		String charsetName = UtilTools.getCharset(Sub, 512);		
-		if(charsetName.equals("")){			
-			boolean isUtf8 = UtilTools.isUTF_8(Sub);					
-			if(!isUtf8){
-				parser.setCharset("GBK");
-			} else {
-				parser.setCharset("UTF-8");
-			}
-		}else {
-			parser.setCharset(charsetName);
-		}
-		parser.parse(new ByteArrayInputStream(Sub));
-		SRTSub.this.elements = parser.getCollection().getElements();
+		CheckSize(sub);
+		//don't support it now
 	}
 
 	@Override
@@ -63,11 +44,8 @@ public class SRTSub extends JoyplusSub{
 				 mElement.setRank(++index);
 				 mElement.setStartTime(new JoyplusSubTime(mCaption.start.mseconds));
 				 mElement.setEndTime(new JoyplusSubTime(mCaption.end.mseconds));
-				 mElement.setText(mCaption.content.replaceAll("<br />", ""));
 				 this.elements.add(mElement);
 			} 
 		}
 	}
-    
-	
 }
