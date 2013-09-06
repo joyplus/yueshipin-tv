@@ -2535,9 +2535,9 @@ public class VideoPlayerJPActivity extends Activity implements
 		reInitDefinationPartAndSubTitle();
 		
 		Log.d(TAG, "playUrls size ------->" + playUrls.size() + " maxQuality--->" + maxQuality);
-		if(Constant.TestEnv){
+//		if(Constant.TestEnv){
 			UtilTools.setP2PMD5(getApplicationContext(), "");
-		}
+//		}
 		if("".equals(UtilTools.getP2PMD5(getApplicationContext()))){
 			
 			String md5 = null;

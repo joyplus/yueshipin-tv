@@ -370,7 +370,7 @@ public class VideoView extends SurfaceView implements MediaPlayerControl {
         public boolean onError(MediaPlayer mp, int framework_err, int impl_err) {
             Log.d(TAG, "Error: " + framework_err + "," + impl_err);
             mCurrentState = STATE_ERROR;
-            mTargetState = STATE_ERROR;
+            mTargetState = STATE_ERROR; 
             if (mMediaController != null) {
                 mMediaController.hide();
             }
