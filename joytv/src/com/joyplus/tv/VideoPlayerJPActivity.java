@@ -637,15 +637,24 @@ public class VideoPlayerJPActivity extends Activity implements
 						if(element_show.getStartTime().getTime() < currentPositionShow + SEEKBAR_REFRESH_TIME/2
 								&& element_show.getStartTime().getTime() > currentPositionShow - SEEKBAR_REFRESH_TIME/2){
 							mSubTitleTv.setText(element_show.getText());
+							mSubTitleTv.setTag(element_show.getEndTime().getTime());
 						}
 					}
 					if(element_show.getEndTime().getTime() < currentPositionShow){
 						mSubTitleTv.setText("");
+						mSubTitleTv.setTag(-1L);
 						mHandler.removeMessages(MESSAGE_SUBTITLE_END_HIDEN);
 						if(preElement_show != null){
 							Message messageHiden = mHandler.obtainMessage(MESSAGE_SUBTITLE_END_HIDEN, preElement_show);
 							mHandler.sendMessageDelayed(messageHiden, preElement_show.getEndTime().getTime() - currentPositionShow);
 						}
+					}
+					
+					long tagEndTime = (Long) mSubTitleTv.getTag();
+					if(!element_show.getText().equals(mSubTitleTv.getText()) && tagEndTime != -1
+							&& tagEndTime < currentPositionShow){
+						mSubTitleTv.setText("");
+						mSubTitleTv.setTag(-1L);
 					}
 					if(preElement_show != null){
 						Message messageShow = mHandler.obtainMessage(MESSAGE_SUBTITLE_BEGAIN_SHOW, preElement_show);
@@ -665,6 +674,7 @@ public class VideoPlayerJPActivity extends Activity implements
 					org.blaznyoght.subtitles.model.Element preElement_show = getPreElement(currentPositionShow);
 					if(element_end.getEndTime().getTime() > currentPositionShow - SEEKBAR_REFRESH_TIME/2){
 						mSubTitleTv.setText("");
+						mSubTitleTv.setTag(-1L);
 					}
 					if(preElement_show != null){
 						Message messageHiden = mHandler.obtainMessage(MESSAGE_SUBTITLE_END_HIDEN, preElement_show);
