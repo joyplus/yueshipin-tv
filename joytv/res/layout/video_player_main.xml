@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:background="@color/black" >
 
-    <VideoView
+    <com.joyplus.tv.ui.VideoView
         android:id="@+id/surface_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -27,7 +27,7 @@
         android:shadowRadius="2"
         android:text=""
         android:textColor="#ffffff"
-        android:textSize="35dp"
+        android:textSize="36dp"
         android:maxLines="6" />
 
     <RelativeLayout
@@ -340,24 +340,6 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/ll_volume"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#00000000"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:padding="0dip"
-        android:visibility="gone" >
-
-        <com.joyplus.tv.ui.ArcView
-            android:id="@+id/av_volume"
-            android:layout_width="133dp"
-            android:layout_height="133dp"
-            android:layout_gravity="center"
-            android:background="@drawable/player_volume" />
-    </LinearLayout>
-
-    <LinearLayout
         android:id="@+id/ll_continue"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -377,5 +359,99 @@
             android:nextFocusRight="@id/btn_continue"
             android:nextFocusUp="@id/btn_continue" />
     </LinearLayout>
+    <LinearLayout
+        android:id="@+id/ll_data_loading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="200dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone" >
 
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
+                android:layout_marginTop="50dp"
+                android:gravity="center"
+                android:orientation="horizontal" >
+
+                <ProgressBar
+                    android:id="@+id/pb_preload_network_pb"
+                    style="?android:attr/progressBarStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:shadowColor="#000000"
+                    android:shadowDx="1"
+                    android:shadowDy="1"
+                    android:shadowRadius="2"
+                    android:text="缓冲中···"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textSize="30dp" />
+
+                <TextView
+                    android:id="@+id/tv_dataloading_network_kb"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+                    android:gravity="right"
+                    android:minEms="4"
+                    android:shadowColor="#000000"
+                    android:shadowDx="1"
+                    android:shadowDy="1"
+                    android:shadowRadius="2"
+                    android:text="(0 Kb/s)"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textSize="30dp" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:gravity="center_horizontal"
+                android:shadowColor="#000000"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowRadius="2"
+                android:text="网速不给力，可按 菜单 键切换清晰度"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textSize="30dp" />
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text=""
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textSize="30dp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_volume"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#00000000"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="0dip"
+        android:visibility="gone" >
+
+        <com.joyplus.tv.ui.ArcView
+            android:id="@+id/av_volume"
+            android:layout_width="133dp"
+            android:layout_height="133dp"
+            android:layout_gravity="center"
+            android:background="@drawable/player_volume" />
+    </LinearLayout>
 </RelativeLayout>
