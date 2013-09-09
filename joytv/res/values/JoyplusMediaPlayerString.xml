@@ -29,4 +29,9 @@
     <string name="meidaplayer_loading_string_buffer">缓冲中...( <xliff:g id="speed">%s</xliff:g> KB/S )</string>
     <string name="meidaplayer_loading_string_buffer_loading">缓冲中...</string>
     <string name="meidaplayer_loading_string_buffer_notify">网速不给力，可按 菜单 键切换清晰度</string>
+    
+    <string name="meidaplayer_sub_string_nosub">暂无字幕</string>
+    <string name="meidaplayer_sub_string_sub"> 字幕  <xliff:g id="speed">%s</xliff:g> </string>
+    <string name="meidaplayer_sub_string_closesub">字幕关</string>
+    
 </resources>

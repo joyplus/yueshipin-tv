@@ -30,16 +30,10 @@ public class URLManager {
 	
 	private URLManagerServer mServer;
 	
-	private final static Quality DefaultQuality  = Quality.HD2;
+	private final static Quality DEFAULTQUALITY  = Quality.HD2;
     
 	public URLManager(){
 		mServer = new URLManagerServer();
-	}
-	public URLManager(List<URLS_INDEX> list){
-		mServer = new URLManagerServer(list);
-	}
-	public URLManager(List<URLS_INDEX> list,int defaultQuality){
-		mServer = new URLManagerServer(list,defaultQuality);
 	}
 	
 	public  URLS_INDEX getCurURLS_INDEX(){
@@ -50,12 +44,24 @@ public class URLManager {
 	}
 	
 	/*Interface of server*/
-	public void setDefaultQuality(List<URLS_INDEX> list ,int defaultQuality){
-		setDefaultQuality(list,getQuality(defaultQuality));
+	public void setDefaultQuality(int defaultQuality){
+		setDefaultQuality(getQuality(defaultQuality));
 	}
-    public void setDefaultQuality(List<URLS_INDEX> list ,Quality qua){
-    	mServer.setDefaultQuality(list,qua);
-	} 
+    public void setDefaultQuality(Quality qua){
+    	mServer.setDefaultQuality(qua);
+	}
+    
+    public void setURLS(URLS_INDEX list){
+    	if(list == null)return;
+    	List<URLS_INDEX> lists = new ArrayList<URLS_INDEX>();
+    	lists.add(list);
+    	setURLS(lists);
+    }
+    public void setURLS(List<URLS_INDEX> list){
+    	if(list == null)return;
+    	mServer.setURLs(list);
+    }
+ 
     public void resetCurURLS_INDEX(){
     	mServer.resetCurURLS_INDEX();
     }
@@ -64,7 +70,7 @@ public class URLManager {
     }
 	/*Interface */
 	public Quality getCurrentQuality(){
-		if(mServer.mURUrls_INDEX == null)return DefaultQuality;
+		if(mServer.mURUrls_INDEX == null)return DEFAULTQUALITY;
 		return getQuality(mServer.mURUrls_INDEX.defination_from_server.trim());
 	}
 	public boolean isHave_HD2(){
@@ -90,7 +96,13 @@ public class URLManager {
     	case 7:return "高    清";
     	case 6:return "标    清";
     	}
-		return getQualityString(DefaultQuality);
+		return getQualityString(DEFAULTQUALITY);
+    }
+    public static Quality getQualityFromString(String quality){    	
+    	if(quality.equals("超    清"))return Quality.HD2;
+    	else if(quality.equals("高    清"))return Quality.MP4;
+    	else if(quality.equals("标    清"))return Quality.FLV;
+		return getQualityFromString(getQualityString(DEFAULTQUALITY));
     }
     /*Interface of quality tranface*/
    public static Quality getQuality(String string){    	
@@ -103,7 +115,7 @@ public class URLManager {
 		}else if (string.trim().equalsIgnoreCase("3gp")) {
 			return Quality.FLV;
 		}    	
-    	return DefaultQuality;
+    	return DEFAULTQUALITY;
     }
     public static String getQuality(Quality qua){
     	switch(qua.toInt()){
@@ -111,7 +123,7 @@ public class URLManager {
     	case 7:return "mp4";
     	case 8:return "hd2";
     	}
-		return getQuality(DefaultQuality);
+		return getQuality(DEFAULTQUALITY);
     }
     public static Quality getQuality(int type){    	
     	switch(type){
@@ -119,7 +131,7 @@ public class URLManager {
     	case 7:return Quality.MP4;
     	case 8:return Quality.HD2;
     	} 	
-    	return DefaultQuality;
+    	return DEFAULTQUALITY;
     }
 	private class URLManagerServer{
 		
@@ -130,7 +142,7 @@ public class URLManager {
 		private List<URLS_INDEX> mList_FLV = new ArrayList<URLS_INDEX>();
 		
 		private URLS_INDEX mURUrls_INDEX;
-		private Quality mDefaultQuality;
+		private Quality mDefaultQuality = null;
 		
 		public URLS_INDEX getNextURLS() {
 			// TODO Auto-generated method stub	
@@ -158,26 +170,24 @@ public class URLManager {
 			}
 			mURUrls_INDEX = mList.get(0);	
 		}
-
-		public void setDefaultQuality(List<URLS_INDEX> list ,Quality qua){
-			mList = list;
+		public void setDefaultQuality(Quality qua){
 			mDefaultQuality = qua;
-			InitResource();
+			ListURLS_INDEX();
 		}
 		public Quality getDefaultQuality(){
 			return mDefaultQuality;
 		}
+
+		public void setURLs(List<URLS_INDEX> list){
+			mList = list;
+			if(mDefaultQuality == null) mDefaultQuality = DEFAULTQUALITY;
+			InitResource();
+		}
+		
 		public URLManagerServer(){
 			
 		}
-		public URLManagerServer(List<URLS_INDEX> list ){
-			this(list,DefaultQuality.toInt());
-		}
-        public URLManagerServer(List<URLS_INDEX> list,int defaultQuality){
-			mList = list;
-			mDefaultQuality = getQuality(defaultQuality);
-			InitResource();
-		}
+
 		private void InitResource(){
 			mList_HD2 = new ArrayList<URLS_INDEX>();
 			mList_MP4 = new ArrayList<URLS_INDEX>();

@@ -8,6 +8,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +19,11 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.Gallery;
 import android.widget.TextView;
+
+import com.joyplus.Sub.JoyplusSubManager;
 import com.joyplus.manager.URLManager;
+import com.joyplus.manager.URLManager.Quality;
+import com.joyplus.mediaplayer.JoyplusMediaPlayerManager;
 import com.joyplus.tv.R;
 import com.joyplus.tv.utils.Log;
 import com.joyplus.tv.utils.UtilTools;
@@ -28,15 +34,32 @@ public class JoyplusMediaPlayerPreference extends AlertDialog{
 	private boolean Debug = true;
 	private String  TAG   = "JoyplusMediaPlayerPreference";
 	
+	private final static int MSG_BASE = 400;
+	public  final static int MSG_QUALITY_CHANGE = MSG_BASE+1;
+	public  final static int MSG_SUB_CHANGE     = MSG_BASE+2;
+	
 	private Context    mContext;
 	private QUALITY    mQuality;
+	private SUB        mSub;
+	private Handler mHandler;
+	public void setHandler(Handler handler){
+		mHandler = handler;
+	}
+	public void setVisible(boolean visible){
+		if(visible){
+			if(mQuality != null)mQuality.setURLManager(JoyplusMediaPlayerManager.getInstance().getURLManager());
+			if(mSub != null)    mSub.setSubManager(JoyplusMediaPlayerManager.getInstance().getSubManager());
+			show();
+		}
+		else Dismiss();
+	}
 	
 	public JoyplusMediaPlayerPreference(Context context) {
 		super(context);
 		// TODO Auto-generated constructor stub
-		mContext = context;
-		
+		mContext = context;		
 	}	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -45,7 +68,6 @@ public class JoyplusMediaPlayerPreference extends AlertDialog{
 		initView();
 	}
     public void setURLManager(URLManager urlManager){
-    	Log.d(TAG, "mQuality="+(mQuality==null)+"setURLManager--->"+(urlManager==null));
     	if(mQuality == null) return;
     	mQuality.setURLManager(urlManager);
     }
@@ -69,7 +91,18 @@ public class JoyplusMediaPlayerPreference extends AlertDialog{
 		@Override
 		public void onClick(View v) {
 			// TODO Auto-generated method stub
-			
+			if(mHandler==null) return;
+			if(mQuality != null && mQuality.isChange()){
+				 Message m = new Message();
+				 m.what    = MSG_QUALITY_CHANGE;
+				 m.obj     = mQuality.getCurrentQuality();
+				 mHandler.sendMessage(m);		
+			}else if(mSub != null && mSub.isChange()){
+				 Message m = new Message();
+				 m.what    = MSG_SUB_CHANGE;
+				 m.obj     = mQuality.getCurrentQuality();
+				 mHandler.sendMessage(m);
+			}
 			Dismiss();
 		}		
 	}
@@ -82,18 +115,19 @@ public class JoyplusMediaPlayerPreference extends AlertDialog{
 			gallery.requestFocus();
 		};
         public void setURLManager(URLManager urlManager){
-        	Log.d(TAG, "setURLManager--->");
         	if(urlManager == null)return;
         	definationStrings = urlManager.getExitQualityList();
         	mCurrentQuality   = urlManager.getCurrentQuality();
-        	Log.d(TAG, "definationStrings size:" + definationStrings.size() + 
-        			" definationStrings-->" + definationStrings.toString());
         	gallery.setAdapter(new QuaSubAdapter(definationStrings));
         	gallery.setSelection(definationStrings.indexOf(URLManager.getQualityString(mCurrentQuality)));
         	gallery.requestFocus();
         }
         public boolean isChange(){
         	return gallery.getSelectedItemPosition() == (definationStrings.indexOf(URLManager.getQualityString(mCurrentQuality)));
+        }
+        public Quality getCurrentQuality(){
+        	return JoyplusMediaPlayerManager.getInstance().getURLManager().getQualityFromString(
+        			     definationStrings.get(gallery.getSelectedItemPosition()));
         }
 	}
 	private class SUB {		
@@ -102,12 +136,27 @@ public class JoyplusMediaPlayerPreference extends AlertDialog{
 		public SUB(){
 			gallery = (Gallery) findViewById(R.id.gallery_zimu);
 		};
-        public void setURLManager(URLManager urlManager){
-        	if(urlManager == null)return;
-        	definationStrings = urlManager.getExitQualityList();
-        	gallery.setAdapter(new QuaSubAdapter(definationStrings));
-        	gallery.setSelection(definationStrings.indexOf(URLManager.getQualityString(urlManager.getCurrentQuality())));
-        }		
+        public void setSubManager(JoyplusSubManager subManager){
+        	if(subManager == null)return;
+        	definationStrings.clear();
+            if(subManager.CheckSubAviable()){
+            	definationStrings.add(mContext.getResources().getString(R.string.meidaplayer_sub_string_closesub));
+            	for(int i = 0;i<subManager.getSubList().size();i++){
+            		definationStrings.add(mContext.getResources().getString(R.string.meidaplayer_sub_string_sub,(i+1)));
+            	}
+            	gallery.setAdapter(new QuaSubAdapter(definationStrings));
+            	gallery.setSelection(definationStrings.indexOf(subManager.getCurrentSubIndex()+1));//for have add "sub close"
+            }else{
+            	definationStrings.add(mContext.getResources().getString(R.string.meidaplayer_sub_string_nosub));
+            	gallery.setAdapter(new QuaSubAdapter(definationStrings));
+            }
+        }	
+        public boolean isChange(){
+        	return gallery.getSelectedItemPosition() == (definationStrings.indexOf(JoyplusMediaPlayerManager.getInstance().getSubManager().getCurrentSubIndex()+1));
+        }
+        public int getCurrentIndex(){
+        	return gallery.getSelectedItemPosition();
+        }
 	}
 	
 	class QuaSubAdapter extends BaseAdapter{

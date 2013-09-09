@@ -141,16 +141,14 @@ public class SubTitleView extends TextView {
 			Message messageHiden = mHandler.obtainMessage(MESSAGE_SUBTITLE_END_HIDEN, preElement);
 			if(preElement.getStartTime().getTime() - currentPosition > SUBTITLE_DELAY_TIME_MAX){
 				mHandler.sendMessageDelayed(messageShow, SUBTITLE_DELAY_TIME_MAX);
-			}else {
-				
+			}else {				
 				mHandler.sendMessageDelayed(messageShow, preElement.getStartTime().getTime() - currentPosition);
 			}
 			mHandler.sendMessageDelayed(messageHiden, preElement.getEndTime().getTime() - currentPosition);
 		}
 	}
 	
-	public void hiddenSubtitle(){
-		
+	public void hiddenSubtitle(){		
 		mHandler.removeCallbacksAndMessages(null);
 		setVisibility(INVISIBLE);
 	}

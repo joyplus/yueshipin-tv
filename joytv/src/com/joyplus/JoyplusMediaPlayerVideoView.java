@@ -1,5 +1,8 @@
 package com.joyplus;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -46,6 +49,7 @@ public class JoyplusMediaPlayerVideoView implements JoyplusMediaPlayerInterface{
 		update();
 		CurrentMediaInfo = new MediaInfo();
 		PreMediaInfo     = new MediaInfo();
+		mWaitingWindows.Init();
 	}
     public JoyplusMediaPlayerVideoView(JoyplusMediaPlayerActivity activity){
     	mActivity = activity;
@@ -125,16 +129,30 @@ public class JoyplusMediaPlayerVideoView implements JoyplusMediaPlayerInterface{
 	private class LoadingWindows {
 		private final static int MSG_SHOW = 1;
 		private final static int MSG_HIDE = 2;
-		private final static int MSG_UPDATEUI = 3;
+		private final static int DELAYTIME  = 10*60*1000; //10 min
+		
+		private class WindowsInfo{
+			public long ShowTime;
+		}
+		private List<WindowsInfo> mWindowsInfo = new ArrayList<WindowsInfo>();
 		
 	    private TextView       mInfo;
-		private LinearLayout mLayout;
+		private LinearLayout   mLayout;
+		private TextView       mNotify;
 		
-		private long mStartRX = 0;
+		private long mStartRX    = 0;
 		private long rxByteslast = 0;
+		public void Init(){
+			mHandler.removeCallbacksAndMessages(null);
+			mWindowsInfo = new ArrayList<WindowsInfo>();
+			mStartRX    = 0;
+			rxByteslast = 0;
+			if((mLayout.getVisibility()==View.VISIBLE))mLayout.setVisibility(View.GONE);
+		}
 		public LoadingWindows(){
 			mInfo   = (TextView)       mActivity.findViewById(R.id.joyplus_videoview_buffer_info);
 			mLayout = (LinearLayout)   mActivity.findViewById(R.id.joyplus_videoview_buffer);
+			mNotify = (TextView)       mActivity.findViewById(R.id.joyplus_videoview_buffer_notify);
 		}
 		public void setVisible(boolean Visible){
 			if(Visible)mHandler.removeCallbacksAndMessages(null);
@@ -157,11 +175,6 @@ public class JoyplusMediaPlayerVideoView implements JoyplusMediaPlayerInterface{
 					if(!(mLayout.getVisibility()==View.VISIBLE))return;
 					mLayout.setVisibility(View.GONE);
 					mHandler.removeCallbacksAndMessages(null);
-					break;
-				case MSG_UPDATEUI:
-					if(!(mLayout.getVisibility()==View.VISIBLE))return;
-					long speed = (Long) msg.obj;
-					
 					break;
 				}
 			}
@@ -203,6 +216,14 @@ public class JoyplusMediaPlayerVideoView implements JoyplusMediaPlayerInterface{
 				mInfo.setText(mActivity.getApplicationContext().getString(R.string.meidaplayer_loading_string_buffer,speed));
 			else
 				mInfo.setText(mActivity.getApplicationContext().getString(R.string.meidaplayer_loading_string_buffer_loading));
+			UpdateNotify();
+		}
+		private void UpdateNotify(){
+			if(!(mLayout.getVisibility()==View.VISIBLE))return;
+			
+		}
+		private void UpdateWindowsInfo(){
+			
 		}
 	}
 	

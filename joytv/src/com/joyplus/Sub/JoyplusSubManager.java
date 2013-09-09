@@ -20,6 +20,7 @@ public class JoyplusSubManager {
 		     mSubServer = new JoyplusSubServer(mContext);
 	   }
 	   
+	   /*Interface of init sub uri*/
 	   public void setSubUri(SubURI string){
 		   if(string == null || !mSubServer.CheckSubAviable())return;
 		   List<SubURI> sub = new ArrayList<SubURI>();
@@ -36,11 +37,19 @@ public class JoyplusSubManager {
 	   public List<SubURI> getSubList(){
 		   return mSubServer.getSubList();
 	   }
+	   public boolean CheckSubAviable(){
+		   return mSubServer.CheckSubAviable();
+	   }
 	   public void SwitchSub(int index){
 		   if(getSubList().size()<0 || index<0 || index>getSubList().size())return;
 		   mSubServer.SwitchSub(index);
 	   }
 	   public Element getElement(long time){
 		   return mSubServer.getElement(time);
+	   }
+	   
+	   /*Interface of parser uri to get download sub uri*/
+	   public static List<SubURI> getNetworkSubURI(String url , String MD5){
+		   return null;
 	   }
 }

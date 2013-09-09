@@ -90,9 +90,9 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 	public JoyplusMediaPlayerBar           mTopBottomController;
 	//private Handler mHandler = new Handler(){};
 	public JoyplusMediaPlayerScreenManager mScreenManager;
-	//Setting
+	//Setting msg 400-450  
 	public JoyplusMediaPlayerPreference    mPreference;
-	/*SubTitle TextView Control */
+	/*SubTitle TextView Control   level 4*/
 	private SubTitleView                   mSubTitleView;
 	
 	public static final int   DELAY_SHOWVIEW        = 10*1000; //10s
@@ -199,6 +199,19 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 			}			
 		}
 	};
+	private Handler PreferenceHandler = new Handler(){
+		@Override
+		public void handleMessage(Message msg) {
+			switch(msg.what){
+			case JoyplusMediaPlayerPreference.MSG_QUALITY_CHANGE:
+				
+				break;
+			case JoyplusMediaPlayerPreference.MSG_SUB_CHANGE:
+				
+				break;
+			}
+		}
+	};
     @Override
 	protected void onNewIntent(Intent intent) {
 		// TODO Auto-generated method stub
@@ -227,9 +240,9 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
     	registerReceiver(mReceiver, new IntentFilter(Constant.VIDEOPLAYERCMD));
     	mAlphaDispear        = AnimationUtils.loadAnimation(this, R.anim.alpha_disappear);
     	mPreference          = new JoyplusMediaPlayerPreference(this);
+    	mPreference.setHandler(PreferenceHandler);
     	mSubTitleView        = (SubTitleView) findViewById(R.id.tv_subtitle);
     	mSubTitleView.Init(this);
-    	
 	}
 	private void InitUI(){
 		StateOk = false;
@@ -245,13 +258,13 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
     		finishActivity();
     		return;
     	}
-    	InitSubAndURL();
+//    	InitSubAndURL();
 	}
-	private void InitSubAndURL(){
-		JoyplusMediaPlayerManager.getInstance().ResetURLAndSub();
-    	urlManager = JoyplusMediaPlayerManager.getInstance().getURLManager();
-    	subManager = JoyplusMediaPlayerManager.getInstance().getSubManager();
-	}
+//	private void InitSubAndURL(){
+//		JoyplusMediaPlayerManager.getInstance().ResetURLAndSub();
+//    	urlManager = JoyplusMediaPlayerManager.getInstance().getURLManager();
+//    	subManager = JoyplusMediaPlayerManager.getInstance().getSubManager();
+//	}
     private void initFromIntent(Intent intent){
     	InitUI();
     	if(intent != null && intent.getData() != null){
@@ -355,11 +368,10 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 			break;
 		case KeyEvent.KEYCODE_MENU:
 			if(mPreference.isShowing()){
-				mPreference.dismiss();
+				mPreference.setVisible(false);
 				return true;
 			}
-			mPreference.show();
-			mPreference.setURLManager(urlManager);
+			mPreference.setVisible(true);
 			break;
 		}
 		return super.onKeyUp(keyCode, event);
@@ -1518,9 +1530,10 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 							}
 						}
 						//获取字幕
-//						if(mSubTitleCollection == null){
-//							initSubTitleCollection(getSubTitleBytes(p2pUrl, UtilTools.getP2PMD5(getApplicationContext())));
-//						}
+						if(!subManager.CheckSubAviable()){
+							subManager.setSubUri(JoyplusSubManager.
+									getNetworkSubURI(p2pUrl, UtilTools.getP2PMD5(getApplicationContext())));
+						}
 					}
 				}
 			}
