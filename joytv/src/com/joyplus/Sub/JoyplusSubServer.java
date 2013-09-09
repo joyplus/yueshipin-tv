@@ -115,6 +115,7 @@ public class JoyplusSubServer {
     }
 	public Element getElement(long time) {
 		// TODO Auto-generated method stub
+		if(mSub == null) return null;
 		int start = 0;
 		int end   = mSub.elements.size();
 		if(end<start || end==0)return null;

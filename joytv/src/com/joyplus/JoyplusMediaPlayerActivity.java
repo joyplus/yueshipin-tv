@@ -36,6 +36,7 @@ import android.provider.MediaStore.Video;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.webkit.MimeTypeMap;
@@ -49,6 +50,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joyplus.Sub.JoyplusSubManager;
 import com.joyplus.manager.URLManager;
+import com.joyplus.manager.URLManager.Quality;
 import com.joyplus.mediaplayer.JoyplusMediaPlayerListener;
 import com.joyplus.mediaplayer.JoyplusMediaPlayerManager;
 import com.joyplus.mediaplayer.JoyplusMediaPlayerScreenManager;
@@ -202,11 +204,26 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 	private Handler PreferenceHandler = new Handler(){
 		@Override
 		public void handleMessage(Message msg) {
+			
 			switch(msg.what){
 			case JoyplusMediaPlayerPreference.MSG_QUALITY_CHANGE:
-				
+				if(msg.obj == null) return;
+				Quality currQuality= (Quality) msg.obj;
+				if(currQuality != null){
+					urlManager.setDefaultQuality(currQuality);
+					mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
+				}
 				break;
 			case JoyplusMediaPlayerPreference.MSG_SUB_CHANGE:
+				int currIndex = msg.arg1;
+				if(currIndex == 0) {
+					mSubTitleView.hiddenSubtitle();
+					return;
+				}
+				subManager.SwitchSub(currIndex);
+				if(mSubTitleView.getVisibility() != View.VISIBLE){
+					mSubTitleView.displaySubtitle();
+				}
 				
 				break;
 			}
@@ -241,6 +258,9 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
     	mAlphaDispear        = AnimationUtils.loadAnimation(this, R.anim.alpha_disappear);
     	mPreference          = new JoyplusMediaPlayerPreference(this);
     	mPreference.setHandler(PreferenceHandler);
+    	JoyplusMediaPlayerManager.getInstance().ResetURLAndSub();
+    	urlManager = JoyplusMediaPlayerManager.getInstance().getURLManager();
+    	subManager = JoyplusMediaPlayerManager.getInstance().getSubManager();
     	mSubTitleView        = (SubTitleView) findViewById(R.id.tv_subtitle);
     	mSubTitleView.Init(this);
 	}
@@ -763,8 +783,12 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 			}
 		}
 		
-		//urlManager = new URLManager(playUrls, mDefination);
-		urlManager.setDefaultQuality(playUrls, mDefination);
+//		URLS_INDEX urlsIndex = new URLS_INDEX();
+//		urlsIndex.source_from = mProd_src;
+//		urlsIndex.defination = mDefination;
+//		urlsIndex.defination_from_server = defintionToType(mDefination);
+//		urlManager.setDefaultQuality(mDefination);
+//		urlManager.setURLS(urlsIndex);
 		// 更新播放来源和上次播放时间
 		updateSourceAndTime();
 		updateName();
@@ -1532,7 +1556,15 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 						//获取字幕
 						if(!subManager.CheckSubAviable()){
 							subManager.setSubUri(JoyplusSubManager.
-									getNetworkSubURI(p2pUrl, UtilTools.getP2PMD5(getApplicationContext())));
+									getNetworkSubURI(p2pUrl, UtilTools.getP2PMD5(getApplicationContext()),getApplicationContext()));
+							mHandler.post(new Runnable() {
+								
+								@Override
+								public void run() {
+									// TODO Auto-generated method stub
+									mSubTitleView.displaySubtitle();
+								}
+							});
 						}
 					}
 				}
@@ -1585,7 +1617,8 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 		/**获取百度网盘的真正播放地址 **/
 		getDownloadUrl_BaiduWP();
 		
-		urlManager.setDefaultQuality(playUrls, mDefination);
+		urlManager.setDefaultQuality(mDefination);
+		urlManager.setURLS(playUrls);
 	}
 	
 	@Override

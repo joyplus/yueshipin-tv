@@ -91,7 +91,10 @@ public class JoyplusMediaPlayerPreference extends AlertDialog{
 		@Override
 		public void onClick(View v) {
 			// TODO Auto-generated method stub
-			if(mHandler==null) return;
+			if(mHandler==null) {
+				Dismiss();
+				return;
+			}
 			if(mQuality != null && mQuality.isChange()){
 				 Message m = new Message();
 				 m.what    = MSG_QUALITY_CHANGE;
@@ -100,7 +103,7 @@ public class JoyplusMediaPlayerPreference extends AlertDialog{
 			}else if(mSub != null && mSub.isChange()){
 				 Message m = new Message();
 				 m.what    = MSG_SUB_CHANGE;
-				 m.obj     = mQuality.getCurrentQuality();
+				 m.arg1     = mSub.getCurrentIndex();
 				 mHandler.sendMessage(m);
 			}
 			Dismiss();
