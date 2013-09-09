@@ -128,13 +128,13 @@ public class JoyplusMediaPlayerVideoView implements JoyplusMediaPlayerInterface{
 		private final static int MSG_UPDATEUI = 3;
 		
 	    private TextView       mInfo;
-		private RelativeLayout mLayout;
+		private LinearLayout mLayout;
 		
 		private long mStartRX = 0;
 		private long rxByteslast = 0;
 		public LoadingWindows(){
 			mInfo   = (TextView)       mActivity.findViewById(R.id.joyplus_videoview_buffer_info);
-			mLayout = (RelativeLayout) mActivity.findViewById(R.id.joyplus_videoview_buffer);
+			mLayout = (LinearLayout)   mActivity.findViewById(R.id.joyplus_videoview_buffer);
 		}
 		public void setVisible(boolean Visible){
 			if(Visible)mHandler.removeCallbacksAndMessages(null);

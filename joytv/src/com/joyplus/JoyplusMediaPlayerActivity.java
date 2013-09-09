@@ -223,8 +223,9 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
     	mMiddleControl       = (JoyplusMediaPlayerMiddleControl) this.findViewById(R.id.JoyplusMediaPlayerMiddleControl);
     	mTopBottomController = new JoyplusMediaPlayerBar(this);
     	registerReceiver(mReceiver, new IntentFilter(Constant.VIDEOPLAYERCMD));
-    	mAlphaDispear = AnimationUtils.loadAnimation(this, R.anim.alpha_disappear);
-    	mPreference   = new JoyplusMediaPlayerPreference(this);
+    	mAlphaDispear        = AnimationUtils.loadAnimation(this, R.anim.alpha_disappear);
+    	mPreference          = new JoyplusMediaPlayerPreference(this);
+    	
 	}
 	private void InitUI(){
 		StateOk = false;
@@ -746,8 +747,8 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 			}
 		}
 		
-		urlManager = new URLManager(playUrls, mDefination);
-		
+		//urlManager = new URLManager(playUrls, mDefination);
+		urlManager.setDefaultQuality(playUrls, mDefination);
 		// 更新播放来源和上次播放时间
 		updateSourceAndTime();
 		updateName();

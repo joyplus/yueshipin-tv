@@ -11,10 +11,7 @@ public class JoyplusSubManager {
 	   private boolean Debug = true;
 	   private String  TAG   = "JoyplusSubManager";
 	   
-	   private Context mContext;
-	   
-	   
-	   
+	   private Context mContext; 
 	   
 	   private JoyplusSubServer mSubServer;
 	   
@@ -42,5 +39,8 @@ public class JoyplusSubManager {
 	   public void SwitchSub(int index){
 		   if(getSubList().size()<0 || index<0 || index>getSubList().size())return;
 		   mSubServer.SwitchSub(index);
+	   }
+	   public Element getElement(long time){
+		   return mSubServer.getElement(time);
 	   }
 }

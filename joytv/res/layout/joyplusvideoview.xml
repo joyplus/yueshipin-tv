@@ -221,30 +221,72 @@
 		        <!-- end Bottom Bar -->
         </RelativeLayout>     
         <!-- Level 4 : nothing  -->     
-        <RelativeLayout
-                android:id="@+id/joyplus_videoview_buffer"
+        <RelativeLayout                
 		        android:layout_width="match_parent"
                 android:layout_height="match_parent"		        
-		        android:layout_centerInParent="true"
-		        android:visibility="gone"
-                android:orientation="horizontal">		    
+		        android:layout_centerInParent="true"		        
+                android:orientation="horizontal">
+			   <com.joyplus.SubTitleView
+			       android:id="@+id/tv_subtitle"
+			       android:layout_width="match_parent"
+			       android:layout_height="wrap_content"
+			       android:layout_alignParentBottom="true"
+			       android:layout_marginBottom="15dp"
+			       android:background="@android:color/transparent"
+			       android:gravity="center"
+			       android:maxLines="6"
+			       android:shadowColor="#000000"
+			       android:shadowDx="1"
+			       android:shadowDy="1"
+			       android:shadowRadius="2"
+			       android:text=""
+			       android:textColor="#ffffff"
+			       android:textSize="36dp" />		    
 	            <LinearLayout
+	                    android:id="@+id/joyplus_videoview_buffer"
 			            android:layout_width="match_parent"
 			            android:layout_height="match_parent"
 			            android:gravity="center"
-			            android:orientation="horizontal" >
-			            <ProgressBar
-			                android:layout_width="40dp"
-			                android:layout_height="40dp" />
-			            <TextView
-			                android:id="@+id/joyplus_videoview_buffer_info"
-			                android:layout_width="wrap_content"
-			                android:layout_height="wrap_content"
-			                android:layout_marginLeft="5dp"
-			                android:textColor="@color/white"
-			                android:text="@string/meidaplayer_loading_string_buffer_loading"
-			                android:textAppearance="?android:attr/textAppearanceMedium"
-			                android:textSize="40dp" />
+			            android:visibility="gone"
+			            android:orientation="vertical" >
+		                <LinearLayout
+				            android:layout_width="wrap_content"
+				            android:layout_height="wrap_content"
+				            android:gravity="center"
+				            android:visibility="visible"
+				            android:orientation="horizontal" 
+				            android:layout_marginTop="300dp">
+				            <ProgressBar
+				                android:layout_width="40dp"
+				                android:layout_height="40dp" />
+				            <TextView
+				                android:id="@+id/joyplus_videoview_buffer_info"
+				                android:layout_width="wrap_content"
+				                android:layout_height="wrap_content"
+				                android:layout_marginLeft="5dp"
+				                android:shadowColor="#000000"
+						        android:shadowDx="1"
+						        android:shadowDy="1"
+						        android:shadowRadius="2"
+				                android:textColor="@color/white"
+				                android:text="@string/meidaplayer_loading_string_buffer_loading"
+				                android:textAppearance="?android:attr/textAppearanceMedium"
+				                android:textSize="40dp" />
+				       </LinearLayout>
+				       <TextView
+				                android:id="@+id/joyplus_videoview_buffer_notify"
+				                android:layout_width="wrap_content"
+				                android:layout_height="wrap_content"
+				                android:layout_marginLeft="5dp"
+				                android:visibility="visible"
+				                android:shadowColor="#000000"
+						        android:shadowDx="1"
+						        android:shadowDy="1"
+						        android:shadowRadius="2"
+				                android:textColor="@color/white"
+				                android:text="@string/meidaplayer_loading_string_buffer_notify"
+				                android:textAppearance="?android:attr/textAppearanceMedium"
+				                android:textSize="40dp" />
 	            </LinearLayout>
 		</RelativeLayout>
 </RelativeLayout>

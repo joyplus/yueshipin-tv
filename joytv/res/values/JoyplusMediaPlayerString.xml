@@ -28,4 +28,5 @@
     <string name="meidaplayer_loading_string_loadingprogress">努力加载中...</string>
     <string name="meidaplayer_loading_string_buffer">缓冲中...( <xliff:g id="speed">%s</xliff:g> KB/S )</string>
     <string name="meidaplayer_loading_string_buffer_loading">缓冲中...</string>
+    <string name="meidaplayer_loading_string_buffer_notify">网速不给力，可按 菜单 键切换清晰度</string>
 </resources>

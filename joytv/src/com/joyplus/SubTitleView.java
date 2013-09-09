@@ -1,9 +1,11 @@
 package com.joyplus;
 
-import java.util.ArrayList;
-import java.util.List;
 
-import org.blaznyoght.subtitles.model.Element;
+
+import com.joyplus.Sub.Element;
+import com.joyplus.Sub.JoyplusSubManager;
+import com.joyplus.mediaplayer.JoyplusMediaPlayerManager;
+import com.joyplus.mediaplayer.MediaInfo;
 
 import android.content.Context;
 import android.os.Handler;
@@ -29,8 +31,8 @@ public class SubTitleView extends TextView {
 				org.blaznyoght.subtitles.model.Element element_show = 
 				(org.blaznyoght.subtitles.model.Element) msg.obj;
 				if(element_show != null){
-					long currentPositionShow = mVideoView.getCurrentPosition();
-					org.blaznyoght.subtitles.model.Element preElement_show = getPreElement(currentPositionShow);
+					long currentPositionShow = getCurrentTime();
+					Element preElement_show = getElement(currentPositionShow);					
 					//在字幕的显示时间段内
 					if(!element_show.getText().equals(getText())){
 						if(element_show.getStartTime().getTime() < currentPositionShow + SEEKBAR_REFRESH_TIME/2
@@ -66,11 +68,10 @@ public class SubTitleView extends TextView {
 				}
 				break;
 			case MESSAGE_SUBTITLE_END_HIDEN:
-				org.blaznyoght.subtitles.model.Element element_end = 
-				(org.blaznyoght.subtitles.model.Element) msg.obj;
+				Element element_end = (Element) msg.obj;
 				if(element_end != null){
-					long currentPositionShow = mVideoView.getCurrentPosition();
-					org.blaznyoght.subtitles.model.Element preElement_show = getPreElement(currentPositionShow);
+					long currentPositionShow = getCurrentTime();
+					Element preElement_show = getElement(currentPositionShow);
 					if(element_end.getEndTime().getTime() > currentPositionShow - SEEKBAR_REFRESH_TIME/2){
 						setText("");
 						setTag(-1L);
@@ -88,7 +89,25 @@ public class SubTitleView extends TextView {
 		
 	};
 	
-	private List<Element> subTitleList = new ArrayList<Element>();
+	//private List<Element> subTitleList = new ArrayList<Element>();
+	private JoyplusMediaPlayerActivity   mActivity;
+	private void Init(JoyplusMediaPlayerActivity activity){
+		if(activity == null)return ;
+		mActivity = activity;
+	}
+	private MediaInfo getMediaInfo(){
+		if(mActivity == null || mActivity.getPlayer()==null)return new MediaInfo();
+		return  mActivity.getPlayer().getMediaInfo();
+	}
+	private long getCurrentTime(){
+		return getMediaInfo().getCurrentTime();
+	}
+	private JoyplusSubManager getSubManager(){
+		return JoyplusMediaPlayerManager.getInstance().getSubManager();
+	}
+	private Element getElement(long time){
+		return getSubManager().getElement(time);
+	}
 	
 	public SubTitleView(Context context) {
 		super(context);

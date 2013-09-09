@@ -62,7 +62,10 @@ public class JoyplusSubServer {
 		if(uri.SubType == SUBTYPE.NETWORK)
 			Subtitle = getSubByte(uri.Uri);
 		mSub = InstanceSub(uri,Subtitle);
-		if(mSub != null)return true;
+		if(mSub != null){
+			java.util.Collections.sort(mSub.elements, new SubTitleElementComparator());
+			return true;
+		}
 		return false;
 	}
 	private JoyplusSub InstanceSub(SubURI uri,byte[] subtitle){
@@ -110,4 +113,43 @@ public class JoyplusSubServer {
     	if(mSub == null)return -1;
     	return SubUri.indexOf(mSub.getUri());
     }
+	public Element getElement(long time) {
+		// TODO Auto-generated method stub
+		int start = 0;
+		int end   = mSub.elements.size();
+		if(end<start || end==0)return null;
+		while(start < end){			
+			if(mSub.elements.get(getMiddle(start,end)).getStartTime().getTime()>time){
+				end   = getMiddle(start,end);
+			}else if(mSub.elements.get(getMiddle(start,end)).getStartTime().getTime()<time){
+				start = getMiddle(start,end);
+			}else if(mSub.elements.get(getMiddle(start,end)).getStartTime().getTime()==time){
+				return mSub.elements.get(getMiddle(start,end));
+			}
+			if(start >end )return null;
+			if(start == end ){
+				if( mSub.elements.get(getMiddle(start,end)).getStartTime().getTime()<time 
+						&& (getMiddle(start,end)+1)<mSub.elements.size())					
+					 return mSub.elements.get(getMiddle(start,end)+1);
+				else
+					 return mSub.elements.get(getMiddle(start,end)); 
+			}else if((end - start)==1){
+				if(mSub.elements.get(end).getStartTime().getTime()<time)
+					 return mSub.elements.get(end+1);
+				else if(mSub.elements.get(start).getStartTime().getTime()<time)
+					 return mSub.elements.get(end);
+				else return mSub.elements.get(start);
+			}
+		}
+		return null;
+	}
+	private int getMiddle(int index){
+		if(index%2 != 0){
+			index++;
+		}
+		return index/2;
+	}
+	private int getMiddle(int Start , int End){
+		return getMiddle(Start+End);
+	}
 }

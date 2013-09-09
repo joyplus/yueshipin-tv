@@ -10,6 +10,7 @@ public class LocalSubParser {
 	
 	 
 	 public TimedTextObject ParserFile(File subfile){
+		    JoyplusSubContentRestrictionFactory.getContentRestriction().checkSubSize(0, subfile.length());
             TimedTextObject tto;		
 			TimedTextFileFormat ttff;	
 			//To test the correct implementation of the SRT parser and writer.
@@ -26,6 +27,7 @@ public class LocalSubParser {
 			InputStream is;
 			try {
 				is = new FileInputStream(subfile);
+				
 				tto = ttff.parseFile(subfile.getName(), is);
 				return tto;
 			} catch (FileNotFoundException e) {
