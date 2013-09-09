@@ -22,8 +22,8 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
-import org.blaznyoght.subtitles.model.Collection;
-import org.blaznyoght.subtitles.model.SRTParser;
+//import org.blaznyoght.subtitles.model.Collection;
+//import org.blaznyoght.subtitles.model.SRTParser;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -82,6 +82,8 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joyplus.JoyplusMediaPlayerActivity;
+import com.joyplus.Sub.Collection;
+import com.joyplus.Sub.SRTParser;
 import com.joyplus.adkey.Ad;
 import com.joyplus.adkey.AdListener;
 import com.joyplus.adkey.banner.AdView;
@@ -274,7 +276,7 @@ public class VideoPlayerJPActivity extends Activity implements
 	/**  Subtitle*/
 	private Collection mSubTitleCollection = null;
 //	private int mStartTimeSubTitle,mEndTimeSubTitle;
-	private org.blaznyoght.subtitles.model.Element mCurSubTitleE,mBefSubTitleE;
+	private com.joyplus.Sub.Element mCurSubTitleE,mBefSubTitleE;
 	
 	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
 		@Override
@@ -1354,7 +1356,7 @@ public class VideoPlayerJPActivity extends Activity implements
 					
 					for(int i=0;i<mSubTitleCollection.getElementSize();i++){
 						
-						org.blaznyoght.subtitles.model.Element element = 
+						com.joyplus.Sub.Element element = 
 								mSubTitleCollection.getElements().get(i);
 						if(currentPosition < element.getStartTime().getTime()){
 							
@@ -1382,8 +1384,7 @@ public class VideoPlayerJPActivity extends Activity implements
 								StringBuilder sb = new StringBuilder();
 								for(int i=mBefSubTitleE.getRank();i<mCurSubTitleE.getRank() &&i<mSubTitleCollection.getElementSize();i++){
 
-									org.blaznyoght.subtitles.model.Element element = 
-											mSubTitleCollection.getElements().get(i);
+									com.joyplus.Sub.Element element = 	mSubTitleCollection.getElements().get(i);
 									sb.append(element.getText().replaceAll("<font.*>", ""));
 //									if(i<=mCurSubTitleE.getRank() -1){
 //										

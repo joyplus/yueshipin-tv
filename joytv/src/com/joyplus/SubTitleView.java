@@ -28,8 +28,7 @@ public class SubTitleView extends TextView {
 			// TODO Auto-generated method stub
 			switch (msg.what) {
 			case MESSAGE_SUBTITLE_BEGAIN_SHOW:
-				org.blaznyoght.subtitles.model.Element element_show = 
-				(org.blaznyoght.subtitles.model.Element) msg.obj;
+				Element element_show = (Element) msg.obj;
 				if(element_show != null){
 					long currentPositionShow = getCurrentTime();
 					Element preElement_show = getElement(currentPositionShow);					
