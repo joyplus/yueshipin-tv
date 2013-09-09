@@ -2917,7 +2917,8 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 		
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("app_key",Constant.APPKEY_TOP );
-		params.put("device_name",Build.MODEL );
+		params.put("device_name",UtilTools.getUmengChannel(this));
+		params.put("app_channel",UtilTools.getUmengChannel(this));
 		
 //		Log.i(TAG, "Build.MODEL--->" + Build.MODEL);
 
