@@ -737,11 +737,11 @@ public class ShowMovieActivity extends AbstractShowActivity {
 		activeView = null;
 
 		if (searchStr != null && !searchStr.equals("")) {
+			currentListIndex = SEARCH;
 			resetGvActive();
 			showDialog(DIALOG_WAITING);
 			search = searchStr;
 			UtilTools.clearList(lists[SEARCH]);
-			currentListIndex = SEARCH;
 //			String url = StatisticsUtils.getSearch_FirstURL(searchStr);
 			String url = URLUtils.getSearch_Movie_FirstURL(searchStr);
 			getFilterData(url);
