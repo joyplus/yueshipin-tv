@@ -9,6 +9,8 @@ import android.content.Context;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
+import com.joyplus.Sub.JoyplusSubInterface.SubContentType;
+import com.joyplus.Sub.SubURI.SUBTYPE;
 import com.joyplus.mediaplayer.ContentRestrictionException;
 import com.joyplus.tv.Constant;
 
@@ -18,7 +20,14 @@ public class JoyplusSubServer {
 	
 	private JoyplusSub mSub;
     private Context mContext;
-    
+    private JoyplusSub getJoyplusSub(SubContentType type , SubURI uri){
+    	if(type == SubContentType.SUB_ASS)return new ASSSub(uri);
+    	else if(type == SubContentType.SUB_SCC)return new SCCSub(uri);
+    	else if(type == SubContentType.SUB_SRT)return new SRTSub(uri);
+    	else if(type == SubContentType.SUB_SSA)return new SSASub(uri);
+    	else if(type == SubContentType.SUB_STL)return new STLSub(uri);
+    	else return null;
+    }
     public JoyplusSubServer(Context context){
     	mContext = context;
     }
@@ -49,20 +58,35 @@ public class JoyplusSubServer {
 	}
 	
 	private boolean InstanceSub(SubURI uri){
-		mSub = InstanceSRTSub(uri);
+		byte[] Subtitle = null;
+		if(uri.SubType == SUBTYPE.NETWORK)
+			Subtitle = getSubByte(uri.Uri);
+		mSub = InstanceSub(uri,Subtitle);
 		if(mSub != null)return true;
 		return false;
 	}
-	private JoyplusSub InstanceSRTSub(SubURI uri){
+	private JoyplusSub InstanceSub(SubURI uri,byte[] subtitle){
+		JoyplusSub sub = null;
+		for(int i=1;i<=SubContentType.SUB_MAX.toInt();i++){
+			sub = InstanceSub(JoyplusSub.getSubContentType(i),uri,subtitle);
+			if(sub !=null)return sub;
+		}
+		return null;
+	}
+	private JoyplusSub InstanceSub(SubContentType type ,SubURI uri,byte[] subtitle){
 		try{
-			JoyplusSub sub = new SRTSub(uri.Uri);
-			sub.parse(getSubByte(sub.getUri()));
+			if(type.toInt()<=SubContentType.SUB_UNKNOW.toInt()
+					||type.toInt()>SubContentType.SUB_MAX.toInt())return null;
+			JoyplusSub sub = getJoyplusSub(type,uri);
+			if(sub.getUri().SubType == SUBTYPE.NETWORK)
+			      sub.parse(subtitle);
+			else if(sub.getUri().SubType == SUBTYPE.LOCAL)
+				  sub.parseLocal();
 			if(sub.getElements().size()>2)return sub;
 		}catch(ContentRestrictionException e){
 		}
-		return null;		
+		return null;
 	}
-	 
    private byte[] getSubByte(String url){		
 		AjaxCallback<byte[]> cb = new AjaxCallback<byte[]>();
 		cb.url(url).type(byte[].class);		

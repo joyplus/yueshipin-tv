@@ -4,22 +4,22 @@ import java.util.Date;
 import java.util.Scanner;
 import java.util.regex.MatchResult;
 
-public class Time {
+public class JoyplusSubTime {
 	private long time;
 	
-	public Time(long time) {
+	public JoyplusSubTime(long time) {
 		this.time = time;
 	}
 	
-	public Time(long h, long m, long s, long ms) {
+	public JoyplusSubTime(long h, long m, long s, long ms) {
 		setTime(getTimeAsLong(h, m, s, ms));
 	}
 	
-	public Time(String time) {
+	public JoyplusSubTime(String time) {
 		setTime(stringTimeToLong(time));
 	}
 
-	public Time(Date value) {
+	public JoyplusSubTime(Date value) {
 		this.time = value.getTime();
 	}
 
@@ -48,7 +48,7 @@ public class Time {
 	
 	private long stringTimeToLong(String time) {
 		Scanner scanner = new Scanner(time);
-		scanner.findInLine("(\\d+):(\\d+):(\\d+)[,.](\\d+)");
+		scanner.findInLine("(\\d+):(\\d+):(\\d+),(\\d+)");
 		MatchResult result = scanner.match();
 		int h = Integer.parseInt(result.group(0));
 		int m = Integer.parseInt(result.group(1));

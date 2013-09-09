@@ -5,8 +5,8 @@ package com.joyplus.Sub;
 public class Element {
 	public static final String TIME_SEP = " --> ";
 	private int rank;
-	private Time startTime;
-	private Time endTime;
+	private JoyplusSubTime startTime;
+	private JoyplusSubTime endTime;
 	private String text;
 	
 	public Element() {}
@@ -39,28 +39,28 @@ public class Element {
 	/**
 	 * @return the startTime
 	 */
-	public Time getStartTime() {
+	public JoyplusSubTime getStartTime() {
 		return startTime;
 	}
 
 	/**
 	 * @param time the startTime to set
 	 */
-	public void setStartTime(Time time) {
+	public void setStartTime(JoyplusSubTime time) {
 		this.startTime = time;
 	}
 
 	/**
 	 * @return the endTime
 	 */
-	public Time getEndTime() {
+	public JoyplusSubTime getEndTime() {
 		return endTime;
 	}
 
 	/**
 	 * @param time the endTime to set
 	 */
-	public void setEndTime(Time time) {
+	public void setEndTime(JoyplusSubTime time) {
 		this.endTime = time;
 	}
 
