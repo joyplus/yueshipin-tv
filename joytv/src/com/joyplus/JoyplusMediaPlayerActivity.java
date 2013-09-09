@@ -92,6 +92,8 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 	public JoyplusMediaPlayerScreenManager mScreenManager;
 	//Setting
 	public JoyplusMediaPlayerPreference    mPreference;
+	/*SubTitle TextView Control */
+	private SubTitleView                   mSubTitleView;
 	
 	public static final int   DELAY_SHOWVIEW        = 10*1000; //10s
 	/*msg 0-99*/
@@ -225,6 +227,8 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
     	registerReceiver(mReceiver, new IntentFilter(Constant.VIDEOPLAYERCMD));
     	mAlphaDispear        = AnimationUtils.loadAnimation(this, R.anim.alpha_disappear);
     	mPreference          = new JoyplusMediaPlayerPreference(this);
+    	mSubTitleView        = (SubTitleView) findViewById(R.id.tv_subtitle);
+    	mSubTitleView.Init(this);
     	
 	}
 	private void InitUI(){

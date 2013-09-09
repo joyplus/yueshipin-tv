@@ -90,7 +90,7 @@ public class SubTitleView extends TextView {
 	
 	//private List<Element> subTitleList = new ArrayList<Element>();
 	private JoyplusMediaPlayerActivity   mActivity;
-	private void Init(JoyplusMediaPlayerActivity activity){
+	public void Init(JoyplusMediaPlayerActivity activity){
 		if(activity == null)return ;
 		mActivity = activity;
 	}
@@ -111,29 +111,48 @@ public class SubTitleView extends TextView {
 	public SubTitleView(Context context) {
 		super(context);
 		// TODO Auto-generated constructor stub
+		initView();
 	}
 
 	public SubTitleView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		// TODO Auto-generated constructor stub
+		initView();
 	}
 
 	public SubTitleView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 		// TODO Auto-generated constructor stub
+		initView();
 	}
 	
-	
+	private void initView(){
+		setVisibility(INVISIBLE);
+		mHandler.removeCallbacksAndMessages(null);
+	}
 	
 	public void displaySubtitle(){
-		
+		mHandler.removeCallbacksAndMessages(null);
+		setVisibility(VISIBLE);
+		long currentPosition = getCurrentTime();
+		Element preElement = getElement(currentPosition);
+		if(preElement != null){
+			Message messageShow = mHandler.obtainMessage(MESSAGE_SUBTITLE_BEGAIN_SHOW, preElement);
+			Message messageHiden = mHandler.obtainMessage(MESSAGE_SUBTITLE_END_HIDEN, preElement);
+			if(preElement.getStartTime().getTime() - currentPosition > SUBTITLE_DELAY_TIME_MAX){
+				mHandler.sendMessageDelayed(messageShow, SUBTITLE_DELAY_TIME_MAX);
+			}else {
+				
+				mHandler.sendMessageDelayed(messageShow, preElement.getStartTime().getTime() - currentPosition);
+			}
+			mHandler.sendMessageDelayed(messageHiden, preElement.getEndTime().getTime() - currentPosition);
+		}
 	}
 	
 	public void hiddenSubtitle(){
 		
 		mHandler.removeCallbacksAndMessages(null);
+		setVisibility(INVISIBLE);
 	}
-	
-//	public void 
 	
 }
