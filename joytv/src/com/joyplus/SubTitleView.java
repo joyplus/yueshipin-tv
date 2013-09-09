@@ -109,12 +109,11 @@ public class SubTitleView extends TextView {
 	
 	public void displaySubtitle(){
 		
-		
 	}
 	
 	public void hiddenSubtitle(){
 		
-		
+		mHandler.removeCallbacksAndMessages(null);
 	}
 	
 //	public void 
