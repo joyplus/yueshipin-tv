@@ -1,23 +1,15 @@
 package com.joyplus;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.Context;
 import android.net.TrafficStats;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.LinearLayout;
-import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.joyplus.mediaplayer.JoyplusVideoView;
@@ -133,6 +125,9 @@ public class JoyplusMediaPlayerVideoView implements JoyplusMediaPlayerInterface{
 		
 		private class WindowsInfo{
 			public long ShowTime;
+			public WindowsInfo(long time){
+				ShowTime = time;
+			}
 		}
 		private List<WindowsInfo> mWindowsInfo = new ArrayList<WindowsInfo>();
 		
@@ -158,8 +153,10 @@ public class JoyplusMediaPlayerVideoView implements JoyplusMediaPlayerInterface{
 			if(Visible)mHandler.removeCallbacksAndMessages(null);
 			if((mLayout.getVisibility()==View.VISIBLE) == Visible)return;
 			mHandler.removeCallbacksAndMessages(null);
-			if(Visible)mHandler.sendEmptyMessage(MSG_SHOW);
-			else       mHandler.sendEmptyMessage(MSG_HIDE);
+			if(Visible){
+				mHandler.sendEmptyMessage(MSG_SHOW);
+				UpdateWindowsInfo();
+			}else mHandler.sendEmptyMessage(MSG_HIDE);
 		}
 		private Handler mHandler = new Handler(){
 			public void handleMessage(Message msg) {
@@ -220,10 +217,21 @@ public class JoyplusMediaPlayerVideoView implements JoyplusMediaPlayerInterface{
 		}
 		private void UpdateNotify(){
 			if(!(mLayout.getVisibility()==View.VISIBLE))return;
-			
+			if(mWindowsInfo.size()>=10)
+				mNotify.setVisibility(View.VISIBLE);
+			else 
+				mNotify.setVisibility(View.GONE);
 		}
 		private void UpdateWindowsInfo(){
-			
+			long currenttime = System.currentTimeMillis();
+			mWindowsInfo.add(new WindowsInfo(currenttime)); 
+			Iterator<WindowsInfo> it = mWindowsInfo.iterator();
+			while(it.hasNext()){
+				WindowsInfo index = it.next();
+				if((currenttime-index.ShowTime)>DELAYTIME){
+					it.remove();
+				}
+			}
 		}
 	}
 	

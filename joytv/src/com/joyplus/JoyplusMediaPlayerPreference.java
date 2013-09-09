@@ -47,9 +47,9 @@ public class JoyplusMediaPlayerPreference extends AlertDialog{
 	}
 	public void setVisible(boolean visible){
 		if(visible){
+			show();
 			if(mQuality != null)mQuality.setURLManager(JoyplusMediaPlayerManager.getInstance().getURLManager());
 			if(mSub != null)    mSub.setSubManager(JoyplusMediaPlayerManager.getInstance().getSubManager());
-			show();
 		}
 		else Dismiss();
 	}
@@ -67,10 +67,10 @@ public class JoyplusMediaPlayerPreference extends AlertDialog{
 		this.setContentView(R.layout.video_choose_defination);
 		initView();
 	}
-    public void setURLManager(URLManager urlManager){
-    	if(mQuality == null) return;
-    	mQuality.setURLManager(urlManager);
-    }
+//    public void setURLManager(URLManager urlManager){
+//    	if(mQuality == null) return;
+//    	mQuality.setURLManager(urlManager);
+//    }
 	private void initView() {
 		// TODO Auto-generated method stub		
 		findViewById(R.id.btn_ok_def).setOnClickListener(new OKListener());
@@ -82,6 +82,7 @@ public class JoyplusMediaPlayerPreference extends AlertDialog{
 			}
 		});
 		mQuality   = new QUALITY();
+		mSub       = new SUB();
 	}
 	private void Dismiss() {
 		// TODO Auto-generated method stub
