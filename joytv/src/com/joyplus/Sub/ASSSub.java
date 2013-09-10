@@ -3,9 +3,6 @@ package com.joyplus.Sub;
 import java.io.File;
 import java.util.Iterator;
 
-import com.joyplus.Sub.JoyplusSubInterface.SubContentType;
-import com.joyplus.Sub.SubURI.SUBTYPE;
-
 public class ASSSub extends JoyplusSub{
 
 	public ASSSub(SubURI uri) {

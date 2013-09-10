@@ -1,12 +1,7 @@
 package com.joyplus.Sub;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.util.Iterator;
-
-import com.joyplus.Sub.JoyplusSubInterface.SubContentType;
-import com.joyplus.Sub.SubURI.SUBTYPE;
-import com.joyplus.tv.utils.UtilTools;
 
 public class SCCSub extends JoyplusSub{
 	  

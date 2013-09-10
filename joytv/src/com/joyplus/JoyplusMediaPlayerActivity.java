@@ -212,7 +212,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 				if(currQuality != null){
 					InitUI();
 					Log.i(TAG, "handleMessage currQuality-->" + currQuality.toInt());
-					urlManager.setDefaultQuality(currQuality);
+					mURLManager.setDefaultQuality(currQuality);
 					mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
 				}
 				break;
@@ -225,7 +225,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 					@Override
 					public void run() {
 						// TODO Auto-generated method stub
-						subManager.SwitchSub(currIndex -1);
+						mJoyplusSubManager.SwitchSub(currIndex -1);
 						JoyplusMediaPlayerActivity.this.runOnUiThread(new Runnable() {							
 							@Override
 							public void run() {
@@ -274,8 +274,8 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
     	mPreference          = new JoyplusMediaPlayerPreference(this);
     	mPreference.setHandler(PreferenceHandler);
     	JoyplusMediaPlayerManager.getInstance().ResetURLAndSub();
-    	urlManager = JoyplusMediaPlayerManager.getInstance().getURLManager();
-    	subManager = JoyplusMediaPlayerManager.getInstance().getSubManager();
+    	mURLManager = JoyplusMediaPlayerManager.getInstance().getURLManager();
+    	mJoyplusSubManager = JoyplusMediaPlayerManager.getInstance().getSubManager();
     	mSubTitleView        = (SubTitleView) findViewById(R.id.tv_subtitle);
     	mSubTitleView.Init(this);
 	}
@@ -711,8 +711,8 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 	private boolean           isOnlyExistLetv = false;
     private String            sourceFromUrl = null;//当前集的原始播放地址
     
-    private URLManager urlManager = null;
-	private JoyplusSubManager subManager = null;
+    private URLManager mURLManager = null;
+	private JoyplusSubManager mJoyplusSubManager = null;
 	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
@@ -865,8 +865,8 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 					}
 					return;
 				}
-				currentPlayUrl = urlManager.getCurURLS_INDEX().url;
-				mProd_src = urlManager.getCurURLS_INDEX().source_from;
+				currentPlayUrl = mURLManager.getCurURLS_INDEX().url;
+				mProd_src = mURLManager.getCurURLS_INDEX().source_from;
 				Log.i(TAG, "MESSAGE_URLS_READY--->" + currentPlayUrl + " isOnlyExistFengXing--->" + isOnlyExistFengXing
 						+" sourceFromUrl--->" + sourceFromUrl);
 				if (currentPlayUrl != null
@@ -900,9 +900,9 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 						}
 					}
 				} else {
-					if (urlManager.getNextURLS() != null) {
-						currentPlayUrl = urlManager.getCurURLS_INDEX().url;
-						mProd_src = urlManager.getCurURLS_INDEX().source_from;
+					if (mURLManager.getNextURLS() != null) {
+						currentPlayUrl = mURLManager.getCurURLS_INDEX().url;
+						mProd_src = mURLManager.getCurURLS_INDEX().source_from;
 						if (currentPlayUrl != null
 								&& URLUtil.isNetworkUrl(currentPlayUrl)) {
 							// 地址跳转相关。。。
@@ -924,7 +924,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 						}else {
 							
 							if(JoyplusMediaPlayerManager.getInstance().IshaveNextType()){
-								urlManager.resetCurURLS_INDEX();
+								mURLManager.resetCurURLS_INDEX();
 								InitUI();
 								mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
 							}else {
@@ -1079,13 +1079,13 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 		//add by Jas
 		mInfo.mLastTime = (int) lastTime;
 		//end add by Jas
-		if(urlManager.getCurURLS_INDEX() != null){
-			Log.d(TAG, "type---->" + urlManager.getCurURLS_INDEX().defination_from_server);
+		if(mURLManager.getCurURLS_INDEX() != null){
+			Log.d(TAG, "type---->" + mURLManager.getCurURLS_INDEX().defination_from_server);
 			//mDefinationIcon.setVisibility(View.VISIBLE);
-			if(Constant.player_quality_index[0].equalsIgnoreCase(urlManager.getCurURLS_INDEX().defination_from_server)){
+			if(Constant.player_quality_index[0].equalsIgnoreCase(mURLManager.getCurURLS_INDEX().defination_from_server)){
 				//mDefinationIcon.setImageResource(R.drawable.player_1080p);
 				mInfo.mQua = "1080p";
-			}else if(Constant.player_quality_index[1].equalsIgnoreCase(urlManager.getCurURLS_INDEX().defination_from_server)){
+			}else if(Constant.player_quality_index[1].equalsIgnoreCase(mURLManager.getCurURLS_INDEX().defination_from_server)){
 				//mDefinationIcon.setImageResource(R.drawable.player_720p);
 				mInfo.mQua = "720p";
 			}else{
@@ -1570,8 +1570,8 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 							}
 						}
 						//获取字幕
-						if(!subManager.CheckSubAviable()){
-							subManager.setSubUri(JoyplusSubManager.
+						if(!mJoyplusSubManager.CheckSubAviable()){
+							mJoyplusSubManager.setSubUri(JoyplusSubManager.
 									getNetworkSubURI(p2pUrl, UtilTools.getP2PMD5(getApplicationContext()),getApplicationContext()));
 							mHandler.post(new Runnable() {
 								
@@ -1633,8 +1633,8 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 		/**获取百度网盘的真正播放地址 **/
 		getDownloadUrl_BaiduWP();
 		
-		urlManager.setDefaultQuality(mDefination);
-		urlManager.setURLS(playUrls);
+		mURLManager.setDefaultQuality(mDefination);
+		mURLManager.setURLS(playUrls);
 	}
 	
 	@Override

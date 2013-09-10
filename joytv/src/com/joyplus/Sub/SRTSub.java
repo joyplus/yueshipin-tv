@@ -2,10 +2,8 @@ package com.joyplus.Sub;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.InputStream;
 import java.util.Iterator;
 
-import com.joyplus.Sub.SubURI.SUBTYPE;
 import com.joyplus.tv.utils.Log;
 import com.joyplus.tv.utils.UtilTools;
 

@@ -11,7 +11,6 @@ import android.content.Context;
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
 import com.joyplus.Sub.JoyplusSubInterface.SubContentType;
-import com.joyplus.Sub.SubURI.SUBTYPE;
 import com.joyplus.mediaplayer.ContentRestrictionException;
 import com.joyplus.tv.Constant;
 import com.joyplus.tv.utils.Log;

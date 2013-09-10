@@ -6,7 +6,7 @@ public class SubURI {
 	
 	public SUBTYPE SubType;
 	
-	enum SUBTYPE{
-		  UNKNOW , NETWORK , LOCAL
-    }
+//	public enum SUBTYPE{
+//		  UNKNOW , NETWORK , LOCAL
+//    }
 }
