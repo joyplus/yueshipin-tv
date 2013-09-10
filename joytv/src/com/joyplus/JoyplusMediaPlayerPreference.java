@@ -143,6 +143,7 @@ public class JoyplusMediaPlayerPreference extends AlertDialog{
         public void setSubManager(JoyplusSubManager subManager){
         	if(subManager == null)return;
         	definationStrings.clear();
+        	Log.i(TAG, "SUB-setSubManager-size-->" + subManager.getSubList().size());
             if(subManager.CheckSubAviable()){
             	definationStrings.add(mContext.getResources().getString(R.string.meidaplayer_sub_string_closesub));
             	for(int i = 0;i<subManager.getSubList().size();i++){

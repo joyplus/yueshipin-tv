@@ -50,7 +50,14 @@ public class SubTitleView extends TextView {
 						}
 					}
 					
-					long tagEndTime = (Long) getTag();
+					long tagEndTime = -1L;
+					try {
+						if(getTag() != null)
+						tagEndTime = (Long) getTag();
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					if(!element_show.getText().equals(getText()) && tagEndTime != -1
 							&& tagEndTime < currentPositionShow){
 						setText("");

@@ -2,6 +2,7 @@ package com.joyplus.Sub;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -13,8 +14,10 @@ import com.joyplus.Sub.JoyplusSubInterface.SubContentType;
 import com.joyplus.Sub.SubURI.SUBTYPE;
 import com.joyplus.mediaplayer.ContentRestrictionException;
 import com.joyplus.tv.Constant;
+import com.joyplus.tv.utils.Log;
 
 public class JoyplusSubServer {
+	private static final String TAG = "JoyplusSubServer";
 
 	private List<SubURI> SubUri = new ArrayList<SubURI>();
 	
@@ -32,6 +35,7 @@ public class JoyplusSubServer {
     	mContext = context;
     }
 	public void setSubUri(List<SubURI> subUri){
+		 Log.i(TAG, "setSubUri subUri size--->" + subUri.size());
 		 if(subUri==null || subUri.size()<=0)return;
 		 SubUri = subUri;
 		 CheckSubUriList();
@@ -49,10 +53,15 @@ public class JoyplusSubServer {
     }
 	private void CheckSubUriList() {
 		// TODO Auto-generated method stub
-		for(SubURI uri : SubUri){
-			if(InstanceSub(uri))return;
-			SubUri.remove(uri);
+		Iterator<SubURI> it = SubUri.iterator();
+		while(it.hasNext()){
+			if(InstanceSub(it.next()))return;
+			it.remove();
 		}
+//		for(SubURI uri : SubUri){
+//			if(InstanceSub(uri))return;
+//			SubUri.remove(uri);
+//		}
 		SubUri = new ArrayList<SubURI>();
 		mSub   = null;
 	}
@@ -98,6 +107,7 @@ public class JoyplusSubServer {
 		cb.SetHeader(headers); 		
 		(new AQuery(mContext)).sync(cb);
 		byte[] subTitle = cb.getResult();
+		Log.i(TAG, "subTitle byte[] length--->" + subTitle.length);
 		return subTitle;
 	}
    

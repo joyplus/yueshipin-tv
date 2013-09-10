@@ -8,7 +8,7 @@ import com.joyplus.Sub.JoyplusSubInterface.SubContentType;
 import com.joyplus.mediaplayer.ContentRestrictionException;
 
 public class JoyplusSubCarrierContentRestriction implements JoyplusSubContentRestriction{
-	private final static int MAXSIZE = 100*1024;
+	private final static int MAXSIZE = 500*1024;
 	@Override
 	public void checkSubSize(long SubSize, long increaseSize) throws ContentRestrictionException {
 		// TODO Auto-generated method stub
