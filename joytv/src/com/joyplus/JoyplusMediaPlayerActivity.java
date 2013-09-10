@@ -204,26 +204,43 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 	private Handler PreferenceHandler = new Handler(){
 		@Override
 		public void handleMessage(Message msg) {
-			
+			Log.i(TAG, "handleMessage msg.what-->" + msg.what);
 			switch(msg.what){
 			case JoyplusMediaPlayerPreference.MSG_QUALITY_CHANGE:
 				if(msg.obj == null) return;
 				Quality currQuality= (Quality) msg.obj;
 				if(currQuality != null){
+					InitUI();
+					Log.i(TAG, "handleMessage currQuality-->" + currQuality.toInt());
 					urlManager.setDefaultQuality(currQuality);
 					mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
 				}
 				break;
 			case JoyplusMediaPlayerPreference.MSG_SUB_CHANGE:
-				int currIndex = msg.arg1;
+				final int currIndex = msg.arg1;
 				if(currIndex == 0) {
 					mSubTitleView.hiddenSubtitle();
 					return;
 				}
-				subManager.SwitchSub(currIndex);
-				if(mSubTitleView.getVisibility() != View.VISIBLE){
-					mSubTitleView.displaySubtitle();
-				}
+				new Thread(new Runnable() {
+					
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						subManager.SwitchSub(currIndex -1);
+						JoyplusMediaPlayerActivity.this.runOnUiThread(new Runnable() {							
+							@Override
+							public void run() {
+								// TODO Auto-generated method stub
+								if(mSubTitleView.getVisibility() != View.VISIBLE){
+									mSubTitleView.displaySubtitle();
+								}
+							}
+						});
+					}
+				}).start();
+				
+				
 				
 				break;
 			}

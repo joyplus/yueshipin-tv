@@ -127,7 +127,10 @@ public class JoyplusMediaPlayerPreference extends AlertDialog{
         	gallery.requestFocus();
         }
         public boolean isChange(){
-        	return gallery.getSelectedItemPosition() == (definationStrings.indexOf(URLManager.getQualityString(mCurrentQuality)));
+        	Log.i(TAG, "isChange-->gallery.getSelectedItemPosition():" + gallery.getSelectedItemPosition()
+        			+ " definationStrings:" + definationStrings.toString()
+        			+ " URLManager.getQualityString(mCurrentQuality):" + URLManager.getQualityString(mCurrentQuality));
+        	return gallery.getSelectedItemPosition() != (definationStrings.indexOf(URLManager.getQualityString(mCurrentQuality)));
         }
         public Quality getCurrentQuality(){
         	return JoyplusMediaPlayerManager.getInstance().getURLManager().getQualityFromString(
@@ -150,14 +153,15 @@ public class JoyplusMediaPlayerPreference extends AlertDialog{
             		definationStrings.add(mContext.getResources().getString(R.string.meidaplayer_sub_string_sub,(i+1)));
             	}
             	gallery.setAdapter(new QuaSubAdapter(definationStrings));
-            	gallery.setSelection(definationStrings.indexOf(subManager.getCurrentSubIndex()+1));//for have add "sub close"
+            	Log.i(TAG, "subManager.getCurrentSubIndex()+1--->" + (subManager.getCurrentSubIndex()+1));
+            	gallery.setSelection(subManager.getCurrentSubIndex()+1);//for have add "sub close"
             }else{
             	definationStrings.add(mContext.getResources().getString(R.string.meidaplayer_sub_string_nosub));
             	gallery.setAdapter(new QuaSubAdapter(definationStrings));
             }
         }	
         public boolean isChange(){
-        	return gallery.getSelectedItemPosition() == (definationStrings.indexOf(JoyplusMediaPlayerManager.getInstance().getSubManager().getCurrentSubIndex()+1));
+        	return gallery.getSelectedItemPosition() != (definationStrings.indexOf(JoyplusMediaPlayerManager.getInstance().getSubManager().getCurrentSubIndex()+1));
         }
         public int getCurrentIndex(){
         	return gallery.getSelectedItemPosition();

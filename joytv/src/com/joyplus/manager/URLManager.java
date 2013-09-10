@@ -197,7 +197,7 @@ public class URLManager {
 		private void ListURLS_INDEX() {
 			// TODO Auto-generated method stub
 			if(mList.size()<=0)return;     
-			mURUrls_INDEX = mList.get(0);
+			
         	for(URLS_INDEX url_index :mList){
         		initResource_list_from(url_index);
         		initResource_list_qua(url_index); 
@@ -207,6 +207,7 @@ public class URLManager {
     			Collections.sort(mList, new SouceComparatorIndex1());
     			Collections.sort(mList, new DefinationComparatorIndex());
     		}  
+    		mURUrls_INDEX = mList.get(0);
 		}
         
         private void initResource_list_from(URLS_INDEX url_index){
