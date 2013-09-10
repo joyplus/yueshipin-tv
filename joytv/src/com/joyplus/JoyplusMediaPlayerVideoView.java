@@ -115,7 +115,7 @@ public class JoyplusMediaPlayerVideoView implements JoyplusMediaPlayerInterface{
 	}  
 	public boolean hasMediaInfoChange(){
 		long delay = Math.abs(CurrentMediaInfo.getCurrentTime()-PreMediaInfo.getCurrentTime());
-		Log.e(TAG,"eeeeeeeeeeeeeeeee  "+delay +" eeeeeeeeeeee");
+		if(Debug)Log.e(TAG,"eeeeeeeeeeeeeeeee  "+delay +" eeeeeeeeeeee");
 		return (delay<2000&&delay>=300);
 	}
 	private class LoadingWindows {
@@ -177,8 +177,8 @@ public class JoyplusMediaPlayerVideoView implements JoyplusMediaPlayerInterface{
 			}
 		};
 		private void StartTrafficStates(){
-			Log.d("Jas","=========StartTrafficStates===========");
-			long mStartRX = TrafficStats.getTotalRxBytes();// ��ȡ�����ٶ�
+			if(Debug)Log.d("Jas","=========StartTrafficStates===========");
+			mStartRX = TrafficStats.getTotalRxBytes();// ��ȡ�����ٶ�
 			rxByteslast = 0;
 			if (mStartRX == TrafficStats.UNSUPPORTED) {
 			     
@@ -192,7 +192,7 @@ public class JoyplusMediaPlayerVideoView implements JoyplusMediaPlayerInterface{
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
-				Log.d("Jas","-------------run-------------");
+				if(Debug)Log.d("Jas","-------------run-------------");
 				long rxBytes = TrafficStats.getTotalRxBytes() - mStartRX;
 				timeTakenMillis = System.currentTimeMillis() - beginTimeMillis;
 				beginTimeMillis = System.currentTimeMillis();
@@ -206,7 +206,7 @@ public class JoyplusMediaPlayerVideoView implements JoyplusMediaPlayerInterface{
 			}
 		};
 		private void UpdateInfo(long speed){
-			Log.d("Jas","============= speed="+speed+" =========================");
+			if(Debug)Log.d("Jas","============= speed="+speed+" =========================");
 			if(!(mLayout.getVisibility()==View.VISIBLE))return;
 			mInfo.setVisibility(View.VISIBLE);
 			if(speed>=0)
