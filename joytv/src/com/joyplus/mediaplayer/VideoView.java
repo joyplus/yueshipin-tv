@@ -19,6 +19,8 @@ package com.joyplus.mediaplayer;
 import java.io.IOException;
 import java.util.Map;
 
+import com.joyplus.tv.utils.Log;
+
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
@@ -28,7 +30,6 @@ import android.media.MediaPlayer.OnErrorListener;
 import android.media.MediaPlayer.OnInfoListener;
 import android.net.Uri;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;

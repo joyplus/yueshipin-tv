@@ -3,11 +3,11 @@ package com.joyplus.mediaplayer;
 import com.joyplus.mediaplayer.VideoViewInterface.DecodeType;
 import com.joyplus.mediaplayer.VideoViewInterface.STATE;
 import com.joyplus.tv.R;
+import com.joyplus.tv.utils.Log;
 
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 
 
 public class JoyplusMediaPlayerServer {

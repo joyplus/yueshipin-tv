@@ -21,7 +21,7 @@ import android.widget.Toast;
 import com.joyplus.adkey.Ad;
 import com.joyplus.adkey.AdListener;
 import com.joyplus.adkey.AdManager;
-import com.joyplus.adkey.widget.Log;
+import com.joyplus.tv.utils.Log;
 import com.joyplus.tv.utils.UtilTools;
 import com.umeng.analytics.MobclickAgent;
 

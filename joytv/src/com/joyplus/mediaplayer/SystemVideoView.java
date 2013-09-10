@@ -2,9 +2,10 @@ package com.joyplus.mediaplayer;
 
 
 
+import com.joyplus.tv.utils.Log;
+
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 
 
 public class SystemVideoView extends VideoView implements VideoViewInterface{

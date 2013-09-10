@@ -1,6 +1,8 @@
 package com.joyplus.mediaplayer;
 
 import com.joyplus.tv.R;
+import com.joyplus.tv.utils.Log;
+
 import io.vov.vitamio.MediaPlayer;
 import io.vov.vitamio.MediaPlayer.OnCompletionListener;
 import io.vov.vitamio.MediaPlayer.OnErrorListener;
@@ -8,7 +10,6 @@ import io.vov.vitamio.MediaPlayer.OnInfoListener;
 import io.vov.vitamio.MediaPlayer.OnPreparedListener;
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.widget.LinearLayout;
 
 public class SystemVitamioPlayerVideoView extends LinearLayout  implements ViewInterface,VideoViewInterface, OnErrorListener,

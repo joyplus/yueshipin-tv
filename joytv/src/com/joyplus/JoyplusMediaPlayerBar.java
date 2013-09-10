@@ -4,7 +4,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -14,6 +13,7 @@ import android.widget.TextView;
 import com.joyplus.mediaplayer.MediaInfo;
 import com.joyplus.mediaplayer.VideoViewInterface.STATE;
 import com.joyplus.tv.R;
+import com.joyplus.tv.utils.Log;
 import com.joyplus.tv.utils.UtilTools;
 
 public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{

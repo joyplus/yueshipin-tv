@@ -4,12 +4,12 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewStub;
 import android.widget.LinearLayout;
 import com.joyplus.tv.R;
+import com.joyplus.tv.utils.Log;
 
 public class JoyplusMediaPlayerMiddleControl extends LinearLayout implements JoyplusMediaPlayerInterface{
      

@@ -2,12 +2,12 @@ package com.joyplus.mediaplayer;
 
 import com.joyplus.mediaplayer.VideoViewInterface.STATE;
 import com.joyplus.tv.R;
+import com.joyplus.tv.utils.Log;
 
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewStub;
 import android.widget.LinearLayout;

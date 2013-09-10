@@ -1,10 +1,11 @@
 package com.joyplus.mediaplayer;
 
 
+import com.joyplus.tv.utils.Log;
+
 import io.vov.vitamio.widget.VideoView;
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 
 public class VitamioVideoView extends VideoView implements VideoViewInterface{
 

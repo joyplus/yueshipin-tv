@@ -34,7 +34,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.provider.MediaStore.Video;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.Animation;
@@ -74,6 +73,7 @@ import com.joyplus.tv.utils.DataBaseItems.UserShouCang;
 import com.joyplus.tv.utils.DesUtils;
 import com.joyplus.tv.utils.HttpUtils;
 import com.joyplus.tv.utils.JieMianConstant;
+import com.joyplus.tv.utils.Log;
 import com.joyplus.tv.utils.URLUtils;
 import com.joyplus.tv.utils.UtilTools;
 import com.umeng.analytics.MobclickAgent;
@@ -218,10 +218,8 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 				break;
 			case JoyplusMediaPlayerPreference.MSG_SUB_CHANGE:
 				final int currIndex = msg.arg1;
-				if(currIndex == 0) {
-					mSubTitleView.hiddenSubtitle();
-					return;
-				}
+				mSubTitleView.hiddenSubtitle();
+				if(currIndex == 0) return;
 				new Thread(new Runnable() {
 					
 					@Override
@@ -404,6 +402,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 			RequestMediaPlayerBarShowandHold();
 			break;
 		case KeyEvent.KEYCODE_MENU:
+			if(mProd_type < 0) return true;
 			if(mPreference.isShowing()){
 				mPreference.setVisible(false);
 				return true;

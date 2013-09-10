@@ -6,7 +6,6 @@ import java.util.List;
 import android.net.TrafficStats;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -17,6 +16,7 @@ import com.joyplus.mediaplayer.MediaInfo;
 import com.joyplus.mediaplayer.VideoViewInterface;
 import com.joyplus.mediaplayer.VideoViewInterface.STATE;
 import com.joyplus.tv.R;
+import com.joyplus.tv.utils.Log;
 /*videoview layout
  * It use to displayer media
  * it have: Android system VideoView 
