@@ -54,6 +54,12 @@ public class JoyplusSubManager {
 	   public boolean CheckSubAviable(){
 		   return mSubServer.CheckSubAviable();
 	   }
+	   public boolean IsSubEnable(){
+	    	return mSubServer.IsSubEnable();
+	   }
+	   public void setSubEnable(boolean EN){
+	    	mSubServer.setSubEnable(EN);
+	   }
 	   public void SwitchSub(int index){
 		   if(getSubList().size()<0 || index<0 || index>getSubList().size())return;
 		   mSubServer.SwitchSub(index);
@@ -75,26 +81,20 @@ public class JoyplusSubManager {
 		headers.put("app_key", Constant.APPKEY);
 		cb.SetHeader(headers);
 		(new AQuery(context)).sync(cb);
-
 		JSONObject jo = cb.getResult();
 		if (jo != null && jo.toString() != null && !"".equals(jo.toString())) {
 			Log.i(TAG, "subtitles--->" + jo.toString());
 			try {
 				JSONObject subtitlesJsonObject = (JSONObject) new JSONTokener(
 						jo.toString()).nextValue();
-
 				if (subtitlesJsonObject.has("error")) {
-
 					if (!subtitlesJsonObject.getBoolean("error")
 							&& subtitlesJsonObject.has("subtitles")) {
-
 						JSONArray subtitleContents = subtitlesJsonObject
 								.getJSONArray("subtitles");
 						if (subtitleContents != null
 								&& subtitleContents.length() > 0) {
-
 							for (int i = 0; i < subtitleContents.length(); i++) {
-
 								String tempsubTitleUrl = subtitleContents.getString(i);
 								SubURI subURI = new SubURI();
 								subURI.SubType = SUBTYPE.NETWORK;
@@ -102,7 +102,6 @@ public class JoyplusSubManager {
 								list.add(subURI);
 							}
 						}
-
 					}
 				}
 			} catch (JSONException e) {

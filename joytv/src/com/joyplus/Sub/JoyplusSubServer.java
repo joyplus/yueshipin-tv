@@ -20,6 +20,7 @@ public class JoyplusSubServer {
 
 	private List<SubURI> SubUri = new ArrayList<SubURI>();
 	
+	private boolean    SubEnable = true;
 	private JoyplusSub mSub;
     private Context mContext;
     private JoyplusSub getJoyplusSub(SubContentType type , SubURI uri){
@@ -57,10 +58,6 @@ public class JoyplusSubServer {
 			if(InstanceSub(it.next()))return;
 			it.remove();
 		}
-//		for(SubURI uri : SubUri){
-//			if(InstanceSub(uri))return;
-//			SubUri.remove(uri);
-//		}
 		SubUri = new ArrayList<SubURI>();
 		mSub   = null;
 	}
@@ -118,13 +115,19 @@ public class JoyplusSubServer {
     		}
     	}
     }
+    public boolean IsSubEnable(){
+    	return SubEnable;
+    }
+    public void setSubEnable(boolean EN){
+    	SubEnable = EN;
+    }
     public int getCurrentSubIndex(){
-    	if(mSub == null)return -1;
+    	if(mSub == null || !IsSubEnable())return -1;
     	return SubUri.indexOf(mSub.getUri());
     }
 	public Element getElement(long time) {
 		// TODO Auto-generated method stub
-		if(mSub == null) return null;
+		if(mSub == null || !IsSubEnable()) return null;
 		int start = 0;
 		int end   = mSub.elements.size();
 		if(end<start || end==0)return null;
