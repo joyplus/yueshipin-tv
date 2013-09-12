@@ -158,6 +158,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 			case JoyplusMediaPlayerMiddleControlMini.MSG_KEYDOWN_LEFT:
 				if(mInfo.mType == URLTYPE.NETWORK && mInfo.getHavePre()){
 					InitUI();
+					JoyplusMediaPlayerManager.getInstance().ResetURLAndSub();
 					if (mProd_type == 3) 
 					    mEpisodeIndex +=1;
 					else
@@ -174,6 +175,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 			case JoyplusMediaPlayerMiddleControlMini.MSG_KEYDOWN_RIGHT:
 				if(mInfo.mType == URLTYPE.NETWORK && mInfo.getHaveNext()){
 					InitUI();
+					JoyplusMediaPlayerManager.getInstance().ResetURLAndSub();
 					if (mProd_type == 3)
 						mEpisodeIndex -= 1;
 					else
@@ -302,6 +304,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 //	}
     private void initFromIntent(Intent intent){
     	InitUI();
+    	JoyplusMediaPlayerManager.getInstance().ResetURLAndSub();
     	if(intent != null && intent.getData() != null){
     		mInfo.mType = URLTYPE.LOCAL;
     		CreateLocal(intent.getData());
@@ -444,6 +447,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 			if(mVideoView.hasMediaInfoChange()){
 				mMiddleControl.JoyplussetVisible(false, 0);
 				mTopBottomController.JoyplussetVisible(true, 0);
+				if(mJoyplusSubManager.CheckSubAviable())mSubTitleView.displaySubtitle();
 				StateOk = true;//now we can dispatch keydown or others operation
 			}
 		}
@@ -458,7 +462,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 	public void MediaCompletion() {
 		// TODO Auto-generated method stub
 		if(mInfo.mType == URLTYPE.NETWORK){
-			autoPlayNext();
+			autoPlayNext();			
 		}else{//local media should be exit
 			finishActivity();
 		}
@@ -1027,6 +1031,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 	}
 	private void playNext(){
 		InitUI();
+		JoyplusMediaPlayerManager.getInstance().ResetURLAndSub();
 		lastTime = 0;
 		if (mProd_type == 3) {
 			mEpisodeIndex -= 1;
@@ -1571,16 +1576,8 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 						}
 						//获取字幕
 						if(!mJoyplusSubManager.CheckSubAviable()){
-							mJoyplusSubManager.setSubUri(JoyplusSubManager.
+							mJoyplusSubManager.setSubUri(mJoyplusSubManager.
 									getNetworkSubURI(p2pUrl, UtilTools.getP2PMD5(getApplicationContext()),getApplicationContext()));
-							mHandler.post(new Runnable() {
-								
-								@Override
-								public void run() {
-									// TODO Auto-generated method stub
-									mSubTitleView.displaySubtitle();
-								}
-							});
 						}
 					}
 				}

@@ -136,16 +136,21 @@ public class JoyplusSubServer {
 			}else if(mSub.elements.get(getMiddle(start,end)).getStartTime().getTime()==time){
 				return mSub.elements.get(getMiddle(start,end));
 			}
+			if(end>=mSub.elements.size())end=mSub.elements.size();
 			if(start >end )return null;
 			if(start == end ){
 				if( mSub.elements.get(getMiddle(start,end)).getStartTime().getTime()<time 
-						&& (getMiddle(start,end)+1)<mSub.elements.size())					
+						&& (getMiddle(start,end)+1)<mSub.elements.size()){	
+					 if(end>=mSub.elements.size())end=mSub.elements.size()-1;
 					 return mSub.elements.get(getMiddle(start,end)+1);
+				}
 				else
 					 return mSub.elements.get(getMiddle(start,end)); 
 			}else if((end - start)==1){
-				if(mSub.elements.get(end).getStartTime().getTime()<time)
+				if(mSub.elements.get(end).getStartTime().getTime()<time){
+				     if(end>=mSub.elements.size())end=mSub.elements.size()-1;
 					 return mSub.elements.get(end+1);
+				}
 				else if(mSub.elements.get(start).getStartTime().getTime()<time)
 					 return mSub.elements.get(end);
 				else return mSub.elements.get(start);
