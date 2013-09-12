@@ -69,15 +69,15 @@ public class SubTitleView extends TextView {
 		if(getTag() == null || !(getTag() instanceof Element)) return;
 		Element currElement = (Element) getTag();
 		long currTime = getCurrentTime();
-		if(currTime >= currElement.getEndTime().getTime() + SUBTITLE_DELAY_TIME_MAX / 10){
-			setText("");
+		long endTime = currElement.getEndTime().getTime();
+		if(currTime >= endTime + SUBTITLE_DELAY_TIME_MAX / 10){
+			mHandler.removeCallbacksAndMessages(null);
 			mHandler.sendEmptyMessage(MESSAGE_SUBTITLE_START);
 		}else {
-			if(currElement.getEndTime().getTime() - currTime > SUBTITLE_DELAY_TIME_MAX){
-				
+			if(endTime - currTime > SUBTITLE_DELAY_TIME_MAX){
 				mHandler.sendEmptyMessageDelayed(MESSAGE_SUBTITLE_HIDEN_CACHE, SUBTITLE_DELAY_TIME_MAX);
 			}else {
-				mHandler.sendEmptyMessageDelayed(MESSAGE_SUBTITLE_END_HIDEN, currElement.getEndTime().getTime() - currTime);
+				mHandler.sendEmptyMessageDelayed(MESSAGE_SUBTITLE_END_HIDEN, endTime - currTime);
 			}
 		}
 	}
@@ -86,14 +86,15 @@ public class SubTitleView extends TextView {
 		if(getTag() == null || !(getTag() instanceof Element)) return;
 		Element currElement = (Element) getTag();
 		long currTime = getCurrentTime();
-		if(currTime >= currElement.getStartTime().getTime() + SUBTITLE_DELAY_TIME_MAX / 10){
+		long startTime =  currElement.getStartTime().getTime();
+		if(currTime >= startTime + SUBTITLE_DELAY_TIME_MAX / 10){
 			mHandler.removeCallbacksAndMessages(null);
 			mHandler.sendEmptyMessage(MESSAGE_SUBTITLE_START);
 		}else {
-			if(currElement.getStartTime().getTime() - currTime > SUBTITLE_DELAY_TIME_MAX){
+			if(startTime - currTime > SUBTITLE_DELAY_TIME_MAX){
 				mHandler.sendEmptyMessageDelayed(MESSAGE_SUBTITLE_SHOW_CACHE, SUBTITLE_DELAY_TIME_MAX);
 			}else {
-				mHandler.sendEmptyMessageDelayed(MESSAGE_SUBTITLE_BEGAIN_SHOW, currElement.getStartTime().getTime() - currTime);
+				mHandler.sendEmptyMessageDelayed(MESSAGE_SUBTITLE_BEGAIN_SHOW, startTime - currTime);
 			}
 		}
 	}
@@ -103,11 +104,11 @@ public class SubTitleView extends TextView {
 		Element elementShow = (Element) getTag();
 		setText(elementShow.getText());
 		long tempShowTime = getCurrentTime();
-		if(elementShow.getEndTime().getTime() - tempShowTime > SUBTITLE_DELAY_TIME_MAX){
-			
+		long endTime = elementShow.getEndTime().getTime();
+		if(endTime - tempShowTime > SUBTITLE_DELAY_TIME_MAX){
 			mHandler.sendEmptyMessageDelayed(MESSAGE_SUBTITLE_HIDEN_CACHE, SUBTITLE_DELAY_TIME_MAX);
 		}else {
-			mHandler.sendEmptyMessageDelayed(MESSAGE_SUBTITLE_END_HIDEN, elementShow.getEndTime().getTime() - tempShowTime);
+			mHandler.sendEmptyMessageDelayed(MESSAGE_SUBTITLE_END_HIDEN,endTime - tempShowTime);
 		}
 	}
 	
@@ -115,12 +116,13 @@ public class SubTitleView extends TextView {
 		long currentPosition = getCurrentTime();
 		Element preElement = getElement(currentPosition);
 		setText("");
+		long startTime = preElement.getStartTime().getTime();
 		if(preElement != null){
 			setTag(preElement);
-			if(preElement.getStartTime().getTime() - currentPosition > SUBTITLE_DELAY_TIME_MAX){
+			if( startTime - currentPosition > SUBTITLE_DELAY_TIME_MAX){
 				mHandler.sendEmptyMessageDelayed(MESSAGE_SUBTITLE_SHOW_CACHE, SUBTITLE_DELAY_TIME_MAX);
 			}else {
-				mHandler.sendEmptyMessageDelayed(MESSAGE_SUBTITLE_BEGAIN_SHOW, preElement.getStartTime().getTime() - currentPosition);
+				mHandler.sendEmptyMessageDelayed(MESSAGE_SUBTITLE_BEGAIN_SHOW, startTime - currentPosition);
 			}
 		}
 	}
