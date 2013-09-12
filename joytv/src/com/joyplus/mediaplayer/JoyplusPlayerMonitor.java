@@ -1,6 +1,7 @@
 package com.joyplus.mediaplayer;
 
 
+import com.joyplus.mediaplayer.VideoViewInterface.STATE;
 import com.joyplus.tv.R;
 import com.joyplus.tv.utils.Log;
 
@@ -38,8 +39,7 @@ public class JoyplusPlayerMonitor{
 			mHandler.removeCallbacksAndMessages(null);
 			Message m = new Message();
 			m.what    = MSG_STATEUPDATE;
-			//Message m = Message.obtain(mHandler, MSG_STATEUPDATE,"MSG_STATEUPDATE");
-			m.obj     = mPlayer.getMediaInfo();			
+			m.obj     = mCurrentInfo;			
 			mHandler.sendMessage(m);
 		}
 	    public void stopMonitor(){
@@ -66,6 +66,7 @@ public class JoyplusPlayerMonitor{
 				while(Flog){
 					try {
 						Thread.sleep(DELAY);
+						CheckMediaInfo();
 						notityState();
 						System.gc();
 					} catch (InterruptedException e) {
@@ -75,4 +76,21 @@ public class JoyplusPlayerMonitor{
 				}
 			}
 	    };
+	    /*Add AutoMediaInfo judge*/
+	    private MediaInfo mCurrentInfo  = new MediaInfo();
+	    private MediaInfo mPreMediaInfo = new MediaInfo();
+	    private final int MAXCount      = 30*1000/DELAY;
+	    private int       Count         = 0;
+	    private void CheckMediaInfo(){
+	    	mCurrentInfo = mPlayer.getMediaInfo();
+	    	if(mCurrentInfo.getState() == STATE.MEDIA_STATE_PLAYING
+	    			&& mPreMediaInfo.getState() == STATE.MEDIA_STATE_PLAYING){
+	    		if(mCurrentInfo.getCurrentTime() == mPreMediaInfo.getCurrentTime()){
+	    			if(++Count>=MAXCount)mCurrentInfo.setState(STATE.MEDIA_STATE_UNKNOW);
+	    		}else{
+	    			Count = 0;
+	    		}
+	    	}else Count = 0;
+	    	mPreMediaInfo = mCurrentInfo.CreateMediaInfo();
+	    }
 }
