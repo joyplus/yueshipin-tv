@@ -465,33 +465,34 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 			public boolean onLongClick(View v) {
 				// TODO Auto-generated method stub
 				Log.i(TAG, "bofangLL.setOnLongClickListener---->");
-				if (supportDefination == 3) {
-
-					int width = v.getWidth();
-					int height = v.getHeight() * 3;
-					int locationY = v.getHeight() * 2;
-					int[] location = new int[2];
-					v.getLocationOnScreen(location);
-					popupWindow.setFocusable(true);
-					popupWindow.setWidth(width + UtilTools.getStandardValue(getApplicationContext(),10));
-					popupWindow.setHeight(height + UtilTools.getStandardValue(getApplicationContext(),40));
-					popupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
-							location[0] - UtilTools.getStandardValue(getApplicationContext(),6), location[1] - locationY
-									- UtilTools.getStandardValue(getApplicationContext(),40));
-				} else if (supportDefination == 2) {
-
-					int width = v.getWidth();
-					int height = v.getHeight() * 2;
-					int locationY = v.getHeight() * 1;
-					int[] location = new int[2];
-					v.getLocationOnScreen(location);
-					popupWindow.setFocusable(true);
-					popupWindow.setWidth(width + UtilTools.getStandardValue(getApplicationContext(),10));
-					popupWindow.setHeight(height + UtilTools.getStandardValue(getApplicationContext(),40));
-					popupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
-							location[0] - UtilTools.getStandardValue(getApplicationContext(),6), location[1] - locationY
-									- UtilTools.getStandardValue(getApplicationContext(),40));
-				}
+//				if (supportDefination == 3) {
+//
+//					int width = v.getWidth();
+//					int height = v.getHeight() * 3;
+//					int locationY = v.getHeight() * 2;
+//					int[] location = new int[2];
+//					v.getLocationOnScreen(location);
+//					popupWindow.setFocusable(true);
+//					popupWindow.setWidth(width + UtilTools.getStandardValue(getApplicationContext(),10));
+//					popupWindow.setHeight(height + UtilTools.getStandardValue(getApplicationContext(),40));
+//					popupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
+//							location[0] - UtilTools.getStandardValue(getApplicationContext(),6), location[1] - locationY
+//									- UtilTools.getStandardValue(getApplicationContext(),40));
+//				} else if (supportDefination == 2) {
+//
+//					int width = v.getWidth();
+//					int height = v.getHeight() * 2;
+//					int locationY = v.getHeight() * 1;
+//					int[] location = new int[2];
+//					v.getLocationOnScreen(location);
+//					popupWindow.setFocusable(true);
+//					popupWindow.setWidth(width + UtilTools.getStandardValue(getApplicationContext(),10));
+//					popupWindow.setHeight(height + UtilTools.getStandardValue(getApplicationContext(),40));
+//					popupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
+//							location[0] - UtilTools.getStandardValue(getApplicationContext(),6), location[1] - locationY
+//									- UtilTools.getStandardValue(getApplicationContext(),40));
+//				}
+				showPopUpWindow(v);
 				return false;
 			}
 		});
@@ -668,34 +669,7 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 //						popupWindow.setHeight(height + 40);
 //						popupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
 //								location[0] - 6, location[1] - locationY -40);
-						
-						if (supportDefination == 3) {
-
-							int width = v.getWidth();
-							int height = v.getHeight() * 3;
-							int locationY = v.getHeight() * 2;
-							int[] location = new int[2];
-							v.getLocationOnScreen(location);
-							popupWindow.setFocusable(true);
-							popupWindow.setWidth(width + UtilTools.getStandardValue(getApplicationContext(),10));
-							popupWindow.setHeight(height + UtilTools.getStandardValue(getApplicationContext(),40));
-							popupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
-									location[0] - UtilTools.getStandardValue(getApplicationContext(),6), location[1] - locationY
-											- UtilTools.getStandardValue(getApplicationContext(),40));
-						} else if (supportDefination == 2) {
-
-							int width = v.getWidth();
-							int height = v.getHeight() * 2;
-							int locationY = v.getHeight() * 1;
-							int[] location = new int[2];
-							v.getLocationOnScreen(location);
-							popupWindow.setFocusable(true);
-							popupWindow.setWidth(width + UtilTools.getStandardValue(getApplicationContext(),10));
-							popupWindow.setHeight(height + UtilTools.getStandardValue(getApplicationContext(),40));
-							popupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
-									location[0] - UtilTools.getStandardValue(getApplicationContext(),6), location[1] - locationY
-											- UtilTools.getStandardValue(getApplicationContext(),40));
-						}
+						showPopUpWindow(v);
 
 					}
 					// Log.i("Yangzhg", "UPUP!!!!!!");
@@ -708,6 +682,36 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 			beforeView = v;
 		}
 		return false;
+	}
+	
+	private void showPopUpWindow(View v){
+		if (supportDefination == 3) {
+
+			int width = v.getWidth();
+			int height = v.getHeight() * 3;
+			int locationY = v.getHeight() * 2;
+			int[] location = new int[2];
+			v.getLocationOnScreen(location);
+			popupWindow.setFocusable(true);
+			popupWindow.setWidth(width + UtilTools.getStandardValue(getApplicationContext(),10));
+			popupWindow.setHeight(height + UtilTools.getStandardValue(getApplicationContext(),40));
+			popupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
+					location[0] - UtilTools.getStandardValue(getApplicationContext(),6), location[1] - locationY
+							- UtilTools.getStandardValue(getApplicationContext(),40));
+		} else if (supportDefination == 2) {
+
+			int width = v.getWidth();
+			int height = v.getHeight() * 2;
+			int locationY = v.getHeight() * 1;
+			int[] location = new int[2];
+			v.getLocationOnScreen(location);
+			popupWindow.setFocusable(true);
+			popupWindow.setWidth(width + UtilTools.getStandardValue(getApplicationContext(),10));
+			popupWindow.setHeight(height + UtilTools.getStandardValue(getApplicationContext(),40));
+			popupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
+					location[0] - UtilTools.getStandardValue(getApplicationContext(),6), location[1] - locationY
+							- UtilTools.getStandardValue(getApplicationContext(),40));
+		}
 	}
 	
 	private void backToNormalPopView() {
