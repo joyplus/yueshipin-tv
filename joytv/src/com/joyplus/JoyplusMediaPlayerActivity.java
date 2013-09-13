@@ -1496,10 +1496,18 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 	}
 	
 	private void getMD5_P2P(){
+		UtilTools.setP2PMD5(getApplicationContext(), "");
+
 		if("".equals(UtilTools.getP2PMD5(getApplicationContext()))){
 			
-			String md5 = MobclickAgent.getConfigParams(this, "P2P_TV_MD5");
-			Log.i(TAG, "md5--->" + md5);
+			String md5 = null;
+			if(Constant.TestEnv){
+				md5 = MobclickAgent.getConfigParams(this, "TEST_P2P_TV_MD5");
+			}else {
+				md5 = MobclickAgent.getConfigParams(this, "P2P_TV_MD5");
+			}
+			
+//			Log.i(TAG, "md5--->" + md5);
 			if(md5 != null && !"".equals(md5)){
 				
 				UtilTools.setP2PMD5(getApplicationContext(), md5);
