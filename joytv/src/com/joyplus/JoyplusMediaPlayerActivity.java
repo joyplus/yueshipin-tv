@@ -249,7 +249,6 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
     @Override
 	protected void onNewIntent(Intent intent) {
 		// TODO Auto-generated method stub
-		super.onNewIntent(intent);
 		mHandler.removeCallbacksAndMessages(null);
 		m_ReturnProgramView = null;
 		initFromIntent(intent);
@@ -257,7 +256,6 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 
 	private void InitResource() {
 		// TODO Auto-generated method stub
-    	if(Debug)Log.d(TAG,"InitResource()");
     	mInfo  = new CurrentPlayerInfo();
     	JoyplusMediaPlayerMiddleControlMini.setHandler(MiniHandler);
     	try {
@@ -275,12 +273,17 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
     	mAlphaDispear        = AnimationUtils.loadAnimation(this, R.anim.alpha_disappear);
     	mPreference          = new JoyplusMediaPlayerPreference(this);
     	mPreference.setHandler(PreferenceHandler);
-    	JoyplusMediaPlayerManager.getInstance().ResetURLAndSub();
-    	mURLManager = JoyplusMediaPlayerManager.getInstance().getURLManager();
-    	mJoyplusSubManager = JoyplusMediaPlayerManager.getInstance().getSubManager();
+    	ResetURLAndSub();
     	mSubTitleView        = (SubTitleView) findViewById(R.id.tv_subtitle);
     	mSubTitleView.Init(this);
 	}
+	
+	private void ResetURLAndSub(){
+		JoyplusMediaPlayerManager.getInstance().ResetURLAndSub();
+    	mURLManager = JoyplusMediaPlayerManager.getInstance().getURLManager();
+    	mJoyplusSubManager = JoyplusMediaPlayerManager.getInstance().getSubManager();
+	}
+	
 	private void InitUI(){
 		StateOk = false;
 		mVideoView.Init();
@@ -303,8 +306,9 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 //    	subManager = JoyplusMediaPlayerManager.getInstance().getSubManager();
 //	}
     private void initFromIntent(Intent intent){
+    	Log.i(TAG, "initFromIntent--->");
     	InitUI();
-    	JoyplusMediaPlayerManager.getInstance().ResetURLAndSub();
+    	ResetURLAndSub();
     	if(intent != null && intent.getData() != null){
     		mInfo.mType = URLTYPE.LOCAL;
     		CreateLocal(intent.getData());
@@ -1654,7 +1658,8 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 	protected void onStop() {
 		Log.i(TAG, "onStop--->");
 		if(!isFinishing()){
-			finish();
+//			finish();
+			finishActivity();
 		}
 		super.onStop();
 	}
