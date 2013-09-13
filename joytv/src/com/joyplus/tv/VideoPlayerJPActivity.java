@@ -75,6 +75,7 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
+import android.widget.VideoView;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
@@ -94,7 +95,6 @@ import com.joyplus.tv.entity.CurrentPlayDetailData;
 import com.joyplus.tv.entity.HotItemInfo;
 import com.joyplus.tv.entity.URLS_INDEX;
 import com.joyplus.tv.ui.ArcView;
-import com.joyplus.tv.ui.VideoView;
 import com.joyplus.tv.utils.BangDanConstant;
 import com.joyplus.tv.utils.DBUtils;
 import com.joyplus.tv.utils.DataBaseItems.UserHistory;
@@ -273,6 +273,8 @@ public class VideoPlayerJPActivity extends Activity implements
 	
 	private boolean isOnlyExistFengXing = false;
 	private boolean isOnlyExistLetv = false;
+	private boolean hasP2p = false;
+	private boolean isRetry = false;
 	
 	private String sourceFromUrl = null;//当前集的原始播放地址
 	
@@ -287,7 +289,6 @@ public class VideoPlayerJPActivity extends Activity implements
 	private Collection mSubTitleCollection = null;
 	private List<String> subTitleUrlList = new ArrayList<String>();
 	private int currentSubtitleIndex = 0;//默认为第一个
-	
 	
 	
 	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -796,11 +797,16 @@ public class VideoPlayerJPActivity extends Activity implements
 	
 	private void noUrlCanPlay(){
 		
-		if(!VideoPlayerJPActivity.this.isFinishing()){
-			showDialog(0);
-			
-			//所有url不能播放，向服务器传递-1
-			saveToServer(-1, 0);
+		if(hasP2p){
+			isRetry = true;
+			sequenceList();
+		}else{
+			if(!VideoPlayerJPActivity.this.isFinishing()){
+				showDialog(0);
+				
+				//所有url不能播放，向服务器传递-1
+				saveToServer(-1, 0);
+			}
 		}
 	}
 	
@@ -992,7 +998,9 @@ public class VideoPlayerJPActivity extends Activity implements
 					Log.i(TAG, "playUrls--->" + playUrls.get(i).defination_from_server);
 				}
 				// url list 准备完成
+				sourceFromUrl = null;
 				mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
+				
 				return;
 				
 			}
@@ -1135,7 +1143,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		mVideoView.setOnErrorListener(this);
 		mVideoView.setOnCompletionListener(this);
 		mVideoView.setOnPreparedListener(this);
-		mVideoView.setOnInfoListener(this);
+//		mVideoView.setOnInfoListener(this);
 		mVideoView.setOnTouchListener(new View.OnTouchListener() {
 
 			@Override
@@ -1943,6 +1951,7 @@ public class VideoPlayerJPActivity extends Activity implements
 	private void playNext() {
 		// TODO Auto-generated method stub
 		url_temp = null;
+		isRetry = false;
 		mStatue = STATUE_LOADING;
 		mSeekBar.setProgress(0);
 		mSeekBar.setEnabled(false);
@@ -1963,6 +1972,7 @@ public class VideoPlayerJPActivity extends Activity implements
 	private void playPrevious() {
 		// TODO Auto-generated method stub
 		url_temp = null;
+		isRetry = false;
 		mStatue = STATUE_LOADING;
 		mSeekBar.setProgress(0);
 		mSeekBar.setEnabled(false);
@@ -2584,18 +2594,28 @@ public class VideoPlayerJPActivity extends Activity implements
 				tempExP2PList.add(playUrls.get(i));
 			}
 		}
+		
+		if(tempP2PList.size()>0){
+			hasP2p = true;
+		}
+		
 		for(int i=0;i< tempP2PList.size();i++){
 			
 			if("p2p".equals(tempP2PList.get(i).source_from)){
-				
 				String p2pUrl = tempP2PList.get(i).url;
 				Log.i(TAG, "p2pUrl--->" + p2pUrl);
 				if(p2pUrl != null && !p2pUrl.equals("")){
 					
 					if(!"".equals(UtilTools.getP2PMD5(getApplicationContext()))){
+						String p2pStr = "";
+						if(!isRetry){
+							p2pStr = URLUtils.getXunLeiUrlURL(Constant.P2P_PARSE_URL_URL,p2pUrl,
+									UtilTools.getP2PMD5(getApplicationContext()));
+						}else{
+							p2pStr = URLUtils.getXunLeiUrlURL(Constant.P2P_PARSE_URL_URL_RETRY,p2pUrl,
+									UtilTools.getP2PMD5(getApplicationContext()));
+						}
 						
-						String p2pStr = URLUtils.getXunLeiUrlURL(Constant.P2P_PARSE_URL_URL,p2pUrl,
-								UtilTools.getP2PMD5(getApplicationContext()));
 						Log.i(TAG, "p2pStr-->" + p2pStr);
 						AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();           
 						cb.url(p2pStr).type(JSONObject.class);             

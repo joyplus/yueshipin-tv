@@ -331,7 +331,7 @@
         </meta-data>
         <meta-data
             android:name="UMENG_CHANNEL"
-            android:value="j004" />
+            android:value="j002" />
 
         <service android:name="com.parse.PushService" />
 

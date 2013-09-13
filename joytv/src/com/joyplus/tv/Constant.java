@@ -61,6 +61,7 @@ public class Constant {
 	
 	public static final String LETV_PARSE_URL_URL = PARSE_URL_BASE_URL + "getAnalyzedUrl";
 	public static final String P2P_PARSE_URL_URL = PARSE_URL_BASE_URL + "GetJoyplusUrl";
+	public static final String P2P_PARSE_URL_URL_RETRY = PARSE_URL_BASE_URL + "GetJoyplusUrl/retry";
 	public static final String SUBTITLE_PARSE_URL_URL = PARSE_URL_BASE_URL + "joyplus/subtitle/";
 	public static final String FENGXING_REGET_FIRST_URL = LETV_PARSE_URL_URL;
 	public static final String FENGXING_REGET_SECOND_URL = PARSE_URL_BASE_URL + "funshion/second/";
