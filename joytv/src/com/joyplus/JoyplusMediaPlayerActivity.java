@@ -221,22 +221,18 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 			case JoyplusMediaPlayerPreference.MSG_SUB_CHANGE:
 				final int currIndex = msg.arg1;
 				mSubTitleView.hiddenSubtitle();
-				if(currIndex == 0) return;
+				if(currIndex == 0) {
+					mJoyplusSubManager.setSubEnable(false);
+					return;
+				}
 				new Thread(new Runnable() {
 					
 					@Override
 					public void run() {
 						// TODO Auto-generated method stub
+						mJoyplusSubManager.setSubEnable(true);
 						mJoyplusSubManager.SwitchSub(currIndex -1);
-						JoyplusMediaPlayerActivity.this.runOnUiThread(new Runnable() {							
-							@Override
-							public void run() {
-								// TODO Auto-generated method stub
-								if(mSubTitleView.getVisibility() != View.VISIBLE){
-									mSubTitleView.displaySubtitle();
-								}
-							}
-						});
+						mSubTitleView.displaySubtitle();
 					}
 				}).start();
 				
