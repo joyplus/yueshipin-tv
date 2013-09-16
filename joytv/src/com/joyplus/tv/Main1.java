@@ -151,7 +151,7 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 
 	private ImageView startingImageView;
 	private RelativeLayout rootLayout;
-	private Map<String, String> headers;
+//	private Map<String, String> headers;
 
 
 	private SparseArray<View> hot_contentViews = new SparseArray<View>();
@@ -708,7 +708,7 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 		alpha_disappear = AnimationUtils.loadAnimation(this,
 				R.anim.alpha_disappear);
 
-		headers = new HashMap<String, String>();
+		Map<String,String> headers = new HashMap<String, String>();
 		headers.put("User-Agent",
 				"Mozilla/5.0 (Windows NT 6.1; WOW64; rv:6.0.2) Gecko/20100101 Firefox/6.0.2");
 		PackageInfo pInfo;
@@ -719,6 +719,7 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		app.setHeaders(headers);
 
 		if (isNetWorkFine) {// 如果网络正常就执行
 
@@ -1218,7 +1219,6 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 		ImageView logoIv = (ImageView) findViewById(R.id.iv_head_logo);
 		
 		if(Constant.isJoyPlus) {//如果是本身应用
-			
 			personal_recordTv.setText("我的悦视频");
 			playStoreTv.setText("悦片库");
 			logoIv.setImageResource(R.drawable.logo);
@@ -1226,63 +1226,40 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 			headers.put("app_key", Constant.APPKEY);
 			headers.put("client", "tv");
 			app.setHeaders(headers);
-
 			if (!Constant.TestEnv)
 				ReadLocalAppKey();
 		} else {
-
 			if(returnLogInfo != null ) {//如果能够获取的到，appkey使用获取数据，图片使用网上下载的
-				Log.i(TAG, "returnLogInfo.api_url--->" + returnLogInfo.logo_url);
-				
 				if(returnLogInfo.logo_url != null && !returnLogInfo.logo_url.equals("")) {
-					
 					aq.id(logoIv).image(
 							returnLogInfo.logo_url, false, true, 0,R.drawable.logo_custom);
 				}
-				
 				UtilTools.setLogoUrl(getApplicationContext(), returnLogInfo.logo_url);
-				
 				if(returnLogInfo.app_key != null && !returnLogInfo.app_key.equals("")) {
-					
 					Constant.APPKEY = returnLogInfo.app_key;
 					headers.put("app_key", returnLogInfo.app_key);
 					headers.put("client", "tv");
 					app.setHeaders(headers);
-					
 				} else {
-					
 					headers.put("app_key", Constant.APPKEY);
 					headers.put("client", "tv");
 					app.setHeaders(headers);
-
 					if (!Constant.TestEnv)
 						ReadLocalAppKey();
 				}
-				
 				if(returnLogInfo.api_url != null && !returnLogInfo.api_url.equals("")) {
-					
 					Constant.BASE_URL = returnLogInfo.api_url;
 				}
-				
-//				if (!Constant.TestEnv)
-//					ReadLocalAppKey();
-
 			} else {//如果获取不到 appkey使用Joyplus的,其他文字显示使用默认,图片使用默认
 				logoIv.setImageResource(R.drawable.logo_custom);
 				headers.put("app_key", Constant.APPKEY);
 				headers.put("client", "tv");
 				app.setHeaders(headers);
-
 				if (!Constant.TestEnv)
 					ReadLocalAppKey();
 			}
 		}
-		
 		checkLogin();
-		// getHotServiceData();
-//		handler.sendEmptyMessageDelayed(MESSAGE_START_TIMEOUT, LOADING_PIC_TIME);
-//		handler.sendEmptyMessageDelayed(MESSAGE_30S_TIMEOUT, LOADING_TIME_OUT);// 图片撤掉20S后
-		// getHistoryServiceData();
 	}
 
 	@Override
@@ -1389,9 +1366,10 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 			params.put("device_type", "Android");
 
 			AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
-			cb.header("User-Agent",
-					"Mozilla/5.0 (Windows NT 6.1; WOW64; rv:6.0.2) Gecko/20100101 Firefox/6.0.2");
-			cb.header("app_key", Constant.APPKEY);
+//			cb.header("User-Agent",
+//					"Mozilla/5.0 (Windows NT 6.1; WOW64; rv:6.0.2) Gecko/20100101 Firefox/6.0.2");
+//			cb.header("app_key", Constant.APPKEY);
+			cb.SetHeader(app.getHeaders());
 
 			cb.params(params).url(url).type(JSONObject.class)
 					.weakHandler(this, "CallServiceResult");
@@ -2989,19 +2967,12 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 	}
 	
 	protected void getPostServiceData(String url, String interfaceName) {
-		
+		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("app_key",Constant.APPKEY_TOP );
-		
 		params.put("device_name",UtilTools.getUmengChannel(this) );
-//		params.put("app_channel",UtilTools.getUmengChannel(this) );
-		Log.i(TAG, "getPostServiceData--->" + UtilTools.getUmengChannel(this));
-
-		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
-		Map<String,String> head = new HashMap<String, String>();
-		head.put("app_channel", UtilTools.getUmengChannel(this));
-//		cb.SetHeader(app.getHeaders());
-		cb.SetHeader(head);
+		headers.put("app_channel", UtilTools.getUmengChannel(this));
+		cb.SetHeader(headers);
 		cb.params(params).url(url).type(JSONObject.class)
 				.weakHandler(this, interfaceName);
 		aq.ajax(cb);
