@@ -33,9 +33,9 @@ import com.joyplus.tv.Adapters.ZongYiAdapter;
 import com.joyplus.tv.entity.MovieItemData;
 import com.joyplus.tv.ui.MyMovieGridView;
 import com.joyplus.tv.utils.ItemStateUtils;
-import com.joyplus.tv.utils.Log;
 import com.joyplus.tv.utils.UtilTools;
 import com.joyplus.tv.utils.URLUtils;
+import com.joyplus.utils.Log;
 import com.umeng.analytics.MobclickAgent;
 
 public class ShowYueDanListActivity extends AbstractShowActivity{

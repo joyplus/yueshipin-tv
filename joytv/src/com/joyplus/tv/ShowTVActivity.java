@@ -42,9 +42,9 @@ import com.joyplus.tv.ui.NavigateView.OnResultListener;
 import com.joyplus.tv.ui.WaitingDialog;
 import com.joyplus.tv.utils.DBUtils;
 import com.joyplus.tv.utils.ItemStateUtils;
-import com.joyplus.tv.utils.Log;
 import com.joyplus.tv.utils.URLUtils;
 import com.joyplus.tv.utils.UtilTools;
+import com.joyplus.utils.Log;
 import com.umeng.analytics.MobclickAgent;
 
 public class ShowTVActivity extends AbstractShowActivity {

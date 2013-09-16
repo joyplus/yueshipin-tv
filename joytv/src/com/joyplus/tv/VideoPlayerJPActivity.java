@@ -3,8 +3,6 @@ package com.joyplus.tv;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -100,12 +98,13 @@ import com.joyplus.tv.utils.DBUtils;
 import com.joyplus.tv.utils.DataBaseItems.UserHistory;
 import com.joyplus.tv.utils.DataBaseItems.UserShouCang;
 import com.joyplus.tv.utils.DefinationComparatorIndex;
-import com.joyplus.tv.utils.DesUtils;
 import com.joyplus.tv.utils.JieMianConstant;
-import com.joyplus.tv.utils.Log;
 import com.joyplus.tv.utils.SouceComparatorIndex1;
 import com.joyplus.tv.utils.URLUtils;
 import com.joyplus.tv.utils.UtilTools;
+import com.joyplus.utils.DesUtils;
+import com.joyplus.utils.Log;
+import com.joyplus.utils.Utils;
 import com.umeng.analytics.MobclickAgent;
 
 public class VideoPlayerJPActivity extends Activity implements
@@ -400,8 +399,8 @@ public class VideoPlayerJPActivity extends Activity implements
 		// 获取是否收藏
 		getIsShoucangData();
 		
-		OFFSET = UtilTools.getStandardValue(getApplicationContext(), OFFSET);
-		seekBarWidthOffset = UtilTools.getStandardValue(getApplicationContext(), seekBarWidthOffset);
+		OFFSET = Utils.getStandardValue(getApplicationContext(), OFFSET);
+		seekBarWidthOffset = Utils.getStandardValue(getApplicationContext(), seekBarWidthOffset);
 	}
 	
 	private void dismissView(View v){
@@ -1687,7 +1686,7 @@ public class VideoPlayerJPActivity extends Activity implements
 	public void onPrepared(MediaPlayer mp) {
 		// TODO Auto-generated method stub
 		// 准备好了
-		mTotalTimeTextView.setText(UtilTools.formatDuration(mVideoView
+		mTotalTimeTextView.setText(Utils.formatDuration(mVideoView
 				.getDuration()));
 		mSeekBar.setMax((int) mVideoView.getDuration());
 		mSeekBar.setOnSeekBarChangeListener(VideoPlayerJPActivity.this);
@@ -1810,10 +1809,10 @@ public class VideoPlayerJPActivity extends Activity implements
 			parms.leftMargin = (int) mLeft;
 		else
 			parms.leftMargin = OFFSET;
-		parms.bottomMargin = UtilTools.getStandardValue(getApplicationContext(), 30);
+		parms.bottomMargin = Utils.getStandardValue(getApplicationContext(), 30);
 		mTimeLayout.setLayoutParams(parms);
 
-		mCurrentTimeTextView.setText(UtilTools.formatDuration(progress));
+		mCurrentTimeTextView.setText(Utils.formatDuration(progress));
 		mCurrentTimeTextView.setVisibility(View.VISIBLE);
 	}
 
@@ -2092,7 +2091,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		}
 		if(lastTime>0){
 			mLastTimeTextView.setVisibility(View.VISIBLE);
-			mLastTimeTextView.setText("上次播放: " + UtilTools.formatDuration(lastTime));
+			mLastTimeTextView.setText("上次播放: " + Utils.formatDuration(lastTime));
 		}else{
 			mLastTimeTextView.setVisibility(View.GONE);
 		}
@@ -2907,11 +2906,11 @@ public class VideoPlayerJPActivity extends Activity implements
 				
 				Parser parser = new Parser();
 				
-				String charsetName = UtilTools.getCharset(subTitle, 512);
+				String charsetName = Utils.getCharset(subTitle, 512);
 				Log.d(TAG, "initSubTitleCollection-->charsetName:" + charsetName);
 				if(charsetName.equals("")){
 					
-					boolean isUtf8 = UtilTools.isUTF_8(subTitle);
+					boolean isUtf8 = Utils.isUTF_8(subTitle);
 					Log.i(TAG, "isUtf8--->" + isUtf8);
 					
 					if(!isUtf8){
@@ -3498,8 +3497,8 @@ public class VideoPlayerJPActivity extends Activity implements
 				tv.setText("标    清");
 				break;
 			}
-			Gallery.LayoutParams param = new Gallery.LayoutParams(UtilTools.getStandardValue(getApplicationContext(), 165),
-					UtilTools.getStandardValue(getApplicationContext(), 40));
+			Gallery.LayoutParams param = new Gallery.LayoutParams(Utils.getStandardValue(getApplicationContext(), 165),
+					Utils.getStandardValue(getApplicationContext(), 40));
 			tv.setGravity(Gravity.CENTER);
 			tv.setLayoutParams(param);
 			return tv;
@@ -3562,8 +3561,8 @@ public class VideoPlayerJPActivity extends Activity implements
 //					break;
 				}
 			}
-			Gallery.LayoutParams param = new Gallery.LayoutParams(UtilTools.getStandardValue(VideoPlayerJPActivity.this,165),
-					UtilTools.getStandardValue(VideoPlayerJPActivity.this,40));
+			Gallery.LayoutParams param = new Gallery.LayoutParams(Utils.getStandardValue(VideoPlayerJPActivity.this,165),
+					Utils.getStandardValue(VideoPlayerJPActivity.this,40));
 			tv.setGravity(Gravity.CENTER);
 			tv.setLayoutParams(param);
 			return tv;

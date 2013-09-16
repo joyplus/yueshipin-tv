@@ -3,6 +3,7 @@ package com.joyplus.tv.utils;
 import java.net.URLEncoder;
 
 import com.joyplus.tv.Constant;
+import com.joyplus.utils.Log;
 
 public class URLUtils implements JieMianConstant, BangDanConstant{
 	

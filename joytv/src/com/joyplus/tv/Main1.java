@@ -98,10 +98,11 @@ import com.joyplus.tv.utils.DBUtils;
 import com.joyplus.tv.utils.DataBaseItems;
 import com.joyplus.tv.utils.DataBaseItems.UserHistory;
 import com.joyplus.tv.utils.DataBaseItems.UserShouCang;
-import com.joyplus.tv.utils.Log;
-import com.joyplus.tv.utils.PackageUtils;
 import com.joyplus.tv.utils.URLUtils;
 import com.joyplus.tv.utils.UtilTools;
+import com.joyplus.utils.Log;
+import com.joyplus.utils.PackageUtils;
+import com.joyplus.utils.Utils;
 import com.saulpower.fayeclient.FayeService;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.update.UmengUpdateAgent;
@@ -692,16 +693,16 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 
 		MarginLayoutParams mlp2 = (MarginLayoutParams) titleGroup
 				.getLayoutParams();
-		mlp2.setMargins((displayWith - UtilTools.getStandardValue(this,40)) / 6 + UtilTools.getStandardValue(this,21), mlp2.topMargin,
+		mlp2.setMargins((displayWith - Utils.getStandardValue(this,40)) / 6 + Utils.getStandardValue(this,21), mlp2.topMargin,
 				mlp2.rightMargin, mlp2.bottomMargin);
 		MarginLayoutParams mlp3 = (MarginLayoutParams) noticeView
 				.getLayoutParams();
-		mlp3.setMargins((displayWith - UtilTools.getStandardValue(this,40)) / 6 + UtilTools.getStandardValue(this,21), mlp3.topMargin,
+		mlp3.setMargins((displayWith - Utils.getStandardValue(this,40)) / 6 + Utils.getStandardValue(this,21), mlp3.topMargin,
 				mlp3.rightMargin, mlp3.bottomMargin);
 
 		LayoutParams param = itemFram.getLayoutParams();
-		param.height = 2 * displayWith / 9 + UtilTools.getStandardValue(this,3);
-		param.width = displayWith / 6 + UtilTools.getStandardValue(this,3);
+		param.height = 2 * displayWith / 9 + Utils.getStandardValue(this,3);
+		param.width = displayWith / 6 + Utils.getStandardValue(this,3);
 		itemFram.setVisibility(View.INVISIBLE);
 		alpha_appear = AnimationUtils.loadAnimation(this, R.anim.alpha_appear);
 		alpha_disappear = AnimationUtils.loadAnimation(this,
@@ -991,7 +992,7 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 
 		TextView tv = (TextView) view.findViewById(R.id.tv_over_time);
 
-		String overTime = UtilTools.movieOverTime(duration);
+		String overTime = Utils.movieOverTime(duration);
 		// String overTime = UtilTools.movieOverTime("300分钟");
 
 		if (overTime != null && !overTime.equals("")) {
@@ -1184,7 +1185,7 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 			}
 			Log.d(TAG, item.prod_name);
 			hot_name_tv.setText(item.prod_name);
-			hot_score_tv.setText(UtilTools.formateScore(item.score));
+			hot_score_tv.setText(Utils.formateScore(item.score));
 			hot_introduce_tv.setText("\t\t" + item.prod_summary);
 			hot_contentViews.put(i, hotView);
 		}

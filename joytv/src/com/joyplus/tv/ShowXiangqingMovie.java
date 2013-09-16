@@ -44,10 +44,11 @@ import com.joyplus.tv.entity.CurrentPlayDetailData;
 import com.joyplus.tv.ui.WaitingDialog;
 import com.joyplus.tv.utils.BangDanConstant;
 import com.joyplus.tv.utils.ItemStateUtils;
-import com.joyplus.tv.utils.Log;
-import com.joyplus.tv.utils.MyKeyEventKey;
 import com.joyplus.tv.utils.URLUtils;
 import com.joyplus.tv.utils.UtilTools;
+import com.joyplus.utils.Log;
+import com.joyplus.utils.MyKeyEventKey;
+import com.joyplus.utils.Utils;
 import com.umeng.analytics.MobclickAgent;
 
 public class ShowXiangqingMovie extends Activity implements
@@ -377,11 +378,11 @@ public class ShowXiangqingMovie extends Activity implements
 			int[] location = new int[2];
 			v.getLocationOnScreen(location);
 			popupWindow.setFocusable(true);
-			popupWindow.setWidth(width + UtilTools.getStandardValue(getApplicationContext(),10));
-			popupWindow.setHeight(height + UtilTools.getStandardValue(getApplicationContext(),40));
+			popupWindow.setWidth(width + Utils.getStandardValue(getApplicationContext(),10));
+			popupWindow.setHeight(height + Utils.getStandardValue(getApplicationContext(),40));
 			popupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
-					location[0] - UtilTools.getStandardValue(getApplicationContext(),6), location[1] - locationY
-							- UtilTools.getStandardValue(getApplicationContext(),40));
+					location[0] - Utils.getStandardValue(getApplicationContext(),6), location[1] - locationY
+							- Utils.getStandardValue(getApplicationContext(),40));
 		} else if (supportDefination == 2) {
 
 			int width = v.getWidth();
@@ -390,11 +391,11 @@ public class ShowXiangqingMovie extends Activity implements
 			int[] location = new int[2];
 			v.getLocationOnScreen(location);
 			popupWindow.setFocusable(true);
-			popupWindow.setWidth(width + UtilTools.getStandardValue(getApplicationContext(),10));
-			popupWindow.setHeight(height + UtilTools.getStandardValue(getApplicationContext(),40));
+			popupWindow.setWidth(width + Utils.getStandardValue(getApplicationContext(),10));
+			popupWindow.setHeight(height + Utils.getStandardValue(getApplicationContext(),40));
 			popupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
-					location[0] - UtilTools.getStandardValue(getApplicationContext(),6), location[1] - locationY
-							- UtilTools.getStandardValue(getApplicationContext(),40));
+					location[0] - Utils.getStandardValue(getApplicationContext(),6), location[1] - locationY
+							- Utils.getStandardValue(getApplicationContext(),40));
 		}
 	}
 
@@ -774,7 +775,7 @@ public class ShowXiangqingMovie extends Activity implements
 
 		TextView tv = (TextView) overTimeLL.findViewById(R.id.tv_over_time);
 
-		String overTime = UtilTools.movieOverTime(movieData.movie.duration);
+		String overTime = Utils.movieOverTime(movieData.movie.duration);
 		// String overTime = UtilTools.movieOverTime("300分钟");
 
 		if (overTime != null && !overTime.equals("")) {
@@ -1020,8 +1021,7 @@ public class ShowXiangqingMovie extends Activity implements
 				// holder.content.setText("时长:"+recommendMoviesData.items[position].duration.replace("：00",
 				// "分钟"));
 				holder.content
-						.setText(UtilTools
-								.formatMovieDuration(recommendMoviesData.items[position].duration));
+						.setText(Utils.formatMovieDuration(recommendMoviesData.items[position].duration));
 			}
 			holder.score.setText(recommendMoviesData.items[position].score);
 			switch (Integer

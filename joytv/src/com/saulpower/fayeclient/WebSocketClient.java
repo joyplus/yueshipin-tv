@@ -12,7 +12,7 @@ import org.apache.http.client.HttpResponseException;
 import org.apache.http.message.BasicLineParser;
 import org.apache.http.message.BasicNameValuePair;
 
-import com.joyplus.tv.utils.Log;
+import com.joyplus.utils.Log;
 
 import javax.net.SocketFactory;
 import javax.net.ssl.SSLContext;

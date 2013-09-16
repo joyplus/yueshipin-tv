@@ -21,7 +21,7 @@ import com.androidquery.util.AQUtility;
 import com.joyplus.tv.Service.Return.ReturnProgramView;
 import com.joyplus.tv.entity.CurrentPlayDetailData;
 import com.joyplus.tv.ui.UserInfo;
-import com.joyplus.tv.utils.Log;
+import com.joyplus.utils.Log;
 
 public class App extends Application {
 	private final String TAG = "App";

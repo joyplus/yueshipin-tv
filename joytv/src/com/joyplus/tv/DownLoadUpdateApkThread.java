@@ -9,10 +9,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import android.content.Context;
-
-import com.joyplus.adkey.mraid.Utils;
-import com.joyplus.tv.utils.Log;
-import com.joyplus.tv.utils.UtilTools;
+import com.joyplus.utils.Log;
+import com.joyplus.utils.Utils;
 
 
 public class DownLoadUpdateApkThread implements Runnable {
@@ -61,7 +59,7 @@ public class DownLoadUpdateApkThread implements Runnable {
 		    }
 		    File f_downloaded = new File(cacheDir, NAME_APK_DOWNLOADED);
 		    f.renameTo(f_downloaded);
-		    UtilTools.chmod("777", f_downloaded.getAbsolutePath());
+		    Utils.chmod("777", f_downloaded.getAbsolutePath());
 		    Log.d("TAG", "---------------download");
 		    
 		    i.close();

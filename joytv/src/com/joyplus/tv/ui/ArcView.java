@@ -1,6 +1,7 @@
 package com.joyplus.tv.ui;
 
 import com.joyplus.tv.utils.UtilTools;
+import com.joyplus.utils.Utils;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -71,7 +72,7 @@ public class ArcView extends View {
 //        float top = 0+r1-2;
 //        float right =this.getWidth()-r1+1;
 //        float bottom = this.getHeight()-r1;
-        int six = 6/UtilTools.getStandardValue(getContext(),1);
+        int six = 6/Utils.getStandardValue(getContext(),1);
         float left = 0+r1-six;
         float top = 0+r1-six;
         float right =this.getWidth()-r1+six;
