@@ -35,7 +35,6 @@ import android.os.Parcelable;
 import android.provider.MediaStore.Video;
 import android.text.TextUtils;
 import android.view.KeyEvent;
-import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.webkit.MimeTypeMap;
@@ -48,6 +47,8 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joyplus.Sub.JoyplusSubManager;
+import com.joyplus.ad.AdPublisherIdManager;
+import com.joyplus.ad.AdvertManager;
 import com.joyplus.manager.URLManager;
 import com.joyplus.manager.URLManager.Quality;
 import com.joyplus.mediaplayer.JoyplusMediaPlayerListener;
@@ -95,7 +96,9 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 	//Setting msg 400-450  
 	public JoyplusMediaPlayerPreference    mPreference;
 	/*SubTitle TextView Control   level 4*/
-	private SubTitleView                   mSubTitleView;
+	private SubTitleView                   mSubTitleView;	
+	/*ad */
+	private JoyplusMediaPlayerAd           mAd;
 	
 	public static final int   DELAY_SHOWVIEW        = 10*1000; //10s
 	/*msg 0-99*/
@@ -110,6 +113,70 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 	
 	public static final int   MSG_UPDATECURRENTINFO = 7;
 	
+	//use to ad
+	public static final int   MSG_FROM_AD           = 8;//play commend come from
+	public static final int   MSG_FROM_SELF         = 9;//play commend come from
+	public static final int   MSG_AD_START          = 10;
+	public static final int   MSG_AD_FINISH         = 11;
+	public static final int   MSG_PLAYER_PLAY       = 12;
+	public static final int   MSG_PLAYER_WAIT       = 13;
+	public Handler PlayerHandler = new Handler(){
+		@Override
+		public void handleMessage(Message msg) {
+			// TODO Auto-generated method stub
+			super.handleMessage(msg);
+			switch(msg.what){
+			case MSG_PLAYER_PLAY:
+				String path    = (String) msg.obj;
+				int   seekto  = msg.arg1;
+				if(!(path==null || "".equals(path))){
+					if(mAd.isPlaying()){
+						PlayerHandler.removeMessages(MSG_PLAYER_WAIT);
+						Message m = new Message();
+						m.what   = MSG_PLAYER_WAIT;
+						m.obj    = path;
+						m.arg1 = (int) seekto;
+						PlayerHandler.sendMessage(m);
+					}else{
+						mVideoView.getPlayer().SetVideoPaths(path);
+						if(lastTime>0){
+							mVideoView.getPlayer().SeekVideo(seekto);
+						}
+					}
+					
+				}
+				break;
+			case MSG_PLAYER_WAIT:
+				if(mAd.isPlaying()){
+					PlayerHandler.removeMessages(MSG_PLAYER_WAIT);
+					Message m = new Message();
+					m.what   = MSG_PLAYER_WAIT;
+					m.obj    = msg.obj;
+					m.arg1   = msg.arg1;
+					PlayerHandler.sendMessageDelayed(m,500);
+				}else{
+					PlayerHandler.removeMessages(MSG_PLAYER_PLAY);
+					Message m = new Message();
+					m.what   = MSG_PLAYER_PLAY;
+					m.obj    = msg.obj;
+					m.arg1   = msg.arg1;
+					PlayerHandler.sendMessage(m);
+				}
+				break;
+			}
+		}		
+	};
+	
+    private void PlayerPlay(String path,int seek){
+    	if(!(path==null || "".equals(path))){
+	    	PlayerHandler.removeMessages(MSG_PLAYER_PLAY);
+			Message m = new Message();
+			m.what = MSG_PLAYER_PLAY;
+			m.obj  = path;
+			m.arg1 = seek;
+			PlayerHandler.sendMessage(m);
+    	}
+    }
 	enum URLTYPE{
 		UNKNOW (0), NETWORK (1), LOCAL (2);
 		private int type;
@@ -120,6 +187,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 			return type;
 		}
 	}
+	
 	public  static CurrentPlayerInfo mInfo;
 	public  static boolean StateOk = false;//flog of player in loading or others
 	public  static Animation mAlphaDispear ;
@@ -127,8 +195,14 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(com.joyplus.tv.R.layout.joyplusvideoview);
-		InitResource();
-		initFromIntent(getIntent());
+		new Runnable(){
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				InitResource();
+				initFromIntent(getIntent());
+			}			
+		}.run();		
 	}
 	private class JoyplusFinish implements Runnable{
 		@Override 
@@ -225,8 +299,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 					mJoyplusSubManager.setSubEnable(false);
 					return;
 				}
-				new Thread(new Runnable() {
-					
+				new Thread(new Runnable() {					
 					@Override
 					public void run() {
 						// TODO Auto-generated method stub
@@ -234,14 +307,12 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 						mJoyplusSubManager.SwitchSub(currIndex -1);
 						mSubTitleView.displaySubtitle();
 					}
-				}).start();
-				
-				
-				
+				}).start();				
 				break;
 			}
 		}
 	};
+	
     @Override
 	protected void onNewIntent(Intent intent) {
 		// TODO Auto-generated method stub
@@ -272,6 +343,8 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
     	ResetURLAndSub();
     	mSubTitleView        = (SubTitleView) findViewById(R.id.tv_subtitle);
     	mSubTitleView.Init(this);
+    	//add ad 
+    	mAd = new JoyplusMediaPlayerAd(this);
 	}
 	
 	private void ResetURLAndSub(){
@@ -280,7 +353,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
     	mJoyplusSubManager = JoyplusMediaPlayerManager.getInstance().getSubManager();
 	}
 	
-	private void InitUI(){
+	public void InitUI(){
 		StateOk = false;
 		mVideoView.Init();
     	mTopBottomController.Init();
@@ -294,13 +367,9 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
     		finishActivity();
     		return;
     	}
-//    	InitSubAndURL();
+    	mAd.startAD();
 	}
-//	private void InitSubAndURL(){
-//		JoyplusMediaPlayerManager.getInstance().ResetURLAndSub();
-//    	urlManager = JoyplusMediaPlayerManager.getInstance().getURLManager();
-//    	subManager = JoyplusMediaPlayerManager.getInstance().getSubManager();
-//	}
+
     private void initFromIntent(Intent intent){
     	Log.i(TAG, "initFromIntent--->");
     	InitUI();
@@ -313,6 +382,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
     		Create();
     	}
     }
+    
     /*Interface of get the videoview of which used*/
     public VideoViewInterface getPlayer(){
     	return mVideoView.getPlayer();
@@ -504,7 +574,8 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
         if (scheme.equals("content")) {
 			try {
 				initFromContentUri(uri);
-				mVideoView.getPlayer().SetVideoPaths(uri.toString());
+				PlayerPlay(uri.toString(),0);
+				//mVideoView.getPlayer().SetVideoPaths(uri.toString());
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				onCreateDialog(0);//the uri was bad we can finish this.
@@ -512,7 +583,8 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 			}
         } else if (uri.getScheme().equals("file")) {
         	mInfo.mPlayerName = getMediaName(uri);
-        	mVideoView.getPlayer().SetVideoPaths(uri.toString());
+        	PlayerPlay(uri.toString(),0);
+        	//mVideoView.getPlayer().SetVideoPaths(uri.toString());
         }
         mInfo.NotifyPlayerInfo();
 	}
@@ -943,11 +1015,11 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 				updateSourceAndTime();
 				//add by Jas@20130816 for player
 				mInfo.mPlayerUri = currentPlayUrl;
-				mVideoView.getPlayer().SetVideoPaths(currentPlayUrl);
-				if(lastTime>0){
-					mVideoView.getPlayer().SeekVideo((int)lastTime);
-				}
-				//mVideoView.getPlayer().StartVideo();
+//				mVideoView.getPlayer().SetVideoPaths(currentPlayUrl);
+//				if(lastTime>0){
+//					mVideoView.getPlayer().SeekVideo((int)lastTime);
+//				}
+				PlayerPlay(mInfo.mPlayerUri , (int)lastTime);
 				break;
 			default:
 				break;

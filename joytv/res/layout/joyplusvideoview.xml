@@ -75,18 +75,14 @@
 	    <RelativeLayout
 		        android:id="@+id/mediacontroller_bar"
 		        android:layout_width="match_parent"
-		        android:layout_height="match_parent" >
-		        <TextView
-		            android:layout_width="match_parent"
-		            android:layout_height="wrap_content"
-		            android:layout_alignParentTop="true"
-		            android:background="@drawable/player_mask_top" />
+		        android:layout_height="match_parent" >		        
 		        <!-- Top bar XML  Control it in JoyplusMediaPlayerBar.VideoViewTopBar -->
 		        <RelativeLayout
 		            android:id="@+id/mediacontroller_topbar"
 		            android:layout_width="fill_parent"
 		            android:layout_height="50dp"
-		            android:layout_alignParentTop="true" >
+		            android:layout_alignParentTop="true">
+			 
 		            <TextView
 		                android:id="@+id/mediacontroller_topbar_playname"
 		                android:layout_width="wrap_content"
@@ -114,15 +110,7 @@
 		                android:layout_marginTop="4dp"
 		                android:layout_toRightOf="@+id/mediacontroller_topbar_playname"/>
 		        </RelativeLayout>
-		        <!-- end Top Bar XML -->
-		        
-		        <TextView
-		            android:layout_width="match_parent"
-		            android:layout_height="wrap_content"
-		            android:layout_alignParentBottom="true"
-		            android:background="@drawable/player_mask_bottom" />
-		        
-		        
+		        <!-- end Top Bar XML --> 
 		        
 		        <!-- Bottom Bar XML Control it in JoyplusMediaPlayerBar.VideoViewController -->
 		        <RelativeLayout
@@ -132,6 +120,7 @@
 		            android:layout_alignParentBottom="true"
 		            android:layout_marginBottom="30dp"
 		            android:layout_marginLeft="33dp" >
+		      
 		            <RelativeLayout
 		                android:id="@+id/mediacontroller_bottombar_time"
 		                android:layout_width="wrap_content"
@@ -289,4 +278,37 @@
 				                android:textSize="40dp" />
 	            </LinearLayout>
 		</RelativeLayout>
+		
+		<!-- Level 5 : Ad -->
+		<RelativeLayout                
+		        android:layout_width="match_parent"
+                android:layout_height="match_parent"	
+		        android:id="@+id/joyplusmediaplayer_advideoView_layout"	
+		        android:visibility="gone"	        
+                android:orientation="horizontal"
+			    android:background="@color/black">
+	            <io.vov.vitamio.widget.CenterLayout
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:orientation="vertical" >
+				    <VideoView
+					    android:id="@+id/joyplusmediaplayer_advideoView"
+					    android:layout_width="wrap_content"
+					    android:layout_height="wrap_content" />
+				</io.vov.vitamio.widget.CenterLayout>
+			    <TextView
+	                android:id="@+id/joyplusmediaplayer_advideoView_time"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:layout_alignParentTop="true"
+	                android:layout_alignParentRight="true"
+		            android:layout_marginRight="30dp"           
+	                android:shadowColor="#000000"
+			        android:shadowDx="1"
+			        android:shadowDy="1"
+			        android:shadowRadius="2"
+	                android:textColor="@color/white"
+	                android:textAppearance="?android:attr/textAppearanceMedium"
+	                android:textSize="40dp" />	            
+	    </RelativeLayout>        
 </RelativeLayout>
