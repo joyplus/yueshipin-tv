@@ -1283,7 +1283,7 @@ public class UtilTools implements JieMianConstant, BangDanConstant {
     }
     
 	public static int getStandardValue(Context context,int value){
-		
-		return (int) (context.getResources().getDimension(R.dimen.standard_1_dp) * value);
+		float standardDp = context.getResources().getDimension(R.dimen.standard_1_dp);
+		return standardDp == 0 ? value:(int)(value * standardDp);
 	}
 }

@@ -179,7 +179,7 @@ public class JoyplusMediaPlayerMiddleControl extends LinearLayout implements Joy
 	@Override
 	public boolean JoyplusonKeyLongPress(int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 }
