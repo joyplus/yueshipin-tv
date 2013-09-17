@@ -706,7 +706,7 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 					holder.stars_notice.setText(R.string.xiangqing_zhuyan_name);
 				}
 				int prod_type = Integer.valueOf(data.get(position).prod_type);
-				String playBack_time = Utils.formatDuration(Integer.valueOf(data.get(position).playback_time));
+				String playBack_time = Utils.formatDuration1(Integer.valueOf(data.get(position).playback_time));
 				switch (prod_type) {
 				case 1:
 					holder.content.setText("上次观看到：" + playBack_time);

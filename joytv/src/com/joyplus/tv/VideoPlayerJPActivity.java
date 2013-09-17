@@ -861,7 +861,8 @@ public class VideoPlayerJPActivity extends Activity implements
 			cb.params(params);
 			Map<String, String> headers = new HashMap<String, String>();
 			headers.put("Content-Type", "application/json");
-			headers.put("app_key", Constant.APPKEY);
+//			headers.put("app_key", Constant.APPKEY);
+			headers.putAll(app.getHeaders());
 			cb.SetHeader(headers);
 			aq.ajax(cb);
 		} catch (UnsupportedEncodingException e) {
@@ -936,9 +937,9 @@ public class VideoPlayerJPActivity extends Activity implements
 
 		if(!"initFenxingNetServiceData".equals(interfaceName)){
 			
-			Map<String, String> headers = new HashMap<String, String>();
-			headers.put("app_key", Constant.APPKEY);
-			cb.SetHeader(headers);
+//			Map<String, String> headers = new HashMap<String, String>();
+//			headers.put("app_key", Constant.APPKEY);
+			cb.SetHeader(app.getHeaders());
 		}
 		aq.ajax(cb);
 	}
@@ -2511,9 +2512,9 @@ public class VideoPlayerJPActivity extends Activity implements
 		Log.i(TAG, "subTitleUrl-->" + subTitleUrl);
 		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();           
 		cb.url(subTitleUrl).type(JSONObject.class);             
-		Map<String, String> headers = new HashMap<String, String>();
-		headers.put("app_key", Constant.APPKEY);
-		cb.SetHeader(headers);        
+//		Map<String, String> headers = new HashMap<String, String>();
+//		headers.put("app_key", Constant.APPKEY);
+		cb.SetHeader(app.getHeaders());        
 		aq.sync(cb);
 		
 		JSONObject jo = cb.getResult();
@@ -2560,9 +2561,9 @@ public class VideoPlayerJPActivity extends Activity implements
 		AjaxCallback<byte[]> cb = new AjaxCallback<byte[]>();
 		cb.url(url).type(byte[].class);
 		
-		Map<String, String> headers = new HashMap<String, String>();
-		headers.put("app_key", Constant.APPKEY);
-		cb.SetHeader(headers); 
+//		Map<String, String> headers = new HashMap<String, String>();
+//		headers.put("app_key", Constant.APPKEY);
+//		cb.SetHeader(headers); 
 		
 		aq.sync(cb);
 		byte[] subTitle = cb.getResult();
@@ -2633,9 +2634,9 @@ public class VideoPlayerJPActivity extends Activity implements
 						Log.i(TAG, "p2pStr-->" + p2pStr);
 						AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();           
 						cb.url(p2pStr).type(JSONObject.class);             
-						Map<String, String> headers = new HashMap<String, String>();
-						headers.put("app_key", Constant.APPKEY);
-						cb.SetHeader(headers);        
+//						Map<String, String> headers = new HashMap<String, String>();
+//						headers.put("app_key", Constant.APPKEY);
+						cb.SetHeader(app.getHeaders());        
 						aq.sync(cb);
 						JSONObject jo = cb.getResult();
 						if(jo != null && jo.has("error")){
@@ -2834,9 +2835,9 @@ public class VideoPlayerJPActivity extends Activity implements
 							getParseUrlURL(Constant.LETV_PARSE_URL_URL, url_index.url, mProd_id, mProd_sub_name);
 					AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();           
 					cb.url(wangPanUrl).type(JSONObject.class);             
-					Map<String, String> headers = new HashMap<String, String>();
-					headers.put("app_key", Constant.APPKEY);
-					cb.SetHeader(headers);        
+//					Map<String, String> headers = new HashMap<String, String>();
+//					headers.put("app_key", Constant.APPKEY);
+					cb.SetHeader(app.getHeaders());        
 					aq.sync(cb);
 //					AjaxStatus status = cb.getStatus();
 					JSONObject jo = cb.getResult();

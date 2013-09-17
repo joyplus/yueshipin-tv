@@ -29,14 +29,35 @@ public class Utils {
 		}.start();
 	}
 
-	public static String formatDuration(long duration) {
+	/** s**/
+	public static String formatDuration1(long duration) {
 		int h = (int) duration / 3600;
 		int m = (int) (duration - h * 3600) / 60;
 		int s = (int) duration - (h * 3600 + m * 60);
-
-		return h == 0 ? String.format("%1$02d:%2$02d", m, s)
-				:String.format("%1$d:%2$02d:%3$02d", h, m, s);
+		String durationValue;
+		if (h == 0) {
+			durationValue = String.format("%1$02d:%2$02d", m, s);
+		} else {
+			durationValue = String.format("%1$d:%2$02d:%3$02d", h, m, s);
+		}
+		return durationValue;
 	}
+	
+	/** mms**/
+	public static String formatDuration(long duration) {
+		duration = duration / 1000;
+		int h = (int) duration / 3600;
+		int m = (int) (duration - h * 3600) / 60;
+		int s = (int) duration - (h * 3600 + m * 60);
+		String durationValue;
+		// if (h == 0) {
+		// durationValue = String.format("%1$02d:%2$02d", m, s);
+		// } else {
+		durationValue = String.format("%1$02d:%2$02d:%3$02d", h, m, s);
+		// }
+		return durationValue;
+	}
+	
 
 	public static String formatMovieDuration(String duration) {
 

@@ -113,7 +113,7 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 		OnItemClickListener , AdListener{
 	private String TAG = "Main";
 	public static final String ACTION_USERUPDATE = "user_update";
-	
+
 	private static final int DIALOG_WAITING = 0;
 
 	private static final int MESSAGE_STEP1_SUCESS = 100;
@@ -127,7 +127,7 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 
 	private static final long LOADING_PIC_TIME = 10 * 1000;
 	private static final long LOADING_TIME_OUT = 30 * 1000;
-	
+
 	private int[] resouces_lib_nomal = { R.drawable.movie_normal,
 			R.drawable.episode_normal, R.drawable.cartoon_normal,
 			R.drawable.variety_normal, R.drawable.search_normal };
@@ -137,11 +137,11 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 
 	private int[] resouces_my_nomal = { R.drawable.follow_normal,
 			R.drawable.recent_normal, R.drawable.system_normal };
-	
+
 	private int[] resouces_my_active = { R.drawable.follow_active,
 			R.drawable.recent_active, R.drawable.system_active, };
 
-	
+
 	private App app;
 	private AQuery aq; 
 	ObjectMapper mapper = new ObjectMapper();
@@ -151,7 +151,7 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 
 	private ImageView startingImageView;
 	private RelativeLayout rootLayout;
-//	private Map<String, String> headers;
+	private Map<String, String> headers;
 
 
 	private SparseArray<View> hot_contentViews = new SparseArray<View>();
@@ -196,25 +196,25 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 	private boolean isWifiReset = false;// wifi网络是否重新设置
 
 	private ImageView erweimaImage;//二维码显示
-	
+
 	private boolean isRegesterService = false;
-	
+
 	private List<HotItemInfo> hot_list = new ArrayList<HotItemInfo>();//用户数据，有可能去过重
 	private List<HotItemInfo> netWorkHotList = new ArrayList<HotItemInfo>();//网络获取数据，不改变
 	private List<YueDanInfo> yuedan_list = new ArrayList<YueDanInfo>();
 	private int isHotLoadedFlag = 0;
 	private int isYueDanLoadedFlag = 0;
-	
+
 	private Button upScrollBt,downScrollBt;
 	private ImageButton leftCustomIv,rightCustomIv;
-	
+
 	/*
 	 * adkey varies
 	 * @author
 	 */
 	private RelativeLayout layout;
 	private AdView mAdView;
-	
+
 	private AdView mAdViewFake = null;
 	private RelativeLayout layoutFake;
 
@@ -228,9 +228,9 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 		aq = new AQuery(this);		
 
 		startingImageView = (ImageView) findViewById(R.id.image_starting);
-		
+
 		if(!UtilTools.getIsShowAd(getApplicationContext())) {
-			
+
 			BitmapFactory.Options opt = new BitmapFactory.Options();
 //			  opt.inPreferredConfig = Bitmap.Config.RGB_565; // Each pixel is stored 2 bytes
 		  // opt.inPreferredConfig = Bitmap.Config.ARGB_8888; //Each pixel is stored 4 bytes
@@ -246,10 +246,10 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 				e1.printStackTrace();
 			}
 		} else {
-			
+
 			showDialog(DIALOG_WAITING);
 		}
-		
+
 		rootLayout = (RelativeLayout) findViewById(R.id.root_layout);
 		gallery1 = (CustomGallery) findViewById(R.id.gallery);
 		contentLayout = (LinearLayout) findViewById(R.id.contentlayout);
@@ -264,11 +264,11 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 		image_bar1.setVisibility(View.INVISIBLE);
 		image_bar2.setVisibility(View.INVISIBLE);
 		image_bar3.setVisibility(View.INVISIBLE);
-		
+
 		upScrollBt = (Button) findViewById(R.id.bt_up_scrolllayout);
-		
+
 		upScrollBt.setOnClickListener(new View.OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
@@ -276,11 +276,11 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 				titleGroup.selectPreTitle();
 			}
 		});
-		
+
 		downScrollBt = (Button) findViewById(R.id.bt_down_scrolllayout);
-		
+
 		downScrollBt.setOnClickListener(new View.OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
@@ -288,7 +288,7 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 				titleGroup.selectNextTitle();
 			}
 		});
-		
+
 		leftCustomIv = (ImageButton) findViewById(R.id.icon_arrow_left);
 		rightCustomIv = (ImageButton) findViewById(R.id.icon_arrow_right);
 		leftCustomIv.setFocusable(false);
@@ -296,21 +296,21 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 		rightCustomIv.setFocusable(false);
 		rightCustomIv.setFocusableInTouchMode(false);
 		leftCustomIv.setOnClickListener(new View.OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				
+
 				gallery1.showPre();
 			}
 		});
-		
+
 		rightCustomIv.setOnClickListener(new View.OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				
+
 				gallery1.showNext();
 			}
 		});
@@ -321,7 +321,7 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 				null);
 		lastBandTimeView = (TextView) myView.findViewById(R.id.lastBandTime);
 		erweimaImage = (ImageView) myView.findViewById(R.id.img_erweima);
-		
+
 		/*
 		 * banner ad
 		 */
@@ -379,14 +379,14 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 							contentLayout.startAnimation(alpha_appear);
 							if(hot_list != null && hot_list.get(indexCaces
 									.get(index))!= null) {
-								
+
 								HotItemInfo tempInfo = hot_list.get(indexCaces
 										.get(index));
-								
+
 								Log.i(TAG, "tempInfo.duration--->" + tempInfo.duration);
-								
+
 								if(tempInfo.type == 1 && tempInfo.prod_type.equals("1")) {
-									
+
 									initOverTime(hotView, tempInfo.duration);
 								}
 							}
@@ -553,7 +553,7 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 						}
 						noticeView.setText(gallery1.getSelectedItemPosition()
 								+ 1 + "/" + yuedan_list.size());
-						
+
 //						gallery1.setAdapter(new MainYueDanItemAdapter(Main.this,
 //								yuedan_list));
 //						if (indexCaces.get(index) == null) {
@@ -708,7 +708,7 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 		alpha_disappear = AnimationUtils.loadAnimation(this,
 				R.anim.alpha_disappear);
 
-		Map<String,String> headers = new HashMap<String, String>();
+		headers = new HashMap<String, String>();
 		headers.put("User-Agent",
 				"Mozilla/5.0 (Windows NT 6.1; WOW64; rv:6.0.2) Gecko/20100101 Firefox/6.0.2");
 		PackageInfo pInfo;
@@ -719,7 +719,6 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		app.setHeaders(headers);
 
 		if (isNetWorkFine) {// 如果网络正常就执行
 
@@ -731,7 +730,7 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 		UmengUpdateAgent.setOnDownloadListener(null);
 		UmengUpdateAgent.update(this);
 		UmengUpdateAgent.setUpdateAutoPopup(false);
-		
+
 		UmengUpdateAgent.setUpdateListener(new UmengUpdateListener() {
 	        @Override
 	        public void onUpdateReturned(int updateStatus,UpdateResponse updateInfo) {
@@ -804,28 +803,28 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 		@Override
 		public void handleMessage(Message msg) {
 			// TODO Auto-generated method stub
-			
+
 			switch (msg.what) {
 			case MESSAGE_UPDATEUSER:// userInfo相关验证完成
 				if (initStep == 0) {
 					initStep += 1;
 					getHotServiceData();
-					
+
 					// 需要网络连接
 					Bitmap tempBitmap = CreateBarCode();
 					if(tempBitmap == null) {//如果返回的Bitmap为空，那就隐藏二维码扫描功能，并且不开启service
-						
+
 						myView.setVisibility(View.INVISIBLE);
 					} else {//如果不为空，照常开启
-						
+
 						erweimaImage.setImageBitmap(tempBitmap);
-						
+
 						IntentFilter filter = new IntentFilter();
 						filter.addAction(FayeService.ACTION_RECIVEACTION_BAND);
 						filter.addAction(FayeService.ACTION_RECIVEACTION_UNBAND);
 						filter.addAction(UtilTools.ACTION_PLAY_END_MAIN);
 						registerReceiver(receiver, filter);
-						
+
 						isRegesterService = true;
 					}
 				}
@@ -835,7 +834,7 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 						R.drawable.avatar_defult);
 				aq.id(R.id.tv_head_user_name).text(
 						app.getUserInfo().getUserName());
-				
+
 				Log.i(TAG, "getHistoryServiceData-->MESSAGE_UPDATEUSER");
 				getHistoryServiceData();
 				break;
@@ -853,7 +852,7 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 					initStep += 1;
 					if (startingImageView.getVisibility() == View.VISIBLE) {
 						startingImageView.setVisibility(View.GONE);
-						
+
 //						if(!isShowAd) {
 //							
 //							handler.postDelayed(new Runnable() {
@@ -874,9 +873,9 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 						handler.removeMessages(MESSAGE_START_TIMEOUT);
 //						new Thread(new CheckPlayUrl()).start();
 						Log.i(TAG,"removeDialog(DIALOG_WAITING);---else ---->1");
-						
+
 //						if(isShowAd) {
-							
+
 							removeDialog(DIALOG_WAITING);
 //						}
 					} else {
@@ -893,49 +892,49 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 				// 当悦单加载完成时，开始下载用户收藏数据，并插入到数据库
 				getShouCangData(URLUtils.getShoucangURL(app
 						.getUserInfo().getUserId()));
-				
+
 				/*
 				 * adkey show,the Viewo of ad init()
 				 */					
 					if (mAdView != null) {
 						removeBanner();
 					}
-					
+
 					mAdView = new AdView(Main1.this, Constant.MAIN_ADV_PUBLISHERID,false);
 					mAdView.setAdListener(Main1.this);
 					layout.addView(mAdView);
-					
+
 					String publishFakeId = null;
-					
+
 					if(Constant.TestEnv){
-						
+
 						publishFakeId = "ab126add561c71c37f2728ca1f9fc9d9";
-						
+
 						if(UtilTools.getUmengChannel(getApplicationContext())!= null &&
 								UtilTools.getUmengChannel(getApplicationContext()).equals("j002")){
-							
+
 							mAdViewFake = new AdView(Main1.this, publishFakeId,false);
 							mAdViewFake.setAdListener(Main1.this);
 							layoutFake.addView(mAdViewFake);
-							
+
 						}
 					}else {
-						
+
 						if(UtilTools.getUmengChannel(getApplicationContext())!= null &&
 								UtilTools.getUmengChannel(getApplicationContext()).equals("t003001")
 								&& !UtilTools.getReplenishAdvID(getApplicationContext()).equals("")){
-							
+
 							publishFakeId = UtilTools.getReplenishAdvID(getApplicationContext());
-							
+
 							mAdViewFake = new AdView(Main1.this, publishFakeId,false);
 							mAdViewFake.setAdListener(Main1.this);
 							layoutFake.addView(mAdViewFake);
-							
+
 						}
 					}
 					//弹出免责声明
 					if(!UtilTools.getDisclaimerVisible(getApplicationContext())){
-						
+
 						final Dialog dialog = new AlertDialog.Builder(Main1.this).create();
 						dialog.setCanceledOnTouchOutside(false);
 						dialog.show();
@@ -953,15 +952,15 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 						});
 						dialog.setContentView(view);
 					}
-				
+
 				break;
 			case MESSAGE_START_TIMEOUT:// 超时还未加载好
 				if (initStep < 3) {
 					startingImageView.setVisibility(View.GONE);
 					contentLayout.setVisibility(View.INVISIBLE);
-					
+
 					if(!UtilTools.getIsShowAd(getApplicationContext())) {
-						
+
 						showDialog(DIALOG_WAITING);
 					}
 				}
@@ -988,7 +987,7 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 
 	};
 	private void initOverTime(View view,String duration) {
-		
+
 		LinearLayout ll = (LinearLayout) view.findViewById(R.id.ll_over_time_main);
 
 		TextView tv = (TextView) view.findViewById(R.id.tv_over_time);
@@ -1004,11 +1003,11 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 
 				tv.setText(overTime);
 				ll.setVisibility(View.VISIBLE);
-				
+
 				return;
 			}
 		}
-		
+
 		ll.setVisibility(View.GONE);
 	}
 
@@ -1117,7 +1116,7 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 				}
 //				item.prod_name = date.
 				// item.prod_pic_url = result.histories[0].big_prod_pic_url;
-				
+
 				hot_list.add(item);
 				for(int i=0; i<netWorkHotList.size(); i++){
 					hot_list.add(netWorkHotList.get(i));
@@ -1135,7 +1134,7 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 		}
 
 	};
-	
+
 	private boolean updateHotDate(){
 		boolean flag = false;
 		HotItemInfo firstInfo = hot_list.get(0);
@@ -1149,7 +1148,7 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 		}
 		return flag;
 	}
-	
+
 	private void updateHotContentLayoue(){
 		hot_contentViews.clear();
 		for(int i=0; i<hot_list.size(); i++){
@@ -1195,70 +1194,82 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 	// 数据初始化
 
 	private void initNetWorkData() {
-		
+
 		UtilTools.setLogoUrl(getApplicationContext(), "");
 		handler.sendEmptyMessageDelayed(MESSAGE_START_TIMEOUT, LOADING_PIC_TIME);
 		handler.sendEmptyMessageDelayed(MESSAGE_30S_TIMEOUT, LOADING_TIME_OUT);// 图片撤掉20S后
+		
 		if(!Constant.isJoyPlus) {//如果过不是自身应用 
-			Log.i(TAG, "initNetWorkData--->Constant.isJoyPlus " + Constant.isJoyPlus);
-			
 			getLogoInfo(Constant.BASE_URL_TOP + "/open_api_config");
-			
 		} else {//如果是自身应用
-			
 			initAppkeyAndBaseurl(null);
 		}
-		
-		
 	}
-	
+
 	private void initAppkeyAndBaseurl(ReturnLogInfo returnLogInfo) {
-		
+
 		TextView personal_recordTv = (TextView) findViewById(R.id.tv_personal_record);
 		TextView playStoreTv = (TextView) findViewById(R.id.tv_play_store);
 		ImageView logoIv = (ImageView) findViewById(R.id.iv_head_logo);
-		
+
 		if(Constant.isJoyPlus) {//如果是本身应用
+
 			personal_recordTv.setText("我的悦视频");
 			playStoreTv.setText("悦片库");
 			logoIv.setImageResource(R.drawable.logo);
-			
+
 			headers.put("app_key", Constant.APPKEY);
 			headers.put("client", "tv");
 			app.setHeaders(headers);
+
 			if (!Constant.TestEnv)
 				ReadLocalAppKey();
 		} else {
+
 			if(returnLogInfo != null ) {//如果能够获取的到，appkey使用获取数据，图片使用网上下载的
+				Log.i(TAG, "returnLogInfo.api_url--->" + returnLogInfo.logo_url);
+
 				if(returnLogInfo.logo_url != null && !returnLogInfo.logo_url.equals("")) {
+
 					aq.id(logoIv).image(
 							returnLogInfo.logo_url, false, true, 0,R.drawable.logo_custom);
 				}
+
 				UtilTools.setLogoUrl(getApplicationContext(), returnLogInfo.logo_url);
+
 				if(returnLogInfo.app_key != null && !returnLogInfo.app_key.equals("")) {
+
 					Constant.APPKEY = returnLogInfo.app_key;
 					headers.put("app_key", returnLogInfo.app_key);
 					headers.put("client", "tv");
 					app.setHeaders(headers);
+
 				} else {
+
 					headers.put("app_key", Constant.APPKEY);
 					headers.put("client", "tv");
 					app.setHeaders(headers);
+
 					if (!Constant.TestEnv)
 						ReadLocalAppKey();
 				}
+
 				if(returnLogInfo.api_url != null && !returnLogInfo.api_url.equals("")) {
+
 					Constant.BASE_URL = returnLogInfo.api_url;
 				}
+
 			} else {//如果获取不到 appkey使用Joyplus的,其他文字显示使用默认,图片使用默认
 				logoIv.setImageResource(R.drawable.logo_custom);
 				headers.put("app_key", Constant.APPKEY);
 				headers.put("client", "tv");
 				app.setHeaders(headers);
+
 				if (!Constant.TestEnv)
 					ReadLocalAppKey();
 			}
 		}
+
 		checkLogin();
 	}
 
@@ -1314,23 +1325,23 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 
 			unregisterReceiver(receiver);
 		}
-		
+
 		if(!UtilTools.getIsShowAd(getApplicationContext()) && startingImageView.getDrawable() != null) {
-			
+
 			UtilTools.recycleBitmap(((BitmapDrawable)startingImageView.getDrawable()).getBitmap());
 
 		}
-		
+
 		//程序退出时设为false
 		if(UtilTools.getWpBaiduLocalParseInit(getApplicationContext())){
-			
+
 			UtilTools.setWpBaiduLocalParseInit(getApplicationContext(), false);
 			UtilTools.setWpBaiduLocalParse(getApplicationContext(), false);
-			
+
 		}
-		
+
 		UtilTools.setP2PMD5(getApplicationContext(), "");
-		
+
 		handler.removeCallbacksAndMessages(null);
 		super.onDestroy();
 	}
@@ -1369,8 +1380,8 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 //			cb.header("User-Agent",
 //					"Mozilla/5.0 (Windows NT 6.1; WOW64; rv:6.0.2) Gecko/20100101 Firefox/6.0.2");
 //			cb.header("app_key", Constant.APPKEY);
-			cb.SetHeader(app.getHeaders());
-
+			
+			cb.SetHeader(headers);
 			cb.params(params).url(url).type(JSONObject.class)
 					.weakHandler(this, "CallServiceResult");
 			aq.ajax(cb);
@@ -1408,9 +1419,10 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 			AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
 			cb.url(url).type(JSONObject.class)
 					.weakHandler(this, "CheckBandResult");
-			Map header = new HashMap<String, String>();
-			header.put("app_key", "ijoyplus_android_0001bj");
-			header.put("client", "tv");
+			Map<String,String> header = new HashMap<String, String>();
+//			header.put("app_key", "ijoyplus_android_0001bj");
+//			header.put("client", "tv");
+			header.putAll(app.getHeaders());
 			header.put("device", new Build().MODEL);
 			cb.SetHeader(header);
 //			Log.d(TAG, "app_key-------------------->" + app.getHeaders().get("app_key"));
@@ -1574,17 +1586,17 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 						} else {
 							contentLayout.startAnimation(alpha_appear);
 						}
-						
+
 						if(hot_list != null && hot_list.get(arg2)!= null) {
-							
+
 							HotItemInfo tempInfo = hot_list.get(arg2);
-							
+
 							if(tempInfo.type == 1 && tempInfo.prod_type.equals("1")) {
-								
+
 								initOverTime(hotView, tempInfo.duration);
 							}
 						}
-						
+
 						contentLayout.addView(hotView);
 						hotView.setVisibility(View.VISIBLE);
 					}
@@ -2354,9 +2366,9 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 		try {
 			ReturnUserPlayHistories result = mapper.readValue(json.toString(),
 					ReturnUserPlayHistories.class);
-			
+
 			if(result == null || result.histories == null) {
-				
+
 				return;
 			}
 			HotItemInfo item = new HotItemInfo();
@@ -2456,7 +2468,7 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 //			hot_score_tv.setText(UtilTools.formateScore(item.score));
 //			hot_introduce_tv.setText(item.prod_summary);
 //			hot_list.add(0, item);
-			
+
 //			Log.i(TAG, "item--->" + item.prod_id);
 //			hot_list.add(item);
 //			
@@ -2473,7 +2485,7 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 //					hot_contentViews.remove(i);
 //				}
 //			}
-			
+
 //			hot_contentViews.add(0, hotView);
 //			
 //			Log.d(TAG, "lengh = " + hot_contentViews.size());
@@ -2509,7 +2521,7 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 				updateHotContentLayoue();
 				if (titleGroup.getSelectedTitleIndex() == 1) {
 					itemFram.setVisibility(View.VISIBLE);
-					
+
 					gallery1.setAdapter(new MainHotItemAdapter(Main1.this,
 							hot_list));
 					if (hot_list.size() > 0) {
@@ -2551,9 +2563,9 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 			ReturnMainHot result = mapper.readValue(json.toString(),
 					ReturnMainHot.class);
 			// hot_list.clear();
-			
+
 			//当历史加载完成，hot数据后加载
-			
+
 //			String tempProdId = null;
 //			
 //			if(hot_list != null && hot_list.size() > 0 && netWorkHotList.size() <= 0 ) {
@@ -2621,7 +2633,7 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 //				hot_name_tv.setText(item.prod_name);
 //				hot_score_tv.setText(UtilTools.formateScore(item.score));
 //				hot_introduce_tv.setText(item.prod_summary);
-				
+
 //				if(tempProdId != null && tempProdId.endsWith(item.prod_id)) {
 //					
 //					//说明历史加载先完成
@@ -2824,7 +2836,7 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 		if (macAddress == null) {
 
 //			date = Constant.CHANNELHEADER;
-			
+
 			return null;//如果不能获取无线网卡Mac地址，返回空的Bitmap
 		} else {
 
@@ -2877,7 +2889,7 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 									} catch (Exception e) {
 										// TODO Auto-generated catch block
 										e.printStackTrace();
-										
+
 										app.MyToast(getApplicationContext(), "自行进入系统网络设置界面");
 									}
 
@@ -2965,12 +2977,14 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 		cb.SetHeader(app.getHeaders());
 		aq.ajax(cb);
 	}
-	
+
 	protected void getPostServiceData(String url, String interfaceName) {
-		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
+
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("app_key",Constant.APPKEY_TOP );
 		params.put("device_name",UtilTools.getUmengChannel(this) );
+
+		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
 		headers.put("app_channel", UtilTools.getUmengChannel(this));
 		cb.SetHeader(headers);
 		cb.params(params).url(url).type(JSONObject.class)
@@ -2983,46 +2997,39 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 
 		getServiceData(url, "initShouCangServiceData");
 	}
-	
+
 	protected void getHistoryData(String url) {
 		// TODO Auto-generated method stub
 
 		getServiceData(url, "initHistoryServiceData");
 	}
-	
+
 	protected void getLogoInfo(String url) {
 		// TODO Auto-generated method stub
 
 		getPostServiceData(url, "initLogoInfo");
 	}
-	
+
 	public void initLogoInfo(String url, JSONObject json,
 			AjaxStatus status) {
 		// TODO Auto-generated method stub
-
+		
 		if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
-
 			app.MyToast(aq.getContext(),
 					getResources().getString(R.string.networknotwork));
 			initAppkeyAndBaseurl(null);
 			return;
 		}
 		try {
-
 			if (json == null || json.equals("")) {
-				
 				initAppkeyAndBaseurl(null);
 				return;
 			}
-				
 
 			Log.d(TAG, "initLogoInfo" + json.toString());
 			ReturnLogInfo logoInfo = mapper.readValue(json.toString(),
 					ReturnLogInfo.class);
-			
-
 			initAppkeyAndBaseurl(logoInfo);
-//			initAppkeyAndBaseurl(null);
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -3054,7 +3061,7 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 			compareUsrFav4DB(
 					UtilTools.returnUserFavoritiesJson(json.toString()),
 					app.getUserInfo().getUserId());
-			
+
 			//获取历史播放记录数据
 			getHistoryData(URLUtils.
 					getHistoryURL(UtilTools.getCurrentUserId(getApplicationContext())));
@@ -3069,18 +3076,18 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void initHistoryServiceData(String url, JSONObject json,
 			AjaxStatus status) {
 		// TODO Auto-generated method stub
-		
+
 		if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
 
 			app.MyToast(aq.getContext(),
 					getResources().getString(R.string.networknotwork));
 			return;
 		}
-		
+
 		try {
 
 			if (json == null || json.equals(""))
@@ -3090,7 +3097,7 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 			compareUsrHis4DB(
 					UtilTools.returnUserHistoryJson(json.toString()),
 					app.getUserInfo().getUserId());
-			
+
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -3102,44 +3109,44 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 			e.printStackTrace();
 		}
 	}
-	
+
 	// 网上用户id数据和本地用户id数据进行比较
 	// 以网上数据为标准，如果本地用户id数据多余的就删除，不存在的就进行添加
 	private void compareUsrHis4DB(List<HotItemInfo> list, String userId) {
-		
+
 		if (list == null) {
 
 			return;
 		}
-		
+
 		String selection = UserShouCang.USER_ID + "=?";// 通过用户id，找到相应信息
 		String[] selectionArgs = { userId };
 
 		TvDatabaseHelper helper = TvDatabaseHelper
 				.newTvDatabaseHelper(getApplicationContext());
 		SQLiteDatabase database = helper.getWritableDatabase();// 获取写db
-		
+
 		String[] columns = { UserHistory.PRO_ID};// 返回影片id
-		
+
 		Cursor cursor_proId = database.query(
 				TvDatabaseHelper.HISTORY_TABLE_NAME, columns, selection,
 				selectionArgs, null, null, null);
-		
+
 		if (list.size() > 0) {// 当用户有历史记录时
-			
+
 			if (cursor_proId != null && cursor_proId.getCount() > 0) {// 数据库有数据
-				
+
 				database.delete(TvDatabaseHelper.HISTORY_TABLE_NAME, selection,
 						selectionArgs);
-				
+
 			}
-			
+
 			for(HotItemInfo info:list) {
-				
+
 				DBUtils.insertHotItemInfo2DB_History(getApplicationContext(),
 						info, userId, database);
 			}
-			
+
 		}else {// 如果网上此用户没有任何收藏,但是数据库中有相应用户数据，清空掉此用户数据
 
 			if (cursor_proId != null && cursor_proId.getCount() > 0) {// 数据库有数据
@@ -3148,10 +3155,10 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 						selectionArgs);
 			}
 		}
-		
+
 		cursor_proId.close();
 		helper.close();
-		
+
 	}
 
 	// 网上用户id数据和本地用户id数据进行比较
@@ -3338,14 +3345,14 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 			layout.removeView(mAdView);
 			mAdView = null;
 		}
-		
+
 		if(mAdViewFake != null){
-			
+
 			layoutFake.removeView(mAdViewFake);
 			mAdViewFake = null;
 		}
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see com.joyplus.adkey.AdListener#adClicked()
@@ -3357,8 +3364,8 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 		// TODO Auto-generated method stub
 		Log.i(Const.TAG,"AdViewActivity--->adClicked");
 	}
-	
-	
+
+
 	/*
 	 * (non-Javadoc)
 	 * @see com.joyplus.adkey.AdListener#adClosed(com.joyplus.adkey.Ad, boolean)
@@ -3370,7 +3377,7 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 		// TODO Auto-generated method stub
 		Log.i(Const.TAG,"AdViewActivity--->adClosed");
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see com.joyplus.adkey.AdListener#adLoadSucceeded(com.joyplus.adkey.Ad)
@@ -3382,7 +3389,7 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 		// TODO Auto-generated method stub
 		Log.i(Const.TAG,"AdViewActivity--->adLoadSucceeded");
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see com.joyplus.adkey.AdListener#adShown(com.joyplus.adkey.Ad, boolean)
@@ -3394,7 +3401,7 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 		// TODO Auto-generated method stub
 		Log.i(Const.TAG,"AdViewActivity--->adShown");
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see com.joyplus.adkey.AdListener#noAdFound()
