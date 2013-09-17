@@ -16,6 +16,7 @@ import com.androidquery.AQuery;
 import com.joyplus.tv.R;
 import com.joyplus.tv.entity.YueDanInfo;
 import com.joyplus.tv.utils.UtilTools;
+import com.joyplus.utils.Utils;
 
 public class MainYueDanItemAdapter extends BaseAdapter {
 	
@@ -108,10 +109,10 @@ public class MainYueDanItemAdapter extends BaseAdapter {
 			break;
 		}
 		
-		convertView.setPadding(UtilTools.getStandardValue(c,15), 
-				UtilTools.getStandardValue(c,10), 
-				UtilTools.getStandardValue(c,15), 
-				UtilTools.getStandardValue(c,10));
+		convertView.setPadding(Utils.getStandardValue(c,15), 
+				Utils.getStandardValue(c,10), 
+				Utils.getStandardValue(c,15), 
+				Utils.getStandardValue(c,10));
 		convertView.setLayoutParams(layoutParam);
 		return convertView;
 	}

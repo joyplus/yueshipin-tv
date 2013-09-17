@@ -13,6 +13,7 @@ import com.joyplus.tv.entity.HotItemInfo;
 import com.joyplus.tv.entity.MovieItemData;
 import com.joyplus.tv.utils.DataBaseItems.UserHistory;
 import com.joyplus.tv.utils.DataBaseItems.UserShouCang;
+import com.joyplus.utils.Log;
 
 public class DBUtils {
 	

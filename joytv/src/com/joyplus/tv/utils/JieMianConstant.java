@@ -30,18 +30,6 @@ public interface JieMianConstant {
 	int[] SHOUCANG_ID_5_ITEMS_INCLUDE = {R.id.inclue_shoucang_item_1,R.id.inclue_shoucang_item_2,
 			R.id.inclue_shoucang_item_3,R.id.inclue_shoucang_item_4,R.id.inclue_shoucang_item_5};
 	
-//	String QUANBUFENLEI = "quanbufenlei";
-//	String QUAN_TEN = "quan_ten";
-//	String QUAN_FILTER = "quan_filter";
-//	String SEARCH = "search";
-//	
-//	String DALUJU = "daluju";
-//	String GANGJU = "gangju";
-//	String TAIJU = "taiju";
-//	String HANJU = "hanju";
-//	String MEIJU = "meiju";
-//	String RIJU = "riju";
-	
 	int QUANBUFENLEI = 0;
 	int QUAN_TEN = 1;
 	int QUAN_FILTER = 2;

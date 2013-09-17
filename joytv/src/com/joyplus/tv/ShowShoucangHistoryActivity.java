@@ -38,8 +38,8 @@ import com.joyplus.tv.Service.Return.ReturnUserFavorities;
 import com.joyplus.tv.entity.HotItemInfo;
 import com.joyplus.tv.utils.DBUtils;
 import com.joyplus.tv.utils.ItemStateUtils;
-import com.joyplus.tv.utils.Log;
 import com.joyplus.tv.utils.UtilTools;
+import com.joyplus.utils.Log;
 import com.umeng.analytics.MobclickAgent;
 
 public class ShowShoucangHistoryActivity extends Activity implements OnClickListener, OnItemSelectedListener,OnFocusChangeListener {

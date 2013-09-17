@@ -18,8 +18,9 @@ import com.joyplus.tv.R;
 import com.joyplus.tv.entity.GridViewItemHodler;
 import com.joyplus.tv.entity.MovieItemData;
 import com.joyplus.tv.utils.JieMianConstant;
-import com.joyplus.tv.utils.Log;
 import com.joyplus.tv.utils.UtilTools;
+import com.joyplus.utils.Log;
+import com.joyplus.utils.Utils;
 
 public class SearchAdapter extends BaseAdapter implements JieMianConstant{
 	private static final String TAG = "SearchAdapter";
@@ -157,16 +158,16 @@ public class SearchAdapter extends BaseAdapter implements JieMianConstant{
 			
 			if(proType.equals("1")) {
 				
-				viewItemHodler.scoreTv.setText(UtilTools.formateScore(movieList.get(position).getMovieScore()));
+				viewItemHodler.scoreTv.setText(Utils.formateScore(movieList.get(position).getMovieScore()));
 				String duration = movieList.get(position).getMovieDuration();
 				if(duration != null && !duration.equals("")) {
 					
-					viewItemHodler.otherInfo.setText(UtilTools.formatMovieDuration(duration));
+					viewItemHodler.otherInfo.setText(Utils.formatMovieDuration(duration));
 				}
 				
 			} else if(proType.equals("2") || proType.equals("131")){
 				
-				viewItemHodler.scoreTv.setText(UtilTools.formateScore(movieList.get(position).getMovieScore()));
+				viewItemHodler.scoreTv.setText(Utils.formateScore(movieList.get(position).getMovieScore()));
 				String curEpisode = movieList.get(position).getMovieCurEpisode();
 				String maxEpisode = movieList.get(position).getMovieMaxEpisode();
 				

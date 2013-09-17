@@ -1,11 +1,6 @@
 package com.joyplus.tv.utils;
 
-import info.monitorenter.cpdetector.io.CodepageDetectorProxy;
-import info.monitorenter.cpdetector.io.JChardetFacade;
-
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -16,12 +11,10 @@ import java.util.Map;
 
 import org.json.JSONObject;
 
-import android.app.Instrumentation;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
-import android.text.format.DateFormat;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
@@ -33,7 +26,6 @@ import com.androidquery.callback.AjaxCallback;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.joyplus.adkey.Util;
 import com.joyplus.tv.App;
 import com.joyplus.tv.Constant;
 import com.joyplus.tv.R;
@@ -44,6 +36,7 @@ import com.joyplus.tv.Service.Return.ReturnUserPlayHistories;
 import com.joyplus.tv.entity.HotItemInfo;
 import com.joyplus.tv.entity.MovieItemData;
 import com.joyplus.tv.entity.ReturnFilterMovieSearch;
+import com.joyplus.utils.Log;
 
 public class UtilTools implements JieMianConstant, BangDanConstant {
 
@@ -95,42 +88,6 @@ public class UtilTools implements JieMianConstant, BangDanConstant {
 		aq.ajax(cb);
 	}
 
-	public static int count = 0;
-
-	public static void simulateKey(final int KeyCode) {
-
-		count++;
-		if (count > 2) {
-			return;
-		}
-
-		new Thread() {
-
-			public void run() {
-
-				try {
-
-					Instrumentation inst = new Instrumentation();
-					// inst.sendKeySync(new KeyEvent(KeyEvent.ACTION_UP,
-					// KeyCode));
-
-					inst.sendKeyDownUpSync(KeyCode);
-					// handler.sendEmptyMessage(0X111);
-
-				} catch (Exception e) {
-
-					Log.e("Exception when sendKeyDownUpSync", e.toString());
-
-				}
-
-			}
-
-		}.start();
-
-	}
-
-	// public static isChineseString
-
 	public static ScaleAnimation getOutScaleAnimation() {
 
 		ScaleAnimation outScaleAnimation = new ScaleAnimation(
@@ -169,16 +126,6 @@ public class UtilTools implements JieMianConstant, BangDanConstant {
 	public static String getUserId(Context c) {
 		SharedPreferences sharedata = c.getSharedPreferences("userData", 0);
 		return sharedata.getString("userId", null);
-		// String macAddress = null;
-		// WifiManager wifiMgr = (WifiManager) c
-		// .getSystemService(Context.WIFI_SERVICE);
-		// WifiInfo info = (null == wifiMgr ? null :
-		// wifiMgr.getConnectionInfo());
-		// if (info != null) {
-		// macAddress = info.getMacAddress();
-		// }
-		// return macAddress;
-		// return null;
 	}
 
 	public static String MD5(String str) {
@@ -207,167 +154,6 @@ public class UtilTools implements JieMianConstant, BangDanConstant {
 			hexValue.append(Integer.toHexString(val));
 		}
 		return hexValue.toString();
-	}
-
-	public static String formatDuration(long duration) {
-		duration = duration / 1000;
-		int h = (int) duration / 3600;
-		int m = (int) (duration - h * 3600) / 60;
-		int s = (int) duration - (h * 3600 + m * 60);
-		String durationValue;
-		// if (h == 0) {
-		// durationValue = String.format("%1$02d:%2$02d", m, s);
-		// } else {
-		durationValue = String.format("%1$02d:%2$02d:%3$02d", h, m, s);
-		// }
-		return durationValue;
-	}
-
-	public static String formatDuration1(long duration) {
-		int h = (int) duration / 3600;
-		int m = (int) (duration - h * 3600) / 60;
-		int s = (int) duration - (h * 3600 + m * 60);
-		String durationValue;
-		if (h == 0) {
-			durationValue = String.format("%1$02d:%2$02d", m, s);
-		} else {
-			durationValue = String.format("%1$d:%2$02d:%3$02d", h, m, s);
-		}
-		return durationValue;
-	}
-
-	public static String formatMovieDuration(String duration) {
-
-		if (duration != null && !duration.equals("")) {
-
-			int indexFenZhong = duration.indexOf("分钟");
-
-			if (indexFenZhong != -1) {
-
-				duration = duration.replaceAll("分钟", "");
-			}
-
-			int indexFen = duration.indexOf("分");
-
-			if (indexFen != -1) {
-
-				duration = duration.replaceAll("分", "");
-			}
-
-			String[] strs = duration.split("：");
-
-			if (strs.length == 1) {
-
-				strs = duration.split(":");
-			}
-
-			if (strs.length == 1) {
-
-				return duration + "分钟";
-			} else if (strs.length == 2) {
-
-				return strs[0] + "分钟";
-			} else if (strs.length == 3) {
-
-				String hourStr = strs[0];
-				String minuteStr = strs[1];
-
-				if (hourStr != null && !hourStr.equals("")) {
-
-					int hour = Integer.valueOf(hourStr);
-
-					if (minuteStr != null && !hourStr.equals("")) {
-
-						int minute = Integer.valueOf(minuteStr);
-
-						if (hour != 0) {
-
-							return (hour * 60 + minute) + "分钟";
-						} else {
-
-							if (minute != 0) {
-
-								return minute + "分钟";
-							}
-						}
-
-					}
-				} else {
-
-					if (minuteStr != null && !hourStr.equals("")) {
-
-						int minute = Integer.valueOf(minuteStr);
-
-						if (minute != 0) {
-
-							return minute + "分钟";
-						}
-					}
-				}
-			}
-
-		}
-
-		return "";
-
-	}
-	
-	public static long formateTimeLong(String timeStr) {
-		
-		if(timeStr != null && !timeStr.equals("")) {
-			
-			int index = timeStr.indexOf("分钟");
-			
-			if(index != -1) {
-				
-				String tempStr = timeStr.substring(0, index);
-				
-				try {
-					int minute = Integer.valueOf(tempStr);//分钟
-					
-					return minute * 60 * 1000;
-				} catch (NumberFormatException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
-		
-		return 0l;
-	}
-	
-	public static String movieOverTime(String duration) {
-		
-		String minuteStr = formatMovieDuration(duration);
-		long movieTime = formateTimeLong(minuteStr);
-		
-		if(movieTime == 0) {
-			
-			return "";
-		}
-		
-		long currentTime = System.currentTimeMillis();
-		
-		long overTime = currentTime + movieTime;
-		
-//		String dateFormat = DateFormat.format("hh:mm", overTime).toString();//12小时制
-		String dateFormat = DateFormat.format("kk:mm", overTime).toString();//24小时制
-		
-		Log.i(TAG, "overTime--->" + overTime + " minuteStr--->" + minuteStr + " duration--->" + duration
-				 + " dateFormat-->" + dateFormat);
-		
-		return dateFormat;
-	}
-
-	public static String formateScore(String score) {
-
-		if (score != null && !score.equals("") && !score.equals("0")
-				&& !score.equals("-1")) {
-
-			return score;
-		}
-
-		return "";
 	}
 
 	public static String formateZongyi(String curEpisode,Context context) {
@@ -1238,70 +1024,5 @@ public class UtilTools implements JieMianConstant, BangDanConstant {
 				Context.MODE_PRIVATE);
 		
 		return sp.getString("channel", "");
-	}
-	
-    public static boolean isUTF_8(byte[] file){
-        if(file.length<3)
-            return false;
-//        if((file[0]&0xFF)==0xEF && 
-//                (file[1]&0xFF)==0xBB &&
-//                (file[2]&0xFF)==0xBF)
-        
-        if (file[0] == -17 && file[1] == -69 && file[2] == -65) 
-            return true;
-        return false;
-    }
-    
-    public static String getCharset(byte[] subTitle,int length){
-    	
-    	if(subTitle != null){
-    		
-    		if(subTitle.length < length){
-    			
-    			length = subTitle.length;
-    		}
-    		
-    		ByteArrayInputStream in = new ByteArrayInputStream(subTitle);
-    		
-    		CodepageDetectorProxy detector = CodepageDetectorProxy.getInstance();
-//    		detector.add(new ParsingDetector(false));
-    		detector.add(JChardetFacade.getInstance());
-    		try {
-    			Charset charset = detector.detectCodepage(in, length);
-    			
-    			return charset!= null ? charset.name() : "";
-    		} catch (IllegalArgumentException e) {
-    			// TODO Auto-generated catch block
-    			e.printStackTrace();
-    		} catch (IOException e) {
-    			// TODO Auto-generated catch block
-    			e.printStackTrace();
-    		}
-    	}
-		
-		return "";
-    }
-    
-	public static int getStandardValue(Context context,int value){
-		
-		return (int) (context.getResources().getDimension(R.dimen.standard_1_dp) * value);
-	}
-	
-	/**
-	 * 获取权限
-	 * 
-	 * @param permission
-	 *            权限
-	 * @param path
-	 *            路径
-	 */
-	public static void chmod(String permission, String path) {
-		try {
-			String command = "chmod " + permission + " " + path;
-			Runtime runtime = Runtime.getRuntime();
-			runtime.exec(command);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 }

@@ -22,8 +22,8 @@ import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.AbsListView.OnScrollListener;
+import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.BaseAdapter;
@@ -44,8 +44,9 @@ import com.joyplus.tv.entity.CurrentPlayDetailData;
 import com.joyplus.tv.entity.HotItemInfo;
 import com.joyplus.tv.utils.DBUtils;
 import com.joyplus.tv.utils.ItemStateUtils;
-import com.joyplus.tv.utils.Log;
 import com.joyplus.tv.utils.UtilTools;
+import com.joyplus.utils.Log;
+import com.joyplus.utils.Utils;
 import com.umeng.analytics.MobclickAgent;
 
 public class HistoryActivity extends Activity implements OnClickListener, OnItemSelectedListener,OnFocusChangeListener {
@@ -705,7 +706,7 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 					holder.stars_notice.setText(R.string.xiangqing_zhuyan_name);
 				}
 				int prod_type = Integer.valueOf(data.get(position).prod_type);
-				String playBack_time = UtilTools.formatDuration1(Integer.valueOf(data.get(position).playback_time));
+				String playBack_time = Utils.formatDuration1(Integer.valueOf(data.get(position).playback_time));
 				switch (prod_type) {
 				case 1:
 					holder.content.setText("上次观看到：" + playBack_time);
