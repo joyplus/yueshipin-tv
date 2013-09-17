@@ -5,9 +5,6 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.util.SparseArray;
 import android.view.Gravity;
 import android.view.View;
@@ -21,12 +18,10 @@ import com.androidquery.AQuery;
 import com.joyplus.tv.R;
 import com.joyplus.tv.entity.GridViewItemHodler;
 import com.joyplus.tv.entity.MovieItemData;
-import com.joyplus.tv.utils.AsyncImageLoader;
-import com.joyplus.tv.utils.BangDanConstant;
 import com.joyplus.tv.utils.JieMianConstant;
-import com.joyplus.tv.utils.Log;
-import com.joyplus.tv.utils.OnImageLoadListener;
 import com.joyplus.tv.utils.UtilTools;
+import com.joyplus.utils.Log;
+import com.joyplus.utils.Utils;
 
 public class ZongYiAdapter extends BaseAdapter implements JieMianConstant{
 	private static final String TAG = "ZongYiAdapter";
@@ -257,16 +252,16 @@ public class ZongYiAdapter extends BaseAdapter implements JieMianConstant{
 			
 			if(proType.equals("1")) {
 				
-				viewItemHodler.scoreTv.setText(UtilTools.formateScore(movieList.get(position).getMovieScore()));
+				viewItemHodler.scoreTv.setText(Utils.formateScore(movieList.get(position).getMovieScore()));
 				String duration = movieList.get(position).getMovieDuration();
 				if(duration != null && !duration.equals("")) {
 					
-					viewItemHodler.otherInfo.setText(UtilTools.formatMovieDuration(duration));
+					viewItemHodler.otherInfo.setText(Utils.formatMovieDuration(duration));
 				}
 				
 			} else if(proType.equals("2") || proType.equals("131")){
 				
-				viewItemHodler.scoreTv.setText(UtilTools.formateScore(movieList.get(position).getMovieScore()));
+				viewItemHodler.scoreTv.setText(Utils.formateScore(movieList.get(position).getMovieScore()));
 				String curEpisode = movieList.get(position).getMovieCurEpisode();
 				String maxEpisode = movieList.get(position).getMovieMaxEpisode();
 				

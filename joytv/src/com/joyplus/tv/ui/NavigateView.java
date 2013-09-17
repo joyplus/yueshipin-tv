@@ -23,8 +23,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.joyplus.tv.R;
-import com.joyplus.tv.utils.Log;
 import com.joyplus.tv.utils.UtilTools;
+import com.joyplus.utils.Log;
+import com.joyplus.utils.Utils;
 
 public class NavigateView extends RelativeLayout implements OnItemSelectedListener {
 	private static final String TAG = "NavigateView";
@@ -374,7 +375,7 @@ public class NavigateView extends RelativeLayout implements OnItemSelectedListen
 						if(!isTouchMode) {
 							
 							LayoutParams parm = (LayoutParams) relativeLayout.getLayoutParams();
-							parm.height = UtilTools.getStandardValue(mContext, 140);
+							parm.height = Utils.getStandardValue(mContext, 140);
 							relativeLayout.requestLayout();
 						}
 					}
@@ -404,9 +405,9 @@ public class NavigateView extends RelativeLayout implements OnItemSelectedListen
 //		gallery1.setPadding(-(1280-480)+105, 0, 0, 0);
 //		gallery2.setPadding(-(1280-480)+105, 0, 0, 0);
 //		gallery3.setPadding(-(1280-480)+105, 0, 0, 0);
-		gallery1.setPadding(UtilTools.getStandardValue(mContext, -(1280-480)+105), 0, 0, 0);
-		gallery2.setPadding(UtilTools.getStandardValue(mContext, -(1280-480)+105), 0, 0, 0);
-		gallery3.setPadding(UtilTools.getStandardValue(mContext, -(1280-480)+105), 0, 0, 0);
+		gallery1.setPadding(Utils.getStandardValue(mContext, -(1280-480)+105), 0, 0, 0);
+		gallery2.setPadding(Utils.getStandardValue(mContext, -(1280-480)+105), 0, 0, 0);
+		gallery3.setPadding(Utils.getStandardValue(mContext, -(1280-480)+105), 0, 0, 0);
 		gallery1.setCallbackDuringFling(false);
 		gallery2.setCallbackDuringFling(false);
 		gallery3.setCallbackDuringFling(false);
@@ -482,7 +483,7 @@ public class NavigateView extends RelativeLayout implements OnItemSelectedListen
 			if(!isTouchMode) {
 				
 				LayoutParams parm = (LayoutParams) relativeLayout.getLayoutParams();
-				parm.height = UtilTools.getStandardValue(mContext, 180);
+				parm.height = Utils.getStandardValue(mContext, 180);
 				relativeLayout.requestLayout();
 			}
 		}
@@ -613,7 +614,7 @@ public class NavigateView extends RelativeLayout implements OnItemSelectedListen
 			if(!isTouchMode) {
 				
 				LayoutParams parm = (LayoutParams) relativeLayout.getLayoutParams();
-				parm.height = UtilTools.getStandardValue(mContext, 140);
+				parm.height = Utils.getStandardValue(mContext, 140);
 				relativeLayout.requestLayout();	
 			}
 		}

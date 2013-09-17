@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.joyplus.tv.R;
+import com.joyplus.utils.Log;
 
 public class ItemStateUtils implements JieMianConstant{
 	

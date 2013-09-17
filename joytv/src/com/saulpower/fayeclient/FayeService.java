@@ -18,8 +18,8 @@ import com.joyplus.tv.App;
 import com.joyplus.tv.Constant;
 import com.joyplus.tv.VideoPlayerJPActivity;
 import com.joyplus.tv.entity.CurrentPlayDetailData;
-import com.joyplus.tv.utils.Log;
 import com.joyplus.tv.utils.UtilTools;
+import com.joyplus.utils.Log;
 import com.saulpower.fayeclient.FayeClient.FayeListener;
 
 public class FayeService extends Service implements FayeListener{

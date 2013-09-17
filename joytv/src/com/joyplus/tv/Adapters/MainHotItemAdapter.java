@@ -12,10 +12,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.androidquery.AQuery;
-import com.fasterxml.jackson.databind.ser.std.StdArraySerializers.IntArraySerializer;
 import com.joyplus.tv.R;
 import com.joyplus.tv.entity.HotItemInfo;
 import com.joyplus.tv.utils.UtilTools;
+import com.joyplus.utils.Utils;
 
 public class MainHotItemAdapter extends BaseAdapter {
 
@@ -75,13 +75,13 @@ public class MainHotItemAdapter extends BaseAdapter {
 		}
 //		aq = new AQuery(convertView);
 		holder.image.setTag(hot_list.get(position).prod_pic_url);
-		holder.score.setText(UtilTools.formateScore(hot_list.get(position).score));
+		holder.score.setText(Utils.formateScore(hot_list.get(position).score));
 //		holder.image.setImageResource(R.drawable.test1);
 		aq.id(holder.image).image(hot_list.get(position).prod_pic_url,true,true,0,R.drawable.post_normal);
 		if(hot_list.get(position).type == 0){
 			holder.firstTitle.setVisibility(View.VISIBLE);
 			if(hot_list.get(position).playback_time!=null&&!"".equals(hot_list.get(position).playback_time)){
-				holder.content.setText("观看到:" +UtilTools.formatDuration1(Long.valueOf(hot_list.get(position).playback_time)));
+				holder.content.setText("观看到:" +Utils.formatDuration1(Long.valueOf(hot_list.get(position).playback_time)));
 			}else{
 				holder.content.setText("");
 			}
@@ -96,7 +96,7 @@ public class MainHotItemAdapter extends BaseAdapter {
 				}else{
 //					holder.content.setText("时长："+hot_list.get(position).duration);
 //					holder.content.setText("时长:"+hot_list.get(position).duration.replace("：00", "分钟"));
-					holder.content.setText(UtilTools.formatMovieDuration(hot_list.get(position).duration));
+					holder.content.setText(Utils.formatMovieDuration(hot_list.get(position).duration));
 				}
 				break;
 			case 2:
@@ -162,10 +162,10 @@ public class MainHotItemAdapter extends BaseAdapter {
 			holder.definition.setImageDrawable(null);
 			break;
 		}
-		convertView.setPadding(UtilTools.getStandardValue(c,15), 
-				UtilTools.getStandardValue(c,10), 
-				UtilTools.getStandardValue(c,15), 
-				UtilTools.getStandardValue(c,10));
+		convertView.setPadding(Utils.getStandardValue(c,15), 
+				Utils.getStandardValue(c,10), 
+				Utils.getStandardValue(c,15), 
+				Utils.getStandardValue(c,10));
 		convertView.setLayoutParams(layoutParam);
 		
 		return convertView;

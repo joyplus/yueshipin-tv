@@ -40,9 +40,9 @@ import com.joyplus.tv.ui.NavigateView;
 import com.joyplus.tv.ui.NavigateView.OnResultListener;
 import com.joyplus.tv.ui.WaitingDialog;
 import com.joyplus.tv.utils.ItemStateUtils;
-import com.joyplus.tv.utils.Log;
 import com.joyplus.tv.utils.UtilTools;
 import com.joyplus.tv.utils.URLUtils;
+import com.joyplus.utils.Log;
 import com.umeng.analytics.MobclickAgent;
 
 public class ShowMovieActivity extends AbstractShowActivity {
@@ -737,11 +737,11 @@ public class ShowMovieActivity extends AbstractShowActivity {
 		activeView = null;
 
 		if (searchStr != null && !searchStr.equals("")) {
+			currentListIndex = SEARCH;
 			resetGvActive();
 			showDialog(DIALOG_WAITING);
 			search = searchStr;
 			UtilTools.clearList(lists[SEARCH]);
-			currentListIndex = SEARCH;
 //			String url = StatisticsUtils.getSearch_FirstURL(searchStr);
 			String url = URLUtils.getSearch_Movie_FirstURL(searchStr);
 			getFilterData(url);

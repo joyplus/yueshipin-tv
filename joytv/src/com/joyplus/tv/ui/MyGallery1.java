@@ -1,6 +1,6 @@
 package com.joyplus.tv.ui;
 
-import com.joyplus.tv.utils.Log;
+import com.joyplus.utils.Log;
 
 import android.content.Context;
 import android.content.Intent;

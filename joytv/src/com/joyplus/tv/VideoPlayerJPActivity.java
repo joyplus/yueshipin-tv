@@ -3,8 +3,6 @@ package com.joyplus.tv;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -75,6 +73,7 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
+import android.widget.VideoView;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
@@ -94,18 +93,18 @@ import com.joyplus.tv.entity.CurrentPlayDetailData;
 import com.joyplus.tv.entity.HotItemInfo;
 import com.joyplus.tv.entity.URLS_INDEX;
 import com.joyplus.tv.ui.ArcView;
-import com.joyplus.tv.ui.VideoView;
 import com.joyplus.tv.utils.BangDanConstant;
 import com.joyplus.tv.utils.DBUtils;
 import com.joyplus.tv.utils.DataBaseItems.UserHistory;
 import com.joyplus.tv.utils.DataBaseItems.UserShouCang;
 import com.joyplus.tv.utils.DefinationComparatorIndex;
-import com.joyplus.tv.utils.DesUtils;
 import com.joyplus.tv.utils.JieMianConstant;
-import com.joyplus.tv.utils.Log;
 import com.joyplus.tv.utils.SouceComparatorIndex1;
 import com.joyplus.tv.utils.URLUtils;
 import com.joyplus.tv.utils.UtilTools;
+import com.joyplus.utils.DesUtils;
+import com.joyplus.utils.Log;
+import com.joyplus.utils.Utils;
 import com.umeng.analytics.MobclickAgent;
 
 public class VideoPlayerJPActivity extends Activity implements
@@ -116,6 +115,8 @@ public class VideoPlayerJPActivity extends Activity implements
 		OnClickListener, AdListener {
 
 	private static final String TAG = "VideoPlayerActivity";
+	
+	private static final boolean DEBUG = false;
 
 	private static final int MESSAGE_RETURN_DATE_OK = 0;
 	private static final int MESSAGE_URLS_READY = MESSAGE_RETURN_DATE_OK + 1;
@@ -273,6 +274,8 @@ public class VideoPlayerJPActivity extends Activity implements
 	
 	private boolean isOnlyExistFengXing = false;
 	private boolean isOnlyExistLetv = false;
+	private boolean hasP2p = false;
+	private boolean isRetry = false;
 	
 	private String sourceFromUrl = null;//当前集的原始播放地址
 	
@@ -287,7 +290,6 @@ public class VideoPlayerJPActivity extends Activity implements
 	private Collection mSubTitleCollection = null;
 	private List<String> subTitleUrlList = new ArrayList<String>();
 	private int currentSubtitleIndex = 0;//默认为第一个
-	
 	
 	
 	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -397,8 +399,8 @@ public class VideoPlayerJPActivity extends Activity implements
 		// 获取是否收藏
 		getIsShoucangData();
 		
-		OFFSET = UtilTools.getStandardValue(getApplicationContext(), OFFSET);
-		seekBarWidthOffset = UtilTools.getStandardValue(getApplicationContext(), seekBarWidthOffset);
+		OFFSET = Utils.getStandardValue(getApplicationContext(), OFFSET);
+		seekBarWidthOffset = Utils.getStandardValue(getApplicationContext(), seekBarWidthOffset);
 	}
 	
 	private void dismissView(View v){
@@ -796,11 +798,24 @@ public class VideoPlayerJPActivity extends Activity implements
 	
 	private void noUrlCanPlay(){
 		
-		if(!VideoPlayerJPActivity.this.isFinishing()){
-			showDialog(0);
-			
-			//所有url不能播放，向服务器传递-1
-			saveToServer(-1, 0);
+		if(hasP2p){
+			isRetry = true;
+			new Thread(new Runnable() {
+				
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					sequenceList();
+					mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
+				}
+			}).start();
+		}else{
+			if(!VideoPlayerJPActivity.this.isFinishing()){
+				showDialog(0);
+				
+				//所有url不能播放，向服务器传递-1
+				saveToServer(-1, 0);
+			}
 		}
 	}
 	
@@ -846,7 +861,8 @@ public class VideoPlayerJPActivity extends Activity implements
 			cb.params(params);
 			Map<String, String> headers = new HashMap<String, String>();
 			headers.put("Content-Type", "application/json");
-			headers.put("app_key", Constant.APPKEY);
+//			headers.put("app_key", Constant.APPKEY);
+			headers.putAll(app.getHeaders());
 			cb.SetHeader(headers);
 			aq.ajax(cb);
 		} catch (UnsupportedEncodingException e) {
@@ -921,9 +937,9 @@ public class VideoPlayerJPActivity extends Activity implements
 
 		if(!"initFenxingNetServiceData".equals(interfaceName)){
 			
-			Map<String, String> headers = new HashMap<String, String>();
-			headers.put("app_key", Constant.APPKEY);
-			cb.SetHeader(headers);
+//			Map<String, String> headers = new HashMap<String, String>();
+//			headers.put("app_key", Constant.APPKEY);
+			cb.SetHeader(app.getHeaders());
 		}
 		aq.ajax(cb);
 	}
@@ -992,7 +1008,9 @@ public class VideoPlayerJPActivity extends Activity implements
 					Log.i(TAG, "playUrls--->" + playUrls.get(i).defination_from_server);
 				}
 				// url list 准备完成
+				sourceFromUrl = null;
 				mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
+				
 				return;
 				
 			}
@@ -1135,7 +1153,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		mVideoView.setOnErrorListener(this);
 		mVideoView.setOnCompletionListener(this);
 		mVideoView.setOnPreparedListener(this);
-		mVideoView.setOnInfoListener(this);
+//		mVideoView.setOnInfoListener(this);
 		mVideoView.setOnTouchListener(new View.OnTouchListener() {
 
 			@Override
@@ -1669,7 +1687,7 @@ public class VideoPlayerJPActivity extends Activity implements
 	public void onPrepared(MediaPlayer mp) {
 		// TODO Auto-generated method stub
 		// 准备好了
-		mTotalTimeTextView.setText(UtilTools.formatDuration(mVideoView
+		mTotalTimeTextView.setText(Utils.formatDuration(mVideoView
 				.getDuration()));
 		mSeekBar.setMax((int) mVideoView.getDuration());
 		mSeekBar.setOnSeekBarChangeListener(VideoPlayerJPActivity.this);
@@ -1792,10 +1810,10 @@ public class VideoPlayerJPActivity extends Activity implements
 			parms.leftMargin = (int) mLeft;
 		else
 			parms.leftMargin = OFFSET;
-		parms.bottomMargin = UtilTools.getStandardValue(getApplicationContext(), 30);
+		parms.bottomMargin = Utils.getStandardValue(getApplicationContext(), 30);
 		mTimeLayout.setLayoutParams(parms);
 
-		mCurrentTimeTextView.setText(UtilTools.formatDuration(progress));
+		mCurrentTimeTextView.setText(Utils.formatDuration(progress));
 		mCurrentTimeTextView.setVisibility(View.VISIBLE);
 	}
 
@@ -1943,6 +1961,7 @@ public class VideoPlayerJPActivity extends Activity implements
 	private void playNext() {
 		// TODO Auto-generated method stub
 		url_temp = null;
+		isRetry = false;
 		mStatue = STATUE_LOADING;
 		mSeekBar.setProgress(0);
 		mSeekBar.setEnabled(false);
@@ -1963,6 +1982,7 @@ public class VideoPlayerJPActivity extends Activity implements
 	private void playPrevious() {
 		// TODO Auto-generated method stub
 		url_temp = null;
+		isRetry = false;
 		mStatue = STATUE_LOADING;
 		mSeekBar.setProgress(0);
 		mSeekBar.setEnabled(false);
@@ -2072,7 +2092,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		}
 		if(lastTime>0){
 			mLastTimeTextView.setVisibility(View.VISIBLE);
-			mLastTimeTextView.setText("上次播放: " + UtilTools.formatDuration(lastTime));
+			mLastTimeTextView.setText("上次播放: " + Utils.formatDuration(lastTime));
 		}else{
 			mLastTimeTextView.setVisibility(View.GONE);
 		}
@@ -2154,6 +2174,7 @@ public class VideoPlayerJPActivity extends Activity implements
 											url.source_from = souces;
 											url.defination_from_server = m_ReturnProgramView.movie.episodes[0].down_urls[i].urls[j].type;
 											url.url = m_ReturnProgramView.movie.episodes[0].down_urls[i].urls[j].url;
+											url.bakUrl = url.url;
 											playUrls.add(url);
 										}
 
@@ -2228,6 +2249,7 @@ public class VideoPlayerJPActivity extends Activity implements
 														url.source_from = souces;
 														url.defination_from_server = m_ReturnProgramView.tv.episodes[i].down_urls[j].urls[k].type;
 														url.url = m_ReturnProgramView.tv.episodes[i].down_urls[j].urls[k].url;
+														url.bakUrl = url.url;
 														playUrls.add(url);
 													}
 												}
@@ -2286,6 +2308,7 @@ public class VideoPlayerJPActivity extends Activity implements
 														url.source_from = souces;
 														url.defination_from_server = m_ReturnProgramView.tv.episodes[mEpisodeIndex].down_urls[j].urls[k].type;
 														url.url = m_ReturnProgramView.tv.episodes[mEpisodeIndex].down_urls[j].urls[k].url;
+														url.bakUrl = url.url;
 														playUrls.add(url);
 													}
 												}
@@ -2364,6 +2387,7 @@ public class VideoPlayerJPActivity extends Activity implements
 															url.source_from = souces;
 															url.defination_from_server = m_ReturnProgramView.show.episodes[i].down_urls[j].urls[k].type;
 															url.url = m_ReturnProgramView.show.episodes[i].down_urls[j].urls[k].url;
+															url.bakUrl = url.url;
 															playUrls.add(url);
 														}
 													}
@@ -2422,6 +2446,7 @@ public class VideoPlayerJPActivity extends Activity implements
 														url.source_from = souces;
 														url.defination_from_server = m_ReturnProgramView.show.episodes[mEpisodeIndex].down_urls[j].urls[k].type;
 														url.url = m_ReturnProgramView.show.episodes[mEpisodeIndex].down_urls[j].urls[k].url;
+														url.bakUrl = url.url;
 														playUrls.add(url);
 													}
 												}
@@ -2487,9 +2512,9 @@ public class VideoPlayerJPActivity extends Activity implements
 		Log.i(TAG, "subTitleUrl-->" + subTitleUrl);
 		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();           
 		cb.url(subTitleUrl).type(JSONObject.class);             
-		Map<String, String> headers = new HashMap<String, String>();
-		headers.put("app_key", Constant.APPKEY);
-		cb.SetHeader(headers);        
+//		Map<String, String> headers = new HashMap<String, String>();
+//		headers.put("app_key", Constant.APPKEY);
+		cb.SetHeader(app.getHeaders());        
 		aq.sync(cb);
 		
 		JSONObject jo = cb.getResult();
@@ -2536,9 +2561,9 @@ public class VideoPlayerJPActivity extends Activity implements
 		AjaxCallback<byte[]> cb = new AjaxCallback<byte[]>();
 		cb.url(url).type(byte[].class);
 		
-		Map<String, String> headers = new HashMap<String, String>();
-		headers.put("app_key", Constant.APPKEY);
-		cb.SetHeader(headers); 
+//		Map<String, String> headers = new HashMap<String, String>();
+//		headers.put("app_key", Constant.APPKEY);
+//		cb.SetHeader(headers); 
 		
 		aq.sync(cb);
 		byte[] subTitle = cb.getResult();
@@ -2552,21 +2577,17 @@ public class VideoPlayerJPActivity extends Activity implements
 		reInitDefinationPartAndSubTitle();
 		
 		Log.d(TAG, "playUrls size ------->" + playUrls.size() + " maxQuality--->" + maxQuality);
-//		if(Constant.TestEnv){
-			UtilTools.setP2PMD5(getApplicationContext(), "");
-//		}
+		
+		UtilTools.setP2PMD5(getApplicationContext(), "");
 		if("".equals(UtilTools.getP2PMD5(getApplicationContext()))){
-			
 			String md5 = null;
 			if(Constant.TestEnv){
 				md5 = MobclickAgent.getConfigParams(this, "TEST_P2P_TV_MD5");
 			}else {
 				md5 = MobclickAgent.getConfigParams(this, "P2P_TV_MD5");
 			}
-			
 			Log.i(TAG, "md5--->" + md5);
 			if(md5 != null && !"".equals(md5)){
-				
 				UtilTools.setP2PMD5(getApplicationContext(), md5);
 			}
 		}
@@ -2575,39 +2596,50 @@ public class VideoPlayerJPActivity extends Activity implements
 		List<URLS_INDEX> tempExP2PList = new ArrayList<URLS_INDEX>();
 		
 		for (int i = 0; i < playUrls.size(); i++) {
-			Log.i(TAG, "url_index-->" + playUrls.get(i).toString());
-
-			if ("p2p".equals(playUrls.get(i).source_from)) {
-				tempP2PList.add(playUrls.get(i));
+			URLS_INDEX tempUrls_INDEX = playUrls.get(i);
+			if ("p2p".equals(tempUrls_INDEX.source_from)) {
+				if(tempUrls_INDEX.bakUrl != null){
+					boolean hasSame = false;
+					for(URLS_INDEX p2pUrlIndex: tempP2PList){
+						if(tempUrls_INDEX.bakUrl.equals(p2pUrlIndex.bakUrl)){
+							hasSame = true;
+						}
+					}
+					if(!hasSame) tempP2PList.add(tempUrls_INDEX);
+				}
 			}else {
-				
-				tempExP2PList.add(playUrls.get(i));
+				tempExP2PList.add(tempUrls_INDEX);
 			}
 		}
+		
+		if(tempP2PList.size()>0){
+			hasP2p = true;
+		}
+		
 		for(int i=0;i< tempP2PList.size();i++){
-			
 			if("p2p".equals(tempP2PList.get(i).source_from)){
-				
-				String p2pUrl = tempP2PList.get(i).url;
-				Log.i(TAG, "p2pUrl--->" + p2pUrl);
+				String p2pUrl = tempP2PList.get(i).bakUrl;
+				if(DEBUG)Log.i(TAG, "p2pUrl--->" + p2pUrl);
 				if(p2pUrl != null && !p2pUrl.equals("")){
-					
 					if(!"".equals(UtilTools.getP2PMD5(getApplicationContext()))){
+						String p2pStr = "";
+						if(!isRetry){
+							p2pStr = URLUtils.getXunLeiUrlURL(Constant.P2P_PARSE_URL_URL,p2pUrl,
+									UtilTools.getP2PMD5(getApplicationContext()));
+						}else{
+							p2pStr = URLUtils.getXunLeiUrlURL(Constant.P2P_PARSE_URL_URL_RETRY,p2pUrl,
+									UtilTools.getP2PMD5(getApplicationContext()));
+						}
 						
-						String p2pStr = URLUtils.getXunLeiUrlURL(Constant.P2P_PARSE_URL_URL,p2pUrl,
-								UtilTools.getP2PMD5(getApplicationContext()));
 						Log.i(TAG, "p2pStr-->" + p2pStr);
 						AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();           
 						cb.url(p2pStr).type(JSONObject.class);             
-						Map<String, String> headers = new HashMap<String, String>();
-						headers.put("app_key", Constant.APPKEY);
-						cb.SetHeader(headers);        
+//						Map<String, String> headers = new HashMap<String, String>();
+//						headers.put("app_key", Constant.APPKEY);
+						cb.SetHeader(app.getHeaders());        
 						aq.sync(cb);
-//						AjaxStatus status = cb.getStatus();
 						JSONObject jo = cb.getResult();
 						if(jo != null && jo.has("error")){
-							Log.i(TAG, "jo-->" + jo.toString());
-							
 							try {
 								if(!jo.getBoolean("error")){
 									String downloadUrl = jo.getString("downurl");
@@ -2622,6 +2654,7 @@ public class VideoPlayerJPActivity extends Activity implements
 												continue;
 											}
 											url_index_info.source_from="p2p";
+											url_index_info.bakUrl = p2pUrl;
 											url_index_info.defination_from_server = p[0];
 											if("hd".equals(p[0])){
 												url_index_info.defination_from_server="mp4";
@@ -2802,9 +2835,9 @@ public class VideoPlayerJPActivity extends Activity implements
 							getParseUrlURL(Constant.LETV_PARSE_URL_URL, url_index.url, mProd_id, mProd_sub_name);
 					AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();           
 					cb.url(wangPanUrl).type(JSONObject.class);             
-					Map<String, String> headers = new HashMap<String, String>();
-					headers.put("app_key", Constant.APPKEY);
-					cb.SetHeader(headers);        
+//					Map<String, String> headers = new HashMap<String, String>();
+//					headers.put("app_key", Constant.APPKEY);
+					cb.SetHeader(app.getHeaders());        
 					aq.sync(cb);
 //					AjaxStatus status = cb.getStatus();
 					JSONObject jo = cb.getResult();
@@ -2874,11 +2907,11 @@ public class VideoPlayerJPActivity extends Activity implements
 				
 				Parser parser = new Parser();
 				
-				String charsetName = UtilTools.getCharset(subTitle, 512);
+				String charsetName = Utils.getCharset(subTitle, 512);
 				Log.d(TAG, "initSubTitleCollection-->charsetName:" + charsetName);
 				if(charsetName.equals("")){
 					
-					boolean isUtf8 = UtilTools.isUTF_8(subTitle);
+					boolean isUtf8 = Utils.isUTF_8(subTitle);
 					Log.i(TAG, "isUtf8--->" + isUtf8);
 					
 					if(!isUtf8){
@@ -3312,71 +3345,47 @@ public class VideoPlayerJPActivity extends Activity implements
 		URL url;
 		try {
 			url = new URL(urlStr);
-//			URI uri = new URI(url.getProtocol(), url.getHost(), url.getPath(), url.getQuery(),null);
-//			HttpGet mHttpGet = new HttpGet(uri);
 			HttpGet mHttpGet = new HttpGet(url.toURI());
 			HttpResponse response = mAndroidHttpClient.execute(mHttpGet);
 			StatusLine statusLine = response.getStatusLine();
 			
 			int status = statusLine.getStatusCode();
-			Log.i(TAG, "HTTP STATUS : " + status);
 			
 			if (status == HttpStatus.SC_OK) {
-				Log.i(TAG, "HttpStatus.SC_OK--->" + urlStr);
 				// 正确的话直接返回，不进行下面的步骤
 				mAndroidHttpClient.close();
 				list.add(urlStr);
-				
 				return;//后面不执行
 			} else {
-				
-				Log.i(TAG, "NOT HttpStatus.SC_OK--->" + urlStr);
-				
 				if (status == HttpStatus.SC_MOVED_PERMANENTLY || // 网址被永久移除
 						status == HttpStatus.SC_MOVED_TEMPORARILY || // 网址暂时性移除
 						status == HttpStatus.SC_SEE_OTHER || // 重新定位资源
 						status == HttpStatus.SC_TEMPORARY_REDIRECT) {// 暂时定向
-					
 					Header header = response.getFirstHeader("Location");// 拿到重新定位后的header
-					
 					if(header != null) {
-						
 						String location = header.getValue();// 从header重新取出信息
 						Log.i(TAG, "Location: " + location);
 						if(location != null && !location.equals("")) {
-							
 							urlRedirect(location, list);
-							
 							mAndroidHttpClient.close();// 关闭此次连接
 							return;//后面不执行
 						}
 					}
-					
 					list.add(null);
 					mAndroidHttpClient.close();
-					
 					return;
-
 				} else {//地址真的不存在
-					
 					mAndroidHttpClient.close();
 					list.add(null);
-					
 					return;//后面不执行
 				}
 			}
-		} catch (MalformedURLException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		
+			mAndroidHttpClient.close();
+			list.add(null);
+		} 
 	}
 	
 	
@@ -3489,8 +3498,8 @@ public class VideoPlayerJPActivity extends Activity implements
 				tv.setText("标    清");
 				break;
 			}
-			Gallery.LayoutParams param = new Gallery.LayoutParams(UtilTools.getStandardValue(getApplicationContext(), 165),
-					UtilTools.getStandardValue(getApplicationContext(), 40));
+			Gallery.LayoutParams param = new Gallery.LayoutParams(Utils.getStandardValue(getApplicationContext(), 165),
+					Utils.getStandardValue(getApplicationContext(), 40));
 			tv.setGravity(Gravity.CENTER);
 			tv.setLayoutParams(param);
 			return tv;
@@ -3553,8 +3562,8 @@ public class VideoPlayerJPActivity extends Activity implements
 //					break;
 				}
 			}
-			Gallery.LayoutParams param = new Gallery.LayoutParams(UtilTools.getStandardValue(VideoPlayerJPActivity.this,165),
-					UtilTools.getStandardValue(VideoPlayerJPActivity.this,40));
+			Gallery.LayoutParams param = new Gallery.LayoutParams(Utils.getStandardValue(VideoPlayerJPActivity.this,165),
+					Utils.getStandardValue(VideoPlayerJPActivity.this,40));
 			tv.setGravity(Gravity.CENTER);
 			tv.setLayoutParams(param);
 			return tv;

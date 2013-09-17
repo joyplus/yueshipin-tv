@@ -4,7 +4,7 @@ import java.util.Iterator;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.joyplus.tv.utils.Log;
+import com.joyplus.utils.Log;
 
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;

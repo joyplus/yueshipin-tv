@@ -51,10 +51,11 @@ import com.joyplus.tv.utils.DBUtils;
 import com.joyplus.tv.utils.DefinationComparatorIndex;
 import com.joyplus.tv.utils.ItemStateUtils;
 import com.joyplus.tv.utils.JieMianConstant;
-import com.joyplus.tv.utils.Log;
-import com.joyplus.tv.utils.MyKeyEventKey;
 import com.joyplus.tv.utils.SouceComparatorIndex1;
 import com.joyplus.tv.utils.UtilTools;
+import com.joyplus.utils.Log;
+import com.joyplus.utils.MyKeyEventKey;
+import com.joyplus.utils.Utils;
 import com.umeng.analytics.MobclickAgent;
 
 public class ShowXiangqingZongYi extends Activity implements View.OnClickListener,
@@ -267,8 +268,8 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 			Button b = new Button(this);
 //			b.setWidth(table.getWidth()/5);
 //			b.setHeight(layout.getHeight());
-			b.setLayoutParams(new LayoutParams((table.getWidth()-UtilTools.getStandardValue(getApplicationContext(),80))/5,
-					UtilTools.getStandardValue(getApplicationContext(),35)));
+			b.setLayoutParams(new LayoutParams((table.getWidth()-Utils.getStandardValue(getApplicationContext(),80))/5,
+					Utils.getStandardValue(getApplicationContext(),35)));
 			if(isOver){
 				if((i+1)*COUNT>num){
 					b.setText((i*COUNT+1) +"-"+num);
@@ -310,8 +311,8 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 			layout.addView(b);
 			if(i!=totle_pagecount-1){
 				TextView t = new TextView(this);
-				t.setLayoutParams(new LayoutParams(UtilTools.getStandardValue(getApplicationContext(),20),
-						UtilTools.getStandardValue(getApplicationContext(),35)));
+				t.setLayoutParams(new LayoutParams(Utils.getStandardValue(getApplicationContext(),20),
+						Utils.getStandardValue(getApplicationContext(),35)));
 				layout.addView(t);
 			}
 			
@@ -475,36 +476,67 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 			public boolean onLongClick(View v) {
 				// TODO Auto-generated method stub
 				Log.i(TAG, "bofangLL.setOnLongClickListener---->");
-				if (supportDefination == 3) {
-
-					int width = v.getWidth();
-					int height = v.getHeight() * 3;
-					int locationY = v.getHeight() * 2;
-					int[] location = new int[2];
-					v.getLocationOnScreen(location);
-					popupWindow.setFocusable(true);
-					popupWindow.setWidth(width + 10);
-					popupWindow.setHeight(height + 40);
-					popupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
-							location[0] - 6, location[1] - locationY
-									- 40);
-				} else if (supportDefination == 2) {
-
-					int width = v.getWidth();
-					int height = v.getHeight() * 2;
-					int locationY = v.getHeight() * 1;
-					int[] location = new int[2];
-					v.getLocationOnScreen(location);
-					popupWindow.setFocusable(true);
-					popupWindow.setWidth(width + 10);
-					popupWindow.setHeight(height + 40);
-					popupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
-							location[0] - 6, location[1] - locationY
-									- 40);
-				}
+//				if (supportDefination == 3) {
+//
+//					int width = v.getWidth();
+//					int height = v.getHeight() * 3;
+//					int locationY = v.getHeight() * 2;
+//					int[] location = new int[2];
+//					v.getLocationOnScreen(location);
+//					popupWindow.setFocusable(true);
+//					popupWindow.setWidth(width + 10);
+//					popupWindow.setHeight(height + 40);
+//					popupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
+//							location[0] - 6, location[1] - locationY
+//									- 40);
+//				} else if (supportDefination == 2) {
+//
+//					int width = v.getWidth();
+//					int height = v.getHeight() * 2;
+//					int locationY = v.getHeight() * 1;
+//					int[] location = new int[2];
+//					v.getLocationOnScreen(location);
+//					popupWindow.setFocusable(true);
+//					popupWindow.setWidth(width + 10);
+//					popupWindow.setHeight(height + 40);
+//					popupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
+//							location[0] - 6, location[1] - locationY
+//									- 40);
+//				}
+				showPopUpWindow(v);
 				return false;
 			}
 		});
+	}
+	
+	private void showPopUpWindow(View v){
+		if (supportDefination == 3) {
+
+			int width = v.getWidth();
+			int height = v.getHeight() * 3;
+			int locationY = v.getHeight() * 2;
+			int[] location = new int[2];
+			v.getLocationOnScreen(location);
+			popupWindow.setFocusable(true);
+			popupWindow.setWidth(width + Utils.getStandardValue(getApplicationContext(),10));
+			popupWindow.setHeight(height + Utils.getStandardValue(getApplicationContext(),40));
+			popupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
+					location[0] - Utils.getStandardValue(getApplicationContext(),6), location[1] - locationY
+							- Utils.getStandardValue(getApplicationContext(),40));
+		} else if (supportDefination == 2) {
+
+			int width = v.getWidth();
+			int height = v.getHeight() * 2;
+			int locationY = v.getHeight() * 1;
+			int[] location = new int[2];
+			v.getLocationOnScreen(location);
+			popupWindow.setFocusable(true);
+			popupWindow.setWidth(width + Utils.getStandardValue(getApplicationContext(),10));
+			popupWindow.setHeight(height + Utils.getStandardValue(getApplicationContext(),40));
+			popupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
+					location[0] - Utils.getStandardValue(getApplicationContext(),6), location[1] - locationY
+							- Utils.getStandardValue(getApplicationContext(),40));
+		}
 	}
 
 	@Override
@@ -669,34 +701,35 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 
 					if (keyCode == KEY_UP && beforeView.getId() == v.getId()
 							&& !isPopupWindowShow) {
-						if (supportDefination == 3) {
+//						if (supportDefination == 3) {
+//
+//							int width = v.getWidth();
+//							int height = v.getHeight() * 3;
+//							int locationY = v.getHeight() * 2;
+//							int[] location = new int[2];
+//							v.getLocationOnScreen(location);
+//							popupWindow.setFocusable(true);
+//							popupWindow.setWidth(width + 10);
+//							popupWindow.setHeight(height + 40);
+//							popupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
+//									location[0] - 6, location[1] - locationY
+//											- 40);
+//						} else if (supportDefination == 2) {
+//
+//							int width = v.getWidth();
+//							int height = v.getHeight() * 2;
+//							int locationY = v.getHeight() * 1;
+//							int[] location = new int[2];
+//							v.getLocationOnScreen(location);
+//							popupWindow.setFocusable(true);
+//							popupWindow.setWidth(width + 10);
+//							popupWindow.setHeight(height + 40);
+//							popupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
+//									location[0] - 6, location[1] - locationY
+//											- 40);
+//						}
 
-							int width = v.getWidth();
-							int height = v.getHeight() * 3;
-							int locationY = v.getHeight() * 2;
-							int[] location = new int[2];
-							v.getLocationOnScreen(location);
-							popupWindow.setFocusable(true);
-							popupWindow.setWidth(width + 10);
-							popupWindow.setHeight(height + 40);
-							popupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
-									location[0] - 6, location[1] - locationY
-											- 40);
-						} else if (supportDefination == 2) {
-
-							int width = v.getWidth();
-							int height = v.getHeight() * 2;
-							int locationY = v.getHeight() * 1;
-							int[] location = new int[2];
-							v.getLocationOnScreen(location);
-							popupWindow.setFocusable(true);
-							popupWindow.setWidth(width + 10);
-							popupWindow.setHeight(height + 40);
-							popupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
-									location[0] - 6, location[1] - locationY
-											- 40);
-						}
-
+						showPopUpWindow(v);
 					}
 
 				}

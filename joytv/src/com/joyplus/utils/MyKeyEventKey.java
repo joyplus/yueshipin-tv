@@ -1,4 +1,4 @@
-package com.joyplus.tv.utils;
+package com.joyplus.utils;
 
 import android.view.KeyEvent;
 

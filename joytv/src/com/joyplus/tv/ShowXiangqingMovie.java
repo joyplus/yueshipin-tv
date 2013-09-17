@@ -44,10 +44,11 @@ import com.joyplus.tv.entity.CurrentPlayDetailData;
 import com.joyplus.tv.ui.WaitingDialog;
 import com.joyplus.tv.utils.BangDanConstant;
 import com.joyplus.tv.utils.ItemStateUtils;
-import com.joyplus.tv.utils.Log;
-import com.joyplus.tv.utils.MyKeyEventKey;
 import com.joyplus.tv.utils.URLUtils;
 import com.joyplus.tv.utils.UtilTools;
+import com.joyplus.utils.Log;
+import com.joyplus.utils.MyKeyEventKey;
+import com.joyplus.utils.Utils;
 import com.umeng.analytics.MobclickAgent;
 
 public class ShowXiangqingMovie extends Activity implements
@@ -335,36 +336,67 @@ public class ShowXiangqingMovie extends Activity implements
 			public boolean onLongClick(View v) {
 				// TODO Auto-generated method stub
 				Log.i(TAG, "bofangLL.setOnLongClickListener---->");
-				if (supportDefination == 3) {
-
-					int width = v.getWidth();
-					int height = v.getHeight() * 3;
-					int locationY = v.getHeight() * 2;
-					int[] location = new int[2];
-					v.getLocationOnScreen(location);
-					popupWindow.setFocusable(true);
-					popupWindow.setWidth(width + UtilTools.getStandardValue(getApplicationContext(),10));
-					popupWindow.setHeight(height + UtilTools.getStandardValue(getApplicationContext(),40));
-					popupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
-							location[0] - UtilTools.getStandardValue(getApplicationContext(),6), location[1] - locationY
-									- UtilTools.getStandardValue(getApplicationContext(),40));
-				} else if (supportDefination == 2) {
-
-					int width = v.getWidth();
-					int height = v.getHeight() * 2;
-					int locationY = v.getHeight() * 1;
-					int[] location = new int[2];
-					v.getLocationOnScreen(location);
-					popupWindow.setFocusable(true);
-					popupWindow.setWidth(width + UtilTools.getStandardValue(getApplicationContext(),10));
-					popupWindow.setHeight(height + UtilTools.getStandardValue(getApplicationContext(),40));
-					popupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
-							location[0] - UtilTools.getStandardValue(getApplicationContext(),6), location[1] - locationY
-									- UtilTools.getStandardValue(getApplicationContext(),40));
-				}
+//				if (supportDefination == 3) {
+//
+//					int width = v.getWidth();
+//					int height = v.getHeight() * 3;
+//					int locationY = v.getHeight() * 2;
+//					int[] location = new int[2];
+//					v.getLocationOnScreen(location);
+//					popupWindow.setFocusable(true);
+//					popupWindow.setWidth(width + UtilTools.getStandardValue(getApplicationContext(),10));
+//					popupWindow.setHeight(height + UtilTools.getStandardValue(getApplicationContext(),40));
+//					popupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
+//							location[0] - UtilTools.getStandardValue(getApplicationContext(),6), location[1] - locationY
+//									- UtilTools.getStandardValue(getApplicationContext(),40));
+//				} else if (supportDefination == 2) {
+//
+//					int width = v.getWidth();
+//					int height = v.getHeight() * 2;
+//					int locationY = v.getHeight() * 1;
+//					int[] location = new int[2];
+//					v.getLocationOnScreen(location);
+//					popupWindow.setFocusable(true);
+//					popupWindow.setWidth(width + UtilTools.getStandardValue(getApplicationContext(),10));
+//					popupWindow.setHeight(height + UtilTools.getStandardValue(getApplicationContext(),40));
+//					popupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
+//							location[0] - UtilTools.getStandardValue(getApplicationContext(),6), location[1] - locationY
+//									- UtilTools.getStandardValue(getApplicationContext(),40));
+//				}
+				showPopUpWindow(v);
 				return false;
 			}
 		});
+	}
+	
+	private void showPopUpWindow(View v){
+		if (supportDefination == 3) {
+
+			int width = v.getWidth();
+			int height = v.getHeight() * 3;
+			int locationY = v.getHeight() * 2;
+			int[] location = new int[2];
+			v.getLocationOnScreen(location);
+			popupWindow.setFocusable(true);
+			popupWindow.setWidth(width + Utils.getStandardValue(getApplicationContext(),10));
+			popupWindow.setHeight(height + Utils.getStandardValue(getApplicationContext(),40));
+			popupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
+					location[0] - Utils.getStandardValue(getApplicationContext(),6), location[1] - locationY
+							- Utils.getStandardValue(getApplicationContext(),40));
+		} else if (supportDefination == 2) {
+
+			int width = v.getWidth();
+			int height = v.getHeight() * 2;
+			int locationY = v.getHeight() * 1;
+			int[] location = new int[2];
+			v.getLocationOnScreen(location);
+			popupWindow.setFocusable(true);
+			popupWindow.setWidth(width + Utils.getStandardValue(getApplicationContext(),10));
+			popupWindow.setHeight(height + Utils.getStandardValue(getApplicationContext(),40));
+			popupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
+					location[0] - Utils.getStandardValue(getApplicationContext(),6), location[1] - locationY
+							- Utils.getStandardValue(getApplicationContext(),40));
+		}
 	}
 
 	@Override
@@ -501,33 +533,34 @@ public class ShowXiangqingMovie extends Activity implements
 					Log.i("Yangzhg", "UPPPPPPPP!");
 					if (keyCode == KEY_UP && beforeView.getId() == v.getId()
 							&& !isPopupWindowShow) {
-						if (supportDefination == 3) {
-
-							int width = v.getWidth();
-							int height = v.getHeight() * 3;
-							int locationY = v.getHeight() * 2;
-							int[] location = new int[2];
-							v.getLocationOnScreen(location);
-							popupWindow.setFocusable(true);
-							popupWindow.setWidth(width + 10);
-							popupWindow.setHeight(height + 40);
-							popupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
-									location[0] - 6, location[1] - locationY
-											- 40);
-						} else if (supportDefination == 2) {
-
-							int width = v.getWidth();
-							int height = v.getHeight() * 2;
-							int locationY = v.getHeight() * 1;
-							int[] location = new int[2];
-							v.getLocationOnScreen(location);
-							popupWindow.setFocusable(true);
-							popupWindow.setWidth(width + 10);
-							popupWindow.setHeight(height + 40);
-							popupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
-									location[0] - 6, location[1] - locationY
-											- 40);
-						}
+//						if (supportDefination == 3) {
+//
+//							int width = v.getWidth();
+//							int height = v.getHeight() * 3;
+//							int locationY = v.getHeight() * 2;
+//							int[] location = new int[2];
+//							v.getLocationOnScreen(location);
+//							popupWindow.setFocusable(true);
+//							popupWindow.setWidth(width + 10);
+//							popupWindow.setHeight(height + 40);
+//							popupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
+//									location[0] - 6, location[1] - locationY
+//											- 40);
+//						} else if (supportDefination == 2) {
+//
+//							int width = v.getWidth();
+//							int height = v.getHeight() * 2;
+//							int locationY = v.getHeight() * 1;
+//							int[] location = new int[2];
+//							v.getLocationOnScreen(location);
+//							popupWindow.setFocusable(true);
+//							popupWindow.setWidth(width + 10);
+//							popupWindow.setHeight(height + 40);
+//							popupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
+//									location[0] - 6, location[1] - locationY
+//											- 40);
+//						}
+						showPopUpWindow(v);
 
 					}
 					// Log.i("Yangzhg", "UPUP!!!!!!");
@@ -742,7 +775,7 @@ public class ShowXiangqingMovie extends Activity implements
 
 		TextView tv = (TextView) overTimeLL.findViewById(R.id.tv_over_time);
 
-		String overTime = UtilTools.movieOverTime(movieData.movie.duration);
+		String overTime = Utils.movieOverTime(movieData.movie.duration);
 		// String overTime = UtilTools.movieOverTime("300分钟");
 
 		if (overTime != null && !overTime.equals("")) {
@@ -988,8 +1021,7 @@ public class ShowXiangqingMovie extends Activity implements
 				// holder.content.setText("时长:"+recommendMoviesData.items[position].duration.replace("：00",
 				// "分钟"));
 				holder.content
-						.setText(UtilTools
-								.formatMovieDuration(recommendMoviesData.items[position].duration));
+						.setText(Utils.formatMovieDuration(recommendMoviesData.items[position].duration));
 			}
 			holder.score.setText(recommendMoviesData.items[position].score);
 			switch (Integer
