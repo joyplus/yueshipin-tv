@@ -15,6 +15,7 @@ public class Constant {
 	public static String LOADING_ADV_PUBLISHERID = "02e071ed43ff9d9e1c57647de3fafc84";//加载页面
 	public static String MAIN_ADV_PUBLISHERID = "9be3883720dfd077b8f4d69bb487d4e2";//首页
 	public static String PLAYER_ADV_PUBLISHERID = "9ada2fbd0ff493d8a11b4e5aefaf7df0";//播放器
+	public static String PLAYERPACH_ADV_PUBLISHERID = "4083958c3dc3360dafe7287ae997070c";
 	
 	public static final String APPKEY_TOP = "ijoyplus_android_0001";//正式
 

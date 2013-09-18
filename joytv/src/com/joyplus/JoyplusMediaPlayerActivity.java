@@ -47,8 +47,6 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joyplus.Sub.JoyplusSubManager;
-import com.joyplus.ad.AdPublisherIdManager;
-import com.joyplus.ad.AdvertManager;
 import com.joyplus.manager.URLManager;
 import com.joyplus.manager.URLManager.Quality;
 import com.joyplus.mediaplayer.JoyplusMediaPlayerListener;

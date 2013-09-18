@@ -7,13 +7,13 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.VideoView;
-
-import com.joyplus.ad.AdPublisherIdManager;
 import com.joyplus.ad.AdvertManager;
+import com.joyplus.tv.Constant;
 import com.joyplus.tv.R;
 import com.joyplus.tv.utils.Log;
 
-public class JoyplusMediaPlayerAd implements MediaPlayer.OnCompletionListener,MediaPlayer.OnPreparedListener{
+public class JoyplusMediaPlayerAd implements MediaPlayer.OnCompletionListener,
+                                               MediaPlayer.OnPreparedListener{
 	
 	private String TAG = "JoyplusMediaPlayerAd";
 	
@@ -43,48 +43,48 @@ public class JoyplusMediaPlayerAd implements MediaPlayer.OnCompletionListener,Me
 		mLayout      = (RelativeLayout) mActivity.findViewById(R.id.joyplusmediaplayer_advideoView_layout);
 		mTime        = (TextView)       mActivity.findViewById(R.id.joyplusmediaplayer_advideoView_time);
 		try {
-			mManager = new AdvertManager(mActivity, getPUBLISHERID(), true);				
+			//mManager = new AdvertManager(mActivity, getPUBLISHERID(), true);	
+			mManager = new AdvertManager(mActivity, Constant.PLAYERPACH_ADV_PUBLISHERID, true);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			mManager = null;
 			e.printStackTrace();
 		}
+		UpdateAd();
 	}
-	public void UpateAd() {
+	public void UpdateAd() {
 		// TODO Auto-generated method stub
-		if(mManager != null){
-			mManager.UpdateAdvert();
-		}
-	}
-	private String getPUBLISHERID() {
-		// TODO Auto-generated method stub
-		AdPublisherIdManager  mAdPublisherIdManager = new AdPublisherIdManager(mActivity);
-		String PUBLISHERID    = mAdPublisherIdManager.getPublisherId();
-		String newPUBLISHERID = mAdPublisherIdManager.UpdatePublisherId(AdPublisherIdManager.UMENGPARAMS.BOOT_ADV);
-		if(newPUBLISHERID != null && !newPUBLISHERID.equals("")){
-			PUBLISHERID = newPUBLISHERID;
-		}
-		Log.i(TAG," PUBLISHERID="+PUBLISHERID+" newPUBLISHERID="+newPUBLISHERID);
-		return PUBLISHERID;
+		Log.i(TAG," UpdateAd()");
+		new Thread(new Runnable(){
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				if(mManager != null){
+					mManager.UpdateAdvert();
+				}
+			}}
+		).start();		
 	}
 	public boolean isPlaying(){
 		return mLayout.getVisibility()==View.VISIBLE;
 	}
 	public void startAD(){
-		return;
-//		mAdState = ADSTATE.PLAYING;
-//		//if(!CheckAdFile())return;
-//		mLayout.setVisibility(View.VISIBLE);
-//		Time = MAXTIME;
-//		mAdVideoView.setVideoPath(getPlayerUri());
-//		mAdState = ADSTATE.PREPARE;
-//		new Thread(new Runnable(){
-//			@Override
-//			public void run() {
-//				// TODO Auto-generated method stub
-//				ADWait();				
-//			}			
-//		}).start();
+		mAdState = ADSTATE.PLAYING;
+		if(!CheckAdFile())return;
+		mLayout.setVisibility(View.VISIBLE);
+		Time = MAXTIME;
+		mAdVideoView.setVideoPath(getPlayerUri());
+		mAdState = ADSTATE.PREPARE;
+		new Thread(new Runnable(){
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				ADWait();	
+				if(mManager != null){
+					mManager.ReportCount();
+				}
+			}			
+		}).start();
 	}
 	private void ADWait(){
 		long time1 ;
@@ -112,7 +112,8 @@ public class JoyplusMediaPlayerAd implements MediaPlayer.OnCompletionListener,Me
 	}
 	private void CheckTime() {
 		// TODO Auto-generated method stub
-		if(Time<=0 && mAdState != ADSTATE.FINISH){
+		if((Time<=0 && mAdState != ADSTATE.FINISH) 
+			||(mActivity.StateOk && mAdState != ADSTATE.FINISH)){
 			mAdVideoView.stopPlayback();
 			mAdState = ADSTATE.FINISH;
 		}
@@ -126,16 +127,18 @@ public class JoyplusMediaPlayerAd implements MediaPlayer.OnCompletionListener,Me
 		});		
 	}
 	private boolean CheckAdFile(){
-		if(mManager == null)return false;
-		File ad = new File(getPlayerUri());
+		if(mManager == null)return false;		
+		String uri = getPlayerUri();
+		Log.d(TAG,"CheckAdFile() "+uri);
+		if(uri == null)return false;
+		File ad = new File(uri);
 		if(ad.exists() && ad.canRead())return true;
 		mAdState = ADSTATE.NOAD;
 		return false;
 	}
 	public String getPlayerUri(){
-		return "/mnt/sdcard/3gp.3gp";
-//		if(mManager == null)return null;
-//		return mManager.getPlayUri(); 
+		if(mManager == null)return null;
+		return mManager.getPlayUri(); 
 	}
 	@Override
 	public void onCompletion(MediaPlayer mp) {

@@ -13,12 +13,11 @@ import com.joyplus.adkey.AdRequest;
 import com.joyplus.adkey.Const;
 import com.joyplus.adkey.RequestRichMediaAd;
 import com.joyplus.adkey.Util;
-import com.joyplus.adkey.download.Downloader;
 import com.joyplus.adkey.download.ImpressionThread;
 import com.joyplus.adkey.video.ResourceManager;
 import com.joyplus.adkey.video.RichMediaAd;
 import com.joyplus.adkey.video.VideoData;
-import com.joyplus.adkey.widget.Log;
+import com.joyplus.tv.utils.Log;
 import com.joyplus.adkey.widget.SerializeManager;
 
 import android.content.Context;
@@ -27,9 +26,8 @@ import android.location.Location;
 
 public class AdvertManager {
 
-	private boolean Debug = true;
-	// private String TAG = "AdBootScreenManager";
-	private String TAG = "Jas";
+	private boolean Debug = false;
+	private String TAG = "AdvertManager";
 	private boolean mIncludeLocation = false;
 	private String mRequestURL = null;
 	private SerializeManager serializeManager;
@@ -52,11 +50,23 @@ public class AdvertManager {
 	}
 
 	// this should be the same as it in BootAnimation.cpp
-	public   static final String DefaultFILEPATH = "JoyplusAd.mp4";
+	public   static String DefaultFILEPATH = "JoyplusAd";
 	public   String getPlayUri(){
-		return PATH+DefaultFILEPATH;
+		if(PATH == null)return null;
+		File file = new File(PATH);
+		if (file.exists()) {
+			String[] temp = file.list();
+			if (temp != null) {
+				for (int i = 0; i < temp.length; i++) {
+					if (temp[i].contains(DefaultFILEPATH)) {						
+						return PATH+temp[i];
+					}
+				}
+			}
+		}
+		return null;
 	}
-	private  String DefaultAD = null;
+	private  String DefaultAD = "tv_patch_advert";
 	private  String PATH = null;
 
 
@@ -64,6 +74,7 @@ public class AdvertManager {
 			final boolean cacheMode) {
 		this.PUBLISHERID = publisherId;
 		this.PATH = Const.DOWNLOAD_PATH+ctx.getPackageName()+"/"+PUBLISHERID+"/";
+		DefaultAD = PATH+DefaultAD;
 		mContext = ctx;
 		Util.CACHE_MODE = cacheMode;
 		InitResource();
@@ -102,13 +113,11 @@ public class AdvertManager {
 				VideoData video = tempAd.getVideo();
 				if (Util.CACHE_MODE && video != null) {
 					String Download_path = video.getVideoUrl();
-					Log.d("Jas", "Download_path=" + Download_path);
 					URL url = null;
 					try {
 						url = new URL(Download_path);
 					} catch (MalformedURLException e) {
 						// TODO Auto-generated catch block
-						Log.d(TAG, "download fail Url fail");
 						e.printStackTrace();
 					}
 					if (url != null) {
@@ -117,8 +126,7 @@ public class AdvertManager {
 					} else {
 						Util.ExternalName = ".mp4";
 					}
-					Downloader downloader = new Downloader(Download_path,
-							mContext);
+					Downloader downloader = new Downloader(Download_path,PATH);
 					if (Download_path.startsWith("http:")
 							|| Download_path.startsWith("https:")) {
 						downloader.download();
@@ -175,7 +183,7 @@ public class AdvertManager {
 
 	private void requestAd(final InputStream xml) {
 		if (Debug)
-			Log.i(TAG, "AdBootScreenManager requestAd mEnabled=" + mEnabled);
+			Log.i(TAG, "requestAd mEnabled=" + mEnabled +" mRequestThread="+(mRequestThread!=null));
 		if (!mEnabled)
 			return;
 		if (mRequestThread == null) {
@@ -186,6 +194,7 @@ public class AdvertManager {
 						@Override
 						public void uncaughtException(Thread thread,
 								Throwable ex) {
+							ex.printStackTrace();
 							mRichMediaAd = new RichMediaAd();
 							mRichMediaAd.setType(Const.AD_FAILED);
 							mRequestThread = null;
@@ -221,19 +230,17 @@ public class AdvertManager {
 				}
 				AdRequest request = getRequest();
 				File cacheDir = new File(PATH);
-				if (!cacheDir.exists())
-					cacheDir.mkdirs();
+				if (!cacheDir.exists())cacheDir.mkdirs();
 				mRichMediaAd = (RichMediaAd) serializeManager
 						.readSerializableData(DefaultAD);
 				RichMediaAd nextResponse = requestAd.sendRequest(request);
-				if(Debug)Log.d(TAG,"Request over mRichMediaAd()");
-				serializeManager.writeSerializableData(DefaultAD, nextResponse);
+				serializeManager.writeSerializableData(DefaultAD, nextResponse);				
 				if (mRichMediaAd == null) {
 					mRichMediaAd = nextResponse;
 				}
-				if(Debug)Log.d(TAG,"Request over mRichMediaAd="+mRichMediaAd.toString());
 			} catch (Throwable t) {
-				Log.e("Jas","Request error ");
+				Log.e(TAG,"Request error ");
+				t.printStackTrace();
 				mRichMediaAd = (RichMediaAd) serializeManager
 						.readSerializableData(DefaultAD);
 			} finally {
@@ -249,7 +256,6 @@ public class AdvertManager {
 			mRichMediaAd = new RichMediaAd();
 			mRichMediaAd.setType(Const.AD_FAILED);
 		}
-		Log.d("Jas", "notifyResponse() type=" + mRichMediaAd.getType());
 		if (mRichMediaAd.getType() == Const.VIDEO_TO_INTERSTITIAL
 				|| mRichMediaAd.getType() == Const.INTERSTITIAL_TO_VIDEO
 				|| mRichMediaAd.getType() == Const.VIDEO
@@ -296,16 +302,18 @@ public class AdvertManager {
 	 */
 	private boolean ResaveCacheLoaded() {
 		// TODO Auto-generated method stub
-		if (Debug)
-			Log.d(TAG, "ResaveCacheLoaded()");
 		File file = new File(PATH);
 		if (file.exists()) {
 			String[] temp = file.list();
 			if (temp != null) {
 				for (int i = 0; i < temp.length; i++) {
 					if (temp[i].contains(Const.DOWNLOAD_PLAY_FILE)) {
-						copyFile(new File(PATH + temp[i]), new File(
-								PATH+DefaultFILEPATH));
+						String dstFile = PATH+DefaultFILEPATH;
+						String extra   = getExtensionName(temp[i]);
+						if(extra!=null && !extra.equals(temp[i])){
+							dstFile += ("."+getExtensionName(temp[i]));
+						}
+						copyFile(new File(PATH + temp[i]), new File(dstFile));
 						return true;
 					}
 				}
@@ -313,10 +321,16 @@ public class AdvertManager {
 		}
 		return false;
 	}
-
+	public static String getExtensionName(String filename) {   
+        if ((filename != null) && (filename.length() > 0)) {   
+            int dot = filename.lastIndexOf('.');   
+            if ((dot >-1) && (dot < (filename.length() - 1))) {   
+                return filename.substring(dot + 1);   
+            }   
+        }   
+        return null;   
+    }
 	private boolean copyFile(File srcFile, File dstFile) {
-		if (Debug)
-			Log.d(TAG, "copyFile()");
 		try {
 			InputStream in = new FileInputStream(srcFile);
 			if (dstFile.exists())
@@ -344,8 +358,6 @@ public class AdvertManager {
 
 	private void InitResource() {
 		// TODO Auto-generated method stub
-		if (Debug)
-			Log.d(TAG, "InitResource()");
 		this.mIncludeLocation = true;
 		this.mRequestURL = Const.REQUESTURL;
 		Util.GetPackage(mContext);
