@@ -798,7 +798,7 @@ public class VideoPlayerJPActivity extends Activity implements
 	
 	private void noUrlCanPlay(){
 		
-		if(hasP2p){
+		if(hasP2p && !isRetry){
 			isRetry = true;
 			new Thread(new Runnable() {
 				
@@ -3129,7 +3129,6 @@ public class VideoPlayerJPActivity extends Activity implements
 	@Override
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
-		
 		Log.i(TAG, "onDestroy--->");
 		
 		unregisterReceiver(mReceiver);
