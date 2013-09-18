@@ -25,7 +25,7 @@
     <dimen name="standard_1_dp">1dp</dimen>
     
     <!--Yangzhg  -->
-    
+     <dimen name="setting_list_item_height">110dp</dimen>   
     
     <!--ZhangQibo  -->
     

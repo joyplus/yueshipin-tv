@@ -798,7 +798,7 @@ public class VideoPlayerJPActivity extends Activity implements
 	
 	private void noUrlCanPlay(){
 		
-		if(hasP2p){
+		if(hasP2p && !isRetry){
 			isRetry = true;
 			new Thread(new Runnable() {
 				
