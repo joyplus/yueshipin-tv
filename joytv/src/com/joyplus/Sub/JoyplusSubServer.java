@@ -19,8 +19,8 @@ public class JoyplusSubServer {
 	private static final String TAG = "JoyplusSubServer";
 
 	private List<SubURI> SubUri = new ArrayList<SubURI>();
+	private JoyplusSubConfig mSubConfig;
 	
-	private boolean    SubEnable = false;
 	private JoyplusSub mSub;
     private Context mContext;
     private JoyplusSub getJoyplusSub(SubContentType type , SubURI uri){
@@ -32,7 +32,8 @@ public class JoyplusSubServer {
     	else return null;
     }
     public JoyplusSubServer(Context context){
-    	mContext = context;
+    	mContext   = context;
+    	mSubConfig = new JoyplusSubConfig(mContext);
     }
 	public void setSubUri(List<SubURI> subUri){
 		 Log.i(TAG, "setSubUri subUri size--->" + subUri.size());
@@ -115,10 +116,10 @@ public class JoyplusSubServer {
     	}
     }
     public boolean IsSubEnable(){
-    	return SubEnable;
+    	return mSubConfig.getSubEN();
     }
     public void setSubEnable(boolean EN){
-    	SubEnable = EN;
+    	mSubConfig.setSubEN(EN);
     }
     public int getCurrentSubIndex(){
     	if(mSub == null || !IsSubEnable())return -1;
@@ -130,6 +131,7 @@ public class JoyplusSubServer {
 		int start = 0;
 		int end   = mSub.elements.size()-1;
 		if(end<start || end==0)return null;
+		if(time>mSub.elements.get(end).getStartTime().getTime())return null;
 		while(start < end){			
 			if(mSub.elements.get(getMiddle(start,end)).getStartTime().getTime()>time){
 				end   = getMiddle(start,end);
