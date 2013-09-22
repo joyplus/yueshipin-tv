@@ -20,7 +20,7 @@ public class JoyplusSubServer {
 
 	private List<SubURI> SubUri = new ArrayList<SubURI>();
 	
-	private boolean    SubEnable = true;
+	private boolean    SubEnable = false;
 	private JoyplusSub mSub;
     private Context mContext;
     private JoyplusSub getJoyplusSub(SubContentType type , SubURI uri){

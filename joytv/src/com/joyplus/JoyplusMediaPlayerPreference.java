@@ -154,7 +154,12 @@ public class JoyplusMediaPlayerPreference extends AlertDialog{
             	}
             	gallery.setAdapter(new QuaSubAdapter(definationStrings));
             	Log.i(TAG, "subManager.getCurrentSubIndex()+1--->" + (subManager.getCurrentSubIndex()+1));
-            	gallery.setSelection(subManager.getCurrentSubIndex()+1);//for have add "sub close"
+            	if(subManager.IsSubEnable()){
+            		gallery.setSelection(subManager.getCurrentSubIndex()+1);//for have add "sub close"
+            	}else {
+            		gallery.setSelection(0);//for have add "sub close"
+
+            	}
             }else{
             	definationStrings.add(mContext.getResources().getString(R.string.meidaplayer_sub_string_nosub));
             	gallery.setAdapter(new QuaSubAdapter(definationStrings));

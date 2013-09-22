@@ -74,17 +74,19 @@ public class JoyplusMediaPlayerVideoView implements JoyplusMediaPlayerInterface{
 		return false;
 	}
 	private boolean CheckMediaInfo(){
-		if(CurrentMediaInfo.getState().toInt()>STATE.MEDIA_STATE_INITED.toInt()
-		&& CurrentMediaInfo.getState().toInt()<STATE.MEDIA_STATE_FINISH.toInt()
-		&& CurrentMediaInfo.getState().toInt() != STATE.MEDIA_STATE_PUSE.toInt()){
-			if( CurrentMediaInfo.getINFO() == 701 //loading
+		if(hasMediaInfoChange()){
+			mWaitingWindows.setVisible(false);
+		}else if(CurrentMediaInfo.getState().toInt()>STATE.MEDIA_STATE_INITED.toInt()
+		     && CurrentMediaInfo.getState().toInt()<STATE.MEDIA_STATE_FINISH.toInt()
+		     && CurrentMediaInfo.getState().toInt() != STATE.MEDIA_STATE_PUSE.toInt()){
+			 if( CurrentMediaInfo.getINFO() == 701 //loading
 					&& CurrentMediaInfo.getCurrentTime()>1000
 					&& JoyplusMediaPlayerActivity.StateOk
 					){
 				mWaitingWindows.setVisible(true);
-			}else{
+			 }else{
 				mWaitingWindows.setVisible(false);
-			}
+			 }
 		}
 		if(CurrentMediaInfo.getPath()==null || "".equals(CurrentMediaInfo.getPath()))return true;
 		if(PreMediaInfo.getPath()!=null && !PreMediaInfo.getPath().equals(CurrentMediaInfo.getPath()))return true;

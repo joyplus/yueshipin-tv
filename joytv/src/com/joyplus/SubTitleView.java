@@ -150,7 +150,7 @@ public class SubTitleView extends TextView {
 	
 	private void messageDisplay(){
 		Log.i(TAG, "messageDisplay-->");
-		if(getSubManager().CheckSubAviable()){
+		if(getSubManager().IsSubEnable()&&getSubManager().CheckSubAviable()){
 			setVisibility(VISIBLE);
 			mHandler.sendEmptyMessage(MESSAGE_SUBTITLE_START);
 		}
