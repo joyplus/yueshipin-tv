@@ -13,7 +13,6 @@ import com.androidquery.callback.AjaxCallback;
 import com.joyplus.Sub.JoyplusSubInterface.SubContentType;
 import com.joyplus.mediaplayer.ContentRestrictionException;
 import com.joyplus.tv.Constant;
-import com.joyplus.tv.utils.Log;
 
 public class JoyplusSubServer {
 	private static final String TAG = "JoyplusSubServer";
@@ -36,7 +35,6 @@ public class JoyplusSubServer {
     	mSubConfig = new JoyplusSubConfig(mContext);
     }
 	public void setSubUri(List<SubURI> subUri){
-		 Log.i(TAG, "setSubUri subUri size--->" + subUri.size());
 		 if(subUri==null || subUri.size()<=0)return;
 		 SubUri = subUri;
 		 CheckSubUriList();

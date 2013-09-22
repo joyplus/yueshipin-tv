@@ -4,7 +4,6 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.util.Iterator;
 
-import com.joyplus.tv.utils.Log;
 import com.joyplus.tv.utils.UtilTools;
 
 
@@ -29,7 +28,6 @@ public class SRTSub extends JoyplusSub{
 	@Override
 	public void parse(byte[] Sub) {
 		// TODO Auto-generated method stub
-		Log.i(TAG, "Sub size--->" + Sub.length + " getUri().SubType--->" + getUri().SubType.name());
 		if(this.getUri().SubType != SUBTYPE.NETWORK)return;
 		CheckSize(Sub);
 		SRTParser parser = new SRTParser();		
@@ -46,7 +44,7 @@ public class SRTSub extends JoyplusSub{
 		}
 		parser.parse(new ByteArrayInputStream(Sub));
 		SRTSub.this.elements = parser.getCollection().getElements();
-		Log.i(TAG, "elements size--->" + elements.size());
+		
 	}
 
 	@Override
