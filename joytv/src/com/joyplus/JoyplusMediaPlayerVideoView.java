@@ -82,6 +82,7 @@ public class JoyplusMediaPlayerVideoView implements JoyplusMediaPlayerInterface{
 			 if( CurrentMediaInfo.getINFO() == 701 //loading
 					&& CurrentMediaInfo.getCurrentTime()>1000
 					&& JoyplusMediaPlayerActivity.StateOk
+					&& CurrentMediaInfo.getState()==STATE.MEDIA_STATE_PLAYING
 					){
 				mWaitingWindows.setVisible(true);
 			 }else{
