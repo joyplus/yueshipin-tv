@@ -1,6 +1,6 @@
 package com.joyplus.Sub;
 
-public class SubURI {
+public class SubURI extends SubModel{
       
 	public String  Uri;
 	

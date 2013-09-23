@@ -20,7 +20,7 @@ public class SRTSub extends JoyplusSub{
 
 	private void CheckUri() {
 		// TODO Auto-generated method stub
-		JoyplusSubContentRestrictionFactory.getContentRestriction().checkUri(SubContentType.SUB_SRT, this.getUri().Uri);
+		JoyplusSubContentRestrictionFactory.getContentRestriction().checkUri(SubContentType.SUB_SRT, this.getUri());
 	}
     private void CheckSize(byte[] Sub){
     	JoyplusSubContentRestrictionFactory.getContentRestriction().checkSubSize(0, Sub.length);

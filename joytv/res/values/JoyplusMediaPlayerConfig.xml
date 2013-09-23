@@ -30,7 +30,6 @@
     <!-- Config support switch player internal, you can change it to false or true -->
     <string name="switch_internal">true</string>
     
-    <!-- Sub dir in SDCard 
-         default dir is "mnt/sdcard/Joyplus/sub/"-->
-    <string name="sun_dir">Joyplus/sub/</string>
+    
+    
 </resources>

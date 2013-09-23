@@ -18,8 +18,7 @@ import com.androidquery.callback.AjaxCallback;
 import com.joyplus.tv.Constant;
 
 
-public class JoyplusSubManager {
-	
+public class JoyplusSubManager {	
 
 	   private boolean Debug = false;
 	   private static final String  TAG   = "JoyplusSubManager";
@@ -35,14 +34,30 @@ public class JoyplusSubManager {
 	   
 	   /*Interface of init sub uri*/
 	   public void setSubUri(SubURI string){
-		   if(string == null || !mSubServer.CheckSubAviable())return;
+		   if(string == null)return;
 		   List<SubURI> sub = new ArrayList<SubURI>();
 		   sub.add(string);
 		   setSubUri(sub);
 	   }
 	   public void setSubUri(List<SubURI> subUri){
-		   if(subUri==null || subUri.size()<=0 ||mSubServer.CheckSubAviable())return;
-		   mSubServer.setSubUri(subUri);
+		   if(subUri==null || subUri.size()<=0)return;
+		   mSubServer.setSubUri(subUri,true);
+	   }
+	   public void AddSubUri(SubURI string){
+		   if(string == null )return;
+		   List<SubURI> sub = new ArrayList<SubURI>();
+		   sub.add(string);
+		   AddSubUri(sub);
+	   }
+	   public void AddSubUri(List<SubURI> subUri){
+		   if(subUri==null || subUri.size()<=0)return;
+		   mSubServer.setSubUri(subUri,false);
+	   }
+	   public void registerListener(JoyplusSubListener listener){
+		   mSubServer.registerListener(listener);
+	   }
+	   public boolean clearSub(){
+		   return mSubServer.clearSub();
 	   }
 	   public int getCurrentSubIndex(){
 		   return mSubServer.getCurrentSubIndex();
@@ -68,7 +83,7 @@ public class JoyplusSubManager {
 	   }
 	   
 	   /*Interface of parser uri to get download sub uri*/
-	public List<SubURI> getNetworkSubURI(String url, String MD5,
+	  public List<SubURI> getNetworkSubURI(String url, String MD5,
 			Context context) {
 		List<SubURI> list = new ArrayList<SubURI>();
 		String subTitleUrl = Constant.SUBTITLE_PARSE_URL_URL + "?url="

@@ -13,7 +13,7 @@ public class ASSSub extends JoyplusSub{
 	}
 	private void CheckUri() {
 		// TODO Auto-generated method stub
-		JoyplusSubContentRestrictionFactory.getContentRestriction().checkUri(SubContentType.SUB_ASS, this.getUri().Uri);
+		JoyplusSubContentRestrictionFactory.getContentRestriction().checkUri(SubContentType.SUB_ASS, this.getUri());
 	}
 	private void CheckSize(byte[] Sub){
     	JoyplusSubContentRestrictionFactory.getContentRestriction().checkSubSize(0, Sub.length);

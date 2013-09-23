@@ -20,14 +20,14 @@ public class JoyplusSubCarrierContentRestriction implements JoyplusSubContentRes
 		}
 	}
 	@Override
-	public void checkUri(SubContentType type, String uri)
+	public void checkUri(SubContentType type, SubURI uri)
 			throws ContentRestrictionException {
 		// TODO Auto-generated method stub
 		if(type == null || uri==null || type==SubContentType.SUB_UNKNOW){
 			throw new ContentRestrictionException();
 		}
-		if(type == SubContentType.SUB_SRT){
-			CheckSRTUri(uri);
+		if(type == SubContentType.SUB_SRT && uri.SubType==SUBTYPE.NETWORK){
+			CheckSRTUri(uri.Uri);
 		}
 	}
 	private void CheckSRTUri(String uri) {

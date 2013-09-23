@@ -1,117 +1,57 @@
 package com.joyplus.Sub;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-
 import android.content.Context;
 
-import com.androidquery.AQuery;
-import com.androidquery.callback.AjaxCallback;
-import com.joyplus.Sub.JoyplusSubInterface.SubContentType;
-import com.joyplus.mediaplayer.ContentRestrictionException;
-import com.joyplus.tv.Constant;
-
-public class JoyplusSubServer {
-	private static final String TAG = "JoyplusSubServer";
-
-	private List<SubURI> SubUri = new ArrayList<SubURI>();
-	private JoyplusSubConfig mSubConfig;
-	
-	private JoyplusSub mSub;
+public class JoyplusSubServer extends SubModel {
+	private static final String  TAG = "JoyplusSubServer";
+	private JoyplusUseableSubUri mUseableSubUri;
+	private JoyplusTempSubUri    mTempSubUri;	
+	private JoyplusSubConfig     mSubConfig;
     private Context mContext;
-    private JoyplusSub getJoyplusSub(SubContentType type , SubURI uri){
-    	if(type == SubContentType.SUB_ASS)return new ASSSub(uri);
-    	else if(type == SubContentType.SUB_SCC)return new SCCSub(uri);
-    	else if(type == SubContentType.SUB_SRT)return new SRTSub(uri);
-    	else if(type == SubContentType.SUB_SSA)return new SSASub(uri);
-    	else if(type == SubContentType.SUB_STL)return new STLSub(uri);
-    	else return null;
-    }
+    
     public JoyplusSubServer(Context context){
     	mContext   = context;
-    	mSubConfig = new JoyplusSubConfig(mContext);
+    	mSubConfig     = new JoyplusSubConfig(mContext);
+    	mUseableSubUri = new JoyplusUseableSubUri(mContext);
+    	//mUseableSubUri.registerModelChangedObserver(this);
+    	mTempSubUri    = new JoyplusTempSubUri(mContext);
+    	mTempSubUri.registerModelChangedObserver(mUseableSubUri);
     }
-	public void setSubUri(List<SubURI> subUri){
-		 if(subUri==null || subUri.size()<=0)return;
-		 SubUri = subUri;
-		 CheckSubUriList();
+    public void registerListener(JoyplusSubListener listener){
+    	mUseableSubUri.registerListener(listener);
 	}
+	public void setSubUri(List<SubURI> subUri,boolean clear){
+		 if(subUri==null || subUri.size()<=0)return;
+		 if(clear){
+			 mUseableSubUri.clear();
+			 mTempSubUri.clear();
+		 }
+		 for(SubURI sub : subUri){
+			 mTempSubUri.add(sub);
+		 }	 
+	}	
+	
 	public List<SubURI> getSubList(){
-		return SubUri;
+		return mUseableSubUri;
+	}
+	public boolean clearSub() {
+		// TODO Auto-generated method stub
+		mTempSubUri.clear();
+		mUseableSubUri.clear();
+		return true;
 	}
     public boolean CheckSubAviable(){
-    	if(mSub != null && mSub.getElements().size()>2)return true;
-    	return false;
+    	return mUseableSubUri.CheckSubAviable();
     }
+    
     public JoyplusSub getJoyplusSub() throws Exception{
-    	if(mSub != null)return mSub;
+    	if(mUseableSubUri.getSub() != null)return mUseableSubUri.getSub();
     	throw new Exception("JoyplusSub is null");
     }
-	private void CheckSubUriList() {
-		// TODO Auto-generated method stub
-		Iterator<SubURI> it = SubUri.iterator();
-		while(it.hasNext()){
-			if(InstanceSub(it.next()))return;
-			it.remove();
-		}
-		SubUri = new ArrayList<SubURI>();
-		mSub   = null;
-	}
-	
-	private boolean InstanceSub(SubURI uri){
-		byte[] Subtitle = null;
-		if(uri.SubType == SUBTYPE.NETWORK)
-			Subtitle = getSubByte(uri.Uri);
-		mSub = InstanceSub(uri,Subtitle);
-		if(mSub != null){
-			java.util.Collections.sort(mSub.elements, new SubTitleElementComparator());
-			return true;
-		}
-		return false;
-	}
-	private JoyplusSub InstanceSub(SubURI uri,byte[] subtitle){
-		JoyplusSub sub = null;
-		for(int i=1;i<=SubContentType.SUB_MAX.toInt();i++){
-			sub = InstanceSub(JoyplusSub.getSubContentType(i),uri,subtitle);
-			if(sub !=null)return sub;
-		}
-		return null;
-	}
-	private JoyplusSub InstanceSub(SubContentType type ,SubURI uri,byte[] subtitle){
-		try{
-			if(type.toInt()<=SubContentType.SUB_UNKNOW.toInt()
-					||type.toInt()>SubContentType.SUB_MAX.toInt())return null;
-			JoyplusSub sub = getJoyplusSub(type,uri);
-			if(sub.getUri().SubType == SUBTYPE.NETWORK)
-			      sub.parse(subtitle);
-			else if(sub.getUri().SubType == SUBTYPE.LOCAL)
-				  sub.parseLocal();
-			if(sub.getElements().size()>2)return sub;
-		}catch(ContentRestrictionException e){
-		}
-		return null;
-	}
-   private byte[] getSubByte(String url){		
-		AjaxCallback<byte[]> cb = new AjaxCallback<byte[]>();
-		cb.url(url).type(byte[].class);		
-		Map<String, String> headers = new HashMap<String, String>();
-		headers.put("app_key", Constant.APPKEY);
-		cb.SetHeader(headers); 		
-		(new AQuery(mContext)).sync(cb);
-		byte[] subTitle = cb.getResult();
-		return subTitle;
-	}
-   
+    
     public void SwitchSub(int index){
-    	if(index>=0 && index<SubUri.size()){
-    		if(!InstanceSub(SubUri.get(index))){
-    			SubUri.remove(index);
-    			CheckSubUriList();
-    		}
-    	}
+    	if(getSubList() == null || index>=getSubList().size()) return ;
+    	
     }
     public boolean IsSubEnable(){
     	return mSubConfig.getSubEN();
@@ -120,11 +60,13 @@ public class JoyplusSubServer {
     	mSubConfig.setSubEN(EN);
     }
     public int getCurrentSubIndex(){
-    	if(mSub == null || !IsSubEnable())return -1;
-    	return SubUri.indexOf(mSub.getUri());
+    	if(mUseableSubUri.getSub() == null || !IsSubEnable())return -1;
+    	return mUseableSubUri.indexOf(mUseableSubUri.getSub().getUri());
     }
+    
 	public Element getElement(long time) {
 		// TODO Auto-generated method stub
+		JoyplusSub mSub = mUseableSubUri.getSub();
 		if(mSub == null || !IsSubEnable()) return null;
 		int start = 0;
 		int end   = mSub.elements.size()-1;
@@ -156,14 +98,15 @@ public class JoyplusSubServer {
 		}
 		return null;
 	}
-	private int getMiddle(int index){
+	private int getMiddle(int index,int MAX ,int MIN){
 		if(index%2 != 0){
 			index++;
 		}
-		if(index/2>=mSub.elements.size())return (mSub.elements.size()-1);
+		if(index/2>=MAX)return MAX;
+		if(index/2<=MIN)return MIN;
 		return index/2;
 	}
-	private int getMiddle(int Start , int End){
-		return getMiddle(Start+End);
+	private int getMiddle(int Start , int End ){
+		return getMiddle(Start+End,End,Start);
 	}
 }

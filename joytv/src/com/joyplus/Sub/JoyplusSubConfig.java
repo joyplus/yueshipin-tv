@@ -3,31 +3,43 @@ package com.joyplus.Sub;
 import com.joyplus.tv.R;
 
 import android.content.Context;
+import android.os.Environment;
+import android.util.Log;
 
 public class JoyplusSubConfig {
        
-    private Context mContext;
+    private static JoyplusSubConfig mConfig;
+    public  static JoyplusSubConfig getInstance(){
+    	return mConfig;
+    }
     public JoyplusSubConfig(Context context){
-	   mContext = context;
-	   InitResource();
+	   InitResource(context);
+	   mConfig = this;
     }     
 	   
-    private void InitResource() {
+    private void InitResource(Context context) {
 	   // TODO Auto-generated method stub
-	   SubEN   = Boolean.parseBoolean(mContext.getString(R.string.sub_en_default));
-	   SubPath = mContext.getString(R.string.sub_dir);
+	   SubEN   = Boolean.parseBoolean(context.getString(R.string.sub_en_default));
+	   SubPath = Environment.getExternalStorageDirectory()+context.getString(R.string.sub_dir);
+	   SubMax  = Integer.parseInt(context.getString(R.string.sub_max_local));
+	   Log.d("Jas","InitResource() SubEN="+SubEN+" SubPath="+SubPath+" SubMax="+SubMax);
 	}
     /*Interface of Sub EN*/
-	private boolean SubEN = false;
-    public void setSubEN(boolean EN){
+	private  boolean SubEN = false;
+    public   void setSubEN(boolean EN){
 	   SubEN = EN;
     }
-    public boolean getSubEN(){
+    public   boolean getSubEN(){
 	   return SubEN;
     }
+    /*Interface of Sub max*/
+    private  int SubMax = 0;
+    public   int getSubMax(){
+    	return SubMax;
+    }
 	/*Interface of Sub dir*/   
-    private String SubPath = "";
-    public String getSubPath(){
+    private  String SubPath = "";
+    public   String getSubPath(){
     	return SubPath;
     }
     /*Interface of Sub mode*/
