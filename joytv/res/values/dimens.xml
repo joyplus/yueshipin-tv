@@ -25,8 +25,10 @@
     <dimen name="standard_1_dp">1dp</dimen>
     
     <!--Yangzhg  -->
-     <dimen name="setting_list_item_height">110dp</dimen>   
-    
+    <dimen name="setting_list_item_height">110dp</dimen>   
+    <dimen name="vip_login_dilog_VIPLOGIN_ts">22dp</dimen>  
+    <dimen name="vip_login_dilog_usrname_ts">20dp</dimen>  
+    <dimen name="vip_login_dilog_item_high">36dp</dimen>  
     <!--ZhangQibo  -->
     
     <!--ZhangQibo  -->

@@ -897,7 +897,10 @@ public class ShowXiangqingMovie extends Activity implements
 			aq.id(R.id.iv_head_user_icon).image(
 					app.getUserInfo().getUserAvatarUrl(), false, true, 0,
 					R.drawable.avatar_defult);
-			aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
+			if(VIPLoginActivity.isLogin(this))
+				aq.id(R.id.tv_head_user_name).text(UtilTools.getVIP_NickName(this));
+			else
+				aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
 		}
 	}
 

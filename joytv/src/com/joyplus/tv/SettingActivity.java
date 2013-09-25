@@ -31,8 +31,9 @@ public class SettingActivity extends Activity implements OnClickListener {
 	private static final String TAG = "SettingActivity";
 	
 	private static final int SHOW_DIALOG_UNBAND = 0;
+	private static final int SHOW_DIALOG_LOGOUT = SHOW_DIALOG_UNBAND + 1;
 	
-	private LinearLayout unbandLayout;
+	private LinearLayout unbandLayout,vipLoginLayout;
 	private TextView aboutLayout,declarationLayout,faqLayout;
 	private TextView versionNameTv;
 	private App app;
@@ -46,7 +47,6 @@ public class SettingActivity extends Activity implements OnClickListener {
 				updateUser();
 			}
 		}
-		
 	};
 	
 	@Override
@@ -59,6 +59,7 @@ public class SettingActivity extends Activity implements OnClickListener {
 		declarationLayout = (TextView) findViewById(R.id.declaration_layout);
 		faqLayout = (TextView) findViewById(R.id.faq_layout);
 		versionNameTv = (TextView) findViewById(R.id.tv_version_name);
+		vipLoginLayout = (LinearLayout) findViewById(R.id.vipLoginLayout);
 		app = (App) getApplication();
 		aq = new AQuery(this);
 		
@@ -88,6 +89,7 @@ public class SettingActivity extends Activity implements OnClickListener {
 		aboutLayout.setOnClickListener(this);
 		declarationLayout.setOnClickListener(this);
 		faqLayout.setOnClickListener(this);
+		vipLoginLayout.setOnClickListener(this);
 		IntentFilter filter = new IntentFilter(Main1.ACTION_USERUPDATE);
 		registerReceiver(receiver, filter);
 	}
@@ -115,7 +117,15 @@ public class SettingActivity extends Activity implements OnClickListener {
 				showDialog(SHOW_DIALOG_UNBAND);
 			}
 			break;
-
+		case R.id.vipLoginLayout:
+			if(!VIPLoginActivity.isLogin(SettingActivity.this)){
+				Intent loginIntent = new Intent(this, VIPLoginActivity.class);
+				loginIntent.putExtra(VIPLoginActivity.START_FROM, VIPLoginActivity.START_FROM_SETTING);
+				startActivityForResult(loginIntent, VIPLoginActivity.RESULTCODE_FOR_SETTING);
+			}else{
+				showDialog(SHOW_DIALOG_LOGOUT);
+			}
+			
 		default:
 			break;
 		}
@@ -166,6 +176,33 @@ public class SettingActivity extends Activity implements OnClickListener {
 			button.requestFocus();
 			
 			return null;
+		case SHOW_DIALOG_LOGOUT:
+			
+			AlertDialog.Builder builder2 = new AlertDialog.Builder(this);
+			builder2.setTitle(R.string.setting_dialog_logout_title).
+			setNegativeButton(R.string.setting_dialog_logout_yes, new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					// TODO Auto-generated method stub
+					UtilTools.clearVIPData(SettingActivity.this);
+					updateVIPData();
+				}
+			}).setPositiveButton(R.string.setting_dialog_logout_no, new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					// TODO Auto-generated method stub
+					
+				}
+			}).setCancelable(false);
+			
+			AlertDialog dialog2 = builder2.show();
+			Button button2 = dialog2.getButton(AlertDialog.BUTTON_POSITIVE);
+			button2.setSelected(true);
+			button2.requestFocus();
+			
+			return null;
 
 		default:
 			break;
@@ -183,6 +220,7 @@ public class SettingActivity extends Activity implements OnClickListener {
 		MobclickAgent.onResume(this);
 		
 		updateUser();
+		updateVIPData();
 	}
 	
 	@Override
@@ -197,10 +235,16 @@ public class SettingActivity extends Activity implements OnClickListener {
 		if(app.getUserInfo() == null){
 			return;
 		}
+		
+		if(VIPLoginActivity.isLogin(this)){
+			aq.id(R.id.tv_head_user_name).text(UtilTools.getVIPUserName(this));
+		}else{
+			aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
+
+		}
 		aq.id(R.id.iv_head_user_icon).image(
 				app.getUserInfo().getUserAvatarUrl(), false, true, 0,
 				R.drawable.avatar_defult);
-		aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
 		aq.id(R.id.user_avatar).image(
 				app.getUserInfo().getUserAvatarUrl(), false, true, 0,
 				R.drawable.avatar_defult);
@@ -220,5 +264,27 @@ public class SettingActivity extends Activity implements OnClickListener {
 		}
 		unregisterReceiver(receiver);
 		super.onDestroy();
+	}
+	
+	private void updateVIPData(){
+		if(VIPLoginActivity.isLogin(this)){
+			aq.id(R.id.tv_head_user_name).text(UtilTools.getVIPUserName(this));
+			aq.id(R.id.vip_name).text(UtilTools.getVIPUserName(this));
+			aq.id(R.id.vip_notice).text(R.string.setting_vip_network_counter);
+		}else{
+			aq.id(R.id.vip_name).text(R.string.setting_vip_logout);
+			aq.id(R.id.vip_notice).text(R.string.setting_vip_local_counter);
+			if(app.getUserInfo() != null)
+				aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
+		}
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// TODO Auto-generated method stub
+		super.onActivityResult(requestCode, resultCode, data);
+		if(resultCode == VIPLoginActivity.RESULTCODE_FOR_SETTING){
+			updateVIPData();
+		}
 	}
 }

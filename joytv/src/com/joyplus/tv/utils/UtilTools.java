@@ -47,6 +47,7 @@ public class UtilTools implements JieMianConstant, BangDanConstant {
 	
 	public static final String TV_SETTING_XML = "tv_setting_xml";
 	public static final String TV_ADKEY_CONFIG_XML = "tv_adkey_config_xml";
+	public static final String TV_VIP_LOGIN_XML = "tv_vip_login_xml";
 
 	/**
 	 * 用来统计用户点击播放视屏后正常跳转的次数 有可能跳转到播放器，也有可能跳转到浏览器
@@ -1025,4 +1026,86 @@ public class UtilTools implements JieMianConstant, BangDanConstant {
 		
 		return sp.getString("channel", "");
 	}
+	
+	public static void setVIPUserName(Context context,String userName){
+		SharedPreferences sp = context.getSharedPreferences(TV_VIP_LOGIN_XML,
+				Context.MODE_PRIVATE);
+		Editor editor = sp.edit();
+		editor.putString("userName", userName);
+		editor.commit();
+	}
+	
+	public static String getVIPUserName(Context context){
+		SharedPreferences sp = context.getSharedPreferences(TV_VIP_LOGIN_XML,
+				Context.MODE_PRIVATE);
+		return sp.getString("userName", "");
+	}
+	
+	public static void setVIPPasswd(Context context,String passWd){
+		SharedPreferences sp = context.getSharedPreferences(TV_VIP_LOGIN_XML,
+				Context.MODE_PRIVATE);
+		Editor editor = sp.edit();
+		editor.putString("passWd", passWd);
+		editor.commit();
+	}
+	
+	public static String getVIPPasswd(Context context){
+		SharedPreferences sp = context.getSharedPreferences(TV_VIP_LOGIN_XML,
+				Context.MODE_PRIVATE);
+		return sp.getString("passWd", "");
+	}
+	
+	public static void setVIP_ID(Context context,String vipID){
+		SharedPreferences sp = context.getSharedPreferences(TV_VIP_LOGIN_XML,
+				Context.MODE_PRIVATE);
+		Editor editor = sp.edit();
+		editor.putString("vipID", vipID);
+		editor.commit();
+	}
+	
+	public static String getVIP_ID(Context context){
+		SharedPreferences sp = context.getSharedPreferences(TV_VIP_LOGIN_XML,
+				Context.MODE_PRIVATE);
+		return sp.getString("vipID", "");
+	}
+	
+	public static void setVIP_NickName(Context context,String nickName){
+		SharedPreferences sp = context.getSharedPreferences(TV_VIP_LOGIN_XML,
+				Context.MODE_PRIVATE);
+		Editor editor = sp.edit();
+		editor.putString("nickName", nickName);
+		editor.commit();
+	}
+	
+	public static String getVIP_NickName(Context context){
+		SharedPreferences sp = context.getSharedPreferences(TV_VIP_LOGIN_XML,
+				Context.MODE_PRIVATE);
+		return sp.getString("nickName", "");
+	}
+	
+	public static void saveVIPNameAndPasswd(Context context,String userName,String passWd){
+		setVIPUserName(context, userName);
+		setVIPPasswd(context, passWd);
+	}
+	
+	public static void saveVIPNickNameAndID(Context context,String nickName,String vipID){
+		setVIP_NickName(context, nickName);
+		setVIP_ID(context, vipID);
+	}
+	
+	public static void clearVIPNameAndPasswd(Context context){
+		setVIPUserName(context, "");
+		setVIPPasswd(context, "");
+	}
+	
+	public static void clearVIPNickNameAndID(Context context){
+		setVIP_NickName(context, "");
+		setVIP_ID(context, "");
+	}
+	
+	public static void clearVIPData(Context context){
+		clearVIPNameAndPasswd(context);
+		clearVIPNickNameAndID(context);
+	}
+	
 }
