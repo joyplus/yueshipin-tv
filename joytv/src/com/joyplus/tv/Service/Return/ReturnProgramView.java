@@ -273,6 +273,7 @@ public class ReturnProgramView {
 		public String total_comment_number;
 		public String definition;
 		public int current_play;
+		public String fee;
 
 		public EPISODES[] episodes;
 
@@ -298,6 +299,7 @@ public class ReturnProgramView {
 		public String area;
 		public String total_comment_number;
 		public String definition;
+		public String fee;
 		public EPISODES[] episodes;
 
 	}
@@ -321,6 +323,7 @@ public class ReturnProgramView {
 		public String total_comment_number;
 		public String definition;
 		public String duration;
+		public String fee;
 		public EPISODES[] episodes;
 
 	}

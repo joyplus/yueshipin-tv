@@ -769,12 +769,7 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				
-				// 禁掉播放按钮，避免多次播放
-				bofangLL.setEnabled(false);
-				
-				int id = v.getId();
-				switch (id) {
+				switch (v.getId()) {
 				case R.id.ll_gaoqing_chaoqing:
 					gaoqingBt.setText(R.string.gaoqing_chaogaoqing);
 					currentBofangViewPop = v;
@@ -799,16 +794,6 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 				if (popupWindow.isShowing()) {
 					popupWindow.dismiss();
 				}
-				
-				handler.postDelayed(new Runnable() {
-
-					@Override
-					public void run() {
-						// TODO Auto-generated method stub
-						bofangLL.setEnabled(true);
-					}
-				}, 1 * 1000);
-				
 				beforeTempPop = v;
 			}
 		};
@@ -1208,11 +1193,15 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 			aq.id(R.id.iv_head_user_icon).image(
 					app.getUserInfo().getUserAvatarUrl(), false, true, 0,
 					R.drawable.avatar_defult);
-			if(VIPLoginActivity.isLogin(this))
-				aq.id(R.id.tv_head_user_name).text(UtilTools.getVIP_NickName(this));
-			else
-				aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
+			updateUserName();
 		}
+	}
+	
+	private void updateUserName(){
+		if(VIPLoginActivity.isLogin(this))
+			aq.id(R.id.tv_head_user_name).text(UtilTools.getVIP_NickName(this));
+		else
+			aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
 	}
 	
 	@Override
@@ -1343,6 +1332,17 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 		if(num<=index){
 			return;
 		}
+		
+		if(date == null || date.show == null) return;
+		if("true".equals(date.show.fee) && !VIPLoginActivity.isLogin(this)
+				&& "t035001".equals(UtilTools.getUmengChannel(this))){
+			Intent loginIntent = new Intent(this, VIPLoginActivity.class);
+			loginIntent.putExtra(VIPLoginActivity.START_FROM, VIPLoginActivity.START_FROM_DETAIL);
+			loginIntent.putExtra(VIPLoginActivity.DATA_CURRENT_INDEX, index);
+			startActivityForResult(loginIntent, VIPLoginActivity.RESULTCODE_FOR_DETAIL);
+			return;
+		}
+		
 		CurrentPlayDetailData playDate = new CurrentPlayDetailData();
 		Intent intent = new Intent(this,VideoPlayerJPActivity.class);
 		playDate.prod_id = prod_id;
@@ -1373,7 +1373,14 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 //		super.onActivityResult(requestCode, resultCode, data);
 		
 		Log.i(TAG, "onActivityResult-->" + resultCode);
-		
+		if(resultCode == VIPLoginActivity.RESULTCODE_FOR_DETAIL){
+			int index = data.getIntExtra(VIPLoginActivity.DATA_CURRENT_INDEX, -1);
+			if(index != -1 && VIPLoginActivity.isLogin(this)){
+				updateUserName();
+				play(index);
+			}
+			return;
+		}
 		if(resultCode == JieMianConstant.SHOUCANG_ADD) {
 			
 			favNum ++;

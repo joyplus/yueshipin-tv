@@ -75,6 +75,11 @@ public class SettingActivity extends Activity implements OnClickListener {
 			findViewById(R.id.tv_filling).setVisibility(View.GONE);
 			findViewById(R.id.iv_filling).setVisibility(View.GONE);
 		}
+		
+		if("t035001".equals(UtilTools.getUmengChannel(this))){
+			findViewById(R.id.vipLoginLine).setVisibility(View.VISIBLE);
+			findViewById(R.id.vipLoginLayout).setVisibility(View.VISIBLE);
+		}
 		 
 		PackageInfo pinfo;
 		try {

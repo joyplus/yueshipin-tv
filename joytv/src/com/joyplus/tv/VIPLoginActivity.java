@@ -20,12 +20,13 @@ public class VIPLoginActivity extends Activity{
 	
 	public static final int DIALOG_WAITING = 0;
 	
-	public static final int RESULTCODE_FOR_SETTING = 100;
+	public static final int RESULTCODE_FOR_SETTING = 500;
 	public static final int RESULTCODE_FOR_DETAIL = RESULTCODE_FOR_SETTING + 1;
 	
 	public static final String START_FROM = "start_from";
 	public static final String START_FROM_SETTING = "START_FROM_SETTING";
 	public static final String START_FROM_DETAIL = "START_FROM_DETAIL";
+	public static final String DATA_CURRENT_INDEX = "DATA_CURRENT_INDEX";
 	
 	private Handler mHandler = new Handler(){
 		@Override
@@ -53,7 +54,7 @@ public class VIPLoginActivity extends Activity{
 				if(START_FROM_SETTING.equals(startFrom)){
 					setResult(RESULTCODE_FOR_SETTING);
 				}else if(START_FROM_DETAIL.equals(startFrom)){
-					setResult(RESULTCODE_FOR_DETAIL);
+					setResult(RESULTCODE_FOR_DETAIL,getIntent());
 				}
 				finish();
 				break;

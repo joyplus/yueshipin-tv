@@ -44,6 +44,7 @@ import com.joyplus.tv.entity.CurrentPlayDetailData;
 import com.joyplus.tv.ui.WaitingDialog;
 import com.joyplus.tv.utils.BangDanConstant;
 import com.joyplus.tv.utils.ItemStateUtils;
+import com.joyplus.tv.utils.JieMianConstant;
 import com.joyplus.tv.utils.URLUtils;
 import com.joyplus.tv.utils.UtilTools;
 import com.joyplus.utils.Log;
@@ -431,66 +432,7 @@ public class ShowXiangqingMovie extends Activity implements
 		case R.id.ll_xiangqing_bofang_gaoqing:
 
 			Log.i(TAG, "R.id.ll_xiangqing_bofang_gaoqing--->start");
-			// bofangLL.setN
-			// xiaiIv.setImageResource(R.drawable.icon_fav_active);
-			// xiaiTv.setTextColor(getResources().getColor(R.color.text_foucs));
-			// String str0 = "984192";
-			// String str1 = "西游降魔篇";
-			// String str2 =
-			// "http://221.130.179.66/25/36/53/kingsoft/movie/47978987920B0079FF686B6370B4E039-xiyoupian.mp4?crypt=61740d1aa7f2e300&b=800&gn=132&nc=1&bf=30&p2p=1&video_type=mp4&check=0&tm=1364191200&key=af7b9ad0697560c682a0070cf225e65e&opck=1&lgn=letv&proxy=3702889363&cipi=2026698610&tsnp=1&tag=ios&tag=kingsoft&sign=coopdown&realext=.mp4test=m3u8";
-
-			// Intent intent = new Intent(this, VideoPlayerActivity.class);
-			// CurrentPlayData playDate = new CurrentPlayData();
-			// Intent intent = new Intent(this,VideoPlayerActivity.class);
-			// playDate.prod_id = movieData.movie.id;
-			// playDate.prod_type = 1;
-			// playDate.prod_name = movieData.movie.name;
-			//
-			// //清晰度
-			// playDate.prod_qua =
-			// UtilTools.string2Int(movieData.movie.definition);
-			//
-			// if(gaoqing_url!=null){
-			// playDate.prod_url = gaoqing_url;
-			// playDate.prod_src = gaoqing_url_souce;
-			// }else if(chaoqing_url != null){
-			// playDate.prod_url = chaoqing_url;
-			// playDate.prod_src = chaoqing_url_souce;
-			// }else if(puqing_url !=null){
-			// playDate.prod_url = puqing_url;
-			// playDate.prod_src = puqing_url_souce;
-			// }
-			// // playDate.prod_src = "";
-			// // playDate.prod_qua = Integer.valueOf(info.definition);
-			// app.setCurrentPlayData(playDate);
-			// app.set_ReturnProgramView(null);
-			// startActivity(intent);
-
-			Intent intent = new Intent(this, VideoPlayerJPActivity.class);
-			CurrentPlayDetailData playData = new CurrentPlayDetailData();
-
-			playData.prod_id = movieData.movie.id;
-			playData.prod_name = movieData.movie.name;
-			playData.prod_favority = isXiai;
-			if (getResources().getString(R.string.gaoqing_gaoqing).equals(gaoqingBt.getText())) {
-
-				playData.prod_qua = BangDanConstant.GAOQING;
-			} else if (getResources().getString(R.string.gaoqing_chaogaoqing).equals(gaoqingBt.getText())) {
-
-				playData.prod_qua = BangDanConstant.CHAOQING;
-			} else if (getResources().getString(R.string.gaoqing_biaoqing).equals(gaoqingBt.getText())) {
-
-				playData.prod_qua = BangDanConstant.CHANGXIAN;
-			}
-
-			Log.i(TAG, "playData.prod_qua--->" + playData.prod_qua + " text--->" + gaoqingBt.getText());
-			playData.prod_type = 1;
-
-			app.setmCurrentPlayDetailData(playData);
-			app.set_ReturnProgramView(movieData);
-
-			startActivity(intent);
-
+			play();
 			break;
 		case R.id.gv_xiangqing_tuijian:
 			break;
@@ -516,6 +458,60 @@ public class ShowXiangqingMovie extends Activity implements
 			break;
 		}
 
+	}
+	
+	private void play(){
+		
+		if(movieData == null || movieData.movie == null) return;
+		if("true".equals(movieData.movie.fee) && !VIPLoginActivity.isLogin(this)
+				&& "t035001".equals(UtilTools.getUmengChannel(this))){
+			Intent loginIntent = new Intent(this, VIPLoginActivity.class);
+			loginIntent.putExtra(VIPLoginActivity.START_FROM, VIPLoginActivity.START_FROM_DETAIL);
+//			loginIntent.putExtra(VIPLoginActivity.DATA_CURRENT_INDEX, index);
+			startActivityForResult(loginIntent, VIPLoginActivity.RESULTCODE_FOR_DETAIL);
+			return;
+		}
+
+		Intent intent = new Intent(this, VideoPlayerJPActivity.class);
+		CurrentPlayDetailData playData = new CurrentPlayDetailData();
+
+		playData.prod_id = movieData.movie.id;
+		playData.prod_name = movieData.movie.name;
+		playData.prod_favority = isXiai;
+		if (getResources().getString(R.string.gaoqing_gaoqing).equals(gaoqingBt.getText())) {
+
+			playData.prod_qua = BangDanConstant.GAOQING;
+		} else if (getResources().getString(R.string.gaoqing_chaogaoqing).equals(gaoqingBt.getText())) {
+
+			playData.prod_qua = BangDanConstant.CHAOQING;
+		} else if (getResources().getString(R.string.gaoqing_biaoqing).equals(gaoqingBt.getText())) {
+
+			playData.prod_qua = BangDanConstant.CHANGXIAN;
+		}
+
+		Log.i(TAG, "playData.prod_qua--->" + playData.prod_qua + " text--->" + gaoqingBt.getText());
+		playData.prod_type = 1;
+
+		app.setmCurrentPlayDetailData(playData);
+		app.set_ReturnProgramView(movieData);
+
+		startActivity(intent);
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// TODO Auto-generated method stub
+//		super.onActivityResult(requestCode, resultCode, data);
+		
+		Log.i(TAG, "onActivityResult-->" + resultCode);
+		if(resultCode == VIPLoginActivity.RESULTCODE_FOR_DETAIL){
+			if(VIPLoginActivity.isLogin(this)){
+				updateUserName();
+				play();
+			}
+			return;
+		}
+		
 	}
 
 	@Override
@@ -605,74 +601,29 @@ public class ShowXiangqingMovie extends Activity implements
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-
-				// 禁掉播放按钮，避免多次播放
-				bofangLL.setEnabled(false);
-
-				int id = v.getId();
-				Intent intent = new Intent(ShowXiangqingMovie.this,
-						VideoPlayerJPActivity.class);
-				CurrentPlayDetailData playDate = new CurrentPlayDetailData();
-				playDate.prod_id = movieData.movie.id;
-				playDate.prod_type = 1;
-				playDate.prod_name = movieData.movie.name;
-
-				// 清晰度
-				playDate.prod_qua = UtilTools
-						.string2Int(movieData.movie.definition);
-
-				playDate.prod_favority = isXiai;
-				// if(gaoqing_url!=null){
-				// playDate.prod_url = gaoqing_url;
-				// }else if(chaoqing_url != null){
-				// playDate.prod_url = chaoqing_url;
-				// }else if(puqing_url !=null){
-				// playDate.prod_url = puqing_url;
-				// }
-				// playDate.prod_src = "";
-				// playDate.prod_qua = Integer.valueOf(info.definition);
-				app.setmCurrentPlayDetailData(playDate);
-				app.set_ReturnProgramView(null);
-				startActivity(intent);
-				switch (id) {
+				switch (v.getId()) {
 				case R.id.ll_gaoqing_chaoqing:
 					gaoqingBt.setText(R.string.gaoqing_chaogaoqing);
 					currentBofangViewPop = v;
-//					playDate.prod_url = chaoqing_url;
-					playDate.prod_qua = 8;
 					break;
 				case R.id.ll_gaoqing_gaoqing:
 					gaoqingBt.setText(R.string.gaoqing_gaoqing);
 					currentBofangViewPop = v;
-//					playDate.prod_url = gaoqing_url;
-					playDate.prod_qua = 7;
 					break;
 				case R.id.ll_gaoqing_biaoqing:
 					gaoqingBt.setText(R.string.gaoqing_biaoqing);
 					currentBofangViewPop = v;
-					playDate.prod_qua = 6;
-//					playDate.prod_url = puqing_url;
 					break;
 				default:
 					break;
 				}
-				
+				play();
 				backToNormalPopView();
 				setLinearLayoutVisible(v);
 
 				if (popupWindow.isShowing()) {
 					popupWindow.dismiss();
 				}
-
-				handler.postDelayed(new Runnable() {
-
-					@Override
-					public void run() {
-						// TODO Auto-generated method stub
-						bofangLL.setEnabled(true);
-					}
-				}, 1 * 1000);
-				// bofangLL.setEnabled(true);
 				
 				beforeTempPop = v;
 			}
@@ -902,6 +853,13 @@ public class ShowXiangqingMovie extends Activity implements
 			else
 				aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
 		}
+	}
+	
+	private void updateUserName(){
+		if(VIPLoginActivity.isLogin(this))
+			aq.id(R.id.tv_head_user_name).text(UtilTools.getVIP_NickName(this));
+		else
+			aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
 	}
 
 	@Override

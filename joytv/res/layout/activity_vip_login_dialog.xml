@@ -59,7 +59,8 @@
                     android:layout_width="@dimen/layout_zero"
                     android:layout_height="@dimen/vip_login_dilog_item_high"
                     android:layout_weight="27"
-                    android:background="@drawable/bg_login_edittext"/>     
+                    android:background="@drawable/bg_login_edittext"
+                    android:inputType="textPassword"/>     
             </LinearLayout>
             <LinearLayout 
                 android:layout_width="match_parent"
