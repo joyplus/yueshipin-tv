@@ -8,6 +8,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import com.joyplus.common.Log;
+
 
 import android.content.Context;
 import android.os.Handler;
@@ -65,6 +67,7 @@ public class JoyplusUseableSubUri extends JoyplusURIList implements ISubModelCha
 						@Override
 						public void run() {
 							// TODO Auto-generated method stub
+							Log.e("Yzg", "JoyplusUseableSubUri:InstanceSub Run--->");
 							JoyplusSub temp =InstanceSub(sub);
 							if(temp != null)setSub(temp);
 						}

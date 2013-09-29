@@ -1,6 +1,8 @@
 package com.joyplus.sub;
 
 
+import com.joyplus.common.Log;
+
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
@@ -48,6 +50,7 @@ public class JoyplusTempSubUri extends JoyplusURIList {
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
+				Log.i("Yzg", "JoyplusTempSubUri:InstanceSub Run--->");
 				Instanceing = true;
 		    	JoyplusSubInstance mSubInstance = new JoyplusSubInstance(mContext);
 		    	if(mSubInstance.InstanceSub(uri) && mSubInstance.IsSubAviable()){
