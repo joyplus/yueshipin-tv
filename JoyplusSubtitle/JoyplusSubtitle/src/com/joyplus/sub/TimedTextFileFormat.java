@@ -51,5 +51,6 @@ public interface TimedTextFileFormat {
 	 */
 	Object toFile(TimedTextObject tto);
 	
-
+	String getCharset();
+	void setCharset(String charset);
 }

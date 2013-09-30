@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
+import com.joyplus.common.Log;
+import com.joyplus.common.Utils;
+
 
 /**
  * This class represents the .SRT subtitle format
@@ -35,16 +38,26 @@ import java.util.Iterator;
  *
  */
 public class FormatSRT implements TimedTextFileFormat {
+	
+	private String charset = "GBK";
 
+	public String getCharset() {
+		return charset;
+	}
+	public void setCharset(String charset) {
+		this.charset = charset;
+	}
 
 	public TimedTextObject parseFile(String fileName, InputStream is) throws IOException {
 		TimedTextObject tto = new TimedTextObject();
 		Caption caption = new Caption();
 		int captionNumber = 1;
 		boolean allGood;
-
+		
+//		String charsetName = Utils.getCharset(is, 512);
+//		Log.i("Yzg", "charsetName--->" + charsetName);
 		//first lets load the file
-		InputStreamReader in= new InputStreamReader(is);
+		InputStreamReader in= new InputStreamReader(is,getCharset());
 		BufferedReader br = new BufferedReader(in);
 
 		//the file name is saved

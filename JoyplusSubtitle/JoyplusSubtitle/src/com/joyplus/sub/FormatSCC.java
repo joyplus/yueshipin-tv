@@ -1052,5 +1052,14 @@ public class FormatSCC implements TimedTextFileFormat {
 		tto.styling.put(style.iD, style);
 		
 	}
+	
+	private String charset = "GBK";
+
+	public String getCharset() {
+		return charset;
+	}
+	public void setCharset(String charset) {
+		this.charset = charset;
+	}
 
 }

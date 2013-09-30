@@ -616,5 +616,14 @@ public class FormatSTL implements TimedTextFileFormat {
 		
 		
 	}
+
+	private String charset = "GBK";
+
+	public String getCharset() {
+		return charset;
+	}
+	public void setCharset(String charset) {
+		this.charset = charset;
+	}
 	
 }
