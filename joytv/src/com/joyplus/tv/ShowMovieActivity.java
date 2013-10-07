@@ -126,6 +126,7 @@ public class ShowMovieActivity extends AbstractShowActivity {
 		initActivity();// 初始化界面
 
 		searchAdapter = new ZongYiAdapter(this, aq);
+		searchAdapter.setShoucangShow(false);
 		playGv.setAdapter(searchAdapter);
 		
 		playGv.requestFocus();
