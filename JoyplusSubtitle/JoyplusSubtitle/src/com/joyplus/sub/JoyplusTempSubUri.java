@@ -74,7 +74,7 @@ public class JoyplusTempSubUri extends JoyplusURIList {
 		if(!Instanceing && size()>0){
 			Message m = new Message();
 			m.what = MSG_INSTANCE_SUBURI;
-			m.obj  = get(0);
+			m.obj  = getNextInstance();
 			mHandler.sendMessage(m);
 		}
 	}	

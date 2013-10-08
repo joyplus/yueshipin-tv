@@ -9,7 +9,14 @@ import java.util.ListIterator;
 public abstract class JoyplusURIList extends SubModel implements List<SubURI>{
 	protected int MAX = 1;
 	private final ArrayList<SubURI> mMedia = new ArrayList<SubURI>();//It always only one item.
-	
+	//Interface of get next suburi which need to instance.
+	public SubURI getNextInstance(){
+		if(mMedia == null)return null;
+		for(SubURI suburi:mMedia){
+			if(!suburi.Instanced)return suburi;
+		}
+		return null;
+	}
 	private void internalAdd(SubURI media) throws IllegalStateException {
         if (media == null || media.Uri == null || "".equals(media.Uri)){
             // Don't add null value into the list.

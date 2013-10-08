@@ -40,4 +40,30 @@ public class JoyplusSubStateTrack {
 	   }
 	}
 	
+	public void notifySubInstanceState(final boolean instanceing){
+		synchronized(mListenerList){
+			new Runnable(){
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					for(JoyplusSubListener listener:mListenerList){
+						 listener.onSubInstance(instanceing);
+					}
+				}				   
+			}.run();
+	   }
+	}
+	public void notifySubSwitchState(final boolean switching){
+		synchronized(mListenerList){
+			new Runnable(){
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					for(JoyplusSubListener listener:mListenerList){
+						 listener.onSubSwitch(switching);
+					}
+				}				   
+			}.run();
+	   }
+	}
 }

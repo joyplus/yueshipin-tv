@@ -26,9 +26,9 @@ public class JoyplusUseableSubUri extends JoyplusURIList implements ISubModelCha
 		@Override
 		public void onSubModelChanged(SubModel model, boolean dataChanged) {
 			// TODO Auto-generated method stub
-			if(mSub == null){
+			//if(mSub==null && getNextInstance()!=null){
 				CheckInstanceList();
-			}
+			//}
 		}
 		@Override
 		public void onInstance(SubURI sub, JoyplusSubInstance subInstance) {
@@ -40,12 +40,20 @@ public class JoyplusUseableSubUri extends JoyplusURIList implements ISubModelCha
 		if(!Instanceing && size()>0){
 			Message m = new Message();
 			m.what = MSG_INSTANCE_SUBURI;
-			m.obj  = get(0);
+			m.obj  = getNextInstance();
 			mHandler.sendMessage(m);
 		}
 	}
+	private synchronized void SwitchSub(SubURI suburi){
+		if(Switching || suburi==null)return;
+		Message m = new Message();
+		m.what = MSG_SWITCH_SUBURI;
+		m.obj  = suburi;
+		mHandler.sendMessage(m);
+	}
 	private final static String SubNAME = "Sub";
 	private boolean Instanceing = false;
+	private boolean Switching   = false;
 	public JoyplusSub getSub(){
 		return mSub;
 	}
@@ -54,6 +62,7 @@ public class JoyplusUseableSubUri extends JoyplusURIList implements ISubModelCha
 		mStateTrack.notifySubChange((sub!=null?true:false));		
 	}
 	private final static int MSG_INSTANCE_SUBURI = 0;
+	private final static int MSG_SWITCH_SUBURI   = 1;
     private Handler mHandler = new Handler(){
 		@Override
 		public void handleMessage(Message msg) {
@@ -67,35 +76,73 @@ public class JoyplusUseableSubUri extends JoyplusURIList implements ISubModelCha
 						@Override
 						public void run() {
 							// TODO Auto-generated method stub
-							Log.e("Yzg", "JoyplusUseableSubUri:InstanceSub Run--->");
+							Log.e("Jas", "JoyplusUseableSubUri:InstanceSub Run--->");
+							setInstanceState(true);
 							JoyplusSub temp =InstanceSub(sub);
-							if(temp != null)setSub(temp);
+							if(temp != null && mSub == null)setSub(temp);
+							setInstanceState(false);
+							//if(mSub==null && getNextInstance()!=null){
+								CheckInstanceList();
+							//}
 						}
 					}).start();
-					
 				}
 				break;
+			case MSG_SWITCH_SUBURI:
+				final SubURI subswitch = (SubURI) msg.obj;
+				if(subswitch != null && !Switching && subswitch.Instanced){
+					new Thread(new Runnable() {						
+						@Override
+						public void run() {
+							// TODO Auto-generated method stub
+							Log.e("Jas", "JoyplusUseableSubUri:SwitchSub Run--->");
+							setSwitchState(true);
+							JoyplusSub subtemp1 =InstanceSub(subswitch);
+							if(subtemp1 != null){
+								setSub(subtemp1);//switch ok 
+							}else if(mSub == null){								
+								for(SubURI sub:JoyplusUseableSubUri.this){
+									if(!sub.Instanced)continue;
+									JoyplusSub subtemp2 =InstanceSub(subswitch);
+									if(subtemp2 != null){
+										setSub(subtemp2);//switch ok 
+										break;
+									}
+								}
+							}
+							setSwitchState(false);
+						}
+					}).start();
+				}
+			    break;
 			}
 		}    	
     };
+    private void setInstanceState(boolean instanceing){
+    	Instanceing = instanceing;
+    	mStateTrack.notifySubInstanceState(instanceing);
+    }
+    private void setSwitchState(boolean switching){
+    	Switching   = switching;
+    	mStateTrack.notifySubSwitchState(switching);
+    }
     public void SwitchSub(int index){
-    	if(index>=size()||Instanceing) return ;
-    	setSub(null);
-    	CheckInstanceList();
+    	if(get(index)==null || index>=size() || Switching ||!get(index).Instanced) return;
+    	SwitchSub(get(index));
     }
     private synchronized JoyplusSub InstanceSub(SubURI uri){
-    	Instanceing = true;
     	JoyplusSub  sub = null;
     	JoyplusSubInstance mSubInstance = new JoyplusSubInstance(mContext);
-    	//if(mSubInstance.InstanceSub(uri) && mSubInstance.IsSubAviable()){
-    	if(mSubInstance.InstanceSub(uri) ){
-    		if(mSubInstance.IsSubAviable()){    	
+    	if(mSubInstance.InstanceSub(uri) && mSubInstance.IsSubAviable()){
+    	//if(mSubInstance.InstanceSub(uri) ){
+    	//	if(mSubInstance.IsSubAviable()){    	
 	    		sub = mSubInstance.getJoyplusSub();
-    		}
+    		//}
     	} 	
-    	Instanceing = false;
-    	if(sub!=null && sub.elements.size()>2)
+    	if(sub!=null && sub.elements.size()>2){
+    		uri.Instanced = true;
     		return sub;
+    	}
     	remove(uri);
     	return null;
     }
@@ -126,6 +173,7 @@ public class JoyplusUseableSubUri extends JoyplusURIList implements ISubModelCha
 	    	 sub.Uri  = subFile.getAbsolutePath();
 	    	 //sub.Uri = JoyplusSubConfig.getInstance().getSubPath()+filename+subInstance.getJoyplusSub().mContentType.toExtension();
 	    	 sub.SubType = SUBTYPE.LOCAL;
+	    	 sub.Instanced = false;//this should be notity useablelist to instance this suburi.
 	    	 add(sub); 
 	    };
 	}

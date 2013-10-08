@@ -19,7 +19,6 @@ public class SubURI extends SubModel{
 	
 	public SUBTYPE SubType;
 	
-//	public enum SUBTYPE{
-//		  UNKNOW , NETWORK , LOCAL
-//    }
+	public boolean Instanced = false;//flog of this sub have instance. default is false
+ 
 }

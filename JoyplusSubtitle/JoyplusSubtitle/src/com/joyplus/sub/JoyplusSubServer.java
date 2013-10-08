@@ -51,7 +51,7 @@ public class JoyplusSubServer extends SubModel {
     
     public void SwitchSub(int index){
     	if(getSubList() == null || index>=getSubList().size()) return ;
-    	
+    	mUseableSubUri.SwitchSub(index);
     }
     public boolean IsSubEnable(){
     	return mSubConfig.getSubEN();
