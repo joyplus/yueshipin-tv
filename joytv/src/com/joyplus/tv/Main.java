@@ -15,8 +15,6 @@ import android.view.KeyEvent;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.joyplus.adkey.Ad;
 import com.joyplus.adkey.AdListener;

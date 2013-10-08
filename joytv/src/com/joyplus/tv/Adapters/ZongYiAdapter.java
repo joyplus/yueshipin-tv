@@ -20,7 +20,6 @@ import com.joyplus.tv.entity.GridViewItemHodler;
 import com.joyplus.tv.entity.MovieItemData;
 import com.joyplus.tv.utils.JieMianConstant;
 import com.joyplus.tv.utils.UtilTools;
-import com.joyplus.utils.Log;
 import com.joyplus.utils.Utils;
 
 public class ZongYiAdapter extends BaseAdapter implements JieMianConstant{
@@ -161,7 +160,6 @@ public class ZongYiAdapter extends BaseAdapter implements JieMianConstant{
 		
 		viewItemHodler.nameTv.setText("");
 		viewItemHodler.otherInfo.setText("");
-//		viewItemHodler.haibaoIv.setBackgroundResource(R.drawable.post_normal);	
 		
 		if(viewItemHodler.haibaoIv.getTag()==null || 
 				!viewItemHodler.haibaoIv.getTag().equals(movieList.get(position).getMoviePicUrl())){
@@ -171,7 +169,6 @@ public class ZongYiAdapter extends BaseAdapter implements JieMianConstant{
 		viewItemHodler.nameTv.setText(movieList.get(position).getMovieName());
 		String definition = movieList.get(position).getDefinition();
 		
-		Log.i(TAG, "position:" + position + " definition:" + definition);
 		if(definition != null && !definition.equals("")) {
 			viewItemHodler.definition.setVisibility(View.VISIBLE);
 			switch (Integer.valueOf(definition)) {

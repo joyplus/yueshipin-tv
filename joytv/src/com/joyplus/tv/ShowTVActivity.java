@@ -74,12 +74,10 @@ public class ShowTVActivity extends AbstractShowActivity {
 	private MyMovieGridView playGv;
 	private LinearLayout topLinearLayout;
 	private View activeView;
-	private int popWidth = 0, popHeight = 0;
+	private int popHeight = 0;
 	private boolean isGridViewUp = false;
 	private int[] beforeFirstAndLastVible = { 0, 9 };
-	private View beforeGvView = null;
 	private ZongYiAdapter searchAdapter = null;
-	private int beforepostion = 0;
 	private int currentListIndex;
 	private String search;
 	private String filterSource;
@@ -125,35 +123,25 @@ public class ShowTVActivity extends AbstractShowActivity {
 		aq = new AQuery(this);
 		
 		ImageView iv = (ImageView) findViewById(R.id.iv_head_logo);
-		
 		UtilTools.setLogoPic(getApplicationContext(), aq, iv);
 		
 		//本地收藏，有没有更新
 		String userId = null;
 		if(app.getUserInfo() != null) {
-			
 			if(app.getUserInfo().getUserId() != null) {
-				
 				userId = app.getUserInfo().getUserId();
 			}
 		} else {
-			
 			userId = UtilTools.getCurrentUserId(getApplicationContext());
 		}
 		
 		if(userId != null) {
-			
 			shoucangList = DBUtils.getList4DB(getApplicationContext(), userId, TV_TYPE);
 		}
 		
 		Log.i(TAG, "shoucangList--->:" + shoucangList.size());
-		
 		if(shoucangList != null && !shoucangList.isEmpty()) {
-			
 			if(shoucangList.size() > 0) {
-				
-				Log.i(TAG, "shoucangList--->:" + shoucangList.size());
-				
 				isShowShoucang = true;
 			}
 		}
@@ -923,8 +911,6 @@ public class ShowTVActivity extends AbstractShowActivity {
 				.getWidth();
 
 		if (height != 0 && width != 0) {
-
-			popWidth = width;
 			popHeight = height;
 		}
 

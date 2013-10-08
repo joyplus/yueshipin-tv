@@ -298,7 +298,6 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 		
 		@Override
 		public int getCount() {
-			// TODO Auto-generated method stub
 			if(data.size()==0){
 				return 1;
 			}else{
@@ -350,23 +349,6 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 				}
 				holder.title.setText(data.get(position).prod_name);
 				holder.content.setVisibility(View.GONE);
-//				int prod_type = Integer.valueOf(data.get(position).prod_type);
-//				String playBack_time = formatDuration(Integer.valueOf(data.get(position).playback_time));
-//				String playBack_time = data.get(position).playback_time;
-//				switch (prod_type) {
-//				case 1:
-//					holder.content.setText("上次观看到：" + playBack_time);
-//					break;
-//				case 2:
-//					holder.content.setText("上次观看到：第" + data.get(position).cur_episode+"集"+playBack_time);
-//					break;
-//				case 3:
-//					holder.content.setText("上次观看到：第" + data.get(position).cur_episode+"期"+playBack_time);
-//					break;
-//				case 131:
-//					holder.content.setText("上次观看到：第" + data.get(position).cur_episode+"集"+playBack_time);
-//					break;
-//				}
 				aq.id(holder.img).image(data.get(position).prod_pic_url);
 			}else{
 				holder.img.setImageResource(R.drawable.post_normal);
@@ -395,8 +377,6 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 		case R.id.fenlei_all:
 			selectedButton.setTextColor(getResources().getColorStateList(R.color.text_color_selector));
 			selectedButton.setBackgroundResource(R.drawable.text_drawable_selector);
-//			btn_fenlei_all.setTextColor(getResources().getColor(R.color.common_title_selected));
-//			btn_fenlei_all.setBackgroundResource(R.drawable.menubg);
 			selectedButton = btn_fenlei_all;
 			selectedButton.setPadding(0, 0, 5, 0);
 			index = 0;
@@ -412,8 +392,6 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 		case R.id.fenlei_movie:
 			selectedButton.setTextColor(getResources().getColorStateList(R.color.text_color_selector));
 			selectedButton.setBackgroundResource(R.drawable.text_drawable_selector);
-//			btn_fenlei_movie.setTextColor(getResources().getColor(R.color.common_title_selected));
-//			btn_fenlei_movie.setBackgroundResource(R.drawable.menubg);
 			selectedButton = btn_fenlei_movie;
 			selectedButton.setPadding(0, 0, 5, 0);
 			index = 1;
@@ -429,8 +407,6 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 		case R.id.fenlei_tv:
 			selectedButton.setTextColor(getResources().getColorStateList(R.color.text_color_selector));
 			selectedButton.setBackgroundResource(R.drawable.text_drawable_selector);
-//			btn_fenlei_tv.setTextColor(getResources().getColor(R.color.common_title_selected));
-//			btn_fenlei_tv.setBackgroundResource(R.drawable.menubg);
 			selectedButton = btn_fenlei_tv;
 			selectedButton.setPadding(0, 0, 5, 0);
 			index = 2;
@@ -447,8 +423,6 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 		case R.id.fenlei_dongman:
 			selectedButton.setTextColor(getResources().getColorStateList(R.color.text_color_selector));
 			selectedButton.setBackgroundResource(R.drawable.text_drawable_selector);
-//			btn_fenlei_dongman.setTextColor(getResources().getColor(R.color.common_title_selected));
-//			btn_fenlei_dongman.setBackgroundResource(R.drawable.menubg);
 			selectedButton = btn_fenlei_dongman;
 			selectedButton.setPadding(0, 0, 5, 0);
 			index = 131;
@@ -463,8 +437,6 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 		case R.id.fenlei_zongyi:
 			selectedButton.setTextColor(getResources().getColorStateList(R.color.text_color_selector));
 			selectedButton.setBackgroundResource(R.drawable.text_drawable_selector);
-//			btn_fenlei_zongyi.setTextColor(getResources().getColor(R.color.common_title_selected));
-//			btn_fenlei_zongyi.setBackgroundResource(R.drawable.menubg);
 			selectedButton = btn_fenlei_zongyi;
 			selectedButton.setPadding(0, 0, 5, 0);
 			index = 3;
@@ -526,7 +498,6 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 								UtilTools.getCurrentUserId(getApplicationContext()), list.get(i).prod_id);
 					}
 					
-//					((HistortyAdapter)listView.getAdapter()).data.clear();
 					((HistortyAdapter)listView.getAdapter()).data.clear();
 					if(allHistoryList!=null&&allHistoryList.size()>0){
 						allHistoryList.clear();
@@ -561,18 +532,13 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 	@Override
 	public void onFocusChange(View v, boolean hasFocus) {
 		// TODO Auto-generated method stub
-		
-		
 		if(!hasFocus) {
-			
 			if(selectedButton.getId() == v.getId()) {
 				Button button = (Button) v;
 				ItemStateUtils.buttonToActiveState(getApplicationContext(), button);
 			}
 		} else {
-			
 			if(selectedButton.getId() == v.getId()) {
-				
 				Button button = (Button) v;
 				ItemStateUtils.buttonToPTState(getApplicationContext(), button);
 			}
@@ -608,8 +574,6 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 			url = url + "&vod_type=" + type;
 		}
 //		String url = Constant.BASE_URL + "user/playHistories" +"?page_num=1&page_size=10&userid=4742";
-
-//		String url = Constant.BASE_URL;
 		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
 		switch (type) {
 		case 0:
@@ -654,16 +618,13 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 	
 	public void initHistoryData(String url, JSONObject json, AjaxStatus status,int type){
 		if (status.getCode() == AjaxStatus.NETWORK_ERROR)  {
-//			aq.id(R.id.ProgressText).invisible();
 			app.MyToast(aq.getContext(),
 					getResources().getString(R.string.networknotwork));
 			return;
 		}
 		
-		if(json == null || json.equals("")) 
-			return;
+		if(json == null || json.equals("")) return;
 		
-		Log.d(TAG, "url--->>>>" + url);
 		Log.d(TAG, "favourate data = " + json.toString());
 		try {
 			ReturnUserFavorities result  = mapper.readValue(json.toString(), ReturnUserFavorities.class);
@@ -739,14 +700,6 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 				}
 				break;
 			}
-//			listView.setSelection(0);
-//			listView.requestFocus();
-//			if(isFirstTime){
-//				listView.requestFocus();
-//				isFirstTime = false;
-//			}else{
-//				selectedButton.requestFocus();
-//			}
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -786,25 +739,16 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 			
 		}
 		aq.ajax(cb);
-//		
-//		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
-//		Log.d("del", url);
-//		cb.url(url).type(JSONObject.class).weakHandler(this, "deleteResult");
-//		cb.SetHeader(app.getHeaders());
-//		aq.ajax(cb);
 	}
 	
 	public void deleteResult(String url, JSONObject json, AjaxStatus status){
 		if (status.getCode() == AjaxStatus.NETWORK_ERROR)  {
-//			aq.id(R.id.ProgressText).invisible();
 			app.MyToast(aq.getContext(),
 					getResources().getString(R.string.networknotwork));
 			return;
 		}
 		
-		if(json == null || json.equals("")) 
-			return;
-		
+		if(json == null || json.equals("")) return;
 		Log.d(TAG, json.toString());
 	}
 	
@@ -843,28 +787,4 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 		TextView content;
 		ImageView img;
 	}
-	
-//	class HistoryData{
-//		public String id;
-//		public String prod_id;
-//		public String prod_name;
-//		public String prod_type; //1，电影; 2，电视剧; 3，综艺; 4，动漫;
-//		public String prod_pic_url;
-//		public String stars;
-//		public String directors;
-//		public String favority_num;
-//		public String support_num;
-//		public String publish_date;
-//		public String score;
-//		public String area;
-//		public String cur_episode;
-//		public String max_episode;
-//		public String definition;
-//		public String prod_summary;
-//		public String duration;
-//		public String video_url;
-//		public String playback_time;
-//		public String prod_subname;
-//		public String play_type;
-//	}
 }

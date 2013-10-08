@@ -4,7 +4,7 @@ import android.os.Environment;
 
 public class Constant {
 	
-	public static final boolean isJoyPlus = true;//是否是JoyPlus本身应用，还是其他应用
+	public static final boolean isJoyPlus = false;//是否是JoyPlus本身应用，还是其他应用
 	
 	public static final boolean cacheMode = true;//该广告加载时是否用本地缓存 Loading界面
 	public static final boolean ANIMATION = true;//该广告加载时是否用动画效果 首页
