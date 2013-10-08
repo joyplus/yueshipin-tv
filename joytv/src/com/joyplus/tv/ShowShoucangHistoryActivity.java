@@ -252,19 +252,6 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 				nameText.setText(((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_name);
 				dialog.setContentView(view);
 			}
-				
-				
-				
-//				Toast.makeText(ShowShoucangHistoryActivity.this, "seleced index = " + arg2, 100).show();
-//				
-//				Dialog dialog = new AlertDialog.Builder(ShowShoucangHistoryActivity.this).create();
-//				dialog.show();
-//				LayoutInflater inflater = LayoutInflater.from(ShowShoucangHistoryActivity.this);
-//				View view = inflater.inflate(R.layout.layout_history_dialog, null);
-//				TextView name = (TextView) view.findViewById(R.id.dialog_title);
-//				name.setText(allHistoryList.get(arg2).prod_name);
-//				dialog.setContentView(view);
-//			}
 		});
 		listView.setSelected(true);
 		listView.setSelection(0);
@@ -274,15 +261,6 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 			@Override
 			public void onFocusChange(View v, boolean hasFocus) {
 				// TODO Auto-generated method stub
-//				if(!hasFocus){
-//					if(selectedView!=null){
-//						selectedView.setBackgroundResource(R.drawable.bg_teat_repeat);
-//					}
-//				}else{
-//					if(selectedView!=null){
-//						selectedView.setBackgroundResource(R.drawable.historty_listitem_drawable_selector);
-//					}
-//				}
 			}
 		});
 		
