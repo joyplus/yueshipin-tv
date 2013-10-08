@@ -32,9 +32,6 @@ public class Main extends Activity implements AdListener{
 	private static final int DIALOG_NETWORK_ERROR = 1;
 
 	private AdManager mManager;
-//	private String publisherId = "53f2f418bfc3759e34e4294ae7b4ebb3";//要显示广告的publisherId
-//	private boolean cacheMode = true;//该广告加载时是否用本地缓存
-	private RelativeLayout starting;
 	
 	
 	private App app;
@@ -166,30 +163,9 @@ public class Main extends Activity implements AdListener{
 			UtilTools.setReplenishAdvID(getApplicationContext(), replenishAdvID);
 		}
 		
-//		String onLineIsShowAd = true + "";//测试数据
-//		Log.i(TAG, "onLineIsShowAd--->" + onLineIsShowAd);
-//		if(onLineIsShowAd != null && onLineIsShowAd.equals("true")) {
-			
-//			UtilTools.setIsShowAd(getApplicationContext(), true);
-			
-			
-			mManager = new AdManager(this,Constant.LOADING_ADV_PUBLISHERID,Constant.cacheMode);
-			mManager.setListener(this);
-			mManager.requestAd();
-			starting = (RelativeLayout)findViewById(R.id.starting);
-//		} else {
-			
-//			if(mManager!=null){
-//				Log.i(TAG,"isCacheLoaded"+mManager.isCacheLoaded());
-//				if(!mManager.isCacheLoaded()){
-					UtilTools.setIsShowAd(getApplicationContext(), false);
-//					final Intent intent = new Intent(Main.this, Main1.class);// AndroidMainScreen为主界面
-//					startActivity(intent);
-//					Main.this.finish();
-//					return;
-//				}
-//			}
-//			UtilTools.setIsShowAd(getApplicationContext(), true);
+		mManager = new AdManager(this,Constant.LOADING_ADV_PUBLISHERID,Constant.cacheMode);
+		mManager.setListener(this);
+		mManager.requestAd();
 		
 	}
 	
