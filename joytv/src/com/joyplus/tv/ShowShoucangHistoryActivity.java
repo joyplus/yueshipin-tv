@@ -33,7 +33,6 @@ import com.androidquery.callback.AjaxStatus;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.joyplus.tv.HistoryActivity.HistortyAdapter;
 import com.joyplus.tv.Service.Return.ReturnUserFavorities;
 import com.joyplus.tv.entity.HotItemInfo;
 import com.joyplus.tv.utils.DBUtils;
@@ -51,7 +50,7 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 	private Button btn_fenlei_zongyi;
 	private Button selectedButton;
 	private Button delBtn;
-	private int index = 0;
+	private int mType = 0;
 	ObjectMapper mapper = new ObjectMapper();
 	private List<HotItemInfo> allHistoryList;
 	private List<HotItemInfo> movieHistoryList;
@@ -59,7 +58,7 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 	private List<HotItemInfo> dongmanHistoryList;
 	private List<HotItemInfo> zongyiHistoryList;
 	
-	private View  selectedView;
+	private boolean[] mIcanLoadMoreArray = new boolean[132];
 	
 	private ListView listView;
 	private App app;
@@ -123,34 +122,12 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 					finish();
 					return;
 				}
-//				Toast.makeText(ShowShoucangHistoryActivity.this, "seleced index = " + arg2, 100).show();
 				final Dialog dialog = new AlertDialog.Builder(ShowShoucangHistoryActivity.this).create();
 				dialog.show();
 				LayoutInflater inflater = LayoutInflater.from(ShowShoucangHistoryActivity.this);
 				View view = inflater.inflate(R.layout.layout_favourite_dialog, null);
 				TextView nameText = (TextView) view.findViewById(R.id.dialog_title);
-//				Button playButton = (Button) view.findViewById(R.id.history_play);
-//				playButton.setOnClickListener(new OnClickListener() {
-//					
-//					@Override
-//					public void onClick(View v) {
-//						// TODO Auto-generated method stub
-//						dialog.dismiss();
-//						CurrentPlayData playDate = new CurrentPlayData();
-//						Intent intent = new Intent(ShowShoucangHistoryActivity.this,VideoPlayerActivity.class);
-//						playDate.prod_id = ((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_id;
-//						playDate.prod_type = Integer.valueOf(((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_type);
-//						playDate.prod_name = ((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_name;
-//						playDate.prod_url = ((HistortyAdapter)listView.getAdapter()).data.get(arg2).video_url;
-////						playDate.prod_src = "";
-//						if(!"".equals(((HistortyAdapter)listView.getAdapter()).data.get(arg2).playback_time)){
-//							playDate.prod_time = Long.valueOf(((HistortyAdapter)listView.getAdapter()).data.get(arg2).playback_time);
-//						}
-////						playDate.prod_qua = Integer.valueOf(info.definition);
-//						app.setCurrentPlayData(playDate);
-//						startActivity(intent);
-//					}
-//				});
+
 				Button viewDetailButton = (Button) view.findViewById(R.id.history_view);
 				viewDetailButton.setOnClickListener(new OnClickListener() {
 					
@@ -202,7 +179,6 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 						
 						String prod_id = ((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_id;
 						deleteShoucang(true, ((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_id);
-//						((HistortyAdapter)listView.getAdapter()).data.remove(arg2);
 						if(allHistoryList!=null){
 							for(int i=0; i<allHistoryList.size(); i++){
 								if(allHistoryList.get(i).prod_id.equals(prod_id)){
@@ -256,13 +232,6 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 		listView.setSelected(true);
 		listView.setSelection(0);
 		listView.requestFocus();
-		listView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-			
-			@Override
-			public void onFocusChange(View v, boolean hasFocus) {
-				// TODO Auto-generated method stub
-			}
-		});
 		
 		getHistoryData(0);
 	}
@@ -357,7 +326,7 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 			selectedButton.setBackgroundResource(R.drawable.text_drawable_selector);
 			selectedButton = btn_fenlei_all;
 			selectedButton.setPadding(0, 0, 5, 0);
-			index = 0;
+			mType = 0;
 			if(allHistoryList==null){
 				listView.setAdapter(null);
 				getHistoryData(0);
@@ -372,7 +341,7 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 			selectedButton.setBackgroundResource(R.drawable.text_drawable_selector);
 			selectedButton = btn_fenlei_movie;
 			selectedButton.setPadding(0, 0, 5, 0);
-			index = 1;
+			mType = 1;
 			if(movieHistoryList==null){
 				listView.setAdapter(null);
 				getHistoryData(1);
@@ -387,7 +356,7 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 			selectedButton.setBackgroundResource(R.drawable.text_drawable_selector);
 			selectedButton = btn_fenlei_tv;
 			selectedButton.setPadding(0, 0, 5, 0);
-			index = 2;
+			mType = 2;
 			if(tvHistoryList==null){
 				listView.setAdapter(null);
 				getHistoryData(2);
@@ -403,7 +372,7 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 			selectedButton.setBackgroundResource(R.drawable.text_drawable_selector);
 			selectedButton = btn_fenlei_dongman;
 			selectedButton.setPadding(0, 0, 5, 0);
-			index = 131;
+			mType = 131;
 			if(dongmanHistoryList==null){
 				listView.setAdapter(null);
 				getHistoryData(131);
@@ -417,7 +386,7 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 			selectedButton.setBackgroundResource(R.drawable.text_drawable_selector);
 			selectedButton = btn_fenlei_zongyi;
 			selectedButton.setPadding(0, 0, 5, 0);
-			index = 3;
+			mType = 3;
 			if(zongyiHistoryList==null){
 				listView.setAdapter(null);
 				getHistoryData(3);
@@ -436,7 +405,7 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 			Button cancelButton = (Button) view.findViewById(R.id.history_cancel);
 			Button delButton = (Button) view.findViewById(R.id.history_del);
 			dialog.setContentView(view);
-			switch (index) {
+			switch (mType) {
 			case 0:
 				nameText.setText("是否清空所有记录？");
 				break;
@@ -526,10 +495,9 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 	@Override
 	public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2,
 			long arg3) {
-		// TODO Auto-generated method stub
-		selectedView = arg1;
-		if(((HistortyAdapter)listView.getAdapter()).data.size()-listView.getLastVisiblePosition()==3){
-			getHistoryData(index);
+		if(((HistortyAdapter)listView.getAdapter()).data.size()-listView.getLastVisiblePosition()==3
+				&& mIcanLoadMoreArray[mType]){
+			getHistoryData(mType);
 		}
 	}
 
@@ -617,7 +585,6 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 				String bigPicUrl = result.favorities[i].big_content_pic_url;
 				if(bigPicUrl == null || bigPicUrl.equals("")
 						||bigPicUrl.equals(UtilTools.EMPTY)) {
-					
 					bigPicUrl = result.favorities[i].content_pic_url;
 				}
 				item.prod_pic_url = bigPicUrl;
@@ -630,6 +597,10 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 				item.area = result.favorities[i].area;
 				list.add(item);
 			}
+			
+			if(list.size() >= 10) mIcanLoadMoreArray[type] = true;
+			else 						 mIcanLoadMoreArray[type] = false;
+			
 			switch (type) {
 			case 0:
 				if(allHistoryList==null){
@@ -702,7 +673,7 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 			cb.params(params).url(url).type(JSONObject.class)
 			.weakHandler(this, "deleteResult");
 		}else{
-			if(index == 0){
+			if(mType == 0){
 				url = Constant.BASE_URL + "user/clearFavorities";
 				Map<String, Object> params = new HashMap<String, Object>();
 				cb.params(params).url(url).type(JSONObject.class)
@@ -710,7 +681,7 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 			}else{
 				url = Constant.BASE_URL + "user/clearFavorities";
 				Map<String, Object> params = new HashMap<String, Object>();
-				params.put("vod_type", index);
+				params.put("vod_type", mType);
 				cb.params(params).url(url).type(JSONObject.class)
 				.weakHandler(this, "deleteResult");
 			}
