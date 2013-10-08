@@ -3,7 +3,6 @@ package com.joyplus.sub;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.joyplus.sub.JoyplusSubInterface.SubContentType;
 
 public abstract class JoyplusSub implements JoyplusSubInterface{
     

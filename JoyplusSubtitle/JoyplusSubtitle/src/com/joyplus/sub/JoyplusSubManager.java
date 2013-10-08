@@ -20,8 +20,8 @@ import com.joyplus.control.SubManager;
 
 public class JoyplusSubManager implements SubManager{	
 
-	   private boolean Debug = false;
-	   private static final String  TAG   = "JoyplusSubManager";
+	   //private boolean Debug = false;
+	   //private static final String  TAG   = "JoyplusSubManager";
 	   
 	   private Context mContext; 
 	   

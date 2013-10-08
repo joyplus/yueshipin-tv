@@ -15,6 +15,7 @@ import android.content.Context;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
+import com.joyplus.control.SubFeature;
 import com.joyplus.sub.JoyplusSubInterface.SubContentType;
 
 public class JoyplusSubInstance {
@@ -57,7 +58,9 @@ public class JoyplusSubInstance {
 			Subtitle = getSubByte(uri.Uri);
 		mSub = InstanceSub(uri,Subtitle);
 		if(mSub != null){
-			java.util.Collections.sort(mSub.elements, new SubTitleElementComparator());
+			java.util.Collections.sort(mSub.elements, new SubTitleElementComparator(false));
+			if(SubFeature.SUBDELAY)
+				java.util.Collections.sort(mSub.elements, new SubTitleElementComparator(true));
 			return true;
 		}
 		return false;

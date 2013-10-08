@@ -1,6 +1,5 @@
 package com.joyplus.sub;
 
-import java.io.InputStream;
 
 public interface JoyplusSubInterface {
 	   /*Interface of sub type*/      

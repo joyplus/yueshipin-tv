@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
-import com.joyplus.common.Log;
-import com.joyplus.common.Utils;
 
 
 /**

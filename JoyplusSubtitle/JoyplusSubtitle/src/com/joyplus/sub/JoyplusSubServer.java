@@ -3,7 +3,7 @@ import java.util.List;
 import android.content.Context;
 
 public class JoyplusSubServer extends SubModel {
-	private static final String  TAG = "JoyplusSubServer";
+	//private static final String  TAG = "JoyplusSubServer";
 	private JoyplusUseableSubUri mUseableSubUri;
 	private JoyplusTempSubUri    mTempSubUri;	
 	private JoyplusSubConfig     mSubConfig;
