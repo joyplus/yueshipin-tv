@@ -539,7 +539,7 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 					int shoucangNum = shoucangList.size();
 					if (!UtilTools.isPostionEmpty(position, shoucangNum)) {
 
-						if (UtilTools.isPositionShowQitaTitle(position,
+						if (UtilTools.isPositionShowQitaTitleBar(position,
 								shoucangNum)) {
 							Log.i(TAG, "Position:--->" + position
 									+ " isGridViewUp--->" + isGridViewUp);

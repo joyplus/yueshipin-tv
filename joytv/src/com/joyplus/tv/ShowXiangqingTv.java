@@ -1329,10 +1329,6 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		// TODO Auto-generated method stub
-//		super.onActivityResult(requestCode, resultCode, data);
-		
-		Log.i(TAG, "onActivityResult-->" + resultCode);
 		if(resultCode == VIPLoginActivity.RESULTCODE_FOR_DETAIL){
 			int index = data.getIntExtra(VIPLoginActivity.DATA_CURRENT_INDEX, -1);
 			if(index != -1 && VIPLoginActivity.isLogin(this)){
@@ -1350,7 +1346,6 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 			ItemStateUtils.shoucangButtonToFocusState(xiaiBt, getApplicationContext());
 			isXiai = true;
 		}else if(resultCode == JieMianConstant.SHOUCANG_CANCEL){
-//			Toast.makeText(getApplicationContext(), "SHOUCANG_CANCEL:" + requestCode, Toast.LENGTH_SHORT);
 			if(favNum - 1 >=0) {
 				
 				favNum --;
@@ -1366,17 +1361,7 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 			Log.i(TAG, "onActivityResult--->" + prodSubName );
 			
 			if(prodSubName != null && !prodSubName.equals("")) {//播放器中集数与一开始所选集数不同
-				
-//				if(seletedButtonIndex != null && seletedIndexButton.getText().equals(prodSubName)) {
-//					
-//					
-//				} else {
-//					
-//					
-//				}
-				
 				int tempId = -1;
-				
 				try {
 					tempId = Integer.valueOf(prodSubName);
 				} catch (NumberFormatException e) {
@@ -1391,63 +1376,7 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 					
 					updateView();
 				}
-				
-//				if(tempId != -1) {
-//					
-//					if(isShowHeadTable) {//如果显示表头
-//						
-//						if(seletedTitleButton != null) {
-//							
-//							seletedTitleButton.setEnabled(true);
-//						}
-//						
-//						if(seletedIndexButton != null){
-//							
-//							seletedIndexButton.setBackgroundResource(R.drawable.bg_button_tv_selector);
-//							seletedIndexButton.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector));
-//							seletedIndexButton.setPadding(8, 0, 0, 0);
-//						}
-//						
-//						seletedButtonIndex = -1;
-//						seletedIndexButton = null;
-//						
-//						historyPlayIndex4DB = tempId;
-//						seletedTitleButton.setEnabled(true);
-//						initButton();
-//					}else {//如果只有一页
-//						
-//						if(seletedIndexButton == null){
-//							seletedIndexButton = (Button) findViewById(tempId);
-//							
-//							if(seletedIndexButton != null) {
-//								
-//								seletedIndexButton.setBackgroundResource(R.drawable.bg_button_tv_selector_1);
-//								seletedIndexButton.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector_1));
-////								seletedIndexButton.setEnabled(false);
-//								seletedIndexButton.setPadding(8, 0, 0, 0);
-//							}
-//
-//						}else{
-////							seletedIndexButton.setEnabled(true);
-//							seletedIndexButton.setBackgroundResource(R.drawable.bg_button_tv_selector);
-//							seletedIndexButton.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector));
-//							seletedIndexButton.setPadding(8, 0, 0, 0);
-//							
-//							seletedIndexButton = (Button) findViewById(tempId);
-//							if(seletedIndexButton != null) {
-//								
-//								seletedIndexButton.setBackgroundResource(R.drawable.bg_button_tv_selector_1);
-//								seletedIndexButton.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector_1));
-////								seletedIndexButton.setEnabled(false);
-//								seletedIndexButton.setPadding(8, 0, 0, 0);
-//							}
-//						}
-//						seletedButtonIndex = tempId;
-//					}
-//				}
 			}
-			
-			
 		}
 		
 	}

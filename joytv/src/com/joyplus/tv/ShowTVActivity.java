@@ -558,7 +558,7 @@ public class ShowTVActivity extends AbstractShowActivity {
 					int shoucangNum = shoucangList.size();
 					if (!UtilTools.isPostionEmpty(position, shoucangNum)) {
 
-						if (UtilTools.isPositionShowQitaTitle(position,
+						if (UtilTools.isPositionShowQitaTitleBar(position,
 								shoucangNum)) {
 							Log.i(TAG, "Position:--->" + position
 									+ " isGridViewUp--->" + isGridViewUp);
@@ -1363,19 +1363,13 @@ public class ShowTVActivity extends AbstractShowActivity {
 	@Override
 	public void initQuanbuServiceData(String url, JSONObject json,
 			AjaxStatus status) {
-		// TODO Auto-generated method stub
-
 		if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
-
 			app.MyToast(aq.getContext(),
 					getResources().getString(R.string.networknotwork));
 			return;
 		}
 		try {
-
-			if (json == null || json.equals(""))
-				return;
-
+			if (json == null || json.equals(""))return;
 			Log.d(TAG, json.toString());
 			if (lists[QUAN_TEN] != null && !lists[QUAN_TEN].isEmpty()) {
 

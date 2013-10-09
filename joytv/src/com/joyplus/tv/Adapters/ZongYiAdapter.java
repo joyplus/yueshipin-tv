@@ -134,7 +134,7 @@ public class ZongYiAdapter extends BaseAdapter implements JieMianConstant{
 			}
 			
 			//显示其他
-			if(UtilTools.isPositionShowQitaTitle(position, shouCangCount)) {
+			if(UtilTools.isPositionShowQitaTitleBar(position, shouCangCount)) {
 				
 				AbsListView.LayoutParams paramsTv = new AbsListView.LayoutParams(
 						width, 31);
