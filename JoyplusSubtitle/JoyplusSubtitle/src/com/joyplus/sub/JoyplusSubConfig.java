@@ -20,7 +20,7 @@ public class JoyplusSubConfig {
 	   // TODO Auto-generated method stub
        ResourcesManager manager = ResourcesManager.newInstance(context);
 	   SubEN   = Boolean.parseBoolean(context.getString(manager.getStringID("sub_en_default")));
-	   SubPath = Environment.getExternalStorageDirectory()+context.getString(manager.getStringID("sub_dir"));
+	   SubPath = Environment.getExternalStorageDirectory()+context.getString(manager.getStringID("sub_dir"),context.getPackageName());
 	   SubMax  = Integer.parseInt(context.getString(manager.getStringID("sub_max_local")));
 //	   Log.d("Jas","InitResource() SubEN="+SubEN+" SubPath="+SubPath+" SubMax="+SubMax);
 	}
