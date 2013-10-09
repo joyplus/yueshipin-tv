@@ -475,6 +475,9 @@ public class VideoPlayerJPActivity extends Activity implements
 		// 更新播放来源和上次播放时间
 		updateSourceAndTime();
 		updateName();
+		if(lastTime<=0){
+			lastTime = getPlayTimeFromLocal();
+		}
 		if (currentPlayUrl != null && URLUtil.isNetworkUrl(currentPlayUrl)) {
 			if (mProd_type<0) {
 				new Thread(new UrlRedirectTask()).start();
@@ -497,30 +500,31 @@ public class VideoPlayerJPActivity extends Activity implements
 				getProgramViewDetailServiceData();
 			}
 		}
-		
-		Log.d(TAG, "defination----->" + mDefination);
-		if(lastTime<=0){
-			String lastTimeStr = DBUtils.getDuartion4HistoryDB(
-					getApplicationContext(),
-					UtilTools.getCurrentUserId(getApplicationContext()), mProd_id,mProd_sub_name);
-			Log.i(TAG, "DBUtils.getDuartion4HistoryDB-->lastTimeStr:" + lastTimeStr);
+	}
+	
+	private long getPlayTimeFromLocal(){
+		String lastTimeStr = DBUtils.getDuartion4HistoryDB(
+				getApplicationContext(),
+				UtilTools.getCurrentUserId(getApplicationContext()), mProd_id,mProd_sub_name);
+		Log.i(TAG, "DBUtils.getDuartion4HistoryDB-->lastTimeStr:" + lastTimeStr);
 
-			if (lastTimeStr != null && !lastTimeStr.equals("")) {
+		if (lastTimeStr != null && !lastTimeStr.equals("")) {
 
-				try {
-					long tempTime = Integer.valueOf(lastTimeStr);
-					Log.i(TAG, "DBUtils.getDuartion4HistoryDB-->time:" + tempTime);
-					if (tempTime != 0) {
+			try {
+				long tempTime = Integer.valueOf(lastTimeStr);
+				Log.i(TAG, "DBUtils.getDuartion4HistoryDB-->time:" + tempTime);
+				if (tempTime != 0) {
 
-						lastTime = tempTime * 1000;
-					}
-				} catch (NumberFormatException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					return tempTime * 1000;
 				}
-
+			} catch (NumberFormatException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
+
 		}
+		
+		return 0;
 	}
 
 	private Handler mHandler = new Handler() {
