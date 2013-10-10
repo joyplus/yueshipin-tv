@@ -798,6 +798,24 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 	});
 
 	}
+	private Handler vipHandler = new Handler(){
+
+		@Override
+		public void handleMessage(Message msg) {
+			// TODO Auto-generated method stub
+			switch (msg.what) {
+			case LoginManager.MEASSGE_LOGIN_SUCCESS:
+				if(VIPLoginActivity.isLogin(Main1.this))
+					aq.id(R.id.tv_head_user_name).text(UtilTools.getVIP_NickName(Main1.this));
+				else
+					aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
+				break;
+			default:
+				break;
+			}
+		}
+	};
+	
 	private Handler handler = new Handler() {
 
 		@Override
@@ -834,7 +852,13 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 						R.drawable.avatar_defult);
 				aq.id(R.id.tv_head_user_name).text(
 						app.getUserInfo().getUserName());
-
+				if(VIPLoginActivity.isUserCounterExist(Main1.this)){
+					LoginManager loginManager = new LoginManager(Main1.this, vipHandler);
+					loginManager.setNamePasswd(UtilTools.getVIPUserName(Main1.this),
+							UtilTools.getVIPPasswd(Main1.this), app.getHeaders());
+					loginManager.login();
+				}
+				
 				Log.i(TAG, "getHistoryServiceData-->MESSAGE_UPDATEUSER");
 				getHistoryServiceData();
 				break;
@@ -1283,7 +1307,10 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 			aq.id(R.id.iv_head_user_icon).image(
 					app.getUserInfo().getUserAvatarUrl(), false, true, 0,
 					R.drawable.avatar_defult);
-			aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
+			if(VIPLoginActivity.isLogin(this))
+				aq.id(R.id.tv_head_user_name).text(UtilTools.getVIP_NickName(this));
+			else
+				aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
 		}
 
 		if (titleGroup.getSelectedTitleIndex() == 4) {
@@ -1338,6 +1365,10 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 			UtilTools.setWpBaiduLocalParseInit(getApplicationContext(), false);
 			UtilTools.setWpBaiduLocalParse(getApplicationContext(), false);
 
+		}
+		
+		if(VIPLoginActivity.isLogin(this)){
+			UtilTools.clearVIPNickNameAndID(this);
 		}
 
 		UtilTools.setP2PMD5(getApplicationContext(), "");
