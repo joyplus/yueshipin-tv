@@ -2,7 +2,6 @@ package com.joyplus.sub;
 
 import java.util.Comparator;
 
-import com.joyplus.control.SubFeature;
 
 public class SubTitleElementComparator implements Comparator<Element> {
     

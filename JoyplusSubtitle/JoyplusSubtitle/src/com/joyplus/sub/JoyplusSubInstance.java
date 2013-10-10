@@ -15,7 +15,6 @@ import android.content.Context;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
-import com.joyplus.control.SubFeature;
 import com.joyplus.sub.JoyplusSubInterface.SubContentType;
 
 public class JoyplusSubInstance {

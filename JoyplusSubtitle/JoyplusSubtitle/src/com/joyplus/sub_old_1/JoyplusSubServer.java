@@ -64,7 +64,9 @@ public class JoyplusSubServer {
 			Subtitle = getSubByte(uri.Uri);
 		mSub = InstanceSub(uri,Subtitle);
 		if(mSub != null){
-			java.util.Collections.sort(mSub.elements, new SubTitleElementComparator());
+			java.util.Collections.sort(mSub.elements, new SubTitleElementComparator(false));
+			if(SubFeature.SUBDELAY)
+				java.util.Collections.sort(mSub.elements, new SubTitleElementComparator(true));
 			return true;
 		}
 		return false;

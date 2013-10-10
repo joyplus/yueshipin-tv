@@ -110,7 +110,7 @@ public class SRTParser {
 			}
 		}
 		collection.setCharset(getCharset());
-		java.util.Collections.sort(collection.getElements(), new SubTitleElementComparator());
+//		java.util.Collections.sort(collection.getElements(), new SubTitleElementComparator());
 	}
 
 	public Collection getCollection() {
