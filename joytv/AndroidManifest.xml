@@ -42,20 +42,19 @@
             android:label="@string/app_name"
             android:launchMode="singleTop"
             android:screenOrientation="landscape"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
             android:uiOptions="splitActionBarWhenNarrow" >
-            <intent-filter>
+        	<intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            </intent-filter> 
         </activity>
         <activity  android:name=".Main1"
             android:label="@string/app_name"
             android:launchMode="singleTop"
             android:screenOrientation="landscape"
-            android:theme="@android:style/Theme.NoTitleBar"
-            android:uiOptions="splitActionBarWhenNarrow" />
+            android:uiOptions="splitActionBarWhenNarrow" >
+        </activity>
         <activity
             android:name="VideoPlayerJPActivity"
             android:configChanges="orientation|keyboardHidden|navigation"
