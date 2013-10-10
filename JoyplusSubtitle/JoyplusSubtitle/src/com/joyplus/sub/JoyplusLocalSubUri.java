@@ -16,7 +16,6 @@ public class JoyplusLocalSubUri extends JoyplusSubListInatance implements ISubMo
 		@Override
 		public void onSubModelChanged(SubModel model, boolean dataChanged) {
 			// TODO Auto-generated method stub
-			Log.d("Sub","Local "+size());
 			SetInstanceState(mContext,false);
 		}
 		@Override
@@ -44,7 +43,8 @@ public class JoyplusLocalSubUri extends JoyplusSubListInatance implements ISubMo
 	    String filename = SubNAME+size()  + subInstance.getJoyplusSub().mContentType.toExtension();
 	    File subFile= SaveFile(subInstance.getSubTitle(),JoyplusSubConfig.getInstance().getSubPath(),filename);
 	    if(subFile != null){
-	    	subInstance.getSubURI().Uri       = subFile.getAbsolutePath();subInstance.getSubURI().SubType   = SUBTYPE.LOCAL;
+	    	subInstance.getSubURI().Uri       = subFile.getAbsolutePath();
+	    	subInstance.getSubURI().SubType   = SUBTYPE.LOCAL;
 	    	subInstance.getSubURI().Instanced = false;//this should be notity useablelist to instance this suburi.
 	    	add(subInstance.getSubURI()); 
 	    };

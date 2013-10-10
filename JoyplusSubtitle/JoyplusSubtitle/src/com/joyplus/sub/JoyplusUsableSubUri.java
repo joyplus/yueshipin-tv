@@ -1,5 +1,7 @@
 package com.joyplus.sub;
 
+import java.io.File;
+
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
@@ -14,6 +16,7 @@ public class JoyplusUsableSubUri extends JoyplusURIList implements ISubModelChan
 	
 	public JoyplusUsableSubUri(Context context){
 		mContext    = context;
+		MAX         = JoyplusSubConfig.getInstance().getSubMax();
 		mStateTrack = new JoyplusSubStateTrack();
 	}
 	public void registerListener(JoyplusSubListener listener){
@@ -105,14 +108,30 @@ public class JoyplusUsableSubUri extends JoyplusURIList implements ISubModelChan
 	@Override
 	public void onInstance(JoyplusSubInstance subInstance) {
 		// TODO Auto-generated method stub
-		Log.d("Sub","+++++Usable onInstance()");
 		if(!subInstance.IsSubAviable())return;
+		subInstance.getSubURI().setUrl(RenameSubURI(subInstance.getSubURI().getUrl()));
 		if(!contains(subInstance.getSubURI())){
-			Log.d("Sub","------Usable onInstance() size="+size());
 			if(mSub == null)setSub(subInstance.getJoyplusSub());
 			add(subInstance.getSubURI());
 		}
-		Log.d("Sub","+++++Usable onInstance() size="+size());
+	}
+	
+	private String RenameSubURI(String url) {
+		// TODO Auto-generated method stub
+		if(url==null||"".equals(url))return url;
+		int dotPos = url.lastIndexOf('.');
+		if(dotPos<=0)return url;
+		StringBuffer SubName = new StringBuffer(url);
+		SubName.insert(dotPos, size());
+		if(!url.equals(SubName.toString())){
+			File subFile = new File(url);
+			File SubFile = new File(SubName.toString());
+			if(subFile.exists()){
+				if(SubFile.exists())SubFile.delete();
+				subFile.renameTo(SubFile);
+			}
+		}
+		return SubName.toString();
 	}
     
 }
