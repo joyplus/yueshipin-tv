@@ -47,6 +47,7 @@ public class UtilTools implements JieMianConstant, BangDanConstant {
 	
 	public static final String TV_SETTING_XML = "tv_setting_xml";
 	public static final String TV_ADKEY_CONFIG_XML = "tv_adkey_config_xml";
+	public static final String TV_VIP_LOGIN_XML = "tv_vip_login_xml";
 
 	/**
 	 * 用来统计用户点击播放视屏后正常跳转的次数 有可能跳转到播放器，也有可能跳转到浏览器
@@ -549,35 +550,20 @@ public class UtilTools implements JieMianConstant, BangDanConstant {
 
 	public static List<MovieItemData> getLists4TwoList(
 			List<MovieItemData> list1, List<MovieItemData> list2) {
-
 		List<MovieItemData> list = new ArrayList<MovieItemData>();
-
 		if (list1 != null) {
-
 			list.addAll(list1);
-
 			if (list2 != null) {
-
-				Log.i(TAG, "getLists4TwoList--> list1-size:" + list1.size()
-						+ " list2-size:" + list2.size());
-
 				for (MovieItemData movieItemData2 : list2) {
-
-//					list.add(movieItemData);
 					boolean isSame = false;
-					
 					for(MovieItemData movieItemData : list1) {
-						
 						if(movieItemData.getMovieID().
 								equals(movieItemData2.getMovieID())) {
-							
 							isSame = true;
 							break;
 						}
 					}
-					
 					if(!isSame) {
-						
 						list.add(movieItemData2);
 					}
 				}
@@ -590,85 +576,32 @@ public class UtilTools implements JieMianConstant, BangDanConstant {
 	// 一进入到能够收藏的界面list排序顺序 收藏集合，将要填充的集合，文字集合（5个），其他集合
 	// 判断当前位置是为不可见
 	public static boolean isPostionEmpty(int position, int shoucangNum) {
-
-		// 因为position是从零开始 因此需要加1
-		position++;
-
-		int chu = shoucangNum / 5;
-		int quyu = shoucangNum % 5;
-
-		if (quyu != 0) {
-
-			int max = (chu + 1) * 5;
-			int min = shoucangNum;
-
-			if (position <= max && position > min) {
-
-				return true;
-			}
-		}
-
-		return false;
+		return (position > shoucangNum -1 && position < getFirstPositionQitaTitle(shoucangNum));
 	}
 
 	public static boolean isPostionShowText(int position, int shoucangNum) {
-
-		int chu = shoucangNum / 5;
-
-		int max = (chu + 1) * 5;
-
-		if (position == max) {
-
-			return true;
-		}
-
-		return false;
+		return getFirstPositionQitaTitle(shoucangNum) == position;
 	}
 
-	public static boolean isPositionShowQitaTitle(int position, int shoucangNum) {
+	public static boolean isPositionShowQitaTitleBar(int position, int shoucangNum) {
+		int min = getFirstPositionQitaTitle(shoucangNum);
+		return position >= min && position < min + 5 ? true:false;
+	}
 
-		int chu = shoucangNum / 5;
-
-		int max = (chu + 1) * 5;
-
-		if (position >= max && position < max + 5) {
-
-			return true;
-		}
-
-		return false;
+	//需要填充的数目
+	public static int tianchongEmptyItem(int shoucangNum) {
+		return getFirstPositionQitaTitle(shoucangNum) - shoucangNum + 5;
 	}
 	
+	//其他文字位置起始点，对应于gridview position
 	public static int getFirstPositionQitaTitle(int shoucangNum) {
-		
-		int chu = shoucangNum / 5;
-
-		int max = (chu + 1) * 5;
-		
-		return max;
+		int chu = (shoucangNum - 1) / 5;
+		return (chu + 1) * 5;
 	}
-
+	
 	public static int stepToFirstInThisRow(int position) {
-
 		int chu = position / 5;
-
 		return chu * 5;
-	}
-
-	public static int tianchongEmptyItem(int shoucangNum) {
-
-		int chu = shoucangNum / 5;
-		int quyu = shoucangNum % 5;
-
-		if (quyu != 0) {
-
-			int max = (chu + 1) * 5;
-			int min = shoucangNum;
-
-			return max - min + 5;
-		}
-
-		return 5;
 	}
 
 	public static int string2Int(String str) {
@@ -1025,4 +958,86 @@ public class UtilTools implements JieMianConstant, BangDanConstant {
 		
 		return sp.getString("channel", "");
 	}
+	
+	public static void setVIPUserName(Context context,String userName){
+		SharedPreferences sp = context.getSharedPreferences(TV_VIP_LOGIN_XML,
+				Context.MODE_PRIVATE);
+		Editor editor = sp.edit();
+		editor.putString("userName", userName);
+		editor.commit();
+	}
+	
+	public static String getVIPUserName(Context context){
+		SharedPreferences sp = context.getSharedPreferences(TV_VIP_LOGIN_XML,
+				Context.MODE_PRIVATE);
+		return sp.getString("userName", "");
+	}
+	
+	public static void setVIPPasswd(Context context,String passWd){
+		SharedPreferences sp = context.getSharedPreferences(TV_VIP_LOGIN_XML,
+				Context.MODE_PRIVATE);
+		Editor editor = sp.edit();
+		editor.putString("passWd", passWd);
+		editor.commit();
+	}
+	
+	public static String getVIPPasswd(Context context){
+		SharedPreferences sp = context.getSharedPreferences(TV_VIP_LOGIN_XML,
+				Context.MODE_PRIVATE);
+		return sp.getString("passWd", "");
+	}
+	
+	public static void setVIP_ID(Context context,String vipID){
+		SharedPreferences sp = context.getSharedPreferences(TV_VIP_LOGIN_XML,
+				Context.MODE_PRIVATE);
+		Editor editor = sp.edit();
+		editor.putString("vipID", vipID);
+		editor.commit();
+	}
+	
+	public static String getVIP_ID(Context context){
+		SharedPreferences sp = context.getSharedPreferences(TV_VIP_LOGIN_XML,
+				Context.MODE_PRIVATE);
+		return sp.getString("vipID", "");
+	}
+	
+	public static void setVIP_NickName(Context context,String nickName){
+		SharedPreferences sp = context.getSharedPreferences(TV_VIP_LOGIN_XML,
+				Context.MODE_PRIVATE);
+		Editor editor = sp.edit();
+		editor.putString("nickName", nickName);
+		editor.commit();
+	}
+	
+	public static String getVIP_NickName(Context context){
+		SharedPreferences sp = context.getSharedPreferences(TV_VIP_LOGIN_XML,
+				Context.MODE_PRIVATE);
+		return sp.getString("nickName", "");
+	}
+	
+	public static void saveVIPNameAndPasswd(Context context,String userName,String passWd){
+		setVIPUserName(context, userName);
+		setVIPPasswd(context, passWd);
+	}
+	
+	public static void saveVIPNickNameAndID(Context context,String nickName,String vipID){
+		setVIP_NickName(context, nickName);
+		setVIP_ID(context, vipID);
+	}
+	
+	public static void clearVIPNameAndPasswd(Context context){
+		setVIPUserName(context, "");
+		setVIPPasswd(context, "");
+	}
+	
+	public static void clearVIPNickNameAndID(Context context){
+		setVIP_NickName(context, "");
+		setVIP_ID(context, "");
+	}
+	
+	public static void clearVIPData(Context context){
+		clearVIPNameAndPasswd(context);
+		clearVIPNickNameAndID(context);
+	}
+	
 }

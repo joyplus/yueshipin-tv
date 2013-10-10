@@ -74,12 +74,10 @@ public class ShowTVActivity extends AbstractShowActivity {
 	private MyMovieGridView playGv;
 	private LinearLayout topLinearLayout;
 	private View activeView;
-	private int popWidth = 0, popHeight = 0;
+	private int popHeight = 0;
 	private boolean isGridViewUp = false;
 	private int[] beforeFirstAndLastVible = { 0, 9 };
-	private View beforeGvView = null;
 	private ZongYiAdapter searchAdapter = null;
-	private int beforepostion = 0;
 	private int currentListIndex;
 	private String search;
 	private String filterSource;
@@ -125,35 +123,25 @@ public class ShowTVActivity extends AbstractShowActivity {
 		aq = new AQuery(this);
 		
 		ImageView iv = (ImageView) findViewById(R.id.iv_head_logo);
-		
 		UtilTools.setLogoPic(getApplicationContext(), aq, iv);
 		
 		//本地收藏，有没有更新
 		String userId = null;
 		if(app.getUserInfo() != null) {
-			
 			if(app.getUserInfo().getUserId() != null) {
-				
 				userId = app.getUserInfo().getUserId();
 			}
 		} else {
-			
 			userId = UtilTools.getCurrentUserId(getApplicationContext());
 		}
 		
 		if(userId != null) {
-			
 			shoucangList = DBUtils.getList4DB(getApplicationContext(), userId, TV_TYPE);
 		}
 		
 		Log.i(TAG, "shoucangList--->:" + shoucangList.size());
-		
 		if(shoucangList != null && !shoucangList.isEmpty()) {
-			
 			if(shoucangList.size() > 0) {
-				
-				Log.i(TAG, "shoucangList--->:" + shoucangList.size());
-				
 				isShowShoucang = true;
 			}
 		}
@@ -332,7 +320,10 @@ public class ShowTVActivity extends AbstractShowActivity {
 			aq.id(R.id.iv_head_user_icon).image(
 					app.getUserInfo().getUserAvatarUrl(), false, true, 0,
 					R.drawable.avatar_defult);
-			aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
+			if(VIPLoginActivity.isLogin(this))
+				aq.id(R.id.tv_head_user_name).text(UtilTools.getVIP_NickName(this));
+			else
+				aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
 		}
 	}
 	
@@ -567,7 +558,7 @@ public class ShowTVActivity extends AbstractShowActivity {
 					int shoucangNum = shoucangList.size();
 					if (!UtilTools.isPostionEmpty(position, shoucangNum)) {
 
-						if (UtilTools.isPositionShowQitaTitle(position,
+						if (UtilTools.isPositionShowQitaTitleBar(position,
 								shoucangNum)) {
 							Log.i(TAG, "Position:--->" + position
 									+ " isGridViewUp--->" + isGridViewUp);
@@ -920,8 +911,6 @@ public class ShowTVActivity extends AbstractShowActivity {
 				.getWidth();
 
 		if (height != 0 && width != 0) {
-
-			popWidth = width;
 			popHeight = height;
 		}
 
@@ -1374,19 +1363,13 @@ public class ShowTVActivity extends AbstractShowActivity {
 	@Override
 	public void initQuanbuServiceData(String url, JSONObject json,
 			AjaxStatus status) {
-		// TODO Auto-generated method stub
-
 		if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
-
 			app.MyToast(aq.getContext(),
 					getResources().getString(R.string.networknotwork));
 			return;
 		}
 		try {
-
-			if (json == null || json.equals(""))
-				return;
-
+			if (json == null || json.equals(""))return;
 			Log.d(TAG, json.toString());
 			if (lists[QUAN_TEN] != null && !lists[QUAN_TEN].isEmpty()) {
 

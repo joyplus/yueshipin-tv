@@ -349,7 +349,10 @@ public class ShowDongManActivity extends AbstractShowActivity {
 			aq.id(R.id.iv_head_user_icon).image(
 					app.getUserInfo().getUserAvatarUrl(), false, true, 0,
 					R.drawable.avatar_defult);
-			aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
+			if(VIPLoginActivity.isLogin(this))
+				aq.id(R.id.tv_head_user_name).text(UtilTools.getVIP_NickName(this));
+			else
+				aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
 		}
 
 		// 只有在重新进来的时候刷新数据
@@ -598,7 +601,7 @@ public class ShowDongManActivity extends AbstractShowActivity {
 					int shoucangNum = shoucangList.size();
 					if (!UtilTools.isPostionEmpty(position, shoucangNum)) {
 
-						if (UtilTools.isPositionShowQitaTitle(position,
+						if (UtilTools.isPositionShowQitaTitleBar(position,
 								shoucangNum)) {
 							Log.i(TAG, "Position:--->" + position
 									+ " isGridViewUp--->" + isGridViewUp);

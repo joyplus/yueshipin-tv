@@ -126,6 +126,7 @@ public class ShowMovieActivity extends AbstractShowActivity {
 		initActivity();// 初始化界面
 
 		searchAdapter = new ZongYiAdapter(this, aq);
+		searchAdapter.setShoucangShow(false);
 		playGv.setAdapter(searchAdapter);
 		
 		playGv.requestFocus();
@@ -288,7 +289,10 @@ public class ShowMovieActivity extends AbstractShowActivity {
 			aq.id(R.id.iv_head_user_icon).image(
 					app.getUserInfo().getUserAvatarUrl(), false, true, 0,
 					R.drawable.avatar_defult);
-			aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
+			if(VIPLoginActivity.isLogin(this))
+				aq.id(R.id.tv_head_user_name).text(UtilTools.getVIP_NickName(this));
+			else
+				aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
 		}
 	}
 	

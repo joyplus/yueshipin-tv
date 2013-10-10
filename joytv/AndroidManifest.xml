@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.joyplus.tv"
-    android:versionCode="14"
-    android:versionName="1.2.8" >
+    android:versionCode="16"
+    android:versionName="1.3.0alpha" >
 
     <uses-sdk
         android:minSdkVersion="14"
@@ -42,20 +42,19 @@
             android:label="@string/app_name"
             android:launchMode="singleTop"
             android:screenOrientation="landscape"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
             android:uiOptions="splitActionBarWhenNarrow" >
-            <intent-filter>
+        	<intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            </intent-filter> 
         </activity>
         <activity  android:name=".Main1"
             android:label="@string/app_name"
             android:launchMode="singleTop"
             android:screenOrientation="landscape"
-            android:theme="@android:style/Theme.NoTitleBar"
-            android:uiOptions="splitActionBarWhenNarrow" />
+            android:uiOptions="splitActionBarWhenNarrow" >
+        </activity>
         <activity
             android:name="VideoPlayerJPActivity"
             android:configChanges="orientation|keyboardHidden|navigation"
@@ -313,6 +312,16 @@
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
             android:uiOptions="splitActionBarWhenNarrow" >
         </activity>
+        <activity
+            android:name="com.joyplus.tv.VIPLoginActivity"
+            android:label="@string/app_name" 
+            android:theme="@style/FullHeightDialog">
+            <!-- <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter> -->
+        </activity>
 		 <!--In order to use adkey, you must add blew two activities -->
           <activity android:name="com.joyplus.adkey.video.RichMediaActivity"
               android:configChanges="keyboard|keyboardHidden|orientation"/>
@@ -331,7 +340,7 @@
         </meta-data>
         <meta-data
             android:name="UMENG_CHANNEL"
-            android:value="t020001" />
+            android:value="t034001" />
 
         <service android:name="com.parse.PushService" />
 

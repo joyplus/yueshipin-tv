@@ -20,8 +20,6 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
-import org.blaznyoght.subtitles.model.Collection;
-import org.blaznyoght.subtitles.model.Parser;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -84,6 +82,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joyplus.adkey.Ad;
 import com.joyplus.adkey.AdListener;
 import com.joyplus.adkey.banner.AdView;
+import com.joyplus.sub_old_1.JoyplusSubManager;
 import com.joyplus.tv.Service.Return.ReturnFengxingSecondView;
 import com.joyplus.tv.Service.Return.ReturnFirstFengxingUrlView;
 import com.joyplus.tv.Service.Return.ReturnProgramView;
@@ -93,6 +92,7 @@ import com.joyplus.tv.entity.CurrentPlayDetailData;
 import com.joyplus.tv.entity.HotItemInfo;
 import com.joyplus.tv.entity.URLS_INDEX;
 import com.joyplus.tv.ui.ArcView;
+import com.joyplus.tv.ui.SubTitleView;
 import com.joyplus.tv.utils.BangDanConstant;
 import com.joyplus.tv.utils.DBUtils;
 import com.joyplus.tv.utils.DataBaseItems.UserHistory;
@@ -126,8 +126,6 @@ public class VideoPlayerJPActivity extends Activity implements
 	private static final int MESSAGE_HIDE_PROGRESSBAR = MESSAGE_UPDATE_PROGRESS + 1;
 	private static final int MESSAGE_HIDE_VOICE = MESSAGE_HIDE_PROGRESSBAR + 1;
 	private static final int MESSAGE_DATALOADING_UPDATE_NETSPEED = MESSAGE_HIDE_VOICE + 1;
-	private static final int MESSAGE_SUBTITLE_BEGAIN_SHOW = MESSAGE_DATALOADING_UPDATE_NETSPEED + 1;
-	private static final int MESSAGE_SUBTITLE_END_HIDEN = MESSAGE_SUBTITLE_BEGAIN_SHOW + 1;
 	
 	/**
 	 * 数据加载
@@ -207,7 +205,7 @@ public class VideoPlayerJPActivity extends Activity implements
 	/**
 	 * subtitle
 	 */
-	private TextView mSubTitleTv;
+	private SubTitleView mSubTitleView;
 
 	/**
 	 * 基本播放参数
@@ -285,11 +283,8 @@ public class VideoPlayerJPActivity extends Activity implements
 	private List<URLS_INDEX> playUrls_flv = new ArrayList<URLS_INDEX>();//标清
 	ArrayList<Integer> definationStrings = new ArrayList<Integer>();//清晰度选择
 	ArrayList<Integer> zimuStrings = new ArrayList<Integer>();
-
-	/**  Subtitle*/
-	private Collection mSubTitleCollection = null;
-	private List<String> subTitleUrlList = new ArrayList<String>();
-	private int currentSubtitleIndex = 0;//默认为第一个
+	
+	private JoyplusSubManager mJoyplusSubManager;
 	
 	
 	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -384,6 +379,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		initViews();
 		mSeekBar.setEnabled(false);
 		m_ReturnProgramView = app.get_ReturnProgramView();
+		resetSubManager();
 		initVedioDate();
 
 		Window win = getWindow();
@@ -479,6 +475,9 @@ public class VideoPlayerJPActivity extends Activity implements
 		// 更新播放来源和上次播放时间
 		updateSourceAndTime();
 		updateName();
+		if(lastTime<=0){
+			lastTime = getPlayTimeFromLocal();
+		}
 		if (currentPlayUrl != null && URLUtil.isNetworkUrl(currentPlayUrl)) {
 			if (mProd_type<0) {
 				new Thread(new UrlRedirectTask()).start();
@@ -501,30 +500,31 @@ public class VideoPlayerJPActivity extends Activity implements
 				getProgramViewDetailServiceData();
 			}
 		}
-		
-		Log.d(TAG, "defination----->" + mDefination);
-		if(lastTime<=0){
-			String lastTimeStr = DBUtils.getDuartion4HistoryDB(
-					getApplicationContext(),
-					UtilTools.getCurrentUserId(getApplicationContext()), mProd_id,mProd_sub_name);
-			Log.i(TAG, "DBUtils.getDuartion4HistoryDB-->lastTimeStr:" + lastTimeStr);
+	}
+	
+	private long getPlayTimeFromLocal(){
+		String lastTimeStr = DBUtils.getDuartion4HistoryDB(
+				getApplicationContext(),
+				UtilTools.getCurrentUserId(getApplicationContext()), mProd_id,mProd_sub_name);
+		Log.i(TAG, "DBUtils.getDuartion4HistoryDB-->lastTimeStr:" + lastTimeStr);
 
-			if (lastTimeStr != null && !lastTimeStr.equals("")) {
+		if (lastTimeStr != null && !lastTimeStr.equals("")) {
 
-				try {
-					long tempTime = Integer.valueOf(lastTimeStr);
-					Log.i(TAG, "DBUtils.getDuartion4HistoryDB-->time:" + tempTime);
-					if (tempTime != 0) {
+			try {
+				long tempTime = Integer.valueOf(lastTimeStr);
+				Log.i(TAG, "DBUtils.getDuartion4HistoryDB-->time:" + tempTime);
+				if (tempTime != 0) {
 
-						lastTime = tempTime * 1000;
-					}
-				} catch (NumberFormatException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					return tempTime * 1000;
 				}
-
+			} catch (NumberFormatException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
+
 		}
+		
+		return 0;
 	}
 
 	private Handler mHandler = new Handler() {
@@ -628,74 +628,17 @@ public class VideoPlayerJPActivity extends Activity implements
 			case MESSAGE_DATALOADING_UPDATE_NETSPEED:
 				updateDataLoadingSpeed();
 				break;
-			case MESSAGE_SUBTITLE_BEGAIN_SHOW:
-				org.blaznyoght.subtitles.model.Element element_show = 
-				(org.blaznyoght.subtitles.model.Element) msg.obj;
-				if(element_show != null){
-					long currentPositionShow = mVideoView.getCurrentPosition();
-					org.blaznyoght.subtitles.model.Element preElement_show = getPreElement(currentPositionShow);
-					//在字幕的显示时间段内
-					if(!element_show.getText().equals(mSubTitleTv.getText())){
-						if(element_show.getStartTime().getTime() < currentPositionShow + SEEKBAR_REFRESH_TIME/2
-								&& element_show.getStartTime().getTime() > currentPositionShow - SEEKBAR_REFRESH_TIME/2){
-							mSubTitleTv.setText(element_show.getText());
-							mSubTitleTv.setTag(element_show.getEndTime().getTime());
-						}
-					}
-					if(element_show.getEndTime().getTime() < currentPositionShow){
-						mSubTitleTv.setText("");
-						mSubTitleTv.setTag(-1L);
-						mHandler.removeMessages(MESSAGE_SUBTITLE_END_HIDEN);
-						if(preElement_show != null){
-							Message messageHiden = mHandler.obtainMessage(MESSAGE_SUBTITLE_END_HIDEN, preElement_show);
-							mHandler.sendMessageDelayed(messageHiden, preElement_show.getEndTime().getTime() - currentPositionShow);
-						}
-					}
-					
-					long tagEndTime = -1;
-					try {
-						if(mSubTitleTv.getTag() != null)
-						tagEndTime = (Long) mSubTitleTv.getTag();
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					if(!element_show.getText().equals(mSubTitleTv.getText()) && tagEndTime != -1
-							&& tagEndTime < currentPositionShow){
-						mSubTitleTv.setText("");
-						mSubTitleTv.setTag(-1L);
-					}
-					if(preElement_show != null){
-						Message messageShow = mHandler.obtainMessage(MESSAGE_SUBTITLE_BEGAIN_SHOW, preElement_show);
-						if(preElement_show.getStartTime().getTime() - currentPositionShow > SUBTITLE_DELAY_TIME_MAX){
-							mHandler.sendMessageDelayed(messageShow, SUBTITLE_DELAY_TIME_MAX);
-						}else {
-							mHandler.sendMessageDelayed(messageShow, preElement_show.getStartTime().getTime() - currentPositionShow);
-						}
-					}
-				}
-				break;
-			case MESSAGE_SUBTITLE_END_HIDEN:
-				org.blaznyoght.subtitles.model.Element element_end = 
-				(org.blaznyoght.subtitles.model.Element) msg.obj;
-				if(element_end != null){
-					long currentPositionShow = mVideoView.getCurrentPosition();
-					org.blaznyoght.subtitles.model.Element preElement_show = getPreElement(currentPositionShow);
-					if(element_end.getEndTime().getTime() > currentPositionShow - SEEKBAR_REFRESH_TIME/2){
-						mSubTitleTv.setText("");
-						mSubTitleTv.setTag(-1L);
-					}
-					if(preElement_show != null){
-						Message messageHiden = mHandler.obtainMessage(MESSAGE_SUBTITLE_END_HIDEN, preElement_show);
-						mHandler.sendMessageDelayed(messageHiden, preElement_show.getEndTime().getTime() - currentPositionShow);
-					}
-				}
-				break;
 			default:
 				break;
 			}
 		}
 	};
+	
+	
+	public long getPlayerCurrentPosition(){
+		if(mVideoView == null) return 0;
+		return mVideoView.getCurrentPosition();
+	}
 	
 	private void getFengxingParseServiceData(String url){
 		
@@ -798,7 +741,7 @@ public class VideoPlayerJPActivity extends Activity implements
 	
 	private void noUrlCanPlay(){
 		
-		if(hasP2p){
+		if(hasP2p && !isRetry){
 			isRetry = true;
 			new Thread(new Runnable() {
 				
@@ -1114,7 +1057,10 @@ public class VideoPlayerJPActivity extends Activity implements
 		mCenterButton = (ImageButton) findViewById(R.id.ib_control_center);
 		mContinueButton = (ImageButton) findViewById(R.id.btn_continue);
 		
-		mSubTitleTv = (TextView) findViewById(R.id.tv_subtitle);
+		mSubTitleView = (SubTitleView) findViewById(R.id.tv_subtitle);
+		
+		mSubTitleView.Init(this);
+		
 		mDataLoadingSpeedText = (TextView) findViewById(R.id.tv_dataloading_network_kb);
 
 		mPreButton.setOnClickListener(this);
@@ -1256,26 +1202,19 @@ public class VideoPlayerJPActivity extends Activity implements
 					View view = inflater.inflate(R.layout.video_choose_defination, null);
 					Button btn_ok = (Button) view.findViewById(R.id.btn_ok_def);
 					Button btn_cancel = (Button) view.findViewById(R.id.btn_cancle_def);
-//					final LinearLayout layout_def = (LinearLayout) view.findViewById(R.id.layout_def);
-//					final LinearLayout layout_zimu = (LinearLayout) view.findViewById(R.id.layout_zimu);
 					final Gallery gallery = (Gallery) view.findViewById(R.id.gallery_def);
 					final Gallery gallery_zm = (Gallery) view.findViewById(R.id.gallery_zimu);
 					
 					definationStrings.clear();
 					zimuStrings.clear();
-					if(subTitleUrlList.size() == 0){
+					
+					if(mJoyplusSubManager.getSubList().size() == 0){
 						zimuStrings.add(-1);//暂无字幕
 					}else{
-						for(int i=0; i<=subTitleUrlList.size(); i++){
+						for(int i=0; i<=mJoyplusSubManager.getSubList().size(); i++)
 							zimuStrings.add(i);
-						}
-//						zimuStrings.add(0);//字幕关
-//						zimuStrings.add(1);//字幕开
 					}
-//					definationStrings.add("超    清");
-//					definationStrings.add("高    清");
-//					definationStrings.add("标    清");
-//					definationStrings.add("流    畅");
+					
 					if(playUrls_hd2.size()>0){
 						definationStrings.add(Constant.DEFINATION_HD2);
 					}
@@ -1289,16 +1228,19 @@ public class VideoPlayerJPActivity extends Activity implements
 					
 					gallery.setAdapter(new DefinationAdapter(this, definationStrings));
 					gallery.setSelection(definationStrings.indexOf(mDefination));
-//					gallery.setOnKeyListener(new MenuKeyListener(dialog));
-//					gallery_zm.setOnKeyListener(new MenuKeyListener(dialog));
 					gallery_zm.setAdapter(new ZimuAdapter(this, zimuStrings));
-					if(mSubTitleTv.getVisibility()==View.INVISIBLE){
+					
+					if(!mJoyplusSubManager.CheckSubAviable()){
 						gallery_zm.setSelection(0);
 					}else{
 						if(zimuStrings.size()==1&&zimuStrings.get(0)==-1){
 							gallery_zm.setSelection(0);
 						}else{
-							gallery_zm.setSelection(currentSubtitleIndex+1);
+							if(mSubTitleView.getVisibility() == View.INVISIBLE){
+								gallery_zm.setSelection(0);
+							}else{
+								gallery_zm.setSelection(mJoyplusSubManager.getCurrentSubIndex() + 1);
+							}
 						}
 					}
 					
@@ -1311,21 +1253,18 @@ public class VideoPlayerJPActivity extends Activity implements
 							dialog.dismiss();
 							if(gallery_zm.getChildCount()>1){
 								if(gallery_zm.getSelectedItemPosition()==0){
-									mSubTitleTv.setVisibility(View.INVISIBLE);
+									mSubTitleView.hiddenSubtitle();
 								}else{
-									mSubTitleTv.setVisibility(View.VISIBLE);
-									Log.i(TAG, "currentSubtitleIndex--->" + currentSubtitleIndex
-											+ " gallery_zm.getSelectedItemPosition()-->" + gallery_zm.getSelectedItemPosition());
-									if(currentSubtitleIndex + 1 !=  gallery_zm.getSelectedItemPosition()){
+									if((gallery_zm.getSelectedItemPosition()!=0 && mSubTitleView.getVisibility() == View.INVISIBLE)||
+											mJoyplusSubManager.getCurrentSubIndex() + 1 !=  gallery_zm.getSelectedItemPosition()){
 										final int selection = gallery_zm.getSelectedItemPosition();
 										new Thread(new Runnable() {
 											
 											@Override
 											public void run() {
 												// TODO Auto-generated method stub
-												currentSubtitleIndex = selection;
-												currentSubtitleIndex -=1;
-												initSubTitleCollection();
+												mJoyplusSubManager.SwitchSub(selection -1);
+												mSubTitleView.displaySubtitle();
 											}
 										}).start();
 									}
@@ -1977,6 +1916,12 @@ public class VideoPlayerJPActivity extends Activity implements
 			mEpisodeIndex += 1;
 		}
 		mHandler.sendEmptyMessage(MESSAGE_RETURN_DATE_OK);
+		resetSubManager();
+	}
+	
+	private void resetSubManager(){
+		mJoyplusSubManager = new JoyplusSubManager(this);
+		mSubTitleView.setSubManager(mJoyplusSubManager);
 	}
 
 	private void playPrevious() {
@@ -2673,11 +2618,13 @@ public class VideoPlayerJPActivity extends Activity implements
 								e.printStackTrace();
 							}
 						}
-						//获取字幕
-						if(mSubTitleCollection == null){
-							subTitleUrlList = getSubTitleList(p2pUrl, UtilTools.getP2PMD5(getApplicationContext()));
-							currentSubtitleIndex = 0;
-							initSubTitleCollection();
+						if(!mJoyplusSubManager.CheckSubAviable()){//获取字幕
+							mJoyplusSubManager.setSubUri(
+									mJoyplusSubManager.getNetworkSubURI(
+											Constant.SUBTITLE_PARSE_URL_URL, 
+											p2pUrl, UtilTools.getP2PMD5(VideoPlayerJPActivity.this),
+											Constant.APPKEY, VideoPlayerJPActivity.this));
+							mSubTitleView.hiddenSubtitle();
 						}
 					}
 				}
@@ -2890,93 +2837,9 @@ public class VideoPlayerJPActivity extends Activity implements
 		playUrls_flv.clear();
 		playUrls_hd2.clear();
 		playUrls_mp4.clear();
-		
-		mSubTitleCollection = null;
-		currentSubtitleIndex = 0;
-//		mBefSubTitleE = null;
-//		mCurSubTitleE = null;
 	}
 	
 	private void initSubTitleCollection(){
-		Log.i(TAG, "subTitleUrlList--->" + subTitleUrlList.size() + "currentSubtitleIndex--->" + currentSubtitleIndex);
-		if(subTitleUrlList.size() > 0 && currentSubtitleIndex < subTitleUrlList.size()){
-			byte[] subTitle = getSubTitleByte(subTitleUrlList.get(currentSubtitleIndex));
-			
-			if(subTitle != null && subTitle.length > 3
-					&& mSubTitleCollection == null){
-				
-				Parser parser = new Parser();
-				
-				String charsetName = Utils.getCharset(subTitle, 512);
-				Log.d(TAG, "initSubTitleCollection-->charsetName:" + charsetName);
-				if(charsetName.equals("")){
-					
-					boolean isUtf8 = Utils.isUTF_8(subTitle);
-					Log.i(TAG, "isUtf8--->" + isUtf8);
-					
-					if(!isUtf8){
-						parser.setCharset("GBK");
-					} else {
-						parser.setCharset("UTF-8");
-					}
-				}else {
-					parser.setCharset(charsetName);
-				}
-				parser.parse(new ByteArrayInputStream(subTitle));
-				Log.d(TAG, "getElements().size()--->" + parser.getCollection().getElements().size());
-				if(parser.getCollection().getElements().size() > 2){
-					mSubTitleCollection = parser.getCollection();
-					if(mVideoView != null){
-						long currentPosition = mVideoView.getCurrentPosition();
-						org.blaznyoght.subtitles.model.Element element = getPreElement(currentPosition);
-						if(element != null){
-							Message messageShow = mHandler.obtainMessage(MESSAGE_SUBTITLE_BEGAIN_SHOW, element);
-							Message messageHiden = mHandler.obtainMessage(MESSAGE_SUBTITLE_END_HIDEN, element);
-							if(element.getStartTime().getTime() - currentPosition > SUBTITLE_DELAY_TIME_MAX){
-								mHandler.sendMessageDelayed(messageShow, SUBTITLE_DELAY_TIME_MAX);
-							}else {
-								
-								mHandler.sendMessageDelayed(messageShow, element.getStartTime().getTime() - currentPosition);
-							}
-							mHandler.sendMessageDelayed(messageHiden, element.getEndTime().getTime() - currentPosition);
-						}
-					}
-				}else {
-					Log.i(TAG, "restart init");
-					if(subTitleUrlList.size() > 0 && currentSubtitleIndex < subTitleUrlList.size()){
-						mHandler.removeMessages(MESSAGE_SUBTITLE_BEGAIN_SHOW);
-						mHandler.removeMessages(MESSAGE_SUBTITLE_END_HIDEN);
-						subTitleUrlList.remove(currentSubtitleIndex);
-						currentSubtitleIndex = 0;
-						mSubTitleCollection = null;
-						initSubTitleCollection();
-					}
-				}
-//				Log.d(TAG, "mSubTitleCollection--->" + mSubTitleCollection.getElementSize());
-				return;
-			}
-		}
-	}
-	
-	/**获取将要显示的元素**/
-	private org.blaznyoght.subtitles.model.Element getPreElement(long currentPosition){
-		
-		if(mSubTitleCollection != null){
-			
-			for(int i=0;i<mSubTitleCollection.getElementSize();i++){
-				
-				org.blaznyoght.subtitles.model.Element element = 
-						mSubTitleCollection.getElements().get(i);
-				if(currentPosition < element.getStartTime().getTime()){
-					Log.i(TAG, "mSubTitleCollection.getElementSize()--->" + mSubTitleCollection.getElementSize() 
-							+ " i--->" + i
-							+ " element--->" + element.toString());
-					return element;
-				}
-			}
-		}
-		
-		return null;
 	}
 	
 	@Override

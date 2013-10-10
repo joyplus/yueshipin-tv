@@ -741,10 +741,6 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				
-				// 禁掉播放按钮，避免多次播放
-				bofangLL.setEnabled(false);
-				
 				int id = v.getId();
 				switch (id) {
 				case R.id.ll_gaoqing_chaoqing:
@@ -771,16 +767,6 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 				if (popupWindow.isShowing()) {
 					popupWindow.dismiss();
 				}
-				
-				handler.postDelayed(new Runnable() {
-
-					@Override
-					public void run() {
-						// TODO Auto-generated method stub
-						bofangLL.setEnabled(true);
-					}
-				}, 1 * 1000);
-				
 				beforeTempPop = v;
 			}
 		};
@@ -1272,7 +1258,7 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 			aq.id(R.id.iv_head_user_icon).image(
 					app.getUserInfo().getUserAvatarUrl(), false, true, 0,
 					R.drawable.avatar_defult);
-			aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
+			updateUserName();
 		}
 	}
 	
@@ -1293,6 +1279,16 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 				|| date.tv.episodes == null 
 				|| index >= date.tv.episodes.length) {
 			
+			return;
+		}
+		
+		if(date == null || date.tv == null) return;
+		if("true".equals(date.tv.fee) && !VIPLoginActivity.isLogin(this)
+				&& "t035001".equals(UtilTools.getUmengChannel(this))){
+			Intent loginIntent = new Intent(this, VIPLoginActivity.class);
+			loginIntent.putExtra(VIPLoginActivity.START_FROM, VIPLoginActivity.START_FROM_DETAIL);
+			loginIntent.putExtra(VIPLoginActivity.DATA_CURRENT_INDEX, index);
+			startActivityForResult(loginIntent, VIPLoginActivity.RESULTCODE_FOR_DETAIL);
 			return;
 		}
 		
@@ -1324,12 +1320,23 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 		startActivityForResult(intent, 0);
 	}
 	
+	private void updateUserName(){
+		if(VIPLoginActivity.isLogin(this))
+			aq.id(R.id.tv_head_user_name).text(UtilTools.getVIP_NickName(this));
+		else
+			aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
+	}
+	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		// TODO Auto-generated method stub
-//		super.onActivityResult(requestCode, resultCode, data);
-		
-		Log.i(TAG, "onActivityResult-->" + resultCode);
+		if(resultCode == VIPLoginActivity.RESULTCODE_FOR_DETAIL){
+			int index = data.getIntExtra(VIPLoginActivity.DATA_CURRENT_INDEX, -1);
+			if(index != -1 && VIPLoginActivity.isLogin(this)){
+				updateUserName();
+				play(index);
+			}
+			return;
+		}
 		
 		if(resultCode == JieMianConstant.SHOUCANG_ADD) {
 			
@@ -1339,7 +1346,6 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 			ItemStateUtils.shoucangButtonToFocusState(xiaiBt, getApplicationContext());
 			isXiai = true;
 		}else if(resultCode == JieMianConstant.SHOUCANG_CANCEL){
-//			Toast.makeText(getApplicationContext(), "SHOUCANG_CANCEL:" + requestCode, Toast.LENGTH_SHORT);
 			if(favNum - 1 >=0) {
 				
 				favNum --;
@@ -1355,17 +1361,7 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 			Log.i(TAG, "onActivityResult--->" + prodSubName );
 			
 			if(prodSubName != null && !prodSubName.equals("")) {//播放器中集数与一开始所选集数不同
-				
-//				if(seletedButtonIndex != null && seletedIndexButton.getText().equals(prodSubName)) {
-//					
-//					
-//				} else {
-//					
-//					
-//				}
-				
 				int tempId = -1;
-				
 				try {
 					tempId = Integer.valueOf(prodSubName);
 				} catch (NumberFormatException e) {
@@ -1380,63 +1376,7 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 					
 					updateView();
 				}
-				
-//				if(tempId != -1) {
-//					
-//					if(isShowHeadTable) {//如果显示表头
-//						
-//						if(seletedTitleButton != null) {
-//							
-//							seletedTitleButton.setEnabled(true);
-//						}
-//						
-//						if(seletedIndexButton != null){
-//							
-//							seletedIndexButton.setBackgroundResource(R.drawable.bg_button_tv_selector);
-//							seletedIndexButton.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector));
-//							seletedIndexButton.setPadding(8, 0, 0, 0);
-//						}
-//						
-//						seletedButtonIndex = -1;
-//						seletedIndexButton = null;
-//						
-//						historyPlayIndex4DB = tempId;
-//						seletedTitleButton.setEnabled(true);
-//						initButton();
-//					}else {//如果只有一页
-//						
-//						if(seletedIndexButton == null){
-//							seletedIndexButton = (Button) findViewById(tempId);
-//							
-//							if(seletedIndexButton != null) {
-//								
-//								seletedIndexButton.setBackgroundResource(R.drawable.bg_button_tv_selector_1);
-//								seletedIndexButton.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector_1));
-////								seletedIndexButton.setEnabled(false);
-//								seletedIndexButton.setPadding(8, 0, 0, 0);
-//							}
-//
-//						}else{
-////							seletedIndexButton.setEnabled(true);
-//							seletedIndexButton.setBackgroundResource(R.drawable.bg_button_tv_selector);
-//							seletedIndexButton.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector));
-//							seletedIndexButton.setPadding(8, 0, 0, 0);
-//							
-//							seletedIndexButton = (Button) findViewById(tempId);
-//							if(seletedIndexButton != null) {
-//								
-//								seletedIndexButton.setBackgroundResource(R.drawable.bg_button_tv_selector_1);
-//								seletedIndexButton.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector_1));
-////								seletedIndexButton.setEnabled(false);
-//								seletedIndexButton.setPadding(8, 0, 0, 0);
-//							}
-//						}
-//						seletedButtonIndex = tempId;
-//					}
-//				}
 			}
-			
-			
 		}
 		
 	}
