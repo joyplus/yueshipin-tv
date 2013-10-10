@@ -37,6 +37,9 @@ public class JoyplusSubInstance {
     public JoyplusSub getJoyplusSub(){
     	return mSub;
     }
+    public SubURI     getSubURI(){
+    	return mSubURI;
+    }
     public JoyplusSubInstance(Context context){
     	 mContext = context;
     }
@@ -54,7 +57,7 @@ public class JoyplusSubInstance {
 		mSubURI  = uri;
 		Subtitle = null;
 		if(uri.SubType == SUBTYPE.NETWORK)
-			Subtitle = getSubByte(uri.Uri);
+			Subtitle = getSubByte(uri.getUrl());
 		mSub = InstanceSub(uri,Subtitle);
 		if(mSub != null){
 			java.util.Collections.sort(mSub.elements, new SubTitleElementComparator(false));
@@ -124,7 +127,7 @@ public class JoyplusSubInstance {
 								String tempsubTitleUrl = subtitleContents.getString(i);
 								SubURI subURI = new SubURI();
 								subURI.SubType = SUBTYPE.NETWORK;
-								subURI.Uri = tempsubTitleUrl;
+								subURI.setUrl(tempsubTitleUrl);
 								list.add(subURI);
 							}
 						}

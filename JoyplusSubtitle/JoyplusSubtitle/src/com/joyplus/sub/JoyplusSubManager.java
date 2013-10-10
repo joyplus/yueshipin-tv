@@ -94,7 +94,7 @@ public class JoyplusSubManager implements SubManager{
 		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
 		cb.url(subTitleUrl).type(JSONObject.class);
 		Map<String, String> headers = new HashMap<String, String>();
-		headers.put("app_key", app_key);
+		headers.put("app_key", app_key); 
 		cb.SetHeader(headers);
 		(new AQuery(context)).sync(cb);
 		JSONObject jo = cb.getResult();
@@ -113,11 +113,11 @@ public class JoyplusSubManager implements SubManager{
 								String tempsubTitleUrl = subtitleContents.getString(i);
 								SubURI subURI = new SubURI();
 								subURI.SubType = SUBTYPE.NETWORK;
-								subURI.Uri = tempsubTitleUrl;
+								subURI.setUrl(tempsubTitleUrl); 
 								list.add(subURI);
-							}
-						}
-					}
+							} 
+						} 
+					} 
 				}
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block

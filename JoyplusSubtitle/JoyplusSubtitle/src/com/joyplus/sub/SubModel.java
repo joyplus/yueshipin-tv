@@ -27,9 +27,9 @@ public class SubModel {
         	observer.onSubModelChanged(this, dataChanged);
         }
     }
-    protected void notifyModelInstance(SubURI sub , JoyplusSubInstance Instance){
+    protected void notifyModelInstance(JoyplusSubInstance Instance){
     	for (ISubModelChangedObserver observer : mSubModelChangedObservers) {
-        	observer.onInstance(sub, Instance);
+        	observer.onInstance(Instance);
         }
     }
 }

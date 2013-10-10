@@ -2,7 +2,7 @@ package com.joyplus.sub;
 
 public class SubURI extends SubModel{
       
-	public String  Uri;
+	public  String  Uri;
 	private String name;
 	public String getName() {
 		return name;

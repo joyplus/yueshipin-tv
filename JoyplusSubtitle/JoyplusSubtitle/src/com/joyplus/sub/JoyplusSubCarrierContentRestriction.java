@@ -22,7 +22,7 @@ public class JoyplusSubCarrierContentRestriction implements JoyplusSubContentRes
 			throw new ContentRestrictionException();
 		}
 		if(type == SubContentType.SUB_SRT && uri.SubType==SUBTYPE.NETWORK){
-			CheckSRTUri(uri.Uri);
+			CheckSRTUri(uri.getUrl());
 		}
 	}
 	private void CheckSRTUri(String uri) {

@@ -2,9 +2,10 @@ package com.joyplus.sub;
 import java.util.List;
 import android.content.Context;
 
-public class JoyplusSubServer extends SubModel {
+public class JoyplusSubServer{
 	//private static final String  TAG = "JoyplusSubServer";
-	private JoyplusUseableSubUri mUseableSubUri;
+	private JoyplusUsableSubUri  mUsableSubUri;
+	private JoyplusLocalSubUri   mLocalSubUri;
 	private JoyplusTempSubUri    mTempSubUri;	
 	private JoyplusSubConfig     mSubConfig;
     private Context mContext;
@@ -12,46 +13,45 @@ public class JoyplusSubServer extends SubModel {
     public JoyplusSubServer(Context context){
     	mContext   = context;
     	mSubConfig     = new JoyplusSubConfig(mContext);
-    	mUseableSubUri = new JoyplusUseableSubUri(mContext);
-    	//mUseableSubUri.registerModelChangedObserver(this);
+    	mUsableSubUri  = new JoyplusUsableSubUri(mContext);
+    	mLocalSubUri   = new JoyplusLocalSubUri(mContext);    	
+    	mLocalSubUri.registerModelChangedObserver(mUsableSubUri);
     	mTempSubUri    = new JoyplusTempSubUri(mContext);
-    	mTempSubUri.registerModelChangedObserver(mUseableSubUri);
+    	mTempSubUri.registerModelChangedObserver(mLocalSubUri);    	
     }
     public void registerListener(JoyplusSubListener listener){
-    	mUseableSubUri.registerListener(listener);
+    	mUsableSubUri.registerListener(listener);
 	}
 	public void setSubUri(List<SubURI> subUri,boolean clear){
 		 if(subUri==null || subUri.size()<=0)return;
-		 if(clear){
-			 mUseableSubUri.clear();
-			 mTempSubUri.clear();
-		 }
+		 if(clear)clearSub();
 		 for(SubURI sub : subUri){
 			 mTempSubUri.add(sub);
 		 }	 
 	}	
 	
 	public List<SubURI> getSubList(){
-		return mUseableSubUri;
+		return mUsableSubUri;
 	}
 	public boolean clearSub() {
 		// TODO Auto-generated method stub
 		mTempSubUri.clear();
-		mUseableSubUri.clear();
+		mLocalSubUri.clear();
+		mUsableSubUri.clear();
 		return true;
 	}
     public boolean CheckSubAviable(){
-    	return mUseableSubUri.CheckSubAviable();
+    	return mUsableSubUri.CheckSubAviable();
     }
     
     public JoyplusSub getJoyplusSub() throws Exception{
-    	if(mUseableSubUri.getSub() != null)return mUseableSubUri.getSub();
+    	if(mUsableSubUri.getSub() != null)return mUsableSubUri.getSub();
     	throw new Exception("JoyplusSub is null");
     }
     
     public void SwitchSub(int index){
     	if(getSubList() == null || index>=getSubList().size()) return ;
-    	mUseableSubUri.SwitchSub(index);
+    	mUsableSubUri.SwitchSub(index);
     }
     public boolean IsSubEnable(){
     	return mSubConfig.getSubEN();
@@ -60,13 +60,13 @@ public class JoyplusSubServer extends SubModel {
     	mSubConfig.setSubEN(EN);
     }
     public int getCurrentSubIndex(){
-    	if(mUseableSubUri.getSub() == null || !IsSubEnable())return -1;
-    	return mUseableSubUri.indexOf(mUseableSubUri.getSub().getUri());
+    	if(mUsableSubUri.getSub() == null || !IsSubEnable())return -1;
+    	return mLocalSubUri.indexOf(mUsableSubUri.getSub().getUri());
     }
     
 	public Element getElement(long time) {
 		// TODO Auto-generated method stub
-		JoyplusSub mSub = mUseableSubUri.getSub();
+		JoyplusSub mSub = mUsableSubUri.getSub();
 		if(mSub == null || !IsSubEnable()) return null;
 		int start = 0;
 		int end   = mSub.elements.size()-1;

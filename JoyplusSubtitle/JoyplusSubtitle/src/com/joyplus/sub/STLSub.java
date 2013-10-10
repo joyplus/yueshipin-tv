@@ -31,7 +31,7 @@ public class STLSub extends JoyplusSub{
 		// TODO Auto-generated method stub
 		if(this.getUri().SubType != SUBTYPE.LOCAL)return;
 		LocalSubParser parser = new LocalSubParser();
-		TimedTextObject obd = parser.ParserFile(new File(this.getUri().Uri));
+		TimedTextObject obd = parser.ParserFile(new File(this.getUri().getUrl()));
 		if(obd != null && obd.captions!=null && obd.captions.size()>0){
 			Iterator<Integer> iterator_2 = obd.captions.keySet().iterator(); 
 			int index = 0;
