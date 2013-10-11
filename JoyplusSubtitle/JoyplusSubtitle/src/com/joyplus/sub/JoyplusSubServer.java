@@ -61,7 +61,7 @@ public class JoyplusSubServer{
     }
     public int getCurrentSubIndex(){
     	if(mUsableSubUri.getSub() == null || !IsSubEnable())return -1;
-    	return mLocalSubUri.indexOf(mUsableSubUri.getSub().getUri());
+    	return mUsableSubUri.indexOf(mUsableSubUri.getSub().getUri());
     }
     
 	public Element getElement(long time) {
