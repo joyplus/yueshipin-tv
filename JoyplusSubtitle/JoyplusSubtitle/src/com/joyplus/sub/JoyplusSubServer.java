@@ -1,6 +1,7 @@
 package com.joyplus.sub;
 import java.util.List;
 import android.content.Context;
+import android.util.Log;
 
 public class JoyplusSubServer{
 	//private static final String  TAG = "JoyplusSubServer";

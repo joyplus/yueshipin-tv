@@ -74,7 +74,7 @@ public abstract class JoyplusSubListInatance extends JoyplusURIList{
 			Instanceing = true;
 	    	JoyplusSubInstance mSubInstance = new JoyplusSubInstance(mContext);
 	    	if(mSubInstance.InstanceSub(mSubURI) && mSubInstance.IsSubAviable()){
-	    		Log.d("Sub","SubListInstance InstanceOK");
+	    		mSubInstance.getSubURI().Instanced = true;
 	    		notifyModelInstance(mSubInstance);
 	    	}	    	    	
 	    	Instanceing = false;
