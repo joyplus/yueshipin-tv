@@ -51,21 +51,25 @@ public class SRTSub extends JoyplusSub{
 	public void parseLocal() {
 		// TODO Auto-generated method stub
 		if(this.getUri().SubType != SUBTYPE.LOCAL)return;
-		LocalSubParser parser = new LocalSubParser();
-		TimedTextObject obd = parser.ParserFile(new File(this.getUri().getUrl()));
-		if(obd != null && obd.captions!=null && obd.captions.size()>0){
-			Iterator<Integer> iterator_2 = obd.captions.keySet().iterator(); 
-			int index = 0;
-			while (iterator_2.hasNext()) { 
-				 Caption mCaption = obd.captions.get(iterator_2.next());
-				 Element mElement = new Element();
-				 mElement.setRank(++index);
-				 mElement.setStartTime(new JoyplusSubTime(mCaption.start.mseconds));
-				 mElement.setEndTime(new JoyplusSubTime(mCaption.end.mseconds));
-				 mElement.setText(mCaption.content.replaceAll("<br />", ""));
-				 this.elements.add(mElement);
-			} 
-		}
+//		LocalSubParser parser = new LocalSubParser();
+//		TimedTextObject obd = parser.ParserFile(new File(this.getUri().getUrl()));
+//		if(obd != null && obd.captions!=null && obd.captions.size()>0){
+//			Iterator<Integer> iterator_2 = obd.captions.keySet().iterator(); 
+//			int index = 0;
+//			while (iterator_2.hasNext()) { 
+//				 Caption mCaption = obd.captions.get(iterator_2.next());
+//				 Element mElement = new Element();
+//				 mElement.setRank(++index);
+//				 mElement.setStartTime(new JoyplusSubTime(mCaption.start.mseconds));
+//				 mElement.setEndTime(new JoyplusSubTime(mCaption.end.mseconds));
+//				 mElement.setText(mCaption.content.replaceAll("<br />", ""));
+//				 this.elements.add(mElement);
+//			} 
+//		}
+		SRTParser parser = new SRTParser();			
+		parser.setCharset("GBK");			
+		parser.parse(new File(this.getUri().getUrl()));
+		SRTSub.this.elements = parser.getCollection().getElements();
 	}
     
 	
