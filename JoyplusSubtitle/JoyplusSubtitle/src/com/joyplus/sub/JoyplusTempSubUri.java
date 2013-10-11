@@ -9,7 +9,6 @@ public class JoyplusTempSubUri extends JoyplusSubListInatance {
 		@Override
 		public void onSubModelChanged(SubModel model, boolean dataChanged) {
 			// TODO Auto-generated method stub
-			Log.d("Sub","Temp "+size());
 			SetInstanceState(mContext,false);
 		}
 		@Override
