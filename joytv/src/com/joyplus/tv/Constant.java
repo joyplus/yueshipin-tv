@@ -40,7 +40,6 @@ public class Constant {
 	 * 
 	 * 2：cms cms-test.yue001.com/manager/index.php
 	 */
-	
 
 //	public static final String PARSE_URL_BASE_URL = "http://tt.yue001.com:8080/";
 //	public static String LOADING_ADV_PUBLISHERID = "42ed1ef187e3fa7179d7edc86906cd89";//加载页面

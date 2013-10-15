@@ -3238,6 +3238,7 @@ public class VideoPlayerJPActivity extends Activity implements
 					mAndroidHttpClient.close();
 					return;
 				} else {//地址真的不存在
+					Log.d(TAG, "status="+ status +"\n + url->" + urlStr);
 					mAndroidHttpClient.close();
 					list.add(null);
 					return;//后面不执行
