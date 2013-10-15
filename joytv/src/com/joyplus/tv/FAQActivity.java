@@ -10,8 +10,10 @@ import org.json.JSONObject;
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup.LayoutParams;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
@@ -112,6 +114,7 @@ public class FAQActivity extends Activity {
 			// aq.id(R.id.ProgressText).invisible();
 			app.MyToast(aq.getContext(),
 					getResources().getString(R.string.networknotwork));
+			handleHelperDateError();
 			return;
 		}else{
 			try{
@@ -128,9 +131,19 @@ public class FAQActivity extends Activity {
 				}
 			}catch (Exception e) {
 				// TODO: handle exception
+				handleHelperDateError();
 				e.printStackTrace();
 			}
 			
 		}
+	}
+	
+	private void handleHelperDateError(){
+		//获取帮助信息失败或者获取数据有误
+		TextView tv = new TextView(this);
+		tv.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT,LayoutParams.WRAP_CONTENT));
+		tv.setGravity(Gravity.CENTER);
+		tv.setText("获取帮助界面失败");
+		layout_content.addView(tv);
 	}
 }
