@@ -30,6 +30,7 @@ public class JoyplusSubManager implements SubManager{
 	   public JoyplusSubManager(Context context){
 		     mContext   = context;
 		     mSubServer = new JoyplusSubServer(mContext);
+		     mSubServer.clearSub();
 	   }
 	   
 	   /*Interface of init sub uri*/
