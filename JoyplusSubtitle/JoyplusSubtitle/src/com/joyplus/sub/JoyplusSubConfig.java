@@ -1,5 +1,7 @@
 package com.joyplus.sub;
 
+import java.io.File;
+
 import com.joyplus.common.ResourcesManager;
 
 import android.content.Context;
@@ -21,6 +23,7 @@ public class JoyplusSubConfig {
        ResourcesManager manager = ResourcesManager.newInstance(context);
 	   SubEN   = Boolean.parseBoolean(context.getString(manager.getStringID("sub_en_default")));
 	   SubPath = Environment.getExternalStorageDirectory()+context.getString(manager.getStringID("sub_dir"),context.getPackageName());
+	   SubPathData = context.getFilesDir().getPath();
 	   SubMax  = Integer.parseInt(context.getString(manager.getStringID("sub_max_local")));
 //	   Log.d("Jas","InitResource() SubEN="+SubEN+" SubPath="+SubPath+" SubMax="+SubMax);
 	}
@@ -34,13 +37,21 @@ public class JoyplusSubConfig {
     }
     /*Interface of Sub max*/
     private  int SubMax = 0;
-    public   int getSubMax(){
+    public   int getSubMax(){    	
     	return SubMax;
     }
 	/*Interface of Sub dir*/   
     private  String SubPath = "";
+    private  String SubPathData = "";
     public   String getSubPath(){
-    	return SubPath;
+    	if(Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED ){
+    		File SubPathFile = new File(SubPath);
+    		if(!SubPathFile.isDirectory())return SubPathData;
+    		if(!SubPathFile.exists())SubPathFile.mkdirs();
+    		if(SubPathFile.canRead() && SubPathFile.canWrite())
+    	        return SubPath;
+    	}
+    	return SubPathData;
     }
     /*Interface of Sub mode*/
     public enum SUBMODE{
