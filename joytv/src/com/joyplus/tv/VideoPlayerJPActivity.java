@@ -2033,7 +2033,37 @@ public class VideoPlayerJPActivity extends Activity implements
 			}else {
 				strSrc = "PPTV";
 			}
+			
 			mResourceTextView.setText(strSrc);
+			mResourceTextView.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					if(!mProd_src.equalsIgnoreCase("p2p")&&!mProd_src.equalsIgnoreCase("wangpan")){
+						//点击logo跳网页
+						String url = null;
+						switch (mProd_type) {
+						case 1:
+							url = m_ReturnProgramView.movie.episodes[0].video_urls[0].url;
+							break;
+						case 2:
+						case 131:
+							url = m_ReturnProgramView.tv.episodes[0].video_urls[0].url;
+							break;
+						case 3:
+							url = m_ReturnProgramView.show.episodes[0].video_urls[0].url;
+							break;
+						}
+						
+						if(url!=null){
+							Intent intent = new Intent(Intent.ACTION_VIEW);
+							intent.setData(Uri.parse(url));
+							startActivity(intent);
+						}
+					}
+				}
+			});
 		}
 		if(lastTime>0){
 			mLastTimeTextView.setVisibility(View.VISIBLE);
