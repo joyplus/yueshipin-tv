@@ -1,7 +1,9 @@
 package com.joyplus.common_old_1;
 
+import info.monitorenter.cpdetector.io.ASCIIDetector;
 import info.monitorenter.cpdetector.io.CodepageDetectorProxy;
 import info.monitorenter.cpdetector.io.JChardetFacade;
+import info.monitorenter.cpdetector.io.UnicodeDetector;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -26,6 +28,8 @@ public class Utils {
     		CodepageDetectorProxy detector = CodepageDetectorProxy.getInstance();
 //    		detector.add(new ParsingDetector(false));
     		detector.add(JChardetFacade.getInstance());
+//    		detector.add(ASCIIDetector.getInstance());  
+//            detector.add(UnicodeDetector.getInstance()); 
     		try {
     			Charset charset = detector.detectCodepage(in, length);
     			return charset!= null ? charset.name() : "";
