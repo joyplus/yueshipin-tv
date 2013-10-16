@@ -60,6 +60,9 @@ public class EnCode {
 	public static String possibleEncode(char[] string,String defaultEnCode){
 		return possibleEncode(string,0,string.length,defaultEnCode);
 	}
+	public static String possibleEncode(byte[] string,int length,String defaultEnCode){
+		return possibleEncode(string.toString().toCharArray(),0,string.length,defaultEnCode);
+	}
 	public static String possibleEncode(char[] string,int offset,int length,String defaultEnCode){
 		if(string == null || string.length<=0)return defaultEnCode;
 		String value = string.toString();

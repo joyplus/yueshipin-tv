@@ -52,8 +52,6 @@ public class FormatSRT implements TimedTextFileFormat {
 		int captionNumber = 1;
 		boolean allGood;
 		
-//		String charsetName = Utils.getCharset(is, 512);
-//		Log.i("Yzg", "charsetName--->" + charsetName);
 		//first lets load the file
 		InputStreamReader in= new InputStreamReader(is,getCharset());
 		BufferedReader br = new BufferedReader(in);
