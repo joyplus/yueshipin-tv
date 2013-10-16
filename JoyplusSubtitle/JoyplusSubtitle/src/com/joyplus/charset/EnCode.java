@@ -18,17 +18,17 @@ public class EnCode {
 		}
 	};
 	
-	public static int possibleEncodings(String string){
+	private static int possibleEncodings(String string){
 		if(string ==  null || "".equals(string))
 			return EnCoding.EncodingNone.toInt();
 		return possibleEncodings(string.toCharArray());
 	}
-	public static int possibleEncodings(byte[] string){
+	private static int possibleEncodings(byte[] string){
 		if(string == null || string.length<=0)
 			return EnCoding.EncodingNone.toInt(); 
 		return possibleEncodings(string.toString().toCharArray());
 	}
-	public static int possibleEncodings(char[] string){
+	private static int possibleEncodings(char[] string){
 		if(string == null || string.length<=0)
 			return EnCoding.EncodingNone.toInt();
 		int resoult  = EnCoding.EncodingAll.toInt();
@@ -48,5 +48,33 @@ public class EnCode {
 		}
 		return resoult;
 	}
-	
+	public static String possibleEncode(byte[] string){
+		return possibleEncode(string,"GBK");
+	}
+	public static String possibleEncode(char[] string){
+		return possibleEncode(string,"GBK");
+	}
+	public static String possibleEncode(byte[] string,String defaultEnCode){
+		return possibleEncode(string.toString().toCharArray(),defaultEnCode);
+	}
+	public static String possibleEncode(char[] string,String defaultEnCode){
+		return possibleEncode(string,0,string.length,defaultEnCode);
+	}
+	public static String possibleEncode(char[] string,int offset,int length,String defaultEnCode){
+		if(string == null || string.length<=0)return defaultEnCode;
+		String value = string.toString();
+		if(offset<0)offset = 0;
+		if(offset>=value.length())offset = value.length()-1;
+		if(length<=0 || (length+offset>=value.length()))length = value.length() - offset;
+		if(length<=0)length=1;
+		int Resoult = possibleEncodings(value.substring(offset,(length+offset>=value.length())?value.length()-1:(length+offset)));
+		if(Resoult == EnCoding.EncodingNone.toInt())return defaultEnCode;
+		if((Resoult & EnCoding.EncodingGBK.toInt()) != 0){
+			return "GBK";
+		}else if((Resoult & EnCoding.EncodingBig5.toInt()) != 0){
+			return "big5";
+		}else {
+			return "utf-8";
+		}
+	}
 }

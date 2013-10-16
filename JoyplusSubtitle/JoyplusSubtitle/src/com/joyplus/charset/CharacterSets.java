@@ -28,7 +28,7 @@ public class CharacterSets {
     public static final int BIG5        = 0x07EA;
     public static final int UCS2        = 0x03E8;
     public static final int UTF_16      = 0x03F7;
-
+           
     /**
      * If the encoding of given data is unsupported, use UTF_8 to decode it.
      */
