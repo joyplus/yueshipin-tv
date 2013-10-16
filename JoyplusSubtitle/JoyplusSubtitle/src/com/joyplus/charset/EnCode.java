@@ -18,7 +18,7 @@ public class EnCode {
 		}
 	};
 	
-	public static int possibleEncodings(String string,EnCoding defaultEnCoding){
+	public static int possibleEncodings(String string){
 		if(string ==  null || "".equals(string))
 			return EnCoding.EncodingNone.toInt();
 		return possibleEncodings(string.toCharArray());
