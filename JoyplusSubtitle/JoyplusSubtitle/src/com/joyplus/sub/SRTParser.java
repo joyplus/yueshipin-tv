@@ -15,6 +15,9 @@ import java.util.regex.Pattern;
 import org.mozilla.intl.chardet.nsDetector;
 import org.mozilla.intl.chardet.nsICharsetDetectionObserver;
 
+import com.joyplus.charset.EnCode;
+import com.joyplus.common.Utils;
+
 public class SRTParser {
 	private static final String SEP = "\r?\n";
 	private static final String RANK_REGEX = "(\\d+)";
@@ -56,11 +59,18 @@ public class SRTParser {
 			is = new FileInputStream(f);
 			int len = 0;
 			byte[] buf = new byte[512];
+//			charset = EnCode.possibleEncode(buf);
 			while ((len = is.read(buf, 0, buf.length)) > 0) {
 				detector.DoIt(buf, len, false);
 			}
 			detector.DataEnd();
 			is.close();
+			if(this.charset.equalsIgnoreCase("BIG5")){
+//				String tempCharset = Utils.getCharset(buf, 512);
+				if(!EnCode.IsBig5EnCode(buf)){
+					this.charset = "GBK";
+				}
+			}
 			is = new FileInputStream(f);
 			parse(is);
 		} catch (FileNotFoundException e) {

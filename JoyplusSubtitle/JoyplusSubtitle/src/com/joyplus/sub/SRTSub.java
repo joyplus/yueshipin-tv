@@ -67,7 +67,7 @@ public class SRTSub extends JoyplusSub{
 //			} 
 //		}
 		SRTParser parser = new SRTParser();			
-		parser.setCharset("GBK");			
+//		parser.setCharset("GBK");			
 		parser.parse(new File(this.getUri().getUrl()));
 		SRTSub.this.elements = parser.getCollection().getElements();
 	}

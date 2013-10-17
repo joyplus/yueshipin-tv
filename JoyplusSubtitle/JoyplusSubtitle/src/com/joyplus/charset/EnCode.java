@@ -80,4 +80,22 @@ public class EnCode {
 			return "utf-8";
 		}
 	}
+	public static boolean IsBig5EnCode(byte[] string){
+		if(string == null || string.length<=0)return false;
+		int  index = 0;
+		byte value1,value2;
+		while(index+4<string.length){
+			value1 = (byte) string[index++];
+			if((value1 & 0x80) != 0){
+				value2 = (byte) string[index++];
+				value1 = (byte) (((value1 << 6) & 0xC0) | (value2 & 0x3F));
+				value2 = (byte) string[index++];
+				if ((value2 & 0x80) != 0)
+					value2 = (byte) (((value2 << 6) & 0xC0) | (string[index++] & 0x3F));
+				int ch = (int)value1 << 8 | (int)value2;
+				if(!AutoDetectEnCode.IsBig5Encodings(ch))return false;
+			}
+		}
+		return true;
+	}
 }

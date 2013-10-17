@@ -853,5 +853,9 @@ public class AutoDetectEnCode {
             result |= EnCode.EnCoding.EncodingEUCKR.toInt();
         return result;
     }
+    static boolean IsBig5Encodings(int ch){
+    	if (ch < 256) return false;
+    	return charMatchesEncoding(ch, kBig5Ranges);
+    }
 
 }
