@@ -65,7 +65,7 @@ public class SRTParser {
 			}
 			detector.DataEnd();
 			is.close();
-			if(this.charset.equalsIgnoreCase("BIG5")){
+			if("BIG5".equalsIgnoreCase(this.charset)){
 //				String tempCharset = Utils.getCharset(buf, 512);
 				if(!EnCode.IsBig5EnCode(buf)){
 					this.charset = "GBK";
@@ -167,7 +167,6 @@ public class SRTParser {
 	 *            the charset to set
 	 */
 	public void setCharset(String charset) {
-		System.out.println(charset);
 		this.charset = charset;
 	}
 }

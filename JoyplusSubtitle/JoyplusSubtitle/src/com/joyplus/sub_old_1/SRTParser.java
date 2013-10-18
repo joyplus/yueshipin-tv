@@ -157,7 +157,6 @@ public class SRTParser {
 	 *            the charset to set
 	 */
 	public void setCharset(String charset) {
-		System.out.println(charset);
 		this.charset = charset;
 	}
 }
