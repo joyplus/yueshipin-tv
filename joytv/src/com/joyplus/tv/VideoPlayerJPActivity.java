@@ -90,6 +90,7 @@ import com.joyplus.tv.Service.Return.ReturnReGetVideoView;
 import com.joyplus.tv.database.TvDatabaseHelper;
 import com.joyplus.tv.entity.CurrentPlayDetailData;
 import com.joyplus.tv.entity.HotItemInfo;
+import com.joyplus.tv.entity.PlayerSourceType;
 import com.joyplus.tv.entity.URLS_INDEX;
 import com.joyplus.tv.ui.ArcView;
 import com.joyplus.tv.ui.SubTitleView;
@@ -2114,13 +2115,13 @@ public class VideoPlayerJPActivity extends Activity implements
 									if(m_ReturnProgramView.movie.episodes[0].video_urls[0].source != null){
 										
 										if(m_ReturnProgramView.movie.episodes[0].video_urls[0].source.
-												equals(Constant.video_index[2])||
+												equals(PlayerSourceType.TYPE_LE_TV_FEE.toStringValue())||
 												m_ReturnProgramView.movie.episodes[0].video_urls[0].source.
-												equals(Constant.video_index[3])){
+												equals(PlayerSourceType.TYPE_LETV.toStringValue())){
 											
 											isOnlyExistLetv = true;
 										}else if(m_ReturnProgramView.movie.episodes[0].video_urls[0].source.
-												equals(Constant.video_index[4])){
+												equals(PlayerSourceType.TYPE_FENGXING.toStringValue())){
 											
 											isOnlyExistFengXing = true;
 										}
@@ -2189,13 +2190,13 @@ public class VideoPlayerJPActivity extends Activity implements
 											if(m_ReturnProgramView.tv.episodes[i].video_urls[0].source != null){
 												
 												if(m_ReturnProgramView.tv.episodes[i].video_urls[0].source.
-														equals(Constant.video_index[2])||
+														equals(PlayerSourceType.TYPE_LE_TV_FEE.toStringValue())||
 														m_ReturnProgramView.tv.episodes[i].video_urls[0].source.
-														equals(Constant.video_index[3])){
+														equals(PlayerSourceType.TYPE_LETV.toStringValue())){
 													
 													isOnlyExistLetv = true;
 												}else if(m_ReturnProgramView.tv.episodes[i].video_urls[0].source.
-														equals(Constant.video_index[4])){
+														equals(PlayerSourceType.TYPE_FENGXING.toStringValue())){
 													
 													isOnlyExistFengXing = true;
 												}
@@ -2246,13 +2247,13 @@ public class VideoPlayerJPActivity extends Activity implements
 										if(m_ReturnProgramView.tv.episodes[mEpisodeIndex].video_urls[0].source != null){
 											
 											if(m_ReturnProgramView.tv.episodes[mEpisodeIndex].video_urls[0].source.
-													equals(Constant.video_index[2])||
+													equals(PlayerSourceType.TYPE_LE_TV_FEE.toStringValue())||
 													m_ReturnProgramView.tv.episodes[mEpisodeIndex].video_urls[0].source.
-													equals(Constant.video_index[3])){
+													equals(PlayerSourceType.TYPE_LETV.toStringValue())){
 												
 												isOnlyExistLetv = true;
 											}else if(m_ReturnProgramView.tv.episodes[mEpisodeIndex].video_urls[0].source.
-													equals(Constant.video_index[4])){
+													equals(PlayerSourceType.TYPE_FENGXING.toStringValue())){
 												
 												isOnlyExistFengXing = true;
 											}
@@ -2326,13 +2327,13 @@ public class VideoPlayerJPActivity extends Activity implements
 												if(m_ReturnProgramView.show.episodes[mEpisodeIndex].video_urls[0].source != null){
 													
 													if(m_ReturnProgramView.show.episodes[mEpisodeIndex].video_urls[0].source.
-															equals(Constant.video_index[2])||
+															equals(PlayerSourceType.TYPE_LE_TV_FEE.toStringValue())||
 															m_ReturnProgramView.show.episodes[mEpisodeIndex].video_urls[0].source.
-															equals(Constant.video_index[3])){
+															equals(PlayerSourceType.TYPE_LETV.toStringValue())){
 														
 														isOnlyExistLetv = true;
 													}else if(m_ReturnProgramView.show.episodes[mEpisodeIndex].video_urls[0].source.
-															equals(Constant.video_index[4])){
+															equals(PlayerSourceType.TYPE_FENGXING.toStringValue())){
 														
 														isOnlyExistFengXing = true;
 													}
@@ -2386,13 +2387,13 @@ public class VideoPlayerJPActivity extends Activity implements
 											if(m_ReturnProgramView.show.episodes[mEpisodeIndex].video_urls[0].source != null){
 												
 												if(m_ReturnProgramView.show.episodes[mEpisodeIndex].video_urls[0].source.
-														equals(Constant.video_index[1])||
+														equals(PlayerSourceType.TYPE_LE_TV_FEE.toStringValue())||
 														m_ReturnProgramView.show.episodes[mEpisodeIndex].video_urls[0].source.
-														equals(Constant.video_index[2])){
+														equals(PlayerSourceType.TYPE_LETV.toStringValue())){
 													
 													isOnlyExistLetv = true;
 												}else if(m_ReturnProgramView.show.episodes[mEpisodeIndex].video_urls[0].source.
-														equals(Constant.video_index[3])){
+														equals(PlayerSourceType.TYPE_FENGXING.toStringValue())){
 													
 													isOnlyExistFengXing = true;
 												}
@@ -2668,49 +2669,52 @@ public class VideoPlayerJPActivity extends Activity implements
 			URLS_INDEX url_index = playUrls.get(i);
 
 			if (url_index.source_from.trim().equalsIgnoreCase(
-					Constant.video_index[0])) {
-				url_index.souces = 0;
+					PlayerSourceType.TYPE_P2P.toStringValue())) {
+				url_index.souces = PlayerSourceType.TYPE_P2P.getPriority();
 			} else if (url_index.source_from.trim().equalsIgnoreCase(
-					Constant.video_index[1])) {
-				url_index.souces = 1;
+					PlayerSourceType.TYPE_WANGPAN.toStringValue())) {
+				url_index.souces = PlayerSourceType.TYPE_WANGPAN.getPriority();
 				
 			} else if (url_index.source_from.trim().equalsIgnoreCase(
-					Constant.video_index[2])) {//le_tv_fee
-				url_index.souces = 2;
+					PlayerSourceType.TYPE_LE_TV_FEE.toStringValue())) {//le_tv_fee
+				url_index.souces =PlayerSourceType.TYPE_LE_TV_FEE.getPriority();
 				
 			} else if (url_index.source_from.trim().equalsIgnoreCase(
-					Constant.video_index[3])) {//letv
-				url_index.souces = 3;
+					PlayerSourceType.TYPE_LETV.toStringValue())) {//letv
+				url_index.souces = PlayerSourceType.TYPE_LETV.getPriority();
 
 			} else if (url_index.source_from.trim().equalsIgnoreCase(
-					Constant.video_index[4])) {//fengxing
-				url_index.souces = 4;
+					PlayerSourceType.TYPE_SOHU.toStringValue())) {//fengxing
+				url_index.souces = PlayerSourceType.TYPE_SOHU.getPriority();
 			} else if (url_index.source_from.trim().equalsIgnoreCase(
-					Constant.video_index[5])) {
-				url_index.souces = 5;
+					PlayerSourceType.TYPE_FENGXING.toStringValue())) {
+				url_index.souces = PlayerSourceType.TYPE_FENGXING.getPriority();
 			} else if (url_index.source_from.trim().equalsIgnoreCase(
-					Constant.video_index[6])) {
-				url_index.souces = 6;
+					PlayerSourceType.TYPE_YOUKU.toStringValue())) {
+				url_index.souces = PlayerSourceType.TYPE_YOUKU.getPriority();
 			} else if (url_index.source_from.trim().equalsIgnoreCase(
-					Constant.video_index[7])) {
-				url_index.souces = 7;
+					PlayerSourceType.TYPE_SINAHD.toStringValue())) {
+				url_index.souces = PlayerSourceType.TYPE_SINAHD.getPriority();
 			} else if (url_index.source_from.trim().equalsIgnoreCase(
-					Constant.video_index[8])) {
-				url_index.souces = 8;
+					PlayerSourceType.TYPE_QIYI.toString())) {
+				url_index.souces = PlayerSourceType.TYPE_QIYI.getPriority();
 			} else if (url_index.source_from.trim().equalsIgnoreCase(
-					Constant.video_index[9])) {
-				url_index.souces = 9;
+					PlayerSourceType.TYPE_M1905.toStringValue())) {
+				url_index.souces = PlayerSourceType.TYPE_M1905.getPriority();
 			} else if (url_index.source_from.trim().equalsIgnoreCase(
-					Constant.video_index[10])) {
-				url_index.souces = 10;
+					PlayerSourceType.TYPE_QQ.toStringValue())) {
+				url_index.souces = PlayerSourceType.TYPE_P2P.getPriority();
 			} else if (url_index.source_from.trim().equalsIgnoreCase(
-					Constant.video_index[11])) {
-				url_index.souces = 11;
+					PlayerSourceType.TYPE_PPTV.toStringValue())) {
+				url_index.souces = PlayerSourceType.TYPE_PPTV.getPriority();
 			} else if (url_index.source_from.trim().equalsIgnoreCase(
-					Constant.video_index[12])) {
-				url_index.souces = 12;
-			} else {
-				url_index.souces = 13;
+					PlayerSourceType.TYPE_56.toStringValue())) {
+				url_index.souces = PlayerSourceType.TYPE_56.getPriority();
+			} else if (url_index.source_from.trim().equalsIgnoreCase(
+					PlayerSourceType.TYPE_PPS.toStringValue())) {
+				url_index.souces = PlayerSourceType.TYPE_PPS.getPriority();
+			}else {
+				url_index.souces = PlayerSourceType.TYPE_UNKOWN.getPriority();
 			}
 			switch (mDefination) {
 			case BangDanConstant.GAOQING:// 高清
