@@ -77,8 +77,8 @@ public class Constant {
 	public static final String VIDEOPLAYERCMD = "com.joyplus.tv.videoservicecommand";
 
 	public static final String[] video_dont_support_extensions = { ".m3u",".m3u8" };//不支持的格式
-	public static final String[] video_index = { "p2p","wangpan", "le_tv_fee",
-			"letv", "fengxing", "qiyi", "youku", "sinahd", "sohu", "56", "qq","pptv", "m1905" };//来源
+//	public static final String[] video_index = { "p2p","wangpan", "le_tv_fee",
+//			"letv", "fengxing", "qiyi", "youku", "sinahd", "sohu", "56", "qq","pptv", "m1905" };//来源
 	public static final String BAIDU_WANGPAN = "baidu_wangpan";
 	
 	/*
