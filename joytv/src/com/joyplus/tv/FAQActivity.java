@@ -105,7 +105,7 @@ public class FAQActivity extends Activity {
 		cb.url(url).type(JSONObject.class).weakHandler(this, "initFAQ");
 		Map<String, String> header = new HashMap<String, String>();
 		header.put("app_key", "ijoyplus_android_0001bj");
-		cb.SetHeader(app.getHeaders());
+		cb.SetHeader(header);
 		aq.ajax(cb);
 	}
 	
