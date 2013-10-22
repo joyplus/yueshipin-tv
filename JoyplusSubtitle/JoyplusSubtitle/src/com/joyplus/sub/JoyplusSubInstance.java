@@ -82,9 +82,10 @@ public class JoyplusSubInstance {
 			if(type.toInt()<=SubContentType.SUB_UNKNOW.toInt()
 					||type.toInt()>SubContentType.SUB_MAX.toInt())return null;
 			JoyplusSub sub = getJoyplusSub(type,uri);
-			if(sub.getUri().SubType == SUBTYPE.NETWORK)
+			if(sub.getUri().SubType == SUBTYPE.NETWORK){
 				if(subtitle != null)
 					sub.parse(subtitle);
+			}
 			else if(sub.getUri().SubType == SUBTYPE.LOCAL)
 				  sub.parseLocal();
 			if(sub.getElements().size()>2)return sub;
