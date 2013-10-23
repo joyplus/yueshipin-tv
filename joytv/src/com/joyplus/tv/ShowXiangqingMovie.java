@@ -1249,14 +1249,9 @@ public class ShowXiangqingMovie extends Activity implements
 			movieData = null;
 			movieData = mapper.readValue(json.toString(),
 					ReturnProgramView.class);
-			new Thread(new CheckPlayUrl()).start();
 			if (movieData != null) {
-
-				if (movieData.movie == null) {
-
-					return;
-				}
-
+				if (movieData.movie == null) return;
+				new Thread(new CheckPlayUrl()).start();
 				String bigPicUrl = movieData.movie.ipad_poster;
 				if (bigPicUrl == null || bigPicUrl.equals("")
 						|| bigPicUrl.equals(UtilTools.EMPTY)) {

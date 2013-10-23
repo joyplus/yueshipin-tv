@@ -2050,10 +2050,10 @@ public class VideoPlayerJPActivity extends Activity implements
 							break;
 						case 2:
 						case 131:
-							url = m_ReturnProgramView.tv.episodes[0].video_urls[0].url;
+							url = m_ReturnProgramView.tv.episodes[mEpisodeIndex].video_urls[0].url;
 							break;
 						case 3:
-							url = m_ReturnProgramView.show.episodes[0].video_urls[0].url;
+							url = m_ReturnProgramView.show.episodes[mEpisodeIndex].video_urls[0].url;
 							break;
 						}
 						
