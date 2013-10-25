@@ -12,7 +12,7 @@ public enum PlayerSourceType {
 	TYPE_P2P   		("p2p"),
 	TYPE_WANGPAN 	("wangpan"),
 	TYPE_LE_TV_FEE 	("le_tv_fee"),
-	TYPE_LETV 		("le_tv"),
+	TYPE_LETV 		("letv"),
 	TYPE_SOHU 		("sohu"),
 	TYPE_FENGXING 	("fengxing"),
 	TYPE_YOUKU 		("youku"),
@@ -55,7 +55,7 @@ public enum PlayerSourceType {
 			return PRIORITY_WANGPAN;
 		else if("le_tv_fee".equalsIgnoreCase(sourceName))
 			return PRIORITY_LE_TV_FEE;
-		else if("le_tv".equalsIgnoreCase(sourceName))
+		else if("letv".equalsIgnoreCase(sourceName))
 			return PRIORITY_LETV;
 		else if("sohu".equalsIgnoreCase(sourceName))
 			return PRIORITY_SOHU;
