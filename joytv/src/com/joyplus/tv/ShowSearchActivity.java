@@ -134,32 +134,6 @@ public class ShowSearchActivity extends AbstractShowActivity {
 		}
 		
 		if(v.getId() == R.id.bt_search_click) {
-			
-//			if (hasFocus == true) {
-//				Log.i(TAG, "et_search_onFocusChange--->hasFocus:" + hasFocus);
-//				((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
-//				.hideSoftInputFromWindow(v.getWindowToken(), 0);
-//				KeyBoardView view = new KeyBoardView(ShowSearchActivity.this, searchEt, new KeyBoardView.OnKeyBoardResultListener() {
-//					
-//					@Override
-//					public void onResult(boolean isSearch) {
-//						// TODO Auto-generated method stub
-//						if(keyBoardWindow!=null&&keyBoardWindow.isShowing()){
-//							keyBoardWindow.dismiss();
-//						}
-//					}
-//				});
-//				
-//				keyBoardWindow = new PopupWindow(view, searchEt.getRootView().getWidth(),
-//						searchEt.getRootView().getHeight(), true);
-//				keyBoardWindow.showAtLocation(searchEt.getRootView(), Gravity.BOTTOM, 0, 0);
-//
-//			} 
-//			else { // ie searchBoxEditText doesn't have focus
-//				((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
-//						.hideSoftInputFromWindow(v.getWindowToken(), 0);
-//
-//			}
 			if(!hasFocus) {
 				
 				if(isLeft) {//如果是在搜索button上，并且向左移动，就当成垂直方向移动
@@ -343,8 +317,8 @@ public class ShowSearchActivity extends AbstractShowActivity {
 				}
 				
 				if(keyBoardWindow != null && !keyBoardWindow.isShowing()){
-					
-					keyBoardWindow.showAtLocation(searchEt.getRootView(), Gravity.BOTTOM, 0, 0);
+					if(!ShowSearchActivity.this.isFinishing())
+						keyBoardWindow.showAtLocation(searchEt.getRootView(), Gravity.BOTTOM, 0, 0);
 				}
 			}
 		}, 300);
@@ -544,8 +518,8 @@ public class ShowSearchActivity extends AbstractShowActivity {
 				}
 
 				if(keyBoardWindow != null && !keyBoardWindow.isShowing()){
-					
-					keyBoardWindow.showAtLocation(searchEt.getRootView(), Gravity.BOTTOM, 0, 0);
+					if(!ShowSearchActivity.this.isFinishing())
+						keyBoardWindow.showAtLocation(searchEt.getRootView(), Gravity.BOTTOM, 0, 0);
 				}
 				
 			}
@@ -568,8 +542,8 @@ public class ShowSearchActivity extends AbstractShowActivity {
 				}
 
 				if(keyBoardWindow != null && !keyBoardWindow.isShowing()){
-					
-					keyBoardWindow.showAtLocation(searchEt.getRootView(), Gravity.BOTTOM, 0, 0);
+					if(!ShowSearchActivity.this.isFinishing())
+						keyBoardWindow.showAtLocation(searchEt.getRootView(), Gravity.BOTTOM, 0, 0);
 				}
 				
 			}
