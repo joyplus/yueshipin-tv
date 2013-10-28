@@ -601,7 +601,8 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 				}else{
 					initTableView(num-COUNT*(selectedIndex-1));
 				}
-				seletedTitleButton.setEnabled(true);
+				if(seletedIndexButton != null)
+					seletedTitleButton.setEnabled(true);
 				seletedTitleButton = (Button) v;
 				seletedTitleButton.setEnabled(false);
 			}else{
