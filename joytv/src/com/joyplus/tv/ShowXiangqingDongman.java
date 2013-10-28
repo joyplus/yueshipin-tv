@@ -1176,7 +1176,7 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 	}
 	
 	private void updateView(){
-		
+		if(date == null || date.tv == null) return;
 		String strNum = date.tv.favority_num;
 		
 		if(strNum != null && !strNum.equals("")){
