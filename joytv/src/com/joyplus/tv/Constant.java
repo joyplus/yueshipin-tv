@@ -59,6 +59,7 @@ public class Constant {
 //	public static final String FAYESERVERURL_CHECKBAND ="http://comettest.joyplus.tv:8000/api/check_binding";//测试
 	
 	public static final String LETV_PARSE_URL_URL = PARSE_URL_BASE_URL + "getAnalyzedUrl";
+	public static final String CLICK_LETV_PARSE_URL_URL = PARSE_URL_BASE_URL + "getAnalyzedLetv";
 	public static final String P2P_PARSE_URL_URL = PARSE_URL_BASE_URL + "GetJoyplusUrl";
 	public static final String P2P_PARSE_URL_URL_RETRY = PARSE_URL_BASE_URL + "GetJoyplusUrl/retry";
 	public static final String SUBTITLE_PARSE_URL_URL = PARSE_URL_BASE_URL + "joyplus/subtitle/";

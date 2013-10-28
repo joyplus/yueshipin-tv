@@ -983,12 +983,16 @@ public class URLUtils implements JieMianConstant, BangDanConstant{
 	
 	public static String getFexingParseUrlURL(String firstBaseUrl,String url){
 		
-		return firstBaseUrl + "?url=" + URLEncoder.encode(url);
+		return firstBaseUrl + "?url=" + URLEncoder.encode(url == null ? "":url);
 	}
 	
 	public static String getXunLeiUrlURL(String baseUrl,String url ,String md5){
 		
-		return baseUrl + "?url=" + URLEncoder.encode(url) + "&md5_code=" + md5;
+		return baseUrl + "?url=" + URLEncoder.encode(url == null ? "":url) + "&md5_code=" + md5;
+	}
+	
+	public static String getReloadLetv(String firstBaseUrl,String url){
+		return getFexingParseUrlURL(firstBaseUrl, url);
 	}
 
 }
