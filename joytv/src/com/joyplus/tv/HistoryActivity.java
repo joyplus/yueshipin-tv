@@ -430,6 +430,7 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 						dialog.dismiss();
 						CurrentPlayDetailData playDate = new CurrentPlayDetailData();
 						Intent intent = new Intent(HistoryActivity.this,VideoPlayerJPActivity.class);
+						if(arg2>=((HistortyAdapter)listView.getAdapter()).data.size()) return;
 						playDate.prod_id = ((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_id;
 						playDate.prod_type = Integer.valueOf(((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_type);
 						playDate.prod_name = ((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_name;

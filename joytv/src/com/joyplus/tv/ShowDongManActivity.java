@@ -838,11 +838,7 @@ public class ShowDongManActivity extends AbstractShowActivity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				
-				Log.i(TAG, "searchLL.setOnClickListener");
-				
 				if(keyBoardWindow == null) {
-					
 					keyBoardWindow = new PopupWindow(keyBoardView, searchEt.getRootView().getWidth(),
 							searchEt.getRootView().getHeight(), true);
 					keyBoardWindow.setBackgroundDrawable(new BitmapDrawable());
@@ -850,8 +846,8 @@ public class ShowDongManActivity extends AbstractShowActivity {
 				}
 
 				if(keyBoardWindow != null && !keyBoardWindow.isShowing()){
-					
-					keyBoardWindow.showAtLocation(searchEt.getRootView(), Gravity.BOTTOM, 0, 0);
+					if(!ShowDongManActivity.this.isFinishing())
+						keyBoardWindow.showAtLocation(searchEt.getRootView(), Gravity.BOTTOM, 0, 0);
 				}
 				
 			}
@@ -859,21 +855,15 @@ public class ShowDongManActivity extends AbstractShowActivity {
 		
 		searchLL.setOnClickListener(new View.OnClickListener() {
 			
-			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				
-				Log.i(TAG, "searchLL.setOnClickListener");
-				
 				if(keyBoardWindow == null) {
-					
 					keyBoardWindow = new PopupWindow(keyBoardView, searchEt.getRootView().getWidth(),
 							searchEt.getRootView().getHeight(), true);
 				}
 
 				if(keyBoardWindow != null && !keyBoardWindow.isShowing()){
-					
-					keyBoardWindow.showAtLocation(searchEt.getRootView(), Gravity.BOTTOM, 0, 0);
+					if(!ShowDongManActivity.this.isFinishing())
+						keyBoardWindow.showAtLocation(searchEt.getRootView(), Gravity.BOTTOM, 0, 0);
 				}
 				
 			}
@@ -1286,8 +1276,9 @@ public class ShowDongManActivity extends AbstractShowActivity {
 			int height = topLinearLayout.getHeight();
 			popupWindow = new PopupWindow(view, width, height, true);
 		}
-		popupWindow.showAtLocation(mFenLeiBtn.getRootView(), Gravity.LEFT
-				| Gravity.BOTTOM, 0, 0);
+		if(!ShowDongManActivity.this.isFinishing())
+			popupWindow.showAtLocation(mFenLeiBtn.getRootView(), Gravity.LEFT
+					| Gravity.BOTTOM, 0, 0);
 	}
 
 	@Override

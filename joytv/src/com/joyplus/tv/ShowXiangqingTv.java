@@ -554,7 +554,8 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 				}else{
 					initTableView(num-COUNT*(selectedIndex-1));
 				}
-				seletedTitleButton.setEnabled(true);
+				if(seletedTitleButton != null)
+					seletedTitleButton.setEnabled(true);
 				seletedTitleButton = (Button) v;
 				seletedTitleButton.setEnabled(false);
 			}else{

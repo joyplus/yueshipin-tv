@@ -1405,7 +1405,7 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 //			Log.i(TAG, "onActivityResult--->" + prodSubName 
 //					+ " seletedIndexButton.getText()-->" + seletedIndexButton.getText());
 			
-			if(prodSubName != null && !prodSubName.equals("")
+			if(seletedIndexButton != null && prodSubName != null && !prodSubName.equals("")
 					&& !prodSubName.equals(seletedIndexButton.getText())) {//播放器中集数与一开始所选集数不同
 				
 				historyPlayProdSubName = prodSubName;

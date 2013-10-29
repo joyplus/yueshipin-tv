@@ -8,6 +8,7 @@ public class URLS_INDEX {
 	public String bakUrl;//重试临时保存地址
 	public String source_from;// 来源 例如P2P 网络获取
 	public String defination_from_server;// 清晰度 例如HD2
+	public String webUrl;//原始网页播放地址
 
 	@Override
 	public String toString() {
