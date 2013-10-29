@@ -1162,18 +1162,21 @@ public class VideoPlayerJPActivity extends Activity implements
 			if(json.has("error") && !json.getBoolean("error")){
 				String type = defintionToType(mDefination);
 				if(json.has("down_urls")){
-					JSONArray downUrls = json.getJSONArray("down_urls");
-					if(downUrls != null && downUrls.length() > 0){
-						for(int i=0;i<downUrls.length();i++){
-							JSONObject urlObj = downUrls.getJSONObject(i);
-							if(urlObj != null && urlObj.has("type")
-									&& type.equals(urlObj.get("type"))){
-								String requestUrl = urlObj.getString("url");
-								if(!TextUtils.isEmpty(requestUrl)){
-									RequestAQueryManager.getInstance().getRequest(VideoPlayerJPActivity.this, requestUrl, app.getHeaders(), aq, "initRequestLetvData");
-									return;
+					JSONObject downUrls = json.getJSONObject("down_urls");
+					if(downUrls != null && downUrls.has("urls")){
+						JSONArray urlArray = downUrls.getJSONArray("urls");
+						if(urlArray != null && urlArray.length() > 0){
+							for(int i=0;i<urlArray.length();i++){
+								JSONObject urlObj = urlArray.getJSONObject(i);
+								if(urlObj != null && urlObj.has("type")
+										&& type.equals(urlObj.get("type"))){
+									String requestUrl = urlObj.getString("url");
+									if(!TextUtils.isEmpty(requestUrl)){
+										RequestAQueryManager.getInstance().getRequest(VideoPlayerJPActivity.this, requestUrl, app.getHeaders(), aq, "initRequestLetvData");
+										return;
+									}
+									
 								}
-								
 							}
 						}
 					}
@@ -2428,72 +2431,6 @@ public class VideoPlayerJPActivity extends Activity implements
 			// url list 准备完成
 			mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
 		}
-	}
-	
-	private List<String> getSubTitleList(String p2pUrl,String md5){
-		
-		List<String> list = new ArrayList<String>();
-		String subTitleUrl = Constant.SUBTITLE_PARSE_URL_URL + "?url="
-				+ URLEncoder.encode(p2pUrl) + "&md5_code=" + md5;
-		Log.i(TAG, "subTitleUrl-->" + subTitleUrl);
-		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();           
-		cb.url(subTitleUrl).type(JSONObject.class);             
-//		Map<String, String> headers = new HashMap<String, String>();
-//		headers.put("app_key", Constant.APPKEY);
-		cb.SetHeader(app.getHeaders());        
-		aq.sync(cb);
-		
-		JSONObject jo = cb.getResult();
-		if(jo != null && jo.toString() != null
-				&& !"".equals(jo.toString())){
-			
-			try {
-				JSONObject subtitlesJsonObject = (JSONObject) new JSONTokener(jo.toString()).nextValue();
-				
-				if(subtitlesJsonObject.has("error")){
-					
-					if(!subtitlesJsonObject.getBoolean("error")
-							&& subtitlesJsonObject.has("subtitles")){
-						
-						JSONArray subtitleContents = subtitlesJsonObject.getJSONArray("subtitles");
-						if(subtitleContents != null && subtitleContents.length() > 0){
-							
-							for(int i=0;i<subtitleContents.length();i++){
-								
-								String tempsubTitleUrl = subtitleContents.getString(i);
-								if(tempsubTitleUrl.contains("scid=")){
-									
-									list.add(tempsubTitleUrl);
-								}else {
-									if(tempsubTitleUrl.length() == tempsubTitleUrl.indexOf(".srt") + 4){
-										list.add(tempsubTitleUrl);
-									}
-								}
-							}
-						}
-						
-					}
-				}
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		return list;
-	}
-	
-	private byte[] getSubTitleByte(String url){
-		
-		AjaxCallback<byte[]> cb = new AjaxCallback<byte[]>();
-		cb.url(url).type(byte[].class);
-		
-//		Map<String, String> headers = new HashMap<String, String>();
-//		headers.put("app_key", Constant.APPKEY);
-//		cb.SetHeader(headers); 
-		
-		aq.sync(cb);
-		byte[] subTitle = cb.getResult();
-		return subTitle;
 	}
 	
 	private int maxQuality = -1;//最高清晰度
