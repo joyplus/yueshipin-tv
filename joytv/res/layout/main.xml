@@ -70,7 +70,7 @@
                 android:focusable="false"
                 android:gravity="center_vertical"
                 android:paddingLeft="14dp"
-                android:text="悦单"
+                android:text="@string/activity_main_joylist"
                 android:textColor="@color/common_title_unselected"
                 android:textSize="30dp" />
 
@@ -80,7 +80,7 @@
                 android:focusable="false"
                 android:gravity="center_vertical"
                 android:paddingLeft="14dp"
-                android:text="热播"
+                android:text="@string/activity_main_hotlist"
                 android:textColor="@color/common_title_unselected"
                 android:textSize="30dp" />
         </com.joyplus.tv.ui.MyScrollLayout>

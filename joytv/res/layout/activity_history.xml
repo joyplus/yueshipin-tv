@@ -37,7 +37,7 @@
 				    android:gravity="center_vertical|left"
 				    android:id="@+id/title_text"
 				    android:textSize="30dp"
-				    android:text="最近观看"
+				    android:text="@string/activity_history_recentlyViewed"
 				    android:textColor="@color/common_title_selected"
 				    />
                 <TextView android:layout_width="fill_parent"
@@ -61,7 +61,7 @@
                 android:orientation="vertical">
                 <Button android:layout_width="fill_parent"
                     android:layout_height="30dp"
-                    android:text="全部"
+                    android:text="@string/activity_history_all"
                     android:id="@+id/fenlei_all"
                     android:layout_marginTop="10dp"
                     android:paddingRight="5dp"
@@ -72,7 +72,7 @@
                 <Button android:layout_width="fill_parent"
                     android:layout_height="30dp"
                     android:gravity="center_vertical|right"
-                    android:text="电影"
+                    android:text="@string/activity_history_movie"
                     android:id="@+id/fenlei_movie"
                     android:layout_marginTop="10dp"
                     android:paddingRight="5dp"
@@ -82,7 +82,7 @@
                 <Button android:layout_width="fill_parent"
                     android:layout_height="30dp"
                     android:gravity="center_vertical|right"
-                    android:text="电视剧"
+                    android:text="@string/activity_history_tvSeries"
                     android:id="@+id/fenlei_tv"
                     android:layout_marginTop="10dp"
                     android:paddingRight="5dp"
@@ -92,7 +92,7 @@
                 <Button android:layout_width="fill_parent"
                     android:layout_height="30dp"
                     android:gravity="center_vertical|right"
-                    android:text="动漫"
+                    android:text="@string/activity_history_anime"
                     android:id="@+id/fenlei_dongman"
                     android:layout_marginTop="10dp"
                     android:paddingRight="5dp"
@@ -102,7 +102,7 @@
                 <Button android:layout_width="fill_parent"
                     android:layout_height="30dp"
                     android:gravity="center_vertical|right"
-                    android:text="综艺"
+                    android:text="@string/activity_history_variety"
                     android:id="@+id/fenlei_zongyi"
                     android:layout_marginTop="10dp"
                     android:paddingRight="5dp"
@@ -135,7 +135,7 @@
                     android:textColor="@color/white"
                     android:id="@+id/delete_btn"
                     android:textSize="18dp"
-                    android:text="清 空 记 录"/>
+                    android:text="@string/activity_history_clearRecord"/>
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

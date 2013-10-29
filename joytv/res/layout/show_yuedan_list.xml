@@ -84,7 +84,7 @@
                     android:layout_gravity="center_vertical"
                     android:background="@drawable/search_selector"
                     android:focusableInTouchMode="false"
-                    android:hint="搜索"
+                    android:hint="@string/activity_joylist_search"
                     android:paddingRight="@dimen/menu_horizontal_padding"
                     android:singleLine="true"
                     android:textSize="15dp"

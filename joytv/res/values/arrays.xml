@@ -136,5 +136,44 @@
         <item>百合</item>
         <item>其他</item>
     </string-array>
+    <string-array name="navigator_area">
+        <item>全部</item>
+        <item>台湾</item>
+        <item>韩国</item>
+        <item>美国</item>
+        <item>日本</item>
+        <item>欧洲</item>
+        <item>东南亚</item>
+        <item>其他</item>
+    </string-array>
+    <string-array name="navigator_classification">
+        <item>全部</item>
+        <item>恐怖</item>
+        <item>惊悚</item>
+        <item>悬疑</item>
+        <item>伦理</item>
+        <item>爱情</item>
+        <item>喜剧</item>
+        <item>科幻</item>
+        <item>动作</item>
+        <item>其他</item>
+    </string-array>
+    <string-array name="navigator_year">
+        <item>全部</item>
+        <item>2013</item>
+        <item>2012</item>
+        <item>2011</item>
+        <item>2010</item>
+        <item>2009</item>
+        <item>2008</item>
+        <item>2007</item>
+        <item>2006</item>
+        <item>2005</item>
+        <item>2004</item>
+        <item>2003</item>
+        <item>2002</item>
+        <item>2001</item>
+        <item>其他</item>
+    </string-array>
 
 </resources>

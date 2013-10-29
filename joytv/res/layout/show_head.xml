@@ -35,7 +35,7 @@
                 android:layout_marginLeft="3dp"
                 android:paddingLeft="5dp"
                 android:layout_weight="5"
-                android:text="用户名称"
+                android:text="@string/layout_head_username"
                 android:textColor="@color/user_name"
                 android:textSize="@dimen/user_name_text_size" />
         </LinearLayout>
@@ -75,7 +75,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="left|center_vertical"
-            android:text="测试版本"
+            android:text="@string/layout_head_testTag"
             android:visibility="visible"/> -->
         
         <ImageView

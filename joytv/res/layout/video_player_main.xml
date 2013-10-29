@@ -63,7 +63,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
-                android:text="载入中..."
+                android:text="@string/activity_videoPlayer_loading"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textSize="22dp" />
 
@@ -82,7 +82,7 @@
                 android:id="@+id/tv_preload_network_accomplish"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=", 已完成0%"
+                android:text="@string/activity_videoPlayer_accomplish"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textSize="22dp" />
         </LinearLayout>
@@ -403,7 +403,7 @@
                     android:shadowDx="1"
                     android:shadowDy="1"
                     android:shadowRadius="2"
-                    android:text="缓冲中···"
+                    android:text="@string/activity_videoPlayer_cache"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:textSize="30dp" />
 
@@ -432,7 +432,7 @@
                 android:shadowDx="1"
                 android:shadowDy="1"
                 android:shadowRadius="2"
-                android:text="网速不给力，可按 菜单 键切换清晰度"
+                android:text="@string/activity_videoPlayer_networkStateTip"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textSize="30dp" />
 

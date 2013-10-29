@@ -54,7 +54,7 @@
                 android:id="@+id/tv_item_layout_gengxinzhi"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="更新至第13集"
+                android:text=""
                 android:textColor="@color/time_color"
                 android:textSize="16dp" />
         </LinearLayout>

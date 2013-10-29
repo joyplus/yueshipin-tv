@@ -14,7 +14,7 @@
         android:gravity="center"
         android:paddingBottom="5dp"
         android:paddingTop="5dp"
-        android:text="免    责   声    明"
+        android:text="@string/dialog_disclaimer_disclaimer"
         android:textColor="#e4e4e4"
         android:textSize="24dp" />
 
@@ -48,7 +48,7 @@
             android:background="@drawable/bg_button_receive_selector"
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
-            android:text="接   受"
+            android:text="@string/dialog_disclaimer_accept"
             android:textSize="20dip" />
     </LinearLayout>
 

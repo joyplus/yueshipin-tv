@@ -29,7 +29,7 @@
 			    android:gravity="center_vertical"
 			    android:textSize="30dp"
 			    android:layout_gravity="bottom"
-			    android:text="常见问题"
+			    android:text="@string/activity_faq_faq"
 			    android:textColor="@color/common_title_selected"
 			    android:background="@drawable/menubg"/>
 	        </LinearLayout>
