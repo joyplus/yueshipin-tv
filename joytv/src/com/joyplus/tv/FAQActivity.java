@@ -143,7 +143,7 @@ public class FAQActivity extends Activity {
 		TextView tv = new TextView(this);
 		tv.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT,LayoutParams.WRAP_CONTENT));
 		tv.setGravity(Gravity.CENTER);
-		tv.setText("获取帮助界面失败");
+		tv.setText(getString(R.string.activity_faq_webload_fail));
 		layout_content.addView(tv);
 	}
 }

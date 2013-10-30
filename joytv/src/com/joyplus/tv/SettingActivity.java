@@ -255,9 +255,9 @@ public class SettingActivity extends Activity implements OnClickListener {
 				R.drawable.avatar_defult);
 		aq.id(R.id.user_name).text(app.getUserInfo().getUserName());
 		if(app.getUserInfo().getUserId().equals(app.getUserData("userId"))){
-			aq.id(R.id.user_notice).text("本机用户");
+			aq.id(R.id.user_notice).text(getString(R.string.activity_setting_localUser));
 		}else{
-			aq.id(R.id.user_notice).text("点击解除绑定");
+			aq.id(R.id.user_notice).text(getString(R.string.activity_setting_unbundling_Account));
 		}
 	}
 	

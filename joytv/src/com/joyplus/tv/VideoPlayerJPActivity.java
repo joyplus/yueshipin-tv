@@ -628,7 +628,6 @@ public class VideoPlayerJPActivity extends Activity implements
 									equals(playUrls.get(currentPlayIndex).source_from)){
 								Log.i(TAG, "postDelayed--->" + playUrls.get(currentPlayIndex).source_from);
 								mVideoView.stopPlayback();
-//								app.MyToast(VideoPlayerJPActivity.this, "按OK键重新获取播放地址");
 								findViewById(R.id.tv_preload_source_reload).setVisibility(View.VISIBLE);
 								reloadLetvCount ++;
 							}
@@ -1014,7 +1013,7 @@ public class VideoPlayerJPActivity extends Activity implements
 			break;
 		case 2:
 		case 131:
-			mVideoNameText.setText(mProd_name + " 第" + mProd_sub_name + "集");
+			mVideoNameText.setText(getString(R.string.utils_prodname_prodSubName, mProd_name,mProd_sub_name));
 			break;
 		case 3:
 			mVideoNameText.setText(mProd_name + " " + mProd_sub_name);
@@ -1138,7 +1137,6 @@ public class VideoPlayerJPActivity extends Activity implements
 	
 	private void reloadLetv(){
 		findViewById(R.id.tv_preload_source_reload).setVisibility(View.GONE);
-//		app.MyToast(VideoPlayerJPActivity.this, "正在重新请求");
 		//1.获取原始地址
 		String webUrl = playUrls.get(currentPlayIndex).webUrl;
 		String url = URLUtils.getReloadLetv(Constant.CLICK_LETV_PARSE_URL_URL,webUrl);
@@ -1526,8 +1524,9 @@ public class VideoPlayerJPActivity extends Activity implements
 		rxByteslast = 0;
 		mLoadingPreparedPercent = 0;
 		mEpisodeIndex = -1;
-		mPercentTextView.setText(", 已完成"
-				+ Long.toString(mLoadingPreparedPercent / 100) + "%");
+		mPercentTextView.setText(
+				getString(R.string.utils_percent_network,mLoadingPreparedPercent / 100 + ""));
+		
 		mDefination = defination;
 		mVideoView.stopPlayback();
 		mStatue = STATUE_LOADING;
@@ -1883,10 +1882,8 @@ public class VideoPlayerJPActivity extends Activity implements
 				mLoadingPreparedPercent = mLoadingPreparedPercent + m_bitrate;
 				if (mLoadingPreparedPercent >= 100
 						&& mLoadingPreparedPercent / 100 < 100)
-					mPercentTextView.setText(", 已完成"
-							+ Long.toString(mLoadingPreparedPercent / 100) + "%");
-
-				// Fun_downloadrate();
+					mPercentTextView.setText(
+							getString(R.string.utils_percent_network,mLoadingPreparedPercent / 100 + ""));
 			}
 			mHandler.postDelayed(mLoadingRunnable, 500);
 		}
@@ -1999,7 +1996,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		} else {
 			mHandler.postDelayed(mLoadingRunnable, 500);
 		}
-		mPercentTextView.setText("已完成0%");
+		mPercentTextView.setText(getString(R.string.utils_percent_network,"0"));
 		mDateLoadingLayout.setVisibility(View.GONE);
 		mPreLoadLayout.setVisibility(View.VISIBLE);
 		mNoticeLayout.setVisibility(View.VISIBLE);
@@ -2168,7 +2165,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		}
 		if(lastTime>0){
 			mLastTimeTextView.setVisibility(View.VISIBLE);
-			mLastTimeTextView.setText("上次播放: " + Utils.formatDuration(lastTime));
+			mLastTimeTextView.setText(getString(R.string.videoPlayerJPActivity_lastTimeRecord,Utils.formatDuration(lastTime)));
 		}else{
 			mLastTimeTextView.setVisibility(View.GONE);
 		}
@@ -2906,8 +2903,8 @@ public class VideoPlayerJPActivity extends Activity implements
 		mLoadingPreparedPercent = 0;
 		mEpisodeIndex = -1;
 		reloadLetvCount = 0;
-		mPercentTextView.setText(", 已完成"
-				+ Long.toString(mLoadingPreparedPercent / 100) + "%");
+		mPercentTextView.setText(getString(R.string.utils_percent_network, 
+				Long.toString(mLoadingPreparedPercent / 100)));
 		initVedioDate();
 	}
 
@@ -2982,7 +2979,7 @@ public class VideoPlayerJPActivity extends Activity implements
 			try {
 				// woof is "00000",now "20024",by yyc
 				if (json.getString("res_code").trim().equalsIgnoreCase("00000")) {
-					app.MyToast(this, "收藏成功!");
+					app.MyToast(this, getString(R.string.videoPlayerJPActivity_toast_add_favority_success));
 					
 					isShoucang = true;
 					mBottomButton.setBackgroundResource(R.drawable.player_btn_unfav);
@@ -2992,7 +2989,7 @@ public class VideoPlayerJPActivity extends Activity implements
 					
 					isShoucang = true;
 					mBottomButton.setBackgroundResource(R.drawable.player_btn_unfav);
-					app.MyToast(this, "已收藏!");
+					app.MyToast(this,getString(R.string.videoPlayerJPActivity_toast_add_favority_already));
 				}
 					
 			} catch (JSONException e) {
@@ -3012,7 +3009,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		if (json != null) {
 			try {
 				if (json.getString("res_code").trim().equalsIgnoreCase("00000")) {
-					app.MyToast(this, "取消收藏成功!");
+					app.MyToast(this,getString(R.string.videoPlayerJPActivity_toast_cancel_favority_succes));
 
 					mBottomButton
 					.setBackgroundResource(R.drawable.player_btn_fav);
@@ -3020,7 +3017,7 @@ public class VideoPlayerJPActivity extends Activity implements
 //					setResult(JieMianConstant.SHOUCANG_CANCEL);
 				} else {
 					
-					app.MyToast(this, "取消收藏失败!");
+					app.MyToast(this,getString(R.string.videoPlayerJPActivity_toast_cancel_favority_fail));
 					isShoucang = true;
 				}
 
@@ -3042,9 +3039,9 @@ public class VideoPlayerJPActivity extends Activity implements
 	protected Dialog onCreateDialog(int id) {
 		// TODO Auto-generated method stub
 		 Dialog alertDialog = new AlertDialog.Builder(this). 
-	                setTitle("提示"). 
-	                setMessage("该视频无法播放"). 
-	                setPositiveButton("确定", new DialogInterface.OnClickListener() {
+	                setTitle(getString(R.string.videoPlayerJPActivity_dailog_tip_title)). 
+	                setMessage(getString(R.string.videoPlayerJPActivity_dailog_canot_play)). 
+	                setPositiveButton(getString(R.string.videoPlayerJPActivity_dailog_OK), new DialogInterface.OnClickListener() {
 
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
@@ -3274,14 +3271,14 @@ public class VideoPlayerJPActivity extends Activity implements
 			tv.setTextSize(25);
 			switch (list.get(position)) {
 			case Constant.DEFINATION_HD2:
-				tv.setText("超    清");
+				tv.setText(getString(R.string.videoPlayerJPActivity_density_SUPERD));
 				break;
 			case Constant.DEFINATION_MP4:
-				tv.setText("高    清");
+				tv.setText(getString(R.string.videoPlayerJPActivity_density_HD));
 				
 				break;
 			case Constant.DEFINATION_FLV:
-				tv.setText("标    清");
+				tv.setText(getString(R.string.videoPlayerJPActivity_density_STANDARDD));
 				break;
 			}
 			Gallery.LayoutParams param = new Gallery.LayoutParams(Utils.getStandardValue(getApplicationContext(), 165),
@@ -3334,14 +3331,14 @@ public class VideoPlayerJPActivity extends Activity implements
 			if(position>=0&&position<list.size()){
 				switch (list.get(position)) {
 				case -1://无字幕
-					tv.setText("暂无字幕");
+					tv.setText(getString(R.string.videoPlayerJPActivity_no_subtitle));
 					break;
 				case 0://字幕关
-					tv.setText("关");
+					tv.setText(getString(R.string.videoPlayerJPActivity_subtitle_close));
 					break;
 					
 				default:
-					tv.setText("字幕" + list.get(position));
+					tv.setText(getString(R.string.videoPlayerJPActivity_subtitle_num,list.get(position).toString()));
 					break;
 //				case 1://字幕开
 //					tv.setText("");

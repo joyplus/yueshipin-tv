@@ -62,12 +62,6 @@ public class NavigateView extends RelativeLayout implements OnItemSelectedListen
 		public void onReceive(Context context, Intent intent) {
 			// TODO Auto-generated method stub
 			Log.d(TAG, intent.getAction() + intent.getBooleanExtra("isBack", false));
-//			if(pop!=null){
-//				pop.dismiss();
-//				Toast.makeText(MainActivity.this, "选择结果：地区="+ array_diqu[gallery1.getSelectedItemPosition()] 
-//								+ ";\t分类 =" + array_leibie[gallery2.getSelectedItemPosition()] 
-//								+ ";\t年份 =" + array_niandai[gallery3.getSelectedItemPosition()], Toast.LENGTH_LONG).show();
-//			}
 			String action = intent.getAction();
 			if("KEY_EVENT_KEYCODE_DPAD_CENTER".equals(action)){
 				if(resultListener != null){

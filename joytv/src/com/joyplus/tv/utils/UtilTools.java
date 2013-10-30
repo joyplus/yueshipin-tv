@@ -210,7 +210,6 @@ public class UtilTools implements JieMianConstant, BangDanConstant {
 		List<MovieItemData> list = new ArrayList<MovieItemData>();
 
 		// Log.i(TAG, "returnFilterMovieSearch_TVJson-->" +
-		// result.results.length + json.indexOf("战友"));
 
 		for (int i = 0; i < result.results.length; i++) {
 
@@ -619,14 +618,6 @@ public class UtilTools implements JieMianConstant, BangDanConstant {
 			return 0;
 		}
 	}
-
-	// public static String getTitleName(String str) {
-	//
-	//
-	// int index = str.indexOf("第");
-	//
-	// return str.substring(start)
-	// }
 
 	public static boolean is48TimeClock(Context context) {
 

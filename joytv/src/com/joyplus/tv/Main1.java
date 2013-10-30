@@ -745,13 +745,12 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 	            	if(f.exists()){
 	            		PackageInfo info = PackageUtils.getAppPackageInfo(Main1.this, f.getAbsolutePath());
 	            		if(info != null&&info.versionName!=null&&info.versionName.equals(updateInfo.version)){
-	            			//Toast.makeText(MainActivity.this, "可以更新啦", Toast.LENGTH_SHORT).show();
 	            			AlertDialog.Builder builder = new Builder(Main1.this);
 	            			  builder.setMessage(updateInfo.updateLog);
 
-	            			  builder.setTitle("发现新版本:" + updateInfo.version);
+	            			  builder.setTitle(getString(R.string.activity_Main1_discover_newVersion,updateInfo.version));
 
-	            			  builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+	            			  builder.setPositiveButton(getString(R.string.activity_Main1_OK), new DialogInterface.OnClickListener() {
 
 		            			   @Override
 		            			   public void onClick(DialogInterface dialog, int which) {
@@ -767,7 +766,7 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 		            			   }
 	            			  });
 
-	            			  builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+	            			  builder.setNegativeButton(getString(R.string.activity_Main1_Cancel), new DialogInterface.OnClickListener() {
 
 		            			   @Override
 		            			   public void onClick(DialogInterface dialog, int which) {
@@ -785,13 +784,10 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 //	                UmengUpdateAgent.showUpdateDialog(MainActivity.this, updateInfo);
 	                break;
 	            case 1: // has no update
-	                //Toast.makeText(MainActivity.this, "没有更新", Toast.LENGTH_SHORT).show();
 	                break;
 //	            case 2: // none wifi
-	                //Toast.makeText(MainActivity.this, "没有wifi连接， 只在wifi下更新", Toast.LENGTH_SHORT).show();
 //	                break;
 	            case 3: // time out
-	                //Toast.makeText(MainActivity.this, "超时", Toast.LENGTH_SHORT).show();
 	                break;
 	            }
 	        }
@@ -1230,8 +1226,8 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 
 		if(Constant.isJoyPlus) {//如果是本身应用
 
-			personal_recordTv.setText("我的悦视频");
-			playStoreTv.setText("悦片库");
+			personal_recordTv.setText(getString(R.string.activity_Main1_PersonalRecordTv_Joyplus));
+			playStoreTv.setText(getString(R.string.activity_Main1_PlayStoreTv_Joyplus));
 			logoIv.setImageResource(R.drawable.logo);
 
 			headers.put("app_key", Constant.APPKEY);
@@ -1926,8 +1922,6 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 			return true;
 		case KeyEvent.KEYCODE_BACK:
 			if ((System.currentTimeMillis() - exitTime) > 2000) {
-//				Toast.makeText(this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
-
 				Toast toast = new Toast(this);
 				View v = getLayoutInflater().inflate(R.layout.toast_textview, null);
 				toast.setView(v);
@@ -2913,7 +2907,7 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 										// TODO Auto-generated catch block
 										e.printStackTrace();
 
-										app.MyToast(getApplicationContext(), "自行进入系统网络设置界面");
+										app.MyToast(Main1.this, getString(R.string.activity_Main1_NETWORK_Setting_byUser));
 									}
 
 								}
@@ -2983,11 +2977,10 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 	private void updateLastTimeView() {
 		if (app.getUserData("lastTime") == null
 				|| "".equals(app.getUserData("lastTime"))) {
-			lastBandTimeView.setText("您还没有同步过哟~");
+			lastBandTimeView.setText(getString(R.string.activity_Main1_band_tip));
 		} else {
-			lastBandTimeView.setText("上次同步于:\t"
-					+ UtilTools.getLastBandNotice(app
-							.getUserData("lastTime")));
+			lastBandTimeView.setText(getString(R.string.activity_Main1_lasttime_band,
+					UtilTools.getLastBandNotice(app.getUserData("lastTime"))));
 		}
 	}
 

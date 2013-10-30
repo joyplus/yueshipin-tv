@@ -954,11 +954,7 @@ public class ShowXiangqingMovie extends Activity implements
 			// holder.content.setText(recommendMoviesData.items[position].duration);
 			if ("".equals(recommendMoviesData.items[position].duration)) {
 				holder.content.setText("");
-				// holder.content.setText("时长未知");
 			} else {
-				// holder.content.setText("时长："+hot_list.get(position).duration);
-				// holder.content.setText("时长:"+recommendMoviesData.items[position].duration.replace("：00",
-				// "分钟"));
 				holder.content
 						.setText(Utils.formatMovieDuration(ShowXiangqingMovie.this,
 								recommendMoviesData.items[position].duration));

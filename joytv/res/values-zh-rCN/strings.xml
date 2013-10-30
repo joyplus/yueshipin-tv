@@ -169,4 +169,5 @@
     <string name="video_player_request_url">按OK键重新请求播放地址</string>
     
     <string name="utils_minute"><xliff:g>%s</xliff:g>分钟</string>
+    <string name="utils_prodname_prodSubName"><xliff:g>%s</xliff:g> 第   <xliff:g>%s</xliff:g> 集</string>
 </resources>

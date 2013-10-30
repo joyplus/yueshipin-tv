@@ -81,7 +81,8 @@ public class MainHotItemAdapter extends BaseAdapter {
 		if(hot_list.get(position).type == 0){
 			holder.firstTitle.setVisibility(View.VISIBLE);
 			if(hot_list.get(position).playback_time!=null&&!"".equals(hot_list.get(position).playback_time)){
-				holder.content.setText("观看到:" +Utils.formatDuration1(Long.valueOf(hot_list.get(position).playback_time)));
+				holder.content.setText(c.getString(R.string.mainHotItemAdapter_view_time,
+						Utils.formatDuration1(Long.valueOf(hot_list.get(position).playback_time))));
 			}else{
 				holder.content.setText("");
 			}
@@ -105,18 +106,18 @@ public class MainHotItemAdapter extends BaseAdapter {
 					} else {
 						
 //						int curEpisode = Integer.valueOf(hot_list.get(position).cur_episode);
-						holder.content.setText("更新到第" + hot_list.get(position).cur_episode+"集");
+						holder.content.setText(c.getString(R.string.mainHotItemAdapter_update_current_epsidoes,hot_list.get(position).cur_episode));
 					}
 				}else{
 					if("".equals(hot_list.get(position).cur_episode)||"0".equals(hot_list.get(position).cur_episode)){
-						holder.content.setText(hot_list.get(position).max_episode + "集全");
+						holder.content.setText(c.getString(R.string.mainHotItemAdapter_no_update,hot_list.get(position).max_episode));
 					}else{
 						int curEpisode = Integer.valueOf(hot_list.get(position).cur_episode);
 						int maxEpisode = Integer.valueOf(hot_list.get(position).max_episode);
 						if(curEpisode>=maxEpisode){
-							holder.content.setText(hot_list.get(position).max_episode + "集全");
+							holder.content.setText(c.getString(R.string.mainHotItemAdapter_no_update,hot_list.get(position).max_episode));
 						}else{
-							holder.content.setText("更新到第" + hot_list.get(position).cur_episode+"集");
+							holder.content.setText(c.getString(R.string.mainHotItemAdapter_update_current_epsidoes,hot_list.get(position).cur_episode));
 						}
 					}
 				}
@@ -127,15 +128,15 @@ public class MainHotItemAdapter extends BaseAdapter {
 				break;
 			case 131:
 				if("".equals(hot_list.get(position).max_episode)){
-					holder.content.setText("更新到第" + hot_list.get(position).cur_episode+"集");
+					holder.content.setText(c.getString(R.string.mainHotItemAdapter_update_current_epsidoes,hot_list.get(position).cur_episode));
 				}else if(!hot_list.get(position).cur_episode.equals(hot_list.get(position).max_episode)){
 					if("".equals(hot_list.get(position).cur_episode)||"0".equals(hot_list.get(position).cur_episode)){
-						holder.content.setText(hot_list.get(position).max_episode + "集全");
+						holder.content.setText(c.getString(R.string.mainHotItemAdapter_no_update,hot_list.get(position).max_episode));
 					}else{
-						holder.content.setText("更新到第" + hot_list.get(position).cur_episode+"集");
+						holder.content.setText(c.getString(R.string.mainHotItemAdapter_update_current_epsidoes,hot_list.get(position).cur_episode));
 					}
 				}else {
-					holder.content.setText(hot_list.get(position).max_episode + "集全");
+					holder.content.setText(c.getString(R.string.mainHotItemAdapter_no_update,hot_list.get(position).max_episode));
 				}
 				break;
 			default:

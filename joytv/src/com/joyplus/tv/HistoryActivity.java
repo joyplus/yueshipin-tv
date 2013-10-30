@@ -710,22 +710,22 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 				String playBack_time = Utils.formatDuration1(Integer.valueOf(data.get(position).playback_time));
 				switch (prod_type) {
 				case 1:
-					holder.content.setText("上次观看到：" + playBack_time);
+					holder.content.setText(getString(R.string.activity_history_lastRecordTime,playBack_time));
 					break;
 				case 2:
-					holder.content.setText("上次观看到：第" + data.get(position).prod_subname +"集 "+playBack_time);
+					holder.content.setText(getString(R.string.activity_history_TV_prodSubname_lastRecordTime, data.get(position).prod_subname,playBack_time));
 					break;
 				case 3:
-					holder.content.setText("上次观看到：" + data.get(position).prod_subname+" "+playBack_time);
+					holder.content.setText(getString(R.string.activity_history_prodSubname_lastRecordTime, data.get(position).prod_subname,playBack_time));
 					break;
 				case 131:
-					holder.content.setText("上次观看到：第" + data.get(position).prod_subname+"集 "+playBack_time);
+					holder.content.setText(getString(R.string.activity_history_TV_prodSubname_lastRecordTime, data.get(position).prod_subname,playBack_time));
 					break;
 				}
 				aq.id(holder.img).image(data.get(position).prod_pic_url);
 			}else{
 				holder.img.setImageResource(R.drawable.post_normal);
-				holder.title.setText("您还未观看过任何影片。去热播看看最近流行什么吧^_^~");
+				holder.title.setText(getString(R.string.activity_history_record_nothing_tip));
 				holder.stars.setVisibility(View.GONE);
 				holder.directors.setVisibility(View.GONE);
 				holder.content.setVisibility(View.GONE);
@@ -837,19 +837,19 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 			dialog.setContentView(view);
 			switch (index) {
 			case 0:
-				nameText.setText("是否清空所有记录？");
+				nameText.setText(getString(R.string.activity_history_record_ClearAllRecord));
 				break;
 			case 1:
-				nameText.setText("是否清空所有电影？");
+				nameText.setText(getString(R.string.activity_history_record_ClearMovieAllRecord));
 				break;
 			case 2:
-				nameText.setText("是否清空所有电视剧？");
+				nameText.setText(getString(R.string.activity_history_record_ClearTvSeriesAllRecord));
 				break;
 			case 3:
-				nameText.setText("是否清空所有综艺？");
+				nameText.setText(getString(R.string.activity_history_record_ClearVarietyAllRecord));
 				break;
 			case 131:
-				nameText.setText("是否清空所有动漫？");
+				nameText.setText(getString(R.string.activity_history_record_ClearAnimeAllRecord));
 				break;
 			}
 			cancelButton.setOnClickListener(new OnClickListener() {

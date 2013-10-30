@@ -299,7 +299,7 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 				aq.id(holder.img).image(data.get(position).prod_pic_url);
 			}else{
 				holder.img.setImageResource(R.drawable.post_normal);
-				holder.title.setText("您还未收藏过任何影片。去热播看看最近流行什么吧^_^~");
+				holder.title.setText(getString(R.string.activity_shoucang_record_nothing_tip));
 				holder.stars.setVisibility(View.GONE);
 				holder.directors.setVisibility(View.GONE);
 				holder.content.setVisibility(View.GONE);
@@ -407,19 +407,19 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 			dialog.setContentView(view);
 			switch (mType) {
 			case 0:
-				nameText.setText("是否清空所有记录？");
+				nameText.setText(getString(R.string.activity_shoucang_record_ClearAllRecord));
 				break;
 			case 1:
-				nameText.setText("是否清空所有电影？");
+				nameText.setText(getString(R.string.activity_shoucang_record_ClearMovieAllRecord));
 				break;
 			case 2:
-				nameText.setText("是否清空所有电视剧？");
+				nameText.setText(getString(R.string.activity_shoucang_record_ClearTvSeriesAllRecord));
 				break;
 			case 3:
-				nameText.setText("是否清空所有综艺？");
+				nameText.setText(getString(R.string.activity_shoucang_record_ClearVarietyAllRecord));
 				break;
 			case 131:
-				nameText.setText("是否清空所有动漫？");
+				nameText.setText(getString(R.string.activity_shoucang_record_ClearAnimeAllRecord));
 				break;
 			}
 			cancelButton.setOnClickListener(new OnClickListener() {

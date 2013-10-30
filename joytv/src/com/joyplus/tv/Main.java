@@ -195,7 +195,7 @@ public class Main extends Activity implements AdListener{
 										// TODO Auto-generated catch block
 										e.printStackTrace();
 										
-										app.MyToast(getApplicationContext(), "自行进入系统网络设置界面");
+										app.MyToast(getApplicationContext(), getString(R.string.activity_Main1_NETWORK_Setting_byUser));
 									}
 
 								}
@@ -250,8 +250,6 @@ public class Main extends Activity implements AdListener{
 	@Override
 	public void adClicked()
 	{
-		// TODO Auto-generated method stub
-//		Toast.makeText(Logo.this, "广告点击事件", Toast.LENGTH_SHORT).show();
 	}
 
 	@Override
@@ -286,7 +284,6 @@ public class Main extends Activity implements AdListener{
 	public void adShown(Ad ad, boolean succeeded)
 	{
 		// TODO Auto-generated method stub
-//		Toast.makeText(Main.this, "广告显示事件", Toast.LENGTH_SHORT).show();
 	}
 
 	@Override

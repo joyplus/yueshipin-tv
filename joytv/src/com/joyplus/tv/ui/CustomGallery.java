@@ -74,8 +74,6 @@ public class CustomGallery extends HorizontalScrollView {
 			view.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					// Toast.makeText(context, "您点击了"+map.get("text"),
-					// Toast.LENGTH_SHORT).show();
 					if (itmeClickListener != null) {
 						itmeClickListener.onItemClick(null, v, index, 0);
 					}
