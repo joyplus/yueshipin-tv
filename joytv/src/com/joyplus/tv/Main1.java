@@ -1013,21 +1013,13 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 	private void initOverTime(View view,String duration) {
 
 		LinearLayout ll = (LinearLayout) view.findViewById(R.id.ll_over_time_main);
-
 		TextView tv = (TextView) view.findViewById(R.id.tv_over_time);
-
-		String overTime = Utils.movieOverTime(duration);
-		// String overTime = UtilTools.movieOverTime("300分钟");
-
+		String overTime = Utils.movieOverTime(Main1.this,duration);
 		if (overTime != null && !overTime.equals("")) {
-
 			int index = overTime.indexOf(":");
-
 			if (index != -1) {
-
 				tv.setText(overTime);
 				ll.setVisibility(View.VISIBLE);
-
 				return;
 			}
 		}

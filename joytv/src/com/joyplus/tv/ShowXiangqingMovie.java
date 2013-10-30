@@ -75,21 +75,6 @@ public class ShowXiangqingMovie extends Activity implements
 	private LinearLayout chaoqingLL, gaoqingLL, biaoqingLL;
 
 	private GridView tuijianGv;
-//	/**
-//	 * 高清地址
-//	 */
-//	private String gaoqing_url;
-//	private String gaoqing_url_souce;
-//	/**
-//	 * 超清地址
-//	 */
-//	private String chaoqing_url;
-//	private String chaoqing_url_souce;
-//	/**
-//	 * 标清地址
-//	 */
-//	private String puqing_url;
-//	private String puqing_url_souce;
 	
 	private boolean hasChaoqing = false;
 	private boolean hasGaoqing= false;
@@ -723,18 +708,11 @@ public class ShowXiangqingMovie extends Activity implements
 	}
 
 	private void initOverTime() {
-
 		TextView tv = (TextView) overTimeLL.findViewById(R.id.tv_over_time);
-
-		String overTime = Utils.movieOverTime(movieData.movie.duration);
-		// String overTime = UtilTools.movieOverTime("300分钟");
-
+		String overTime = Utils.movieOverTime(ShowXiangqingMovie.this,movieData.movie.duration);
 		if (overTime != null && !overTime.equals("")) {
-
 			int index = overTime.indexOf(":");
-
 			if (index != -1) {
-
 				tv.setText(overTime);
 				overTimeLL.setVisibility(View.VISIBLE);
 			}
@@ -982,7 +960,8 @@ public class ShowXiangqingMovie extends Activity implements
 				// holder.content.setText("时长:"+recommendMoviesData.items[position].duration.replace("：00",
 				// "分钟"));
 				holder.content
-						.setText(Utils.formatMovieDuration(recommendMoviesData.items[position].duration));
+						.setText(Utils.formatMovieDuration(ShowXiangqingMovie.this,
+								recommendMoviesData.items[position].duration));
 			}
 			holder.score.setText(recommendMoviesData.items[position].score);
 			switch (Integer

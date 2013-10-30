@@ -59,7 +59,11 @@ public class Utils {
 	}
 	
 
-	public static String formatMovieDuration(String duration) {
+	/**
+	 * @param duration
+	 * @return 单位为分钟
+	 */
+	public static String formatMovieDuration(Context context,String duration) {
 
 		if (duration != null && !duration.equals("")) {
 			int indexFenZhong = duration.indexOf("分钟");
@@ -78,9 +82,9 @@ public class Utils {
 				strs = duration.split(":");
 			}
 			if (strs.length == 1) {
-				return duration + "分钟";
+				return context.getString(R.string.utils_minute, duration);
 			} else if (strs.length == 2) {
-				return strs[0] + "分钟";
+				return context.getString(R.string.utils_minute, strs[0]);
 			} else if (strs.length == 3) {
 				String hourStr = strs[0];
 				String minuteStr = strs[1];
@@ -89,10 +93,10 @@ public class Utils {
 					if (minuteStr != null && !hourStr.equals("")) {
 						int minute = Integer.valueOf(minuteStr);
 						if (hour != 0) {
-							return (hour * 60 + minute) + "分钟";
+							return context.getString(R.string.utils_minute, (hour * 60 + minute));
 						} else {
 							if (minute != 0) {
-								return minute + "分钟";
+								return context.getString(R.string.utils_minute, minute);
 							}
 						}
 					}
@@ -100,7 +104,7 @@ public class Utils {
 					if (minuteStr != null && !hourStr.equals("")) {
 						int minute = Integer.valueOf(minuteStr);
 						if (minute != 0) {
-							return minute + "分钟";
+							return context.getString(R.string.utils_minute, minute);
 						}
 					}
 				}
@@ -125,8 +129,8 @@ public class Utils {
 		return 0l;
 	}
 	
-	public static String movieOverTime(String duration) {
-		String minuteStr = formatMovieDuration(duration);
+	public static String movieOverTime(Context context,String duration) {
+		String minuteStr = formatMovieDuration(context,duration);
 		long movieTime = formateTimeLong(minuteStr);
 		if(movieTime == 0) {
 			return "";

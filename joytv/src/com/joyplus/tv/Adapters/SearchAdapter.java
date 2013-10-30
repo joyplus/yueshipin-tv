@@ -162,7 +162,7 @@ public class SearchAdapter extends BaseAdapter implements JieMianConstant{
 				String duration = movieList.get(position).getMovieDuration();
 				if(duration != null && !duration.equals("")) {
 					
-					viewItemHodler.otherInfo.setText(Utils.formatMovieDuration(duration));
+					viewItemHodler.otherInfo.setText(Utils.formatMovieDuration(context,duration));
 				}
 				
 			} else if(proType.equals("2") || proType.equals("131")){

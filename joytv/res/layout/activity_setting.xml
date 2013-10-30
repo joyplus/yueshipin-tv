@@ -184,7 +184,7 @@
                             android:focusable="true"
                             android:gravity="center_vertical"
                             android:paddingLeft="15dp"
-                            android:text="免责声明"
+                            android:text="@string/activity_setting_disclaimer"
                             android:textColor="@color/hot_content_notice"
                             android:textSize="25dp" />
 
