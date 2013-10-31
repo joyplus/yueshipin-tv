@@ -2,42 +2,42 @@
 <resources>
 
     <string-array name="diqu_dianying_fenlei">
-        <item>全部</item>
-        <item>内地</item>
-        <item>香港</item>
-        <item>台湾</item>
-        <item>美国</item>
-        <item>日本</item>
-        <item>韩国</item>
-        <item>欧洲</item>
-        <item>东南亚</item>
-        <item>其他</item>
+        <item>All</item>
+        <item>China</item>
+        <item>H.K.</item>
+        <item>Taiwan</item>
+        <item>US</item>
+        <item>Japan</item>
+        <item>Korea</item>
+        <item>Europe</item>
+        <item>SE. Asia</item>
+        <item>Other</item>
     </string-array>
     <string-array name="leixing_dianying_fenlei">
-        <item>全部</item>
-        <item>恐怖</item>
-        <item>惊悚</item>
-        <item>悬疑</item>
-        <item>伦理</item>
-        <item>爱情</item>
-        <item>剧情</item>
-        <item>喜剧</item>
-        <item>科幻</item>
-        <item>动作</item>
-        <item>战争</item>
-        <item>冒险</item>
-        <item>音乐</item>
-        <item>动画</item>
-        <item>运动</item>
-        <item>奇幻</item>
-        <item>传记</item>
-        <item>古装</item>
-        <item>犯罪</item>
-        <item>武侠</item>
-        <item>其他</item>
+        <item>All</item>
+        <item>Horror</item>
+        <item>Thriller</item>
+        <item>Mystery</item>
+        <item>Ethics</item>
+        <item>Romance</item>
+        <item>Plot</item>
+        <item>Comedy</item>
+        <item>Sci-Fi</item>
+        <item>Action</item>
+        <item>War</item>
+        <item>Adventure</item>
+        <item>Musical</item>
+        <item>Animation</item>
+        <item>Sport</item>
+        <item>Fantasy</item>
+        <item>Biography</item>
+        <item>Costume</item>
+        <item>Crime</item>
+        <item>Warrior</item>
+        <item>Other</item>
     </string-array>
     <string-array name="shijian_dianying_fenlei">
-        <item>全部</item>
+        <item>All</item>
         <item>2013</item>
         <item>2012</item>
         <item>2011</item>
@@ -47,119 +47,119 @@
         <item>2007</item>
         <item>2006</item>
         <item>2005</item>
-        <item>其他</item>
+        <item>Other</item>
     </string-array>
     <string-array name="diqu_dianshiju_fenlei">
-        <item>全部</item>
-        <item>内地</item>
-        <item>香港</item>
-        <item>台湾</item>
-        <item>韩国</item>
-        <item>美国</item>
-        <item>日本</item>
-        <item>其他</item>
+        <item>All</item>
+        <item>China</item>
+        <item>H.K.</item>
+        <item>Taiwan</item>
+        <item>Korea</item>
+        <item>US</item>
+        <item>Japan</item>
+        <item>Other</item>
     </string-array>
     <string-array name="leixing_dianshiju_fenlei">
-        <item>全部</item>
-        <item>剧情</item>
-        <item>情感</item>
-        <item>青春偶像</item>
-        <item>家庭伦理</item>
-        <item>喜剧</item>
-        <item>犯罪</item>
-        <item>战争</item>
-        <item>古装</item>
-        <item>动作</item>
-        <item>奇幻</item>
-        <item>经典</item>
-        <item>乡村</item>
-        <item>商战</item>
-        <item>历史</item>
-        <item>情景</item>
+        <item>All</item>
+        <item>Plot</item>
+        <item>Romance</item>
+        <item>Idol</item>
+        <item>Family</item>
+        <item>Comedy</item>
+        <item>Crime</item>
+        <item>War</item>
+        <item>Costume</item>
+        <item>Action</item>
+        <item>Fantasy</item>
+        <item>Classical</item>
+        <item>Country</item>
+        <item>Business</item>
+        <item>History</item>
+        <item>Sitcom</item>
         <item>TVB</item>
-        <item>其他</item>
+        <item>Other</item>
     </string-array>
     <string-array name="diqu_zongyi_fenlei">
-        <item>全部</item>
-        <item>港台</item>
-        <item>内地</item>
-        <item>日韩</item>
-        <item>欧美</item>
-        <item>其他</item>
+        <item>All</item>
+        <item>HK TW</item>
+        <item>China</item>
+        <item>KR JP</item>
+        <item>US ERP</item>
+        <item>Other</item>
     </string-array>
     <string-array name="leixing_zongyi_fenlei">
-        <item>全部</item>
-        <item>综艺</item>
-        <item>选秀</item>
-        <item>情感</item>
-        <item>访谈</item>
-        <item>播报</item>
-        <item>旅游</item>
-        <item>音乐</item>
-        <item>美食</item>
-        <item>纪实</item>
-        <item>曲艺</item>
-        <item>生活</item>
-        <item>游戏互动</item>
-        <item>财经</item>
-        <item>求职</item>
-        <item>其他</item>
+        <item>All</item>
+        <item>Shows</item>
+        <item>Draft</item>
+        <item>Emotion</item>
+        <item>Interview</item>
+        <item>Broadcast</item>
+        <item>Travel</item>
+        <item>Musical</item>
+        <item>Food</item>
+        <item>Documentary</item>
+        <item>QUYI</item>
+        <item>Life</item>
+        <item>Game</item>
+        <item>FE</item>
+        <item>Career</item>
+        <item>Other</item>
     </string-array>
     <string-array name="diqu_dongman_fenlei">
-        <item>全部</item>
-        <item>日本</item>
-        <item>欧美</item>
-        <item>国产</item>
-        <item>其他</item>
+        <item>All</item>
+        <item>Japan</item>
+        <item>US ERP</item>
+        <item>China</item>
+        <item>Other</item>
     </string-array>
     <string-array name="leixing_dongman_fenlei">
-        <item>全部</item>
-        <item>情感</item>
-        <item>科幻</item>
-        <item>热血</item>
-        <item>推理</item>
-        <item>搞笑</item>
-        <item>冒险</item>
-        <item>萝莉</item>
-        <item>校园</item>
-        <item>动作</item>
-        <item>机战</item>
-        <item>耽美</item>
-        <item>战争</item>
-        <item>少年</item>
-        <item>少女</item>
-        <item>社会</item>
-        <item>原创</item>
-        <item>亲子</item>
-        <item>益智</item>
-        <item>励志</item>
-        <item>百合</item>
-        <item>其他</item>
+        <item>All</item>
+        <item>Emotion</item>
+        <item>Sci-Fi</item>
+        <item>Blood</item>
+        <item>Mystery</item>
+        <item>Comedy</item>
+        <item>Adventure</item>
+        <item>Loli</item>
+        <item>Campus</item>
+        <item>Action</item>
+        <item>Robot War</item>
+        <item>BL</item>
+        <item>War</item>
+        <item>Youth</item>
+        <item>Girls</item>
+        <item>Society</item>
+        <item>Original</item>
+        <item>Kids</item>
+        <item>Puzzle</item>
+        <item>Inspiration</item>
+        <item>Lesbine</item>
+        <item>Other</item>
     </string-array>
     <string-array name="navigator_area">
-        <item>全部</item>
-        <item>台湾</item>
-        <item>韩国</item>
-        <item>美国</item>
-        <item>日本</item>
-        <item>欧洲</item>
-        <item>东南亚</item>
-        <item>其他</item>
+        <item>All</item>
+        <item>Taiwan</item>
+        <item>Korea</item>
+        <item>US</item>
+        <item>Japan</item>
+        <item>Europe</item>
+        <item>SE Asia</item>
+        <item>Other</item>
     </string-array>
     <string-array name="navigator_classification">
-        <item>全部</item>
-        <item>恐怖</item>
-        <item>惊悚</item>
-        <item>悬疑</item>
-        <item>伦理</item>
-        <item>爱情</item>
-        <item>喜剧</item>
-        <item>科幻</item>
-        <item>动作</item>
-        <item>其他</item>
+        <item>All</item>
+        <item>Horror</item>
+        <item>Thriller</item>
+        <item>Suspense</item>
+        <item>Ethics</item>
+        <item>Romance</item>
+        <item>Comedy</item>
+        <item>Sci-Fi</item>
+        <item>Action</item>
+        <item>Other</item>
     </string-array>
     <string-array name="navigator_year">
-        <item>全部</item>
+        <item>All</item>
         <item>2013</item>
         <item>2012</item>
         <item>2011</item>
@@ -173,7 +173,7 @@
         <item>2003</item>
         <item>2002</item>
         <item>2001</item>
-        <item>其他</item>
+        <item>Other</item>
     </string-array>
 
 </resources>

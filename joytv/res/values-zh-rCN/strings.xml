@@ -67,7 +67,7 @@
     <string name="time_time_name">15:08</string>
     <string name="xiangqing_fenshu_value">7.3</string>
     <string name="xiangqing_bofang">播放</string>
-    <string name="xiangqing_gaoqing">高清</string>
+    <!-- <string name="xiangqing_gaoqing">高清</string> -->
     <string name="xiangqing_xiazai">下载</string>
     <string name="xiangqing_yingping">影评</string>
     <string name="xiangqing_tujiandianying">推 荐 电 影</string>
@@ -75,8 +75,8 @@
     <string name="gaoqing_chaogaoqing">超清版</string>
     <string name="gaoqing_biaoqing">标清版</string>
     <string name="yingpianshu">部影片</string>
-    <string name="zongyi_gengxinzhi">更新至第</string>
-    <string name="dianshiju_jiquan">集全</string>
+    <string name="zongyi_gengxinzhi">更新至  <xliff:g id="currentEpisode">%s</xliff:g></string>
+    <!-- <string name="dianshiju_jiquan">集全</string> -->
     <string name="quanbu_name">全部</string>
     <string name="xiangqing_zongyi_zhuchi">主持/嘉宾:&#160;</string>
     <string name="xiangqing_zongyi_shoubo">电视台:&#160;</string>
@@ -168,6 +168,157 @@
     <!--Yu  -->
     <string name="video_player_request_url">按OK键重新请求播放地址</string>
     
-    <string name="utils_minute"><xliff:g>%s</xliff:g>分钟</string>
-    <string name="utils_prodname_prodSubName"><xliff:g>%s</xliff:g> 第   <xliff:g>%s</xliff:g> 集</string>
+    <string name="activity_about_aboutUs">关于我们</string>
+    
+    <string name="activity_declaration_disclaimer">免责声明</string>
+    
+    <string name="activity_faq_faq">常见问题</string>
+    
+    <string name="activity_history_recentlyViewed">最近观看</string>
+    <string name="activity_history_all">全部</string>
+    <string name="activity_history_movie">电影</string>
+    <string name="activity_history_tvSeries">电视剧</string>
+    <string name="activity_history_anime">动漫</string>
+    <string name="activity_history_variety">综艺</string>
+    <string name="activity_history_clearRecord">清 空 记 录</string>
+    
+    <string name="activity_setting_setting">设置</string>
+    <string name="activity_setting_faq">常见问题</string>
+    <string name="activity_setting_aboutUs">关于我们</string>
+    <string name="activity_setting_disclaimer">免责声明</string>
+    <string name="activity_setting_versionName">版本号</string>
+    <string name="activity_setting_weixinPublicAccount">微信公众账号</string>
+    <string name="activity_setting_feedback">\t如果您遇到什么问题或者有什么建议，请用微信扫描二维码或搜索&quot;悦视频&quot;。我们时刻倾听您的声音。</string>
+    
+    <string name="activity_shoucang_add_favorite_play">追剧收藏</string>
+    <string name="activity_shoucang_all">全部</string>
+    <string name="activity_shoucang_movie">电影</string>
+    <string name="activity_shoucang_tvSeries">电视剧</string>
+    <string name="activity_shoucang_anime">动漫</string>
+    <string name="activity_shoucang_variety">综艺</string>
+    <string name="activity_shoucang_clearRecord">清 空 记 录</string>
+    
+    <string name="activity_vip_login_dialog_passwd">密       码</string>
+    
+    <string name="layout_delete_all_cancel">取  消</string>
+    <string name="layout_delete_all_delete">删  除</string>
+    
+    <string name="layout_favorite_viewDetail">查看详情</string>
+    <string name="layout_favorite_delete">删  除</string>
+    
+    <string name="layout_history_continu_play">继续播放</string>
+    <string name="layout_history_viewDetail">查看详情</string>
+    <string name="layout_history_delete">删  除</string>
+    
+    <string name="layout_hot_director">导演:</string>
+    <string name="layout_hot_stars">主演:</string>
+    <string name="layout_hot_plot">剧情简介:</string>
+    
+    <string name="layout_keyboard_delete">删除</string>
+    <string name="layout_keyboard_search">搜索</string>
+    
+    <string name="layout_my_tip">如需更换用户，请启动手机上的&quot;悦视频&quot;，然后扫描上面的二维码。</string>
+    
+    <string name="activity_main_joylist">悦单</string>
+    <string name="activity_main_hotlist">热播</string>
+    
+    <string name="dialog_disclaimer_disclaimer">免    责   声    明</string>
+    <string name="dialog_disclaimer_accept">接   受</string>
+    
+    <string name="layout_navagator_area">地区</string>
+    <string name="layout_navagator_type">类别</string>
+    <string name="layout_navagator_date">年代</string>
+    <string name="layout_navagator_reset">重置</string>
+    <string name="layout_navagator_ok">确定</string>
+    <string name="layout_navagator_cancel">取消</string>
+    <string name="layout_navagator_all">全部分类</string>
+    
+    <string name="layout_head_username">用户名称</string>
+    <string name="layout_head_testTag">测试版本</string>
+    
+    <string name="activity_joylist_search">搜索</string>
+    
+    <string name="activity_joy_search">搜索</string>
+    
+    <string name="toast_exit_app">再按一次退出程序</string>
+    
+    <string name="layout_choose_defination_density">清 晰 度</string>
+    <string name="layout_choose_defination_SUPERD">超清</string>
+    <string name="layout_choose_defination_HD">高清</string>
+    <string name="layout_choose_defination_STANDARDD">标清</string>
+    <string name="layout_choose_defination_NORMALD">流畅</string>
+    <string name="layout_choose_defination_sub">字      幕</string>
+    <string name="layout_choose_defination_cancel">取  消</string>
+    <string name="layout_choose_defination_complete">完  成</string>
+    
+    <string name="activity_videoPlayer_loading">载入中···</string>
+    <string name="activity_videoPlayer_accomplish">, 已完成0%</string>
+    <string name="activity_videoPlayer_cache">缓冲中···</string>
+    <string name="activity_videoPlayer_networkStateTip">网速不给力，可按 菜单 键切换清晰度</string>
+    
+    <string name="fayeservice_toast_tip_retry_unbundling">解绑遇到问题，再试一次哦</string>
+    <string name="fayeservice_toast_tip_retry_bundling">绑定在路上, 再试一次哦</string>
+    
+    <string name="utils_minute"><xliff:g>%s</xliff:g> 分钟</string>
+    <string name="utils_prodname_prodSubName"><xliff:g id="prodName">%s</xliff:g>  <xliff:g id="prodSubName">%s</xliff:g> </string>
+    <string name="utils_percent_network">, 已完成 <xliff:g id="finished">%s</xliff:g>%%</string>
+    
+    <string name="videoPlayerJPActivity_lastTimeRecord">上次播放:  <xliff:g id="lastTime">%s</xliff:g></string>
+    <string name="videoPlayerJPActivity_toast_add_favority_success">收藏成功！</string>
+    <string name="videoPlayerJPActivity_toast_add_favority_already">已收藏！</string>
+    <string name="videoPlayerJPActivity_toast_cancel_favority_succes">取消收藏成功！</string>
+    <string name="videoPlayerJPActivity_toast_cancel_favority_fail">取消收藏失败！</string>
+    <string name="videoPlayerJPActivity_dailog_tip_title">提示</string>
+    <string name="videoPlayerJPActivity_dailog_canot_play">该视频无法播放</string>
+    <string name="videoPlayerJPActivity_dailog_OK">确定</string>
+    
+    <string name="videoPlayerJPActivity_density_SUPERD">超    清</string>
+    <string name="videoPlayerJPActivity_density_HD">高    清</string>
+    <string name="videoPlayerJPActivity_density_STANDARDD">标    清</string>
+    
+    <string name="videoPlayerJPActivity_no_subtitle">暂无字幕</string>
+    <string name="videoPlayerJPActivity_subtitle_close">关</string>
+    <string name="videoPlayerJPActivity_subtitle_num">字幕<xliff:g id="subtitleNum">%s</xliff:g></string>
+    
+    <string name="activity_viplogin_toast_usrname_empty">用户名不能为空</string>
+    <string name="activity_viplogin_toast_passwd_empty">密码不能为空</string>
+    <string name="activity_viplogin_toast_network_error">网络异常，检查网络状态</string>
+    <string name="activity_viplogin_toast_usrname_passwd_error">用户名或者密码错误</string>
+    <string name="activity_viplogin_toast_login_success">登陆成功</string>
+    
+    <string name="activity_shoucang_record_nothing_tip">您还未收藏过任何影片。去热播看看最近流行什么吧^_^~</string>
+    <string name="activity_shoucang_record_ClearAllRecord">是否清空所有记录？</string>
+    <string name="activity_shoucang_record_ClearMovieAllRecord">是否清空所有电影？</string>
+    <string name="activity_shoucang_record_ClearTvSeriesAllRecord">是否清空所有电视剧？</string>
+    <string name="activity_shoucang_record_ClearVarietyAllRecord">是否清空所有综艺？</string>
+    <string name="activity_shoucang_record_ClearAnimeAllRecord">是否清空所有动漫？</string>
+    
+    <string name="activity_setting_localUser">本机用户</string>
+    <string name="activity_setting_unbundling_Account">点击解除绑定</string>
+    
+    <string name="activity_Main1_discover_newVersion">发现新版本:<xliff:g id="versionName">%s</xliff:g></string>
+    <string name="activity_Main1_OK">确定</string>
+    <string name="activity_Main1_Cancel">取消</string>
+    
+    <string name="activity_Main1_PersonalRecordTv_Joyplus">我的悦视频</string>
+    <string name="activity_Main1_PlayStoreTv_Joyplus">悦片库</string>
+    <string name="activity_Main1_NETWORK_Setting_byUser">悦片库</string>
+    <string name="activity_Main1_band_tip">您还没有同步过哟~</string>
+    <string name="activity_Main1_lasttime_band">上次同步于:\t<xliff:g id="lastBandTime">%s</xliff:g></string>
+    
+    <string name="activity_history_lastRecordTime">上次观看到：<xliff:g id="lastTime">%s</xliff:g></string>
+    <string name="activity_history_prodSubname_lastRecordTime">上次观看到：<xliff:g id="prodSubName">%s</xliff:g>  <xliff:g id="lastTime">%s</xliff:g></string>
+    <string name="activity_history_TV_prodSubname_lastRecordTime">上次观看到：第<xliff:g id="prodSubName">%s</xliff:g>集<xliff:g id="lastTime">%s</xliff:g></string>
+    <string name="activity_history_record_nothing_tip">您还未收藏过任何影片。去热播看看最近流行什么吧^_^~</string>
+    <string name="activity_history_record_ClearAllRecord">是否清空所有记录？</string>
+    <string name="activity_history_record_ClearMovieAllRecord">是否清空所有电影？</string>
+    <string name="activity_history_record_ClearTvSeriesAllRecord">是否清空所有电视剧？</string>
+    <string name="activity_history_record_ClearVarietyAllRecord">是否清空所有综艺？</string>
+    <string name="activity_history_record_ClearAnimeAllRecord">是否清空所有动漫？</string>
+    
+    <string name="activity_faq_webload_fail">获取帮助界面失败</string>
+    
+    <string name="mainHotItemAdapter_view_time">观看到:<xliff:g id="lastTime">%s</xliff:g></string>
+    <string name="mainHotItemAdapter_update_current_epsidoes">更新到第 <xliff:g id="currentEpisode">%s</xliff:g> 集</string>
+    <string name="mainHotItemAdapter_no_update"><xliff:g id="currentEpisode">%s</xliff:g> 集全</string>
 </resources>

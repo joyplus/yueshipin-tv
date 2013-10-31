@@ -213,8 +213,7 @@ public class ZongYiAdapter extends BaseAdapter implements JieMianConstant{
 					if(curEpisode == null || curEpisode.equals("") 
 							|| curEpisode.equals("0")) {
 						
-						viewItemHodler.otherInfo.setText(
-								maxEpisode + context.getString(R.string.dianshiju_jiquan));
+						viewItemHodler.otherInfo.setText(context.getString(R.string.mainHotItemAdapter_no_update,maxEpisode));
 						} else{
 
 							int max = 0;
@@ -233,11 +232,10 @@ public class ZongYiAdapter extends BaseAdapter implements JieMianConstant{
 								if(min >= max) {
 									
 									viewItemHodler.otherInfo.setText(
-											maxEpisode + context.getString(R.string.dianshiju_jiquan));
+											context.getString(R.string.mainHotItemAdapter_no_update,maxEpisode));
 								} else {
 									
-									viewItemHodler.otherInfo.setText(context.getString(R.string.zongyi_gengxinzhi) + 
-											curEpisode);
+									viewItemHodler.otherInfo.setText(context.getString(R.string.zongyi_gengxinzhi,curEpisode));
 								}
 							}
 
@@ -254,8 +252,7 @@ public class ZongYiAdapter extends BaseAdapter implements JieMianConstant{
 						}
 						
 						if(cur != 0) {
-							viewItemHodler.otherInfo.setText(context.getString(R.string.zongyi_gengxinzhi) + 
-									curEpisode);
+							viewItemHodler.otherInfo.setText(context.getString(R.string.zongyi_gengxinzhi,curEpisode));
 						}
 					}
 				}

@@ -166,7 +166,7 @@ public class UtilTools implements JieMianConstant, BangDanConstant {
 
 				if (curEpisode.length() > 2 && curEpisode.length() <= 9) {
 
-					return "更新至"+ curEpisode;
+					return context.getString(R.string.zongyi_gengxinzhi,curEpisode);
 				}
 			}
 		}
