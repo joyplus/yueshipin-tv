@@ -6,6 +6,8 @@ import info.monitorenter.cpdetector.io.JChardetFacade;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.joyplus.tv.R;
 
@@ -115,9 +117,12 @@ public class Utils {
 	
 	public static long formateTimeLong(String timeStr) {
 		if(timeStr != null && !timeStr.equals("")) {
-			int index = timeStr.indexOf("分钟");
-			if(index != -1) {
-				String tempStr = timeStr.substring(0, index);
+			Log.i("Yzg", "formateTimeLong--->" + timeStr);
+//			int index = timeStr.indexOf("分钟");
+			Pattern p = Pattern.compile("\\d+");
+			Matcher m=p.matcher(timeStr);
+			if(m.find()){
+				String tempStr = m.group();
 				try {
 					return Integer.valueOf(tempStr) * 60 * 1000;
 				} catch (NumberFormatException e) {
