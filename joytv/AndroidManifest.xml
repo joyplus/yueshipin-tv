@@ -301,6 +301,16 @@
             android:uiOptions="splitActionBarWhenNarrow" >
         </activity>
         <activity
+            android:name=".ShowHaoimsActivity"
+            android:screenOrientation="landscape"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+            android:uiOptions="splitActionBarWhenNarrow" />
+        <activity
+            android:name="ShowDetailHaoimsActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="landscape"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
+        <activity
             android:name=".ShowShoucangHistoryActivity"
             android:screenOrientation="landscape"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen"

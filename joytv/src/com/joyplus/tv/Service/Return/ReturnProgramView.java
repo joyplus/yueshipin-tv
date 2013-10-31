@@ -208,6 +208,10 @@ public class ReturnProgramView {
 	public static class VIDEO_URLS {
 		public String source;
 		public String url;
+		
+//		public String toString() {
+//			return ";
+//		}
 	}
 
 	@JsonIgnoreProperties(ignoreUnknown = true)
@@ -230,6 +234,12 @@ public class ReturnProgramView {
 			public String type;
 			public String url;
 			public String file;
+			
+			public String toString() {
+				return " type:" + type +
+						" url:" +  url +
+						" file:" + file;
+			}
 		}
 	}
 
