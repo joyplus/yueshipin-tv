@@ -128,12 +128,36 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 	private static final long LOADING_PIC_TIME = 10 * 1000;
 	private static final long LOADING_TIME_OUT = 30 * 1000;
 
-	private int[] resouces_lib_nomal = { R.drawable.movie_normal,
-			R.drawable.episode_normal, R.drawable.cartoon_normal,
-			R.drawable.variety_normal, R.drawable.search_normal };
-	private int[] resouces_lib_active = { R.drawable.movie_active,
-			R.drawable.episode_active, R.drawable.cartoon_active,
-			R.drawable.variety_active, R.drawable.search_active, };
+	private int[] resouces_lib_nomal;
+//		  { R.drawable.movie_normal,
+//			R.drawable.episode_normal, R.drawable.cartoon_normal,
+//			R.drawable.variety_normal, R.drawable.search_normal };
+	private int[] resouces_lib_active;
+//		  { R.drawable.movie_active,
+//			R.drawable.episode_active, R.drawable.cartoon_active,
+//			R.drawable.variety_active, R.drawable.search_active, };
+	
+	{
+		if(Constant.isAddHaoims){
+			int[] normalArray = { R.drawable.movie_normal,R.drawable.episode_normal, 
+					  R.drawable.cartoon_normal,R.drawable.variety_normal,
+					  R.drawable.haoims_normal,R.drawable.search_normal };
+			int[] activeArray = { R.drawable.movie_active,R.drawable.episode_active, 
+					  R.drawable.cartoon_active,R.drawable.variety_active, 
+					  R.drawable.haoims_active,R.drawable.search_active, };
+			resouces_lib_nomal 	= normalArray;
+			resouces_lib_active = activeArray;
+		}else{
+			int[] normalArray = { R.drawable.movie_normal,
+					R.drawable.episode_normal, R.drawable.cartoon_normal,
+					R.drawable.variety_normal, R.drawable.search_normal };
+			int[] activeArray = { R.drawable.movie_active,
+					R.drawable.episode_active, R.drawable.cartoon_active,
+					R.drawable.variety_active, R.drawable.search_active, };
+			resouces_lib_nomal 	= normalArray;
+			resouces_lib_active = activeArray;
+		}
+	}
 
 	private int[] resouces_my_nomal = { R.drawable.follow_normal,
 			R.drawable.recent_normal, R.drawable.system_normal };
@@ -2078,22 +2102,45 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 			startActivity(yuedanIntent);
 			break;
 		case 3:
-			switch (index) {
-			case 0:
-				startActivity(new Intent(this, ShowMovieActivity.class));
-				break;
-			case 1:
-				startActivity(new Intent(this, ShowTVActivity.class));
-				break;
-			case 2:
-				startActivity(new Intent(this, ShowDongManActivity.class));
-				break;
-			case 3:
-				startActivity(new Intent(this, ShowZongYiActivity.class));
-				break;
-			case 4:
-				startActivity(new Intent(this, ShowSearchActivity.class));
-				break;
+			if(Constant.isAddHaoims){
+				switch (index) {
+				case 0:
+					startActivity(new Intent(this, ShowMovieActivity.class));
+					break;
+				case 1:
+					startActivity(new Intent(this, ShowTVActivity.class));
+					break;
+				case 2:
+					startActivity(new Intent(this, ShowDongManActivity.class));
+					break;
+				case 3:
+					startActivity(new Intent(this, ShowZongYiActivity.class));
+					break;
+				case 4:
+					startActivity(new Intent(this, ShowHaoimsActivity.class));
+					break;
+				case 5:
+					startActivity(new Intent(this, ShowSearchActivity.class));
+					break;
+				}
+			}else {
+				switch (index) {
+				case 0:
+					startActivity(new Intent(this, ShowMovieActivity.class));
+					break;
+				case 1:
+					startActivity(new Intent(this, ShowTVActivity.class));
+					break;
+				case 2:
+					startActivity(new Intent(this, ShowDongManActivity.class));
+					break;
+				case 3:
+					startActivity(new Intent(this, ShowZongYiActivity.class));
+					break;
+				case 4:
+					startActivity(new Intent(this, ShowSearchActivity.class));
+					break;
+				}
 			}
 			break;
 		case 4:

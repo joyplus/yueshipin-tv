@@ -3,7 +3,7 @@ package com.joyplus.tv;
 import android.os.Environment;
 
 public class Constant {
-	
+	public static final boolean isAddHaoims = true;//是否开启haoims功能模块
 	public static final boolean isJoyPlus = false;//是否是JoyPlus本身应用，还是其他应用
 	
 	public static final boolean cacheMode = true;//该广告加载时是否用本地缓存 Loading界面

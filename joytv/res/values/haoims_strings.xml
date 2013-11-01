@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <string translatable="false" name="haoims_show_title" >Haoims专区</string>
+    <string translatable="false" name="haoims_show_all">全部</string>
+    <string translatable="false" name="haoims_show_movie">电影</string>
+    <string translatable="false" name="haoims_show_tvSeries">电视剧</string>
+    <string translatable="false" name="haoims_show_variety">综艺</string>
+    <string translatable="false" name="haoims_show_live">直播</string>
+    <string translatable="false" name="haoims_show_anime">动漫</string>
+    <string translatable="false" name="haoims_show_music">音乐</string>
+    <string translatable="false" name="haoims_show_documentary">纪实</string>
+    <string translatable="false" name="haoims_show_education">教育</string>
+    <string translatable="false" name="haoims_show_others">其它</string>
+    <string translatable="false" name="haoims_show_load_data_fail">网络数据异常</string>
+</resources>
