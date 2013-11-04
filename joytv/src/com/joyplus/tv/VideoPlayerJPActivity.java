@@ -1523,6 +1523,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		lastTime = mVideoView.getCurrentPosition();
 		rxByteslast = 0;
 		mLoadingPreparedPercent = 0;
+		reloadLetvCount = 0;
 		mEpisodeIndex = -1;
 		mPercentTextView.setText(
 				getString(R.string.utils_percent_network,mLoadingPreparedPercent / 100 + ""));

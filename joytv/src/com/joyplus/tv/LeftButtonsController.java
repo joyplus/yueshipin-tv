@@ -138,6 +138,8 @@ public class LeftButtonsController implements OnClickListener,OnFocusChangeListe
 			Log.i(TAG, "sourceType:" + sourceType.name());
 			if(sourceType.getSourceDatalist().size() <= 0){
 				getList4Network();
+			}else{
+				mHandler.sendEmptyMessage(ShowHaoimsActivity.MESSAGE_ADAPTER_SETLIST);
 			}
 		}
 	}

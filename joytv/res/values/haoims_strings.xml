@@ -12,5 +12,5 @@
     <string translatable="false" name="haoims_show_documentary">纪实</string>
     <string translatable="false" name="haoims_show_education">教育</string>
     <string translatable="false" name="haoims_show_others">其它</string>
-    <string translatable="false" name="haoims_show_load_data_fail">网络数据异常</string>
+    <string translatable="false" name="haoims_show_load_data_fail">获取不到播放地址</string>
 </resources>

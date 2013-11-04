@@ -57,7 +57,7 @@
     <string name="zuijinguankan_name">Recently watched</string>
     <string name="zhuijushoucang_name">Favorites</string>
     <string name="lixianshipin_name">Downloaded</string>
-    <string name="zongyi_name">综艺</string>
+    <string name="zongyi_name">Variety</string>
     <string name="qitazongyi_name">Other</string>
     <string name="xiangqing_daoyan_name">Director:&#160;</string>
     <string name="xiangqing_zhuyan_name">Stars:&#160;</string>
@@ -123,33 +123,29 @@
     <!-- main -->
     <string name="yuedan_notice_num">and more %1$s videos</string>
     <!--ZhangQibo  -->
-    <string name="setting_about">\n\n\n志精科技洞察消费者视频娱乐消费习惯变革的趋势，致力于成为家庭娱乐分享的引擎。
-        \n\n使命：分享生活和爱的乐趣
-        \n\n愿景：成为家庭娱乐分享引擎
-        \n\n宗旨：
-        \n\n嫁接起移动屏幕和大屏幕的娱乐应用桥梁；
-        \n体验极富乐趣的家庭互动娱乐生活；
-        \n实现多屏合一智能化高效监播体系
-        \n\n企业文化：
-        \n\n先行与恒持——行业先导与使命必达
-        \n分享与共荣——高效沟通与利益共享
-        \n激情与守信——阳光心境与信誉为先
-        \n\n口号：Enjoy sharing life</string>
+    <string name="setting_about">\n\n\n ShangHai JoyPlus Network Technology Co., Ltd insight into consumer’s video entertainment consumption habits changes and want to become the “share engine” of home entertainment.
+        \n\n Mission: to share the fun of life and love
+        \n\n Vision: To be the “Share engine” of home entertainment
+        \n\n Purpose:
+        \n\n To be the bridge of mobile screen and large screen entertainment;
+        \n Bring a fun life with interactive entertainment technology;
+        \n Build an intelligent, efficient and multi-screen monitoring broadcast system.
+        \n\n Slogan:Enjoy sharing life</string>
     <string name="setting_declaration">
-		\n\n\n\t任何用户在使用本客户端服务之前，均应仔细阅读本声明（未成年人应当在其法定监护人陪同下阅读），用户可以选择不使用本客户端服务，一旦使用，既被视为对本声明全部内容的认可和接受。
-		\n\n\t1、	任何通过本客户端显示或下载的资源和产品均系聚合引擎技术自动搜录第三方网站所有者制作或提供的内容，本客户端中的所有材料、信息和产品仅按“原样”提供，我公司对其合法性、准确性、真实性、适用性、安全性等概不负责，也无法负责；并且本客户端自动搜录的内容不代表我公司之任何意见和主张，也不代表我公司同意或支持第三方网站上的任何内容、主张或立场。
-		\n\n\t2、	任何第三方网站如果不希望被我公司的聚合引擎技术收录，应该及时向我公司反映。否则，我公司的聚合引擎技术将视其为可收录的资源网站。
-		\n\n\t3、	任何单位或者个人如认为本客户端聚合引擎技术收录的第三方网站视频内容可能侵犯了其合法权益，请及时向我公司书面反馈，并提供身份证明、权属证明以及详情侵权情况证明。我公司在收到上述文件后，可依其合理判断，断开聚合引擎技术收录的涉嫌侵权的第三方网站内容。
-		\n\n\t4、	用户理解并且同意，用户通过本客户端所获得的材料、信息、产品以及服务完全处于用户自己的判断，并承担因使用该等内容而引起的所有风险，包括但不限于因对内容的正确性、完整性或实用性的依赖而产生的风险。用户在使用本客户端的过程中，因受视频或相关内容误导或欺骗而导致或可能导致的任何心理、生理上的伤害以及经济上的损失，一概与本公司无关。
-		\n\n\t5、	用户因第三方如电信部门的通讯线路故障、技术问题、网络、电脑故障、系统不稳定性及其他各种不可抗力量原因而遭受到的一切损失，我公司不承担责任。因技术故障等不可抗时间影响到服务的正常运行的，我公司承诺在第一时间内与相关单位配合，及时处理进行修复，但用户因此而遭受的一切损失，我公司不承担责任。
+		\n\n\n\tAny user should carefully read this statement ( minors should be accompanied by their legal guardian to read ),before using this product.Users can choose not to use the product,once used,will be considered as the recognition and acceptance to the entire contents of this statement.
+		\n\n\t1、Any resources and products which display or download through this product are produced or provided by third-party site owner.Our aggregation engine technology provides the user with auto search record function.All materials and information in the product only provided as original shape.Our company assumes no responsibility and can not be responsible for the legitimacy,accuracy,authenticity,suitability,safety,etc.The content searched by user in this product does not represent any opinions and ideas of our company. It does not mean our company agree to or support any content,advocates or position on third party websites.        
+		\n\n\t2、If any third party website does not want to be included in our aggregation engine,should be promptly reflected to us. Otherwise,we will be collecting them as a resource website.
+		\n\n\t3、Any company or individual who considers that the video content collected by our product might involve infringement,please timely written feedback to our company,and provide proof of identity, proof of ownership as well as details of infringement proof to us.When we receive these documents,we would disconnect  allegedly infringing content in the product based on reasonable judgment.
+		\n\n\t4、User understands and agrees that the materials,information,products and services user obtained through this product are entirely in the user\'s own judgment,and bear all risks caused by the use of the contents,including but not limited to risks arising from reliance to the accuracy,completeness,or usefulness of the content.There\'s nothing to do with our company, if users affected by any mental,physical injuries and economic losses due to the video or related content while using this product. 
+		\n\n\t5、Our company is not liable if users suffer any loss because of third party (such as the telecommunications sector) communications line failure,technical issues,networking,computer failure,system instabilitythe and other amount of force majeure.Our company promise to cooperate with relevant units in the first time and Timely repair,if the server does not operate normally due to technical failure and other reasons.But our company is not liable if users suffer any loss.
     </string>
     <string name="setting_declaration2">
-		\n\t任何用户在使用本客户端服务之前，均应仔细阅读本声明（未成年人应当在其法定监护人陪同下阅读），用户可以选择不使用本客户端服务，一旦使用，既被视为对本声明全部内容的认可和接受。
-		\n\n\t1、	任何通过本客户端显示或下载的资源和产品均系聚合引擎技术自动搜录第三方网站所有者制作或提供的内容，本客户端中的所有材料、信息和产品仅按“原样”提供，我公司对其合法性、准确性、真实性、适用性、安全性等概不负责，也无法负责；并且本客户端自动搜录的内容不代表我公司之任何意见和主张，也不代表我公司同意或支持第三方网站上的任何内容、主张或立场。
-		\n\n\t2、	任何第三方网站如果不希望被我公司的聚合引擎技术收录，应该及时向我公司反映。否则，我公司的聚合引擎技术将视其为可收录的资源网站。
-		\n\n\t3、	任何单位或者个人如认为本客户端聚合引擎技术收录的第三方网站视频内容可能侵犯了其合法权益，请及时向我公司书面反馈，并提供身份证明、权属证明以及详情侵权情况证明。我公司在收到上述文件后，可依其合理判断，断开聚合引擎技术收录的涉嫌侵权的第三方网站内容。
-		\n\n\t4、	用户理解并且同意，用户通过本客户端所获得的材料、信息、产品以及服务完全处于用户自己的判断，并承担因使用该等内容而引起的所有风险，包括但不限于因对内容的正确性、完整性或实用性的依赖而产生的风险。用户在使用本客户端的过程中，因受视频或相关内容误导或欺骗而导致或可能导致的任何心理、生理上的伤害以及经济上的损失，一概与本公司无关。
-		\n\n\t5、	用户因第三方如电信部门的通讯线路故障、技术问题、网络、电脑故障、系统不稳定性及其他各种不可抗力量原因而遭受到的一切损失，我公司不承担责任。因技术故障等不可抗时间影响到服务的正常运行的，我公司承诺在第一时间内与相关单位配合，及时处理进行修复，但用户因此而遭受的一切损失，我公司不承担责任。
+		\n\tAny user should carefully read this statement ( minors should be accompanied by their legal guardian to read ),before using this product.Users can choose not to use the product,once used,will be considered as the recognition and acceptance to the entire contents of this statement.
+		\n\n\t1、Any resources and products which display or download through this product are produced or provided by third-party site owner.Our aggregation engine technology provides the user with auto search record function.All materials and information in the product only provided as original shape.Our company assumes no responsibility and can not be responsible for the legitimacy,accuracy,authenticity,suitability,safety,etc.The content searched by user in this product does not represent any opinions and ideas of our company. It does not mean our company agree to or support any content,advocates or position on third party websites.
+		\n\n\t2、If any third party website does not want to be included in our aggregation engine,should be promptly reflected to us. Otherwise,we will be collecting them as a resource website.
+		\n\n\t3、Any company or individual who considers that the video content collected by our product might involve infringement,please timely written feedback to our company,and provide proof of identity, proof of ownership as well as details of infringement proof to us.When we receive these documents,we would disconnect  allegedly infringing content in the product based on reasonable judgment.
+		\n\n\t4、User understands and agrees that the materials,information,products and services user obtained through this product are entirely in the user\'s own judgment,and bear all risks caused by the use of the contents,including but not limited to risks arising from reliance to the accuracy,completeness,or usefulness of the content.There\'s nothing to do with our company, if users affected by any mental,physical injuries and economic losses due to the video or related content while using this product.
+		\n\n\t5、Our company is not liable if users suffer any loss because of third party (such as the telecommunications sector) communications line failure,technical issues,networking,computer failure,system instabilitythe and other amount of force majeure.Our company promise to cooperate with relevant units in the first time and Timely repair,if the server does not operate normally due to technical failure and other reasons.But our company is not liable if users suffer any loss.
     </string>
     <string name="history_title">Recently watched</string>
     
@@ -188,7 +184,8 @@
     <string name="activity_setting_disclaimer">Disclaimers</string>
     <string name="activity_setting_versionName">Ver.</string>
     <string name="activity_setting_weixinPublicAccount">Weixin public account</string>
-    <string name="activity_setting_feedback">\t如果您遇到什么问题或者有什么建议，请用微信扫描二维码或搜索&quot;悦视频&quot;。我们时刻倾听您的声音。</string>
+    <string name="activity_setting_feedback">\t If you encounter any problems or have any suggestions, please use WeChat to scan 
+QR Code or search&quot;Joyplus&quot;.We always listen to your voice.</string>
     
     <string name="activity_shoucang_add_favorite_play">Favorites</string>
     <string name="activity_shoucang_all">All</string>
@@ -268,7 +265,7 @@
     <string name="videoPlayerJPActivity_toast_add_favority_already"> Added  to favorites</string>
     <string name="videoPlayerJPActivity_toast_cancel_favority_succes">Removed</string>
     <string name="videoPlayerJPActivity_toast_cancel_favority_fail">Failed to remove</string>
-    <string name="videoPlayerJPActivity_dailog_tip_title">提示</string>
+    <string name="videoPlayerJPActivity_dailog_tip_title">Hint</string>
     <string name="videoPlayerJPActivity_dailog_canot_play">Failed to play, please retry</string>
     <string name="videoPlayerJPActivity_dailog_OK">Done</string>
     
