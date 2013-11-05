@@ -1,18 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    
+<resources xmlns:android="http://schemas.android.com/apk/res/android" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
     <string name="app_name">Joyplus</string>
     <string name="action_settings">Settings</string>
     <string name="title_section1">Section 1</string>
     <string name="title_section2">Section 2</string>
     <string name="title_section3">Section 3</string>
-    
-    <string name="netstat">Network</string>
+    <string name="netstate">Network</string>
     <string name=" networknotwork">Oops, some problem with your network connection, Please retry</string>
     <string name=" ok">Exit</string>
     <string name="  cancel">Cancel</string>
-    
     <string name="init_decoders">Preparing decode package, please wait…</string>
     <string name="VideoView_error_title">Failed to play, please retry</string>
     <string name=" addressnotwork">Video URL failed</string>
@@ -20,8 +17,8 @@
     <string name="VideoView_error_text_unknown"> Failed to play, please retry</string>
     <string name="VideoView_error_button">OK</string>
     <string name="mediacontroller_play_pause">Play/Pause</string>
-    
-    <!--Yangzhg  -->
+
+    <!-- Yangzhg -->
     <string name="hello_world">Hello world!</string>
     <string name="tv_play_name">Episodes</string>
     <string name="shoucang_update_name">Favorites</string>
@@ -51,7 +48,7 @@
     <string name="xijupian_name">Comedy</string>
     <string name="aiqingpian_name">Romance</string>
     <string name="xuanyipian_name">Mystery</string>
-    <string name="kongbupian_name"> Horror</string>
+    <string name="kongbupian_name">Horror</string>
     <string name="donghuapian_name">Animation</string>
     <string name="qitadongman_play_name">Other</string>
     <string name="zuijinguankan_name">Recently watched</string>
@@ -63,7 +60,7 @@
     <string name="xiangqing_zhuyan_name">Stars:&#160;</string>
     <string name="xiangqing_juqingjianjie_name">Summery:&#160;</string>
     <string name="time_yuezai_name">About finished at</string>
-    <string name="time_kanwan_name"> </string>
+    <string name="time_kanwan_name"></string>
     <string name="time_time_name">15:08</string>
     <string name="xiangqing_fenshu_value">7.3</string>
     <string name="xiangqing_bofang">Play</string>
@@ -75,12 +72,12 @@
     <string name="gaoqing_chaogaoqing">1080P</string>
     <string name="gaoqing_biaoqing">480P</string>
     <string name="yingpianshu">Videos</string>
-    <string name="zongyi_gengxinzhi">Update to </string>
-    <string name="dianshiju_jiquan">finished</string>
+    <string name="zongyi_gengxinzhi">Update to  <xliff:g id="currentEpisode">%s</xliff:g></string>
+    <!-- <string name="dianshiju_jiquan">集全</string> -->
     <string name="quanbu_name">All</string>
     <string name="xiangqing_zongyi_zhuchi"> Hosting / Stars:&#160;</string>
     <string name="xiangqing_zongyi_shoubo">TV company:&#160;</string>
-    <string name="xiangqing_zongyi_jianjie"> Summary:&#160;</string>
+    <string name="xiangqing_zongyi_jianjie">Summary:&#160;</string>
     <string name="xiangqing_yingping_no">No comment</string>
     <string name="movie_fenzhong">Mins</string>
     <string name="toast_no_play">Oops, cannot find any videos</string>
@@ -89,40 +86,34 @@
     <string name="toast_no_exit">Quit</string>
     <string name="toast_setting_wifi">Network settings</string>
     <string name="toast_network_slow">The network is too slow to use </string>
-    
-    <string name="dialog_unband">Do you want to disconnect with Joyplus in mobilephone? </string>
+    <string name="dialog_unband">Do you want to disconnect with Joyplus in mobilephone?</string>
     <string name="dialog_unband_yes">Yes</string>
     <string name="dialog_unband_no">No</string>
-    
     <string name="search_hint">Enter 1st letter of each words</string>
-    
-    <string name="before_num_text"> </string>
+    <string name="before_num_text">共</string>
     <string name="after_num_text">videos</string>
-    
     <string name="group_series_tv_dongman">All seasons</string>
-    
-    <string name="personal_record">Profiles and Settings</string><!-- My Joyplus -->
-    <string name="play_store">All videos</string><!-- Video Source -->
-    
+    <string name="personal_record">Profiles and Settings</string> <!-- 我的悦视频 -->
+    <string name="play_store">All videos</string> <!-- 悦片库 -->
+
     <string name="vip_login_dilog_viplogin">Log in</string>
     <string name="vip_login_dilog_username">Account</string>
     <string name="vip_login_dilog_passwd">Password</string>
     <string name="vip_login_dilog_login">Login</string>
     <string name="vip_login_dilog_cancel">Cancel</string>
-    
     <string name="setting_vip_logout">VIP </string>
     <string name="setting_vip_local_counter">Please login</string>
     <string name="setting_vip_network_counter">Logged in</string>
     <string name="setting_dialog_logout_title">Log out</string>
     <string name="setting_dialog_logout_yes">Yes</string>
     <string name="setting_dialog_logout_no">No</string>
-    <!--Yangzhg  -->
-    
-    
-    <!--ZhangQibo  -->
+    <!-- Yangzhg -->
+
+
+    <!-- ZhangQibo -->
     <!-- main -->
     <string name="yuedan_notice_num">and more %1$s videos</string>
-    <!--ZhangQibo  -->
+    <!-- ZhangQibo -->
     <string name="setting_about">\n\n\n ShangHai JoyPlus Network Technology Co., Ltd insight into consumer’s video entertainment consumption habits changes and want to become the “share engine” of home entertainment.
         \n\n Mission: to share the fun of life and love
         \n\n Vision: To be the “Share engine” of home entertainment
@@ -149,45 +140,39 @@
 
     </string>
     <string name="history_title">Recently watched</string>
-    
-    <!--Yu  -->
+
+    <!-- Yu -->
     <!-- Movie View Resume Playing dialog title -->
     <string name="resume_playing_title">Options</string>
-    
+
     <!-- Movie View Start Playing dialog title -->
-    <string name="resume_playing_message">Play anyway?</string>
-    
+    <string name="resume_playing_message">Play anyway? </string>
+
     <!-- Movie View Start Playing button "Resume from bookmark" -->
     <string name="resume_playing_resume">Continue</string>
-    
+
     <!-- Movie View Start Playing button "Beginning" -->
     <string name="resume_playing_restart">Restart</string>
-    <!--Yu  -->
+    <!-- Yu -->
     <string name="video_player_request_url">Press OK update URLs to play </string>
-    
     <string name="activity_about_aboutUs">About us</string>
-    
     <string name="activity_declaration_disclaimer"> Disclaimers </string>
-    
     <string name="activity_faq_faq">Q&amp;A</string>
-        
-        <string name="activity_history_recentlyViewed">Recently watched </string>
-        <string name="activity_history_all">All</string>
-        <string name="activity_history_movie">Movies</string>
-        <string name="activity_history_tvSeries">Episodes</string>
-        <string name="activity_history_anime">Anime</string>
-        <string name="activity_history_variety">Variety show</string>
-        <string name="activity_history_clearRecord">Clear all</string>
-        
-        <string name="activity_setting_setting">Settings</string>
-        <string name="activity_setting_faq">Q&amp;A</string>
-        <string name="activity_setting_aboutUs">About us</string>
-        <string name="activity_setting_disclaimer">Disclaimers</string>
-        <string name="activity_setting_versionName">Version</string>
-        <string name="activity_setting_weixinPublicAccount">Weixin public account</string>
-        <string name="activity_setting_feedback">\t If you encounter any problems or have any suggestions, please use WeChat to scan 
+    <string name="activity_history_recentlyViewed">Recently watched </string>
+    <string name="activity_history_all">All</string>
+    <string name="activity_history_movie">Movies</string>
+    <string name="activity_history_tvSeries">Episodes</string>
+    <string name="activity_history_anime">Anime</string>
+    <string name="activity_history_variety">Variety show</string>
+    <string name="activity_history_clearRecord">Clear all</string>
+    <string name="activity_setting_setting">Settings</string>
+    <string name="activity_setting_faq">Q&amp;A</string>
+    <string name="activity_setting_aboutUs">About us</string>
+    <string name="activity_setting_disclaimer">Disclaimers</string>
+    <string name="activity_setting_versionName">Version</string>
+    <string name="activity_setting_weixinPublicAccount">Weixin public account</string>
+    <string name="activity_setting_feedback">\t If you encounter any problems or have any suggestions, please use WeChat to scan 
 QR Code or search&quot;Joyplus&quot;.We always listen to your voice.</string>
-    
     <string name="activity_shoucang_add_favorite_play">Favorites</string>
     <string name="activity_shoucang_all">All</string>
     <string name="activity_shoucang_movie">Movies</string>
@@ -195,128 +180,100 @@ QR Code or search&quot;Joyplus&quot;.We always listen to your voice.</string>
     <string name="activity_shoucang_anime">Anime</string>
     <string name="activity_shoucang_variety">Variety show</string>
     <string name="activity_shoucang_clearRecord">Clear all</string>
-    
     <string name="activity_vip_login_dialog_passwd">Password</string>
-    
     <string name="layout_delete_all_cancel">Cancel</string>
     <string name="layout_delete_all_delete">Delete</string>
-    
     <string name="layout_favorite_viewDetail">View detail</string>
     <string name="layout_favorite_delete">Delete</string>
-    
     <string name="layout_history_continu_play">Continue</string>
     <string name="layout_history_viewDetail">View detail</string>
     <string name="layout_history_delete">Delete</string>
-    
     <string name="layout_hot_director">Director:</string>
     <string name="layout_hot_stars">Stars:</string>
     <string name="layout_hot_plot">Summery:</string>
-    
     <string name="layout_keyboard_delete">Delete</string>
     <string name="layout_keyboard_search">Search</string>
-    
     <string name="layout_my_tip">If you want to switch account, please scan QR on the screen by Joyplus mobile</string>
-    
     <string name="activity_main_joylist">Especial albums</string>
     <string name="activity_main_hotlist">What’s hot</string>
-    
     <string name="dialog_disclaimer_disclaimer"> Disclaimers </string>
     <string name="dialog_disclaimer_accept">Accept</string>
-    
     <string name="layout_navagator_area">Area</string>
-    <string name="layout_navagator_type">Genre </string>
+    <string name="layout_navagator_type">Genre</string>
     <string name="layout_navagator_date">Year</string>
     <string name="layout_navagator_reset">Reset</string>
     <string name="layout_navagator_ok">Done</string>
     <string name="layout_navagator_cancel">Cancel</string>
     <string name="layout_navagator_all">Genre</string>
-    
     <string name="layout_head_username">User</string>
     <string name="layout_head_testTag">Beta Ver.</string>
-    
     <string name="activity_joylist_search">Search</string>
-    
     <string name="activity_joy_search">Search</string>
-    
     <string name="toast_exit_app">press again to quit</string>
-    
     <string name="layout_choose_defination_density">Definition</string>
-        <string name="layout_choose_defination_SUPERD">1080P</string>
-        <string name="layout_choose_defination_HD">720P</string>
-        <string name="layout_choose_defination_STANDARDD">480P</string>
-        <string name="layout_choose_defination_NORMALD">Streaming</string>
-        <string name="layout_choose_defination_sub">Subtitle</string>
-        <string name="layout_choose_defination_cancel">Cancel</string>
-        <string name="layout_choose_defination_complete">Done</string>
-        
-        <string name="activity_videoPlayer_loading">Loading···</string>
-        <string name="activity_videoPlayer_accomplish">, 0%  completed </string>
-        <string name="activity_videoPlayer_cache">Buffering ···</string>
-        <string name="activity_videoPlayer_networkStateTip">Network speed is too slow，press Menu to change definition</string>
-        
-        <string name="fayeservice_toast_tip_retry_unbundling">Failed to disconnect, please retry</string>
-        <string name="fayeservice_toast_tip_retry_bundling"> Failed to connect, please retry </string>
-        
-        <string name="utils_minute"><xliff:g>%s</xliff:g> Mins</string>
-        <string name="utils_prodname_prodSubName"><xliff:g id="prodName">%s</xliff:g>  <xliff:g id="prodSubName">%s</xliff:g> </string>
-        <string name="utils_percent_network">,  <xliff:g id="finished">%s</xliff:g>%% completed </string>
-        
-        <string name="videoPlayerJPActivity_lastTimeRecord">Played:  <xliff:g id="lastTime">%s</xliff:g></string>
-        <string name="videoPlayerJPActivity_toast_add_favority_success"> Added  to favorites</string>
-        <string name="videoPlayerJPActivity_toast_add_favority_already"> Added  to favorites</string>
-        <string name="videoPlayerJPActivity_toast_cancel_favority_succes">Removed</string>
-        <string name="videoPlayerJPActivity_toast_cancel_favority_fail">Failed to remove</string>
-        <string name="videoPlayerJPActivity_dailog_tip_title">Hint</string>
-        <string name="videoPlayerJPActivity_dailog_canot_play">Failed to play, please retry</string>
-        <string name="videoPlayerJPActivity_dailog_OK">Done</string>
-        
-        <string name="videoPlayerJPActivity_density_SUPERD">1080P</string>
-        <string name="videoPlayerJPActivity_density_HD">720P</string>
-        <string name="videoPlayerJPActivity_density_STANDARDD">480P</string>
-        
-        <string name="videoPlayerJPActivity_no_subtitle">No subtitle</string>
-        <string name="videoPlayerJPActivity_subtitle_close">Off</string>
-        <string name="videoPlayerJPActivity_subtitle_num">Subtitle<xliff:g id="subtitleNum">%s</xliff:g></string>
-        
-        <string name="activity_viplogin_toast_usrname_empty">Account cannot be empty</string>
-        <string name="activity_viplogin_toast_passwd_empty"> Password cannot be empty </string>
-        <string name="activity_viplogin_toast_network_error">Network problem, please check</string>
-        <string name="activity_viplogin_toast_usrname_passwd_error">Account or password mismatched, please retry</string>
-        <string name="activity_viplogin_toast_login_success">Log in succeed</string>
-        
-        <string name="activity_shoucang_record_nothing_tip">Favorites is empty, chect it out what’s hot now ^_^~</string>
-        <string name="activity_shoucang_record_ClearAllRecord">Clear all?</string>
-        <string name="activity_shoucang_record_ClearMovieAllRecord">Clear all movies?</string>
-        <string name="activity_shoucang_record_ClearTvSeriesAllRecord">Clear all episodes?</string>
-        <string name="activity_shoucang_record_ClearVarietyAllRecord">Clear all variety shows?</string>
-        <string name="activity_shoucang_record_ClearAnimeAllRecord">Clear all anime?</string>
-        
-        <string name="activity_setting_localUser">Local user</string>
-        <string name="activity_setting_unbundling_Account">Press to disconnect</string>
-        
-        <string name="activity_Main1_discover_newVersion">Find new version:<xliff:g id="versionName">%s</xliff:g></string>
-        <string name="activity_Main1_OK">Done</string>
-        <string name="activity_Main1_Cancel">Concel</string>
-        
-        <string name="activity_Main1_PersonalRecordTv_Joyplus">Profiles and Settings</string>
-        <string name="activity_Main1_PlayStoreTv_Joyplus">All videos</string>
-        <string name="activity_Main1_NETWORK_Setting_byUser"> All videos</string>
-        <string name="activity_Main1_band_tip">Haven’t synced your data yet~</string>
-        <string name="activity_Main1_lasttime_band">Synced by: \t<xliff:g id="lastBandTime">%s</xliff:g></string>
-        
-        <string name="activity_history_lastRecordTime">Played：<xliff:g id="lastTime">%s</xliff:g></string>
-        <string name="activity_history_prodSubname_lastRecordTime"> Played：<xliff:g id="prodSubName">%s</xliff:g>  <xliff:g id="lastTime">%s</xliff:g></string>
-        <string name="activity_history_TV_prodSubname_lastRecordTime"> Played： <xliff:g id="prodSubName">%s</xliff:g> <xliff:g id="lastTime">%s</xliff:g></string>
-        <string name="activity_history_record_nothing_tip">You haven’t watched any videos, chect it out what’s hot now^_^~</string>
-        <string name="activity_history_record_ClearAllRecord">Clear all?</string>
-        <string name="activity_history_record_ClearMovieAllRecord">Clear all movies?</string>
-        <string name="activity_history_record_ClearTvSeriesAllRecord">Clear all episodes?</string>
-        <string name="activity_history_record_ClearVarietyAllRecord">Clear all variety shows?</string>
-        <string name="activity_history_record_ClearAnimeAllRecord">Clear all anime?</string>
-        
-        <string name="activity_faq_webload_fail">Failed to load help data</string>
-        
-        <string name="mainHotItemAdapter_view_time">Played:<xliff:g id="lastTime">%s</xliff:g></string>
-        <string name="mainHotItemAdapter_update_current_epsidoes">Update to <xliff:g id="lastTime">%s</xliff:g> </string>
-        <string name="mainHotItemAdapter_no_update"><xliff:g id="lastTime">%s</xliff:g>Finished</string>
-    </resources>
+    <string name="layout_choose_defination_SUPERD">1080P</string>
+    <string name="layout_choose_defination_HD">720P</string>
+    <string name="layout_choose_defination_STANDARDD">480P</string>
+    <string name="layout_choose_defination_NORMALD">Streaming</string>
+    <string name="layout_choose_defination_sub">Subtitle</string>
+    <string name="layout_choose_defination_cancel">Cancel</string>
+    <string name="layout_choose_defination_complete">Done</string>
+    <string name="activity_videoPlayer_loading">Loading···</string>
+    <string name="activity_videoPlayer_accomplish">, 0%  completed </string>
+    <string name="activity_videoPlayer_cache">Buffering ···</string>
+    <string name="activity_videoPlayer_networkStateTip">Network speed is too slow，press Menu to change definition</string>
+    <string name="fayeservice_toast_tip_retry_unbundling">Failed to disconnect, please retry</string>
+    <string name="fayeservice_toast_tip_retry_bundling"> Failed to connect, please retry </string>
+    <string name="utils_minute"><xliff:g>%s</xliff:g> Mins</string>
+    <string name="utils_prodname_prodSubName"><xliff:g id="prodName">%s</xliff:g><xliff:g id="prodSubName">%s</xliff:g></string>
+    <string name="utils_percent_network">,  <xliff:g id="finished">%s</xliff:g>%% completed </string>
+    <string name="videoPlayerJPActivity_lastTimeRecord">Played:  <xliff:g id="lastTime">%s</xliff:g></string>
+    <string name="videoPlayerJPActivity_toast_add_favority_success"> Added  to favorites</string>
+    <string name="videoPlayerJPActivity_toast_add_favority_already"> Added  to favorites</string>
+    <string name="videoPlayerJPActivity_toast_cancel_favority_succes">Removed</string>
+    <string name="videoPlayerJPActivity_toast_cancel_favority_fail">Failed to remove</string>
+    <string name="videoPlayerJPActivity_dailog_tip_title">Hint</string>
+    <string name="videoPlayerJPActivity_dailog_canot_play">Failed to play, please retry</string>
+    <string name="videoPlayerJPActivity_dailog_OK">Done</string>
+    <string name="videoPlayerJPActivity_density_SUPERD">1080P</string>
+    <string name="videoPlayerJPActivity_density_HD">720P</string>
+    <string name="videoPlayerJPActivity_density_STANDARDD">480P</string>
+    <string name="videoPlayerJPActivity_no_subtitle">No subtitle</string>
+    <string name="videoPlayerJPActivity_subtitle_close">Off</string>
+    <string name="videoPlayerJPActivity_subtitle_num">Subtitle<xliff:g id="subtitleNum">%s</xliff:g></string>
+    <string name="activity_viplogin_toast_usrname_empty">Account cannot be empty</string>
+    <string name="activity_viplogin_toast_passwd_empty"> Password cannot be empty </string>
+    <string name="activity_viplogin_toast_network_error">Network problem, please check</string>
+    <string name="activity_viplogin_toast_usrname_passwd_error">Account or password mismatched, please retry</string>
+    <string name="activity_viplogin_toast_login_success">Log in succeed</string>
+    <string name="activity_shoucang_record_nothing_tip">Favorites is empty, chect it out what’s hot now ^_^~</string>
+    <string name="activity_shoucang_record_ClearAllRecord">Clear all?</string>
+    <string name="activity_shoucang_record_ClearMovieAllRecord">Clear all movies?</string>
+    <string name="activity_shoucang_record_ClearTvSeriesAllRecord">Clear all episodes?</string>
+    <string name="activity_shoucang_record_ClearVarietyAllRecord">Clear all variety shows?</string>
+    <string name="activity_shoucang_record_ClearAnimeAllRecord">Clear all anime?</string>
+    <string name="activity_setting_localUser">Local user</string>
+    <string name="activity_setting_unbundling_Account">Press to disconnect</string>
+    <string name="activity_Main1_discover_newVersion">Find new version:<xliff:g id="versionName">%s</xliff:g></string>
+    <string name="activity_Main1_OK">Done</string>
+    <string name="activity_Main1_Cancel">Cancel</string>
+    <string name="activity_Main1_PersonalRecordTv_Joyplus">Profiles and Settings</string>
+    <string name="activity_Main1_PlayStoreTv_Joyplus">All videos</string>
+    <string name="activity_Main1_NETWORK_Setting_byUser"> All videos</string>
+    <string name="activity_Main1_band_tip">Haven’t synced your data yet~</string>
+    <string name="activity_Main1_lasttime_band">Synced by:\t<xliff:g id="lastBandTime">%s</xliff:g></string>
+    <string name="activity_history_lastRecordTime">Played：<xliff:g id="lastTime">%s</xliff:g></string>
+    <string name="activity_history_prodSubname_lastRecordTime"> Played：<xliff:g id="prodSubName">%s</xliff:g><xliff:g id="lastTime">%s</xliff:g></string>
+    <string name="activity_history_TV_prodSubname_lastRecordTime"> Played： <xliff:g id="prodSubName">%s</xliff:g> <xliff:g id="lastTime">%s</xliff:g></string>
+    <string name="activity_history_record_nothing_tip">You haven’t watched any videos, chect it out what’s hot now^_^~</string>
+    <string name="activity_history_record_ClearAllRecord">Clear all?</string>
+    <string name="activity_history_record_ClearMovieAllRecord">Clear all movies?</string>
+    <string name="activity_history_record_ClearTvSeriesAllRecord">Clear all episodes?</string>
+    <string name="activity_history_record_ClearVarietyAllRecord">Clear all variety shows?</string>
+    <string name="activity_history_record_ClearAnimeAllRecord">Clear all anime?</string>
+    <string name="activity_faq_webload_fail">Failed to load help data</string>
+    <string name="mainHotItemAdapter_view_time">Played:<xliff:g id="lastTime">%s</xliff:g></string>
+    <string name="mainHotItemAdapter_update_current_epsidoes">Update to  <xliff:g id="currentEpisode">%s</xliff:g> </string>
+    <string name="mainHotItemAdapter_no_update"><xliff:g id="currentEpisode">%s</xliff:g> Finished</string>
+
+</resources>
