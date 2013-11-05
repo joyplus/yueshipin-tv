@@ -717,16 +717,16 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 
 		MarginLayoutParams mlp2 = (MarginLayoutParams) titleGroup
 				.getLayoutParams();
-		mlp2.setMargins((displayWith - Utils.getStandardValue(this,40)) / 6 + Utils.getStandardValue(this,21), mlp2.topMargin,
+		mlp2.setMargins((int) ((displayWith - Utils.getStandardValue(this,40)) / 6 + Utils.getStandardValue(this,21)), mlp2.topMargin,
 				mlp2.rightMargin, mlp2.bottomMargin);
 		MarginLayoutParams mlp3 = (MarginLayoutParams) noticeView
 				.getLayoutParams();
-		mlp3.setMargins((displayWith - Utils.getStandardValue(this,40)) / 6 + Utils.getStandardValue(this,21), mlp3.topMargin,
+		mlp3.setMargins((int) ((displayWith - Utils.getStandardValue(this,40)) / 6 + Utils.getStandardValue(this,21)), mlp3.topMargin,
 				mlp3.rightMargin, mlp3.bottomMargin);
 
 		LayoutParams param = itemFram.getLayoutParams();
-		param.height = 2 * displayWith / 9 + Utils.getStandardValue(this,3);
-		param.width = displayWith / 6 + Utils.getStandardValue(this,3);
+		param.height = (int) (2 * displayWith / 9 + Utils.getStandardValue(this,3));
+		param.width = (int) (displayWith / 6 + Utils.getStandardValue(this,3));
 		itemFram.setVisibility(View.INVISIBLE);
 		alpha_appear = AnimationUtils.loadAnimation(this, R.anim.alpha_appear);
 		alpha_disappear = AnimationUtils.loadAnimation(this,

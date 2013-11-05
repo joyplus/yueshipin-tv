@@ -369,7 +369,7 @@ public class NavigateView extends RelativeLayout implements OnItemSelectedListen
 						if(!isTouchMode) {
 							
 							LayoutParams parm = (LayoutParams) relativeLayout.getLayoutParams();
-							parm.height = Utils.getStandardValue(mContext, 140);
+							parm.height = (int) Utils.getStandardValue(mContext, 140);
 							relativeLayout.requestLayout();
 						}
 					}
@@ -399,9 +399,9 @@ public class NavigateView extends RelativeLayout implements OnItemSelectedListen
 //		gallery1.setPadding(-(1280-480)+105, 0, 0, 0);
 //		gallery2.setPadding(-(1280-480)+105, 0, 0, 0);
 //		gallery3.setPadding(-(1280-480)+105, 0, 0, 0);
-		gallery1.setPadding(Utils.getStandardValue(mContext, -(1280-480)+105), 0, 0, 0);
-		gallery2.setPadding(Utils.getStandardValue(mContext, -(1280-480)+105), 0, 0, 0);
-		gallery3.setPadding(Utils.getStandardValue(mContext, -(1280-480)+105), 0, 0, 0);
+		gallery1.setPadding((int) Utils.getStandardValue(mContext, -(1280-480)+105), 0, 0, 0);
+		gallery2.setPadding((int) Utils.getStandardValue(mContext, -(1280-480)+105), 0, 0, 0);
+		gallery3.setPadding((int) Utils.getStandardValue(mContext, -(1280-480)+105), 0, 0, 0);
 		gallery1.setCallbackDuringFling(false);
 		gallery2.setCallbackDuringFling(false);
 		gallery3.setCallbackDuringFling(false);
@@ -477,7 +477,7 @@ public class NavigateView extends RelativeLayout implements OnItemSelectedListen
 			if(!isTouchMode) {
 				
 				LayoutParams parm = (LayoutParams) relativeLayout.getLayoutParams();
-				parm.height = Utils.getStandardValue(mContext, 180);
+				parm.height = (int) Utils.getStandardValue(mContext, 180);
 				relativeLayout.requestLayout();
 			}
 		}
@@ -608,7 +608,7 @@ public class NavigateView extends RelativeLayout implements OnItemSelectedListen
 			if(!isTouchMode) {
 				
 				LayoutParams parm = (LayoutParams) relativeLayout.getLayoutParams();
-				parm.height = Utils.getStandardValue(mContext, 140);
+				parm.height = (int) Utils.getStandardValue(mContext, 140);
 				relativeLayout.requestLayout();	
 			}
 		}

@@ -189,9 +189,9 @@ public class Utils {
 		return "";
     }
     
-	public static int getStandardValue(Context context,int value){
+	public static float getStandardValue(Context context,int value){
 		float standardDp = context.getResources().getDimension(R.dimen.standard_1_dp);
-		return standardDp == 0 ? value:(int)(value * standardDp);
+		return standardDp == 0f ? value:(int)(value * standardDp);
 	}
 	
 	/**

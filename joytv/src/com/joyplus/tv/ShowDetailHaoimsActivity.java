@@ -435,11 +435,11 @@ public class ShowDetailHaoimsActivity extends Activity
 			int[] location = new int[2];
 			v.getLocationOnScreen(location);
 			popupWindow.setFocusable(true);
-			popupWindow.setWidth(width + Utils.getStandardValue(getApplicationContext(),10));
-			popupWindow.setHeight(height + Utils.getStandardValue(getApplicationContext(),40));
+			popupWindow.setWidth((int) (width + Utils.getStandardValue(getApplicationContext(),10)));
+			popupWindow.setHeight((int) (height + Utils.getStandardValue(getApplicationContext(),40)));
 			popupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
-					location[0] - Utils.getStandardValue(getApplicationContext(),6), location[1] - locationY
-							- Utils.getStandardValue(getApplicationContext(),40));
+					(int)(location[0] - Utils.getStandardValue(getApplicationContext(),6)), (int)(location[1] - locationY
+							- Utils.getStandardValue(getApplicationContext(),40)));
 		} else if (supportDefination == 2) {
 
 			int width = v.getWidth();
@@ -448,11 +448,11 @@ public class ShowDetailHaoimsActivity extends Activity
 			int[] location = new int[2];
 			v.getLocationOnScreen(location);
 			popupWindow.setFocusable(true);
-			popupWindow.setWidth(width + Utils.getStandardValue(getApplicationContext(),10));
-			popupWindow.setHeight(height + Utils.getStandardValue(getApplicationContext(),40));
+			popupWindow.setWidth((int) (width + Utils.getStandardValue(getApplicationContext(),10)));
+			popupWindow.setHeight((int) (height + Utils.getStandardValue(getApplicationContext(),40)));
 			popupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
-					location[0] - Utils.getStandardValue(getApplicationContext(),6), location[1] - locationY
-							- Utils.getStandardValue(getApplicationContext(),40));
+					(int)(location[0] - Utils.getStandardValue(getApplicationContext(),6)), (int)(location[1] - locationY
+							- Utils.getStandardValue(getApplicationContext(),40)));
 		}
 	}
 	

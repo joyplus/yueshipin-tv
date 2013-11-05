@@ -160,10 +160,10 @@ public class MainHotItemAdapter extends BaseAdapter {
 			holder.definition.setImageDrawable(null);
 			break;
 		}
-		convertView.setPadding(Utils.getStandardValue(c,15), 
-				Utils.getStandardValue(c,10), 
-				Utils.getStandardValue(c,15), 
-				Utils.getStandardValue(c,10));
+		convertView.setPadding((int)Utils.getStandardValue(c,15), 
+				(int)Utils.getStandardValue(c,10), 
+				(int)Utils.getStandardValue(c,15), 
+				(int)Utils.getStandardValue(c,10));
 		convertView.setLayoutParams(layoutParam);
 		
 		return convertView;

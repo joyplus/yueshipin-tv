@@ -69,10 +69,10 @@ public class MainLibAdapter extends BaseAdapter {
 		holder.layout.setVisibility(View.GONE);
 		holder.definition.setVisibility(View.GONE);
 		holder.image.setImageResource(data[position]);
-		convertView.setPadding(Utils.getStandardValue(c,15), 
-				Utils.getStandardValue(c,10), 
-				Utils.getStandardValue(c,15), 
-				Utils.getStandardValue(c,10));
+		convertView.setPadding((int)Utils.getStandardValue(c,15), 
+				(int)Utils.getStandardValue(c,10), 
+				(int)Utils.getStandardValue(c,15), 
+				(int)Utils.getStandardValue(c,10));
 		convertView.setLayoutParams(layoutParam);
 		return convertView;
 	}

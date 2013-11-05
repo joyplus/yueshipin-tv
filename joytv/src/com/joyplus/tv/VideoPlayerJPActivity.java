@@ -3,7 +3,6 @@ package com.joyplus.tv;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -22,7 +21,6 @@ import org.apache.http.params.HttpParams;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONTokener;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -147,7 +145,6 @@ public class VideoPlayerJPActivity extends Activity implements
 	private static final int STATUE_FAST_DRAG = STATUE_PAUSE + 1;
 	
 	private static final int SEEKBAR_REFRESH_TIME = 200;//refresh time
-	private static final int SUBTITLE_DELAY_TIME_MAX = 1000;
 
 	private int OFFSET = 33;
 	private int seekBarWidthOffset = 40;
@@ -398,8 +395,8 @@ public class VideoPlayerJPActivity extends Activity implements
 		// 获取是否收藏
 		getIsShoucangData();
 		
-		OFFSET = Utils.getStandardValue(getApplicationContext(), OFFSET);
-		seekBarWidthOffset = Utils.getStandardValue(getApplicationContext(), seekBarWidthOffset);
+		OFFSET = (int) Utils.getStandardValue(getApplicationContext(), OFFSET);
+		seekBarWidthOffset = (int) Utils.getStandardValue(getApplicationContext(), seekBarWidthOffset);
 	}
 	
 	private void dismissView(View v){
@@ -673,19 +670,15 @@ public class VideoPlayerJPActivity extends Activity implements
 			return;
 		}
 
-		if (json == null || json.equals("")){
+		if (json == null || json.toString().equals("")){
 			mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
 			return;
 		}
-
-
 		Log.d(TAG, "initFengxingParseServiceData= " + json.toString());
-		
 		ObjectMapper mapper = new ObjectMapper();
 		try {
 			ReturnFirstFengxingUrlView returnFirstFengxingUrlView = mapper.readValue(json.toString(),
 					ReturnFirstFengxingUrlView.class);
-			
 			if(returnFirstFengxingUrlView != null){
 				if(returnFirstFengxingUrlView.error != null && 
 						returnFirstFengxingUrlView.error.equals("false")){
@@ -704,9 +697,7 @@ public class VideoPlayerJPActivity extends Activity implements
 					Log.i(TAG, "mDefination--->" + mDefination);
 					if(returnFirstFengxingUrlView.video_infos != null &&
 							returnFirstFengxingUrlView.video_infos.length > 0){
-						
 						for(int i=0;i<returnFirstFengxingUrlView.video_infos.length;i++){
-							
 							if(returnFirstFengxingUrlView.video_infos[i]!= null 
 									&& returnFirstFengxingUrlView.video_infos[i].type != null){
 								Log.i(TAG, "sourceQua--->" + sourceQua + " type:" + returnFirstFengxingUrlView.video_infos[i].type);
@@ -718,7 +709,6 @@ public class VideoPlayerJPActivity extends Activity implements
 									return;
 								}
 							}
-							
 						}
 					}
 
@@ -726,22 +716,17 @@ public class VideoPlayerJPActivity extends Activity implements
 				
 			}
 		} catch (JsonParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (JsonMappingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 			mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
 	}
 	
 	private String defintionToType(int defintion){
-		
 		String sourceQua = "";
-		
 		switch (defintion) {
 		case 8:
 			sourceQua = "hd2";
@@ -753,7 +738,6 @@ public class VideoPlayerJPActivity extends Activity implements
 			sourceQua = "flv";
 			break;
 		}
-		
 		return sourceQua;
 	}
 	
@@ -794,7 +778,7 @@ public class VideoPlayerJPActivity extends Activity implements
 			return;
 		}
 
-		if (json == null || json.equals("")){
+		if (json == null || json.toString().equals("")){
 			mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
 			return;
 		}
@@ -842,12 +826,11 @@ public class VideoPlayerJPActivity extends Activity implements
 			return;
 		}
 		
-		if (json == null || json.equals("")){
+		if (json == null || json.toString().equals("")){
 			Log.d(TAG, "initFengxingSecondServiceData = ");
 			mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
 			return;
 		}
-
 
 		Log.d(TAG, "initFengxingSecondServiceData = " + json.toString());
 		ObjectMapper mapper = new ObjectMapper();
@@ -1857,7 +1840,7 @@ public class VideoPlayerJPActivity extends Activity implements
 			parms.leftMargin = (int) mLeft;
 		else
 			parms.leftMargin = OFFSET;
-		parms.bottomMargin = Utils.getStandardValue(getApplicationContext(), 30);
+		parms.bottomMargin = (int) Utils.getStandardValue(getApplicationContext(), 30);
 		mTimeLayout.setLayoutParams(parms);
 
 		mCurrentTimeTextView.setText(Utils.formatDuration(progress));
@@ -3282,8 +3265,8 @@ public class VideoPlayerJPActivity extends Activity implements
 				tv.setText(getString(R.string.videoPlayerJPActivity_density_STANDARDD));
 				break;
 			}
-			Gallery.LayoutParams param = new Gallery.LayoutParams(Utils.getStandardValue(getApplicationContext(), 165),
-					Utils.getStandardValue(getApplicationContext(), 40));
+			Gallery.LayoutParams param = new Gallery.LayoutParams((int)Utils.getStandardValue(getApplicationContext(), 165),
+					(int)Utils.getStandardValue(getApplicationContext(), 40));
 			tv.setGravity(Gravity.CENTER);
 			tv.setLayoutParams(param);
 			return tv;
@@ -3346,8 +3329,8 @@ public class VideoPlayerJPActivity extends Activity implements
 //					break;
 				}
 			}
-			Gallery.LayoutParams param = new Gallery.LayoutParams(Utils.getStandardValue(VideoPlayerJPActivity.this,165),
-					Utils.getStandardValue(VideoPlayerJPActivity.this,40));
+			Gallery.LayoutParams param = new Gallery.LayoutParams((int)Utils.getStandardValue(VideoPlayerJPActivity.this,165),
+					(int)Utils.getStandardValue(VideoPlayerJPActivity.this,40));
 			tv.setGravity(Gravity.CENTER);
 			tv.setLayoutParams(param);
 			return tv;
