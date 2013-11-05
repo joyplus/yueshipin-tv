@@ -8,7 +8,7 @@
     <string name="title_section2">Section 2</string>
     <string name="title_section3">Section 3</string>
     
-    <string name="netstate">Network</string>
+    <string name="netstat">Network</string>
     <string name=" networknotwork">Oops, some problem with your network connection, Please retry</string>
     <string name=" ok">Exit</string>
     <string name="  cancel">Cancel</string>
@@ -25,14 +25,14 @@
     <string name="hello_world">Hello world!</string>
     <string name="tv_play_name">Episodes</string>
     <string name="shoucang_update_name">Favorites</string>
-    <string name="oumei_play_name"> America </string>
+    <string name="oumei_play_name">America</string>
     <string name="dalu_play_name">China</string>
     <string name="gangju_play_name">Hongkong</string>
     <string name="taiju_play_name">Taiwan</string>
-    <string name="hanju_play_name">Korea </string>
+    <string name="hanju_play_name">Korea</string>
     <string name="riju_play_name">Japan</string>
-    <string name="dongman_play_name"> Anime </string>
-    <string name="qinzidongman_play_name"> Family </string>
+    <string name="dongman_play_name">Anime</string>
+    <string name="qinzidongman_play_name">Family</string>
     <string name="rexuedongman_play_name">Blood</string>
     <string name="hougongdoangman_play_name">Campus</string>
     <string name="tuilidongman_play_name">Mystery</string>
@@ -41,16 +41,16 @@
     <string name="search_name">Search</string>
     <string name="yuedan_name">Especial Albums</string>
     <string name="dianyingyuedan_name">Movie albums</string>
-    <string name="dianshijuyuedan_name">Episode albums </string>
+    <string name="dianshijuyuedan_name">Episode albums</string>
     <string name="qitadianshiju_play_name">Others</string>
     <string name="dianying_name">Movies</string>
-    <string name="quanbufenlei_name"> Genre </string>
+    <string name="quanbufenlei_name">Genre</string>
     <string name="dongzuopian_name">Action</string>
-    <string name="kehuanpian_name"> Sci-Fi</string>
-    <string name="lunlipian_pian"> Ethics </string>
-    <string name="xijupian_name"> Comedy</string>
-    <string name="aiqingpian_name"> Romance</string>
-    <string name="xuanyipian_name"> Mystery</string>
+    <string name="kehuanpian_name">Sci-Fi</string>
+    <string name="lunlipian_pian">Ethics</string>
+    <string name="xijupian_name">Comedy</string>
+    <string name="aiqingpian_name">Romance</string>
+    <string name="xuanyipian_name">Mystery</string>
     <string name="kongbupian_name"> Horror</string>
     <string name="donghuapian_name">Animation</string>
     <string name="qitadongman_play_name">Other</string>
@@ -71,12 +71,12 @@
     <string name="xiangqing_xiazai">Download</string>
     <string name="xiangqing_yingping">Comments</string>
     <string name="xiangqing_tujiandianying">Recommended</string>
-    <string name="gaoqing_gaoqing">HD</string>
-    <string name="gaoqing_chaogaoqing">FullHD</string>
-    <string name="gaoqing_biaoqing">DVD</string>
+    <string name="gaoqing_gaoqing">720P</string>
+    <string name="gaoqing_chaogaoqing">1080P</string>
+    <string name="gaoqing_biaoqing">480P</string>
     <string name="yingpianshu">Videos</string>
-    <string name="zongyi_gengxinzhi">Update to <xliff:g id="currentEpisode">%s</xliff:g></string>
-    <!-- <string name="dianshiju_jiquan">finished</string> -->
+    <string name="zongyi_gengxinzhi">Update to </string>
+    <string name="dianshiju_jiquan">finished</string>
     <string name="quanbu_name">All</string>
     <string name="xiangqing_zongyi_zhuchi"> Hosting / Stars:&#160;</string>
     <string name="xiangqing_zongyi_shoubo">TV company:&#160;</string>
@@ -88,7 +88,7 @@
     <string name="toast_no_retry">Retry</string>
     <string name="toast_no_exit">Quit</string>
     <string name="toast_setting_wifi">Network settings</string>
-    <string name="toast_network_slow"> The network is too slow to use </string>
+    <string name="toast_network_slow">The network is too slow to use </string>
     
     <string name="dialog_unband">Do you want to disconnect with Joyplus in mobilephone? </string>
     <string name="dialog_unband_yes">Yes</string>
@@ -101,8 +101,8 @@
     
     <string name="group_series_tv_dongman">All seasons</string>
     
-    <string name="personal_record">Profiles and Settings</string><!-- 我的悦视频 -->
-    <string name="play_store">All videos</string><!-- 悦片库 -->
+    <string name="personal_record">Profiles and Settings</string><!-- My Joyplus -->
+    <string name="play_store">All videos</string><!-- Video Source -->
     
     <string name="vip_login_dilog_viplogin">Log in</string>
     <string name="vip_login_dilog_username">Account</string>
@@ -132,20 +132,21 @@
         \n Build an intelligent, efficient and multi-screen monitoring broadcast system.
         \n\n Slogan:Enjoy sharing life</string>
     <string name="setting_declaration">
-		\n\n\n\tAny user should carefully read this statement ( minors should be accompanied by their legal guardian to read ),before using this product.Users can choose not to use the product,once used,will be considered as the recognition and acceptance to the entire contents of this statement.
-		\n\n\t1、Any resources and products which display or download through this product are produced or provided by third-party site owner.Our aggregation engine technology provides the user with auto search record function.All materials and information in the product only provided as original shape.Our company assumes no responsibility and can not be responsible for the legitimacy,accuracy,authenticity,suitability,safety,etc.The content searched by user in this product does not represent any opinions and ideas of our company. It does not mean our company agree to or support any content,advocates or position on third party websites.        
-		\n\n\t2、If any third party website does not want to be included in our aggregation engine,should be promptly reflected to us. Otherwise,we will be collecting them as a resource website.
-		\n\n\t3、Any company or individual who considers that the video content collected by our product might involve infringement,please timely written feedback to our company,and provide proof of identity, proof of ownership as well as details of infringement proof to us.When we receive these documents,we would disconnect  allegedly infringing content in the product based on reasonable judgment.
-		\n\n\t4、User understands and agrees that the materials,information,products and services user obtained through this product are entirely in the user\'s own judgment,and bear all risks caused by the use of the contents,including but not limited to risks arising from reliance to the accuracy,completeness,or usefulness of the content.There\'s nothing to do with our company, if users affected by any mental,physical injuries and economic losses due to the video or related content while using this product. 
-		\n\n\t5、Our company is not liable if users suffer any loss because of third party (such as the telecommunications sector) communications line failure,technical issues,networking,computer failure,system instabilitythe and other amount of force majeure.Our company promise to cooperate with relevant units in the first time and Timely repair,if the server does not operate normally due to technical failure and other reasons.But our company is not liable if users suffer any loss.
+		\n\n\n\tAny user should carefully read this statement ( minors should be accompanied by their legal guardian to read ), before using this product. Users don\'t use the product to be necessary, once used, will be considered as the recognition and acceptance to the entire contents of this statement.
+		\n\n\t1、Any resources and products which display or download through this product are produced or provided by third-party site owner. Our aggregation engine technology provides the user with auto search record function. All materials and information in the product only provided as original shape. Our company assumes haven\'t any responsibility and can not be responsible for the legitimacy, accuracy, authenticity, suitability, safety, etc. The content searched by user in this product does not represent any opinions and ideas of our company. It doesn\'t mean our company agree to or support any content, advocates or position on third party websites.
+		\n\n\t2、If any third party website does not want to be included in our aggregation engine，should be promptly reflected to us. Otherwise, we will be collecting them as a resource website.
+		\n\n\t3、Any company or individual who considers that the video content collected by our product might involve infringement, please timely written feedback to our company, and provide proof of identity, proof of ownership as well as details of infringement proof to us. When we receive these documents, we would disconnect  allegedly infringing content in the product based on reasonable judgment.
+		\n\n\t4、User understands and agrees that the materials, information, products and services user obtained through this product are entirely in the user\'s own judgment, and bear all risks caused by the use of the contents, including but not limited to risks arising from reliance to the accuracy, completeness, or usefulness of the content. There\'s nothing to do with our company, if users affected by any mental, physical injuries and economic losses due to the video or related content while using this product. 
+		\n\n\t5、Our company is not liable if users suffer any loss because of third party (such as the telecommunications sector) communications line failure, technical issues, networking,computer failure, system instabilitythe and other amount of force majeure. Our company promise to cooperate with relevant units in the first time and Timely repair, if the server does not operate normally due to technical failure and other reasons. But our company is not liable if users suffer any loss.
     </string>
     <string name="setting_declaration2">
-		\n\tAny user should carefully read this statement ( minors should be accompanied by their legal guardian to read ),before using this product.Users can choose not to use the product,once used,will be considered as the recognition and acceptance to the entire contents of this statement.
-		\n\n\t1、Any resources and products which display or download through this product are produced or provided by third-party site owner.Our aggregation engine technology provides the user with auto search record function.All materials and information in the product only provided as original shape.Our company assumes no responsibility and can not be responsible for the legitimacy,accuracy,authenticity,suitability,safety,etc.The content searched by user in this product does not represent any opinions and ideas of our company. It does not mean our company agree to or support any content,advocates or position on third party websites.
-		\n\n\t2、If any third party website does not want to be included in our aggregation engine,should be promptly reflected to us. Otherwise,we will be collecting them as a resource website.
-		\n\n\t3、Any company or individual who considers that the video content collected by our product might involve infringement,please timely written feedback to our company,and provide proof of identity, proof of ownership as well as details of infringement proof to us.When we receive these documents,we would disconnect  allegedly infringing content in the product based on reasonable judgment.
-		\n\n\t4、User understands and agrees that the materials,information,products and services user obtained through this product are entirely in the user\'s own judgment,and bear all risks caused by the use of the contents,including but not limited to risks arising from reliance to the accuracy,completeness,or usefulness of the content.There\'s nothing to do with our company, if users affected by any mental,physical injuries and economic losses due to the video or related content while using this product.
-		\n\n\t5、Our company is not liable if users suffer any loss because of third party (such as the telecommunications sector) communications line failure,technical issues,networking,computer failure,system instabilitythe and other amount of force majeure.Our company promise to cooperate with relevant units in the first time and Timely repair,if the server does not operate normally due to technical failure and other reasons.But our company is not liable if users suffer any loss.
+        \n\tAny user should carefully read this statement ( minors should be accompanied by their legal guardian to read ), before using this product. Users don\'t use the product to be necessary, once used, will be considered as the recognition and acceptance to the entire contents of this statement.
+		\n\n\t1、Any resources and products which display or download through this product are produced or provided by third-party site owner. Our aggregation engine technology provides the user with auto search record function. All materials and information in the product only provided as original shape. Our company assumes haven\'t any responsibility and can not be responsible for the legitimacy, accuracy, authenticity, suitability, safety, etc. The content searched by user in this product does not represent any opinions and ideas of our company. It doesn\'t mean our company agree to or support any content, advocates or position on third party websites.
+		\n\n\t2、If any third party website does not want to be included in our aggregation engine，should be promptly reflected to us. Otherwise, we will be collecting them as a resource website.
+		\n\n\t3、Any company or individual who considers that the video content collected by our product might involve infringement, please timely written feedback to our company, and provide proof of identity, proof of ownership as well as details of infringement proof to us. When we receive these documents, we would disconnect  allegedly infringing content in the product based on reasonable judgment.
+		\n\n\t4、User understands and agrees that the materials, information, products and services user obtained through this product are entirely in the user\'s own judgment, and bear all risks caused by the use of the contents, including but not limited to risks arising from reliance to the accuracy, completeness, or usefulness of the content. There\'s nothing to do with our company, if users affected by any mental, physical injuries and economic losses due to the video or related content while using this product.
+		\n\n\t5、Our company is not liable if users suffer any loss because of third party (such as the telecommunications sector) communications line failure, technical issues, networking,computer failure, system instabilitythe and other amount of force majeure. Our company promise to cooperate with relevant units in the first time and Timely repair, if the server does not operate normally due to technical failure and other reasons. But our company is not liable if users suffer any loss.
+
     </string>
     <string name="history_title">Recently watched</string>
     
@@ -154,7 +155,7 @@
     <string name="resume_playing_title">Options</string>
     
     <!-- Movie View Start Playing dialog title -->
-    <string name="resume_playing_message">Play anyway？ </string>
+    <string name="resume_playing_message">Play anyway?</string>
     
     <!-- Movie View Start Playing button "Resume from bookmark" -->
     <string name="resume_playing_resume">Continue</string>
@@ -170,21 +171,21 @@
     
     <string name="activity_faq_faq">Q&amp;A</string>
         
-    <string name="activity_history_recentlyViewed">Recently watched </string>
-    <string name="activity_history_all">All</string>
-    <string name="activity_history_movie">Movies</string>
-    <string name="activity_history_tvSeries">Episodes</string>
-    <string name="activity_history_anime"> Anime</string>
-    <string name="activity_history_variety"> Variety show</string>
-    <string name="activity_history_clearRecord">Clear all</string>
-    
-    <string name="activity_setting_setting">Settings</string>
-    <string name="activity_setting_faq">Q&amp;A</string>
-    <string name="activity_setting_aboutUs">About us</string>
-    <string name="activity_setting_disclaimer">Disclaimers</string>
-    <string name="activity_setting_versionName">Ver.</string>
-    <string name="activity_setting_weixinPublicAccount">Weixin public account</string>
-    <string name="activity_setting_feedback">\t If you encounter any problems or have any suggestions, please use WeChat to scan 
+        <string name="activity_history_recentlyViewed">Recently watched </string>
+        <string name="activity_history_all">All</string>
+        <string name="activity_history_movie">Movies</string>
+        <string name="activity_history_tvSeries">Episodes</string>
+        <string name="activity_history_anime">Anime</string>
+        <string name="activity_history_variety">Variety show</string>
+        <string name="activity_history_clearRecord">Clear all</string>
+        
+        <string name="activity_setting_setting">Settings</string>
+        <string name="activity_setting_faq">Q&amp;A</string>
+        <string name="activity_setting_aboutUs">About us</string>
+        <string name="activity_setting_disclaimer">Disclaimers</string>
+        <string name="activity_setting_versionName">Version</string>
+        <string name="activity_setting_weixinPublicAccount">Weixin public account</string>
+        <string name="activity_setting_feedback">\t If you encounter any problems or have any suggestions, please use WeChat to scan 
 QR Code or search&quot;Joyplus&quot;.We always listen to your voice.</string>
     
     <string name="activity_shoucang_add_favorite_play">Favorites</string>
@@ -192,7 +193,7 @@ QR Code or search&quot;Joyplus&quot;.We always listen to your voice.</string>
     <string name="activity_shoucang_movie">Movies</string>
     <string name="activity_shoucang_tvSeries">Episodes</string>
     <string name="activity_shoucang_anime">Anime</string>
-    <string name="activity_shoucang_variety"> Variety show </string>
+    <string name="activity_shoucang_variety">Variety show</string>
     <string name="activity_shoucang_clearRecord">Clear all</string>
     
     <string name="activity_vip_login_dialog_passwd">Password</string>
@@ -223,7 +224,7 @@ QR Code or search&quot;Joyplus&quot;.We always listen to your voice.</string>
     <string name="dialog_disclaimer_accept">Accept</string>
     
     <string name="layout_navagator_area">Area</string>
-    <string name="layout_navagator_type"> enre </string>
+    <string name="layout_navagator_type">Genre </string>
     <string name="layout_navagator_date">Year</string>
     <string name="layout_navagator_reset">Reset</string>
     <string name="layout_navagator_ok">Done</string>
@@ -240,82 +241,82 @@ QR Code or search&quot;Joyplus&quot;.We always listen to your voice.</string>
     <string name="toast_exit_app">press again to quit</string>
     
     <string name="layout_choose_defination_density">Definition</string>
-    <string name="layout_choose_defination_SUPERD">FullHD</string>
-    <string name="layout_choose_defination_HD">HD</string>
-    <string name="layout_choose_defination_STANDARDD">DVD</string>
-    <string name="layout_choose_defination_NORMALD">Streaming</string>
-    <string name="layout_choose_defination_sub">Subtitle</string>
-    <string name="layout_choose_defination_cancel">Cancel</string>
-    <string name="layout_choose_defination_complete">Done</string>
-    
-    <string name="activity_videoPlayer_loading">Loading···</string>
-    <string name="activity_videoPlayer_accomplish">, 0%  completed </string>
-    <string name="activity_videoPlayer_cache">Buffering ···</string>
-    <string name="activity_videoPlayer_networkStateTip">Network speed is too slow，press Menu to change definition</string>
-    
-    <string name="fayeservice_toast_tip_retry_unbundling">Failed to disconnect, please retry</string>
-    <string name="fayeservice_toast_tip_retry_bundling"> Failed to connect, please retry </string>
-    
-    <string name="utils_minute"><xliff:g>%s</xliff:g> minutes</string>
-    <string name="utils_prodname_prodSubName"><xliff:g id="prodName">%s</xliff:g>  <xliff:g id="prodSubName">%s</xliff:g> </string>
-    <string name="utils_percent_network">,  <xliff:g id="finished">%s</xliff:g>%% completed </string>
-    
-    <string name="videoPlayerJPActivity_lastTimeRecord">Played:  <xliff:g id="lastTime">%s</xliff:g></string>
-    <string name="videoPlayerJPActivity_toast_add_favority_success"> Added  to favorites</string>
-    <string name="videoPlayerJPActivity_toast_add_favority_already"> Added  to favorites</string>
-    <string name="videoPlayerJPActivity_toast_cancel_favority_succes">Removed</string>
-    <string name="videoPlayerJPActivity_toast_cancel_favority_fail">Failed to remove</string>
-    <string name="videoPlayerJPActivity_dailog_tip_title">Hint</string>
-    <string name="videoPlayerJPActivity_dailog_canot_play">Failed to play, please retry</string>
-    <string name="videoPlayerJPActivity_dailog_OK">Done</string>
-    
-    <string name="videoPlayerJPActivity_density_SUPERD">Full HD</string>
-    <string name="videoPlayerJPActivity_density_HD">HD</string>
-    <string name="videoPlayerJPActivity_density_STANDARDD">DVD</string>
-    
-    <string name="videoPlayerJPActivity_no_subtitle">No subtitle</string>
-    <string name="videoPlayerJPActivity_subtitle_close">Off</string>
-    <string name="videoPlayerJPActivity_subtitle_num">Subtitle<xliff:g id="subtitleNum">%s</xliff:g></string>
-    
-    <string name="activity_viplogin_toast_usrname_empty">Account cannot be empty</string>
-    <string name="activity_viplogin_toast_passwd_empty"> Password cannot be empty </string>
-    <string name="activity_viplogin_toast_network_error">Network problem, please check</string>
-    <string name="activity_viplogin_toast_usrname_passwd_error">Account or password mismatched, please retry</string>
-    <string name="activity_viplogin_toast_login_success">Log in succeed</string>
-    
-    <string name="activity_shoucang_record_nothing_tip">Favorites is empty, chect it out what’s hot now ^_^~</string>
-    <string name="activity_shoucang_record_ClearAllRecord">Clear all? </string>
-    <string name="activity_shoucang_record_ClearMovieAllRecord"> Clear all movies?</string>
-    <string name="activity_shoucang_record_ClearTvSeriesAllRecord"> Clear all episodes?</string>
-    <string name="activity_shoucang_record_ClearVarietyAllRecord"> Clear all variety shows?</string>
-    <string name="activity_shoucang_record_ClearAnimeAllRecord"> Clear all anime?</string>
-    
-    <string name="activity_setting_localUser">Local user</string>
-    <string name="activity_setting_unbundling_Account">press to disconnect</string>
-    
-    <string name="activity_Main1_discover_newVersion">Find new version:<xliff:g id="versionName">%s</xliff:g></string>
-    <string name="activity_Main1_OK">Done</string>
-    <string name="activity_Main1_Cancel">Concel</string>
-    
-    <string name="activity_Main1_PersonalRecordTv_Joyplus">Profiles and Settings</string>
-    <string name="activity_Main1_PlayStoreTv_Joyplus">All videos</string>
-    <string name="activity_Main1_NETWORK_Setting_byUser"> All videos</string>
-    <string name="activity_Main1_band_tip">Haven’t synced your data yet~</string>
-    <string name="activity_Main1_lasttime_band">Synced by: \t<xliff:g id="lastBandTime">%s</xliff:g></string>
-    
-    <string name="activity_history_lastRecordTime">Played：<xliff:g id="lastTime">%s</xliff:g></string>
-    <string name="activity_history_prodSubname_lastRecordTime"> Played：<xliff:g id="prodSubName">%s</xliff:g>  <xliff:g id="lastTime">%s</xliff:g></string>
-    <string name="activity_history_TV_prodSubname_lastRecordTime"> Played： <xliff:g id="prodSubName">%s</xliff:g> <xliff:g id="lastTime">%s</xliff:g></string>
-    <string name="activity_history_record_nothing_tip">You haven’t watched any videos, chect it out what’s hot now^_^~</string>
-    <string name="activity_history_record_ClearAllRecord">Clear all?</string>
-    <string name="activity_history_record_ClearMovieAllRecord">Clear all movies?</string>
-    <string name="activity_history_record_ClearTvSeriesAllRecord"> Clear all episodes?</string>
-    <string name="activity_history_record_ClearVarietyAllRecord"> Clear all variety shows?</string>
-    <string name="activity_history_record_ClearAnimeAllRecord"> Clear all anime?</string>
-    
-    <string name="activity_faq_webload_fail">Failed to load help data</string>
-    
-    <string name="mainHotItemAdapter_view_time">Played: <xliff:g id="lastTime">%s</xliff:g></string>
-    <string name="mainHotItemAdapter_update_current_epsidoes">Update to  <xliff:g id="currentEpisode">%s</xliff:g> </string>
-    <string name="mainHotItemAdapter_no_update"><xliff:g id="currentEpisode">%s</xliff:g> Finished</string>
-</resources>
+        <string name="layout_choose_defination_SUPERD">1080P</string>
+        <string name="layout_choose_defination_HD">720P</string>
+        <string name="layout_choose_defination_STANDARDD">480P</string>
+        <string name="layout_choose_defination_NORMALD">Streaming</string>
+        <string name="layout_choose_defination_sub">Subtitle</string>
+        <string name="layout_choose_defination_cancel">Cancel</string>
+        <string name="layout_choose_defination_complete">Done</string>
+        
+        <string name="activity_videoPlayer_loading">Loading···</string>
+        <string name="activity_videoPlayer_accomplish">, 0%  completed </string>
+        <string name="activity_videoPlayer_cache">Buffering ···</string>
+        <string name="activity_videoPlayer_networkStateTip">Network speed is too slow，press Menu to change definition</string>
+        
+        <string name="fayeservice_toast_tip_retry_unbundling">Failed to disconnect, please retry</string>
+        <string name="fayeservice_toast_tip_retry_bundling"> Failed to connect, please retry </string>
+        
+        <string name="utils_minute"><xliff:g>%s</xliff:g> Mins</string>
+        <string name="utils_prodname_prodSubName"><xliff:g id="prodName">%s</xliff:g>  <xliff:g id="prodSubName">%s</xliff:g> </string>
+        <string name="utils_percent_network">,  <xliff:g id="finished">%s</xliff:g>%% completed </string>
+        
+        <string name="videoPlayerJPActivity_lastTimeRecord">Played:  <xliff:g id="lastTime">%s</xliff:g></string>
+        <string name="videoPlayerJPActivity_toast_add_favority_success"> Added  to favorites</string>
+        <string name="videoPlayerJPActivity_toast_add_favority_already"> Added  to favorites</string>
+        <string name="videoPlayerJPActivity_toast_cancel_favority_succes">Removed</string>
+        <string name="videoPlayerJPActivity_toast_cancel_favority_fail">Failed to remove</string>
+        <string name="videoPlayerJPActivity_dailog_tip_title">Hint</string>
+        <string name="videoPlayerJPActivity_dailog_canot_play">Failed to play, please retry</string>
+        <string name="videoPlayerJPActivity_dailog_OK">Done</string>
+        
+        <string name="videoPlayerJPActivity_density_SUPERD">1080P</string>
+        <string name="videoPlayerJPActivity_density_HD">720P</string>
+        <string name="videoPlayerJPActivity_density_STANDARDD">480P</string>
+        
+        <string name="videoPlayerJPActivity_no_subtitle">No subtitle</string>
+        <string name="videoPlayerJPActivity_subtitle_close">Off</string>
+        <string name="videoPlayerJPActivity_subtitle_num">Subtitle<xliff:g id="subtitleNum">%s</xliff:g></string>
+        
+        <string name="activity_viplogin_toast_usrname_empty">Account cannot be empty</string>
+        <string name="activity_viplogin_toast_passwd_empty"> Password cannot be empty </string>
+        <string name="activity_viplogin_toast_network_error">Network problem, please check</string>
+        <string name="activity_viplogin_toast_usrname_passwd_error">Account or password mismatched, please retry</string>
+        <string name="activity_viplogin_toast_login_success">Log in succeed</string>
+        
+        <string name="activity_shoucang_record_nothing_tip">Favorites is empty, chect it out what’s hot now ^_^~</string>
+        <string name="activity_shoucang_record_ClearAllRecord">Clear all?</string>
+        <string name="activity_shoucang_record_ClearMovieAllRecord">Clear all movies?</string>
+        <string name="activity_shoucang_record_ClearTvSeriesAllRecord">Clear all episodes?</string>
+        <string name="activity_shoucang_record_ClearVarietyAllRecord">Clear all variety shows?</string>
+        <string name="activity_shoucang_record_ClearAnimeAllRecord">Clear all anime?</string>
+        
+        <string name="activity_setting_localUser">Local user</string>
+        <string name="activity_setting_unbundling_Account">Press to disconnect</string>
+        
+        <string name="activity_Main1_discover_newVersion">Find new version:<xliff:g id="versionName">%s</xliff:g></string>
+        <string name="activity_Main1_OK">Done</string>
+        <string name="activity_Main1_Cancel">Concel</string>
+        
+        <string name="activity_Main1_PersonalRecordTv_Joyplus">Profiles and Settings</string>
+        <string name="activity_Main1_PlayStoreTv_Joyplus">All videos</string>
+        <string name="activity_Main1_NETWORK_Setting_byUser"> All videos</string>
+        <string name="activity_Main1_band_tip">Haven’t synced your data yet~</string>
+        <string name="activity_Main1_lasttime_band">Synced by: \t<xliff:g id="lastBandTime">%s</xliff:g></string>
+        
+        <string name="activity_history_lastRecordTime">Played：<xliff:g id="lastTime">%s</xliff:g></string>
+        <string name="activity_history_prodSubname_lastRecordTime"> Played：<xliff:g id="prodSubName">%s</xliff:g>  <xliff:g id="lastTime">%s</xliff:g></string>
+        <string name="activity_history_TV_prodSubname_lastRecordTime"> Played： <xliff:g id="prodSubName">%s</xliff:g> <xliff:g id="lastTime">%s</xliff:g></string>
+        <string name="activity_history_record_nothing_tip">You haven’t watched any videos, chect it out what’s hot now^_^~</string>
+        <string name="activity_history_record_ClearAllRecord">Clear all?</string>
+        <string name="activity_history_record_ClearMovieAllRecord">Clear all movies?</string>
+        <string name="activity_history_record_ClearTvSeriesAllRecord">Clear all episodes?</string>
+        <string name="activity_history_record_ClearVarietyAllRecord">Clear all variety shows?</string>
+        <string name="activity_history_record_ClearAnimeAllRecord">Clear all anime?</string>
+        
+        <string name="activity_faq_webload_fail">Failed to load help data</string>
+        
+        <string name="mainHotItemAdapter_view_time">Played:<xliff:g id="lastTime">%s</xliff:g></string>
+        <string name="mainHotItemAdapter_update_current_epsidoes">Update to <xliff:g id="lastTime">%s</xliff:g> </string>
+        <string name="mainHotItemAdapter_no_update"><xliff:g id="lastTime">%s</xliff:g>Finished</string>
+    </resources>
