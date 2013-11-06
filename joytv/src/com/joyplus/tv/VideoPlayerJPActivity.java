@@ -6,6 +6,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -270,7 +271,7 @@ public class VideoPlayerJPActivity extends Activity implements
 	private AdView mAdView;
 	
 	private boolean isOnlyExistFengXing = false;
-	private boolean isOnlyExistLetv = false;
+	private boolean isOnlyExistLetv = false;//包括le_tv_fee、letv
 	private boolean hasP2p = false;
 	private boolean isRetry = false;
 	private int	 reloadLetvCount = 0;
@@ -592,16 +593,16 @@ public class VideoPlayerJPActivity extends Activity implements
 						// 所有的片源都不能播放
 						Log.e(TAG, "no url can play!--->");
 						
-						if(isOnlyExistLetv && m_ReturnProgramView != null
-								&& sourceFromUrl != null){
-							String url = URLUtils.
-									getParseUrlURL(Constant.LETV_PARSE_URL_URL, sourceFromUrl, mProd_id, mProd_sub_name);
-							Log.i(TAG, "sourceUrl--->" + sourceFromUrl + " url---->" + url);
-							getLetvParseServiceData(url);
-						}else {
+//						if(isOnlyExistLetv && m_ReturnProgramView != null
+//								&& sourceFromUrl != null){
+//							String url = URLUtils.
+//									getParseUrlURL(Constant.LETV_PARSE_URL_URL, sourceFromUrl, mProd_id, mProd_sub_name);
+//							Log.i(TAG, "sourceUrl--->" + sourceFromUrl + " url---->" + url);
+//							getLetvParseServiceData(url);
+//						}else {
 							
 							noUrlCanPlay();
-						}
+//						}
 					}
 				}
 				break;
@@ -619,9 +620,9 @@ public class VideoPlayerJPActivity extends Activity implements
 					public void run() {
 						if(mStatue != STATUE_LOADING) return;
 						if(currentPlayIndex>=0&& currentPlayIndex<playUrls.size()){
-							if(PlayerSourceType.TYPE_LETV.toStringValue().
+							if(PlayerSourceType.TYPE_LETV.toSourceName().
 									equals(playUrls.get(currentPlayIndex).source_from)
-									||PlayerSourceType.TYPE_LE_TV_FEE.toStringValue().
+									||PlayerSourceType.TYPE_LE_TV_FEE.toSourceName().
 									equals(playUrls.get(currentPlayIndex).source_from)){
 								Log.i(TAG, "postDelayed--->" + playUrls.get(currentPlayIndex).source_from);
 								mVideoView.stopPlayback();
@@ -750,7 +751,12 @@ public class VideoPlayerJPActivity extends Activity implements
 				@Override
 				public void run() {
 					// TODO Auto-generated method stub
-					sequenceList();
+//					urlArrange();??
+					p2pPreArrange();
+					
+					playUrlsPreArrange();
+					initDefinitionUrls();
+					sortList();
 					mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
 				}
 			}).start();
@@ -851,7 +857,7 @@ public class VideoPlayerJPActivity extends Activity implements
 					for(int i=0;i<returnFengxingSecondView.urls.length;i++){
 						
 						URLS_INDEX urls_INDEX = new URLS_INDEX();
-						urls_INDEX.source_from = "fengxing";
+						urls_INDEX.source_from = PlayerSourceType.TYPE_FENGXING.toSourceName();
 						urls_INDEX.defination_from_server = type;
 						urls_INDEX.url = returnFengxingSecondView.urls[i];
 						urls_INDEX.webUrl = sourceFromUrl;
@@ -947,7 +953,10 @@ public class VideoPlayerJPActivity extends Activity implements
 					}
 				}
 				
-				sequenceList();
+//				urlArrange();??
+				playUrlsPreArrange();
+				initDefinitionUrls();
+				sortList();
 				
 				for(int i=0;i<playUrls.size();i++){
 					
@@ -1122,7 +1131,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		findViewById(R.id.tv_preload_source_reload).setVisibility(View.GONE);
 		//1.获取原始地址
 		String webUrl = playUrls.get(currentPlayIndex).webUrl;
-		String url = URLUtils.getReloadLetv(Constant.CLICK_LETV_PARSE_URL_URL,webUrl);
+		String url = URLUtils.getReloadLetv(Constant.CLICK_LETV_PARSE_URL_URL,webUrl,mProd_id,mProd_sub_name);
 		Log.i(TAG, "reloadLetv url--->" + url);
 //		//2.服务器请求获取新地址
 		RequestAQueryManager.getInstance().getRequest(VideoPlayerJPActivity.this, url, app.getHeaders(), aq, "initOnlineParseLetvData");
@@ -1153,7 +1162,7 @@ public class VideoPlayerJPActivity extends Activity implements
 										&& type.equals(urlObj.get("type"))){
 									String requestUrl = urlObj.getString("url");
 									if(!TextUtils.isEmpty(requestUrl)){
-										RequestAQueryManager.getInstance().getRequest(VideoPlayerJPActivity.this, requestUrl, app.getHeaders(), aq, "initRequestLetvData");
+										RequestAQueryManager.getInstance().getRequest(VideoPlayerJPActivity.this, requestUrl, null, aq, "initRequestLetvData");
 										return;
 									}
 									
@@ -2097,31 +2106,30 @@ public class VideoPlayerJPActivity extends Activity implements
 			mResourceTextView.setText("");
 		} else {
 			String strSrc = "";
-			if (mProd_src.equalsIgnoreCase("wangpan")) {
-				strSrc = "PPTV";
-			} else if (mProd_src.equalsIgnoreCase("le_tv_fee")) {
+			if (mProd_src.equalsIgnoreCase(PlayerSourceType.TYPE_LE_TV_FEE.toSourceName()) 
+					||mProd_src.equalsIgnoreCase(PlayerSourceType.TYPE_LETV.toSourceName())
+					||mProd_src.equals(PlayerSourceType.TYPE_LETV_V2.toSourceName())
+					||mProd_src.equals(PlayerSourceType.TYPE_LETV_V2_FEE.toSourceName())) {
 				strSrc = "乐  视";
-			} else if (mProd_src.equalsIgnoreCase("letv")) {
-				strSrc = "乐  视";
-			} else if (mProd_src.equalsIgnoreCase("fengxing")) {
+			} else if (mProd_src.equalsIgnoreCase(PlayerSourceType.TYPE_FENGXING.toSourceName())) {
 				strSrc = "风  行";
-			} else if (mProd_src.equalsIgnoreCase("qiyi")) {
+			} else if (mProd_src.equalsIgnoreCase(PlayerSourceType.TYPE_QIYI.toSourceName())) {
 				strSrc = "爱  奇  艺";
-			} else if (mProd_src.equalsIgnoreCase("youku")) {
+			} else if (mProd_src.equalsIgnoreCase(PlayerSourceType.TYPE_YOUKU.toSourceName())) {
 				strSrc = "优  酷";
-			} else if (mProd_src.equalsIgnoreCase("sinahd")) {
+			} else if (mProd_src.equalsIgnoreCase(PlayerSourceType.TYPE_SINAHD.toSourceName())) {
 				strSrc = "新  浪  视  频";
-			} else if (mProd_src.equalsIgnoreCase("sohu")) {
+			} else if (mProd_src.equalsIgnoreCase(PlayerSourceType.TYPE_SOHU.toSourceName())) {
 				strSrc = "搜  狐  视  频";
-			} else if (mProd_src.equalsIgnoreCase("qq")) {
+			} else if (mProd_src.equalsIgnoreCase(PlayerSourceType.TYPE_QQ.toSourceName())) {
 				strSrc = "腾  讯  视  频";
-			} else if (mProd_src.equalsIgnoreCase("pptv")) {
+			} else if (mProd_src.equalsIgnoreCase(PlayerSourceType.TYPE_PPTV.toSourceName())) {
 				strSrc = "PPTV";
-			} else if (mProd_src.equalsIgnoreCase("m1905")) {
+			} else if (mProd_src.equalsIgnoreCase(PlayerSourceType.TYPE_M1905.toSourceName())) {
 				strSrc = "电  影  网";
-			} else if (mProd_src.equalsIgnoreCase("p2p")) {
+			} else if (mProd_src.equalsIgnoreCase(PlayerSourceType.TYPE_P2P.toSourceName())) {
 				strSrc = "P 2 P";
-			}else {
+			}else {//wangpan baidu_wangpan
 				strSrc = "PPTV";
 			}
 			
@@ -2131,7 +2139,8 @@ public class VideoPlayerJPActivity extends Activity implements
 				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
-					if(!mProd_src.equalsIgnoreCase("p2p")&&!mProd_src.equalsIgnoreCase("wangpan")){
+					if(!mProd_src.equalsIgnoreCase(PlayerSourceType.TYPE_P2P.toSourceName())&&
+							!mProd_src.equalsIgnoreCase(PlayerSourceType.TYPE_WANGPAN.toSourceName())){
 						//点击logo跳网页
 						String url = null;
 						if(currentPlayIndex>=0&&currentPlayIndex<playUrls.size()){
@@ -2186,10 +2195,10 @@ public class VideoPlayerJPActivity extends Activity implements
 					}
 				}
 				if(movieMap.size() == 1){//只存在一个来源
-					if(!TextUtils.isEmpty(movieMap.get(PlayerSourceType.TYPE_LE_TV_FEE.toStringValue()))
-							|| !TextUtils.isEmpty(movieMap.get(PlayerSourceType.TYPE_LETV.toStringValue()))){
+					if(!TextUtils.isEmpty(movieMap.get(PlayerSourceType.TYPE_LE_TV_FEE.toSourceName()))
+							|| !TextUtils.isEmpty(movieMap.get(PlayerSourceType.TYPE_LETV.toSourceName()))){
 						isOnlyExistLetv = true;
-					}else if( !TextUtils.isEmpty(movieMap.get(PlayerSourceType.TYPE_FENGXING.toStringValue()))){
+					}else if( !TextUtils.isEmpty(movieMap.get(PlayerSourceType.TYPE_FENGXING.toSourceName()))){
 						isOnlyExistFengXing = true;
 					}
 					if(isOnlyExistFengXing || isOnlyExistLetv){
@@ -2251,10 +2260,10 @@ public class VideoPlayerJPActivity extends Activity implements
 							}
 						}
 						if(map.size() == 1){//只存在一个来源
-							if(!TextUtils.isEmpty(map.get(PlayerSourceType.TYPE_LE_TV_FEE.toStringValue()))
-									|| !TextUtils.isEmpty(map.get(PlayerSourceType.TYPE_LETV.toStringValue()))){
+							if(!TextUtils.isEmpty(map.get(PlayerSourceType.TYPE_LE_TV_FEE.toSourceName()))
+									|| !TextUtils.isEmpty(map.get(PlayerSourceType.TYPE_LETV.toSourceName()))){
 								isOnlyExistLetv = true;
-							}else if( !TextUtils.isEmpty(map.get(PlayerSourceType.TYPE_FENGXING.toStringValue()))){
+							}else if( !TextUtils.isEmpty(map.get(PlayerSourceType.TYPE_FENGXING.toSourceName()))){
 								isOnlyExistFengXing = true;
 							}
 							if(isOnlyExistFengXing || isOnlyExistLetv){
@@ -2323,10 +2332,10 @@ public class VideoPlayerJPActivity extends Activity implements
 								}
 							}
 							if(map.size() == 1){//只存在一个来源
-								if(!TextUtils.isEmpty(map.get(PlayerSourceType.TYPE_LE_TV_FEE.toStringValue()))
-										|| !TextUtils.isEmpty(map.get(PlayerSourceType.TYPE_LETV.toStringValue()))){
+								if(!TextUtils.isEmpty(map.get(PlayerSourceType.TYPE_LE_TV_FEE.toSourceName()))
+										|| !TextUtils.isEmpty(map.get(PlayerSourceType.TYPE_LETV.toSourceName()))){
 									isOnlyExistLetv = true;
-								}else if( !TextUtils.isEmpty(map.get(PlayerSourceType.TYPE_FENGXING.toStringValue()))){
+								}else if( !TextUtils.isEmpty(map.get(PlayerSourceType.TYPE_FENGXING.toSourceName()))){
 									isOnlyExistFengXing = true;
 								}
 								if(isOnlyExistFengXing || isOnlyExistLetv){
@@ -2408,7 +2417,7 @@ public class VideoPlayerJPActivity extends Activity implements
 				}
 			}
 
-			sequenceList();
+			urlArrange();
 			// url list 准备完成
 			mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
 		}
@@ -2416,12 +2425,11 @@ public class VideoPlayerJPActivity extends Activity implements
 	
 	private int maxQuality = -1;//最高清晰度
 	
-	private void sequenceList(){
-		
-		reInitDefinationPartAndSubTitle();
-		
-		Log.d(TAG, "playUrls size ------->" + playUrls.size() + " maxQuality--->" + maxQuality);
-		
+	/**
+	 * 把P2P源的磁力链和Bt地址转换成下载地址
+	 * 此方法需要在非UI线程中调用
+	 */
+	private void p2pPreArrange(){
 		UtilTools.setP2PMD5(getApplicationContext(), "");
 		if("".equals(UtilTools.getP2PMD5(getApplicationContext()))){
 			String md5 = null;
@@ -2441,7 +2449,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		
 		for (int i = 0; i < playUrls.size(); i++) {
 			URLS_INDEX tempUrls_INDEX = playUrls.get(i);
-			if ("p2p".equals(tempUrls_INDEX.source_from)) {
+			if (PlayerSourceType.TYPE_P2P.toSourceName().equals(tempUrls_INDEX.source_from)) {
 				if(tempUrls_INDEX.bakUrl != null){
 					boolean hasSame = false;
 					for(URLS_INDEX p2pUrlIndex: tempP2PList){
@@ -2461,7 +2469,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		}
 		
 		for(int i=0;i< tempP2PList.size();i++){
-			if("p2p".equals(tempP2PList.get(i).source_from)){
+			if(PlayerSourceType.TYPE_P2P.toSourceName().equals(tempP2PList.get(i).source_from)){
 				String p2pUrl = tempP2PList.get(i).bakUrl;
 				if(DEBUG)Log.i(TAG, "p2pUrl--->" + p2pUrl);
 				if(p2pUrl != null && !p2pUrl.equals("")){
@@ -2497,7 +2505,7 @@ public class VideoPlayerJPActivity extends Activity implements
 											if(p.length<2){
 												continue;
 											}
-											url_index_info.source_from="p2p";
+											url_index_info.source_from=PlayerSourceType.TYPE_P2P.toSourceName();
 											url_index_info.bakUrl = p2pUrl;
 											url_index_info.defination_from_server = p[0];
 											if("hd".equals(p[0])){
@@ -2532,113 +2540,129 @@ public class VideoPlayerJPActivity extends Activity implements
 		
 		playUrls.clear();
 		playUrls = tempExP2PList;
+	}
+	
+	/**
+	 * 把Letv V2的地址转换成下载地址
+	 * 此方法需要在非UI线程中调用
+	 * 包括LetvV2和Letv_v2_fee
+	 */
+	private void letvV2PreArrange(){
+		List<URLS_INDEX> tempV2List 	= new ArrayList<URLS_INDEX>();
+		List<URLS_INDEX> tempExV2List 	= new ArrayList<URLS_INDEX>();
+		List<String> sourceList         = new ArrayList<String>();
+		List<String> typeList			= new ArrayList<String>();
+		for(URLS_INDEX tempUrls:playUrls){
+			if (PlayerSourceType.TYPE_LETV_V2.toSourceName().equals(tempUrls.source_from)
+					||PlayerSourceType.TYPE_LETV_V2_FEE.toSourceName().equals(tempUrls.source_from)) {
+				tempV2List.add(tempUrls);
+				if(sourceList.indexOf(tempUrls.webUrl) <0){
+					sourceList.add(tempUrls.webUrl);
+					typeList.add(tempUrls.source_from);
+				}
+			}else{
+				tempExV2List.add(tempUrls);
+			}
+		}
 		
-		for (int i = 0; i < playUrls.size(); i++) {
+		List<URLS_INDEX> tempList = getV2List4Server(tempV2List);
+		
+		if(tempList.size() <= 0){//需要主动去获取播放地址
+			if(sourceList.size() > 0){
+				for(int j=0;j<sourceList.size();j++){
+					String sourceUrl = sourceList.get(j);
+					String url = URLUtils.getReloadLetv(Constant.CLICK_LETV_PARSE_URL_URL,sourceUrl,mProd_id,mProd_sub_name);
+					AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();           
+					cb.url(url).type(JSONObject.class);             
+//					Map<String, String> headers = new HashMap<String, String>();
+//					headers.put("app_key", Constant.APPKEY);
+					cb.SetHeader(app.getHeaders());        
+					aq.sync(cb);
+					JSONObject json = cb.getResult();
+					if(json != null)Log.i(TAG, "letvV2PreArrange:" + json.toString());
+					try {
+						if(json.has("error") && !json.getBoolean("error")){
+							if(json.has("down_urls")){
+								JSONObject downUrls = json.getJSONObject("down_urls");
+								if(downUrls != null && downUrls.has("urls")){
+									JSONArray urlArray = downUrls.getJSONArray("urls");
+									if(urlArray != null && urlArray.length() > 0){
+										for(int i=0;i<urlArray.length();i++){
+											JSONObject urlObj = urlArray.getJSONObject(i);
+											if(urlObj != null)Log.i(TAG, "urlObj:" + urlObj.toString());
+											if(urlObj != null && urlObj.has("type")){
+												String requestUrl = urlObj.getString("url");
+												String type = urlObj.getString("type");
+												if(!TextUtils.isEmpty(requestUrl)){
+													URLS_INDEX tempIndex = new URLS_INDEX();
+													Log.i(TAG, "source_from:" + type);
+													tempIndex.source_from = typeList.get(j);
+													tempIndex.defination_from_server = type;
+													tempIndex.url = requestUrl;
+													tempIndex.webUrl = sourceUrl;
+													tempList.add(tempIndex);
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+			tempList = getV2List4Server(tempList);
+		}
+		
+		tempExV2List.addAll(tempList);
+		playUrls.clear();
+		playUrls = tempExV2List;
+	}
+	
+	private List<URLS_INDEX> getV2List4Server(List<URLS_INDEX> list){
+		Iterator<URLS_INDEX> v2Iterator = list.iterator();
+		List<URLS_INDEX> tempList = new ArrayList<URLS_INDEX>();
+		while(v2Iterator.hasNext()){
+			URLS_INDEX tempE = v2Iterator.next();
+			String downUrl = tempE.url;
+			AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();           
+			cb.url(downUrl).type(JSONObject.class);             
+//			Map<String, String> headers = new HashMap<String, String>();
+//			headers.put("app_key", Constant.APPKEY);
+//			cb.SetHeader(app.getHeaders());        
+			aq.sync(cb);
+			JSONObject json = cb.getResult();
+			if(json != null)Log.i(TAG, "getV2List4Server:" + json.toString());
+			if(json != null &&json.has("location")){
+				try {
+					String location = json.getString("location");
+					if(!TextUtils.isEmpty(location) && URLUtil.isNetworkUrl(location)){
+						tempE.url = location;
+						tempList.add(tempE);
+					}
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}else{
+				break;
+			}
+		}
+		return tempList;
+	}
+	
+	/**
+	 * 把百度网盘的原始转换成下载地址
+	 * 此方法需要在非UI线程中调用
+	 */
+	private void baiduWangPanPreArrange(){
+		for(int i=0;i<playUrls.size();i++){
 			URLS_INDEX url_index = playUrls.get(i);
-
-			if (url_index.source_from.trim().equalsIgnoreCase(
-					PlayerSourceType.TYPE_P2P.toStringValue())) {
-				url_index.souces = PlayerSourceType.TYPE_P2P.getPriority();
-			} else if (url_index.source_from.trim().equalsIgnoreCase(
-					PlayerSourceType.TYPE_WANGPAN.toStringValue())) {
-				url_index.souces = PlayerSourceType.TYPE_WANGPAN.getPriority();
-				
-			} else if (url_index.source_from.trim().equalsIgnoreCase(
-					PlayerSourceType.TYPE_LE_TV_FEE.toStringValue())) {//le_tv_fee
-				url_index.souces =PlayerSourceType.TYPE_LE_TV_FEE.getPriority();
-				
-			} else if (url_index.source_from.trim().equalsIgnoreCase(
-					PlayerSourceType.TYPE_LETV.toStringValue())) {//letv
-				url_index.souces = PlayerSourceType.TYPE_LETV.getPriority();
-
-			} else if (url_index.source_from.trim().equalsIgnoreCase(
-					PlayerSourceType.TYPE_SOHU.toStringValue())) {//fengxing
-				url_index.souces = PlayerSourceType.TYPE_SOHU.getPriority();
-			} else if (url_index.source_from.trim().equalsIgnoreCase(
-					PlayerSourceType.TYPE_FENGXING.toStringValue())) {
-				url_index.souces = PlayerSourceType.TYPE_FENGXING.getPriority();
-			} else if (url_index.source_from.trim().equalsIgnoreCase(
-					PlayerSourceType.TYPE_YOUKU.toStringValue())) {
-				url_index.souces = PlayerSourceType.TYPE_YOUKU.getPriority();
-			} else if (url_index.source_from.trim().equalsIgnoreCase(
-					PlayerSourceType.TYPE_SINAHD.toStringValue())) {
-				url_index.souces = PlayerSourceType.TYPE_SINAHD.getPriority();
-			} else if (url_index.source_from.trim().equalsIgnoreCase(
-					PlayerSourceType.TYPE_QIYI.toString())) {
-				url_index.souces = PlayerSourceType.TYPE_QIYI.getPriority();
-			} else if (url_index.source_from.trim().equalsIgnoreCase(
-					PlayerSourceType.TYPE_M1905.toStringValue())) {
-				url_index.souces = PlayerSourceType.TYPE_M1905.getPriority();
-			} else if (url_index.source_from.trim().equalsIgnoreCase(
-					PlayerSourceType.TYPE_QQ.toStringValue())) {
-				url_index.souces = PlayerSourceType.TYPE_P2P.getPriority();
-			} else if (url_index.source_from.trim().equalsIgnoreCase(
-					PlayerSourceType.TYPE_PPTV.toStringValue())) {
-				url_index.souces = PlayerSourceType.TYPE_PPTV.getPriority();
-			} else if (url_index.source_from.trim().equalsIgnoreCase(
-					PlayerSourceType.TYPE_56.toStringValue())) {
-				url_index.souces = PlayerSourceType.TYPE_56.getPriority();
-			} else if (url_index.source_from.trim().equalsIgnoreCase(
-					PlayerSourceType.TYPE_PPS.toStringValue())) {
-				url_index.souces = PlayerSourceType.TYPE_PPS.getPriority();
-			}else {
-				url_index.souces = PlayerSourceType.TYPE_UNKOWN.getPriority();
-			}
-			switch (mDefination) {
-			case BangDanConstant.GAOQING:// 高清
-				if (url_index.defination_from_server.trim()
-						.equalsIgnoreCase(Constant.player_quality_index[1])) {
-					url_index.defination = 1;
-				} else if (url_index.defination_from_server.trim()
-						.equalsIgnoreCase(Constant.player_quality_index[0])) {
-					url_index.defination = 2;
-				} else if (url_index.defination_from_server.trim()
-						.equalsIgnoreCase(Constant.player_quality_index[2])) {
-					url_index.defination = 3;
-				} else if (url_index.defination_from_server.trim()
-						.equalsIgnoreCase(Constant.player_quality_index[3])) {
-					url_index.defination = 4;
-				} else {
-					url_index.defination = 5;
-				}
-				break;
-			case BangDanConstant.CHAOQING:// 超清
-				if (url_index.defination_from_server.trim()
-						.equalsIgnoreCase(Constant.player_quality_index[0])) {
-					url_index.defination = 1;
-				} else if (url_index.defination_from_server.trim()
-						.equalsIgnoreCase(Constant.player_quality_index[1])) {
-					url_index.defination = 2;
-				} else if (url_index.defination_from_server.trim()
-						.equalsIgnoreCase(Constant.player_quality_index[2])) {
-					url_index.defination = 3;
-				} else if (url_index.defination_from_server.trim()
-						.equalsIgnoreCase(Constant.player_quality_index[3])) {
-					url_index.defination = 4;
-				} else {
-					url_index.defination = 5;
-				}
-				break;
-			case BangDanConstant.CHANGXIAN:// 标清
-				if (url_index.defination_from_server.trim()
-						.equalsIgnoreCase(Constant.player_quality_index[2])) {
-					url_index.defination = 1;
-				} else if (url_index.defination_from_server.trim()
-						.equalsIgnoreCase(Constant.player_quality_index[3])) {
-					url_index.defination = 2;
-				} else if (url_index.defination_from_server.trim()
-						.equalsIgnoreCase(Constant.player_quality_index[1])) {
-					url_index.defination = 3;
-				} else if (url_index.defination_from_server.trim()
-						.equalsIgnoreCase(Constant.player_quality_index[0])) {
-					url_index.defination = 4;
-				} else {
-					url_index.defination = 5;
-				}
-				break;
-			}
 			if (url_index.source_from
-					.equalsIgnoreCase(Constant.BAIDU_WANGPAN)) {
+					.equalsIgnoreCase(PlayerSourceType.TYPE_BAIDU_WANGPAN.toSourceName())) {
 				boolean isLocalParse = false;
 				if(UtilTools.getWpBaiduLocalParseInit(getApplicationContext())){
 					
@@ -2717,11 +2741,130 @@ public class VideoPlayerJPActivity extends Activity implements
 				}
 			}
 		}
-		if (playUrls.size() > 1) {
-			Collections.sort(playUrls, new SouceComparatorIndex1());
-			Collections.sort(playUrls, new DefinationComparatorIndex());
+	}
+	
+	/**
+	 *地址排序前的处理
+	 */
+	private void playUrlsPreArrange(){
+		for (int i = 0; i < playUrls.size(); i++) {
+			URLS_INDEX url_index = playUrls.get(i);
+
+			if (url_index.source_from.trim().equalsIgnoreCase(
+					PlayerSourceType.TYPE_P2P.toSourceName())) {
+				url_index.souces = PlayerSourceType.TYPE_P2P.getPriority();
+			} else if (url_index.source_from.trim().equalsIgnoreCase(
+					PlayerSourceType.TYPE_WANGPAN.toSourceName())) {
+				url_index.souces = PlayerSourceType.TYPE_WANGPAN.getPriority();
+				
+			} else if (url_index.source_from.trim().equalsIgnoreCase(
+					PlayerSourceType.TYPE_LE_TV_FEE.toSourceName())) {//le_tv_fee
+				url_index.souces =PlayerSourceType.TYPE_LE_TV_FEE.getPriority();
+				
+			} else if (url_index.source_from.trim().equalsIgnoreCase(
+					PlayerSourceType.TYPE_LETV.toSourceName())) {//letv
+				url_index.souces = PlayerSourceType.TYPE_LETV.getPriority();
+
+			} else if (url_index.source_from.trim().equalsIgnoreCase(
+					PlayerSourceType.TYPE_SOHU.toSourceName())) {//fengxing
+				url_index.souces = PlayerSourceType.TYPE_SOHU.getPriority();
+			} else if (url_index.source_from.trim().equalsIgnoreCase(
+					PlayerSourceType.TYPE_FENGXING.toSourceName())) {
+				url_index.souces = PlayerSourceType.TYPE_FENGXING.getPriority();
+			} else if (url_index.source_from.trim().equalsIgnoreCase(
+					PlayerSourceType.TYPE_YOUKU.toSourceName())) {
+				url_index.souces = PlayerSourceType.TYPE_YOUKU.getPriority();
+			} else if (url_index.source_from.trim().equalsIgnoreCase(
+					PlayerSourceType.TYPE_SINAHD.toSourceName())) {
+				url_index.souces = PlayerSourceType.TYPE_SINAHD.getPriority();
+			} else if (url_index.source_from.trim().equalsIgnoreCase(
+					PlayerSourceType.TYPE_QIYI.toString())) {
+				url_index.souces = PlayerSourceType.TYPE_QIYI.getPriority();
+			} else if (url_index.source_from.trim().equalsIgnoreCase(
+					PlayerSourceType.TYPE_M1905.toSourceName())) {
+				url_index.souces = PlayerSourceType.TYPE_M1905.getPriority();
+			} else if (url_index.source_from.trim().equalsIgnoreCase(
+					PlayerSourceType.TYPE_QQ.toSourceName())) {
+				url_index.souces = PlayerSourceType.TYPE_P2P.getPriority();
+			} else if (url_index.source_from.trim().equalsIgnoreCase(
+					PlayerSourceType.TYPE_PPTV.toSourceName())) {
+				url_index.souces = PlayerSourceType.TYPE_PPTV.getPriority();
+			} else if (url_index.source_from.trim().equalsIgnoreCase(
+					PlayerSourceType.TYPE_56.toSourceName())) {
+				url_index.souces = PlayerSourceType.TYPE_56.getPriority();
+			} else if (url_index.source_from.trim().equalsIgnoreCase(
+					PlayerSourceType.TYPE_PPS.toSourceName())) {
+				url_index.souces = PlayerSourceType.TYPE_PPS.getPriority();
+			} else if (url_index.source_from.trim().equalsIgnoreCase(
+					PlayerSourceType.TYPE_BAIDU_WANGPAN.toSourceName())) {
+				url_index.souces = PlayerSourceType.TYPE_BAIDU_WANGPAN.getPriority();
+			} else if (url_index.source_from.trim().equalsIgnoreCase(
+					PlayerSourceType.TYPE_LETV_V2.toSourceName())) {
+				url_index.souces = PlayerSourceType.TYPE_LETV_V2.getPriority();
+			} else if (url_index.source_from.trim().equalsIgnoreCase(
+					PlayerSourceType.TYPE_LETV_V2_FEE.toSourceName())) {
+				url_index.souces = PlayerSourceType.TYPE_LETV_V2_FEE.getPriority();
+			}else {
+				url_index.souces = PlayerSourceType.TYPE_UNKOWN.getPriority();
+			}
+			switch (mDefination) {
+			case BangDanConstant.GAOQING:// 高清
+				if (url_index.defination_from_server.trim()
+						.equalsIgnoreCase(Constant.player_quality_index[1])) {
+					url_index.defination = 1;
+				} else if (url_index.defination_from_server.trim()
+						.equalsIgnoreCase(Constant.player_quality_index[0])) {
+					url_index.defination = 2;
+				} else if (url_index.defination_from_server.trim()
+						.equalsIgnoreCase(Constant.player_quality_index[2])) {
+					url_index.defination = 3;
+				} else if (url_index.defination_from_server.trim()
+						.equalsIgnoreCase(Constant.player_quality_index[3])) {
+					url_index.defination = 4;
+				} else {
+					url_index.defination = 5;
+				}
+				break;
+			case BangDanConstant.CHAOQING:// 超清
+				if (url_index.defination_from_server.trim()
+						.equalsIgnoreCase(Constant.player_quality_index[0])) {
+					url_index.defination = 1;
+				} else if (url_index.defination_from_server.trim()
+						.equalsIgnoreCase(Constant.player_quality_index[1])) {
+					url_index.defination = 2;
+				} else if (url_index.defination_from_server.trim()
+						.equalsIgnoreCase(Constant.player_quality_index[2])) {
+					url_index.defination = 3;
+				} else if (url_index.defination_from_server.trim()
+						.equalsIgnoreCase(Constant.player_quality_index[3])) {
+					url_index.defination = 4;
+				} else {
+					url_index.defination = 5;
+				}
+				break;
+			case BangDanConstant.CHANGXIAN:// 标清
+				if (url_index.defination_from_server.trim()
+						.equalsIgnoreCase(Constant.player_quality_index[2])) {
+					url_index.defination = 1;
+				} else if (url_index.defination_from_server.trim()
+						.equalsIgnoreCase(Constant.player_quality_index[3])) {
+					url_index.defination = 2;
+				} else if (url_index.defination_from_server.trim()
+						.equalsIgnoreCase(Constant.player_quality_index[1])) {
+					url_index.defination = 3;
+				} else if (url_index.defination_from_server.trim()
+						.equalsIgnoreCase(Constant.player_quality_index[0])) {
+					url_index.defination = 4;
+				} else {
+					url_index.defination = 5;
+				}
+				break;
+			}
 		}
-		
+	}
+	
+	private void initDefinitionUrls(){
+		reInitDefinationPartAndSubTitle();
 		for (int i = 0; i < playUrls.size(); i++) {
 
 			if ("hd2".equals(playUrls.get(i).defination_from_server)) {
@@ -2734,6 +2877,25 @@ public class VideoPlayerJPActivity extends Activity implements
 		}
 	}
 	
+	//地址排序
+	private void sortList(){
+		if (playUrls.size() > 1) {
+			Collections.sort(playUrls, new SouceComparatorIndex1());
+			Collections.sort(playUrls, new DefinationComparatorIndex());
+		}
+	}
+	
+	private void urlArrange(){
+		Log.d(TAG, "playUrls size ------->" + playUrls.size() + " maxQuality--->" + maxQuality);
+		
+		p2pPreArrange();
+		letvV2PreArrange();
+		baiduWangPanPreArrange();
+		playUrlsPreArrange();
+		initDefinitionUrls();
+		sortList();
+	}
+	
 	private void reInitDefinationPartAndSubTitle(){
 		
 		playUrls_flv.clear();
@@ -2741,22 +2903,16 @@ public class VideoPlayerJPActivity extends Activity implements
 		playUrls_mp4.clear();
 	}
 	
-	private void initSubTitleCollection(){
-	}
 	
-	@Override
 	protected void onResume() {
-		// TODO Auto-generated method stub
 		MobclickAgent.onResume(this);
 		super.onResume();
 	}
 
-	@Override
 	protected void onPause() {
 		
 		Log.i(TAG, "onPause--->");
 		
-		// TODO Auto-generated method stub
 		MobclickAgent.onPause(this);
 		if (mProd_type > 0&&mStatue!=STATUE_LOADING) {
 			long duration = mVideoView.getDuration();

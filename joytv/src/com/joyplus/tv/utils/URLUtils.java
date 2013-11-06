@@ -967,7 +967,7 @@ public class URLUtils implements JieMianConstant, BangDanConstant{
 
 	public static String getParseUrlURL(String url,String parseUrl,String id,String episode){
 		
-		return url + "?url=" + URLEncoder.encode(parseUrl) + "&id=" + id
+		return url + "?url=" + URLEncoder.encode(parseUrl == null ? "":parseUrl) + "&id=" + id
 				+ "&episode=" + episode;
 	}
 	
@@ -981,18 +981,18 @@ public class URLUtils implements JieMianConstant, BangDanConstant{
 //		return getParseUrlURL(Constant.SOHU_PARSE_URL_URL, parseUrl, id, episode);
 //	}
 	
-	public static String getFexingParseUrlURL(String firstBaseUrl,String url){
+	public static String getFexingParseUrlURL(String firstBaseUrl,String parseUrl){
 		
-		return firstBaseUrl + "?url=" + URLEncoder.encode(url == null ? "":url);
+		return firstBaseUrl + "?url=" + URLEncoder.encode(parseUrl == null ? "":parseUrl);
 	}
 	
-	public static String getXunLeiUrlURL(String baseUrl,String url ,String md5){
+	public static String getXunLeiUrlURL(String baseUrl,String parseUrl ,String md5){
 		
-		return baseUrl + "?url=" + URLEncoder.encode(url == null ? "":url) + "&md5_code=" + md5;
+		return baseUrl + "?url=" + URLEncoder.encode(parseUrl == null ? "":parseUrl) + "&md5_code=" + md5;
 	}
 	
-	public static String getReloadLetv(String firstBaseUrl,String url){
-		return getFexingParseUrlURL(firstBaseUrl, url);
+	public static String getReloadLetv(String firstBaseUrl,String parseUrl,String id,String episode){
+		return getParseUrlURL(firstBaseUrl, parseUrl, id, episode);
 	}
 
 }
