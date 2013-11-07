@@ -75,6 +75,7 @@ import com.joyplus.adkey.Ad;
 import com.joyplus.adkey.AdListener;
 import com.joyplus.adkey.Const;
 import com.joyplus.adkey.banner.AdView;
+import com.joyplus.features.HaoimsFeature;
 import com.joyplus.tv.Adapters.MainHotItemAdapter;
 import com.joyplus.tv.Adapters.MainLibAdapter;
 import com.joyplus.tv.Adapters.MainYueDanItemAdapter;
@@ -138,7 +139,7 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 //			R.drawable.variety_active, R.drawable.search_active, };
 	
 	{
-		if(Constant.isAddHaoims){
+		if(HaoimsFeature.isAddHaoims){
 			int[] normalArray = { R.drawable.movie_normal,R.drawable.episode_normal, 
 					  R.drawable.cartoon_normal,R.drawable.variety_normal,
 					  R.drawable.haoims_normal,R.drawable.search_normal };
@@ -2102,7 +2103,7 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 			startActivity(yuedanIntent);
 			break;
 		case 3:
-			if(Constant.isAddHaoims){
+			if(HaoimsFeature.isAddHaoims){
 				switch (index) {
 				case 0:
 					startActivity(new Intent(this, ShowMovieActivity.class));
