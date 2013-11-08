@@ -241,6 +241,18 @@ QR Code or search&quot;Joyplus&quot;.We always listen to your voice.</string>
     <string name="videoPlayerJPActivity_no_subtitle">No subtitle</string>
     <string name="videoPlayerJPActivity_subtitle_close">Off</string>
     <string name="videoPlayerJPActivity_subtitle_num">Subtitle<xliff:g id="subtitleNum">%s</xliff:g></string>
+    
+    <string name="videoPlayerJPActivity_source_letv">LETV</string>
+    <string name="videoPlayerJPActivity_source_fengxing">Funshion</string>
+    <string name="videoPlayerJPActivity_source_qiyi">QIYI</string>
+    <string name="videoPlayerJPActivity_subtitle_youku">Youku</string>
+    <string name="videoPlayerJPActivity_subtitle_sina">Sine video</string>
+    <string name="videoPlayerJPActivity_subtitle_sohu">Sohu TV</string>
+    <string name="videoPlayerJPActivity_subtitle_qq">Tencent video</string>
+    <string name="videoPlayerJPActivity_subtitle_pptv">PPTV</string>
+    <string name="videoPlayerJPActivity_subtitle_m1905">m1905</string>
+    <string name="videoPlayerJPActivity_subtitle_p2p">P 2 P</string>
+    
     <string name="activity_viplogin_toast_usrname_empty">Account cannot be empty</string>
     <string name="activity_viplogin_toast_passwd_empty"> Password cannot be empty </string>
     <string name="activity_viplogin_toast_network_error">Network problem, please check</string>

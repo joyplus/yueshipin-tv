@@ -239,6 +239,19 @@
     <string name="videoPlayerJPActivity_no_subtitle">暂无字幕</string>
     <string name="videoPlayerJPActivity_subtitle_close">关</string>
     <string name="videoPlayerJPActivity_subtitle_num">字幕<xliff:g id="subtitleNum">%s</xliff:g></string>
+    
+    <string name="videoPlayerJPActivity_source_letv">乐  视</string>
+    <string name="videoPlayerJPActivity_source_fengxing">风  行</string>
+    <string name="videoPlayerJPActivity_source_qiyi">爱  奇  艺</string>
+    <string name="videoPlayerJPActivity_subtitle_youku">优  酷</string>
+    <string name="videoPlayerJPActivity_subtitle_sina">新  浪  视  频</string>
+    <string name="videoPlayerJPActivity_subtitle_sohu">搜  狐  视  频</string>
+    <string name="videoPlayerJPActivity_subtitle_qq">腾  讯  视  频</string>
+    <string name="videoPlayerJPActivity_subtitle_pptv">PPTV</string>
+    <string name="videoPlayerJPActivity_subtitle_m1905">电  影  网</string>
+    <string name="videoPlayerJPActivity_subtitle_p2p">P 2 P</string>
+    
+    
     <string name="activity_viplogin_toast_usrname_empty">用户名不能为空</string>
     <string name="activity_viplogin_toast_passwd_empty">密码不能为空</string>
     <string name="activity_viplogin_toast_network_error">网络异常，检查网络状态</string>
@@ -274,4 +287,5 @@
     <string name="mainHotItemAdapter_update_current_epsidoes">更新到第 <xliff:g id="currentEpisode">%s</xliff:g> 集</string>
     <string name="mainHotItemAdapter_no_update"><xliff:g id="currentEpisode">%s</xliff:g> 集全</string>
 
+    
 </resources>

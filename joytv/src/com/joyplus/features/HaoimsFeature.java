@@ -7,5 +7,5 @@ public class HaoimsFeature {
 	 * @author Yzg 20131107
 	 */
 	
-	public static final boolean isAddHaoims = true;//是否开启haoims功能模块
+	public static final boolean isAddHaoims = false;//是否开启haoims功能模块
 }
