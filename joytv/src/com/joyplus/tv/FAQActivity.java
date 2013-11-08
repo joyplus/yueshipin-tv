@@ -100,7 +100,9 @@ public class FAQActivity extends Activity {
 	
 	
 	public void getFAQData() {
-		String url = Constant.PARSE_URL_BASE_URL + "questions/yueshipin";
+		String language = getResources().getConfiguration().locale.getLanguage();
+//		Log.i(TAG, "language:" + language);
+		String url = Constant.PARSE_URL_BASE_URL + "questions/yueshipin?language=" + language;
 		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
 		cb.url(url).type(JSONObject.class).weakHandler(this, "initFAQ");
 		Map<String, String> header = new HashMap<String, String>();
