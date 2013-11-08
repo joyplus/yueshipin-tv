@@ -2111,27 +2111,27 @@ public class VideoPlayerJPActivity extends Activity implements
 					||mProd_src.equalsIgnoreCase(PlayerSourceType.TYPE_LETV.toSourceName())
 					||mProd_src.equals(PlayerSourceType.TYPE_LETV_V2.toSourceName())
 					||mProd_src.equals(PlayerSourceType.TYPE_LETV_V2_FEE.toSourceName())) {
-				strSrc = "乐  视";
+				strSrc = getString(R.string.videoPlayerJPActivity_source_letv);
 			} else if (mProd_src.equalsIgnoreCase(PlayerSourceType.TYPE_FENGXING.toSourceName())) {
-				strSrc = "风  行";
+				strSrc = getString(R.string.videoPlayerJPActivity_source_fengxing);
 			} else if (mProd_src.equalsIgnoreCase(PlayerSourceType.TYPE_QIYI.toSourceName())) {
-				strSrc = "爱  奇  艺";
+				strSrc = getString(R.string.videoPlayerJPActivity_source_qiyi);
 			} else if (mProd_src.equalsIgnoreCase(PlayerSourceType.TYPE_YOUKU.toSourceName())) {
-				strSrc = "优  酷";
+				strSrc = getString(R.string.videoPlayerJPActivity_source_youku);
 			} else if (mProd_src.equalsIgnoreCase(PlayerSourceType.TYPE_SINAHD.toSourceName())) {
-				strSrc = "新  浪  视  频";
+				strSrc = getString(R.string.videoPlayerJPActivity_source_sina);
 			} else if (mProd_src.equalsIgnoreCase(PlayerSourceType.TYPE_SOHU.toSourceName())) {
-				strSrc = "搜  狐  视  频";
+				strSrc = getString(R.string.videoPlayerJPActivity_source_sohu);
 			} else if (mProd_src.equalsIgnoreCase(PlayerSourceType.TYPE_QQ.toSourceName())) {
-				strSrc = "腾  讯  视  频";
+				strSrc = getString(R.string.videoPlayerJPActivity_source_qq);
 			} else if (mProd_src.equalsIgnoreCase(PlayerSourceType.TYPE_PPTV.toSourceName())) {
-				strSrc = "PPTV";
+				strSrc = getString(R.string.videoPlayerJPActivity_source_pptv);
 			} else if (mProd_src.equalsIgnoreCase(PlayerSourceType.TYPE_M1905.toSourceName())) {
-				strSrc = "电  影  网";
+				strSrc = getString(R.string.videoPlayerJPActivity_source_m1905);
 			} else if (mProd_src.equalsIgnoreCase(PlayerSourceType.TYPE_P2P.toSourceName())) {
-				strSrc = "P 2 P";
+				strSrc = getString(R.string.videoPlayerJPActivity_source_p2p);
 			}else {//wangpan baidu_wangpan
-				strSrc = "PPTV";
+				strSrc = getString(R.string.videoPlayerJPActivity_source_pptv);
 			}
 			
 			mResourceTextView.setText(strSrc);
