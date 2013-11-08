@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.joyplus.tv.App;
 import com.joyplus.tv.Constant;
+import com.joyplus.tv.R;
 import com.joyplus.tv.VideoPlayerJPActivity;
 import com.joyplus.tv.entity.CurrentPlayDetailData;
 import com.joyplus.tv.utils.UtilTools;
@@ -83,8 +84,7 @@ public class FayeService extends Service implements FayeListener{
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
-						app.MyToast(FayeService.this, "解绑遇到问题，再试一次哦");
-//						Toast.makeText(FayeService.this, "解绑遇到问题，再试一次哦", Toast.LENGTH_LONG).show();
+						app.MyToast(FayeService.this,getString(R.string.fayeservice_toast_tip_retry_unbundling));
 					}
 	        	}else if(ACTION_M_APPEAR.equals(intent.getAction())){
 	        		//二维码出现啦
@@ -234,11 +234,8 @@ public class FayeService extends Service implements FayeListener{
 						Log.e(TAG, e.getMessage());
 						handler.post(new Runnable() {
 							
-							@Override
 							public void run() {
-								// TODO Auto-generated method stub
-								app.MyToast(FayeService.this, "绑定在路上, 再试一次哦");
-//								Toast.makeText(FayeService.this, "绑定在路上, 再试一次哦", Toast.LENGTH_LONG).show();
+								app.MyToast(FayeService.this, getString(R.string.fayeservice_toast_tip_retry_bundling));
 								myClient.connectToServer(null);
 //								myClient = null;
 //								System.gc();
@@ -275,7 +272,6 @@ public class FayeService extends Service implements FayeListener{
 						sendBroadcast(bandIntent);
 					}catch (Exception e) {
 						// TODO: handle exception
-//						Toast.makeText(FayeService.this, "绑定在路上, 再试一次哦", Toast.LENGTH_LONG).show();
 						Log.e(TAG, e.getMessage());
 						handler.post(new Runnable() {
 							
@@ -290,8 +286,7 @@ public class FayeService extends Service implements FayeListener{
 //								myClient = new FayeClient(handler, url, channel);
 //								myClient.setFayeListener(FayeService.this);
 //								myClient.connectToServer(null);
-								app.MyToast(FayeService.this, "绑定在路上, 再试一次哦");
-//								Toast.makeText(FayeService.this, "绑定在路上, 再试一次哦", Toast.LENGTH_LONG).show();
+								app.MyToast(FayeService.this, getString(R.string.fayeservice_toast_tip_retry_bundling));
 								myClient.connectToServer(null);
 							}
 						});

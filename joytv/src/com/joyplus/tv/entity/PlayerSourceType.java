@@ -8,79 +8,39 @@ public enum PlayerSourceType {
 	 * 	m1905，	qq，	pptv，
 	 * 	56，pps
 	 */
-	TYPE_UNKOWN		("unkown"),
-	TYPE_P2P   		("p2p"),
-	TYPE_WANGPAN 	("wangpan"),
-	TYPE_LE_TV_FEE 	("le_tv_fee"),
-	TYPE_LETV 		("letv"),
-	TYPE_SOHU 		("sohu"),
-	TYPE_FENGXING 	("fengxing"),
-	TYPE_YOUKU 		("youku"),
-	TYPE_SINAHD 	("sinahd"),
-	TYPE_QIYI 		("qiyi"),
-	TYPE_M1905 		("m1905"),
-	TYPE_QQ 		("qq"),
-	TYPE_PPTV 		("pptv"),
-	TYPE_56 		("56"),
-	TYPE_PPS		("pps");
+	TYPE_UNKOWN		("unkown",100),//max 100
+	TYPE_P2P   		("p2p",0),//0
+	TYPE_WANGPAN 	("wangpan",4),//4
+	TYPE_LE_TV_FEE 	("le_tv_fee",5),//5
+	TYPE_LETV 		("letv",7),//7
+	TYPE_SOHU 		("sohu",8),//8
+	TYPE_FENGXING 	("fengxing",9),//9
+	TYPE_YOUKU 		("youku",10),//10
+	TYPE_SINAHD 	("sinahd",11),//11
+	TYPE_QIYI 		("qiyi",12),//12
+	TYPE_M1905 		("m1905",13),//13
+	TYPE_QQ 		("qq",14),//14
+	TYPE_PPTV 		("pptv",15),//15
+	TYPE_56 		("56",16),//16
+	TYPE_PPS		("pps",17),//17
+	
+	//20131105 by @yzg
+	TYPE_BAIDU_WANGPAN		("baidu_wangpan",1),//1
+	TYPE_LETV_V2			("letv_v2",2),//2
+	TYPE_LETV_V2_FEE		("letv_v2_fee",3);//3
 
 	private String sourceName = "unkown";
-	private PlayerSourceType(String _sourceName){
+	private int priority     = 100;//默认值100，值越小，优先级越高，可自行设置
+	private PlayerSourceType(String _sourceName,int _priority){
 		this.sourceName = _sourceName;
+		this.priority 	= _priority;
 	}
-	
-	//值越小，优先级越高
-	//可自行设置
-	private static final int PRIORITY_P2P 		= 0;
-	private static final int PRIORITY_WANGPAN 	= 1;
-	private static final int PRIORITY_LE_TV_FEE  	= 2;
-	private static final int PRIORITY_LETV  		= 3;
-	private static final int PRIORITY_SOHU 		= 4;
-	private static final int PRIORITY_FENGXING 	= 5;
-	private static final int PRIORITY_YOUKU  		= 6;
-	private static final int PRIORITY_SINAHD 		= 7;
-	private static final int PRIORITY_QIYI 		= 8;
-	private static final int PRIORITY_M1905 		= 9;
-	private static final int PRIORITY_QQ  		= 10;
-	private static final int PRIORITY_PPTV 		= 11;
-	private static final int PRIORITY_56  		= 12;
-	private static final int PRIORITY_PPS 		= 13;
-	private static final int PRIORITY_UNKOWN 		= 100;
-	
 
 	public int getPriority(){
-		if("p2p".equalsIgnoreCase(sourceName))
-			return PRIORITY_P2P;
-		else if("wangpan".equalsIgnoreCase(sourceName))
-			return PRIORITY_WANGPAN;
-		else if("le_tv_fee".equalsIgnoreCase(sourceName))
-			return PRIORITY_LE_TV_FEE;
-		else if("letv".equalsIgnoreCase(sourceName))
-			return PRIORITY_LETV;
-		else if("sohu".equalsIgnoreCase(sourceName))
-			return PRIORITY_SOHU;
-		else if("fengxing".equalsIgnoreCase(sourceName))
-			return PRIORITY_FENGXING;
-		else if("youku".equalsIgnoreCase(sourceName))
-			return PRIORITY_YOUKU;
-		else if("sinahd".equalsIgnoreCase(sourceName))
-			return PRIORITY_SINAHD;
-		else if("qiyi".equalsIgnoreCase(sourceName))
-			return PRIORITY_QIYI;
-		else if("m1905".equalsIgnoreCase(sourceName))
-			return PRIORITY_M1905;
-		else if("qq".equalsIgnoreCase(sourceName))
-			return PRIORITY_QQ;
-		else if("pptv".equalsIgnoreCase(sourceName))
-			return PRIORITY_PPTV;
-		else if("56".equalsIgnoreCase(sourceName))
-			return PRIORITY_56;
-		else if("pps".equalsIgnoreCase(sourceName))
-			return PRIORITY_PPS;
-		else return PRIORITY_UNKOWN;
+		return this.priority;
 	}
 	
-	public String toStringValue(){
+	public String toSourceName(){
 		return sourceName;
 	}
 	

@@ -40,7 +40,7 @@
 		            android:textColor="@color/hot_content_content"
 		        	android:id="@+id/content"
 		            android:textSize="15dp"
-		            android:text="第二季  第17集"/>
+		            android:text=""/>
 		        <TextView android:layout_width="25dp"
 		            android:layout_height="20dp"
 		            android:textColor="@color/hot_content_notice"
@@ -68,7 +68,7 @@
 		    android:paddingLeft="8dp"
 		    android:paddingRight="8dp"
 		    android:singleLine="true"
-		    android:text="上次观看"
+		    android:text=""
 		    android:id="@+id/first_title"
 		    android:visibility="gone"
 		    android:textColor="@color/clock_green"

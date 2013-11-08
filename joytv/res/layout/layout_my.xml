@@ -25,5 +25,5 @@
 	    android:layout_height="wrap_content"
 	    android:textColor="@color/hot_content_content"
 	    android:textSize="20dp"
-	    android:text="如需更换用户，请启动手机上的&quot;悦视频&quot;，然后扫描上面的二维码。"/>
+	    android:text="@string/layout_my_tip"/>
 </LinearLayout>

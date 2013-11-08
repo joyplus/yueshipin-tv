@@ -170,7 +170,7 @@ public class YueDanAdapter extends BaseAdapter implements JieMianConstant{
 					String duration = movieList.get(position).getMovieDuration();
 					if(duration != null && !duration.equals("")) {
 						
-						viewItemHodler.otherInfo.setText(Utils.formatMovieDuration(duration));
+						viewItemHodler.otherInfo.setText(Utils.formatMovieDuration(context,duration));
 					}
 				} else if(proType.equals("2") || proType.equals("131")){
 					
@@ -184,11 +184,10 @@ public class YueDanAdapter extends BaseAdapter implements JieMianConstant{
 								curEpisode.compareTo(maxEpisode) >= 0) {
 							
 							viewItemHodler.otherInfo.setText(
-									maxEpisode + context.getString(R.string.dianshiju_jiquan));
+									context.getString(R.string.mainHotItemAdapter_no_update,maxEpisode));
 							} else if(maxEpisode.compareTo(curEpisode) > 0) {
 
-								viewItemHodler.otherInfo.setText(context.getString(R.string.zongyi_gengxinzhi) + 
-										curEpisode);
+								viewItemHodler.otherInfo.setText(context.getString(R.string.zongyi_gengxinzhi,curEpisode));
 						}
 					}
 

@@ -62,12 +62,6 @@ public class NavigateView extends RelativeLayout implements OnItemSelectedListen
 		public void onReceive(Context context, Intent intent) {
 			// TODO Auto-generated method stub
 			Log.d(TAG, intent.getAction() + intent.getBooleanExtra("isBack", false));
-//			if(pop!=null){
-//				pop.dismiss();
-//				Toast.makeText(MainActivity.this, "选择结果：地区="+ array_diqu[gallery1.getSelectedItemPosition()] 
-//								+ ";\t分类 =" + array_leibie[gallery2.getSelectedItemPosition()] 
-//								+ ";\t年份 =" + array_niandai[gallery3.getSelectedItemPosition()], Toast.LENGTH_LONG).show();
-//			}
 			String action = intent.getAction();
 			if("KEY_EVENT_KEYCODE_DPAD_CENTER".equals(action)){
 				if(resultListener != null){
@@ -375,7 +369,7 @@ public class NavigateView extends RelativeLayout implements OnItemSelectedListen
 						if(!isTouchMode) {
 							
 							LayoutParams parm = (LayoutParams) relativeLayout.getLayoutParams();
-							parm.height = Utils.getStandardValue(mContext, 140);
+							parm.height = (int) Utils.getStandardValue(mContext, 140);
 							relativeLayout.requestLayout();
 						}
 					}
@@ -405,9 +399,9 @@ public class NavigateView extends RelativeLayout implements OnItemSelectedListen
 //		gallery1.setPadding(-(1280-480)+105, 0, 0, 0);
 //		gallery2.setPadding(-(1280-480)+105, 0, 0, 0);
 //		gallery3.setPadding(-(1280-480)+105, 0, 0, 0);
-		gallery1.setPadding(Utils.getStandardValue(mContext, -(1280-480)+105), 0, 0, 0);
-		gallery2.setPadding(Utils.getStandardValue(mContext, -(1280-480)+105), 0, 0, 0);
-		gallery3.setPadding(Utils.getStandardValue(mContext, -(1280-480)+105), 0, 0, 0);
+		gallery1.setPadding((int) Utils.getStandardValue(mContext, -(1280-480)+105), 0, 0, 0);
+		gallery2.setPadding((int) Utils.getStandardValue(mContext, -(1280-480)+105), 0, 0, 0);
+		gallery3.setPadding((int) Utils.getStandardValue(mContext, -(1280-480)+105), 0, 0, 0);
 		gallery1.setCallbackDuringFling(false);
 		gallery2.setCallbackDuringFling(false);
 		gallery3.setCallbackDuringFling(false);
@@ -483,7 +477,7 @@ public class NavigateView extends RelativeLayout implements OnItemSelectedListen
 			if(!isTouchMode) {
 				
 				LayoutParams parm = (LayoutParams) relativeLayout.getLayoutParams();
-				parm.height = Utils.getStandardValue(mContext, 180);
+				parm.height = (int) Utils.getStandardValue(mContext, 180);
 				relativeLayout.requestLayout();
 			}
 		}
@@ -614,7 +608,7 @@ public class NavigateView extends RelativeLayout implements OnItemSelectedListen
 			if(!isTouchMode) {
 				
 				LayoutParams parm = (LayoutParams) relativeLayout.getLayoutParams();
-				parm.height = Utils.getStandardValue(mContext, 140);
+				parm.height = (int) Utils.getStandardValue(mContext, 140);
 				relativeLayout.requestLayout();	
 			}
 		}

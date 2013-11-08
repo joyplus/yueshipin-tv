@@ -67,7 +67,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
                         android:layout_alignParentTop="true"
-                        android:text="西游降魔篇"
+                        android:text=""
                         android:textColor="@color/menu_bg_select_ok"
                         android:textSize="25dp" />
 
@@ -79,7 +79,7 @@
                         android:layout_alignParentTop="true"
                         android:layout_marginLeft="22dp"
                         android:layout_toRightOf="@+id/textView1"
-                        android:text="的影评"
+                        android:text=""
                         android:textColor="@color/white"
                         android:textSize="20dp" />
 

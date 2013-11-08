@@ -11,6 +11,6 @@
         android:layout_height="wrap_content"
         android:textColor="#f18c21" 
         android:textSize="30dp" 
-	  	android:text="再按一次退出程序"
+	  	android:text="@string/toast_exit_app"
 	  	android:gravity="center"/>
 </LinearLayout>

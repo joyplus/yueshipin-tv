@@ -264,8 +264,8 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 			Button b = new Button(this);
 //			b.setWidth(table.getWidth()/5);
 //			b.setHeight(layout.getHeight());
-			b.setLayoutParams(new LayoutParams((table.getWidth()-Utils.getStandardValue(getApplicationContext(),80))/5,
-					Utils.getStandardValue(getApplicationContext(),35)));
+			b.setLayoutParams(new LayoutParams(((int)(table.getWidth()-Utils.getStandardValue(getApplicationContext(),80))/5),
+					(int)Utils.getStandardValue(getApplicationContext(),35)));
 			if(isOver){
 				if((i+1)*COUNT>num){
 					b.setText((i*COUNT+1) +"-"+num);
@@ -307,8 +307,8 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 			layout.addView(b);
 			if(i!=totle_pagecount-1){
 				TextView t = new TextView(this);
-				t.setLayoutParams(new LayoutParams(Utils.getStandardValue(getApplicationContext(),20),
-						Utils.getStandardValue(getApplicationContext(),35)));
+				t.setLayoutParams(new LayoutParams((int)Utils.getStandardValue(getApplicationContext(),20),
+						(int)Utils.getStandardValue(getApplicationContext(),35)));
 				layout.addView(t);
 			}
 			
@@ -484,11 +484,11 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 			int[] location = new int[2];
 			v.getLocationOnScreen(location);
 			popupWindow.setFocusable(true);
-			popupWindow.setWidth(width + Utils.getStandardValue(getApplicationContext(),10));
-			popupWindow.setHeight(height + Utils.getStandardValue(getApplicationContext(),40));
+			popupWindow.setWidth((int) (width + Utils.getStandardValue(getApplicationContext(),10)));
+			popupWindow.setHeight((int) (height + Utils.getStandardValue(getApplicationContext(),40)));
 			popupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
-					location[0] - Utils.getStandardValue(getApplicationContext(),6), location[1] - locationY
-							- Utils.getStandardValue(getApplicationContext(),40));
+					(int)(location[0] - Utils.getStandardValue(getApplicationContext(),6)), (int)(location[1] - locationY
+							- Utils.getStandardValue(getApplicationContext(),40)));
 		} else if (supportDefination == 2) {
 
 			int width = v.getWidth();
@@ -497,11 +497,11 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 			int[] location = new int[2];
 			v.getLocationOnScreen(location);
 			popupWindow.setFocusable(true);
-			popupWindow.setWidth(width + Utils.getStandardValue(getApplicationContext(),10));
-			popupWindow.setHeight(height + Utils.getStandardValue(getApplicationContext(),40));
+			popupWindow.setWidth((int) (width + Utils.getStandardValue(getApplicationContext(),10)));
+			popupWindow.setHeight((int) (height + Utils.getStandardValue(getApplicationContext(),40)));
 			popupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
-					location[0] - Utils.getStandardValue(getApplicationContext(),6), location[1] - locationY
-							- Utils.getStandardValue(getApplicationContext(),40));
+					(int)(location[0] - Utils.getStandardValue(getApplicationContext(),6)), (int)(location[1] - locationY
+							- Utils.getStandardValue(getApplicationContext(),40)));
 		}
 	}
 	

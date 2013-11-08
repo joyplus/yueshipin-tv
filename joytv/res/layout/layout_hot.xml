@@ -42,54 +42,11 @@
             android:layout_weight="1"
             android:orientation="horizontal"
             android:visibility="gone" >
-
-            <!--
-     	        <TextView android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_marginLeft="48dp"
-	        android:textSize="24dp"
-	        android:textColor="@color/clock_green"
-	        android:text="约在"
-	        />
-            -->
-
             <include
                 android:layout_marginLeft="24dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 layout="@layout/show_timeover_item" />
-
-<!--             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="25dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginBottom="2dp"
-                android:layout_marginTop="3dp"
-                android:background="@drawable/bg_time"
-                android:orientation="horizontal" >
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="fill_parent"
-                    android:src="@drawable/icon_time" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="fill_parent"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginTop="-3dp"
-                    android:gravity="center_vertical"
-                    android:text="15:08"
-                    android:textColor="@color/common_title_selected"
-                    android:textSize="18dp" />
-            </LinearLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="看完"
-                android:textColor="@color/clock_green"
-                android:textSize="24dp" /> -->
         </LinearLayout>
     </LinearLayout>
 
@@ -102,7 +59,7 @@
             android:id="@+id/title_directors"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="导演:"
+            android:text="@string/layout_hot_director"
             android:textColor="@color/hot_content_notice"
             android:textSize="24dp" />
 
@@ -119,7 +76,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="48dp"
-            android:text="主演:"
+            android:text="@string/layout_hot_stars"
             android:textColor="@color/hot_content_notice"
             android:textSize="24dp" />
 
@@ -137,7 +94,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
-        android:text="剧情简介:"
+        android:text="@string/layout_hot_plot"
         android:visibility="gone"
         android:textColor="@color/hot_content_notice"
         android:textSize="24dp" />

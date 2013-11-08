@@ -75,21 +75,6 @@ public class ShowXiangqingMovie extends Activity implements
 	private LinearLayout chaoqingLL, gaoqingLL, biaoqingLL;
 
 	private GridView tuijianGv;
-//	/**
-//	 * 高清地址
-//	 */
-//	private String gaoqing_url;
-//	private String gaoqing_url_souce;
-//	/**
-//	 * 超清地址
-//	 */
-//	private String chaoqing_url;
-//	private String chaoqing_url_souce;
-//	/**
-//	 * 标清地址
-//	 */
-//	private String puqing_url;
-//	private String puqing_url_souce;
 	
 	private boolean hasChaoqing = false;
 	private boolean hasGaoqing= false;
@@ -337,33 +322,6 @@ public class ShowXiangqingMovie extends Activity implements
 			public boolean onLongClick(View v) {
 				// TODO Auto-generated method stub
 				Log.i(TAG, "bofangLL.setOnLongClickListener---->");
-//				if (supportDefination == 3) {
-//
-//					int width = v.getWidth();
-//					int height = v.getHeight() * 3;
-//					int locationY = v.getHeight() * 2;
-//					int[] location = new int[2];
-//					v.getLocationOnScreen(location);
-//					popupWindow.setFocusable(true);
-//					popupWindow.setWidth(width + UtilTools.getStandardValue(getApplicationContext(),10));
-//					popupWindow.setHeight(height + UtilTools.getStandardValue(getApplicationContext(),40));
-//					popupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
-//							location[0] - UtilTools.getStandardValue(getApplicationContext(),6), location[1] - locationY
-//									- UtilTools.getStandardValue(getApplicationContext(),40));
-//				} else if (supportDefination == 2) {
-//
-//					int width = v.getWidth();
-//					int height = v.getHeight() * 2;
-//					int locationY = v.getHeight() * 1;
-//					int[] location = new int[2];
-//					v.getLocationOnScreen(location);
-//					popupWindow.setFocusable(true);
-//					popupWindow.setWidth(width + UtilTools.getStandardValue(getApplicationContext(),10));
-//					popupWindow.setHeight(height + UtilTools.getStandardValue(getApplicationContext(),40));
-//					popupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
-//							location[0] - UtilTools.getStandardValue(getApplicationContext(),6), location[1] - locationY
-//									- UtilTools.getStandardValue(getApplicationContext(),40));
-//				}
 				showPopUpWindow(v);
 				return false;
 			}
@@ -379,11 +337,11 @@ public class ShowXiangqingMovie extends Activity implements
 			int[] location = new int[2];
 			v.getLocationOnScreen(location);
 			popupWindow.setFocusable(true);
-			popupWindow.setWidth(width + Utils.getStandardValue(getApplicationContext(),10));
-			popupWindow.setHeight(height + Utils.getStandardValue(getApplicationContext(),40));
+			popupWindow.setWidth((int) (width + Utils.getStandardValue(getApplicationContext(),10)));
+			popupWindow.setHeight((int) (height + Utils.getStandardValue(getApplicationContext(),40)));
 			popupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
-					location[0] - Utils.getStandardValue(getApplicationContext(),6), location[1] - locationY
-							- Utils.getStandardValue(getApplicationContext(),40));
+					(int)(location[0] - Utils.getStandardValue(getApplicationContext(),6)), (int)(location[1] - locationY
+							- Utils.getStandardValue(getApplicationContext(),40)));
 		} else if (supportDefination == 2) {
 
 			int width = v.getWidth();
@@ -392,11 +350,11 @@ public class ShowXiangqingMovie extends Activity implements
 			int[] location = new int[2];
 			v.getLocationOnScreen(location);
 			popupWindow.setFocusable(true);
-			popupWindow.setWidth(width + Utils.getStandardValue(getApplicationContext(),10));
-			popupWindow.setHeight(height + Utils.getStandardValue(getApplicationContext(),40));
+			popupWindow.setWidth((int) (width + Utils.getStandardValue(getApplicationContext(),10)));
+			popupWindow.setHeight((int) (height + Utils.getStandardValue(getApplicationContext(),40)));
 			popupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
-					location[0] - Utils.getStandardValue(getApplicationContext(),6), location[1] - locationY
-							- Utils.getStandardValue(getApplicationContext(),40));
+					(int)(location[0] - Utils.getStandardValue(getApplicationContext(),6)), (int)(location[1] - locationY
+							- Utils.getStandardValue(getApplicationContext(),40)));
 		}
 	}
 
@@ -723,18 +681,11 @@ public class ShowXiangqingMovie extends Activity implements
 	}
 
 	private void initOverTime() {
-
 		TextView tv = (TextView) overTimeLL.findViewById(R.id.tv_over_time);
-
-		String overTime = Utils.movieOverTime(movieData.movie.duration);
-		// String overTime = UtilTools.movieOverTime("300分钟");
-
+		String overTime = Utils.movieOverTime(ShowXiangqingMovie.this,movieData.movie.duration);
 		if (overTime != null && !overTime.equals("")) {
-
 			int index = overTime.indexOf(":");
-
 			if (index != -1) {
-
 				tv.setText(overTime);
 				overTimeLL.setVisibility(View.VISIBLE);
 			}
@@ -976,13 +927,10 @@ public class ShowXiangqingMovie extends Activity implements
 			// holder.content.setText(recommendMoviesData.items[position].duration);
 			if ("".equals(recommendMoviesData.items[position].duration)) {
 				holder.content.setText("");
-				// holder.content.setText("时长未知");
 			} else {
-				// holder.content.setText("时长："+hot_list.get(position).duration);
-				// holder.content.setText("时长:"+recommendMoviesData.items[position].duration.replace("：00",
-				// "分钟"));
 				holder.content
-						.setText(Utils.formatMovieDuration(recommendMoviesData.items[position].duration));
+						.setText(Utils.formatMovieDuration(ShowXiangqingMovie.this,
+								recommendMoviesData.items[position].duration));
 			}
 			holder.score.setText(recommendMoviesData.items[position].score);
 			switch (Integer

@@ -29,7 +29,7 @@
 		        android:textSize="18dp"
 		        android:id="@+id/history_cancel"
 		        android:background="@drawable/yingping_button_selector"
-		        android:text="取  消"/>
+		        android:text="@string/layout_delete_all_cancel"/>
 		    <Button android:layout_width="190dp"
 		        android:layout_height="wrap_content"
 		        android:layout_marginLeft="10dp"
@@ -37,7 +37,7 @@
 		        android:textSize="18dp"
 		        android:id="@+id/history_del"
 		        android:background="@drawable/bg_button_delete_selector"
-		        android:text="删  除"/>
+		        android:text="@string/layout_delete_all_delete"/>
 		</LinearLayout>
 	</LinearLayout>
 </LinearLayout>

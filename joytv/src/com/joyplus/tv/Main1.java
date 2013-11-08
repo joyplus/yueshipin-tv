@@ -75,6 +75,7 @@ import com.joyplus.adkey.Ad;
 import com.joyplus.adkey.AdListener;
 import com.joyplus.adkey.Const;
 import com.joyplus.adkey.banner.AdView;
+import com.joyplus.features.HaoimsFeature;
 import com.joyplus.tv.Adapters.MainHotItemAdapter;
 import com.joyplus.tv.Adapters.MainLibAdapter;
 import com.joyplus.tv.Adapters.MainYueDanItemAdapter;
@@ -128,12 +129,36 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 	private static final long LOADING_PIC_TIME = 10 * 1000;
 	private static final long LOADING_TIME_OUT = 30 * 1000;
 
-	private int[] resouces_lib_nomal = { R.drawable.movie_normal,
-			R.drawable.episode_normal, R.drawable.cartoon_normal,
-			R.drawable.variety_normal, R.drawable.search_normal };
-	private int[] resouces_lib_active = { R.drawable.movie_active,
-			R.drawable.episode_active, R.drawable.cartoon_active,
-			R.drawable.variety_active, R.drawable.search_active, };
+	private int[] resouces_lib_nomal;
+//		  { R.drawable.movie_normal,
+//			R.drawable.episode_normal, R.drawable.cartoon_normal,
+//			R.drawable.variety_normal, R.drawable.search_normal };
+	private int[] resouces_lib_active;
+//		  { R.drawable.movie_active,
+//			R.drawable.episode_active, R.drawable.cartoon_active,
+//			R.drawable.variety_active, R.drawable.search_active, };
+	
+	{
+		if(HaoimsFeature.isAddHaoims){
+			int[] normalArray = { R.drawable.movie_normal,R.drawable.episode_normal, 
+					  R.drawable.cartoon_normal,R.drawable.variety_normal,
+					  R.drawable.haoims_normal,R.drawable.search_normal };
+			int[] activeArray = { R.drawable.movie_active,R.drawable.episode_active, 
+					  R.drawable.cartoon_active,R.drawable.variety_active, 
+					  R.drawable.haoims_active,R.drawable.search_active, };
+			resouces_lib_nomal 	= normalArray;
+			resouces_lib_active = activeArray;
+		}else{
+			int[] normalArray = { R.drawable.movie_normal,
+					R.drawable.episode_normal, R.drawable.cartoon_normal,
+					R.drawable.variety_normal, R.drawable.search_normal };
+			int[] activeArray = { R.drawable.movie_active,
+					R.drawable.episode_active, R.drawable.cartoon_active,
+					R.drawable.variety_active, R.drawable.search_active, };
+			resouces_lib_nomal 	= normalArray;
+			resouces_lib_active = activeArray;
+		}
+	}
 
 	private int[] resouces_my_nomal = { R.drawable.follow_normal,
 			R.drawable.recent_normal, R.drawable.system_normal };
@@ -693,16 +718,16 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 
 		MarginLayoutParams mlp2 = (MarginLayoutParams) titleGroup
 				.getLayoutParams();
-		mlp2.setMargins((displayWith - Utils.getStandardValue(this,40)) / 6 + Utils.getStandardValue(this,21), mlp2.topMargin,
+		mlp2.setMargins((int) ((displayWith - Utils.getStandardValue(this,40)) / 6 + Utils.getStandardValue(this,21)), mlp2.topMargin,
 				mlp2.rightMargin, mlp2.bottomMargin);
 		MarginLayoutParams mlp3 = (MarginLayoutParams) noticeView
 				.getLayoutParams();
-		mlp3.setMargins((displayWith - Utils.getStandardValue(this,40)) / 6 + Utils.getStandardValue(this,21), mlp3.topMargin,
+		mlp3.setMargins((int) ((displayWith - Utils.getStandardValue(this,40)) / 6 + Utils.getStandardValue(this,21)), mlp3.topMargin,
 				mlp3.rightMargin, mlp3.bottomMargin);
 
 		LayoutParams param = itemFram.getLayoutParams();
-		param.height = 2 * displayWith / 9 + Utils.getStandardValue(this,3);
-		param.width = displayWith / 6 + Utils.getStandardValue(this,3);
+		param.height = (int) (2 * displayWith / 9 + Utils.getStandardValue(this,3));
+		param.width = (int) (displayWith / 6 + Utils.getStandardValue(this,3));
 		itemFram.setVisibility(View.INVISIBLE);
 		alpha_appear = AnimationUtils.loadAnimation(this, R.anim.alpha_appear);
 		alpha_disappear = AnimationUtils.loadAnimation(this,
@@ -745,13 +770,12 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 	            	if(f.exists()){
 	            		PackageInfo info = PackageUtils.getAppPackageInfo(Main1.this, f.getAbsolutePath());
 	            		if(info != null&&info.versionName!=null&&info.versionName.equals(updateInfo.version)){
-	            			//Toast.makeText(MainActivity.this, "可以更新啦", Toast.LENGTH_SHORT).show();
 	            			AlertDialog.Builder builder = new Builder(Main1.this);
 	            			  builder.setMessage(updateInfo.updateLog);
 
-	            			  builder.setTitle("发现新版本:" + updateInfo.version);
+	            			  builder.setTitle(getString(R.string.activity_Main1_discover_newVersion,updateInfo.version));
 
-	            			  builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+	            			  builder.setPositiveButton(getString(R.string.activity_Main1_OK), new DialogInterface.OnClickListener() {
 
 		            			   @Override
 		            			   public void onClick(DialogInterface dialog, int which) {
@@ -767,7 +791,7 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 		            			   }
 	            			  });
 
-	            			  builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+	            			  builder.setNegativeButton(getString(R.string.activity_Main1_Cancel), new DialogInterface.OnClickListener() {
 
 		            			   @Override
 		            			   public void onClick(DialogInterface dialog, int which) {
@@ -785,13 +809,10 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 //	                UmengUpdateAgent.showUpdateDialog(MainActivity.this, updateInfo);
 	                break;
 	            case 1: // has no update
-	                //Toast.makeText(MainActivity.this, "没有更新", Toast.LENGTH_SHORT).show();
 	                break;
 //	            case 2: // none wifi
-	                //Toast.makeText(MainActivity.this, "没有wifi连接， 只在wifi下更新", Toast.LENGTH_SHORT).show();
 //	                break;
 	            case 3: // time out
-	                //Toast.makeText(MainActivity.this, "超时", Toast.LENGTH_SHORT).show();
 	                break;
 	            }
 	        }
@@ -1013,21 +1034,13 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 	private void initOverTime(View view,String duration) {
 
 		LinearLayout ll = (LinearLayout) view.findViewById(R.id.ll_over_time_main);
-
 		TextView tv = (TextView) view.findViewById(R.id.tv_over_time);
-
-		String overTime = Utils.movieOverTime(duration);
-		// String overTime = UtilTools.movieOverTime("300分钟");
-
+		String overTime = Utils.movieOverTime(Main1.this,duration);
 		if (overTime != null && !overTime.equals("")) {
-
 			int index = overTime.indexOf(":");
-
 			if (index != -1) {
-
 				tv.setText(overTime);
 				ll.setVisibility(View.VISIBLE);
-
 				return;
 			}
 		}
@@ -1238,8 +1251,8 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 
 		if(Constant.isJoyPlus) {//如果是本身应用
 
-			personal_recordTv.setText("我的悦视频");
-			playStoreTv.setText("悦片库");
+			personal_recordTv.setText(getString(R.string.activity_Main1_PersonalRecordTv_Joyplus));
+			playStoreTv.setText(getString(R.string.activity_Main1_PlayStoreTv_Joyplus));
 			logoIv.setImageResource(R.drawable.logo);
 
 			headers.put("app_key", Constant.APPKEY);
@@ -1934,8 +1947,6 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 			return true;
 		case KeyEvent.KEYCODE_BACK:
 			if ((System.currentTimeMillis() - exitTime) > 2000) {
-//				Toast.makeText(this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
-
 				Toast toast = new Toast(this);
 				View v = getLayoutInflater().inflate(R.layout.toast_textview, null);
 				toast.setView(v);
@@ -2092,22 +2103,45 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 			startActivity(yuedanIntent);
 			break;
 		case 3:
-			switch (index) {
-			case 0:
-				startActivity(new Intent(this, ShowMovieActivity.class));
-				break;
-			case 1:
-				startActivity(new Intent(this, ShowTVActivity.class));
-				break;
-			case 2:
-				startActivity(new Intent(this, ShowDongManActivity.class));
-				break;
-			case 3:
-				startActivity(new Intent(this, ShowZongYiActivity.class));
-				break;
-			case 4:
-				startActivity(new Intent(this, ShowSearchActivity.class));
-				break;
+			if(HaoimsFeature.isAddHaoims){
+				switch (index) {
+				case 0:
+					startActivity(new Intent(this, ShowMovieActivity.class));
+					break;
+				case 1:
+					startActivity(new Intent(this, ShowTVActivity.class));
+					break;
+				case 2:
+					startActivity(new Intent(this, ShowDongManActivity.class));
+					break;
+				case 3:
+					startActivity(new Intent(this, ShowZongYiActivity.class));
+					break;
+				case 4:
+					startActivity(new Intent(this, ShowHaoimsActivity.class));
+					break;
+				case 5:
+					startActivity(new Intent(this, ShowSearchActivity.class));
+					break;
+				}
+			}else {
+				switch (index) {
+				case 0:
+					startActivity(new Intent(this, ShowMovieActivity.class));
+					break;
+				case 1:
+					startActivity(new Intent(this, ShowTVActivity.class));
+					break;
+				case 2:
+					startActivity(new Intent(this, ShowDongManActivity.class));
+					break;
+				case 3:
+					startActivity(new Intent(this, ShowZongYiActivity.class));
+					break;
+				case 4:
+					startActivity(new Intent(this, ShowSearchActivity.class));
+					break;
+				}
 			}
 			break;
 		case 4:
@@ -2921,7 +2955,7 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 										// TODO Auto-generated catch block
 										e.printStackTrace();
 
-										app.MyToast(getApplicationContext(), "自行进入系统网络设置界面");
+										app.MyToast(Main1.this, getString(R.string.activity_Main1_NETWORK_Setting_byUser));
 									}
 
 								}
@@ -2991,11 +3025,10 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 	private void updateLastTimeView() {
 		if (app.getUserData("lastTime") == null
 				|| "".equals(app.getUserData("lastTime"))) {
-			lastBandTimeView.setText("您还没有同步过哟~");
+			lastBandTimeView.setText(getString(R.string.activity_Main1_band_tip));
 		} else {
-			lastBandTimeView.setText("上次同步于:\t"
-					+ UtilTools.getLastBandNotice(app
-							.getUserData("lastTime")));
+			lastBandTimeView.setText(getString(R.string.activity_Main1_lasttime_band,
+					UtilTools.getLastBandNotice(app.getUserData("lastTime"))));
 		}
 	}
 

@@ -40,7 +40,7 @@
                     android:background="@drawable/menubg"
                     android:gravity="center_vertical"
                     android:paddingLeft="15dp"
-                    android:text="设置"
+                    android:text="@string/activity_setting_setting"
                     android:textColor="@color/common_title_selected"
                     android:textSize="30dp" />
             </LinearLayout>
@@ -167,7 +167,7 @@
                             android:focusable="true"
                             android:gravity="center_vertical"
                             android:paddingLeft="15dp"
-                            android:text="常见问题"
+                            android:text="@string/activity_setting_faq"
                             android:textColor="@color/hot_content_notice"
                             android:textSize="25dp" />
 
@@ -184,7 +184,7 @@
                             android:focusable="true"
                             android:gravity="center_vertical"
                             android:paddingLeft="15dp"
-                            android:text="免责声明"
+                            android:text="@string/activity_setting_disclaimer"
                             android:textColor="@color/hot_content_notice"
                             android:textSize="25dp" />
 
@@ -203,7 +203,7 @@
                             android:focusable="true"
                             android:gravity="center_vertical"
                             android:paddingLeft="15dp"
-                            android:text="关于我们"
+                            android:text="@string/activity_setting_aboutUs"
                             android:textColor="@color/hot_content_notice"
                             android:textSize="25dp"
                             android:visibility="gone" />
@@ -230,7 +230,7 @@
                                 <TextView
                                     android:layout_width="fill_parent"
                                     android:layout_height="wrap_content"
-                                    android:text="版本号"
+                                    android:text="@string/activity_setting_versionName"
                                     android:textColor="@color/hot_content_notice"
                                     android:textSize="20dp" />
 
@@ -272,7 +272,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="悦视频"
+                        android:text="@string/app_name"
                         android:textColor="@color/hot_content_notice"
                         android:textSize="20dp" />
 
@@ -293,7 +293,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="50dp"
-                        android:text="微信公众账号"
+                        android:text="@string/activity_setting_weixinPublicAccount"
                         android:textColor="@color/hot_content_notice"
                         android:textSize="20dp" />
 
@@ -306,7 +306,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="悦视频"
+                        android:text="@string/app_name"
                         android:textColor="@color/hot_content_notice"
                         android:textSize="18dp" />
 
@@ -314,7 +314,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:text="\t如果您遇到什么问题或者有什么建议，请用微信扫描二维码或搜索&quot;悦视频&quot;。我们时刻倾听您的声音。"
+                        android:text="@string/activity_setting_feedback"
                         android:textColor="@color/hot_content_notice"
                         android:textSize="18dp" />
                 </LinearLayout>

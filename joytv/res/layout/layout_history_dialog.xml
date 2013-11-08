@@ -28,7 +28,7 @@
 		        android:textSize="18dp"
 		        android:id="@+id/history_play"
 		        android:background="@drawable/yingping_button_selector"
-		        android:text="继续播放"/>
+		        android:text="@string/layout_history_continu_play"/>
 		    <Button android:layout_width="0dp"
 		        android:layout_height="wrap_content"
 		        android:layout_weight="1"
@@ -37,7 +37,7 @@
 		        android:textSize="18dp"
 		        android:id="@+id/history_view"
 		        android:background="@drawable/yingping_button_selector"
-		        android:text="查看详情"/>
+		        android:text="@string/layout_history_viewDetail"/>
 		    <Button android:layout_width="0dp"
 		        android:layout_height="wrap_content"
 		        android:layout_weight="1"
@@ -46,7 +46,7 @@
 		        android:textSize="18dp"
 		        android:id="@+id/history_del"
 		        android:background="@drawable/bg_button_delete_selector"
-		        android:text="删  除"/>
+		        android:text="@string/layout_history_delete"/>
 		</LinearLayout>
 	</LinearLayout>
 </LinearLayout>

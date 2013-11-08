@@ -34,19 +34,19 @@ public class VIPLoginActivity extends Activity{
 			// TODO Auto-generated method stub
 			switch (msg.what) {
 			case LoginManager.MEASSGE_LOGIN_USRNAE_EMPTY:
-				app.MyToast(VIPLoginActivity.this, "用户名不能为空");
+				app.MyToast(VIPLoginActivity.this, getString(R.string.activity_viplogin_toast_usrname_empty));
 				break;
 			case LoginManager.MEASSGE_LOGIN_PASSWD_EMPTY:
-				app.MyToast(VIPLoginActivity.this, "密码不能为空");
+				app.MyToast(VIPLoginActivity.this, getString(R.string.activity_viplogin_toast_passwd_empty));
 				break;
 			case LoginManager.MEASSGE_LOGIN_NETWORK_ERROR:
-				app.MyToast(VIPLoginActivity.this, "网络异常，检查网络状态");
+				app.MyToast(VIPLoginActivity.this, getString(R.string.activity_viplogin_toast_network_error));
 				break;
 			case LoginManager.MEASSGE_LOGIN_PASSWD_OR_USRNAME_ERROR:
-				app.MyToast(VIPLoginActivity.this, "用户名或者密码错误");
+				app.MyToast(VIPLoginActivity.this, getString(R.string.activity_viplogin_toast_usrname_passwd_error));
 				break;
 			case LoginManager.MEASSGE_LOGIN_SUCCESS:
-				app.MyToast(VIPLoginActivity.this, "登陆成功");
+				app.MyToast(VIPLoginActivity.this, getString(R.string.activity_viplogin_toast_login_success));
 				sendEmptyMessageDelayed(LoginManager.MEASSGE_DELAY_SHOW_SUCCESS, 500);
 				break;
 			case LoginManager.MEASSGE_DELAY_SHOW_SUCCESS:
