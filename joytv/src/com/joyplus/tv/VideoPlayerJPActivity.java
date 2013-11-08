@@ -1995,7 +1995,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		mPreLoadLayout.setVisibility(View.VISIBLE);
 		mNoticeLayout.setVisibility(View.VISIBLE);
 	}
-
+// kong
 	private void playNext() {
 		// TODO Auto-generated method stub
 		url_temp = null;
