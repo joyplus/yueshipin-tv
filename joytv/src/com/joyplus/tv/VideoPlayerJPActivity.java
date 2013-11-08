@@ -2582,7 +2582,7 @@ public class VideoPlayerJPActivity extends Activity implements
 					JSONObject json = cb.getResult();
 					if(json != null)Log.i(TAG, "letvV2PreArrange:" + json.toString());
 					try {
-						if(json.has("error") && !json.getBoolean("error")){
+						if(json != null && json.has("error") && !json.getBoolean("error")){
 							if(json.has("down_urls")){
 								JSONObject downUrls = json.getJSONObject("down_urls");
 								if(downUrls != null && downUrls.has("urls")){
