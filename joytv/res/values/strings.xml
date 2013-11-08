@@ -20,7 +20,7 @@
 
     <!-- Yangzhg -->
     <string name="hello_world">Hello world!</string>
-    <string name="tv_play_name">Episodes</string>
+    <string name="tv_play_name">TV series</string>
     <string name="shoucang_update_name">Favorites</string>
     <string name="oumei_play_name">America</string>
     <string name="dalu_play_name">China</string>
@@ -38,7 +38,7 @@
     <string name="search_name">Search</string>
     <string name="yuedan_name">Especial Albums</string>
     <string name="dianyingyuedan_name">Movie albums</string>
-    <string name="dianshijuyuedan_name">Episode albums</string>
+    <string name="dianshijuyuedan_name">TV series albums</string>
     <string name="qitadianshiju_play_name">Others</string>
     <string name="dianying_name">Movies</string>
     <string name="quanbufenlei_name">Genre</string>
@@ -72,11 +72,11 @@
     <string name="gaoqing_chaogaoqing">1080P</string>
     <string name="gaoqing_biaoqing">480P</string>
     <string name="yingpianshu">Videos</string>
-    <string name="zongyi_gengxinzhi">Update to  <xliff:g id="currentEpisode">%s</xliff:g></string>
+    <string name="zongyi_gengxinzhi">Updated to  <xliff:g id="currentEpisode">%s</xliff:g></string>
     <!-- <string name="dianshiju_jiquan">集全</string> -->
     <string name="quanbu_name">All</string>
     <string name="xiangqing_zongyi_zhuchi"> Hosting / Stars:&#160;</string>
-    <string name="xiangqing_zongyi_shoubo">TV company:&#160;</string>
+    <string name="xiangqing_zongyi_shoubo">Producer:&#160;</string>
     <string name="xiangqing_zongyi_jianjie">Summary:&#160;</string>
     <string name="xiangqing_yingping_no">No comment</string>
     <string name="movie_fenzhong">Mins</string>
@@ -90,8 +90,8 @@
     <string name="dialog_unband_yes">Yes</string>
     <string name="dialog_unband_no">No</string>
     <string name="search_hint">Enter 1st letter of each words</string>
-    <string name="before_num_text">共</string>
-    <string name="after_num_text">videos</string>
+    <string name="before_num_text"></string>
+    <string name="after_num_text">&#160;videos</string>
     <string name="group_series_tv_dongman">All seasons</string>
     <string name="personal_record">Profiles and Settings</string> <!-- 我的悦视频 -->
     <string name="play_store">All videos</string> <!-- 悦片库 -->
@@ -112,7 +112,7 @@
 
     <!-- ZhangQibo -->
     <!-- main -->
-    <string name="yuedan_notice_num">and more %1$s videos</string>
+    <string name="yuedan_notice_num">and %1$s videos more</string>
     <!-- ZhangQibo -->
     <string name="setting_about">\n\n\n ShangHai JoyPlus Network Technology Co., Ltd insight into consumer’s video entertainment consumption habits changes and want to become the “share engine” of home entertainment.
         \n\n Mission: to share the fun of life and love
@@ -161,9 +161,9 @@
     <string name="activity_history_recentlyViewed">Recently watched </string>
     <string name="activity_history_all">All</string>
     <string name="activity_history_movie">Movies</string>
-    <string name="activity_history_tvSeries">Episodes</string>
+    <string name="activity_history_tvSeries">TV series</string>
     <string name="activity_history_anime">Anime</string>
-    <string name="activity_history_variety">Variety show</string>
+    <string name="activity_history_variety">Variety shows</string>
     <string name="activity_history_clearRecord">Clear all</string>
     <string name="activity_setting_setting">Settings</string>
     <string name="activity_setting_faq">Q&amp;A</string>
@@ -176,9 +176,9 @@ QR Code or search&quot;Joyplus&quot;.We always listen to your voice.</string>
     <string name="activity_shoucang_add_favorite_play">Favorites</string>
     <string name="activity_shoucang_all">All</string>
     <string name="activity_shoucang_movie">Movies</string>
-    <string name="activity_shoucang_tvSeries">Episodes</string>
+    <string name="activity_shoucang_tvSeries">TV series</string>
     <string name="activity_shoucang_anime">Anime</string>
-    <string name="activity_shoucang_variety">Variety show</string>
+    <string name="activity_shoucang_variety">Variety shows</string>
     <string name="activity_shoucang_clearRecord">Clear all</string>
     <string name="activity_vip_login_dialog_passwd">Password</string>
     <string name="layout_delete_all_cancel">Cancel</string>
@@ -195,7 +195,7 @@ QR Code or search&quot;Joyplus&quot;.We always listen to your voice.</string>
     <string name="layout_keyboard_search">Search</string>
     <string name="layout_my_tip">If you want to switch account, please scan QR on the screen by Joyplus mobile</string>
     <string name="activity_main_joylist">Especial albums</string>
-    <string name="activity_main_hotlist">What’s hot</string>
+    <string name="activity_main_hotlist">What’s Hot</string>
     <string name="dialog_disclaimer_disclaimer"> Disclaimers </string>
     <string name="dialog_disclaimer_accept">Accept</string>
     <string name="layout_navagator_area">Area</string>
@@ -249,7 +249,7 @@ QR Code or search&quot;Joyplus&quot;.We always listen to your voice.</string>
     <string name="activity_shoucang_record_nothing_tip">Favorites is empty, chect it out what’s hot now ^_^~</string>
     <string name="activity_shoucang_record_ClearAllRecord">Clear all?</string>
     <string name="activity_shoucang_record_ClearMovieAllRecord">Clear all movies?</string>
-    <string name="activity_shoucang_record_ClearTvSeriesAllRecord">Clear all episodes?</string>
+    <string name="activity_shoucang_record_ClearTvSeriesAllRecord">Clear all TV series?</string>
     <string name="activity_shoucang_record_ClearVarietyAllRecord">Clear all variety shows?</string>
     <string name="activity_shoucang_record_ClearAnimeAllRecord">Clear all anime?</string>
     <string name="activity_setting_localUser">Local user</string>
@@ -268,12 +268,12 @@ QR Code or search&quot;Joyplus&quot;.We always listen to your voice.</string>
     <string name="activity_history_record_nothing_tip">You haven’t watched any videos, chect it out what’s hot now^_^~</string>
     <string name="activity_history_record_ClearAllRecord">Clear all?</string>
     <string name="activity_history_record_ClearMovieAllRecord">Clear all movies?</string>
-    <string name="activity_history_record_ClearTvSeriesAllRecord">Clear all episodes?</string>
+    <string name="activity_history_record_ClearTvSeriesAllRecord">Clear all TV series?</string>
     <string name="activity_history_record_ClearVarietyAllRecord">Clear all variety shows?</string>
     <string name="activity_history_record_ClearAnimeAllRecord">Clear all anime?</string>
     <string name="activity_faq_webload_fail">Failed to load help data</string>
     <string name="mainHotItemAdapter_view_time">Played:<xliff:g id="lastTime">%s</xliff:g></string>
-    <string name="mainHotItemAdapter_update_current_epsidoes">Update to  <xliff:g id="currentEpisode">%s</xliff:g> </string>
-    <string name="mainHotItemAdapter_no_update"><xliff:g id="currentEpisode">%s</xliff:g> Finished</string>
+    <string name="mainHotItemAdapter_update_current_epsidoes">Updated to  <xliff:g id="currentEpisode">%s</xliff:g> </string>
+    <string name="mainHotItemAdapter_no_update">Finished at <xliff:g id="currentEpisode">%s</xliff:g></string>
 
 </resources>

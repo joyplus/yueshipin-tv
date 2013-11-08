@@ -91,6 +91,7 @@ import com.joyplus.tv.database.TvDatabaseHelper;
 import com.joyplus.tv.entity.CurrentPlayDetailData;
 import com.joyplus.tv.entity.HotItemInfo;
 import com.joyplus.tv.entity.PlayerSourceType;
+import com.joyplus.tv.entity.REQUEST_URL;
 import com.joyplus.tv.entity.URLS_INDEX;
 import com.joyplus.tv.ui.ArcView;
 import com.joyplus.tv.ui.SubTitleView;
@@ -2988,6 +2989,9 @@ public class VideoPlayerJPActivity extends Activity implements
 
 		helper.closeDatabase();
 		
+		REQUEST_URL request_URL = RequestAQueryManager.getInstance().getcurrentRequest_URL();
+		
+		if(request_URL == REQUEST_URL.HAOIMS) return;
 		//发送更新最新记录广播
 		app.set_ReturnProgramView(m_ReturnProgramView);
 		Intent historyIntent  = new Intent(UtilTools.ACTION_PLAY_END_HISTORY);
