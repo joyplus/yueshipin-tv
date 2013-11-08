@@ -243,13 +243,13 @@
     <string name="videoPlayerJPActivity_source_letv">乐  视</string>
     <string name="videoPlayerJPActivity_source_fengxing">风  行</string>
     <string name="videoPlayerJPActivity_source_qiyi">爱  奇  艺</string>
-    <string name="videoPlayerJPActivity_subtitle_youku">优  酷</string>
-    <string name="videoPlayerJPActivity_subtitle_sina">新  浪  视  频</string>
-    <string name="videoPlayerJPActivity_subtitle_sohu">搜  狐  视  频</string>
-    <string name="videoPlayerJPActivity_subtitle_qq">腾  讯  视  频</string>
-    <string name="videoPlayerJPActivity_subtitle_pptv">PPTV</string>
-    <string name="videoPlayerJPActivity_subtitle_m1905">电  影  网</string>
-    <string name="videoPlayerJPActivity_subtitle_p2p">P 2 P</string>
+    <string name="videoPlayerJPActivity_source_youku">优  酷</string>
+    <string name="videoPlayerJPActivity_source_sina">新  浪  视  频</string>
+    <string name="videoPlayerJPActivity_source_sohu">搜  狐  视  频</string>
+    <string name="videoPlayerJPActivity_source_qq">腾  讯  视  频</string>
+    <string name="videoPlayerJPActivity_source_pptv">PPTV</string>
+    <string name="videoPlayerJPActivity_source_m1905">电  影  网</string>
+    <string name="videoPlayerJPActivity_source_p2p">P 2 P</string>
     
     
     <string name="activity_viplogin_toast_usrname_empty">用户名不能为空</string>
