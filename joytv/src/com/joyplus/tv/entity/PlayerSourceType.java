@@ -26,8 +26,8 @@ public enum PlayerSourceType {
 	
 	//20131105 by @yzg
 	TYPE_BAIDU_WANGPAN		("baidu_wangpan",1),//1
-	TYPE_LETV_V2			("letv_v2",2),//2
-	TYPE_LETV_V2_FEE		("letv_v2_fee",3);//3
+	TYPE_LETV_V2			("le_v2",2),//2
+	TYPE_LETV_V2_FEE		("le_v2_fee",3);//3
 
 	private String sourceName = "unkown";
 	private int priority     = 100;//默认值100，值越小，优先级越高，可自行设置

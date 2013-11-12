@@ -627,7 +627,7 @@ public class VideoPlayerJPActivity extends Activity implements
 									equals(playUrls.get(currentPlayIndex).source_from)){
 								Log.i(TAG, "postDelayed--->" + playUrls.get(currentPlayIndex).source_from);
 								mVideoView.stopPlayback();
-								findViewById(R.id.tv_preload_source_reload).setVisibility(View.VISIBLE);
+							//	findViewById(R.id.tv_preload_source_reload).setVisibility(View.VISIBLE);
 								reloadLetvCount ++;
 							}
 						}
@@ -1252,7 +1252,7 @@ public class VideoPlayerJPActivity extends Activity implements
 			case STATUE_LOADING:
 				if(reloadLetvCount == 1){
 					reloadLetvCount ++;
-					reloadLetv();
+				//	reloadLetv();
 				}
 				break;
 			case STATUE_PLAYING:
