@@ -791,14 +791,14 @@ public class VideoPlayerJPActivity extends Activity implements
 		}
 
 		Log.d(TAG, "initFenxingNetServiceData = " + json.toString());
-		getFengxingSecondServiceData(Constant.FENGXING_REGET_SECOND_URL, json);
+//		getFengxingSecondServiceData(Constant.FENGXING_REGET_SECOND_URL, json);
 		
 	}
 	
-	private void getFengxingSecondServiceData(String url,JSONObject json){
-		
-		getParseServiceData(url,json, "initFengxingSecondServiceData");
-	}
+//	private void getFengxingSecondServiceData(String url,JSONObject json){
+//		
+//		getParseServiceData(url,json, "initFengxingSecondServiceData");
+//	}
 	
 	protected void getParseServiceData(String url,JSONObject json, String interfaceName) {
 		// TODO Auto-generated method stub
@@ -824,63 +824,63 @@ public class VideoPlayerJPActivity extends Activity implements
 ;
 	}
 	
-	public void initFengxingSecondServiceData(String url, JSONObject json, AjaxStatus status) {
-
-		if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
-			app.MyToast(aq.getContext(),
-					getResources().getString(R.string.networknotwork));
-			mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
-			return;
-		}
-		
-		if (json == null || json.toString().equals("")){
-			Log.d(TAG, "initFengxingSecondServiceData = ");
-			mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
-			return;
-		}
-
-		Log.d(TAG, "initFengxingSecondServiceData = " + json.toString());
-		ObjectMapper mapper = new ObjectMapper();
-		try {
-			ReturnFengxingSecondView returnFengxingSecondView = mapper.readValue(json.toString(),
-					ReturnFengxingSecondView.class);
-			
-			if(returnFengxingSecondView != null && returnFengxingSecondView.error!= null
-					&& returnFengxingSecondView.error.equals("false")){
-				
-				if(returnFengxingSecondView.urls != null && returnFengxingSecondView.urls.length > 0){
-					
-					String type = defintionToType(mDefination);
-					if(playUrls != null){
-						
-						playUrls.clear();
-					}
-					for(int i=0;i<returnFengxingSecondView.urls.length;i++){
-						
-						URLS_INDEX urls_INDEX = new URLS_INDEX();
-						urls_INDEX.source_from = PlayerSourceType.TYPE_FENGXING.toSourceName();
-						urls_INDEX.defination_from_server = type;
-						urls_INDEX.url = returnFengxingSecondView.urls[i];
-						urls_INDEX.webUrl = sourceFromUrl;
-						Log.i(TAG, "urls_INDEX--->" + urls_INDEX.toString());
-						playUrls.add(urls_INDEX);
-					}
-				}
-			}
-		} catch (JsonParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-			
-			mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
-	}
-	
+//	public void initFengxingSecondServiceData(String url, JSONObject json, AjaxStatus status) {
+//
+//		if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
+//			app.MyToast(aq.getContext(),
+//					getResources().getString(R.string.networknotwork));
+//			mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
+//			return;
+//		}
+//		
+//		if (json == null || json.toString().equals("")){
+//			Log.d(TAG, "initFengxingSecondServiceData = ");
+//			mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
+//			return;
+//		}
+//
+//		Log.d(TAG, "initFengxingSecondServiceData = " + json.toString());
+//		ObjectMapper mapper = new ObjectMapper();
+//		try {
+//			ReturnFengxingSecondView returnFengxingSecondView = mapper.readValue(json.toString(),
+//					ReturnFengxingSecondView.class);
+//			
+//			if(returnFengxingSecondView != null && returnFengxingSecondView.error!= null
+//					&& returnFengxingSecondView.error.equals("false")){
+//				
+//				if(returnFengxingSecondView.urls != null && returnFengxingSecondView.urls.length > 0){
+//					
+//					String type = defintionToType(mDefination);
+//					if(playUrls != null){
+//						
+//						playUrls.clear();
+//					}
+//					for(int i=0;i<returnFengxingSecondView.urls.length;i++){
+//						
+//						URLS_INDEX urls_INDEX = new URLS_INDEX();
+//						urls_INDEX.source_from = PlayerSourceType.TYPE_FENGXING.toSourceName();
+//						urls_INDEX.defination_from_server = type;
+//						urls_INDEX.url = returnFengxingSecondView.urls[i];
+//						urls_INDEX.webUrl = sourceFromUrl;
+//						Log.i(TAG, "urls_INDEX--->" + urls_INDEX.toString());
+//						playUrls.add(urls_INDEX);
+//					}
+//				}
+//			}
+//		} catch (JsonParseException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (JsonMappingException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//			
+//			mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
+//	}
+//	
 	protected void getParseServiceData(String url, String interfaceName) {
 		// TODO Auto-generated method stub
 
