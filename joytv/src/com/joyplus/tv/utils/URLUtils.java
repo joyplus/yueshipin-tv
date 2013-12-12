@@ -71,7 +71,7 @@ public class URLUtils implements JieMianConstant, BangDanConstant{
 	}
 
 	public static final int CACHE_NUM = 20;
-	public static final int FIRST_NUM = 30;
+	public static final int FIRST_NUM = 20;
 
 	// TV 全部分类 10
 	public static String getTV_Quan10URL() {
@@ -966,9 +966,12 @@ public class URLUtils implements JieMianConstant, BangDanConstant{
 	}
 
 	public static String getParseUrlURL(String url,String parseUrl,String id,String episode){
-		
+		Log.d(TAG,"--------"+url + "?url=" + URLEncoder.encode(parseUrl == null ? "":parseUrl) + "&id=" + id
+				+ "&episode=" + episode);
 		return url + "?url=" + URLEncoder.encode(parseUrl == null ? "":parseUrl) + "&id=" + id
 				+ "&episode=" + episode;
+		
+		
 	}
 	
 //	public static String getLetvParseUrlURL(String parseUrl,String id,String episode){

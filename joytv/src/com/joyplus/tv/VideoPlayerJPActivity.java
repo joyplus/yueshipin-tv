@@ -271,6 +271,7 @@ public class VideoPlayerJPActivity extends Activity implements
 	private RelativeLayout layout;
 	private AdView mAdView;
 	
+	private boolean getFlvTypeFengXing=false;
 	private boolean isOnlyExistFengXing = false;
 	private boolean isOnlyExistLetv = false;//包括le_tv_fee、letv
 	private boolean hasP2p = false;
@@ -552,8 +553,11 @@ public class VideoPlayerJPActivity extends Activity implements
 					
 					if(isOnlyExistFengXing && sourceFromUrl != null){//只存在风行的地址
 						
+						getTypeFengXing();
+						if(getFlvTypeFengXing){
 						String url = URLUtils.getFexingParseUrlURL(Constant.FENGXING_REGET_FIRST_URL, sourceFromUrl);
 						getFengxingParseServiceData(url);
+						}
 						
 					}else {
 						
@@ -657,6 +661,68 @@ public class VideoPlayerJPActivity extends Activity implements
 		return mVideoView.getCurrentPosition();
 	}
 	
+	private void getTypeFengXing(){
+		String sourceQua = "flv";
+		Log.d(TAG, "mProd_type"+mProd_type);
+		switch (mProd_type) {
+		case 1:
+			for (int i = 0; i < m_ReturnProgramView.movie.episodes[0].down_urls.length; i++) {
+				for (int j = 0; j < m_ReturnProgramView.movie.episodes[0].down_urls[i].urls.length; j++) {
+						if(m_ReturnProgramView.movie.episodes[0].down_urls[i].urls[j].type!= null) {
+								if(sourceQua.equals(m_ReturnProgramView.movie.episodes[0].down_urls[i].urls[j].type)){
+									getFlvTypeFengXing=true;	
+									Log.d(TAG, "getFlvTypeFengXing"+getFlvTypeFengXing);
+								}
+						}
+					}
+				}
+			break;
+		case 2:
+		case 131:
+			if(m_ReturnProgramView.tv.episodes[mEpisodeIndex].down_urls != null) {
+				for (int j = 0; j < m_ReturnProgramView.tv.episodes[mEpisodeIndex].down_urls.length; j++) {
+					if(m_ReturnProgramView.tv.episodes[mEpisodeIndex].down_urls[j] != null) {
+						String sources = m_ReturnProgramView.tv.episodes[mEpisodeIndex].down_urls[j].source;
+						if( m_ReturnProgramView.tv.episodes[mEpisodeIndex].down_urls[j].urls != null) {
+							for (int k = 0; k < m_ReturnProgramView.tv.episodes[mEpisodeIndex].down_urls[j].urls.length; k++) {
+								if(m_ReturnProgramView.tv.episodes[mEpisodeIndex].down_urls[j].urls[k] != null) {
+									if(sourceQua.equals(m_ReturnProgramView.tv.episodes[mEpisodeIndex].down_urls[j].urls[k].type)){
+										getFlvTypeFengXing=true;	
+										Log.d(TAG, "getFlvTypeFengXing"+getFlvTypeFengXing);
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			break;
+		case 3:
+			for (int j = 0; j < m_ReturnProgramView.show.episodes[mEpisodeIndex].down_urls.length; j++) {
+				if(m_ReturnProgramView.show.episodes[mEpisodeIndex].down_urls[j] != null) {
+					String sources = m_ReturnProgramView.show.episodes[mEpisodeIndex].down_urls[j].source;
+					if(m_ReturnProgramView.show.episodes[mEpisodeIndex].down_urls[j].urls != null) {
+						for (int k = 0; k < m_ReturnProgramView.show.episodes[mEpisodeIndex].down_urls[j].urls.length; k++) {
+							if(m_ReturnProgramView.show.episodes[mEpisodeIndex].down_urls[j].urls[k] != null) {
+								if(sourceQua.equals(m_ReturnProgramView.show.episodes[mEpisodeIndex].down_urls[j].urls[k].type)){
+									getFlvTypeFengXing=true;	
+									Log.d(TAG, "getFlvTypeFengXing"+getFlvTypeFengXing);
+								}
+							}
+						}
+					}
+				}
+
+			}
+			break;
+		}
+		
+		
+		
+	}
+	
+	
+	
 	private void getFengxingParseServiceData(String url){
 		
 		getParseServiceData(url, "initFengxingParseServiceData");
@@ -697,22 +763,47 @@ public class VideoPlayerJPActivity extends Activity implements
 						break;
 					}
 					Log.i(TAG, "mDefination--->" + mDefination);
-					if(returnFirstFengxingUrlView.video_infos != null &&
-							returnFirstFengxingUrlView.video_infos.length > 0){
-						for(int i=0;i<returnFirstFengxingUrlView.video_infos.length;i++){
-							if(returnFirstFengxingUrlView.video_infos[i]!= null 
-									&& returnFirstFengxingUrlView.video_infos[i].type != null){
-								Log.i(TAG, "sourceQua--->" + sourceQua + " type:" + returnFirstFengxingUrlView.video_infos[i].type);
-								if(sourceQua.equals(returnFirstFengxingUrlView.video_infos[i].type)){
-									
-									String tempUrl = returnFirstFengxingUrlView.video_infos[i].request_url;
-									Log.i(TAG, "tempUrl--->" + tempUrl);
-									getFenxingNetServiceData(tempUrl);
-									return;
-								}
+//					if(returnFirstFengxingUrlView.video_infos != null &&
+//							returnFirstFengxingUrlView.video_infos.length > 0){
+//						for(int i=0;i<returnFirstFengxingUrlView.video_infos.length;i++){
+//							if(returnFirstFengxingUrlView.video_infos[i]!= null 
+//									&& returnFirstFengxingUrlView.video_infos[i].type != null){
+//								Log.i(TAG, "sourceQua--->" + sourceQua + " type:" + returnFirstFengxingUrlView.video_infos[i].type);
+//								if(sourceQua.equals(returnFirstFengxingUrlView.video_infos[i].type)){
+//									
+//									String tempUrl = returnFirstFengxingUrlView.video_infos[i].request_url;
+//									Log.i(TAG, "tempUrl--->" + tempUrl);
+//									getFenxingNetServiceData(tempUrl);
+//									return;
+//								}
+//							}
+//						}
+//					}
+					if(returnFirstFengxingUrlView != null && returnFirstFengxingUrlView.error!= null
+							&& returnFirstFengxingUrlView.error.equals("false")){
+		//				Log.d(TAG,"invideo_infos_length"+returnFirstFengxingUrlView.video_infos.length+"urls"+returnFirstFengxingUrlView.video_infos);
+						if(returnFirstFengxingUrlView.down_urls != null && returnFirstFengxingUrlView.down_urls.urls.length > 0){
+							
+							String type = defintionToType(mDefination);
+							if(playUrls != null){
+								
+								playUrls.clear();
+							}
+							Log.d(TAG,"playurls"+playUrls+"type"+type);
+							for(int i=0;i<returnFirstFengxingUrlView.down_urls.urls.length;i++){
+								URLS_INDEX urls_INDEX = new URLS_INDEX();
+								urls_INDEX.source_from = PlayerSourceType.TYPE_FENGXING.toSourceName();
+								urls_INDEX.defination_from_server = type;
+								urls_INDEX.url = returnFirstFengxingUrlView.down_urls.urls[i].url;
+								urls_INDEX.webUrl = sourceFromUrl;
+								Log.i(TAG, "urls_INDEX--->" + urls_INDEX.toString());
+								playUrls.add(urls_INDEX);
+							//	Log.d(TAG,"playurls.urls_index"+urls_INDEX);
 							}
 						}
+					//	Log.d(TAG,"invideo_infos");
 					}
+				//	Log.d(TAG,"OUTVIDEO_INFOS");
 
 				}
 				
