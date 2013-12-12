@@ -447,6 +447,7 @@ public class VideoPlayerJPActivity extends Activity implements
 
 		Log.d(TAG, "name ----->" + mProd_name);
 		Log.d(TAG, "currentPlayUrl ----->" + currentPlayUrl);
+		Log.d(TAG,"sourceFromUrl------->"+sourceFromUrl);
 		
 		if(mDefination == 0){
 			mDefination = 8;
@@ -555,10 +556,10 @@ public class VideoPlayerJPActivity extends Activity implements
 						
 						getTypeFengXing();
 						if(getFlvTypeFengXing){
-						String url = URLUtils.getFexingParseUrlURL(Constant.FENGXING_REGET_FIRST_URL, sourceFromUrl);
+						String url = URLUtils.getFexingParseUrlURL(Constant.FENGXING_REGET_FIRST_URL, sourceFromUrl, mProd_id, mProd_sub_name);
+						Log.d(TAG,"FENGXING-URL"+mProd_id+"mProd_sub_name"+ mProd_sub_name);
 						getFengxingParseServiceData(url);
 						}
-						
 					}else {
 						
 						// 地址跳转相关。。。
@@ -614,7 +615,9 @@ public class VideoPlayerJPActivity extends Activity implements
 			case MESSAGE_PALY_URL_OK:
 				updateName();
 				updateSourceAndTime();
+				Log.d(TAG,"------------->url_ok currentPlayUrl"+currentPlayUrl);
 				mVideoView.setVideoURI(Uri.parse(currentPlayUrl));
+				
 				if (lastTime > 0) {
 					mVideoView.seekTo((int) lastTime);
 				}
@@ -661,9 +664,9 @@ public class VideoPlayerJPActivity extends Activity implements
 		return mVideoView.getCurrentPosition();
 	}
 	
+	
 	private void getTypeFengXing(){
 		String sourceQua = "flv";
-		Log.d(TAG, "mProd_type"+mProd_type);
 		switch (mProd_type) {
 		case 1:
 			for (int i = 0; i < m_ReturnProgramView.movie.episodes[0].down_urls.length; i++) {
@@ -671,7 +674,6 @@ public class VideoPlayerJPActivity extends Activity implements
 						if(m_ReturnProgramView.movie.episodes[0].down_urls[i].urls[j].type!= null) {
 								if(sourceQua.equals(m_ReturnProgramView.movie.episodes[0].down_urls[i].urls[j].type)){
 									getFlvTypeFengXing=true;	
-									Log.d(TAG, "getFlvTypeFengXing"+getFlvTypeFengXing);
 								}
 						}
 					}
@@ -688,7 +690,6 @@ public class VideoPlayerJPActivity extends Activity implements
 								if(m_ReturnProgramView.tv.episodes[mEpisodeIndex].down_urls[j].urls[k] != null) {
 									if(sourceQua.equals(m_ReturnProgramView.tv.episodes[mEpisodeIndex].down_urls[j].urls[k].type)){
 										getFlvTypeFengXing=true;	
-										Log.d(TAG, "getFlvTypeFengXing"+getFlvTypeFengXing);
 									}
 								}
 							}
@@ -706,7 +707,6 @@ public class VideoPlayerJPActivity extends Activity implements
 							if(m_ReturnProgramView.show.episodes[mEpisodeIndex].down_urls[j].urls[k] != null) {
 								if(sourceQua.equals(m_ReturnProgramView.show.episodes[mEpisodeIndex].down_urls[j].urls[k].type)){
 									getFlvTypeFengXing=true;	
-									Log.d(TAG, "getFlvTypeFengXing"+getFlvTypeFengXing);
 								}
 							}
 						}
@@ -720,8 +720,6 @@ public class VideoPlayerJPActivity extends Activity implements
 		
 		
 	}
-	
-	
 	
 	private void getFengxingParseServiceData(String url){
 		
@@ -747,6 +745,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		try {
 			ReturnFirstFengxingUrlView returnFirstFengxingUrlView = mapper.readValue(json.toString(),
 					ReturnFirstFengxingUrlView.class);
+			Log.d(TAG,"returnFirstFengxingUrlView"+returnFirstFengxingUrlView.down_urls);
 			if(returnFirstFengxingUrlView != null){
 				if(returnFirstFengxingUrlView.error != null && 
 						returnFirstFengxingUrlView.error.equals("false")){
@@ -763,6 +762,9 @@ public class VideoPlayerJPActivity extends Activity implements
 						break;
 					}
 					Log.i(TAG, "mDefination--->" + mDefination);
+					
+					
+					
 //					if(returnFirstFengxingUrlView.video_infos != null &&
 //							returnFirstFengxingUrlView.video_infos.length > 0){
 //						for(int i=0;i<returnFirstFengxingUrlView.video_infos.length;i++){
@@ -778,6 +780,8 @@ public class VideoPlayerJPActivity extends Activity implements
 //								}
 //							}
 //						}
+//					Log.d(TAG,"invideo_infos");
+//					
 //					}
 					if(returnFirstFengxingUrlView != null && returnFirstFengxingUrlView.error!= null
 							&& returnFirstFengxingUrlView.error.equals("false")){
@@ -882,18 +886,19 @@ public class VideoPlayerJPActivity extends Activity implements
 		}
 
 		Log.d(TAG, "initFenxingNetServiceData = " + json.toString());
-//		getFengxingSecondServiceData(Constant.FENGXING_REGET_SECOND_URL, json);
+		getFengxingSecondServiceData(Constant.FENGXING_REGET_SECOND_URL, json);
 		
 	}
 	
-//	private void getFengxingSecondServiceData(String url,JSONObject json){
-//		
-//		getParseServiceData(url,json, "initFengxingSecondServiceData");
-//	}
+	private void getFengxingSecondServiceData(String url,JSONObject json){
+		
+		getParseServiceData(url,json, "initFengxingSecondServiceData");
+	}
 	
 	protected void getParseServiceData(String url,JSONObject json, String interfaceName) {
 		// TODO Auto-generated method stub
 
+		Log.d(TAG,"--------->json"+json);
 		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
 		cb.url(url).type(JSONObject.class).weakHandler(this, interfaceName);
 		Map<String, Object> params = new HashMap<String, Object>();
@@ -915,63 +920,63 @@ public class VideoPlayerJPActivity extends Activity implements
 ;
 	}
 	
-//	public void initFengxingSecondServiceData(String url, JSONObject json, AjaxStatus status) {
-//
-//		if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
-//			app.MyToast(aq.getContext(),
-//					getResources().getString(R.string.networknotwork));
-//			mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
-//			return;
-//		}
-//		
-//		if (json == null || json.toString().equals("")){
-//			Log.d(TAG, "initFengxingSecondServiceData = ");
-//			mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
-//			return;
-//		}
-//
-//		Log.d(TAG, "initFengxingSecondServiceData = " + json.toString());
-//		ObjectMapper mapper = new ObjectMapper();
-//		try {
-//			ReturnFengxingSecondView returnFengxingSecondView = mapper.readValue(json.toString(),
-//					ReturnFengxingSecondView.class);
-//			
-//			if(returnFengxingSecondView != null && returnFengxingSecondView.error!= null
-//					&& returnFengxingSecondView.error.equals("false")){
-//				
-//				if(returnFengxingSecondView.urls != null && returnFengxingSecondView.urls.length > 0){
-//					
-//					String type = defintionToType(mDefination);
-//					if(playUrls != null){
-//						
-//						playUrls.clear();
-//					}
-//					for(int i=0;i<returnFengxingSecondView.urls.length;i++){
-//						
-//						URLS_INDEX urls_INDEX = new URLS_INDEX();
-//						urls_INDEX.source_from = PlayerSourceType.TYPE_FENGXING.toSourceName();
-//						urls_INDEX.defination_from_server = type;
-//						urls_INDEX.url = returnFengxingSecondView.urls[i];
-//						urls_INDEX.webUrl = sourceFromUrl;
-//						Log.i(TAG, "urls_INDEX--->" + urls_INDEX.toString());
-//						playUrls.add(urls_INDEX);
-//					}
-//				}
-//			}
-//		} catch (JsonParseException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (JsonMappingException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//			
-//			mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
-//	}
-//	
+	public void initFengxingSecondServiceData(String url, JSONObject json, AjaxStatus status) {
+
+		if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
+			app.MyToast(aq.getContext(),
+					getResources().getString(R.string.networknotwork));
+			mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
+			return;
+		}
+		
+		if (json == null || json.toString().equals("")){
+			Log.d(TAG, "initFengxingSecondServiceData = ");
+			mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
+			return;
+		}
+
+		Log.d(TAG, "initFengxingSecondServiceData = " + json.toString());
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			ReturnFengxingSecondView returnFengxingSecondView = mapper.readValue(json.toString(),
+					ReturnFengxingSecondView.class);
+			
+			if(returnFengxingSecondView != null && returnFengxingSecondView.error!= null
+					&& returnFengxingSecondView.error.equals("false")){
+				
+				if(returnFengxingSecondView.urls != null && returnFengxingSecondView.urls.length > 0){
+					
+					String type = defintionToType(mDefination);
+					if(playUrls != null){
+						
+						playUrls.clear();
+					}
+					for(int i=0;i<returnFengxingSecondView.urls.length;i++){
+						
+						URLS_INDEX urls_INDEX = new URLS_INDEX();
+						urls_INDEX.source_from = PlayerSourceType.TYPE_FENGXING.toSourceName();
+						urls_INDEX.defination_from_server = type;
+						urls_INDEX.url = returnFengxingSecondView.urls[i];
+						urls_INDEX.webUrl = sourceFromUrl;
+						Log.i(TAG, "urls_INDEX--->" + urls_INDEX.toString());
+						playUrls.add(urls_INDEX);
+					}
+				}
+			}
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+			
+			mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
+	}
+	
 	protected void getParseServiceData(String url, String interfaceName) {
 		// TODO Auto-generated method stub
 
@@ -2798,11 +2803,13 @@ public class VideoPlayerJPActivity extends Activity implements
 					
 					String wangPanUrl = URLUtils.
 							getParseUrlURL(Constant.LETV_PARSE_URL_URL, url_index.url, mProd_id, mProd_sub_name);
+					Log.d(TAG,"-------geturl"+url_index.url);
 					AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();           
 					cb.url(wangPanUrl).type(JSONObject.class);             
 //					Map<String, String> headers = new HashMap<String, String>();
 //					headers.put("app_key", Constant.APPKEY);
-					cb.SetHeader(app.getHeaders());        
+					cb.SetHeader(app.getHeaders());  
+					
 					aq.sync(cb);
 //					AjaxStatus status = cb.getStatus();
 					JSONObject jo = cb.getResult();

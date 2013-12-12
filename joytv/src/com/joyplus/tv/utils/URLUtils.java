@@ -939,7 +939,9 @@ public class URLUtils implements JieMianConstant, BangDanConstant{
 
 	public static String getQuanBuFenLeiName(String[] choices,
 			String defaultQuanbufenlei, String defaultItemName) {
-
+           Log.d(TAG, "choices"+choices);
+           Log.d(TAG, "defaultQuanbufenlei"+defaultQuanbufenlei);
+           Log.d(TAG, "defaultItemName"+defaultItemName);
 		if (choices.length < 3) {
 
 			return defaultQuanbufenlei;
@@ -984,9 +986,10 @@ public class URLUtils implements JieMianConstant, BangDanConstant{
 //		return getParseUrlURL(Constant.SOHU_PARSE_URL_URL, parseUrl, id, episode);
 //	}
 	
-	public static String getFexingParseUrlURL(String firstBaseUrl,String parseUrl){
+	public static String getFexingParseUrlURL(String firstBaseUrl,String parseUrl,String id,String episode){
 		
-		return firstBaseUrl + "?url=" + URLEncoder.encode(parseUrl == null ? "":parseUrl);
+		return firstBaseUrl + "?url=" + URLEncoder.encode(parseUrl == null ? "":parseUrl)+ "&id=" + id
+				+ "&episode=" + episode;
 	}
 	
 	public static String getXunLeiUrlURL(String baseUrl,String parseUrl ,String md5){
