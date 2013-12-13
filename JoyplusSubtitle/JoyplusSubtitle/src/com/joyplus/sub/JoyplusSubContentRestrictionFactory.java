@@ -2,15 +2,15 @@ package com.joyplus.sub;
 
 
 public class JoyplusSubContentRestrictionFactory {
-	  private static JoyplusSubContentRestriction sContentRestriction= new JoyplusSubCarrierContentRestriction();
+	   private static JoyplusSubContentRestriction sContentRestriction;
 
 	    private JoyplusSubContentRestrictionFactory() {
 	    }
 
-	    public static JoyplusSubContentRestriction getContentRestriction() {
-//	        if (null == sContentRestriction) {
-//	            sContentRestriction = new JoyplusSubCarrierContentRestriction();
-//	        }
+	    public synchronized static JoyplusSubContentRestriction getContentRestriction() {
+	        if (null == sContentRestriction) {
+	            sContentRestriction = new JoyplusSubCarrierContentRestriction();
+	        }
 	        return sContentRestriction;
 	    }
 }
