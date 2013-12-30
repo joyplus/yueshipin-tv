@@ -113,6 +113,7 @@
     <!-- ZhangQibo -->
     <!-- main -->
     <string name="yuedan_notice_num">等%1$s部影片</string>
+    <string name="main_last_seen">上次观看</string>
     <!-- ZhangQibo -->
     <string name="setting_about">\n\n\n志精科技洞察消费者视频娱乐消费习惯变革的趋势，致力于成为家庭娱乐分享的引擎。
         \n\n使命：分享生活和爱的乐趣
@@ -223,7 +224,7 @@
     <string name="fayeservice_toast_tip_retry_unbundling">解绑遇到问题，再试一次哦</string>
     <string name="fayeservice_toast_tip_retry_bundling">绑定在路上, 再试一次哦</string>
     <string name="utils_minute"><xliff:g>%s</xliff:g> 分钟</string>
-    <string name="utils_prodname_prodSubName"><xliff:g id="prodName">%s</xliff:g><xliff:g id="prodSubName">%s</xliff:g></string>
+    <string name="utils_prodname_prodSubName"><xliff:g id="prodName">%s</xliff:g> 第<xliff:g id="prodSubName">%s</xliff:g>集</string>
     <string name="utils_percent_network">, 已完成 <xliff:g id="finished">%s</xliff:g>%%</string>
     <string name="videoPlayerJPActivity_lastTimeRecord">上次播放:  <xliff:g id="lastTime">%s</xliff:g></string>
     <string name="videoPlayerJPActivity_toast_add_favority_success">收藏成功！</string>
@@ -286,6 +287,4 @@
     <string name="mainHotItemAdapter_view_time">观看到:<xliff:g id="lastTime">%s</xliff:g></string>
     <string name="mainHotItemAdapter_update_current_epsidoes">更新到第 <xliff:g id="currentEpisode">%s</xliff:g> 集</string>
     <string name="mainHotItemAdapter_no_update"><xliff:g id="currentEpisode">%s</xliff:g> 集全</string>
-
-    
 </resources>

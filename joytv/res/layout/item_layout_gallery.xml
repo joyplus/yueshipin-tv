@@ -68,7 +68,7 @@
 		    android:paddingLeft="8dp"
 		    android:paddingRight="8dp"
 		    android:singleLine="true"
-		    android:text=""
+		    android:text="@string/main_last_seen"
 		    android:id="@+id/first_title"
 		    android:visibility="gone"
 		    android:textColor="@color/clock_green"

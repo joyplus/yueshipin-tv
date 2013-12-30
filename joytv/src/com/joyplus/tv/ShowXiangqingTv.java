@@ -8,7 +8,10 @@ import org.json.JSONObject;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.IntentFilter;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
@@ -93,7 +96,7 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 	private int seletedButtonIndex=0;//选中当前页数下，当前想要播放集数的Button的索引 1开始
 	private int selectedIndex;//选中页数的索引 1开始
 	
-	private int historyPlayIndex4DB = -1;//当前数据库中播放的集数
+	private String historyPlayIndex4DB = null;//当前数据库中播放的集数
 	
 	private boolean isYingPing = false;
 	
@@ -104,6 +107,44 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 	private boolean haspuqing = false;
 	
 	private int supportDefination;
+	
+	
+	private boolean isSohu = false;
+	
+	private BroadcastReceiver mReceiver = new BroadcastReceiver(){
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			// TODO Auto-generated method stub
+			String action = intent.getAction();
+			if(prod_id!=null&&prod_id.equals(action)){
+				String date = intent.getStringExtra("date");
+				try{
+					JSONObject root = new JSONObject(date);
+					int type = root.getInt("type");
+					switch (type) {
+					case Constant.SOHU_ACTION_TYPE_COLLECT:
+						shoucang();
+						break;
+					case Constant.SOHU_ACTION_TYPE_CANCELCOLLECT:
+						cancelshoucang();
+						break;
+					case Constant.SOHU_ACTION_TYPE_SAVE_HISTORY:
+						JSONObject sohuDate =  root.getJSONObject("date");
+						UtilTools.saveSohuPlayHistory(aq, app, context,sohuDate.toString());
+						String subName = sohuDate.getString("prod_subname");
+						historyPlayIndex4DB = subName;
+						updateSelctedButtonIndex();
+						updateView();
+						break;
+					}
+				}catch (Exception e) {
+					// TODO: handle exception
+					e.printStackTrace();
+				}
+			}
+		}
+	};
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -134,11 +175,11 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 		//从DB文件中获取历史播放集数
 		historyPlayIndex4DB = DBUtils.
 				getHistoryPlayIndex4DB(getApplicationContext(),prod_id,BangDanConstant.TV_TYPE);
-		seletedButtonIndex = historyPlayIndex4DB;
 		Log.i(TAG, "onCreate--->historyPlayIndex4DB:" + historyPlayIndex4DB);
-		
 		getIsShoucangData();
 		getServiceDate();
+		IntentFilter filter = new IntentFilter(prod_id);
+		registerReceiver(mReceiver, filter);
 	}
 	
 	private Handler handler = new Handler() {
@@ -187,10 +228,19 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 				beforeTempPop = biaoqingLL;
 			}
 		}
-		if (supportDefination == 0) {
+		
+		if(isSohu){
+			gaoqingBt.setText(R.string.sohu_definition_sd);
+		}else{
+			if (supportDefination == 0) {
 
-			bofangLL.setEnabled(false);
+				bofangLL.setEnabled(false);
+			}
 		}
+//		if (supportDefination == 0) {
+//
+//			bofangLL.setEnabled(false);
+//		}
 		
 		initPopWindowData();
 	}
@@ -200,7 +250,7 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 		int max = 0;
 		int min = 0;
 		
-		if(historyPlayIndex4DB != -1) {//能够获取历史记录
+		if(seletedButtonIndex != -1) {//能够获取历史记录
 			
 			if(tempStartTag < tempEndTag) {//正序
 				
@@ -213,7 +263,7 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 			}
 			
 			//如果历史播放记录集数属于这个区间
-			if(historyPlayIndex4DB <= max && historyPlayIndex4DB >= min) {
+			if(seletedButtonIndex <= max && seletedButtonIndex >= min) {
 				
 				seletedTitleButton = button;
 				seletedTitleButton.setEnabled(false);
@@ -267,7 +317,6 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 			if(isOver){
 				if((i+1)*COUNT>num){
 					b.setText((i*COUNT+1) +"-"+num);
-					
 					int tempStartTag = i*COUNT+1;
 					int tempEndTag = num;
 					
@@ -292,7 +341,7 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 				}
 				
 			}
-			if(i==0 && historyPlayIndex4DB == -1){//如果获取不到历史播放记录集数，就使用默认值
+			if(i==0 && seletedButtonIndex == -1){//如果获取不到历史播放记录集数，就使用默认值
 				seletedTitleButton = b;
 				seletedTitleButton.setEnabled(false);
 			}
@@ -638,10 +687,14 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 	 */
 	private void playFirst(int i){
 		if(i<date.tv.episodes.length){
-			if(date.tv.episodes[i].down_urls!=null){
+			if(isSohu){
 				play(i);
 			}else{
-				playFirst(i+1);
+				if(date.tv.episodes[i].down_urls!=null){
+					play(i);
+				}else{
+					playFirst(i+1);
+				}
 			}
 		}
 	}
@@ -838,11 +891,18 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 				btn.setTextSize(18);
 				btn.setHeight(25);
 				if(isOver){
-					btn.setText("" + (j*5+i+1 + (selectedIndex-1)*COUNT));
 					btn.setId(j*5+i+1 + (selectedIndex-1)*COUNT);
+					//btn.setText("" + (j*5+i+1 + (selectedIndex-1)*COUNT));
+					//btn.setText(date.tv.episodes[btn.getId()-1].name);
+					if((btn.getId()-1)<date.tv.episodes.length){
+						btn.setText(date.tv.episodes[btn.getId()-1].name);
+					}
 				}else{
-					btn.setText("" + (num-((j*5+i)+ (selectedIndex-1)*COUNT)));
 					btn.setId(num-((j*5+i)+ (selectedIndex-1)*COUNT));
+//					btn.setText("" + (num-((j*5+i)+ (selectedIndex-1)*COUNT)));
+					if((btn.getId()-1)<date.tv.episodes.length){
+						btn.setText(date.tv.episodes[btn.getId()-1].name);
+					}
 				}
 				btn.setOnClickListener(this);
 				btn.setOnKeyListener(this);
@@ -859,11 +919,13 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 				btn.setPadding(8, 0, 0, 0);
 				int btnIndex = btn.getId()-1;
 				//没有地址的的时候按钮置黑
-				if(btnIndex>=0&&btnIndex<date.tv.episodes.length){
-					if(date.tv.episodes[btnIndex].down_urls == null){
-						btn.setEnabled(false);
-						Log.d(TAG, "id --------->" + btn.getId());
-						Log.d(TAG, "label --------->" + btn.getText());
+				if(!isSohu){
+					if(btnIndex>=0&&btnIndex<date.tv.episodes.length){
+						if(date.tv.episodes[btnIndex].down_urls == null){
+							btn.setEnabled(false);
+							Log.d(TAG, "id --------->" + btn.getId());
+							Log.d(TAG, "label --------->" + btn.getText());
+						}
 					}
 				}
 //				btn.setBackgroundResource(R.drawable.bg_button_tv_selector);
@@ -906,7 +968,7 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 				
 				if(seletedIndexButton == null) { //如果当前页没有一个button被选中
 					
-					Button button = (Button) findViewById(historyPlayIndex4DB);
+					Button button = (Button) findViewById(seletedButtonIndex);
 					if(button != null) {
 						
 						button.setBackgroundResource(R.drawable.bg_button_tv_selector_1);
@@ -914,7 +976,6 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 						button.setPadding(8, 0, 0, 0);
 						
 						seletedIndexButton = button;
-						seletedButtonIndex = historyPlayIndex4DB;
 					}
 				}
 			}
@@ -945,30 +1006,38 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 		try {
 			date = null;
 			date  = mapper.readValue(json.toString(), ReturnProgramView.class);
-			if(date == null){
+			if(date == null||date.tv == null){
 				Log.e(TAG, "tv date error---->date == null");
 				return;
 			}
-			
-			if(date.tv == null) {
-				Log.e(TAG, "tv error---->date.tv == null");
-				return ;
+			if(Constant.SO_HU_CP.equalsIgnoreCase(date.tv.sources)){
+				isSohu = true;
 			}
-			if("".equals(date.tv.max_episode)||"0".equals(date.tv.max_episode)){
-				num = date.tv.episodes.length;
-				isOver = true;
-			}else if(date.tv.cur_episode.equals(date.tv.max_episode)){
-				isOver = true;
-				num = Integer.valueOf(date.tv.max_episode);
-			}else if("".equals(date.tv.cur_episode)||"0".equals(date.tv.cur_episode)){
-				isOver = true;
-				num = Integer.valueOf(date.tv.max_episode);
-			}else if(Integer.valueOf(date.tv.cur_episode)>=Integer.valueOf(date.tv.max_episode)){
-				isOver = true;
-				num = Integer.valueOf(date.tv.max_episode);
+			if(historyPlayIndex4DB==null){
+				seletedButtonIndex = -1;
 			}else{
-				isOver = false;
+				updateSelctedButtonIndex();
+			}
+			if(isSohu){
+				isOver = true;
 				num = date.tv.episodes.length;
+			}else{
+				if("".equals(date.tv.max_episode)||"0".equals(date.tv.max_episode)){
+					num = date.tv.episodes.length;
+					isOver = true;
+				}else if(date.tv.cur_episode.equals(date.tv.max_episode)){
+					isOver = true;
+					num = Integer.valueOf(date.tv.max_episode);
+				}else if("".equals(date.tv.cur_episode)||"0".equals(date.tv.cur_episode)){
+					isOver = true;
+					num = Integer.valueOf(date.tv.max_episode);
+				}else if(Integer.valueOf(date.tv.cur_episode)>=Integer.valueOf(date.tv.max_episode)){
+					isOver = true;
+					num = Integer.valueOf(date.tv.max_episode);
+				}else{
+					isOver = false;
+					num = date.tv.episodes.length;
+				}
 			}
 			String bigPicUrl = date.tv.ipad_poster;
 			if(bigPicUrl == null || bigPicUrl.equals("")
@@ -1150,6 +1219,10 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 			aq.id(R.id.img_definition).gone();
 			break;
 		}
+		if(isSohu){
+			aq.id(R.id.img_definition).image(R.drawable.icon_sohu);
+			aq.id(R.id.img_definition).visible();
+		}
 		updateScore(date.tv.score);
 	}
 	
@@ -1245,6 +1318,7 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 	protected void onDestroy() {
 		if (aq != null)
 			aq.dismiss();
+		unregisterReceiver(mReceiver);
 		super.onDestroy();
 	}
 	
@@ -1284,41 +1358,54 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 		}
 		
 		if(date == null || date.tv == null) return;
-		if("true".equals(date.tv.fee) && !VIPLoginActivity.isLogin(this)
-				&& "t035001".equals(UtilTools.getUmengChannel(this))){
-			Intent loginIntent = new Intent(this, VIPLoginActivity.class);
-			loginIntent.putExtra(VIPLoginActivity.START_FROM, VIPLoginActivity.START_FROM_DETAIL);
-			loginIntent.putExtra(VIPLoginActivity.DATA_CURRENT_INDEX, index);
-			startActivityForResult(loginIntent, VIPLoginActivity.RESULTCODE_FOR_DETAIL);
-			return;
+		
+		if(isSohu){
+			Intent it = new Intent(this, PlaySohuVideoActivity.class);
+			it.putExtra("sid", date.tv.sid);
+			it.putExtra("cid", date.tv.cid);
+			it.putExtra("vid", date.tv.episodes[index].vid);
+			it.putExtra("is_favority", isXiai);
+			it.putExtra("prod_id", prod_id);
+			it.putExtra("prod_sub_name", date.tv.episodes[index].name);
+			it.putExtra("play_backtime", 0);
+			startActivity(it);
+		}else{
+			if("true".equals(date.tv.fee) && !VIPLoginActivity.isLogin(this)
+					&& "t035001".equals(UtilTools.getUmengChannel(this))){
+				Intent loginIntent = new Intent(this, VIPLoginActivity.class);
+				loginIntent.putExtra(VIPLoginActivity.START_FROM, VIPLoginActivity.START_FROM_DETAIL);
+				loginIntent.putExtra(VIPLoginActivity.DATA_CURRENT_INDEX, index);
+				startActivityForResult(loginIntent, VIPLoginActivity.RESULTCODE_FOR_DETAIL);
+				return;
+			}
+			
+			CurrentPlayDetailData playDate = new CurrentPlayDetailData();
+			Intent intent = new Intent(this,VideoPlayerJPActivity.class);
+			playDate.prod_id = prod_id;
+			playDate.prod_type = 2;
+			playDate.prod_name = date.tv.name;
+			
+			//清晰度
+//			playDate.prod_qua = UtilTools.string2Int(date.tv.definition);
+			playDate.prod_sub_name = date.tv.episodes[index].name;
+			playDate.prod_favority = isXiai;
+
+			
+			if (getResources().getString(R.string.gaoqing_gaoqing).equals(gaoqingBt.getText())) {
+
+				playDate.prod_qua = BangDanConstant.GAOQING;
+			} else if (getResources().getString(R.string.gaoqing_chaogaoqing).equals(gaoqingBt.getText())) {
+
+				playDate.prod_qua = BangDanConstant.CHAOQING;
+			} else if (getResources().getString(R.string.gaoqing_biaoqing).equals(gaoqingBt.getText())) {
+
+				playDate.prod_qua = BangDanConstant.CHANGXIAN;
+			}
+			
+			app.set_ReturnProgramView(date);
+			app.setmCurrentPlayDetailData(playDate);
+			startActivityForResult(intent, 0);
 		}
-		
-		CurrentPlayDetailData playDate = new CurrentPlayDetailData();
-		Intent intent = new Intent(this,VideoPlayerJPActivity.class);
-		playDate.prod_id = prod_id;
-		playDate.prod_type = 2;
-		playDate.prod_name = date.tv.name;
-		
-		//清晰度
-//		playDate.prod_qua = UtilTools.string2Int(date.tv.definition);
-		playDate.prod_sub_name = date.tv.episodes[index].name;
-		playDate.prod_favority = isXiai;
-
-		
-		if (getResources().getString(R.string.gaoqing_gaoqing).equals(gaoqingBt.getText())) {
-
-			playDate.prod_qua = BangDanConstant.GAOQING;
-		} else if (getResources().getString(R.string.gaoqing_chaogaoqing).equals(gaoqingBt.getText())) {
-
-			playDate.prod_qua = BangDanConstant.CHAOQING;
-		} else if (getResources().getString(R.string.gaoqing_biaoqing).equals(gaoqingBt.getText())) {
-
-			playDate.prod_qua = BangDanConstant.CHANGXIAN;
-		}
-		
-		app.set_ReturnProgramView(date);
-		app.setmCurrentPlayDetailData(playDate);
-		startActivityForResult(intent, 0);
 	}
 	
 	private void updateUserName(){
@@ -1370,9 +1457,8 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 					e.printStackTrace();
 				}
 				
-				seletedButtonIndex = tempId;
-				historyPlayIndex4DB = tempId;
-				
+				historyPlayIndex4DB = prodSubName;
+				updateSelctedButtonIndex();
 				if(date != null && date.tv != null) {
 					
 					updateView();
@@ -1653,5 +1739,15 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 //		}
 //		
 //		handler.sendEmptyMessage(0);
+	}
+	
+	
+	private void updateSelctedButtonIndex(){
+		for(int i = 0 ; i<ShowXiangqingTv.this.date.tv.episodes.length; i++){
+			if(historyPlayIndex4DB.equals(ShowXiangqingTv.this.date.tv.episodes[i].name)){
+				seletedButtonIndex = i+1 ;
+				Log.d(TAG, "current seletedButtonIndex = " + seletedButtonIndex);
+			}
+		}
 	}
 }

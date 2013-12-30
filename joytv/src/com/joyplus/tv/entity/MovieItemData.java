@@ -25,6 +25,8 @@ public class MovieItemData {
 	private String favority_num;
 	private String definition;
 	
+	private String sources;
+	
 	public String getStars() {
 		return stars;
 	}
@@ -143,6 +145,14 @@ public class MovieItemData {
 
 	public void setMovieScore(String movieScore) {
 		this.movieScore = movieScore;
+	}
+
+	public String getSources() {
+		return sources;
+	}
+
+	public void setSources(String sources) {
+		this.sources = sources;
 	}
 
 }

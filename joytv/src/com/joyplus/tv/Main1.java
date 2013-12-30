@@ -97,6 +97,7 @@ import com.joyplus.tv.ui.WaitingDialog;
 import com.joyplus.tv.utils.BangDanConstant;
 import com.joyplus.tv.utils.DBUtils;
 import com.joyplus.tv.utils.DataBaseItems;
+import com.joyplus.tv.utils.ItemStateUtils;
 import com.joyplus.tv.utils.DataBaseItems.UserHistory;
 import com.joyplus.tv.utils.DataBaseItems.UserShouCang;
 import com.joyplus.tv.utils.URLUtils;
@@ -141,20 +142,20 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 	{
 		if(HaoimsFeature.isAddHaoims){
 			int[] normalArray = { R.drawable.movie_normal,R.drawable.episode_normal, 
-					  R.drawable.cartoon_normal,R.drawable.variety_normal,
+					  R.drawable.cartoon_normal,R.drawable.variety_normal, R.drawable.sohu_normal,
 					  R.drawable.haoims_normal,R.drawable.search_normal };
 			int[] activeArray = { R.drawable.movie_active,R.drawable.episode_active, 
-					  R.drawable.cartoon_active,R.drawable.variety_active, 
+					  R.drawable.cartoon_active,R.drawable.variety_active, R.drawable.sohu_active,
 					  R.drawable.haoims_active,R.drawable.search_active, };
 			resouces_lib_nomal 	= normalArray;
 			resouces_lib_active = activeArray;
 		}else{
 			int[] normalArray = { R.drawable.movie_normal,
-					R.drawable.episode_normal, R.drawable.cartoon_normal,
-					R.drawable.variety_normal, R.drawable.search_normal };
+					R.drawable.episode_normal, R.drawable.cartoon_normal, 
+					R.drawable.variety_normal, R.drawable.sohu_normal, R.drawable.search_normal };
 			int[] activeArray = { R.drawable.movie_active,
 					R.drawable.episode_active, R.drawable.cartoon_active,
-					R.drawable.variety_active, R.drawable.search_active, };
+					R.drawable.variety_active, R.drawable.sohu_active, R.drawable.search_active, };
 			resouces_lib_nomal 	= normalArray;
 			resouces_lib_active = activeArray;
 		}
@@ -862,6 +863,9 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 						filter.addAction(FayeService.ACTION_RECIVEACTION_BAND);
 						filter.addAction(FayeService.ACTION_RECIVEACTION_UNBAND);
 						filter.addAction(UtilTools.ACTION_PLAY_END_MAIN);
+						filter.addAction(Constant.ACTION_SOHU_SAVE_HISTORY);
+						filter.addAction(Constant.ACTION_SOHU_COLLECT);
+						filter.addAction(Constant.ACTION_SOHU_CANCELCOLLECT);
 						registerReceiver(receiver, filter);
 
 						isRegesterService = true;
@@ -1166,6 +1170,57 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 					gallery1.setSelection(0);
 				}else{
 					indexCaces.put(1, 0);
+				}
+			}else if(Constant.ACTION_SOHU_SAVE_HISTORY.equals(action)){
+				String str = intent.getStringExtra("playInfo");
+				Log.d(TAG, "history date ----->" + str);
+				try{
+					JSONObject jsonObj = new JSONObject(str);
+					String prod_id = jsonObj.getString("prod_id");
+					// save play history to sever
+					JSONObject obj = new JSONObject();
+					obj.put("type", Constant.SOHU_ACTION_TYPE_SAVE_HISTORY);
+					obj.put("date", jsonObj);
+					Intent intent_new = new Intent(prod_id);
+					intent_new.putExtra("date", obj.toString());
+					context.sendBroadcast(intent_new);
+				}catch (Exception e) {
+					// TODO: handle exception
+					e.printStackTrace();
+				}
+			}else if(Constant.ACTION_SOHU_COLLECT.equals(action)){
+				String str = intent.getStringExtra("playInfo");
+				Log.d(TAG, "soucang date ----->" + str);
+				try{
+					JSONObject jsonObj = new JSONObject(str);
+					String prod_id = jsonObj.getString("prod_id");
+					// do sth.
+					JSONObject obj = new JSONObject();
+					obj.put("type", Constant.SOHU_ACTION_TYPE_COLLECT);
+					obj.put("date", jsonObj);
+					Intent intent_new = new Intent(prod_id);
+					intent_new.putExtra("date", obj.toString());
+					context.sendBroadcast(intent_new);
+				}catch (Exception e) {
+					// TODO: handle exception
+					e.printStackTrace();
+				}
+			}else if(Constant.ACTION_SOHU_CANCELCOLLECT.equals(action)){
+				String str = intent.getStringExtra("playInfo");
+				Log.d(TAG, "cacle soucang date ----->" + str);
+				try{
+					JSONObject jsonObj = new JSONObject(str);
+					String prod_id = jsonObj.getString("prod_id");
+					// do sth.
+					JSONObject obj = new JSONObject();
+					obj.put("type", Constant.SOHU_ACTION_TYPE_CANCELCOLLECT);
+					obj.put("date", jsonObj);
+					Intent intent_new = new Intent(prod_id);
+					intent_new.putExtra("date", obj.toString());
+					context.sendBroadcast(intent_new);
+				}catch (Exception e) {
+					// TODO: handle exception
+					e.printStackTrace();
 				}
 			}
 		}
@@ -1971,70 +2026,123 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 		switch (titleGroup.getSelectedTitleIndex()) {
 		case 1:
 			HotItemInfo info = hot_list.get(index);
-			Intent intent;
-			if (info.type == 0) {
-				// 历史
-				CurrentPlayDetailData playDate = new CurrentPlayDetailData();
-				intent = new Intent(this, VideoPlayerJPActivity.class);
-				playDate.prod_id = info.prod_id;
-				playDate.prod_type = Integer.valueOf(info.prod_type);
-				playDate.prod_name = info.prod_name;
-				playDate.prod_url = info.video_url;
-
-				// 清晰度
-				playDate.prod_qua = UtilTools.string2Int(info.definition);
-
-				Log.d(TAG, "url" + playDate.prod_url);
-				playDate.prod_src = info.source;
-				if (!"".equals(info.playback_time)) {
-					playDate.prod_time = Long.valueOf(info.playback_time) * 1000;
-				}
-				playDate.prod_sub_name = info.prod_subname;
-//				if(playDate.prod_type!=1){
-//					
-//					if(playDate.prod_type == 3) {
-//						
-//						playDate.CurrentIndex = - 1;
-//					} else {
-//						
-////						String  currentIndex = ((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_subname;
-//						if(currentIndex!=null&&!"".equals(currentIndex)){
-//							int current = Integer.valueOf(currentIndex);
-//							if(current>0){
-//								current = current-1;
-//							}
-//							playDate.CurrentIndex = current;
-//						}
-//					}
-//					
-//				}
-				// playDate.prod_qua = Integer.valueOf(info.definition);
-				app.setmCurrentPlayDetailData(playDate);
-				app.set_ReturnProgramView(null);
-				startActivity(intent);
-			} else if (info.type == 1) {
-				int prod_type = Integer.valueOf(info.prod_type);
-				switch (prod_type) {
-				case 1:
-					Log.d(TAG, "name---->" + info.prod_name);
+			Intent intent = null;
+			if (info.type == 0) {// 历史
+				if("3".equalsIgnoreCase(info.play_type)){
+//					Intent it = new Intent(this, PlaySohuVideoActivity.class);
+//					it.putExtra("sid", info.sid);
+//					it.putExtra("cid", info.cid);
+//					it.putExtra("vid", info.vid);
+//					it.putExtra("prod_id", info.prod_id);
+//					it.putExtra("prod_sub_name", info.prod_subname);
+//					it.putExtra("play_backtime", Integer.valueOf(info.playback_time));
+//					startActivity(it);
+					int prod_type = Integer.valueOf(info.prod_type);
+					switch (prod_type) {
+					case 1:
+						intent = new Intent(this, ShowXiangqingMovie.class);
+						break;
+					case 2:
+						intent = new Intent(this, ShowXiangqingTv.class);
+						break;
+					case 3:
+						intent = new Intent(this, ShowXiangqingZongYi.class);
+						break;
+					case 131:
+						intent = new Intent(this, ShowXiangqingDongman.class);
+						break;
+					}
+					if(intent!=null){
+						intent.putExtra("ID", info.prod_id);
+						intent.putExtra("prod_name", info.prod_name);
+						intent.putExtra("prod_url", info.prod_pic_url);
+						intent.putExtra("directors", info.directors);
+						intent.putExtra("stars", info.stars);
+						intent.putExtra("summary", info.prod_summary);
+						intent.putExtra("support_num", info.support_num);
+						intent.putExtra("favority_num", info.favority_num);
+						intent.putExtra("definition", info.definition);
+						intent.putExtra("score", info.score);
+						startActivity(intent);
+					}
+				}else{
 					CurrentPlayDetailData playDate = new CurrentPlayDetailData();
 					intent = new Intent(this, VideoPlayerJPActivity.class);
 					playDate.prod_id = info.prod_id;
 					playDate.prod_type = Integer.valueOf(info.prod_type);
 					playDate.prod_name = info.prod_name;
-//					playDate.prod_url = info.video_url;
-					playDate.prod_src = info.source;
-					// 清晰度
-					playDate.prod_qua = UtilTools
-							.string2Int(info.definition);
+					playDate.prod_url = info.video_url;
 
+					// 清晰度
+					playDate.prod_qua = UtilTools.string2Int(info.definition);
+
+					Log.d(TAG, "url" + playDate.prod_url);
+					playDate.prod_src = info.source;
 					if (!"".equals(info.playback_time)) {
-						playDate.prod_time = Long.valueOf(info.playback_time);
+						playDate.prod_time = Long.valueOf(info.playback_time) * 1000;
 					}
+					playDate.prod_sub_name = info.prod_subname;
+//					if(playDate.prod_type!=1){
+//						
+//						if(playDate.prod_type == 3) {
+//							
+//							playDate.CurrentIndex = - 1;
+//						} else {
+//							
+////							String  currentIndex = ((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_subname;
+//							if(currentIndex!=null&&!"".equals(currentIndex)){
+//								int current = Integer.valueOf(currentIndex);
+//								if(current>0){
+//									current = current-1;
+//								}
+//								playDate.CurrentIndex = current;
+//							}
+//						}
+//						
+//					}
 					// playDate.prod_qua = Integer.valueOf(info.definition);
 					app.setmCurrentPlayDetailData(playDate);
 					app.set_ReturnProgramView(null);
 					startActivity(intent);
+				}
+			} else if (info.type == 1) {
+				int prod_type = Integer.valueOf(info.prod_type);
+				switch (prod_type) {
+				case 1:
+					Log.d(TAG, "name---->" + info.prod_name);
+					if(Constant.SO_HU_CP.equalsIgnoreCase(info.sources)){
+						intent = new Intent(this, ShowXiangqingMovie.class);
+						intent.putExtra("ID", info.prod_id);
+						intent.putExtra("prod_name", info.prod_name);
+						intent.putExtra("prod_url", info.prod_pic_url);
+						intent.putExtra("directors", info.directors);
+						intent.putExtra("stars", info.stars);
+						intent.putExtra("summary", info.prod_summary);
+						intent.putExtra("support_num", info.support_num);
+						intent.putExtra("favority_num", info.favority_num);
+						intent.putExtra("definition", info.definition);
+						intent.putExtra("score", info.score);
+						startActivity(intent);
+					}else{
+						CurrentPlayDetailData playDate = new CurrentPlayDetailData();
+						intent = new Intent(this, VideoPlayerJPActivity.class);
+						playDate.prod_id = info.prod_id;
+						playDate.prod_type = Integer.valueOf(info.prod_type);
+						playDate.prod_name = info.prod_name;
+//							playDate.prod_url = info.video_url;
+						playDate.prod_src = info.source;
+						// 清晰度
+						playDate.prod_qua = UtilTools
+								.string2Int(info.definition);
+
+						if (!"".equals(info.playback_time)) {
+							playDate.prod_time = Long.valueOf(info.playback_time);
+						}
+						// playDate.prod_qua = Integer.valueOf(info.definition);
+						app.setmCurrentPlayDetailData(playDate);
+						app.set_ReturnProgramView(null);
+						startActivity(intent);
+					}
 					break;
 				case 2:
 					intent = new Intent(this, ShowXiangqingTv.class);
@@ -2118,9 +2226,12 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 					startActivity(new Intent(this, ShowZongYiActivity.class));
 					break;
 				case 4:
-					startActivity(new Intent(this, ShowHaoimsActivity.class));
+					startActivity(new Intent(this, ShowSohuActivity.class));
 					break;
 				case 5:
+					startActivity(new Intent(this, ShowHaoimsActivity.class));
+					break;
+				case 6:
 					startActivity(new Intent(this, ShowSearchActivity.class));
 					break;
 				}
@@ -2139,6 +2250,9 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 					startActivity(new Intent(this, ShowZongYiActivity.class));
 					break;
 				case 4:
+					startActivity(new Intent(this, ShowSohuActivity.class));
+					break;
+				case 5:
 					startActivity(new Intent(this, ShowSearchActivity.class));
 					break;
 				}
@@ -2499,6 +2613,11 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 			item.duration = result.histories[0].duration;
 			item.playback_time = result.histories[0].playback_time;
 			item.video_url = result.histories[0].video_url;
+			item.source = result.histories[0].sources;
+			item.sid = result.histories[0].sid;
+			item.cid = result.histories[0].cid;
+			item.vid = result.histories[0].vid;
+			item.play_type= result.histories[0].play_type;
 //
 //			View hotView = LayoutInflater.from(Main.this).inflate(
 //					R.layout.layout_hot, null);
@@ -2662,6 +2781,10 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 				item.prod_summary = result.items[i].prod_summary;
 				item.duration = result.items[i].duration;
 				item.play_urls = result.items[i].play_urls;
+				item.sources = result.items[i].sources;
+				item.sid = result.items[i].sid;
+				item.cid = result.items[i].cid;
+				item.vid = result.items[i].vid;
 				item.playback_time = "";
 				hot_list.add(item);
 				netWorkHotList.add(item);//网络数据
@@ -3156,8 +3279,8 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 
 			if (json == null || json.equals(""))
 				return;
-
-			Log.d(TAG, "initHistoryServiceData" + json.toString());
+			Log.d(TAG, "initHistoryServiceData url = " + url); 
+			Log.d(TAG, "initHistoryServiceData" + json.toString()); 
 			compareUsrHis4DB(
 					UtilTools.returnUserHistoryJson(json.toString()),
 					app.getUserInfo().getUserId());

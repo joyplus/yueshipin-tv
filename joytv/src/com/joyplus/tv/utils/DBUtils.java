@@ -387,7 +387,7 @@ public class DBUtils {
 		return info;
 	}
 	
-	public static int getHistoryPlayIndex4DB(Context context,String prod_id,String prod_type) {
+	public static String getHistoryPlayIndex4DB(Context context,String prod_id,String prod_type) {
 		
 		HotItemInfo info = getHotItemInfo4DB_History(context,
 				UtilTools.getCurrentUserId(context), prod_id);
@@ -402,22 +402,13 @@ public class DBUtils {
 				Log.i(TAG, "prod_subName--->" + prod_subName);
 				if(prod_subName != null && !prod_subName.equals("")
 						&& !prod_subName.equals("EMPTY")) {
-					
-					int currentIndex = -1;
-					try {
-						currentIndex = Integer.valueOf(prod_subName);
-					} catch (NumberFormatException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					
-					return currentIndex;
+					return prod_subName;
 				}
 			}
 				
 		}
 		
-		return -1;
+		return null;
 		
 	}
 

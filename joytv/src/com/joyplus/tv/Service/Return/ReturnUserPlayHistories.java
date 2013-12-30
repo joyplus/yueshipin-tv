@@ -58,6 +58,9 @@ public class ReturnUserPlayHistories {
 		public String area;
 		public String max_episode;
 		public String cur_episode;
-
+		public String sources;
+		public String sid;
+		public String cid;
+		public String vid;
 	}
 }

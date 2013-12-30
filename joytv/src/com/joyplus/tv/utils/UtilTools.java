@@ -14,6 +14,7 @@ import org.json.JSONObject;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.view.View;
 import android.view.animation.Animation;
@@ -33,9 +34,12 @@ import com.joyplus.tv.Service.Return.ReturnTVBangDanList;
 import com.joyplus.tv.Service.Return.ReturnTops;
 import com.joyplus.tv.Service.Return.ReturnUserFavorities;
 import com.joyplus.tv.Service.Return.ReturnUserPlayHistories;
+import com.joyplus.tv.database.TvDatabaseHelper;
 import com.joyplus.tv.entity.HotItemInfo;
 import com.joyplus.tv.entity.MovieItemData;
 import com.joyplus.tv.entity.ReturnFilterMovieSearch;
+import com.joyplus.tv.utils.DataBaseItems.UserHistory;
+import com.joyplus.tv.utils.DataBaseItems.UserShouCang;
 import com.joyplus.utils.Log;
 
 public class UtilTools implements JieMianConstant, BangDanConstant {
@@ -228,13 +232,14 @@ public class UtilTools implements JieMianConstant, BangDanConstant {
 			movieItemData.setMovieCurEpisode(result.results[i].cur_episode);
 			movieItemData.setMovieMaxEpisode(result.results[i].max_episode);
 			movieItemData.setMovieProType(result.results[i].prod_type);
-
+			movieItemData.setSources(result.results[i].sources);
 			movieItemData.setStars(result.results[i].star);
 			movieItemData.setDirectors(result.results[i].director);
 			movieItemData.setSummary(result.results[i].prod_sumary);
 			movieItemData.setSupport_num(result.results[i].support_num);
 			movieItemData.setFavority_num(result.results[i].favority_num);
 			movieItemData.setDefinition(result.results[i].definition);
+			movieItemData.setSources(result.results[i].sources);
 			list.add(movieItemData);
 		}
 
@@ -436,6 +441,10 @@ public class UtilTools implements JieMianConstant, BangDanConstant {
 			item.playback_time = result.histories[i].playback_time;
 			item.prod_subname = result.histories[i].prod_subname;
 			item.play_type = result.histories[i].play_type;
+			item.source = result.histories[i].sources;
+			item.sid = result.histories[i].sid;
+			item.cid = result.histories[i].cid;
+			item.vid = result.histories[i].vid;
 			list.add(item);
 		}
 
@@ -1029,6 +1038,94 @@ public class UtilTools implements JieMianConstant, BangDanConstant {
 	public static void clearVIPData(Context context){
 		clearVIPNameAndPasswd(context);
 		clearVIPNickNameAndID(context);
+	}
+	
+	
+	public static void saveSohuPlayHistory(AQuery aq, App app,Context context,String sohuDate){
+		
+		try{
+			JSONObject jsonObj = new JSONObject(sohuDate);
+			String prod_id = jsonObj.getString("prod_id");
+			String vid = jsonObj.getString("vid");
+			String sid = jsonObj.getString("sid");
+			String cid = jsonObj.getString("cid");
+			String sub_name = jsonObj.getString("prod_subname");
+			int playback_time = Integer.valueOf(jsonObj.getString("playback_time"))/1000;
+			int duration =  Integer.valueOf(jsonObj.getString("duration"))/1000;
+			String prod_name = jsonObj.getString("prod_name");
+			int prod_type = 0;
+			switch (Integer.valueOf(cid)) {
+			case 1:
+				prod_type = 1;
+				break;
+			case 2:
+				prod_type = 2;
+				break;
+			case 7:
+				prod_type = 3;
+				sub_name = prod_name;
+				break;
+			case 16:
+				prod_type = 131;
+				break;
+
+			default:
+				return ;
+			}
+			// save play history to sever
+			//save play count
+			UtilTools.StatisticsClicksShow(aq, app, prod_id, prod_name, sub_name, prod_type);
+			
+			String url = Constant.BASE_URL + "program/play";
+			Map<String, Object> params = new HashMap<String, Object>();
+			params.put("app_key", Constant.APPKEY);// required string
+			params.put("prod_id", prod_id);
+			params.put("prod_name", prod_name);// required
+			params.put("prod_subname", sub_name);
+			params.put("prod_type", prod_type);// required int 视频类别
+			params.put("play_type", "3");
+			params.put("playback_time", playback_time);// _time required int
+			params.put("duration", duration);// required int 视频时长， 单位：秒
+			params.put("sid", sid);
+			params.put("cid", cid);
+			params.put("vid", vid);
+			AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
+			cb.SetHeader(app.getHeaders());
+			cb.params(params).url(url).type(JSONObject.class);
+			
+			aq.ajax(cb);
+
+			// DB操作，把存储到服务器的数据保存到数据库
+			TvDatabaseHelper helper = TvDatabaseHelper
+					.newTvDatabaseHelper(context);
+			SQLiteDatabase database = helper.getWritableDatabase();// 获取写db
+
+			String selection = UserShouCang.USER_ID + "=? and "
+					+ UserHistory.PRO_ID + "=?";// 通过用户id，找到相应信息
+			String[] selectionArgs = {
+					UtilTools.getCurrentUserId(context), prod_id };
+
+			database.delete(TvDatabaseHelper.HISTORY_TABLE_NAME, selection,
+					selectionArgs);
+
+			HotItemInfo info = new HotItemInfo();
+			info.prod_type = prod_type + "";
+			info.prod_name = prod_name;
+			info.prod_subname = sub_name;
+			info.prod_id = prod_id;
+			info.play_type = "3";
+			info.playback_time = playback_time+"";
+			//info.video_url = currentPlayUrl;
+			info.duration = duration + "";
+
+			DBUtils.insertHotItemInfo2DB_History(context, info,
+					UtilTools.getCurrentUserId(context), database);
+
+			helper.closeDatabase();
+		}catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
 	}
 	
 }

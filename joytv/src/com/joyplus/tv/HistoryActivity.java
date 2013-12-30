@@ -422,51 +422,67 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 				View view = inflater.inflate(R.layout.layout_history_dialog, null);
 				TextView nameText = (TextView) view.findViewById(R.id.dialog_title);
 				Button playButton = (Button) view.findViewById(R.id.history_play);
+				HotItemInfo info = ((HistortyAdapter)listView.getAdapter()).data.get(arg2);
+				if("3".equals(info.play_type)){
+					playButton.setVisibility(View.GONE);
+				}
 				playButton.setOnClickListener(new OnClickListener() {
 					
 					@Override
 					public void onClick(View v) {
 						// TODO Auto-generated method stub
 						dialog.dismiss();
-						CurrentPlayDetailData playDate = new CurrentPlayDetailData();
-						Intent intent = new Intent(HistoryActivity.this,VideoPlayerJPActivity.class);
-						if(arg2>=((HistortyAdapter)listView.getAdapter()).data.size()) return;
-						playDate.prod_id = ((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_id;
-						playDate.prod_type = Integer.valueOf(((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_type);
-						playDate.prod_name = ((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_name;
-						playDate.prod_url = ((HistortyAdapter)listView.getAdapter()).data.get(arg2).video_url;
-						
-						//清晰度
-						String definition = ((HistortyAdapter)listView.getAdapter()).data.get(arg2).definition;
-						
-						playDate.prod_qua = UtilTools.string2Int(definition);
-						playDate.prod_sub_name = ((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_subname;
-//						if(playDate.prod_type!=1){
-//							
-//							if(playDate.prod_type == 3) {
+						HotItemInfo info = ((HistortyAdapter)listView.getAdapter()).data.get(arg2);
+						if("3".equals(info.play_type)){
+//							Intent it = new Intent(HistoryActivity.this, PlaySohuVideoActivity.class);
+//							it.putExtra("sid", info.sid);
+//							it.putExtra("cid", info.cid);
+//							it.putExtra("vid", info.vid);
+//							it.putExtra("prod_id", info.prod_id);
+//							it.putExtra("prod_sub_name", info.prod_subname);
+//							it.putExtra("play_backtime", Integer.valueOf(info.playback_time));
+//							startActivity(it);
+						}else{
+							CurrentPlayDetailData playDate = new CurrentPlayDetailData();
+							Intent intent = new Intent(HistoryActivity.this,VideoPlayerJPActivity.class);
+							if(arg2>=((HistortyAdapter)listView.getAdapter()).data.size()) return;
+							playDate.prod_id = ((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_id;
+							playDate.prod_type = Integer.valueOf(((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_type);
+							playDate.prod_name = ((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_name;
+							playDate.prod_url = ((HistortyAdapter)listView.getAdapter()).data.get(arg2).video_url;
+							
+							//清晰度
+							String definition = ((HistortyAdapter)listView.getAdapter()).data.get(arg2).definition;
+							
+							playDate.prod_qua = UtilTools.string2Int(definition);
+							playDate.prod_sub_name = ((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_subname;
+//							if(playDate.prod_type!=1){
 //								
-//								playDate.CurrentIndex = - 1;
-//							} else {
-//								
-//								String  currentIndex = ((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_subname;
-//								if(currentIndex!=null&&!"".equals(currentIndex)){
-//									int current = Integer.valueOf(currentIndex);
-//									if(current>0){
-//										current = current-1;
+//								if(playDate.prod_type == 3) {
+//									
+//									playDate.CurrentIndex = - 1;
+//								} else {
+//									
+//									String  currentIndex = ((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_subname;
+//									if(currentIndex!=null&&!"".equals(currentIndex)){
+//										int current = Integer.valueOf(currentIndex);
+//										if(current>0){
+//											current = current-1;
+//										}
+//										playDate.CurrentIndex = current;
 //									}
-//									playDate.CurrentIndex = current;
 //								}
+//								
 //							}
-//							
-//						}
-//						playDate.prod_src = "";
-						if(!"".equals(((HistortyAdapter)listView.getAdapter()).data.get(arg2).playback_time)){
-							playDate.prod_time = Long.valueOf(((HistortyAdapter)listView.getAdapter()).data.get(arg2).playback_time)*1000;
+//							playDate.prod_src = "";
+							if(!"".equals(((HistortyAdapter)listView.getAdapter()).data.get(arg2).playback_time)){
+								playDate.prod_time = Long.valueOf(((HistortyAdapter)listView.getAdapter()).data.get(arg2).playback_time)*1000;
+							}
+//							playDate.prod_qua = Integer.valueOf(info.definition);
+							app.setmCurrentPlayDetailData(playDate);
+							app.set_ReturnProgramView(null);
+							startActivity(intent);
 						}
-//						playDate.prod_qua = Integer.valueOf(info.definition);
-						app.setmCurrentPlayDetailData(playDate);
-						app.set_ReturnProgramView(null);
-						startActivity(intent);
 					}
 				});
 				
@@ -716,7 +732,11 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 					holder.content.setText(getString(R.string.activity_history_TV_prodSubname_lastRecordTime, data.get(position).prod_subname,playBack_time));
 					break;
 				case 3:
-					holder.content.setText(getString(R.string.activity_history_prodSubname_lastRecordTime, data.get(position).prod_subname,playBack_time));
+					if("3".equals(data.get(position).play_type)){
+						holder.content.setText(getString(R.string.activity_history_lastRecordTime,playBack_time));
+					}else{
+						holder.content.setText(getString(R.string.activity_history_prodSubname_lastRecordTime, data.get(position).prod_subname,playBack_time));
+					}
 					break;
 				case 131:
 					holder.content.setText(getString(R.string.activity_history_TV_prodSubname_lastRecordTime, data.get(position).prod_subname,playBack_time));
@@ -1056,6 +1076,9 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 				item.playback_time = result.histories[i].playback_time;
 				item.prod_subname = result.histories[i].prod_subname;
 				item.play_type = result.histories[i].play_type;
+				item.sid =  result.histories[i].sid;
+				item.cid =  result.histories[i].cid;
+				item.vid =  result.histories[i].vid;
 				list.add(item);
 			}
 			switch (type) {

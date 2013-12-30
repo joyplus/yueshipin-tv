@@ -1212,7 +1212,7 @@ public class ShowZongYiActivity extends AbstractShowActivity {
 			}
 
 			Log.i(TAG, "Temp size:" + tempList.size());
-			if (tempList.size() == URLUtils.FIRST_NUM) {
+			if (tempList.size() == URLUtils.FIRST_NUM-10) {
 
 				isNextPagePossibles[currentListIndex] = true;
 			}

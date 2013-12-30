@@ -215,6 +215,23 @@
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
             android:uiOptions="splitActionBarWhenNarrow" />
         <activity
+            android:name=".ShowSohuActivity"
+            android:screenOrientation="landscape"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+            android:uiOptions="splitActionBarWhenNarrow" >
+<!--             <intent-filter> -->
+<!--                 <action android:name="android.intent.action.MAIN" /> -->
+
+<!--                 <category android:name="android.intent.category.LAUNCHER" /> -->
+<!--             </intent-filter> -->
+       	</activity>
+        <activity
+            android:name=".PlaySohuVideoActivity"
+            android:screenOrientation="landscape"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+            android:uiOptions="splitActionBarWhenNarrow" >
+       	</activity>
+        <activity
             android:name="ShowDetailHaoimsActivity"
             android:label="@string/app_name"
             android:screenOrientation="landscape"
@@ -259,7 +276,7 @@
         </meta-data>
         <meta-data
             android:name="UMENG_CHANNEL"
-            android:value="t044001" />
+            android:value="j001" />
 
         <service android:name="com.parse.PushService" />
 

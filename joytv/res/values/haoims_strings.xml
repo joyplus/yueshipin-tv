@@ -13,4 +13,17 @@
     <string translatable="false" name="haoims_show_education">教育</string>
     <string translatable="false" name="haoims_show_others">其它</string>
     <string translatable="false" name="haoims_show_load_data_fail">获取不到播放地址</string>
+    
+    <!-- sohu -->
+    <string translatable="false" name="sohu_show_title" >搜狐专区</string>
+    <string translatable="false" name="sohu_show_movie">电影</string>
+    <string translatable="false" name="sohu_show_tvSeries">电视剧</string>
+    <string translatable="false" name="sohu_show_variety">综艺</string>
+    <string translatable="false" name="sohu_show_anime">动漫</string>
+    
+    <string translatable="false" name="sohu_install_title">安装提示</string>
+    <string translatable="false" name="sohu_install_notice">该视频需要搜狐播放器支持播放，是否安装搜狐播放器</string>
+    <string translatable="false" name="sohu_install_error">您的设备暂不支持安装应用</string>
+    
+    <string translatable="false" name="sohu_definition_sd">最高画质</string>
 </resources>

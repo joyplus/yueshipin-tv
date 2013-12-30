@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.androidquery.AQuery;
+import com.joyplus.tv.Constant;
 import com.joyplus.tv.R;
 import com.joyplus.tv.entity.HotItemInfo;
 import com.joyplus.tv.utils.UtilTools;
@@ -78,6 +79,22 @@ public class MainHotItemAdapter extends BaseAdapter {
 		holder.score.setText(Utils.formateScore(hot_list.get(position).score));
 //		holder.image.setImageResource(R.drawable.test1);
 		aq.id(holder.image).image(hot_list.get(position).prod_pic_url,true,true,0,R.drawable.post_normal);
+		
+		switch (Integer.valueOf(hot_list.get(position).definition)) {
+		case 8:
+			holder.definition.setImageResource(R.drawable.icon_bd);
+			break;
+		case 7:
+			holder.definition.setImageResource(R.drawable.icon_hd);
+			break;
+		case 6:
+			holder.definition.setImageResource(R.drawable.icon_ts);
+			break;
+		default:
+			holder.definition.setImageDrawable(null);
+			break;
+		}
+		
 		if(hot_list.get(position).type == 0){
 			holder.firstTitle.setVisibility(View.VISIBLE);
 			if(hot_list.get(position).playback_time!=null&&!"".equals(hot_list.get(position).playback_time)){
@@ -85,6 +102,10 @@ public class MainHotItemAdapter extends BaseAdapter {
 						Utils.formatDuration1(Long.valueOf(hot_list.get(position).playback_time))));
 			}else{
 				holder.content.setText("");
+			}
+			if("3".equalsIgnoreCase(hot_list.get(position).play_type)){
+				holder.definition.setVisibility(View.VISIBLE);
+				holder.definition.setImageResource(R.drawable.icon_sohu);
 			}
 		}else{
 			holder.firstTitle.setVisibility(View.GONE);
@@ -143,23 +164,14 @@ public class MainHotItemAdapter extends BaseAdapter {
 				holder.content.setVisibility(View.INVISIBLE);
 				break;
 			}
+			
+			if(Constant.SO_HU_CP.equalsIgnoreCase(hot_list.get(position).sources)){
+				holder.definition.setVisibility(View.VISIBLE);
+				holder.definition.setImageResource(R.drawable.icon_sohu);
+			}
 		}
 		holder.secondTitle.setText(hot_list.get(position).prod_name);
 		
-		switch (Integer.valueOf(hot_list.get(position).definition)) {
-		case 8:
-			holder.definition.setImageResource(R.drawable.icon_bd);
-			break;
-		case 7:
-			holder.definition.setImageResource(R.drawable.icon_hd);
-			break;
-		case 6:
-			holder.definition.setImageResource(R.drawable.icon_ts);
-			break;
-		default:
-			holder.definition.setImageDrawable(null);
-			break;
-		}
 		convertView.setPadding((int)Utils.getStandardValue(c,15), 
 				(int)Utils.getStandardValue(c,10), 
 				(int)Utils.getStandardValue(c,15), 

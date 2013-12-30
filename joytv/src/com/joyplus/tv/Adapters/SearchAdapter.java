@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.androidquery.AQuery;
+import com.joyplus.tv.Constant;
 import com.joyplus.tv.R;
 import com.joyplus.tv.entity.GridViewItemHodler;
 import com.joyplus.tv.entity.MovieItemData;
@@ -151,6 +152,10 @@ public class SearchAdapter extends BaseAdapter implements JieMianConstant{
 			}
 		}
 
+		if(Constant.SO_HU_CP.equalsIgnoreCase(movieList.get(position).getSources())){
+			viewItemHodler.definition.setVisibility(View.VISIBLE);
+			viewItemHodler.definition.setImageResource(R.drawable.icon_sohu);
+		}
 		
 		String proType = movieList.get(position).getMovieProType();
 		

@@ -56,6 +56,10 @@ public class ReturnMainHot {
 		public String max_episode;
 		public String cur_item_name;
 		
+		public String sid;
+		public String cid;
+		public String vid;
+		public String sources;
 		
 	}
 	

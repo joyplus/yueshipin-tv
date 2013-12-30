@@ -32,6 +32,6 @@ public class ReturnFilterMovieSearch {
 		public String max_episode;
 		public String cur_episode;
 		public String duration;
-
+		public String sources;
 	}
 }

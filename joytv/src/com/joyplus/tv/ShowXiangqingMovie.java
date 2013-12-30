@@ -8,7 +8,10 @@ import org.json.JSONObject;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.IntentFilter;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
@@ -94,6 +97,41 @@ public class ShowXiangqingMovie extends Activity implements
 	private boolean isYingPing = false;
 
 	private LinearLayout overTimeLL;// 看完时间
+	
+	/**
+	 * sohu合作相关视频
+	 */
+	private boolean isSohu = false;
+	private BroadcastReceiver mReceiver = new BroadcastReceiver(){
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			// TODO Auto-generated method stub
+			String action = intent.getAction();
+			if(prod_id!=null&&prod_id.equals(action)){
+				String date = intent.getStringExtra("date");
+				try{
+					JSONObject root = new JSONObject(date);
+					int type = root.getInt("type");
+					switch (type) {
+					case Constant.SOHU_ACTION_TYPE_COLLECT:
+						shoucang();
+						break;
+					case Constant.SOHU_ACTION_TYPE_CANCELCOLLECT:
+						cancelshoucang();
+						break;
+					case Constant.SOHU_ACTION_TYPE_SAVE_HISTORY:
+						JSONObject sohuDate =  root.getJSONObject("date");
+						UtilTools.saveSohuPlayHistory(aq, app, context,sohuDate.toString());
+						break;
+					}
+				}catch (Exception e) {
+					// TODO: handle exception
+					e.printStackTrace();
+				}
+			}
+		}
+	};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -120,6 +158,8 @@ public class ShowXiangqingMovie extends Activity implements
 		getIsShoucangData();
 		getMovieDateFromService();
 		getRecommendMovieFormService();
+		IntentFilter filter = new IntentFilter(prod_id);
+		registerReceiver(mReceiver, filter);
 	}
 
 	private Handler handler = new Handler() {
@@ -168,11 +208,14 @@ public class ShowXiangqingMovie extends Activity implements
 				beforeTempPop = biaoqingLL;
 			}
 		}
-		if (supportDefination == 0) {
+		if(isSohu){
+			gaoqingBt.setText(R.string.sohu_definition_sd);
+		}else{
+			if (supportDefination == 0) {
 
-			bofangLL.setEnabled(false);
+				bofangLL.setEnabled(false);
+			}
 		}
-		
 		initPopWindowData();
 	}
 
@@ -419,41 +462,52 @@ public class ShowXiangqingMovie extends Activity implements
 	}
 	
 	private void play(){
-		
-		if(movieData == null || movieData.movie == null) return;
-		if("true".equals(movieData.movie.fee) && !VIPLoginActivity.isLogin(this)
-				&& "t035001".equals(UtilTools.getUmengChannel(this))){
-			Intent loginIntent = new Intent(this, VIPLoginActivity.class);
-			loginIntent.putExtra(VIPLoginActivity.START_FROM, VIPLoginActivity.START_FROM_DETAIL);
-//			loginIntent.putExtra(VIPLoginActivity.DATA_CURRENT_INDEX, index);
-			startActivityForResult(loginIntent, VIPLoginActivity.RESULTCODE_FOR_DETAIL);
-			return;
+		if(isSohu){
+			Intent it = new Intent(this, PlaySohuVideoActivity.class);
+			it.putExtra("sid", movieData.movie.sid);
+			it.putExtra("cid", movieData.movie.cid);
+			it.putExtra("vid", movieData.movie.episodes[0].vid);
+			it.putExtra("is_favority", isXiai);
+			it.putExtra("prod_id", prod_id);
+			it.putExtra("prod_sub_name", movieData.movie.episodes[0].name);
+			it.putExtra("play_backtime", 0);
+			startActivity(it);
+		}else{
+			if(movieData == null || movieData.movie == null) return;
+			if("true".equals(movieData.movie.fee) && !VIPLoginActivity.isLogin(this)
+					&& "t035001".equals(UtilTools.getUmengChannel(this))){
+				Intent loginIntent = new Intent(this, VIPLoginActivity.class);
+				loginIntent.putExtra(VIPLoginActivity.START_FROM, VIPLoginActivity.START_FROM_DETAIL);
+//				loginIntent.putExtra(VIPLoginActivity.DATA_CURRENT_INDEX, index);
+				startActivityForResult(loginIntent, VIPLoginActivity.RESULTCODE_FOR_DETAIL);
+				return;
+			}
+
+			Intent intent = new Intent(this, VideoPlayerJPActivity.class);
+			CurrentPlayDetailData playData = new CurrentPlayDetailData();
+
+			playData.prod_id = movieData.movie.id;
+			playData.prod_name = movieData.movie.name;
+			playData.prod_favority = isXiai;
+			if (getResources().getString(R.string.gaoqing_gaoqing).equals(gaoqingBt.getText())) {
+
+				playData.prod_qua = BangDanConstant.GAOQING;
+			} else if (getResources().getString(R.string.gaoqing_chaogaoqing).equals(gaoqingBt.getText())) {
+
+				playData.prod_qua = BangDanConstant.CHAOQING;
+			} else if (getResources().getString(R.string.gaoqing_biaoqing).equals(gaoqingBt.getText())) {
+
+				playData.prod_qua = BangDanConstant.CHANGXIAN;
+			}
+
+			Log.i(TAG, "playData.prod_qua--->" + playData.prod_qua + " text--->" + gaoqingBt.getText());
+			playData.prod_type = 1;
+
+			app.setmCurrentPlayDetailData(playData);
+			app.set_ReturnProgramView(movieData);
+
+			startActivity(intent);
 		}
-
-		Intent intent = new Intent(this, VideoPlayerJPActivity.class);
-		CurrentPlayDetailData playData = new CurrentPlayDetailData();
-
-		playData.prod_id = movieData.movie.id;
-		playData.prod_name = movieData.movie.name;
-		playData.prod_favority = isXiai;
-		if (getResources().getString(R.string.gaoqing_gaoqing).equals(gaoqingBt.getText())) {
-
-			playData.prod_qua = BangDanConstant.GAOQING;
-		} else if (getResources().getString(R.string.gaoqing_chaogaoqing).equals(gaoqingBt.getText())) {
-
-			playData.prod_qua = BangDanConstant.CHAOQING;
-		} else if (getResources().getString(R.string.gaoqing_biaoqing).equals(gaoqingBt.getText())) {
-
-			playData.prod_qua = BangDanConstant.CHANGXIAN;
-		}
-
-		Log.i(TAG, "playData.prod_qua--->" + playData.prod_qua + " text--->" + gaoqingBt.getText());
-		playData.prod_type = 1;
-
-		app.setmCurrentPlayDetailData(playData);
-		app.set_ReturnProgramView(movieData);
-
-		startActivity(intent);
 	}
 	
 	@Override
@@ -674,6 +728,11 @@ public class ShowXiangqingMovie extends Activity implements
 			aq.id(R.id.img_definition).gone();
 			break;
 		}
+		
+		if(isSohu){
+			aq.id(R.id.img_definition).image(R.drawable.icon_sohu);
+			aq.id(R.id.img_definition).visible();
+		}
 
 		initOverTime();
 
@@ -785,6 +844,7 @@ public class ShowXiangqingMovie extends Activity implements
 	protected void onDestroy() {
 		if (aq != null)
 			aq.dismiss();
+		unregisterReceiver(mReceiver);
 		super.onDestroy();
 	}
 
@@ -971,6 +1031,9 @@ public class ShowXiangqingMovie extends Activity implements
 		@Override
 		public int getCount() {
 			// TODO Auto-generated method stub
+			if(recommendMoviesData ==null || recommendMoviesData.items == null){
+				return 0;
+			}
 			if (recommendMoviesData.items.length > 6) {
 				return 6;
 			} else {
@@ -1168,7 +1231,9 @@ public class ShowXiangqingMovie extends Activity implements
 			recommendMoviesData = null;
 			recommendMoviesData = mapper.readValue(json.toString(),
 					ReturnProgramRelatedVideos.class);
-			tuijianGv.setAdapter(tuiJianAdapter);
+			if(recommendMoviesData!=null){
+				tuijianGv.setAdapter(tuiJianAdapter);
+			}
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -1199,6 +1264,9 @@ public class ShowXiangqingMovie extends Activity implements
 					ReturnProgramView.class);
 			if (movieData != null) {
 				if (movieData.movie == null) return;
+				if(Constant.SO_HU_CP.equalsIgnoreCase(movieData.movie.sources)){
+					isSohu = true;
+				}
 				new Thread(new CheckPlayUrl()).start();
 				String bigPicUrl = movieData.movie.ipad_poster;
 				if (bigPicUrl == null || bigPicUrl.equals("")

@@ -71,7 +71,7 @@ public class URLUtils implements JieMianConstant, BangDanConstant{
 	}
 
 	public static final int CACHE_NUM = 20;
-	public static final int FIRST_NUM = 20;
+	public static final int FIRST_NUM = 30;
 
 	// TV 全部分类 10
 	public static String getTV_Quan10URL() {
@@ -727,7 +727,7 @@ public class URLUtils implements JieMianConstant, BangDanConstant{
 
 	public static String getZongyi_QuanAllFirstURL() {
 
-		return getFilterURL(FILTER_URL, 1 + "", (FIRST_NUM)
+		return getFilterURL(FILTER_URL, 1 + "", (FIRST_NUM-10)
 				+ "", ZONGYI_TYPE);
 	}
 
