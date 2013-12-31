@@ -695,7 +695,7 @@ public class ShowSohuActivity extends Activity implements JieMianConstant, MyKey
 			break;
 		case TYPE_MOVIE:
 			intent = new Intent(this, ShowXiangqingMovie.class);
-			info = list_sohu_video.get(position);
+			info = list_movie.get(position);
 			intent.putExtra("ID", info.getMovieID());
 			intent.putExtra("prod_name", info.getMovieName());
 			intent.putExtra("prod_url", info.getMoviePicUrl());

@@ -15,6 +15,7 @@ public class Constant {
 	public static String LOADING_ADV_PUBLISHERID = "02e071ed43ff9d9e1c57647de3fafc84";//加载页面
 	public static String MAIN_ADV_PUBLISHERID = "9be3883720dfd077b8f4d69bb487d4e2";//首页
 	public static String PLAYER_ADV_PUBLISHERID = "9ada2fbd0ff493d8a11b4e5aefaf7df0";//播放器
+	public static String ADDITIONAL_ADV_PUBLISHERID = "49d74b126f3f1def893ce83be29a7d22" ;//补量
 	
 	public static final String APPKEY_TOP = "ijoyplus_android_0001";//正式
 
@@ -47,6 +48,7 @@ public class Constant {
 //	public static String LOADING_ADV_PUBLISHERID = "42ed1ef187e3fa7179d7edc86906cd89";//加载页面
 //	public static String MAIN_ADV_PUBLISHERID = "2e82295fab92770b89eae5caf62bdbed";//首页
 //	public static String PLAYER_ADV_PUBLISHERID = "ad591f194cabeff51ed456ee63e0def2";//播放器
+//	public static String ADDITIONAL_ADV_PUBLISHERID = "ab126add561c71c37f2728ca1f9fc9d9";//补量
 ////	
 //	public static final String APPKEY_TOP = "ijoyplus_android_0001bj";//测试
 //	public static final String BASE_URL_TOP = "http://apitest.yue001.com/joyplus-service/index.php/";//测试

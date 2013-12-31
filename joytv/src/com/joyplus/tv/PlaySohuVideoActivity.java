@@ -106,7 +106,7 @@ public class PlaySohuVideoActivity extends Activity {
 			tDialog.setPositiveButton("确定",
 					new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int which) {
-							retrieveApkFromAssets(PlaySohuVideoActivity.this, "SohuPlayer_1.0_joyplus_ott_12261214.apk");
+							retrieveApkFromAssets(PlaySohuVideoActivity.this, "SohuPlayer_1.0.apk");
 //								finish();
 						}
 					});

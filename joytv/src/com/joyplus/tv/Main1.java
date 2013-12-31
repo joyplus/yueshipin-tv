@@ -953,34 +953,37 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 					mAdView.setAdListener(Main1.this);
 					layout.addView(mAdView);
 
-					String publishFakeId = null;
+					
+					mAdViewFake = new AdView(Main1.this, Constant.ADDITIONAL_ADV_PUBLISHERID,false);
+					mAdViewFake.setAdListener(Main1.this);
+					layoutFake.addView(mAdViewFake);
 
-					if(Constant.TestEnv){
-
-						publishFakeId = "ab126add561c71c37f2728ca1f9fc9d9";
-
-						if(UtilTools.getUmengChannel(getApplicationContext())!= null &&
-								UtilTools.getUmengChannel(getApplicationContext()).equals("j002")){
-
-							mAdViewFake = new AdView(Main1.this, publishFakeId,false);
-							mAdViewFake.setAdListener(Main1.this);
-							layoutFake.addView(mAdViewFake);
-
-						}
-					}else {
-
-						if(UtilTools.getUmengChannel(getApplicationContext())!= null &&
-								UtilTools.getUmengChannel(getApplicationContext()).equals("t003001")
-								&& !UtilTools.getReplenishAdvID(getApplicationContext()).equals("")){
-
-							publishFakeId = UtilTools.getReplenishAdvID(getApplicationContext());
-
-							mAdViewFake = new AdView(Main1.this, publishFakeId,false);
-							mAdViewFake.setAdListener(Main1.this);
-							layoutFake.addView(mAdViewFake);
-
-						}
-					}
+//					if(Constant.TestEnv){
+//
+//						publishFakeId = "ab126add561c71c37f2728ca1f9fc9d9";
+//
+//						if(UtilTools.getUmengChannel(getApplicationContext())!= null &&
+//								UtilTools.getUmengChannel(getApplicationContext()).equals("j002")){
+//
+//							mAdViewFake = new AdView(Main1.this, publishFakeId,false);
+//							mAdViewFake.setAdListener(Main1.this);
+//							layoutFake.addView(mAdViewFake);
+//
+//						}
+//					}else {
+//
+//						if(UtilTools.getUmengChannel(getApplicationContext())!= null &&
+//								UtilTools.getUmengChannel(getApplicationContext()).equals("t003001")
+//								&& !UtilTools.getReplenishAdvID(getApplicationContext()).equals("")){
+//
+//							publishFakeId = UtilTools.getReplenishAdvID(getApplicationContext());
+//
+//							mAdViewFake = new AdView(Main1.this, publishFakeId,false);
+//							mAdViewFake.setAdListener(Main1.this);
+//							layoutFake.addView(mAdViewFake);
+//
+//						}
+//					}
 					//弹出免责声明
 					if(!UtilTools.getDisclaimerVisible(getApplicationContext())){
 
@@ -3582,7 +3585,7 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 		Log.i(Const.TAG,"AdViewActivity--->adClosed");
 	}
 
-	/*
+	/**
 	 * (non-Javadoc)
 	 * @see com.joyplus.adkey.AdListener#adLoadSucceeded(com.joyplus.adkey.Ad)
 	 * @author yyc

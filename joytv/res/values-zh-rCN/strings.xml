@@ -210,10 +210,10 @@
     <string name="activity_joy_search">搜索</string>
     <string name="toast_exit_app">再按一次退出程序</string>
     <string name="layout_choose_defination_density">清 晰 度</string>
-    <string name="layout_choose_defination_SUPERD">超清</string>
-    <string name="layout_choose_defination_HD">高清</string>
-    <string name="layout_choose_defination_STANDARDD">标清</string>
-    <string name="layout_choose_defination_NORMALD">流畅</string>
+    <string name="layout_choose_defination_SUPERD">超       清</string>
+    <string name="layout_choose_defination_HD">高      清</string>
+    <string name="layout_choose_defination_STANDARDD">标      清</string>
+    <string name="layout_choose_defination_NORMALD">流       畅</string>
     <string name="layout_choose_defination_sub">字      幕</string>
     <string name="layout_choose_defination_cancel">取  消</string>
     <string name="layout_choose_defination_complete">完  成</string>
@@ -239,7 +239,7 @@
     <string name="videoPlayerJPActivity_density_STANDARDD">标    清</string>
     <string name="videoPlayerJPActivity_no_subtitle">暂无字幕</string>
     <string name="videoPlayerJPActivity_subtitle_close">关</string>
-    <string name="videoPlayerJPActivity_subtitle_num">字幕<xliff:g id="subtitleNum">%s</xliff:g></string>
+    <string name="videoPlayerJPActivity_subtitle_num">字      幕<xliff:g id="subtitleNum">%s</xliff:g></string>
     
     <string name="videoPlayerJPActivity_source_letv">乐  视</string>
     <string name="videoPlayerJPActivity_source_fengxing">风  行</string>

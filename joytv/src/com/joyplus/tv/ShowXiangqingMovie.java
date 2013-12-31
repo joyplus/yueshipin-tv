@@ -33,6 +33,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.androidquery.AQuery;
@@ -41,6 +42,9 @@ import com.androidquery.callback.AjaxStatus;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.joyplus.adkey.Ad;
+import com.joyplus.adkey.AdListener;
+import com.joyplus.adkey.banner.AdView;
 import com.joyplus.tv.Service.Return.ReturnProgramRelatedVideos;
 import com.joyplus.tv.Service.Return.ReturnProgramView;
 import com.joyplus.tv.entity.CurrentPlayDetailData;
@@ -56,10 +60,13 @@ import com.joyplus.utils.Utils;
 import com.umeng.analytics.MobclickAgent;
 
 public class ShowXiangqingMovie extends Activity implements
-		View.OnClickListener, View.OnKeyListener, MyKeyEventKey {
+		View.OnClickListener, View.OnKeyListener, MyKeyEventKey, AdListener {
 
 	private static final String TAG = "ShowXiangqingMovie";
 	private static final int DIALOG_WAITING = 0;
+	
+	private RelativeLayout layoutFake; //ad buliang
+	private AdView mAdViewFake = null;
 
 	private LinearLayout bofangLL;
 	private String pic_url;
@@ -143,7 +150,10 @@ public class ShowXiangqingMovie extends Activity implements
 		app = (App) getApplication();
 		
 		ImageView iv = (ImageView) findViewById(R.id.iv_head_logo);
-		
+		layoutFake = (RelativeLayout) findViewById(R.id.adsdkContentFake);
+		mAdViewFake = new AdView(this, Constant.ADDITIONAL_ADV_PUBLISHERID,false);
+		mAdViewFake.setAdListener(this);
+		layoutFake.addView(mAdViewFake);
 		UtilTools.setLogoPic(getApplicationContext(), aq, iv);
 		
 		supportDefination = 3;
@@ -1380,5 +1390,35 @@ public class ShowXiangqingMovie extends Activity implements
 			}
 			handler.sendEmptyMessage(0);
 		}
+	}
+
+	@Override
+	public void adClicked() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void adClosed(Ad arg0, boolean arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void adLoadSucceeded(Ad arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void adShown(Ad arg0, boolean arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void noAdFound() {
+		// TODO Auto-generated method stub
+		
 	}
 }

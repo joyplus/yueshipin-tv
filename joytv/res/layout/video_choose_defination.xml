@@ -14,7 +14,7 @@
 	        android:layout_height="40dp"
 	        android:id="@+id/layout_def"
 	        android:orientation="horizontal">
-	        <TextView android:layout_width="wrap_content"
+	        <TextView android:layout_width="100dp"
 	            android:layout_height="wrap_content"
 	            android:textColor="#f0f0f0"
 	            android:paddingLeft="10dp"
@@ -42,7 +42,7 @@
 	        android:layout_height="40dp"
 	        android:id="@+id/layout_zimu"
 	        android:orientation="horizontal">
-	        <TextView android:layout_width="wrap_content"
+	        <TextView android:layout_width="100dp"
 	            android:layout_height="wrap_content"
 	            android:textColor="#f0f0f0"
 	            android:paddingLeft="10dp"
