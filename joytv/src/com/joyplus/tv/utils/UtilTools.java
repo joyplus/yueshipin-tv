@@ -1068,7 +1068,10 @@ public class UtilTools implements JieMianConstant, BangDanConstant {
 			case 16:
 				prod_type = 131;
 				break;
-
+			case 8:
+				prod_type = 5;
+				sub_name = prod_name;
+				break;
 			default:
 				return ;
 			}

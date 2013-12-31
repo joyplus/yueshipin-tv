@@ -421,6 +421,9 @@ public class ShowMovieActivity extends AbstractShowActivity {
 
 							intent.setClass(ShowMovieActivity.this,
 									ShowXiangqingZongYi.class);
+						} else if (pro_type.equals("5")){
+							intent.setClass(ShowMovieActivity.this,
+									ShowXiangqingJilu.class);
 						}
 
 						intent.putExtra("ID", list.get(position).getMovieID());

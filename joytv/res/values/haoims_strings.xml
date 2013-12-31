@@ -15,11 +15,13 @@
     <string translatable="false" name="haoims_show_load_data_fail">获取不到播放地址</string>
     
     <!-- sohu -->
+    <string translatable="false" name="sohu_show_video">搜狐出品</string>
     <string translatable="false" name="sohu_show_title" >搜狐专区</string>
     <string translatable="false" name="sohu_show_movie">电影</string>
     <string translatable="false" name="sohu_show_tvSeries">电视剧</string>
     <string translatable="false" name="sohu_show_variety">综艺</string>
     <string translatable="false" name="sohu_show_anime">动漫</string>
+    <string translatable="false" name="sohu_show_jilu">纪录片</string>
     
     <string translatable="false" name="sohu_install_title">安装提示</string>
     <string translatable="false" name="sohu_install_notice">该视频需要搜狐播放器支持播放，是否安装搜狐播放器</string>

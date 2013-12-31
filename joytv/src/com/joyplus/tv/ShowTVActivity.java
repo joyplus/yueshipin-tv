@@ -445,6 +445,10 @@ public class ShowTVActivity extends AbstractShowActivity {
 
 							intent.setClass(ShowTVActivity.this,
 									ShowXiangqingZongYi.class);
+						}else if (pro_type.equals("5")) {
+
+							intent.setClass(ShowTVActivity.this,
+									ShowXiangqingJilu.class);
 						}
 
 						intent.putExtra("ID", list.get(position).getMovieID());

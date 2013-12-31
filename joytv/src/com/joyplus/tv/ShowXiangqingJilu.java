@@ -61,7 +61,7 @@ import com.joyplus.utils.MyKeyEventKey;
 import com.joyplus.utils.Utils;
 import com.umeng.analytics.MobclickAgent;
 
-public class ShowXiangqingZongYi extends Activity implements View.OnClickListener,
+public class ShowXiangqingJilu extends Activity implements View.OnClickListener,
 		View.OnKeyListener, MyKeyEventKey {
 
 	private static final String TAG = "ShowXiangqingZongYi";
@@ -153,7 +153,7 @@ public class ShowXiangqingZongYi extends Activity implements View.OnClickListene
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 
-		this.setContentView(R.layout.show_xiangqing_zongyi);
+		this.setContentView(R.layout.show_xiangqing_jilu);
 		Intent intent = getIntent();
 		prod_id = intent.getStringExtra("ID");
 		if(prod_id == null||"".equals(prod_id)){

@@ -63,6 +63,8 @@ public class ShowDtailConfig {
 	public static final String VARIETY_TYPE = "3";
 	//动漫类型
 	public static final String ANIME_TYPE = "131";
+	//记录
+	public static final String JILU_TYPE = "5";
 	
 	public static Intent getIntent() throws Exception{
 		Intent intent = new Intent(ShowDtailConfig.JOYPLUS_INTENT_ACTION);

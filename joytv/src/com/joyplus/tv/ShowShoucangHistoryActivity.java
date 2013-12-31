@@ -150,6 +150,9 @@ public class ShowShoucangHistoryActivity extends Activity implements OnClickList
 						case 131:
 							intent = new Intent(ShowShoucangHistoryActivity.this,ShowXiangqingDongman.class);
 							break;
+						case 5:
+							intent = new Intent(ShowShoucangHistoryActivity.this,ShowXiangqingJilu.class);
+							break;
 						}
 						if(intent == null){ 
 							return; 

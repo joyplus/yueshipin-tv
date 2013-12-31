@@ -43,10 +43,12 @@ public class ShowSohuActivity extends Activity implements JieMianConstant, MyKey
 	private static final String TAG = "ShowSohuActivity";
 	private static final int DIALOG_WAITING = 0;
 	
-	private static final int TYPE_MOVIE 	= 0;
-	private static final int TYPE_TV 		= 1;
-	private static final int TYPE_SHOW 		= 2;
-	private static final int TYPE_DONGMAN 	= 3;
+	private static final int TYPE_SOHU_VIDEO = 0;
+	private static final int TYPE_MOVIE 	= 1;
+	private static final int TYPE_TV 		= 2;
+	private static final int TYPE_SHOW 		= 3;
+	private static final int TYPE_DONGMAN 	= 4;
+	private static final int TYPE_JILU      = 5;
 	
 	private static final int REQUSET_NUMBER = 30;
 	
@@ -64,10 +66,12 @@ public class ShowSohuActivity extends Activity implements JieMianConstant, MyKey
 	private Map<Integer, Integer> requestIndexs = new HashMap<Integer, Integer>();
 	private boolean isRequesting = false;
 	
+	private List<MovieItemData> list_sohu_video;
 	private List<MovieItemData> list_movie;
 	private List<MovieItemData> list_tv;
 	private List<MovieItemData> list_show;
 	private List<MovieItemData> list_dongman;
+	private List<MovieItemData> list_jilu;
 	
 	private SohuAdapter adapter;
 	
@@ -76,7 +80,7 @@ public class ShowSohuActivity extends Activity implements JieMianConstant, MyKey
 //	private SohuAdapter adapter_show;
 //	private SohuAdapter adapter_dongman;
 	
-	private Button btn_movie, btn_tv, btn_show, btn_dongman;
+	private Button btn_video,btn_movie, btn_tv, btn_show, btn_dongman, btn_jilu;
 	private Button selecteButton;
 	private int selecte_type;
 	
@@ -87,34 +91,46 @@ public class ShowSohuActivity extends Activity implements JieMianConstant, MyKey
 		this.setContentView(R.layout.activity_sohu);
 		app = (App) getApplication();
 		aQuery = new AQuery(this);
+		hasMores.put(TYPE_SOHU_VIDEO, true);
 		hasMores.put(TYPE_MOVIE, true);
 		hasMores.put(TYPE_TV, true);
 		hasMores.put(TYPE_SHOW, true);
 		hasMores.put(TYPE_DONGMAN, true);
+		hasMores.put(TYPE_JILU, true);
+		requestIndexs.put(TYPE_SOHU_VIDEO, 1);
 		requestIndexs.put(TYPE_MOVIE, 1);
 		requestIndexs.put(TYPE_TV, 1);
 		requestIndexs.put(TYPE_SHOW, 1);
 		requestIndexs.put(TYPE_DONGMAN, 1);
+		requestIndexs.put(TYPE_JILU, 1);
 		playGv = (MyMovieGridView) findViewById(R.id.gv_movie_show);
+		btn_video = (Button) findViewById(R.id.bt_sohu_source_video);
 		btn_movie = (Button) findViewById(R.id.bt_sohu_source_movie);
 		btn_tv = (Button) findViewById(R.id.bt_sohu_source_tvSeries);
 		btn_show = (Button) findViewById(R.id.bt_sohu_source_variety);
 		btn_dongman = (Button) findViewById(R.id.bt_sohu_source_anime);
+		btn_jilu = (Button) findViewById(R.id.bt_sohu_source_jilu);
 		
+		btn_video.setPadding(0, 0, 5, 0);
 		btn_movie.setPadding(0, 0, 5, 0);
 		btn_tv.setPadding(0, 0, 5, 0);
 		btn_show.setPadding(0, 0, 5, 0);
 		btn_dongman.setPadding(0, 0, 5, 0);
+		btn_jilu.setPadding(0, 0, 5, 0);
 		
+		btn_video.setOnFocusChangeListener(this);
 		btn_movie.setOnFocusChangeListener(this);
 		btn_tv.setOnFocusChangeListener(this);
 		btn_show.setOnFocusChangeListener(this);
 		btn_dongman.setOnFocusChangeListener(this);
+		btn_jilu.setOnFocusChangeListener(this);
 		
+		btn_video.setOnClickListener(this);
 		btn_movie.setOnClickListener(this);
 		btn_tv.setOnClickListener(this);
 		btn_show.setOnClickListener(this);
 		btn_dongman.setOnClickListener(this);
+		btn_jilu.setOnClickListener(this);
 		
 		List<MovieItemData> lists  = new ArrayList<MovieItemData>();
 		for(int i=0; i<15; i++){
@@ -368,12 +384,20 @@ public class ShowSohuActivity extends Activity implements JieMianConstant, MyKey
 			String url = null;
 			AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
 			switch (type) {
+			case TYPE_SOHU_VIDEO:
+				//sohuchupin
+				url = Constant.BASE_URL + "filter?app_key=" + Constant.APPKEY + 
+				"&page_num=" + requestIndexs.get(TYPE_SOHU_VIDEO) +
+				"&page_size=" + REQUSET_NUMBER + 
+				"&playfrom=so_hu_cp" + 
+				"&type=" + 1;
+				break;
 			case TYPE_MOVIE:
 				url = Constant.BASE_URL + "filter?app_key=" + Constant.APPKEY + 
-						"&page_num=" + requestIndexs.get(TYPE_MOVIE) +
-						"&page_size=" + REQUSET_NUMBER + 
-						"&playfrom=so_hu_cp" + 
-						"&type=" + 1;
+				"&page_num=" + requestIndexs.get(TYPE_MOVIE) +
+				"&page_size=" + REQUSET_NUMBER + 
+				"&playfrom=so_hu_cp" + 
+				"&type=" + 1;
 				break;
 			case TYPE_TV:
 				url = Constant.BASE_URL + "filter?app_key=" + Constant.APPKEY + 
@@ -395,6 +419,13 @@ public class ShowSohuActivity extends Activity implements JieMianConstant, MyKey
 				"&page_size=" + REQUSET_NUMBER + 
 				"&playfrom=so_hu_cp" + 
 				"&type=" + 131;
+				break;
+			case TYPE_JILU:
+				url = Constant.BASE_URL + "filter?app_key=" + Constant.APPKEY + 
+				"&page_num=" + requestIndexs.get(TYPE_JILU) +
+				"&page_size=" + REQUSET_NUMBER + 
+				"&playfrom=so_hu_cp" + 
+				"&type=" + 5;
 				break;
 			}
 			if(url!=null){
@@ -428,6 +459,17 @@ public class ShowSohuActivity extends Activity implements JieMianConstant, MyKey
 				hasMores.put(selecte_type, true);
 			}
 			switch (selecte_type) {
+			case TYPE_SOHU_VIDEO:
+				if(list_sohu_video == null){
+					list_sohu_video = new ArrayList<MovieItemData>();
+					//playGv.setSelection(0);
+				}
+				for (MovieItemData movieItemData : lists) {
+					list_sohu_video.add(movieItemData);
+				}
+				adapter.setDateList(list_sohu_video);
+				adapter.notifyDataSetChanged();
+				break;
 			case TYPE_MOVIE:
 				if(list_movie == null){
 					list_movie = new ArrayList<MovieItemData>();
@@ -467,6 +509,16 @@ public class ShowSohuActivity extends Activity implements JieMianConstant, MyKey
 					list_dongman.add(movieItemData);
 				}
 				adapter.setDateList(list_dongman);
+				adapter.notifyDataSetChanged();
+				break;
+			case TYPE_JILU:
+				if(list_jilu == null){
+					list_jilu = new ArrayList<MovieItemData>();
+				}
+				for (MovieItemData movieItemData : lists) {
+					list_jilu.add(movieItemData);
+				}
+				adapter.setDateList(list_jilu);
 				adapter.notifyDataSetChanged();
 				break;
 			}
@@ -557,6 +609,17 @@ public class ShowSohuActivity extends Activity implements JieMianConstant, MyKey
 		selecteButton.setTextColor(getResources().getColorStateList(R.color.text_color_selector));
 		selecteButton.setBackgroundResource(R.drawable.text_drawable_selector);
 		switch (v.getId()) {
+		case R.id.bt_sohu_source_video:
+			selecte_type = TYPE_SOHU_VIDEO;
+			selecteButton = btn_video;
+			if(list_sohu_video==null){
+				getServiceDate(TYPE_SOHU_VIDEO);
+				showDialog(DIALOG_WAITING);
+			}else{
+				adapter.setDateList(list_sohu_video);
+				adapter.notifyDataSetChanged();
+			}
+			break;
 		case R.id.bt_sohu_source_movie:
 			selecte_type = TYPE_MOVIE;
 			selecteButton = btn_movie;
@@ -601,6 +664,17 @@ public class ShowSohuActivity extends Activity implements JieMianConstant, MyKey
 				adapter.notifyDataSetChanged();
 			}
 			break;
+		case R.id.bt_sohu_source_jilu:
+			selecte_type = TYPE_JILU;
+			selecteButton = btn_jilu;
+			if(list_jilu==null){
+				getServiceDate(TYPE_JILU);
+				showDialog(DIALOG_WAITING);
+			}else{
+				adapter.setDateList(list_jilu);
+				adapter.notifyDataSetChanged();
+			}
+			break;
 		}
 		selecteButton.setTextColor(getResources().getColor(R.color.common_title_selected));
 		selecteButton.setBackgroundResource(R.drawable.menubg);
@@ -617,9 +691,11 @@ public class ShowSohuActivity extends Activity implements JieMianConstant, MyKey
 		Intent intent = null;
 		MovieItemData info = null;
 		switch (selecte_type) {
+		case TYPE_SOHU_VIDEO:
+			break;
 		case TYPE_MOVIE:
 			intent = new Intent(this, ShowXiangqingMovie.class);
-			info = list_movie.get(position);
+			info = list_sohu_video.get(position);
 			intent.putExtra("ID", info.getMovieID());
 			intent.putExtra("prod_name", info.getMovieName());
 			intent.putExtra("prod_url", info.getMoviePicUrl());
@@ -662,6 +738,20 @@ public class ShowSohuActivity extends Activity implements JieMianConstant, MyKey
 		case TYPE_SHOW:
 			info = list_show.get(position);
 			intent = new Intent(this, ShowXiangqingZongYi.class);
+			intent.putExtra("ID", info.getMovieID());
+			intent.putExtra("prod_name", info.getMovieName());
+			intent.putExtra("prod_url", info.getMoviePicUrl());
+			intent.putExtra("directors", info.getDirectors());
+			intent.putExtra("stars", info.getStars());
+			intent.putExtra("summary", info.getSummary());
+			intent.putExtra("support_num", info.getSupport_num());
+			intent.putExtra("favority_num", info.getFavority_num());
+			intent.putExtra("definition", info.getDefinition());
+			intent.putExtra("score", info.getMovieScore());
+			break;
+		case TYPE_JILU:
+			info = list_jilu.get(position);
+			intent = new Intent(this, ShowXiangqingJilu.class);
 			intent.putExtra("ID", info.getMovieID());
 			intent.putExtra("prod_name", info.getMovieName());
 			intent.putExtra("prod_url", info.getMoviePicUrl());

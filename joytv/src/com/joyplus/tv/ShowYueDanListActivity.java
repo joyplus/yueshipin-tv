@@ -291,6 +291,10 @@ public class ShowYueDanListActivity extends AbstractShowActivity{
 
 							intent.setClass(ShowYueDanListActivity.this,
 									ShowXiangqingZongYi.class);
+						} else if (pro_type.equals("5")) {
+
+							intent.setClass(ShowYueDanListActivity.this,
+									ShowXiangqingJilu.class);
 						}
 
 						intent.putExtra("ID", list.get(position).getMovieID());

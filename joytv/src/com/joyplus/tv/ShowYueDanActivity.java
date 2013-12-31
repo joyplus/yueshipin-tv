@@ -398,6 +398,10 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 
 								intent.setClass(ShowYueDanActivity.this,
 										ShowXiangqingZongYi.class);
+							}else if (pro_type.equals("5")) {
+
+								intent.setClass(ShowYueDanActivity.this,
+										ShowXiangqingJilu.class);
 							}
 
 							intent.putExtra("ID", list.get(position)

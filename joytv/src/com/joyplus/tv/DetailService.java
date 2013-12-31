@@ -60,6 +60,9 @@ public class DetailService extends Service {
 				}else if(ShowDtailConfig.VARIETY_TYPE.equals(prod_type)){
 					mIntent.setClass(DetailService.this, ShowXiangqingZongYi.class);
 					startActivity(mIntent);
+				}else if(ShowDtailConfig.JILU_TYPE.equals(prod_type)){
+					mIntent.setClass(DetailService.this, ShowXiangqingJilu.class);
+					startActivity(mIntent);
 				}
 				break;
 

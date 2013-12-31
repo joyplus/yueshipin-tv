@@ -900,7 +900,7 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 				}else{
 					btn.setId(num-((j*5+i)+ (selectedIndex-1)*COUNT));
 //					btn.setText("" + (num-((j*5+i)+ (selectedIndex-1)*COUNT)));
-					if((btn.getId()-1)<date.tv.episodes.length){
+					if((btn.getId()-1)>=0&&(btn.getId()-1)<date.tv.episodes.length){
 						btn.setText(date.tv.episodes[btn.getId()-1].name);
 					}
 				}

@@ -554,6 +554,9 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 						case 131:
 							intent = new Intent(HistoryActivity.this,ShowXiangqingDongman.class);
 							break;
+						case 5:
+							intent = new Intent(HistoryActivity.this,ShowXiangqingJilu.class);
+							break;
 						}
 						if(intent == null){ 
 							return; 
@@ -741,6 +744,13 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 				case 131:
 					holder.content.setText(getString(R.string.activity_history_TV_prodSubname_lastRecordTime, data.get(position).prod_subname,playBack_time));
 					break;
+				case 5:
+					if("3".equals(data.get(position).play_type)){
+						holder.content.setText(getString(R.string.activity_history_lastRecordTime,playBack_time));
+					}else{
+						holder.content.setText(getString(R.string.activity_history_prodSubname_lastRecordTime, data.get(position).prod_subname,playBack_time));
+					}
+					break;
 				}
 				aq.id(holder.img).image(data.get(position).prod_pic_url);
 			}else{
@@ -871,6 +881,9 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 			case 131:
 				nameText.setText(getString(R.string.activity_history_record_ClearAnimeAllRecord));
 				break;
+			//case 5:
+				//nameText.setText(getString(R.string.activity_history_record_ClearVarietyAllRecord));
+				//break;
 			}
 			cancelButton.setOnClickListener(new OnClickListener() {
 				

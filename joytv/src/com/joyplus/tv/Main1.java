@@ -2051,6 +2051,9 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 					case 131:
 						intent = new Intent(this, ShowXiangqingDongman.class);
 						break;
+					case 5:
+						intent = new Intent(this, ShowXiangqingJilu.class);
+						break;
 					}
 					if(intent!=null){
 						intent.putExtra("ID", info.prod_id);
@@ -2160,6 +2163,20 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 					break;
 				case 3:
 					intent = new Intent(this, ShowXiangqingZongYi.class);
+					intent.putExtra("ID", info.prod_id);
+					intent.putExtra("prod_name", info.prod_name);
+					intent.putExtra("prod_url", info.prod_pic_url);
+					intent.putExtra("directors", info.directors);
+					intent.putExtra("stars", info.stars);
+					intent.putExtra("summary", info.prod_summary);
+					intent.putExtra("support_num", info.support_num);
+					intent.putExtra("favority_num", info.favority_num);
+					intent.putExtra("definition", info.definition);
+					intent.putExtra("score", info.score);
+					startActivity(intent);
+					break;
+				case 5:
+					intent = new Intent(this, ShowXiangqingJilu.class);
 					intent.putExtra("ID", info.prod_id);
 					intent.putExtra("prod_name", info.prod_name);
 					intent.putExtra("prod_url", info.prod_pic_url);
