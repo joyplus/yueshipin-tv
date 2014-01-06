@@ -106,7 +106,7 @@ public class PlaySohuVideoActivity extends Activity {
 			tDialog.setPositiveButton("确定",
 					new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int which) {
-							retrieveApkFromAssets(PlaySohuVideoActivity.this, "SohuPlayer_1.0.apk");
+							retrieveApkFromAssets(PlaySohuVideoActivity.this, "SohuPlayer_1.0.1.apk");
 //								finish();
 						}
 					});
@@ -124,7 +124,7 @@ public class PlaySohuVideoActivity extends Activity {
 	}
 
 	public boolean isBaiduInstalled(){
-		return PackageUtils.isInstalled(this, "com.sohutv.tv.joyplus_player");
+		return PackageUtils.isInstalled(this, "com.sohutv.tv.joyplus_player", 1001);
 	}
 	
 	public boolean retrieveApkFromAssets(Context context, String fileName) {

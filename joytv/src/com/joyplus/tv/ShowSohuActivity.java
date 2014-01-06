@@ -238,11 +238,11 @@ public class ShowSohuActivity extends Activity implements JieMianConstant, MyKey
 		playGv.setSelected(true);
 		playGv.setSelection(3);
 		showDialog(DIALOG_WAITING);
-		getServiceDate(TYPE_MOVIE);
-		selecteButton = btn_movie;
-		selecte_type = TYPE_MOVIE;
-		btn_movie.setTextColor(getResources().getColor(R.color.common_title_selected));
-		btn_movie.setBackgroundResource(R.drawable.menubg);
+		selecteButton = btn_video;
+		selecte_type = TYPE_SOHU_VIDEO;
+		getServiceDate(selecte_type);
+		selecteButton.setTextColor(getResources().getColor(R.color.common_title_selected));
+		selecteButton.setBackgroundResource(R.drawable.menubg);
 		selecteButton.setPadding(0, 0, 5, 0);
 	}
 
@@ -386,11 +386,9 @@ public class ShowSohuActivity extends Activity implements JieMianConstant, MyKey
 			switch (type) {
 			case TYPE_SOHU_VIDEO:
 				//sohuchupin
-				url = Constant.BASE_URL + "filter?app_key=" + Constant.APPKEY + 
+				url = Constant.BASE_URL + "top/SohuProduce?app_key=" + Constant.APPKEY + 
 				"&page_num=" + requestIndexs.get(TYPE_SOHU_VIDEO) +
-				"&page_size=" + REQUSET_NUMBER + 
-				"&playfrom=so_hu_cp" + 
-				"&type=" + 1;
+				"&page_size=" + REQUSET_NUMBER;
 				break;
 			case TYPE_MOVIE:
 				url = Constant.BASE_URL + "filter?app_key=" + Constant.APPKEY + 
@@ -462,7 +460,7 @@ public class ShowSohuActivity extends Activity implements JieMianConstant, MyKey
 			case TYPE_SOHU_VIDEO:
 				if(list_sohu_video == null){
 					list_sohu_video = new ArrayList<MovieItemData>();
-					//playGv.setSelection(0);
+					playGv.setSelection(0);
 				}
 				for (MovieItemData movieItemData : lists) {
 					list_sohu_video.add(movieItemData);
@@ -473,7 +471,7 @@ public class ShowSohuActivity extends Activity implements JieMianConstant, MyKey
 			case TYPE_MOVIE:
 				if(list_movie == null){
 					list_movie = new ArrayList<MovieItemData>();
-					playGv.setSelection(0);
+//					playGv.setSelection(0);
 				}
 				for (MovieItemData movieItemData : lists) {
 					list_movie.add(movieItemData);
@@ -692,6 +690,38 @@ public class ShowSohuActivity extends Activity implements JieMianConstant, MyKey
 		MovieItemData info = null;
 		switch (selecte_type) {
 		case TYPE_SOHU_VIDEO:
+			info = list_sohu_video.get(position);
+			String type = info.getMovieProType();
+			int prod_type = Integer.valueOf(type);
+			switch (prod_type) {
+			case 1:
+				intent = new Intent(this, ShowXiangqingMovie.class);
+				break;
+			case 2:
+				intent = new Intent(this, ShowXiangqingTv.class);
+				break;
+			case 3:
+				intent = new Intent(this, ShowXiangqingZongYi.class);
+				break;
+			case 131:
+				intent = new Intent(this, ShowXiangqingDongman.class);
+				break;
+			case 5:
+				intent = new Intent(this, ShowXiangqingJilu.class);
+				break;
+			}
+			if(intent!=null){
+				intent.putExtra("ID", info.getMovieID());
+				intent.putExtra("prod_name", info.getMovieName());
+				intent.putExtra("prod_url", info.getMoviePicUrl());
+				intent.putExtra("directors", info.getDirectors());
+				intent.putExtra("stars", info.getStars());
+				intent.putExtra("summary", info.getSummary());
+				intent.putExtra("support_num", info.getSupport_num());
+				intent.putExtra("favority_num", info.getFavority_num());
+				intent.putExtra("definition", info.getDefinition());
+				intent.putExtra("score", info.getMovieScore());
+			}
 			break;
 		case TYPE_MOVIE:
 			intent = new Intent(this, ShowXiangqingMovie.class);

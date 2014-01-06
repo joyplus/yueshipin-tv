@@ -68,7 +68,6 @@
                     android:gravity="center_vertical|right"
                     android:background="@drawable/text_drawable_selector"
                     android:textSize="20dp"
-                    android:visibility="gone"
                     android:textColor="@color/text_color_selector"/>
                 <Button android:layout_width="fill_parent"
                     android:layout_height="30dp"

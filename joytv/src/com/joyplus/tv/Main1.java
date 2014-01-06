@@ -468,6 +468,10 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 							definitionIcon.setImageDrawable(null);
 							break;
 						}
+						if("3".equals(hot_list.get(gallery1.getSelectedItemPosition()).play_type)
+								||Constant.SO_HU_CP.equals(hot_list.get(gallery1.getSelectedItemPosition()).sources)){
+							definitionIcon.setImageResource(R.drawable.icon_sohu);
+						}
 						// aq.id(highlightImageView).image(hot_list.get(gallery1.getSelectedItemPosition()).prod_pic_url);
 						// noticeView.setText(gallery1.getSelectedItemPosition()+1
 						// + "/" + hot_list.size());
@@ -1649,7 +1653,9 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 					definitionIcon.setImageDrawable(null);
 					break;
 				}
-
+				if("3".equals(hot_list.get(arg2).play_type)||Constant.SO_HU_CP.equals(hot_list.get(arg2).sources)){
+					definitionIcon.setImageResource(R.drawable.icon_sohu);
+				}
 				ImageView img = (ImageView) gallery1.findViewWithTag(hot_list
 						.get(arg2).prod_pic_url);
 				if (img != null) {
