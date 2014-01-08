@@ -788,6 +788,7 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 		            				   try {
 		            						Uri packageURI =Uri.parse("file://"+f.getAbsolutePath());
 		            						Intent intent = new Intent(Intent.ACTION_INSTALL_PACKAGE, packageURI);
+		            						intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		            						startActivity(intent);
 		            					} catch (Exception e) {
 		            						// TODO: handle exception
