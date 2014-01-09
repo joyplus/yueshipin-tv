@@ -34,6 +34,7 @@ public class ReturnTVBangDanList {
 		public String support_num;
 		public String publish_date;
 		public String score;
+		public String sources;
 		public String area;
 		public String max_episode;
 		public String cur_episode;

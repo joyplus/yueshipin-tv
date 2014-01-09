@@ -313,7 +313,7 @@ public class UtilTools implements JieMianConstant, BangDanConstant {
 			movieItemData.setMovieCurEpisode(result.items[i].cur_episode);
 			movieItemData.setMovieMaxEpisode(result.items[i].max_episode);
 			movieItemData.setMovieProType(result.items[i].prod_type);
-
+			movieItemData.setSources(result.items[i].sources);
 			movieItemData.setStars(result.items[i].stars);
 			movieItemData.setDirectors(result.items[i].directors);
 			movieItemData.setSupport_num(result.items[i].support_num);
