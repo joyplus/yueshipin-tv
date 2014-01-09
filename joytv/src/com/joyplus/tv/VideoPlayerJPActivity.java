@@ -549,19 +549,19 @@ public class VideoPlayerJPActivity extends Activity implements
 				mProd_src = playUrls.get(currentPlayIndex).source_from;
 				Log.i(TAG, "MESSAGE_URLS_READY--->" + currentPlayUrl + " isOnlyExistFengXing--->" + isOnlyExistFengXing
 						+" sourceFromUrl--->" + sourceFromUrl);
-				if (currentPlayUrl != null
-						&& URLUtil.isNetworkUrl(currentPlayUrl)) {
+				if (currentPlayUrl != null&& URLUtil.isNetworkUrl(currentPlayUrl)) {
 					
 					if(isOnlyExistFengXing && sourceFromUrl != null){//只存在风行的地址
 						
 						getTypeFengXing();
 						if(getFlvTypeFengXing){
-						String url = URLUtils.getFexingParseUrlURL(Constant.FENGXING_REGET_FIRST_URL, sourceFromUrl, mProd_id, mProd_sub_name);
-						Log.d(TAG,"FENGXING-URL"+mProd_id+"mProd_sub_name"+ mProd_sub_name);
-						getFengxingParseServiceData(url);
+							String url = URLUtils.getFexingParseUrlURL(Constant.FENGXING_REGET_FIRST_URL, sourceFromUrl, mProd_id, mProd_sub_name);
+							Log.d(TAG,"FENGXING-URL"+mProd_id+"mProd_sub_name"+ mProd_sub_name + "url = " + url);
+							getFengxingParseServiceData(url);
+						}else{
+							new Thread(new UrlRedirectTask()).start();
 						}
 					}else {
-						
 						// 地址跳转相关。。。
 						new Thread(new UrlRedirectTask()).start();
 						// 要根据不同的节目做相应的处理。这里仅仅是为了验证上下集
