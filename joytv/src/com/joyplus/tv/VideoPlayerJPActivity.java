@@ -681,15 +681,17 @@ public class VideoPlayerJPActivity extends Activity implements
 			break;
 		case 2:
 		case 131:
-			if(m_ReturnProgramView.tv.episodes[mEpisodeIndex].down_urls != null) {
-				for (int j = 0; j < m_ReturnProgramView.tv.episodes[mEpisodeIndex].down_urls.length; j++) {
-					if(m_ReturnProgramView.tv.episodes[mEpisodeIndex].down_urls[j] != null) {
-						String sources = m_ReturnProgramView.tv.episodes[mEpisodeIndex].down_urls[j].source;
-						if( m_ReturnProgramView.tv.episodes[mEpisodeIndex].down_urls[j].urls != null) {
-							for (int k = 0; k < m_ReturnProgramView.tv.episodes[mEpisodeIndex].down_urls[j].urls.length; k++) {
-								if(m_ReturnProgramView.tv.episodes[mEpisodeIndex].down_urls[j].urls[k] != null) {
-									if(sourceQua.equals(m_ReturnProgramView.tv.episodes[mEpisodeIndex].down_urls[j].urls[k].type)){
-										getFlvTypeFengXing=true;	
+			if(mEpisodeIndex>=0&&mEpisodeIndex<m_ReturnProgramView.tv.episodes.length){
+				if(m_ReturnProgramView.tv.episodes[mEpisodeIndex].down_urls != null) {
+					for (int j = 0; j < m_ReturnProgramView.tv.episodes[mEpisodeIndex].down_urls.length; j++) {
+						if(m_ReturnProgramView.tv.episodes[mEpisodeIndex].down_urls[j] != null) {
+							String sources = m_ReturnProgramView.tv.episodes[mEpisodeIndex].down_urls[j].source;
+							if( m_ReturnProgramView.tv.episodes[mEpisodeIndex].down_urls[j].urls != null) {
+								for (int k = 0; k < m_ReturnProgramView.tv.episodes[mEpisodeIndex].down_urls[j].urls.length; k++) {
+									if(m_ReturnProgramView.tv.episodes[mEpisodeIndex].down_urls[j].urls[k] != null) {
+										if(sourceQua.equals(m_ReturnProgramView.tv.episodes[mEpisodeIndex].down_urls[j].urls[k].type)){
+											getFlvTypeFengXing=true;	
+										}
 									}
 								}
 							}
@@ -699,20 +701,22 @@ public class VideoPlayerJPActivity extends Activity implements
 			}
 			break;
 		case 3:
-			for (int j = 0; j < m_ReturnProgramView.show.episodes[mEpisodeIndex].down_urls.length; j++) {
-				if(m_ReturnProgramView.show.episodes[mEpisodeIndex].down_urls[j] != null) {
-					String sources = m_ReturnProgramView.show.episodes[mEpisodeIndex].down_urls[j].source;
-					if(m_ReturnProgramView.show.episodes[mEpisodeIndex].down_urls[j].urls != null) {
-						for (int k = 0; k < m_ReturnProgramView.show.episodes[mEpisodeIndex].down_urls[j].urls.length; k++) {
-							if(m_ReturnProgramView.show.episodes[mEpisodeIndex].down_urls[j].urls[k] != null) {
-								if(sourceQua.equals(m_ReturnProgramView.show.episodes[mEpisodeIndex].down_urls[j].urls[k].type)){
-									getFlvTypeFengXing=true;	
+			if(mEpisodeIndex>=0&&mEpisodeIndex<m_ReturnProgramView.show.episodes.length){
+				for (int j = 0; j < m_ReturnProgramView.show.episodes[mEpisodeIndex].down_urls.length; j++) {
+					if(m_ReturnProgramView.show.episodes[mEpisodeIndex].down_urls[j] != null) {
+						String sources = m_ReturnProgramView.show.episodes[mEpisodeIndex].down_urls[j].source;
+						if(m_ReturnProgramView.show.episodes[mEpisodeIndex].down_urls[j].urls != null) {
+							for (int k = 0; k < m_ReturnProgramView.show.episodes[mEpisodeIndex].down_urls[j].urls.length; k++) {
+								if(m_ReturnProgramView.show.episodes[mEpisodeIndex].down_urls[j].urls[k] != null) {
+									if(sourceQua.equals(m_ReturnProgramView.show.episodes[mEpisodeIndex].down_urls[j].urls[k].type)){
+										getFlvTypeFengXing=true;	
+									}
 								}
 							}
 						}
 					}
-				}
 
+				}
 			}
 			break;
 		}

@@ -1752,10 +1752,12 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 	
 	
 	private void updateSelctedButtonIndex(){
-		for(int i = 0 ; i<ShowXiangqingTv.this.date.tv.episodes.length; i++){
-			if(historyPlayIndex4DB.equals(ShowXiangqingTv.this.date.tv.episodes[i].name)){
-				seletedButtonIndex = i+1 ;
-				Log.d(TAG, "current seletedButtonIndex = " + seletedButtonIndex);
+		if(this.date!=null&&date.tv!=null&&date.tv.episodes!=null){
+			for(int i = 0 ; i<ShowXiangqingTv.this.date.tv.episodes.length; i++){
+				if(historyPlayIndex4DB.equals(ShowXiangqingTv.this.date.tv.episodes[i].name)){
+					seletedButtonIndex = i+1 ;
+					Log.d(TAG, "current seletedButtonIndex = " + seletedButtonIndex);
+				}
 			}
 		}
 	}

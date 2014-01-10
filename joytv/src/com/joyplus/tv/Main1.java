@@ -944,8 +944,9 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 				}
 
 				// 当悦单加载完成时，开始下载用户收藏数据，并插入到数据库
-				getShouCangData(URLUtils.getShoucangURL(app
-						.getUserInfo().getUserId()));
+				if(app!=null&&app.getUserInfo()!=null){
+					getShouCangData(URLUtils.getShoucangURL(app.getUserInfo().getUserId()));
+				}
 
 				/*
 				 * adkey show,the Viewo of ad init()
