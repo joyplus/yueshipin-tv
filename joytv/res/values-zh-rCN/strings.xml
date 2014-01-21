@@ -287,4 +287,5 @@
     <string name="mainHotItemAdapter_view_time">观看到:<xliff:g id="lastTime">%s</xliff:g></string>
     <string name="mainHotItemAdapter_update_current_epsidoes">更新到第 <xliff:g id="currentEpisode">%s</xliff:g> 集</string>
     <string name="mainHotItemAdapter_no_update"><xliff:g id="currentEpisode">%s</xliff:g> 集全</string>
+	<string name="notice_choose_source">该视频由上述视频服务商提供</string>
 </resources>

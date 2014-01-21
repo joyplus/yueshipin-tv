@@ -1,16 +1,21 @@
 package com.joyplus.tv;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnShowListener;
 import android.content.IntentFilter;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
@@ -18,6 +23,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -25,6 +31,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
+import android.view.ViewGroup.MarginLayoutParams;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
@@ -45,9 +52,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joyplus.adkey.Ad;
 import com.joyplus.adkey.AdListener;
 import com.joyplus.adkey.banner.AdView;
+import com.joyplus.tv.Adapters.SourceAdapter;
 import com.joyplus.tv.Service.Return.ReturnProgramRelatedVideos;
 import com.joyplus.tv.Service.Return.ReturnProgramView;
 import com.joyplus.tv.entity.CurrentPlayDetailData;
+import com.joyplus.tv.entity.PlayerSourceType;
+import com.joyplus.tv.ui.Gallery;
 import com.joyplus.tv.ui.WaitingDialog;
 import com.joyplus.tv.utils.BangDanConstant;
 import com.joyplus.tv.utils.ItemStateUtils;
@@ -104,6 +114,8 @@ public class ShowXiangqingMovie extends Activity implements
 	private boolean isYingPing = false;
 
 	private LinearLayout overTimeLL;// 看完时间
+	
+	private List<String> mResources = new ArrayList<String>();
 	
 	/**
 	 * sohu合作相关视频
@@ -492,31 +504,37 @@ public class ShowXiangqingMovie extends Activity implements
 				startActivityForResult(loginIntent, VIPLoginActivity.RESULTCODE_FOR_DETAIL);
 				return;
 			}
+			
+			if(mResources.size()<=0){
+				startPlayer(null);
+			}else{
+				final Dialog dialog = new AlertDialog.Builder(this).create();
+				dialog.show();
+				LayoutInflater inflater = LayoutInflater.from(this);
+				View view = inflater.inflate(R.layout.dialog_choose_resouce, null);
+				final Gallery gallery = (Gallery) view.findViewById(R.id.gallery_choose_source);
+				gallery.setAdapter(new SourceAdapter(this, mResources));
+//				gallery.setPadding(-Math.round(Utils.getStandardValue(this, 650)), 0, 0, 0);
+				gallery.setOnItemClickListener(new OnItemClickListener() {
 
-			Intent intent = new Intent(this, VideoPlayerJPActivity.class);
-			CurrentPlayDetailData playData = new CurrentPlayDetailData();
-
-			playData.prod_id = movieData.movie.id;
-			playData.prod_name = movieData.movie.name;
-			playData.prod_favority = isXiai;
-			if (getResources().getString(R.string.gaoqing_gaoqing).equals(gaoqingBt.getText())) {
-
-				playData.prod_qua = BangDanConstant.GAOQING;
-			} else if (getResources().getString(R.string.gaoqing_chaogaoqing).equals(gaoqingBt.getText())) {
-
-				playData.prod_qua = BangDanConstant.CHAOQING;
-			} else if (getResources().getString(R.string.gaoqing_biaoqing).equals(gaoqingBt.getText())) {
-
-				playData.prod_qua = BangDanConstant.CHANGXIAN;
+					@Override
+					public void onItemClick(AdapterView<?> parent, View view,
+							int position, long id) {
+						// TODO Auto-generated method stub
+						dialog.dismiss();
+						startPlayer(mResources.get(position));
+					}
+				});
+//				handler.postDelayed(new Runnable() {
+//					
+//					@Override
+//					public void run() {
+//						// TODO Auto-generated method stub
+//						gallery.onFling(null, null, -1, 0);
+//					}
+//				}, 200);
+				dialog.setContentView(view);
 			}
-
-			Log.i(TAG, "playData.prod_qua--->" + playData.prod_qua + " text--->" + gaoqingBt.getText());
-			playData.prod_type = 1;
-
-			app.setmCurrentPlayDetailData(playData);
-			app.set_ReturnProgramView(movieData);
-
-			startActivity(intent);
 		}
 	}
 	
@@ -1276,7 +1294,15 @@ public class ShowXiangqingMovie extends Activity implements
 				if (movieData.movie == null) return;
 				if(Constant.SO_HU_CP.equalsIgnoreCase(movieData.movie.sources)){
 					isSohu = true;
+					
+				}else{
+					if(movieData.movie.sources!=null){
+						mResources = UtilTools.getResource(movieData.movie.sources);
+					}else{
+						mResources = new ArrayList<String>();
+					}
 				}
+				
 				new Thread(new CheckPlayUrl()).start();
 				String bigPicUrl = movieData.movie.ipad_poster;
 				if (bigPicUrl == null || bigPicUrl.equals("")
@@ -1349,6 +1375,34 @@ public class ShowXiangqingMovie extends Activity implements
 					.getColor(R.color.unuse_color));
 			// yingpingBt.setFocusable(false);
 		}
+	}
+	
+	
+	private void startPlayer(String source){
+		Intent intent = new Intent(this, VideoPlayerJPActivity.class);
+		CurrentPlayDetailData playData = new CurrentPlayDetailData();
+
+		playData.prod_id = movieData.movie.id;
+		playData.prod_name = movieData.movie.name;
+		playData.prod_favority = isXiai;
+		if (getResources().getString(R.string.gaoqing_gaoqing).equals(gaoqingBt.getText())) {
+
+			playData.prod_qua = BangDanConstant.GAOQING;
+		} else if (getResources().getString(R.string.gaoqing_chaogaoqing).equals(gaoqingBt.getText())) {
+
+			playData.prod_qua = BangDanConstant.CHAOQING;
+		} else if (getResources().getString(R.string.gaoqing_biaoqing).equals(gaoqingBt.getText())) {
+
+			playData.prod_qua = BangDanConstant.CHANGXIAN;
+		}
+
+		Log.i(TAG, "playData.prod_qua--->" + playData.prod_qua + " text--->" + gaoqingBt.getText());
+		playData.prod_type = 1;
+		playData.prod_src = source;
+		app.setmCurrentPlayDetailData(playData);
+		app.set_ReturnProgramView(movieData);
+
+		startActivity(intent);
 	}
 
 	/**

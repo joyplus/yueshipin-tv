@@ -120,6 +120,9 @@ public class VideoPlayerJPActivity extends Activity implements
 	
 	private static final boolean DEBUG = false;
 
+	
+	public static final String SOURCE_LETV = "LETV";
+	
 	private static final int MESSAGE_RETURN_DATE_OK = 0;
 	private static final int MESSAGE_URLS_READY = MESSAGE_RETURN_DATE_OK + 1;
 	private static final int MESSAGE_PALY_URL_OK = MESSAGE_URLS_READY + 1;
@@ -2319,7 +2322,21 @@ public class VideoPlayerJPActivity extends Activity implements
 									url.url = m_ReturnProgramView.movie.episodes[0].down_urls[i].urls[j].url;
 									url.bakUrl = url.url;
 									url.webUrl = movieMap.get(sources);//网页播放来源
-									playUrls.add(url);
+									if(TextUtils.isEmpty(mProd_src)){
+										Log.d(TAG, "mProd_src = " + mProd_src);
+										playUrls.add(url);
+									}else{
+										if(mProd_src.equalsIgnoreCase(SOURCE_LETV)){
+											if(url.source_from.equalsIgnoreCase(PlayerSourceType.TYPE_LE_TV_FEE.toSourceName()) 
+													||url.source_from.equalsIgnoreCase(PlayerSourceType.TYPE_LETV.toSourceName())
+													||url.source_from.equals(PlayerSourceType.TYPE_LETV_V2.toSourceName())
+													||url.source_from.equals(PlayerSourceType.TYPE_LETV_V2_FEE.toSourceName())){
+												playUrls.add(url);
+											}
+										}else if(mProd_src.equalsIgnoreCase(url.source_from)){
+											playUrls.add(url);
+										}
+									}
 								}
 							}
 						}
@@ -2384,7 +2401,21 @@ public class VideoPlayerJPActivity extends Activity implements
 												url.url = m_ReturnProgramView.tv.episodes[mEpisodeIndex].down_urls[j].urls[k].url;
 												url.bakUrl = url.url;
 												url.webUrl = map.get(sources);//网页播放来源
-												playUrls.add(url);
+												if(TextUtils.isEmpty(mProd_src)){
+													Log.d(TAG, "mProd_src = " + mProd_src);
+													playUrls.add(url);
+												}else{
+													if(mProd_src.equalsIgnoreCase(SOURCE_LETV)){
+														if(url.source_from.equalsIgnoreCase(PlayerSourceType.TYPE_LE_TV_FEE.toSourceName()) 
+																||url.source_from.equalsIgnoreCase(PlayerSourceType.TYPE_LETV.toSourceName())
+																||url.source_from.equals(PlayerSourceType.TYPE_LETV_V2.toSourceName())
+																||url.source_from.equals(PlayerSourceType.TYPE_LETV_V2_FEE.toSourceName())){
+															playUrls.add(url);
+														}
+													}else if(mProd_src.equalsIgnoreCase(url.source_from)){
+														playUrls.add(url);
+													}
+												}
 											}
 										}
 									}
@@ -2455,7 +2486,21 @@ public class VideoPlayerJPActivity extends Activity implements
 												url.url = m_ReturnProgramView.show.episodes[mEpisodeIndex].down_urls[j].urls[k].url;
 												url.bakUrl = url.url;
 												url.webUrl = map.get(sources);//网页播放来源
-												playUrls.add(url);
+												if(TextUtils.isEmpty(mProd_src)){
+													Log.d(TAG, "mProd_src = " + mProd_src);
+													playUrls.add(url);
+												}else{
+													if(mProd_src.equalsIgnoreCase(SOURCE_LETV)){
+														if(url.source_from.equalsIgnoreCase(PlayerSourceType.TYPE_LE_TV_FEE.toSourceName()) 
+																||url.source_from.equalsIgnoreCase(PlayerSourceType.TYPE_LETV.toSourceName())
+																||url.source_from.equals(PlayerSourceType.TYPE_LETV_V2.toSourceName())
+																||url.source_from.equals(PlayerSourceType.TYPE_LETV_V2_FEE.toSourceName())){
+															playUrls.add(url);
+														}
+													}else if(mProd_src.equalsIgnoreCase(url.source_from)){
+														playUrls.add(url);
+													}
+												}
 											}
 										}
 									}

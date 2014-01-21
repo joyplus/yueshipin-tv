@@ -23,6 +23,7 @@ public enum PlayerSourceType {
 	TYPE_PPTV 		("pptv",15),//15
 	TYPE_56 		("56",16),//16
 	TYPE_PPS		("pps",17),//17
+	TYPE_KU6		("ku6",18),//18
 	
 	//20131105 by @yzg
 	TYPE_BAIDU_WANGPAN		("baidu_wangpan",1),//1

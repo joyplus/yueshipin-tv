@@ -2091,7 +2091,7 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 					playDate.prod_qua = UtilTools.string2Int(info.definition);
 
 					Log.d(TAG, "url" + playDate.prod_url);
-					playDate.prod_src = info.source;
+					//playDate.prod_src = info.source;
 					if (!"".equals(info.playback_time)) {
 						playDate.prod_time = Long.valueOf(info.playback_time) * 1000;
 					}
@@ -2138,23 +2138,34 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 						intent.putExtra("score", info.score);
 						startActivity(intent);
 					}else{
-						CurrentPlayDetailData playDate = new CurrentPlayDetailData();
-						intent = new Intent(this, VideoPlayerJPActivity.class);
-						playDate.prod_id = info.prod_id;
-						playDate.prod_type = Integer.valueOf(info.prod_type);
-						playDate.prod_name = info.prod_name;
-//							playDate.prod_url = info.video_url;
-						playDate.prod_src = info.source;
-						// 清晰度
-						playDate.prod_qua = UtilTools
-								.string2Int(info.definition);
-
-						if (!"".equals(info.playback_time)) {
-							playDate.prod_time = Long.valueOf(info.playback_time);
-						}
-						// playDate.prod_qua = Integer.valueOf(info.definition);
-						app.setmCurrentPlayDetailData(playDate);
-						app.set_ReturnProgramView(null);
+//						CurrentPlayDetailData playDate = new CurrentPlayDetailData();
+//						intent = new Intent(this, VideoPlayerJPActivity.class);
+//						playDate.prod_id = info.prod_id;
+//						playDate.prod_type = Integer.valueOf(info.prod_type);
+//						playDate.prod_name = info.prod_name;
+////							playDate.prod_url = info.video_url;
+//						//playDate.prod_src = info.source;
+//						// 清晰度
+//						playDate.prod_qua = UtilTools.string2Int(info.definition);
+//
+//						if (!"".equals(info.playback_time)) {
+//							playDate.prod_time = Long.valueOf(info.playback_time);
+//						}
+//						// playDate.prod_qua = Integer.valueOf(info.definition);
+//						app.setmCurrentPlayDetailData(playDate);
+//						app.set_ReturnProgramView(null);
+//						startActivity(intent);
+						intent = new Intent(this, ShowXiangqingMovie.class);
+						intent.putExtra("ID", info.prod_id);
+						intent.putExtra("prod_name", info.prod_name);
+						intent.putExtra("prod_url", info.prod_pic_url);
+						intent.putExtra("directors", info.directors);
+						intent.putExtra("stars", info.stars);
+						intent.putExtra("summary", info.prod_summary);
+						intent.putExtra("support_num", info.support_num);
+						intent.putExtra("favority_num", info.favority_num);
+						intent.putExtra("definition", info.definition);
+						intent.putExtra("score", info.score);
 						startActivity(intent);
 					}
 					break;

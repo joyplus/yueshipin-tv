@@ -288,5 +288,6 @@ QR Code or search&quot;Joyplus&quot;.We always listen to your voice.</string>
     <string name="mainHotItemAdapter_view_time">Played:<xliff:g id="lastTime">%s</xliff:g></string>
     <string name="mainHotItemAdapter_update_current_epsidoes">Updated to  <xliff:g id="currentEpisode">%s</xliff:g> </string>
     <string name="mainHotItemAdapter_no_update">Finished at <xliff:g id="currentEpisode">%s</xliff:g></string>
+    <string name="notice_choose_source">该视频由上述视频服务商提供</string>
 
 </resources>

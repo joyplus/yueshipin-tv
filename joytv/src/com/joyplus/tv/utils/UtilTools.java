@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -16,6 +17,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
@@ -30,6 +32,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joyplus.tv.App;
 import com.joyplus.tv.Constant;
 import com.joyplus.tv.R;
+import com.joyplus.tv.VideoPlayerJPActivity;
 import com.joyplus.tv.Service.Return.ReturnTVBangDanList;
 import com.joyplus.tv.Service.Return.ReturnTops;
 import com.joyplus.tv.Service.Return.ReturnUserFavorities;
@@ -37,6 +40,7 @@ import com.joyplus.tv.Service.Return.ReturnUserPlayHistories;
 import com.joyplus.tv.database.TvDatabaseHelper;
 import com.joyplus.tv.entity.HotItemInfo;
 import com.joyplus.tv.entity.MovieItemData;
+import com.joyplus.tv.entity.PlayerSourceType;
 import com.joyplus.tv.entity.ReturnFilterMovieSearch;
 import com.joyplus.tv.utils.DataBaseItems.UserHistory;
 import com.joyplus.tv.utils.DataBaseItems.UserShouCang;
@@ -1129,6 +1133,55 @@ public class UtilTools implements JieMianConstant, BangDanConstant {
 			// TODO: handle exception
 			e.printStackTrace();
 		}
+	}
+	
+	public static List<String> getResource(String resoures)
+	{
+		List<String> list = new ArrayList<String>();
+		String[] strs = resoures.split("\\$\\$\\$");
+		for(int i=0; i<strs.length; i++){
+			String str = strs[i];
+			if (str.equalsIgnoreCase(PlayerSourceType.TYPE_LE_TV_FEE.toSourceName()) 
+					||str.equalsIgnoreCase(PlayerSourceType.TYPE_LETV.toSourceName())
+					||str.equals(PlayerSourceType.TYPE_LETV_V2.toSourceName())
+					||str.equals(PlayerSourceType.TYPE_LETV_V2_FEE.toSourceName())) {
+				
+				if(!list.contains(VideoPlayerJPActivity.SOURCE_LETV)){
+					list.add(VideoPlayerJPActivity.SOURCE_LETV);
+					Log.d(TAG, "add += " + VideoPlayerJPActivity.SOURCE_LETV);
+				}
+			}else if(!TextUtils.isEmpty(str)){
+				if(!str.equalsIgnoreCase(PlayerSourceType.TYPE_PPTV.toSourceName())
+						&&!str.equalsIgnoreCase(PlayerSourceType.TYPE_PPS.toSourceName())
+						&&!str.equalsIgnoreCase(PlayerSourceType.TYPE_KU6.toSourceName())){
+					list.add(str);
+					Log.d(TAG, "add += " + str);
+				}
+			}
+		}
+		
+		if(list.size()>1){
+			if(list.contains(PlayerSourceType.TYPE_YOUKU.toSourceName())
+					||list.contains(VideoPlayerJPActivity.SOURCE_LETV)
+					||list.contains(PlayerSourceType.TYPE_SOHU.toSourceName())
+					||list.contains(PlayerSourceType.TYPE_QIYI.toSourceName())
+					||list.contains(PlayerSourceType.TYPE_FENGXING.toSourceName())
+					||list.contains(PlayerSourceType.TYPE_WANGPAN.toSourceName())
+					||list.contains(PlayerSourceType.TYPE_BAIDU_WANGPAN.toSourceName())
+					||list.contains(PlayerSourceType.TYPE_P2P.toSourceName())){
+				Iterator<String> it = list.iterator();
+				while(it.hasNext()){
+					String s = it.next();
+					if(s.equalsIgnoreCase(PlayerSourceType.TYPE_56.toSourceName())
+							||s.equalsIgnoreCase(PlayerSourceType.TYPE_SINAHD.toSourceName())
+							||s.equalsIgnoreCase(PlayerSourceType.TYPE_M1905.toSourceName())){
+						it.remove();
+					}
+					
+				}
+			}
+		}
+		return list;
 	}
 	
 }

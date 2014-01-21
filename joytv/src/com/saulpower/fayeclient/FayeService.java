@@ -340,7 +340,7 @@ public class FayeService extends Service implements FayeListener{
 					playDate.prod_type = Integer.valueOf(json.getString("prod_type"));
 					playDate.prod_name = json.getString("prod_name");
 					playDate.prod_url = json.getString("prod_url");
-					playDate.prod_src = json.getString("prod_src");
+					//playDate.prod_src = json.getString("prod_src");
 					playDate.prod_time = Math.round(Float.valueOf(json.getString("prod_time"))*1000);
 					playDate.prod_qua = Integer.valueOf(json.getString("prod_qua"));
 					if(playDate.prod_type==2||playDate.prod_type==3||playDate.prod_type==131){
