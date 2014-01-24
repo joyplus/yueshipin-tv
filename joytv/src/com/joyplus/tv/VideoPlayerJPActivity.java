@@ -627,22 +627,22 @@ public class VideoPlayerJPActivity extends Activity implements
 				mVideoView.start();
 				
 				if(reloadLetvCount == 0)
-				postDelayed(new Runnable() {
-					public void run() {
-						if(mStatue != STATUE_LOADING) return;
-						if(currentPlayIndex>=0&& currentPlayIndex<playUrls.size()){
-							if(PlayerSourceType.TYPE_LETV.toSourceName().
-									equals(playUrls.get(currentPlayIndex).source_from)
-									||PlayerSourceType.TYPE_LE_TV_FEE.toSourceName().
-									equals(playUrls.get(currentPlayIndex).source_from)){
-								Log.i(TAG, "postDelayed--->" + playUrls.get(currentPlayIndex).source_from);
-								mVideoView.stopPlayback();
-							//	findViewById(R.id.tv_preload_source_reload).setVisibility(View.VISIBLE);
-								reloadLetvCount ++;
-							}
-						}
-					}
-				}, 3 * 1000);
+//				postDelayed(new Runnable() {
+//					public void run() {
+//						if(mStatue != STATUE_LOADING) return;
+//						if(currentPlayIndex>=0&& currentPlayIndex<playUrls.size()){
+//							if(PlayerSourceType.TYPE_LETV.toSourceName().
+//									equals(playUrls.get(currentPlayIndex).source_from)
+//									||PlayerSourceType.TYPE_LE_TV_FEE.toSourceName().
+//									equals(playUrls.get(currentPlayIndex).source_from)){
+//								Log.i(TAG, "postDelayed--->" + playUrls.get(currentPlayIndex).source_from);
+//								mVideoView.stopPlayback();
+//							//	findViewById(R.id.tv_preload_source_reload).setVisibility(View.VISIBLE);
+//								reloadLetvCount ++;
+//							}
+//						}
+//					}
+//				}, 3 * 1000);
 				break;
 			case MESSAGE_UPDATE_PROGRESS:
 				updateSeekBar();
