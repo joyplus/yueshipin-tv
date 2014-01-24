@@ -686,31 +686,47 @@ public class ShowSohuActivity extends Activity implements JieMianConstant, MyKey
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
 		// TODO Auto-generated method stub
-		Intent intent = null;
-		MovieItemData info = null;
-		switch (selecte_type) {
-		case TYPE_SOHU_VIDEO:
-			info = list_sohu_video.get(position);
-			String type = info.getMovieProType();
-			int prod_type = Integer.valueOf(type);
-			switch (prod_type) {
-			case 1:
+		try{
+			Intent intent = null;
+			MovieItemData info = null;
+			switch (selecte_type) {
+			case TYPE_SOHU_VIDEO:
+				info = list_sohu_video.get(position);
+				String type = info.getMovieProType();
+				int prod_type = Integer.valueOf(type);
+				switch (prod_type) {
+				case 1:
+					intent = new Intent(this, ShowXiangqingMovie.class);
+					break;
+				case 2:
+					intent = new Intent(this, ShowXiangqingTv.class);
+					break;
+				case 3:
+					intent = new Intent(this, ShowXiangqingZongYi.class);
+					break;
+				case 131:
+					intent = new Intent(this, ShowXiangqingDongman.class);
+					break;
+				case 5:
+					intent = new Intent(this, ShowXiangqingJilu.class);
+					break;
+				}
+				if(intent!=null){
+					intent.putExtra("ID", info.getMovieID());
+					intent.putExtra("prod_name", info.getMovieName());
+					intent.putExtra("prod_url", info.getMoviePicUrl());
+					intent.putExtra("directors", info.getDirectors());
+					intent.putExtra("stars", info.getStars());
+					intent.putExtra("summary", info.getSummary());
+					intent.putExtra("support_num", info.getSupport_num());
+					intent.putExtra("favority_num", info.getFavority_num());
+					intent.putExtra("definition", info.getDefinition());
+					intent.putExtra("score", info.getMovieScore());
+				}
+				break;
+			case TYPE_MOVIE:
 				intent = new Intent(this, ShowXiangqingMovie.class);
-				break;
-			case 2:
-				intent = new Intent(this, ShowXiangqingTv.class);
-				break;
-			case 3:
-				intent = new Intent(this, ShowXiangqingZongYi.class);
-				break;
-			case 131:
-				intent = new Intent(this, ShowXiangqingDongman.class);
-				break;
-			case 5:
-				intent = new Intent(this, ShowXiangqingJilu.class);
-				break;
-			}
-			if(intent!=null){
+				info = list_movie.get(position);
 				intent.putExtra("ID", info.getMovieID());
 				intent.putExtra("prod_name", info.getMovieName());
 				intent.putExtra("prod_url", info.getMoviePicUrl());
@@ -721,83 +737,72 @@ public class ShowSohuActivity extends Activity implements JieMianConstant, MyKey
 				intent.putExtra("favority_num", info.getFavority_num());
 				intent.putExtra("definition", info.getDefinition());
 				intent.putExtra("score", info.getMovieScore());
+				break;
+			case TYPE_TV:
+				info = list_tv.get(position);
+				intent = new Intent(this, ShowXiangqingTv.class);
+				intent.putExtra("ID", info.getMovieID());
+				intent.putExtra("prod_name", info.getMovieName());
+				intent.putExtra("prod_url", info.getMoviePicUrl());
+				intent.putExtra("directors", info.getDirectors());
+				intent.putExtra("stars", info.getStars());
+				intent.putExtra("summary", info.getSummary());
+				intent.putExtra("support_num", info.getSupport_num());
+				intent.putExtra("favority_num", info.getFavority_num());
+				intent.putExtra("definition", info.getDefinition());
+				intent.putExtra("score", info.getMovieScore());
+				break;
+			case TYPE_DONGMAN:
+				info = list_dongman.get(position);
+				intent = new Intent(this, ShowXiangqingDongman.class);
+				intent.putExtra("ID", info.getMovieID());
+				intent.putExtra("prod_name", info.getMovieName());
+				intent.putExtra("prod_url", info.getMoviePicUrl());
+				intent.putExtra("directors", info.getDirectors());
+				intent.putExtra("stars", info.getStars());
+				intent.putExtra("summary", info.getSummary());
+				intent.putExtra("support_num", info.getSupport_num());
+				intent.putExtra("favority_num", info.getFavority_num());
+				intent.putExtra("definition", info.getDefinition());
+				intent.putExtra("score", info.getMovieScore());
+				break;
+			case TYPE_SHOW:
+				info = list_show.get(position);
+				intent = new Intent(this, ShowXiangqingZongYi.class);
+				intent.putExtra("ID", info.getMovieID());
+				intent.putExtra("prod_name", info.getMovieName());
+				intent.putExtra("prod_url", info.getMoviePicUrl());
+				intent.putExtra("directors", info.getDirectors());
+				intent.putExtra("stars", info.getStars());
+				intent.putExtra("summary", info.getSummary());
+				intent.putExtra("support_num", info.getSupport_num());
+				intent.putExtra("favority_num", info.getFavority_num());
+				intent.putExtra("definition", info.getDefinition());
+				intent.putExtra("score", info.getMovieScore());
+				break;
+			case TYPE_JILU:
+				info = list_jilu.get(position);
+				intent = new Intent(this, ShowXiangqingJilu.class);
+				intent.putExtra("ID", info.getMovieID());
+				intent.putExtra("prod_name", info.getMovieName());
+				intent.putExtra("prod_url", info.getMoviePicUrl());
+				intent.putExtra("directors", info.getDirectors());
+				intent.putExtra("stars", info.getStars());
+				intent.putExtra("summary", info.getSummary());
+				intent.putExtra("support_num", info.getSupport_num());
+				intent.putExtra("favority_num", info.getFavority_num());
+				intent.putExtra("definition", info.getDefinition());
+				intent.putExtra("score", info.getMovieScore());
+				break;
+			default:
+				break;
 			}
-			break;
-		case TYPE_MOVIE:
-			intent = new Intent(this, ShowXiangqingMovie.class);
-			info = list_movie.get(position);
-			intent.putExtra("ID", info.getMovieID());
-			intent.putExtra("prod_name", info.getMovieName());
-			intent.putExtra("prod_url", info.getMoviePicUrl());
-			intent.putExtra("directors", info.getDirectors());
-			intent.putExtra("stars", info.getStars());
-			intent.putExtra("summary", info.getSummary());
-			intent.putExtra("support_num", info.getSupport_num());
-			intent.putExtra("favority_num", info.getFavority_num());
-			intent.putExtra("definition", info.getDefinition());
-			intent.putExtra("score", info.getMovieScore());
-			break;
-		case TYPE_TV:
-			info = list_tv.get(position);
-			intent = new Intent(this, ShowXiangqingTv.class);
-			intent.putExtra("ID", info.getMovieID());
-			intent.putExtra("prod_name", info.getMovieName());
-			intent.putExtra("prod_url", info.getMoviePicUrl());
-			intent.putExtra("directors", info.getDirectors());
-			intent.putExtra("stars", info.getStars());
-			intent.putExtra("summary", info.getSummary());
-			intent.putExtra("support_num", info.getSupport_num());
-			intent.putExtra("favority_num", info.getFavority_num());
-			intent.putExtra("definition", info.getDefinition());
-			intent.putExtra("score", info.getMovieScore());
-			break;
-		case TYPE_DONGMAN:
-			info = list_dongman.get(position);
-			intent = new Intent(this, ShowXiangqingDongman.class);
-			intent.putExtra("ID", info.getMovieID());
-			intent.putExtra("prod_name", info.getMovieName());
-			intent.putExtra("prod_url", info.getMoviePicUrl());
-			intent.putExtra("directors", info.getDirectors());
-			intent.putExtra("stars", info.getStars());
-			intent.putExtra("summary", info.getSummary());
-			intent.putExtra("support_num", info.getSupport_num());
-			intent.putExtra("favority_num", info.getFavority_num());
-			intent.putExtra("definition", info.getDefinition());
-			intent.putExtra("score", info.getMovieScore());
-			break;
-		case TYPE_SHOW:
-			info = list_show.get(position);
-			intent = new Intent(this, ShowXiangqingZongYi.class);
-			intent.putExtra("ID", info.getMovieID());
-			intent.putExtra("prod_name", info.getMovieName());
-			intent.putExtra("prod_url", info.getMoviePicUrl());
-			intent.putExtra("directors", info.getDirectors());
-			intent.putExtra("stars", info.getStars());
-			intent.putExtra("summary", info.getSummary());
-			intent.putExtra("support_num", info.getSupport_num());
-			intent.putExtra("favority_num", info.getFavority_num());
-			intent.putExtra("definition", info.getDefinition());
-			intent.putExtra("score", info.getMovieScore());
-			break;
-		case TYPE_JILU:
-			info = list_jilu.get(position);
-			intent = new Intent(this, ShowXiangqingJilu.class);
-			intent.putExtra("ID", info.getMovieID());
-			intent.putExtra("prod_name", info.getMovieName());
-			intent.putExtra("prod_url", info.getMoviePicUrl());
-			intent.putExtra("directors", info.getDirectors());
-			intent.putExtra("stars", info.getStars());
-			intent.putExtra("summary", info.getSummary());
-			intent.putExtra("support_num", info.getSupport_num());
-			intent.putExtra("favority_num", info.getFavority_num());
-			intent.putExtra("definition", info.getDefinition());
-			intent.putExtra("score", info.getMovieScore());
-			break;
-		default:
-			break;
-		}
-		if(intent!=null){
-			startActivity(intent);
+			if(intent!=null){
+				startActivity(intent);
+			}
+		}catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
 		}
 		//startActivity(new Intent(this, PlaySohuVideoActivity.class));
 	}

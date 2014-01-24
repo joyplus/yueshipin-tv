@@ -626,7 +626,7 @@ public class VideoPlayerJPActivity extends Activity implements
 				}
 				mVideoView.start();
 				
-				if(reloadLetvCount == 0)
+//				if(reloadLetvCount == 0)
 //				postDelayed(new Runnable() {
 //					public void run() {
 //						if(mStatue != STATUE_LOADING) return;
@@ -2252,9 +2252,15 @@ public class VideoPlayerJPActivity extends Activity implements
 						}
 //						Log.i(TAG, "OnClickListener weburl:" + url);
 						if(url!=null){
-							Intent intent = new Intent(Intent.ACTION_VIEW);
-							intent.setData(Uri.parse(url));
-							startActivity(intent);
+							try {
+								Intent intent = new Intent(Intent.ACTION_VIEW);
+								intent.setData(Uri.parse(url));
+								startActivity(intent);
+							} catch (Exception e) {
+								// TODO: handle exception
+								e.printStackTrace();
+							}
+							
 						}
 					}
 				}
