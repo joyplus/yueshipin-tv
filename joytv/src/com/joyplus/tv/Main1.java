@@ -2039,7 +2039,7 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 			HotItemInfo info = hot_list.get(index);
 			Intent intent = null;
 			if (info.type == 0) {// 历史
-				if("3".equalsIgnoreCase(info.play_type)){
+//				if("3".equalsIgnoreCase(info.play_type)){
 //					Intent it = new Intent(this, PlaySohuVideoActivity.class);
 //					it.putExtra("sid", info.sid);
 //					it.putExtra("cid", info.cid);
@@ -2079,46 +2079,46 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 						intent.putExtra("score", info.score);
 						startActivity(intent);
 					}
-				}else{
-					CurrentPlayDetailData playDate = new CurrentPlayDetailData();
-					intent = new Intent(this, VideoPlayerJPActivity.class);
-					playDate.prod_id = info.prod_id;
-					playDate.prod_type = Integer.valueOf(info.prod_type);
-					playDate.prod_name = info.prod_name;
-					playDate.prod_url = info.video_url;
-
-					// 清晰度
-					playDate.prod_qua = UtilTools.string2Int(info.definition);
-
-					Log.d(TAG, "url" + playDate.prod_url);
-					//playDate.prod_src = info.source;
-					if (!"".equals(info.playback_time)) {
-						playDate.prod_time = Long.valueOf(info.playback_time) * 1000;
-					}
-					playDate.prod_sub_name = info.prod_subname;
-//					if(playDate.prod_type!=1){
-//						
-//						if(playDate.prod_type == 3) {
-//							
-//							playDate.CurrentIndex = - 1;
-//						} else {
-//							
-////							String  currentIndex = ((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_subname;
-//							if(currentIndex!=null&&!"".equals(currentIndex)){
-//								int current = Integer.valueOf(currentIndex);
-//								if(current>0){
-//									current = current-1;
-//								}
-//								playDate.CurrentIndex = current;
-//							}
-//						}
-//						
+//				}else{
+//					CurrentPlayDetailData playDate = new CurrentPlayDetailData();
+//					intent = new Intent(this, VideoPlayerJPActivity.class);
+//					playDate.prod_id = info.prod_id;
+//					playDate.prod_type = Integer.valueOf(info.prod_type);
+//					playDate.prod_name = info.prod_name;
+//					playDate.prod_url = info.video_url;
+//
+//					// 清晰度
+//					playDate.prod_qua = UtilTools.string2Int(info.definition);
+//
+//					Log.d(TAG, "url" + playDate.prod_url);
+//					//playDate.prod_src = info.source;
+//					if (!"".equals(info.playback_time)) {
+//						playDate.prod_time = Long.valueOf(info.playback_time) * 1000;
 //					}
-					// playDate.prod_qua = Integer.valueOf(info.definition);
-					app.setmCurrentPlayDetailData(playDate);
-					app.set_ReturnProgramView(null);
-					startActivity(intent);
-				}
+//					playDate.prod_sub_name = info.prod_subname;
+////					if(playDate.prod_type!=1){
+////						
+////						if(playDate.prod_type == 3) {
+////							
+////							playDate.CurrentIndex = - 1;
+////						} else {
+////							
+//////							String  currentIndex = ((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_subname;
+////							if(currentIndex!=null&&!"".equals(currentIndex)){
+////								int current = Integer.valueOf(currentIndex);
+////								if(current>0){
+////									current = current-1;
+////								}
+////								playDate.CurrentIndex = current;
+////							}
+////						}
+////						
+////					}
+//					// playDate.prod_qua = Integer.valueOf(info.definition);
+//					app.setmCurrentPlayDetailData(playDate);
+//					app.set_ReturnProgramView(null);
+//					startActivity(intent);
+//				}
 			} else if (info.type == 1) {
 				int prod_type = Integer.valueOf(info.prod_type);
 				switch (prod_type) {

@@ -2,6 +2,7 @@ package com.joyplus.tv;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -549,26 +550,26 @@ public class VideoPlayerJPActivity extends Activity implements
 				}
 				currentPlayIndex = 0;
 				currentPlayUrl = playUrls.get(currentPlayIndex).url;
-				mProd_src = playUrls.get(currentPlayIndex).source_from;
+//				mProd_src = playUrls.get(currentPlayIndex).source_from;
 				Log.i(TAG, "MESSAGE_URLS_READY--->" + currentPlayUrl + " isOnlyExistFengXing--->" + isOnlyExistFengXing
 						+" sourceFromUrl--->" + sourceFromUrl);
 				if (currentPlayUrl != null&& URLUtil.isNetworkUrl(currentPlayUrl)) {
 					
-					if(isOnlyExistFengXing && sourceFromUrl != null){//只存在风行的地址
-						
-						getTypeFengXing();
-						if(getFlvTypeFengXing){
-							String url = URLUtils.getFexingParseUrlURL(Constant.FENGXING_REGET_FIRST_URL, sourceFromUrl, mProd_id, mProd_sub_name);
-							Log.d(TAG,"FENGXING-URL"+mProd_id+"mProd_sub_name"+ mProd_sub_name + "url = " + url);
-							getFengxingParseServiceData(url);
-						}else{
-							new Thread(new UrlRedirectTask()).start();
-						}
-					}else {
+//					if(isOnlyExistFengXing && sourceFromUrl != null){//只存在风行的地址
+//						
+//						getTypeFengXing();
+//						if(getFlvTypeFengXing){
+//							String url = URLUtils.getFexingParseUrlURL(Constant.FENGXING_REGET_FIRST_URL, sourceFromUrl, mProd_id, mProd_sub_name);
+//							Log.d(TAG,"FENGXING-URL"+mProd_id+"mProd_sub_name"+ mProd_sub_name + "url = " + url);
+//							getFengxingParseServiceData(url);
+//						}else{
+//							new Thread(new UrlRedirectTask()).start();
+//						}
+//					}else {
 						// 地址跳转相关。。。
 						new Thread(new UrlRedirectTask()).start();
 						// 要根据不同的节目做相应的处理。这里仅仅是为了验证上下集
-					}
+//					}
 
 				}else {
 					mHandler.sendEmptyMessage(MESSAGE_URL_NEXT);
@@ -589,7 +590,7 @@ public class VideoPlayerJPActivity extends Activity implements
 					if (currentPlayIndex < playUrls.size() - 1) {
 						currentPlayIndex += 1;
 						currentPlayUrl = playUrls.get(currentPlayIndex).url;
-						mProd_src = playUrls.get(currentPlayIndex).source_from;
+//						mProd_src = playUrls.get(currentPlayIndex).source_from;
 						if (currentPlayUrl != null
 								&& URLUtil.isNetworkUrl(currentPlayUrl)) {
 							// 地址跳转相关。。。
@@ -600,18 +601,37 @@ public class VideoPlayerJPActivity extends Activity implements
 						}
 					} else {
 						// 所有的片源都不能播放
-						Log.e(TAG, "no url can play!--->");
-						
-//						if(isOnlyExistLetv && m_ReturnProgramView != null
+						Log.e(TAG, "no url can play!--->" + mProd_src + isRetry);
+						sourceFromUrl = playUrls.get(currentPlayIndex).webUrl;
+//						if ((mProd_src.equalsIgnoreCase(PlayerSourceType.TYPE_LE_TV_FEE.toSourceName()) 
+//								||mProd_src.equalsIgnoreCase(PlayerSourceType.TYPE_LETV.toSourceName())
+//								||mProd_src.equalsIgnoreCase(PlayerSourceType.TYPE_LETV_V2.toSourceName())
+//								||mProd_src.equalsIgnoreCase(PlayerSourceType.TYPE_LETV_V2_FEE.toSourceName()))
+//								&& m_ReturnProgramView != null
+//								&& sourceFromUrl != null
+//								&& !isRetry) {
+						if (mProd_src.equalsIgnoreCase(SOURCE_LETV)
+								&& m_ReturnProgramView != null
+								&& sourceFromUrl != null
+								&& !isRetry) {
+//						if(mProd_src.equalsIgnoreCase(string) && m_ReturnProgramView != null
 //								&& sourceFromUrl != null){
-//							String url = URLUtils.
-//									getParseUrlURL(Constant.LETV_PARSE_URL_URL, sourceFromUrl, mProd_id, mProd_sub_name);
-//							Log.i(TAG, "sourceUrl--->" + sourceFromUrl + " url---->" + url);
-//							getLetvParseServiceData(url);
-//						}else {
+							String url = URLUtils.getParseUrlURL(Constant.LETV_PARSE_URL_URL, sourceFromUrl, mProd_id, mProd_sub_name);
+							Log.i(TAG, "sourceUrl--->" + sourceFromUrl + " url---->" + url);
+							getLetvParseServiceData(url);
+							isRetry = true;
+						}else if(mProd_src.equalsIgnoreCase(PlayerSourceType.TYPE_FENGXING.toSourceName())
+								&& m_ReturnProgramView != null
+								&& sourceFromUrl != null
+								&& !isRetry){
+							String url = URLUtils.getFexingParseUrlURL(Constant.FENGXING_REGET_FIRST_URL, sourceFromUrl, mProd_id, mProd_sub_name);
+							Log.d(TAG,"FENGXING-URL"+mProd_id+"mProd_sub_name"+ mProd_sub_name + "url = " + url);
+							getFengxingParseServiceData(url);
+							isRetry = true;
+						}else{
 							
 							noUrlCanPlay();
-//						}
+						}
 					}
 				}
 				break;
@@ -619,8 +639,24 @@ public class VideoPlayerJPActivity extends Activity implements
 				updateName();
 				updateSourceAndTime();
 				Log.d(TAG,"------------->url_ok currentPlayUrl"+currentPlayUrl);
-				mVideoView.setVideoURI(Uri.parse(currentPlayUrl));
-				
+				if(mProd_src!=null&&mProd_src.equalsIgnoreCase(PlayerSourceType.TYPE_QIYI.toSourceName())){
+//					try{
+//						Map<String, String> headers = new HashMap<String, String>();
+//						headers.put("Host", "metan.video.qiyi.com");
+//						headers.put("User-Agent", Constant.MAC_SAFARI);
+//						Class class1 = mVideoView.getClass();
+//						Method method = class1.getMethod("setVideoURI",Uri.class,Map.class);
+//						method.invoke(mVideoView,Uri.parse(currentPlayUrl),headers);
+//						Log.d(TAG, "---------header added-----Host----------" + headers.get("Host"));
+//						Log.d(TAG, "---------header added-----User-Agent----" + headers.get("User-Agent"));
+//					}catch (Exception e) {
+//						// TODO: handle exception
+//						e.printStackTrace();
+						mVideoView.setVideoURI(Uri.parse(currentPlayUrl));
+//					}
+				}else{
+					mVideoView.setVideoURI(Uri.parse(currentPlayUrl));
+				}
 				if (lastTime > 0) {
 					mVideoView.seekTo((int) lastTime);
 				}
@@ -814,19 +850,16 @@ public class VideoPlayerJPActivity extends Activity implements
 						}
 					//	Log.d(TAG,"invideo_infos");
 					}
+					mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
 				//	Log.d(TAG,"OUTVIDEO_INFOS");
 
 				}
 				
 			}
-		} catch (JsonParseException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+			noUrlCanPlay();
 		}
-			mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
 	}
 	
 	private String defintionToType(int defintion){
@@ -1041,6 +1074,9 @@ public class VideoPlayerJPActivity extends Activity implements
 						
 						URLS_INDEX urls_INDEX = new URLS_INDEX(); 
 						urls_INDEX.source_from = reGetVideoView.down_urls.source;
+						if(urls_INDEX.source_from == null){
+							urls_INDEX.source_from = "letv";
+						}
 						urls_INDEX.defination_from_server = reGetVideoView.down_urls.urls[i].type;
 						urls_INDEX.url = reGetVideoView.down_urls.urls[i].url;
 						urls_INDEX.webUrl = sourceFromUrl;
@@ -1073,18 +1109,11 @@ public class VideoPlayerJPActivity extends Activity implements
 				return;
 				
 			}
-		} catch (JsonParseException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			noUrlCanPlay();
 		}
-		
-		noUrlCanPlay();
 	}
 	
 	private void updateDataLoadingSpeed(){
@@ -2210,10 +2239,11 @@ public class VideoPlayerJPActivity extends Activity implements
 			mResourceTextView.setText("");
 		} else {
 			String strSrc = "";
-			if (mProd_src.equalsIgnoreCase(PlayerSourceType.TYPE_LE_TV_FEE.toSourceName()) 
-					||mProd_src.equalsIgnoreCase(PlayerSourceType.TYPE_LETV.toSourceName())
-					||mProd_src.equals(PlayerSourceType.TYPE_LETV_V2.toSourceName())
-					||mProd_src.equals(PlayerSourceType.TYPE_LETV_V2_FEE.toSourceName())) {
+//			if (mProd_src.equalsIgnoreCase(PlayerSourceType.TYPE_LE_TV_FEE.toSourceName()) 
+//					||mProd_src.equalsIgnoreCase(PlayerSourceType.TYPE_LETV.toSourceName())
+//					||mProd_src.equals(PlayerSourceType.TYPE_LETV_V2.toSourceName())
+//					||mProd_src.equals(PlayerSourceType.TYPE_LETV_V2_FEE.toSourceName())) {
+			if (mProd_src.equalsIgnoreCase(SOURCE_LETV)) {
 				strSrc = getString(R.string.videoPlayerJPActivity_source_letv);
 			} else if (mProd_src.equalsIgnoreCase(PlayerSourceType.TYPE_FENGXING.toSourceName())) {
 				strSrc = getString(R.string.videoPlayerJPActivity_source_fengxing);

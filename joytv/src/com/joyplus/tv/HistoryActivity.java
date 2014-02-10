@@ -423,9 +423,9 @@ public class HistoryActivity extends Activity implements OnClickListener, OnItem
 				TextView nameText = (TextView) view.findViewById(R.id.dialog_title);
 				Button playButton = (Button) view.findViewById(R.id.history_play);
 				HotItemInfo info = ((HistortyAdapter)listView.getAdapter()).data.get(arg2);
-				if("3".equals(info.play_type)){
+//				if("3".equals(info.play_type)){
 					playButton.setVisibility(View.GONE);
-				}
+//				}
 				playButton.setOnClickListener(new OnClickListener() {
 					
 					@Override
