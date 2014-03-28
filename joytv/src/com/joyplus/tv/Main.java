@@ -16,6 +16,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 
+import com.joyplus.Config.ADFeature;
 import com.joyplus.adkey.Ad;
 import com.joyplus.adkey.AdListener;
 import com.joyplus.adkey.AdManager;
@@ -160,7 +161,12 @@ public class Main extends Activity implements AdListener{
 			String replenishAdvID = MobclickAgent.getConfigParams(this, "REPLENISH_ADV_PUBLISHERID");
 			UtilTools.setReplenishAdvID(getApplicationContext(), replenishAdvID);
 		}
-		
+		//add by Jas@20140317
+		if(ADFeature.EN){
+			Constant.LOADING_ADV_PUBLISHERID = "120a3a8995e973dca198268847f792ff";//
+			Constant.MAIN_ADV_PUBLISHERID    = "1a0758b8259886eaa2e3d2b2684e543c";
+			Constant.PLAYER_ADV_PUBLISHERID  = "289f16a05ed5fc64cee9af71e72dc549";
+		}
 		mManager = new AdManager(this,Constant.LOADING_ADV_PUBLISHERID,Constant.cacheMode);
 		mManager.setListener(this);
 		mManager.requestAd();

@@ -40,28 +40,36 @@
                 android:textSize="@dimen/user_name_text_size" />
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="@dimen/layout_zero"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="horizontal" >
-        </LinearLayout>
+  
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="@dimen/layout_zero"
         android:layout_height="match_parent"
-        android:layout_weight="1"
+        android:layout_weight="4"
         android:orientation="vertical" >
-
-        <com.joyplus.tv.ui.ClockTextView
-            android:id="@+id/cv_head_time"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+        <RelativeLayout 
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
             android:layout_gravity="center"
-            android:gravity="center"
-            android:textColor="@color/time_color"
-            android:textSize="@dimen/time_text_size" />
+            android:gravity="center">
+	            <com.joyplus.tv.ui.ClockTextView
+		            android:id="@+id/cv_head_time"
+		            android:layout_width="match_parent"
+		            android:layout_height="match_parent"
+		            android:layout_gravity="center"
+		            android:paddingBottom="10dp"
+		            android:gravity="center"
+		            android:textColor="@color/time_color"
+		            android:textSize="@dimen/time_text_size" />
+	            <RelativeLayout
+			        android:id="@+id/adsdkhead"
+			        android:layout_width="wrap_content"
+			        android:layout_height="65dp"
+			        android:scaleType="fitXY" >
+                </RelativeLayout>
+        </RelativeLayout>
+        
     </LinearLayout>
 
     <LinearLayout

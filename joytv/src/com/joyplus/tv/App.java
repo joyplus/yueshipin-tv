@@ -17,6 +17,9 @@ import android.widget.Toast;
 
 import com.androidquery.callback.BitmapAjaxCallback;
 import com.androidquery.util.AQUtility;
+import com.joyplus.admonitor.Application.AdMonitorConfig;
+import com.joyplus.admonitor.Application.AdMonitorSDKException;
+import com.joyplus.admonitor.Application.AdMonitorSDKManager;
 import com.joyplus.tv.Service.Return.ReturnProgramView;
 import com.joyplus.tv.entity.CurrentPlayDetailData;
 import com.joyplus.tv.ui.UserInfo;
@@ -78,7 +81,17 @@ public class App extends Application {
 
 		File cacheDir = new File(Constant.PATH);
 		AQUtility.setCacheDir(cacheDir);
-
+        //add by Jas
+		if(AdMonitor){
+			try {
+				AdMonitorSDKManager.Init(this);
+				Log.d("Jas","AdMonitorSDK-->"+AdMonitorConfig.ToString());
+			} catch (AdMonitorSDKException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		//end add by Jas
 		instance = this;
 	}
 
@@ -255,5 +268,6 @@ public class App extends Application {
 		}
 		return true;
 	}
-
+    //add by Jas
+	public final static boolean AdMonitor = true;
 }

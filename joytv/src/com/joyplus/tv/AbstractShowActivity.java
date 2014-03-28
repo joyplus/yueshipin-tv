@@ -5,6 +5,9 @@ import java.util.List;
 import org.json.JSONObject;
 
 import com.androidquery.callback.AjaxStatus;
+import com.joyplus.Config.ADFeature;
+import com.joyplus.adkey.banner.AdView;
+import com.joyplus.adkey.mini.AdMini;
 import com.joyplus.tv.entity.MovieItemData;
 import com.joyplus.tv.utils.BangDanConstant;
 import com.joyplus.tv.utils.JieMianConstant;
@@ -12,11 +15,14 @@ import com.joyplus.utils.MyKeyEventKey;
 
 import android.app.Activity;
 import android.view.View;
+import android.widget.RelativeLayout;
 
 public abstract class AbstractShowActivity extends Activity implements
 		View.OnKeyListener, MyKeyEventKey, BangDanConstant, JieMianConstant,
 		View.OnClickListener, View.OnFocusChangeListener {
-
+	//add by Jas
+    private AdView mAdView;
+    //end add by Jas
 	protected void initActivity() {
 
 		initView();
@@ -24,6 +30,17 @@ public abstract class AbstractShowActivity extends Activity implements
 		initViewState();
 		initLists();
 		clearLists();
+		//add by Jas
+		if(ADFeature.EN){
+			RelativeLayout layout = (RelativeLayout) this.findViewById(R.id.adsdkhead);
+			if(mAdView != null){
+				layout.removeView(mAdView);
+				mAdView = null;
+			}
+			mAdView = new AdView(this, "1f1192cac398aeb8b70c84a9f31fc037",false);
+			layout.addView(mAdView); 
+		}
+		//end add by Jas
 	}
 
 	protected abstract void initView();// 初始化界面基本组件

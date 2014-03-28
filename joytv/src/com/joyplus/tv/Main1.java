@@ -71,10 +71,12 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.zxing.WriterException;
+import com.joyplus.Config.ADFeature;
 import com.joyplus.adkey.Ad;
 import com.joyplus.adkey.AdListener;
 import com.joyplus.adkey.Const;
 import com.joyplus.adkey.banner.AdView;
+import com.joyplus.adkey.mini.AdMini;
 import com.joyplus.features.HaoimsFeature;
 import com.joyplus.tv.Adapters.MainHotItemAdapter;
 import com.joyplus.tv.Adapters.MainLibAdapter;
@@ -240,7 +242,9 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 	 */
 	private RelativeLayout layout;
 	private AdView mAdView;
-
+    //add by Jas
+	private AdMini mAdMini;
+	//end add by Jas
 	private AdView mAdViewFake = null;
 	private RelativeLayout layoutFake;
 
@@ -954,12 +958,20 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 					if (mAdView != null) {
 						removeBanner();
 					}
-
-					mAdView = new AdView(Main1.this, Constant.MAIN_ADV_PUBLISHERID,false);
-					mAdView.setAdListener(Main1.this);
-					layout.addView(mAdView);
-
-					
+					//change by Jas
+                    if(ADFeature.EN){
+                    	if(mAdMini != null){
+                    		layout.removeView(mAdMini);
+                    		mAdMini = null;
+                    	}
+                    	mAdMini = new AdMini(Main1.this, Constant.MAIN_ADV_PUBLISHERID,false);
+						layout.addView(mAdMini);
+                    }else{
+						mAdView = new AdView(Main1.this, Constant.MAIN_ADV_PUBLISHERID,false);
+						mAdView.setAdListener(Main1.this);
+						layout.addView(mAdView);
+                    }
+					//end change by Jas
 					mAdViewFake = new AdView(Main1.this, Constant.ADDITIONAL_ADV_PUBLISHERID,false);
 					mAdViewFake.setAdListener(Main1.this);
 					layoutFake.addView(mAdViewFake);
@@ -1890,7 +1902,7 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
 		// Toast.makeText(this, "key code = " + keyCode, 100).show();
-		Log.d(TAG, "code = " + keyCode);
+		Log.d(TAG, "code = " + keyCode+" , "+KeyEvent.keyCodeToString(keyCode)+" ,initStep="+initStep);
 		if (initStep < 3) {
 			return true;
 		}
@@ -1951,7 +1963,8 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 			// break;
 			//
 			// }
-			return true;
+			//return true;
+			break;
 		case KeyEvent.KEYCODE_DPAD_LEFT:
 			//
 			//
@@ -2010,7 +2023,8 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 			//
 			// }
 			//
-			return true;
+			//return true;
+			break;
 		case KeyEvent.KEYCODE_BACK:
 			if ((System.currentTimeMillis() - exitTime) > 2000) {
 				Toast toast = new Toast(this);

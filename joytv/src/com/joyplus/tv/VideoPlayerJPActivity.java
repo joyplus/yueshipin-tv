@@ -79,9 +79,12 @@ import com.androidquery.callback.AjaxStatus;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.joyplus.Config.ADFeature;
 import com.joyplus.adkey.Ad;
 import com.joyplus.adkey.AdListener;
 import com.joyplus.adkey.banner.AdView;
+import com.joyplus.adkey.floatlayout.FloatLayout;
+import com.joyplus.admonitor.Application.AdMonitor;
 import com.joyplus.manager.RequestAQueryManager;
 import com.joyplus.sub_old_1.JoyplusSubManager;
 import com.joyplus.tv.Service.Return.ReturnFengxingSecondView;
@@ -292,8 +295,9 @@ public class VideoPlayerJPActivity extends Activity implements
 	ArrayList<Integer> zimuStrings = new ArrayList<Integer>();
 	
 	private JoyplusSubManager mJoyplusSubManager;
-	
-	
+	//add by Jas
+	private FloatLayout mFloatLayout; 
+	//end add by Jas
 	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
@@ -638,22 +642,24 @@ public class VideoPlayerJPActivity extends Activity implements
 			case MESSAGE_PALY_URL_OK:
 				updateName();
 				updateSourceAndTime();
-				Log.d(TAG,"------------->url_ok currentPlayUrl"+currentPlayUrl);
+				Log.d("Jas","------------->url_ok currentPlayUrl"+currentPlayUrl);
+				//WebAddress mWebAddress = new WebAddress(currentPlayUrl);
 				if(mProd_src!=null&&mProd_src.equalsIgnoreCase(PlayerSourceType.TYPE_QIYI.toSourceName())){
-//					try{
-//						Map<String, String> headers = new HashMap<String, String>();
-//						headers.put("Host", "metan.video.qiyi.com");
-//						headers.put("User-Agent", Constant.MAC_SAFARI);
-//						Class class1 = mVideoView.getClass();
-//						Method method = class1.getMethod("setVideoURI",Uri.class,Map.class);
-//						method.invoke(mVideoView,Uri.parse(currentPlayUrl),headers);
-//						Log.d(TAG, "---------header added-----Host----------" + headers.get("Host"));
-//						Log.d(TAG, "---------header added-----User-Agent----" + headers.get("User-Agent"));
-//					}catch (Exception e) {
-//						// TODO: handle exception
-//						e.printStackTrace();
+					try{
+						Map<String, String> headers = new HashMap<String, String>();
+						headers.put("Host", "metan.video.qiyi.com");
+						//headers.put("Host", "data.video.qiyi.com");
+						headers.put("User-Agent", Constant.USER_AGENT_IOS);
+						Class class1 = mVideoView.getClass();
+						Method method = class1.getMethod("setVideoURI",Uri.class,Map.class);
+						method.invoke(mVideoView,Uri.parse(currentPlayUrl),headers);
+						Log.d("Jas", "---------header added-----Host----------" + headers.get("Host"));
+						Log.d("Jas", "---------header added-----User-Agent----" + headers.get("User-Agent"));
+					}catch (Exception e) {
+						// TODO: handle exception
+						e.printStackTrace();
 						mVideoView.setVideoURI(Uri.parse(currentPlayUrl));
-//					}
+					}
 				}else{
 					mVideoView.setVideoURI(Uri.parse(currentPlayUrl));
 				}
@@ -661,7 +667,20 @@ public class VideoPlayerJPActivity extends Activity implements
 					mVideoView.seekTo((int) lastTime);
 				}
 				mVideoView.start();
-				
+				//add by Jas for admonitor
+				if(App.AdMonitor){
+					AdMonitor.SetCollectVideoStartInfo(mProd_id, mProd_name, lastTime);
+				}
+				if(ADFeature.EN){
+					if(mFloatLayout != null){
+						mFloatLayout.Stop();
+						mFloatLayout = null;
+					}
+					mFloatLayout = new FloatLayout(VideoPlayerJPActivity.this, 
+							"cd03d90dab5f8d14158881b69efc43e3", mVideoView, 200, 200);
+					mFloatLayout.requestAd();
+				}
+				//end add by Jas
 //				if(reloadLetvCount == 0)
 //				postDelayed(new Runnable() {
 //					public void run() {
@@ -2130,6 +2149,17 @@ public class VideoPlayerJPActivity extends Activity implements
 // kong
 	private void playNext() {
 		// TODO Auto-generated method stub
+		//add by Jas
+		if(App.AdMonitor){
+			AdMonitor.SetCollectVideoEndInfo(mProd_id, mProd_name);
+		}
+		if(ADFeature.EN){
+			if(mFloatLayout != null){
+				mFloatLayout.Stop();
+				mFloatLayout = null;
+			}
+		}
+		//end add by Jas
 		url_temp = null;
 		isRetry = false;
 		mStatue = STATUE_LOADING;
@@ -2158,6 +2188,17 @@ public class VideoPlayerJPActivity extends Activity implements
 
 	private void playPrevious() {
 		// TODO Auto-generated method stub
+		//add by Jas
+		if(App.AdMonitor){
+			AdMonitor.SetCollectVideoEndInfo(mProd_id, mProd_name);
+		}
+		if(ADFeature.EN){
+			if(mFloatLayout != null){
+				mFloatLayout.Stop();
+				mFloatLayout = null;
+			}
+		}
+		//end add by Jas
 		url_temp = null;
 		isRetry = false;
 		mStatue = STATUE_LOADING;
@@ -3389,7 +3430,22 @@ public class VideoPlayerJPActivity extends Activity implements
 	        alertDialog.show(); 
 		return super.onCreateDialog(id);
 	}
-	
+	//add by Jas
+	@Override
+	public void finish() {
+		// TODO Auto-generated method stub
+		if(App.AdMonitor){
+			AdMonitor.SetCollectVideoEndInfo(mProd_id, mProd_name);
+		}
+		if(ADFeature.EN){
+			if(mFloatLayout != null){
+				mFloatLayout.Stop();
+				mFloatLayout = null;
+			}
+		}
+		super.finish();
+	}
+    //end add ny Jas
 	/**
 	 * 地址跳转
 	 */
